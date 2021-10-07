@@ -2,12 +2,12 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
+use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\Building;
-use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -16,7 +16,6 @@ use App\Models\UserActionPlanAdviceComments;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use App\Helpers\Arr;
 use Illuminate\Support\Str;
@@ -427,18 +426,22 @@ class Form extends Component
         $savings = 0;
         $subsidy = 0;
 
-        foreach ($this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] as $card) {
+        $investmentPerCard = [];
+
+        foreach ($this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] as $order => $card) {
             $from = $card['costs']['from'] ?? 0;
             $to = $card['costs']['to'] ?? 0;
 
             if ($from <= 0 && $to > 0) {
-                $investment += $to;
+                $cardInvestment = $to;
             } elseif ($to <= 0 && $from > 0) {
-                $investment += $from;
+                $cardInvestment = $from;
             } elseif ($from > 0 && $to > 0) {
-                $investment += (($from + $to) / 2);
+                $cardInvestment = (($from + $to) / 2);
             }
 
+            $investmentPerCard[$order] = $cardInvestment;
+            $investment += $cardInvestment;
             $savings += $card['savings'] ?? 0;
 
 //            if ($card['subsidy'] === $this->SUBSIDY_AVAILABLE) {
@@ -448,10 +451,31 @@ class Form extends Component
 
         $investment = NumberFormatter::round($investment);
         $savings = NumberFormatter::round($savings);
+        $subsidy = NumberFormatter::round($subsidy);
 
-        // Investment cannot be 0!
-        $investmentPercentage = $savings / max(1, $investment) * 100;
-        $this->evaluateCalculationResult('investment', $investmentPercentage);
+        $this->expectedInvestment = $investment;
+        $this->yearlySavings = $savings;
+        $this->availableSubsidy = $subsidy;
+
+        $investmentRating = 0;
+
+        // Now we have calculated the total investment, we need to calculate the investment rendement per card
+        foreach ($this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] as $order => $card) {
+            $cardInvestment = $investmentPerCard[$order];
+            // Calculate the weight of this card
+            $weight = $cardInvestment / $investment;
+
+            // Calculate the interest just like in the expert tool
+            $interest = BankInterestCalculator::getComparableInterest($cardInvestment, $card['savings']);
+
+            // Get a rating based on interest, then multiply it by its weight, and then add it to the total
+            $rating = $this->evaluateCalculationResult('investment', $interest, false);
+            $investmentRating += ($weight * $rating);
+        }
+
+        // Set the investment value after rounding
+        $investmentRating = round($investmentRating);
+        $this->setField('investment', $investmentRating);
 
         // ---------------------------------------------------------------------
         // sustainability
@@ -498,10 +522,6 @@ class Form extends Component
         // ---------------------------------------------------------------------
         $comfort = UserActionPlanAdviceService::getComfortForBuilding($this->building);
         $this->evaluateCalculationResult('comfort', $comfort);
-
-        $this->expectedInvestment = $investment;
-        $this->yearlySavings = $savings;
-        $this->availableSubsidy = $subsidy;
     }
 
     public function reorder($category)
@@ -675,7 +695,7 @@ class Form extends Component
         return $cards;
     }
 
-    public function evaluateCalculationResult($field, $calculation)
+    public function evaluateCalculationResult(string $field, $calculation, bool $setValue = true)
     {
         // TODO: This will most likely come from the database at one point
         $calculationConditions = $this->calculationMap[$field];
@@ -703,6 +723,15 @@ class Form extends Component
             }
         }
 
+        if ($setValue) {
+            $this->setField($field, $value);
+        }
+
+        return $value;
+    }
+
+    private function setField($field, $value)
+    {
         $this->{$field} = $value;
         // TODO: Deprecate this dispatch in Livewire V2 (IF POSSIBLE)
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);

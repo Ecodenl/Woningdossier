@@ -23,7 +23,7 @@ use Carbon\Carbon;
 
 class RoofInsulationHelper extends ToolHelper
 {
-    public function createAdvices(): ToolHelper
+    public function createAdvices(array $updatedMeasureIds = []): ToolHelper
     {
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = RoofInsulationCalculate::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
@@ -79,7 +79,11 @@ class RoofInsulationHelper extends ToolHelper
                             $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                             $actionPlanAdvice->step()->associate($step);
 
-                            UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                            // We only want to check old advices if the updated attributes are not relevant to this measure
+                            if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                                    $oldAdvices);
+                            }
 
                             $actionPlanAdvice->save();
                         }
@@ -119,7 +123,11 @@ class RoofInsulationHelper extends ToolHelper
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($zincReplaceMeasure);
                         $actionPlanAdvice->step()->associate($step);
 
-                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $zincReplaceMeasure, $oldAdvices);
+                        // We only want to check old advices if the updated attributes are not relevant to this measure
+                        if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                            UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $zincReplaceMeasure,
+                                $oldAdvices);
+                        }
 
                         $actionPlanAdvice->save();
                     }
@@ -147,7 +155,11 @@ class RoofInsulationHelper extends ToolHelper
                             $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
                             $actionPlanAdvice->step()->associate($step);
 
-                            UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure, $oldAdvices);
+                            // We only want to check old advices if the updated attributes are not relevant to this measure
+                            if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure,
+                                    $oldAdvices);
+                            }
 
                             $actionPlanAdvice->save();
                         }
@@ -177,7 +189,11 @@ class RoofInsulationHelper extends ToolHelper
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
                         $actionPlanAdvice->step()->associate($step);
 
-                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure, $oldAdvices);
+                        // We only want to check old advices if the updated attributes are not relevant to this measure
+                        if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                            UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure,
+                                $oldAdvices);
+                        }
 
                         $actionPlanAdvice->save();
                     }

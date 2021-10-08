@@ -471,6 +471,8 @@
                     </li>
                 </ol>
             @endcomponent
+
+            <input type="hidden" name="dirty_attributes" value="{{ old('dirty_attributes') }}">
         </div>
     </form>
 @endsection
@@ -478,6 +480,15 @@
 @push('js')
     <script>
         $(document).ready(function () {
+            let data = {};
+            $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {
+                data[$(this).attr('name')] = $(this).val();
+            });
+
+            $('#wall-insulation-form').submit(function () {
+                $('input[name="dirty_attributes"]').val(JSON.stringify(data));
+                return true;
+            });
 
             $("select, input[type=radio], input[type=text]").change(() => formChange());
 

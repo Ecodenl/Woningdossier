@@ -30,11 +30,11 @@ class ExampleBuildingService
      *
      *
      *
-     * @param  ExampleBuilding  $exampleBuilding
-     * @param  int  $buildYear  Build year for selecting the appropriate example building content
-     * @param  Building  $building  Target building to apply to
-     * @param  InputSource|null  $inputSource
-     * @param  InputSource|null  $initiatingInputSource  The input source starting this action.
+     * @param ExampleBuilding $exampleBuilding
+     * @param int $buildYear Build year for selecting the appropriate example building content
+     * @param Building $building Target building to apply to
+     * @param InputSource|null $inputSource
+     * @param InputSource|null $initiatingInputSource The input source starting this action.
      */
     public static function apply(
         ExampleBuilding $exampleBuilding,
@@ -42,7 +42,8 @@ class ExampleBuildingService
         Building $building,
         ?InputSource $inputSource = null,
         ?InputSource $initiatingInputSource = null
-    ) {
+    )
+    {
         $inputSource = $inputSource ?? InputSource::findByShort(
                 InputSource::EXAMPLE_BUILDING
             );
@@ -55,11 +56,11 @@ class ExampleBuildingService
 
         // Clear the current example building data
         self::log(
-            'Lookup '.$exampleBuilding->name.' for '.$buildYear." (".$inputSource->name.")"
+            'Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ")"
         );
         $contents = $exampleBuilding->getContentForYear($buildYear);
 
-        if ( ! $contents instanceof ExampleBuildingContent) {
+        if (!$contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
             self::log('No data to apply');
 
@@ -81,7 +82,7 @@ class ExampleBuildingService
                 $exampleBuilding->building_type_id,
             )->first();
             self::log(
-                "Example building is specific. Generic counterpart is ".$genericExampleBuilding->name
+                "Example building is specific. Generic counterpart is " . $genericExampleBuilding->name
             );
             $genericContent = $genericExampleBuilding->getContentForYear(
                 $buildYear
@@ -96,61 +97,26 @@ class ExampleBuildingService
         }
 
         self::log(
-            'Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.') for input source '.$inputSource->name
+            'Applying Example Building ' . $exampleBuilding->name . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
         );
 
         $oldFeatures = [];
-        $oldHabits = [];
-
-        // important!
-        // A generic example building can be set, while the rest of the
-        // quick scan isn't filled yet. Thing is: if nothing has been changed
-        // by the user just yet (so the user is filling the tool for the first
-        // time from front to back) data will have been set from the first
-        // (generic) example building. When selecting a specific example
-        // building, we want to override the values ONLY if nothing has been
-        // changed further in the tool by the user. Therefore we check if
-        // no substeps > 4 have been completed.
-        $userAlreadyStartedFilling = $building->completedSubSteps()
-                                              ->forInputSource(
-                                                  $initiatingInputSource
-                                              )
-                                              ->where('sub_step_id', '>', 4)
-                                              ->count() > 0;
 
         // Don't do this for the example building, otherwise it might get the old values from other input sources
         // which is unwanted.
         if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
-            self::log(
-                "User already started filling in the tool. We merge that data."
-            );
+            self::log("User already started filling in the tool. We merge that data.");
             // Save the features for later. We merge this with the example building contents.
             // Note that $oldFeatures *might* be null in the highly unlikely case.
             /** @var BuildingFeature|null $currentInputSourceFeatures */
-            $currentInputSourceFeatures = $building->buildingFeatures(
-            )->forInputSource($initiatingInputSource)->first();
+            $currentInputSourceFeatures = $building->buildingFeatures()->forInputSource($initiatingInputSource)->first();
 
             if ($currentInputSourceFeatures instanceof BuildingFeature) {
-                if ($userAlreadyStartedFilling) {
-                    $oldFeatures = $currentInputSourceFeatures->attributesToArray(
-                    );
-                    // filter out null values
-                    $oldFeatures = array_filter(
-                        $oldFeatures,
-                        fn($item) => ! is_null($item)
-                    );
-                } else {
-                    $oldFeatures = [
-                        'build_year' => $currentInputSourceFeatures->build_year,
-                        'surface'    => $currentInputSourceFeatures->surface,
-                    ];
-                }
-            }
-
-            // Copy over some habits
-            $currentHabits = $buildingOwner->energyHabit()->forInputSource($initiatingInputSource)->first();
-            if ($currentHabits instanceof UserEnergyHabit){
-                $oldHabits = $currentHabits->only('amount_gas', 'amount_electricity', 'amount_water');
+                // so we want to keep these since the example building can't overwrite this.
+                $oldFeatures = [
+                    'build_year' => $currentInputSourceFeatures->build_year,
+                    'surface' => $currentInputSourceFeatures->surface,
+                ];
             }
         }
 
@@ -162,35 +128,34 @@ class ExampleBuildingService
 
         foreach ($exampleData as $stepSlug => $dataForStep) {
             self::log('=====');
-            self::log('Processing '.$stepSlug);
+            self::log('Processing ' . $stepSlug);
             self::log('=====');
 
             foreach ($dataForStep as $subStep => $subStepData) {
                 foreach ($subStepData as $columnOrTable => $values) {
-                    self::log('-----> '.$stepSlug.' - '.$columnOrTable);
+                    self::log('-----> ' . $stepSlug . ' - ' . $columnOrTable);
 
                     if (is_null($values)) {
-                        self::log('Skipping '.$columnOrTable.' (empty)');
+                        self::log('Skipping ' . $columnOrTable . ' (empty)');
                         continue;
                     }
 
                     if ('user_energy_habits' == $columnOrTable) {
-                        $values = array_replace_recursive($values, $oldHabits);
                         $buildingOwner->energyHabit()
-                                ->forInputSource($inputSource)
-                                ->updateOrCreate(
-                            ['input_source_id' => $inputSource->id],
-                            $values
-                        );
+                            ->forInputSource($inputSource)
+                            ->updateOrCreate(
+                                ['input_source_id' => $inputSource->id],
+                                $values
+                            );
                     }
                     if ('element' == $columnOrTable) {
                         // process elements
                         if (is_array($values)) {
                             foreach ($values as $elementId => $elementValueData) {
-                                $extra         = null;
+                                $extra = null;
                                 $elementValues = [];
                                 if (is_array($elementValueData)) {
-                                    if ( ! array_key_exists(
+                                    if (!array_key_exists(
                                         'element_value_id',
                                         $elementValueData
                                     )) {
@@ -238,15 +203,14 @@ class ExampleBuildingService
                                 $element = Element::find($elementId);
                                 if ($element instanceof Element) {
                                     foreach ($elementValues as $elementValue) {
-                                        $extra           = array_key_exists(
+                                        $extra = array_key_exists(
                                             'extra',
                                             $elementValue
                                         ) ? $elementValue['extra'] : null;
                                         $buildingElement = new BuildingElement(
                                             ['extra' => $extra]
                                         );
-                                        $buildingElement->inputSource(
-                                        )->associate($inputSource);
+                                        $buildingElement->inputSource()->associate($inputSource);
                                         $buildingElement->element()->associate(
                                             $element
                                         );
@@ -255,21 +219,19 @@ class ExampleBuildingService
                                         );
 
                                         if (isset($elementValue['element_value_id'])) {
-                                            $elementValue = $element->values(
-                                            )->where(
+                                            $elementValue = $element->values()->where(
                                                 'id',
                                                 $elementValue['element_value_id']
                                             )->first();
 
                                             if ($elementValue instanceof ElementValue) {
-                                                $buildingElement->elementValue(
-                                                )->associate($elementValue);
+                                                $buildingElement->elementValue()->associate($elementValue);
                                             }
                                         }
 
                                         $buildingElement->save();
                                         self::log(
-                                            'Update or creating building element '.json_encode(
+                                            'Update or creating building element ' . json_encode(
                                                 $buildingElement->toArray()
                                             )
                                         );
@@ -296,12 +258,12 @@ class ExampleBuildingService
                                 $extra = null;
                                 // note: in the case of solar panels the service_value_id can be null!!
                                 if (is_array($serviceValueData)) {
-                                    if ( ! array_key_exists(
+                                    if (!array_key_exists(
                                         'service_value_id',
                                         $serviceValueData
                                     )) {
                                         self::log(
-                                            'Service ID '.$serviceId.': no service_value_id -> service_value_id set to NULL'
+                                            'Service ID ' . $serviceId . ': no service_value_id -> service_value_id set to NULL'
                                         );
                                         $serviceValueId = null;
                                     } else {
@@ -322,15 +284,14 @@ class ExampleBuildingService
                                     $existingBuildingService = BuildingService::forMe(
                                         $building->user
                                     )
-                                                                              ->forInputSource(
-                                                                                  $inputSource
-                                                                              )
-                                                                              ->where(
-                                                                                  'service_id',
-                                                                                  $serviceId
-                                                                              )
-                                                                              ->first(
-                                                                              );
+                                        ->forInputSource(
+                                            $inputSource
+                                        )
+                                        ->where(
+                                            'service_id',
+                                            $serviceId
+                                        )
+                                        ->first();
 
                                     // see if it already exists, if so we need to add data to that service
 
@@ -339,10 +300,8 @@ class ExampleBuildingService
                                     if ($existingBuildingService instanceof BuildingService) {
                                         $buildingService = $existingBuildingService;
                                     } else {
-                                        $buildingService = new BuildingService(
-                                        );
-                                        $buildingService->inputSource(
-                                        )->associate($inputSource);
+                                        $buildingService = new BuildingService();
+                                        $buildingService->inputSource()->associate($inputSource);
                                         $buildingService->service()->associate(
                                             $service
                                         );
@@ -358,18 +317,15 @@ class ExampleBuildingService
                                         $buildingService->extra = $extra;
                                     }
 
-                                    if ( ! is_null($serviceValueId)) {
-                                        $serviceValue = $service->values(
-                                        )->where('id', $serviceValueId)->first(
-                                        );
-                                        $buildingService->serviceValue(
-                                        )->associate($serviceValue);
+                                    if (!is_null($serviceValueId)) {
+                                        $serviceValue = $service->values()->where('id', $serviceValueId)->first();
+                                        $buildingService->serviceValue()->associate($serviceValue);
                                     }
 
                                     $buildingService->save();
 
                                     self::log(
-                                        'Update or creating building service '.json_encode(
+                                        'Update or creating building service ' . json_encode(
                                             $buildingService->toArray()
                                         )
                                     );
@@ -379,15 +335,15 @@ class ExampleBuildingService
                     }
                     if ('building_features' == $columnOrTable) {
                         $features = array_replace_recursive($features, $values);
-                        if(empty($features['surface'] ?? null)){
+                        if (empty($features['surface'] ?? null)) {
                             unset($features['surface']);
                         }
-                        if (empty($features['build_year'] ?? null)){
+                        if (empty($features['build_year'] ?? null)) {
                             unset($features['build_year']);
                         }
                     }
                     if ('building_paintwork_statuses' == $columnOrTable) {
-                        $statusId        = Arr::get(
+                        $statusId = Arr::get(
                             $values,
                             'paintwork_status_id'
                         );
@@ -418,15 +374,14 @@ class ExampleBuildingService
                             // the value was stored inside the insulated_glazing_id key, however this changed to insulating_glazing_id.
                             // recent updated example buildings will have the new key, old ones wont.
                             // so if the insulating_glazing_id does not exist, we will set the old one.
-                            if ( ! array_key_exists(
+                            if (!array_key_exists(
                                 'insulating_glazing_id',
                                 $glazingData
                             )) {
                                 $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
                             }
 
-                            $building->currentInsulatedGlazing(
-                            )->forInputSource($inputSource)->updateOrCreate(
+                            $building->currentInsulatedGlazing()->forInputSource($inputSource)->updateOrCreate(
                                 [
                                     'input_source_id' => $inputSource->id,
                                     'measure_application_id' => $glazingData['measure_application_id'],
@@ -435,12 +390,12 @@ class ExampleBuildingService
                             );
 
                             self::log(
-                                'Update or creating building insulated glazing '.json_encode(
+                                'Update or creating building insulated glazing ' . json_encode(
                                     $building->currentInsulatedGlazing()
-                                             ->forInputSource($inputSource)
-                                             ->where('measure_application_id', '=', $glazingData['measure_application_id'])
-                                             ->first()
-                                             ->toArray()
+                                        ->forInputSource($inputSource)
+                                        ->where('measure_application_id', '=', $glazingData['measure_application_id'])
+                                        ->first()
+                                        ->toArray()
                                 )
                             );
                         }
@@ -460,7 +415,7 @@ class ExampleBuildingService
                                 );
 
                                 self::log(
-                                    'Update or creating building rooftype '.json_encode(
+                                    'Update or creating building rooftype ' . json_encode(
                                         $building->roofTypes()->forInputSource(
                                             $inputSource
                                         )->first()->toArray()
@@ -476,19 +431,19 @@ class ExampleBuildingService
                     if ('building_pv_panels' == $columnOrTable) {
 
                         $toolQuestion = ToolQuestion::findByShort('has-solar-panels');
-                        if ((int) ($values['number'] ?? 0) > 0){
+                        if ((int)($values['number'] ?? 0) > 0) {
                             /** @var ToolQuestion $toolQuestion */
                             // set to  yes
                             $toolQuestionCustomValue = $toolQuestion->toolQuestionCustomValues()->where('short', '=', 'yes')->first();
                             $building->toolQuestionAnswers()
-                                     ->forInputSource($inputSource)
-                                     ->updateOrCreate([
-                                         'tool_question_id' => $toolQuestion->id,
-                                         'input_source_id' => $inputSource->id,
-                                     ], [
-                                         'tool_question_custom_value_id' => $toolQuestionCustomValue->id,
-                                         'answer' => $toolQuestionCustomValue->short,
-                                     ]);
+                                ->forInputSource($inputSource)
+                                ->updateOrCreate([
+                                    'tool_question_id' => $toolQuestion->id,
+                                    'input_source_id' => $inputSource->id,
+                                ], [
+                                    'tool_question_custom_value_id' => $toolQuestionCustomValue->id,
+                                    'answer' => $toolQuestionCustomValue->short,
+                                ]);
                         }
 
                         $building->pvPanels()->forInputSource(
@@ -498,7 +453,7 @@ class ExampleBuildingService
                             $values
                         );
                         self::log(
-                            'Update or creating building pv_panels '.json_encode(
+                            'Update or creating building pv_panels ' . json_encode(
                                 $building->pvPanels()->forInputSource(
                                     $inputSource
                                 )->first()->toArray()
@@ -513,30 +468,30 @@ class ExampleBuildingService
                             $values
                         );
                         self::log(
-                            'Update or creating building heater '.json_encode(
+                            'Update or creating building heater ' . json_encode(
                                 $building->heater()->forInputSource(
                                     $inputSource
                                 )->first()->toArray()
                             )
                         );
                     }
-                    if ('considerables' == $columnOrTable){
-                        foreach($values as $modelClass => $modelConsideration){
-                            foreach($modelConsideration as $id => $considering){
+                    if ('considerables' == $columnOrTable) {
+                        foreach ($values as $modelClass => $modelConsideration) {
+                            foreach ($modelConsideration as $id => $considering) {
 //                                $considering = ($considering == 1);
-                                self::log("Building " . $building->id . " Setting consideration for user " . $building->user->id . " for " . $modelClass . " (" . $id . ") to " . ((int) $considering));
+                                self::log("Building " . $building->id . " Setting consideration for user " . $building->user->id . " for " . $modelClass . " (" . $id . ") to " . ((int)$considering));
 
                                 ConsiderableService::save($modelClass::find($id), $building->user, $inputSource, $considering);
                             }
                         }
                     }
                     // deprecated in favor of considerables.
-                    if ('user_interests' == $columnOrTable){
-                        foreach($values as $modelClass => $modelInterest){
-                            foreach($modelInterest as $id => $interest){
+                    if ('user_interests' == $columnOrTable) {
+                        foreach ($values as $modelClass => $modelInterest) {
+                            foreach ($modelInterest as $id => $interest) {
                                 $interestId = $interest['interest_id'] ?? null;
 
-                                if (!is_null($interestId)){
+                                if (!is_null($interestId)) {
                                     self::log("Building " . $building->id . " Setting interest for user " . $building->user->id . " for " . $modelClass . " (" . $id . ") to " . $interestId);
                                     $userInterest = new UserInterest([
                                         'input_source_id' => $inputSource->id,
@@ -545,15 +500,15 @@ class ExampleBuildingService
                                         'interest_id' => $interestId,
                                     ]);
                                     $building->user->userInterests()
-                                                   ->allInputSources()
-                                                   ->save($userInterest);
+                                        ->allInputSources()
+                                        ->save($userInterest);
                                 }
                             }
                         }
                     }
                     if ('tool_question_answers' == $columnOrTable) {
                         foreach ($values as $questionShort => $answers) {
-                            if ( ! is_array($answers)) {
+                            if (!is_array($answers)) {
                                 $answers = [$answers];
                             }
                             /** @var ToolQuestion $toolQuestion */
@@ -562,22 +517,21 @@ class ExampleBuildingService
                             );
                             if ($toolQuestion instanceof ToolQuestion) {
                                 foreach ($answers as $answer) {
-                                    $customValue = $toolQuestion->toolQuestionCustomValues(
-                                    )->where('short', '=', $answer)->first();
-                                    $input       = ['answer' => $answer];
+                                    $customValue = $toolQuestion->toolQuestionCustomValues()->where('short', '=', $answer)->first();
+                                    $input = ['answer' => $answer];
                                     if ($customValue instanceof ToolQuestionCustomValue) {
                                         $input['tool_question_custom_value_id'] = $customValue->id;
                                     }
 
                                     $building->toolQuestionAnswers()
-                                             ->forInputSource($inputSource)
-                                             ->updateOrCreate(
-                                                 [
-                                                     'input_source_id'  => $inputSource->id,
-                                                     'tool_question_id' => $toolQuestion->id,
-                                                 ],
-                                                 $input
-                                             );
+                                        ->forInputSource($inputSource)
+                                        ->updateOrCreate(
+                                            [
+                                                'input_source_id' => $inputSource->id,
+                                                'tool_question_id' => $toolQuestion->id,
+                                            ],
+                                            $input
+                                        );
                                 }
                             }
                         }
@@ -586,9 +540,7 @@ class ExampleBuildingService
             }
         }
 
-//        self::log('processing features '.json_encode($features));
-
-        // replace particular features with the old features.
+        // replace particular features with the old features (build year and surface).
         $features = array_replace_recursive($features, $oldFeatures);
 
         $buildingFeatures = new BuildingFeature($features);
@@ -600,15 +552,15 @@ class ExampleBuildingService
         $buildingFeatures->save();
 
         self::log(
-            'Update or creating building features '.json_encode(
+            'Update or creating building features ' . json_encode(
                 $buildingFeatures->toArray()
             )
         );
 
         // Get all expert tool steps and complete them for this building + input source
         $stepsToComplete = Step::whereDoesntHave('parentStep')
-                               ->whereDoesntHave('subSteps')
-                               ->get();
+            ->whereDoesntHave('subSteps')
+            ->get();
 
         foreach ($stepsToComplete as $stepToComplete) {
             StepHelper::complete($stepToComplete, $building, $inputSource);
@@ -624,7 +576,8 @@ class ExampleBuildingService
     public static function clearExampleBuilding(
         Building $building,
         ?InputSource $inputSource = null
-    ) {
+    )
+    {
         /** @var InputSource $inputSource */
         $inputSource = $inputSource ?? InputSource::findByShort(
                 InputSource::EXAMPLE_BUILDING
@@ -640,7 +593,7 @@ class ExampleBuildingService
 
     protected static function log($text)
     {
-        Log::debug(__CLASS__.' '.$text);
+        Log::debug(__CLASS__ . ' ' . $text);
     }
 
     /*

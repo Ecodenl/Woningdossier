@@ -141,6 +141,13 @@ class InsulatedGlazingController extends ToolController
             }
         }
 
+        // Add the paint measure if any of the building elements were changed
+        if (Str::arrStartsWith($dirtyNames, 'building_elements', true)) {
+            if (($paintMeasure = MeasureApplication::findByShort('paint-wood-elements')) instanceof MeasureApplication) {
+                $updatedMeasureIds[] = $paintMeasure->id;
+            }
+        }
+
         (new InsulatedGlazingHelper($user, $inputSource))
             ->setValues($request->only('considerables', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
             ->saveValues()

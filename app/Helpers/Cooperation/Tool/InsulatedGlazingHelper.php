@@ -122,7 +122,8 @@ class InsulatedGlazingHelper extends ToolHelper
 
                     // We only want to check old advices if the updated attributes are not relevant to this measure
                     if (! in_array($measureApplication->id, $updatedMeasureIds)) {
-                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                            $oldAdvices);
                     }
 
                     $actionPlanAdvice->save();
@@ -147,7 +148,11 @@ class InsulatedGlazingHelper extends ToolHelper
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
 
-                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                    // We only want to check old advices if the updated attributes are not relevant to this measure
+                    if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                            $oldAdvices);
+                    }
 
                     $actionPlanAdvice->save();
                 }

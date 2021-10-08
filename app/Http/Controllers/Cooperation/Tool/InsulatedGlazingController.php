@@ -118,8 +118,10 @@ class InsulatedGlazingController extends ToolController
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+
         (new InsulatedGlazingHelper($user, $inputSource))
-            ->setValues($request->only('considerables', 'user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
+            ->setValues($request->only('considerables', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
             ->saveValues()
             ->createAdvices();
 

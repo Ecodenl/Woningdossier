@@ -99,4 +99,22 @@ class StrTest extends TestCase
     {
         $this->assertEquals($expected, Str::arrContains($array, $needle, $ignoreCase));
     }
+
+    public static function htmlArrToDotProvider()
+    {
+        return [
+            ['table[column]', 'table.column'],
+            ['table[column][]', 'table.column'],
+            ['table', 'table'],
+            ['', ''],
+        ];
+    }
+
+    /**
+     * @dataProvider htmlArrToDotProvider
+     */
+    public function testHtmlArrToDot($value, $expected)
+    {
+        $this->assertEquals($expected, Str::htmlArrToDot($value));
+    }
 }

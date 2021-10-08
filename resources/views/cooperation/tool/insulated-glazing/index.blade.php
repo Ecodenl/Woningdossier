@@ -444,7 +444,6 @@
     <script>
         $(document).ready(function () {
             let data = {};
-
             $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {
                 data[$(this).attr('name')] = $(this).val();
             });

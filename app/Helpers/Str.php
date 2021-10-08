@@ -161,4 +161,13 @@ class Str
 
         return false;
     }
+
+    public static function htmlArrToDot(string $htmlArray): string
+    {
+        $dotted = str_replace(']', '', str_replace('[', '.', $htmlArray));
+        if (substr($htmlArray, -2) === '[]') {
+            $dotted = substr($dotted, 0, strlen($dotted) - 1);
+        }
+        return $dotted;
+    }
 }

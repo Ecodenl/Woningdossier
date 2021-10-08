@@ -22,6 +22,13 @@ use Illuminate\Http\Request;
 
 class InsulatedGlazingController extends ToolController
 {
+    const measureApplicationShorts = [
+        'hrpp-glass-only',
+        'hrpp-glass-frames',
+        'hr3p-frames',
+        'glass-in-lead',
+    ];
+
     /**
      * Display a listing of the resources.
      *
@@ -47,19 +54,12 @@ class InsulatedGlazingController extends ToolController
         $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
         $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
-        $measureApplicationShorts = [
-            'hrpp-glass-only',
-            'hrpp-glass-frames',
-            'hr3p-frames',
-            'glass-in-lead',
-        ];
-
         $buildingInsulatedGlazings = [];
         $buildingInsulatedGlazingsForMe = [];
 
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
 
-        foreach ($measureApplicationShorts as $measureApplicationShort) {
+        foreach (static::measureApplicationShorts as $measureApplicationShort) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
             if ($measureApplication instanceof MeasureApplication) {
@@ -120,10 +120,12 @@ class InsulatedGlazingController extends ToolController
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
 
+        $updatedMeasureIds = [];
+
         (new InsulatedGlazingHelper($user, $inputSource))
             ->setValues($request->only('considerables', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
             ->saveValues()
-            ->createAdvices();
+            ->createAdvices($updatedMeasureIds);
 
         return $this->completeStore($this->step, $building, $inputSource);
     }

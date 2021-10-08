@@ -8,8 +8,8 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Tool\FloorInsulationFormRequest;
 use App\Models\Building;
-use App\Models\Cooperation;
 use App\Models\Element;
+use App\Models\MeasureApplication;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
 
@@ -52,7 +52,8 @@ class FloorInsulationController extends ToolController
         )->get();
 
         return view('cooperation.tool.floor-insulation.index', compact(
-            'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe', 'buildingElementsOrderedOnInputSourceCredibility',
+            'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe',
+            'buildingElementsOrderedOnInputSourceCredibility',
             'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
             'crawlspacePresent', 'building'
         ));
@@ -66,7 +67,8 @@ class FloorInsulationController extends ToolController
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $result = FloorInsulation::calculate($building, HoomdossierSession::getInputSource(true), $user->energyHabit, $request->all());
+        $result = FloorInsulation::calculate($building, HoomdossierSession::getInputSource(true), $user->energyHabit,
+            $request->all());
 
         return response()->json($result);
     }
@@ -82,15 +84,27 @@ class FloorInsulationController extends ToolController
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
+        ConsiderableService::save($this->step, $user, $inputSource,
+            $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        $updatedMeasureIds = [];
+        // If anything's dirty, all measures must be recalculated
+        if (! empty($dirtyAttributes)) {
+            $updatedMeasureIds = MeasureApplication::findByShorts([
+                'floor-insulation', 'bottom-insulation', 'floor-insulation-research',
+            ])
+                ->pluck('id')
+                ->toArray();
+        }
+
         (new FloorInsulationHelper($user, $inputSource))
             ->setValues($request->validated())
             ->saveValues()
-            ->createAdvices();
+            ->createAdvices($updatedMeasureIds);
 
         return $this->completeStore($this->step, $building, $inputSource);
     }

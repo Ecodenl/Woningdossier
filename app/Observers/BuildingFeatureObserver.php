@@ -26,7 +26,7 @@ class BuildingFeatureObserver
         if ($buildingFeature->isDirty('roof_type_id') && $buildingFeature->input_source_id != $masterInputSource->id) {
             if (($building = $buildingFeature->building) instanceof Building) {
                 if (($primaryRoofType = $buildingFeature->roofType) instanceof RoofType) {
-                    $currentInputSource = HoomdossierSession::getInputSource(true);
+                    $currentInputSource = $buildingFeature->inputSource;
                     $secondaryRoofTypes = $building->roofTypes()->forInputSource($currentInputSource)->get();
 
                     if (($roofTypeToLink = RoofType::findByShort(RoofType::PRIMARY_TO_SECONDARY_MAP[$primaryRoofType->short])) instanceof RoofType) {

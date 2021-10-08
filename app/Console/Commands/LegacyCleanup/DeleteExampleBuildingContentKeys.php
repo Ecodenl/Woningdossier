@@ -41,7 +41,7 @@ class DeleteExampleBuildingContentKeys extends Command
     {
 
         $keysToRemove = [
-            'heater.-.user_energy_habits.water_comfort_id',
+            'heater.-.user_energy_habits',
         ];
 
         foreach(ExampleBuildingContent::all() as $exampleBuildingContent) {
@@ -50,7 +50,6 @@ class DeleteExampleBuildingContentKeys extends Command
             foreach($keysToRemove as $keyToRemove) {
                 Arr::forget($content, $keyToRemove);
             }
-
 
             $exampleBuildingContent->update(compact('content'));
         }

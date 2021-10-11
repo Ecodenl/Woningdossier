@@ -13,6 +13,7 @@ use App\Models\BuildingFeature;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
+use App\Models\MeasureApplication;
 use App\Scopes\GetValueScope;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
@@ -72,8 +73,23 @@ class WallInsulationController extends ToolController
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        $updatedMeasureIds = [];
+        // If anything's dirty, all measures must be recalculated (we can't really check specifics here)
+        if (! empty($dirtyAttributes)) {
+            $updatedMeasureIds = MeasureApplication::findByShorts([
+                'cavity-wall-insulation', 'facade-wall-insulation', 'wall-insulation-research',
+                'paint-wall', 'repair-joint', 'clean-brickwork', 'impregnate-wall',
+            ])
+                ->pluck('id')
+                ->toArray();
+        }
+
+        $values = $request->validated();
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new WallInsulationHelper($user, $inputSource))
-            ->setValues($request->validated())
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
 

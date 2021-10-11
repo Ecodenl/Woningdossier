@@ -100,6 +100,8 @@ class InsulatedGlazingHelper extends ToolHelper
 
     public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $step = Step::findByShort('insulated-glazing');
 
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
@@ -120,7 +122,11 @@ class InsulatedGlazingHelper extends ToolHelper
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
 
-                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                    // We only want to check old advices if the updated attributes are not relevant to this measure
+                    if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                            $oldAdvices);
+                    }
 
                     $actionPlanAdvice->save();
                 }
@@ -144,7 +150,11 @@ class InsulatedGlazingHelper extends ToolHelper
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
 
-                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                    // We only want to check old advices if the updated attributes are not relevant to this measure
+                    if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                            $oldAdvices);
+                    }
 
                     $actionPlanAdvice->save();
                 }
@@ -231,6 +241,7 @@ class InsulatedGlazingHelper extends ToolHelper
             'building_elements' => $buildingElementsArray,
             'building_features' => ['window_surface' => $buildingFeature->window_surface ?? null],
             'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
+            'updated_measure_ids' => [],
         ]);
 
         return $this;

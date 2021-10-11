@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoofInsulation;
+use App\Helpers\Str;
 use App\Http\Requests\Cooperation\Tool\RoofInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingHeating;
 use App\Models\Element;
+use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Services\ConsiderableService;
@@ -101,13 +103,50 @@ class RoofInsulationController extends ToolController
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
+        ConsiderableService::save($this->step, $user, $inputSource,
+            $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        $dirtyNames = array_keys($dirtyAttributes);
+        $updatedMeasureIds = [];
+
+        $dirtyPitched = Str::arrStartsWith($dirtyNames, 'building_roof_types[pitched]');
+        $dirtyFlat = Str::arrStartsWith($dirtyNames, 'building_roof_types[flat]');
+
+        // We update everything if the primary roof is changed, otherwise we will update the relevant measures for the
+        // changed roof category
+        if (Str::arrStartsWith($dirtyNames, 'building_features')
+            || Str::arrStartsWith($dirtyNames, 'building_roof_type_ids') || ($dirtyFlat && $dirtyPitched)
+        ) {
+            $updatedMeasureIds = MeasureApplication::findByShorts([
+                'roof-insulation-pitched-inside', 'roof-insulation-pitched-replace-tiles',
+                'roof-insulation-flat-current', 'roof-insulation-flat-replace-current',
+                'replace-tiles', 'replace-roof-insulation', 'replace-zinc-pitched',
+                'replace-zinc-flat',
+            ])->pluck('id')->toArray();
+        } else {
+            if ($dirtyFlat) {
+                $updatedMeasureIds = MeasureApplication::findByShorts([
+                    'roof-insulation-flat-current', 'roof-insulation-flat-replace-current', 'replace-roof-insulation',
+                    'replace-zinc-flat',
+                ])->pluck('id')->toArray();
+            } elseif ($dirtyPitched) {
+                $updatedMeasureIds = MeasureApplication::findByShorts([
+                    'roof-insulation-pitched-inside', 'roof-insulation-pitched-replace-tiles',
+                    'replace-tiles', 'replace-zinc-pitched',
+                ])->pluck('id')->toArray();
+            }
+        }
+
+        $values = $request->only('considerables', 'building_roof_type_ids', 'building_features',
+            'building_roof_types', 'step_comments');
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new RoofInsulationHelper($user, $inputSource))
-            ->setValues($request->all())
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
 

@@ -161,4 +161,50 @@ class Str
 
         return false;
     }
+
+    /**
+     * Check if a needle is somewhere at the start in an array.
+     *
+     * @param  array  $array
+     * @param $needle
+     * @param  bool  $ignoreCase
+     *
+     * @return bool
+     */
+    public static function arrStartsWith(array $array, $needle, bool $ignoreCase = false)
+    {
+        $needle = $ignoreCase ? strtolower($needle) : $needle;
+
+        if (! empty($array)) {
+            // Dot to remove recursion
+            $array = Arr::dot($array);
+
+            foreach ($array as $key => $value) {
+                if (is_string($value)) {
+                    $value = $ignoreCase ? strtolower($value) : $value;
+                    if (SupportStr::startsWith($value, $needle)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Convert HTML array format to dot
+     *
+     * @param  string  $htmlArray
+     *
+     * @return string
+     */
+    public static function htmlArrToDot(string $htmlArray): string
+    {
+        $dotted = str_replace(']', '', str_replace('[', '.', $htmlArray));
+        if (substr($htmlArray, -2) === '[]') {
+            $dotted = substr($dotted, 0, strlen($dotted) - 1);
+        }
+        return $dotted;
+    }
 }

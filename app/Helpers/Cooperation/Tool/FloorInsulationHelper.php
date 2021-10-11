@@ -60,6 +60,7 @@ class FloorInsulationHelper extends ToolHelper
             'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],
             'building_elements' => $floorInsulationBuildingElements,
             'building_features' => $floorBuildingFeatures,
+            'updated_measure_ids' => [],
         ]);
 
         return $this;
@@ -103,6 +104,8 @@ class FloorInsulationHelper extends ToolHelper
 
     public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $step = Step::findByShort('floor-insulation');
 
@@ -131,7 +134,11 @@ class FloorInsulationHelper extends ToolHelper
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
 
-                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                        // We only want to check old advices if the updated attributes are not relevant to this measure
+                        if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                            UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                                $oldAdvices);
+                        }
 
                         $actionPlanAdvice->save();
                     }

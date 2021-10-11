@@ -36,6 +36,8 @@ class SolarPanelHelper extends ToolHelper
 
     public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $step = Step::findByShort('solar-panels');
 
         $results = SolarPanel::calculate($this->building, $this->getValues());
@@ -53,7 +55,10 @@ class SolarPanelHelper extends ToolHelper
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
 
-                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                // We only want to check old advices if the updated attributes are not relevant to this measure
+                if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                }
 
                 $actionPlanAdvice->save();
             }
@@ -79,6 +84,7 @@ class SolarPanelHelper extends ToolHelper
                     'is_considering' => $this->user->considers($step, $this->inputSource),
                 ]
             ],
+            'updated_measure_ids' => [],
         ]);
 
         return $this;

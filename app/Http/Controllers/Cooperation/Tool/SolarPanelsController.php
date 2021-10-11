@@ -7,6 +7,7 @@ use App\Helpers\Cooperation\Tool\SolarPanelHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Tool\SolarPanelFormRequest;
+use App\Models\MeasureApplication;
 use App\Models\PvPanelOrientation;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
@@ -70,8 +71,22 @@ class SolarPanelsController extends ToolController
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        $updatedMeasureIds = [];
+        // If anything's dirty, all measures must be recalculated (we can't really check specifics here)
+        if (! empty($dirtyAttributes)) {
+            $updatedMeasureIds = MeasureApplication::findByShorts([
+                'solar-panels-place-replace',
+            ])
+                ->pluck('id')
+                ->toArray();
+        }
+
+        $values = $request->only('building_pv_panels', 'user_energy_habits', 'considerables');
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new SolarPanelHelper($user, $inputSource))
-            ->setValues($request->only('building_pv_panels', 'user_energy_habits', 'considerables'))
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
 

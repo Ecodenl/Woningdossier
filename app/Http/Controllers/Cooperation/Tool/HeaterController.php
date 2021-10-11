@@ -8,6 +8,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Tool\HeaterFormRequest;
 use App\Models\ComfortLevelTapWater;
+use App\Models\MeasureApplication;
 use App\Models\PvPanelOrientation;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
@@ -70,8 +71,22 @@ class HeaterController extends ToolController
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        $updatedMeasureIds = [];
+        // If anything's dirty, all measures must be recalculated (we can't really check specifics here)
+        if (! empty($dirtyAttributes)) {
+            $updatedMeasureIds = MeasureApplication::findByShorts([
+                'heater-place-replace',
+            ])
+                ->pluck('id')
+                ->toArray();
+        }
+
+        $values = $request->only('building_heaters', 'user_energy_habits', 'considerables');
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new HeaterHelper($user, $inputSource))
-            ->setValues($request->only('building_heaters', 'user_energy_habits', 'considerables'))
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
 

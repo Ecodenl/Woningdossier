@@ -47,6 +47,7 @@ class WallInsulationHelper extends ToolHelper
                 'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
                 'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
             ],
+            'updated_measure_ids' => [],
         ]);
 
         return $this;
@@ -85,6 +86,8 @@ class WallInsulationHelper extends ToolHelper
      */
     public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = WallInsulation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
@@ -103,7 +106,11 @@ class WallInsulationHelper extends ToolHelper
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
 
-                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                    // We only want to check old advices if the updated attributes are not relevant to this measure
+                    if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                            $oldAdvices);
+                    }
 
                     $actionPlanAdvice->save();
                 }
@@ -127,7 +134,11 @@ class WallInsulationHelper extends ToolHelper
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
 
-                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                        // We only want to check old advices if the updated attributes are not relevant to this measure
+                        if (! in_array($measureApplication->id, $updatedMeasureIds)) {
+                            UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                                $oldAdvices);
+                        }
 
                         $actionPlanAdvice->save();
                     }

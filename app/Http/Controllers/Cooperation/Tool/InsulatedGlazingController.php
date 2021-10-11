@@ -6,6 +6,7 @@ use App\Calculations\InsulatedGlazing;
 use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Str;
 use App\Http\Requests\Cooperation\Tool\InsulatedGlazingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -19,6 +20,7 @@ use App\Models\WoodRotStatus;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str as SupportStr;
 
 class InsulatedGlazingController extends ToolController
 {
@@ -47,17 +49,17 @@ class InsulatedGlazingController extends ToolController
         $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
         $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
+        $buildingInsulatedGlazings = [];
+        $buildingInsulatedGlazingsForMe = [];
+
+        $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
+
         $measureApplicationShorts = [
             'hrpp-glass-only',
             'hrpp-glass-frames',
             'hr3p-frames',
             'glass-in-lead',
         ];
-
-        $buildingInsulatedGlazings = [];
-        $buildingInsulatedGlazingsForMe = [];
-
-        $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
 
         foreach ($measureApplicationShorts as $measureApplicationShort) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
@@ -118,8 +120,40 @@ class InsulatedGlazingController extends ToolController
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+
+        // Time to check for building_insulated_glazings in the dirtyAttributes
+        // We don't care for the values attached, if they're here, it means the user has messed with them
+        $dirtyNames = array_keys($dirtyAttributes);
+        $updatedMeasureIds = [];
+        // Check if any of the values have the name we check for
+        if (Str::arrStartsWith($dirtyNames, 'building_insulated_glazings', true)) {
+            // There are some, let's fetch the measure IDs
+            foreach ($dirtyNames as $dirtyName) {
+                if (SupportStr::startsWith($dirtyName, 'building_insulated_glazings')) {
+                    // Format always has the ID as second attr
+                    $id = explode('.', Str::htmlArrToDot($dirtyName))[1] ?? null;
+                    if (! is_null($id) && ! in_array($id, $updatedMeasureIds)) {
+                        // Add ID
+                        $updatedMeasureIds[] = $id;
+                    }
+                }
+            }
+        }
+
+        // Add the paint measure if any of the building elements were changed
+        if (Str::arrStartsWith($dirtyNames, 'building_elements', true)) {
+            if (($paintMeasure = MeasureApplication::findByShort('paint-wood-elements')) instanceof MeasureApplication) {
+                $updatedMeasureIds[] = $paintMeasure->id;
+            }
+        }
+
+        $values = $request->only('considerables', 'building_insulated_glazings', 'building_features',
+            'building_elements', 'building_paintwork_statuses');
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new InsulatedGlazingHelper($user, $inputSource))
-            ->setValues($request->only('considerables', 'user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
 

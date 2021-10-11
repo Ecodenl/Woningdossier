@@ -78,7 +78,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             [
                 'measure_type' => 'energy_saving',
                 'measure_name' => [
-                    'nl' => 'Meer info nodig',
+                    'nl' => 'Vloerisolatie, meer info nodig',
                 ],
                 'measure_info' => [
                     'nl' => '',
@@ -153,7 +153,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             [
                 'measure_type' => 'energy_saving',
                 'measure_name' => [
-                    'nl' => 'Meer info nodig',
+                    'nl' => 'Muurisolatie, meer info nodig',
                 ],
                 'measure_info' => [
                     'nl' => '',

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\LegacyCleanup;
 
 use App\Models\LanguageLine;
 use Illuminate\Console\Command;

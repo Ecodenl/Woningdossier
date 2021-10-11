@@ -456,9 +456,8 @@ class Form extends Component
 
             $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
             // apply the example building for the given changes.
-            // we give him the old building features, otherwise we cant verify the changes
+            // we give him the old building features, otherwise we can't verify the changes
             ApplyExampleBuildingForChanges::dispatchNow($oldBuildingFeature, $changes, $this->currentInputSource);
-
         }
 
         // Now save it

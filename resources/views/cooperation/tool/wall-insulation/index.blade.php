@@ -471,9 +471,9 @@
                     </li>
                 </ol>
             @endcomponent
-
-            <input type="hidden" name="dirty_attributes" value="{{ old('dirty_attributes') }}">
         </div>
+
+        <input type="hidden" name="dirty_attributes" value="{{ old('dirty_attributes') }}">
     </form>
 @endsection
 

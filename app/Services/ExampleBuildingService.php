@@ -437,10 +437,10 @@ class ExampleBuildingService
                             self::log(
                                 'Update or creating building insulated glazing '.json_encode(
                                     $building->currentInsulatedGlazing()
-                                             ->forInputSource($inputSource)
-                                             ->where('measure_application_id', '=', $glazingData['measure_application_id'])
-                                             ->first()
-                                             ->toArray()
+                                        ->forInputSource($inputSource)
+                                        ->where('measure_application_id', '=', $glazingData['measure_application_id'])
+                                        ->first()
+                                        ->toArray()
                                 )
                             );
                         }
@@ -449,27 +449,24 @@ class ExampleBuildingService
                         foreach ($values as $roofTypeId => $buildingRoofTypeData) {
                             $buildingRoofTypeData['roof_type_id'] = $roofTypeId;
                             if (isset($buildingRoofTypeData['roof_surface']) && (int)$buildingRoofTypeData['roof_surface'] > 0) {
-                                $building->roofTypes()->forInputSource(
-                                    $inputSource
-                                )->updateOrCreate(
-                                    [
+                                $building->roofTypes()
+                                    ->forInputSource($inputSource)
+                                    ->updateOrCreate([
                                         'input_source_id' => $inputSource->id,
                                         'roof_type_id' => $roofTypeId,
-                                    ],
-                                    $buildingRoofTypeData
-                                );
+                                    ], $buildingRoofTypeData);
 
                                 self::log(
                                     'Update or creating building rooftype '.json_encode(
-                                        $building->roofTypes()->forInputSource(
-                                            $inputSource
-                                        )->first()->toArray()
+                                        $building->roofTypes()
+                                            ->forInputSource($inputSource)
+                                            ->where('roof_type_id', $roofTypeId)
+                                            ->first()
+                                            ->toArray()
                                     )
                                 );
                             } else {
-                                self::log(
-                                    'Not saving building rooftype because surface is 0'
-                                );
+                                self::log('Not saving building rooftype because surface is 0');
                             }
                         }
                     }

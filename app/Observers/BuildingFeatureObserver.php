@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -57,14 +58,31 @@ class BuildingFeatureObserver
                                 ->forInputSource(InputSource::findByShort(InputSource::EXAMPLE_BUILDING))
                                 ->first();
 
+                            if (! $exampleBuildingRoofType instanceof BuildingRoofType) {
+                                // No data set, we need the other roof type. We unset none and the linked short
+                                $shorts = array_flip(RoofType::SECONDARY_ROOF_TYPE_SHORTS);
+                                unset($shorts['none']);
+                                unset($shorts[$roofTypeToLink->short]);
+                                $short = array_key_first($shorts);
+                                $otherRoofType = RoofType::findByShort($short);
+
+                                $exampleBuildingRoofType = $building->roofTypes()
+                                    ->where('roof_type_id', $otherRoofType->id)
+                                    ->forInputSource(InputSource::findByShort(InputSource::EXAMPLE_BUILDING))
+                                    ->first();
+                            }
+
                             if ($exampleBuildingRoofType instanceof BuildingRoofType) {
                                 $exampleBuildingRoofType->replicate()
-                                    ->fill(['input_source_id' => $currentInputSource->id])
+                                    ->fill([
+                                        'input_source_id' => $currentInputSource->id,
+                                        'roof_type_id' => $roofTypeToLink->id,
+                                    ])
                                     ->save();
                             } else {
                                 // No example building data, we just built a new one
                                 $building->roofTypes()->create([
-                                    'roof_type_id' => $roofTypeToLink->id, 'input_source_id' => $currentInputSource->id
+                                    'roof_type_id' => $roofTypeToLink->id, 'input_source_id' => $currentInputSource->id,
                                 ]);
                             }
                         }

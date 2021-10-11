@@ -18,7 +18,13 @@ class BuildingDataService
         $building->buildingFeatures()->forInputSource($inputSource)->delete();
         $building->buildingServices()->forInputSource($inputSource)->delete();
         $building->currentInsulatedGlazing()->forInputSource($inputSource)->delete();
-        $building->roofTypes()->forInputSource($inputSource)->delete();
+
+        $roofTypesToDelete = $building->roofTypes()->forInputSource($inputSource)->get();
+        foreach ($roofTypesToDelete as $roofTypeToDelete) {
+            // Manually delete these so the master input source updates with it
+            $roofTypeToDelete->delete();
+        }
+
         $building->currentPaintworkStatus()->forInputSource($inputSource)->delete();
         $building->pvPanels()->forInputSource($inputSource)->delete();
         $building->heater()->forInputSource($inputSource)->delete();

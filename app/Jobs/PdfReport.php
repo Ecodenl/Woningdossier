@@ -24,6 +24,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class PdfReport implements ShouldQueue
@@ -162,6 +163,9 @@ class PdfReport implements ShouldQueue
             'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
 
+        $cooperationLogo = $userCooperation->firstMedia(\App\Helpers\MediaHelper::LOGO);
+
+        Log::debug('cooperation url: '. $cooperationLogo->getUrl());
         // save the pdf report
         Storage::disk('downloads')->put($this->fileStorage->filename, $pdf->output());
 

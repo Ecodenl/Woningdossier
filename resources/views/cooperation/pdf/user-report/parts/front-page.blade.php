@@ -19,8 +19,8 @@
             $paardemiddelOplossing = $cooperationLogo->getUrl();
             if($userCooperation->slug == 'deltawind') {
                 $absolutePath = $cooperationLogo->getAbsolutePath();
-                $imagePath = explode('app', $absolutePath)[1];
-                $paardemiddelOplossing = "deltawind.hoomdossier.nl{$imagePath}";
+                $imagePath = explode('public', $absolutePath)[1];
+                $paardemiddelOplossing = "https://deltawind.hoomdossier.nl/storage{$imagePath}";
             }
         ?>
 

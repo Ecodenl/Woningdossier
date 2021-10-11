@@ -7,6 +7,7 @@ use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Tool\HighEfficiencyBoilerFormRequest;
+use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
@@ -70,8 +71,22 @@ class HighEfficiencyBoilerController extends ToolController
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        $updatedMeasureIds = [];
+        // If anything's dirty, all measures must be recalculated (we can't really check specifics here)
+        if (! empty($dirtyAttributes)) {
+            $updatedMeasureIds = MeasureApplication::findByShorts([
+                'high-efficiency-boiler-replace',
+            ])
+                ->pluck('id')
+                ->toArray();
+        }
+
+        $values = $request->only('user_energy_habits', 'building_services', 'considerables');
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new HighEfficiencyBoilerHelper($user, $inputSource))
-            ->setValues($request->only('user_energy_habits', 'building_services', 'considerables'))
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
 

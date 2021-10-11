@@ -59,6 +59,7 @@ class SolarPanelHelper extends ToolHelper
                 if (! in_array($measureApplication->id, $updatedMeasureIds)) {
                     UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
                 }
+
                 $actionPlanAdvice->save();
             }
         }

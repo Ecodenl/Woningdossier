@@ -16,8 +16,9 @@
         @php($cooperationLogo = $userCooperation->firstMedia(\App\Helpers\MediaHelper::LOGO))
 
         <div style="text-align: center;">
+
             <img style="display: block; margin-top: 250px; width: 250px"
-                 src="{{ public_path($cooperationLogo->getPath()) }}">
+                 src="{{ $cooperationLogo->getUrl() }}">
         </div>
     @else
         <div id="img-front-page">

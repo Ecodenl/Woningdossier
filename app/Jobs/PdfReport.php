@@ -156,7 +156,7 @@ class PdfReport implements ShouldQueue
         $noInterest = Interest::where('calculate_value', 4)->first();
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
-        $pdf = PDF::setOptions(['isRemoteEnabled' => true])->loadView('cooperation.pdf.user-report.index', compact(
+        $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
             'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'

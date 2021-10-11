@@ -47,6 +47,7 @@ class WallInsulationHelper extends ToolHelper
                 'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
                 'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
             ],
+            'updated_measure_ids' => [],
         ]);
 
         return $this;
@@ -83,8 +84,10 @@ class WallInsulationHelper extends ToolHelper
      *
      * @return \App\Helpers\Cooperation\Tool\ToolHelper
      */
-    public function createAdvices(array $updatedMeasureIds = []): ToolHelper
+    public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = WallInsulation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 

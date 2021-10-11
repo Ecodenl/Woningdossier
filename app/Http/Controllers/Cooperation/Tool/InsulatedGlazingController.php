@@ -148,10 +148,14 @@ class InsulatedGlazingController extends ToolController
             }
         }
 
+        $values = $request->only('considerables', 'building_insulated_glazings', 'building_features',
+            'building_elements', 'building_paintwork_statuses');
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new InsulatedGlazingHelper($user, $inputSource))
-            ->setValues($request->only('considerables', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
+            ->setValues($values)
             ->saveValues()
-            ->createAdvices($updatedMeasureIds);
+            ->createAdvices();
 
         return $this->completeStore($this->step, $building, $inputSource);
     }

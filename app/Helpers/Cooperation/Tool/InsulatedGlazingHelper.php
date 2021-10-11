@@ -98,8 +98,10 @@ class InsulatedGlazingHelper extends ToolHelper
         return $this;
     }
 
-    public function createAdvices(array $updatedMeasureIds = []): ToolHelper
+    public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $step = Step::findByShort('insulated-glazing');
 
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
@@ -239,6 +241,7 @@ class InsulatedGlazingHelper extends ToolHelper
             'building_elements' => $buildingElementsArray,
             'building_features' => ['window_surface' => $buildingFeature->window_surface ?? null],
             'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
+            'updated_measure_ids' => [],
         ]);
 
         return $this;

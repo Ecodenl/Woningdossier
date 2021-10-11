@@ -141,10 +141,14 @@ class RoofInsulationController extends ToolController
             }
         }
 
+        $values = $request->only('considerables', 'building_roof_type_ids', 'building_features',
+            'building_roof_types', 'step_comments');
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new RoofInsulationHelper($user, $inputSource))
-            ->setValues($request->all())
+            ->setValues($values)
             ->saveValues()
-            ->createAdvices($updatedMeasureIds);
+            ->createAdvices();
 
         return $this->completeStore($this->step, $building, $inputSource);
     }

@@ -85,10 +85,13 @@ class WallInsulationController extends ToolController
                 ->toArray();
         }
 
+        $values = $request->validated();
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new WallInsulationHelper($user, $inputSource))
-            ->setValues($request->validated())
+            ->setValues($values)
             ->saveValues()
-            ->createAdvices($updatedMeasureIds);
+            ->createAdvices();
 
         return $this->completeStore($this->step, $building, $inputSource);
     }

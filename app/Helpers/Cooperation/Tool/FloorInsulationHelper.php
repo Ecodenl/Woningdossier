@@ -60,6 +60,7 @@ class FloorInsulationHelper extends ToolHelper
             'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],
             'building_elements' => $floorInsulationBuildingElements,
             'building_features' => $floorBuildingFeatures,
+            'updated_measure_ids' => [],
         ]);
 
         return $this;
@@ -101,8 +102,10 @@ class FloorInsulationHelper extends ToolHelper
         return $this;
     }
 
-    public function createAdvices(array $updatedMeasureIds = []): ToolHelper
+    public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $step = Step::findByShort('floor-insulation');
 

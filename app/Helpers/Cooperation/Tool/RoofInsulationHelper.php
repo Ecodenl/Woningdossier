@@ -24,8 +24,10 @@ use Carbon\Carbon;
 
 class RoofInsulationHelper extends ToolHelper
 {
-    public function createAdvices(array $updatedMeasureIds = []): ToolHelper
+    public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = RoofInsulationCalculate::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
@@ -309,6 +311,7 @@ class RoofInsulationHelper extends ToolHelper
                     $this->building->buildingFeatures()->forInputSource($this->inputSource)->select('roof_type_id')->first()
                 )->roof_type_id,
             ],
+            'updated_measure_ids' => [],
         ]);
 
         return $this;

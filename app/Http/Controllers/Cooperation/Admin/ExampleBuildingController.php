@@ -157,7 +157,9 @@ class ExampleBuildingController extends Controller
             $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_gas'],
             $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_electricity'],
             $contentStructure['solar-panels']['-']['user_energy_habits.amount_electricity'],
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.resident_count']
+            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.resident_count'],
+
+            $contentStructure['heater']['-']['user_energy_habits.water_comfort_id']
         );
 
         // filter out interest stuff from the interest page

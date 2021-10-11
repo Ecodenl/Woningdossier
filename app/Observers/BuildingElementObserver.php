@@ -23,7 +23,7 @@ class BuildingElementObserver
         if (($building = $buildingElement->building) instanceof Building
             && $buildingElement->input_source_id != $masterInputSource->id
         ) {
-            $currentInputSource = HoomdossierSession::getInputSource(true);
+            $currentInputSource = $buildingElement->inputSource;
 
             ## Insulating Glazing
             $livingRoomsWindows = Element::findByShort('living-rooms-windows');

@@ -67,7 +67,7 @@ class VentilationController extends ToolController
         }
 
         $stepComments = $request->input('step_comments');
-        StepCommentService::save($building, $inputSource, $step, $stepComments);
+        StepCommentService::save($building, $inputSource, $step, $stepComments['comment']);
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
         $updatedMeasureIds = [];

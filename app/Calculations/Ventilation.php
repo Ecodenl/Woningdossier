@@ -81,7 +81,7 @@ class Ventilation
                 // "different" type which returns early
                 unset($measures['crack-sealing']);
 
-                $improvement = 'Natuurlijke ventilatie is  niet zo goed voor het comfort en zorgt voor een hoog energiegebruik. Daarom worden de huizen steeds luchtdichter gemaakt en van goede isolatie voorzien. Om een gezond binnenklimaat te bereiken is hierbij een andere vorm van ventilatie nodig. De volgende opties kunt u overwegen:';
+                $improvement = 'Natuurlijke ventilatie is niet zo goed voor het comfort en zorgt voor een hoog energiegebruik. Daarom worden de huizen steeds luchtdichter gemaakt en van goede isolatie voorzien. Om een gezond binnenklimaat te bereiken is hierbij een andere vorm van ventilatie nodig. De volgende opties kunt u overwegen:';
                 $remark = __('my-plan.warnings.ventilation');
             }
             if ('mechanic' === $ventilationType) {

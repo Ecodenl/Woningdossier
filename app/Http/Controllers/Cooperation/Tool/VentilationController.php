@@ -66,15 +66,30 @@ class VentilationController extends ToolController
             ConsiderableService::save(MeasureApplication::findOrFail($considerableId), $buildingOwner, $inputSource, $considerableData);
         }
 
-        $valuesToSet = $request->only('building_ventilations');
-        $valuesToSet['considerables'] = $considerables;
+        $stepComments = $request->input('step_comments');
+        StepCommentService::save($building, $inputSource, $step, $stepComments);
+
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        $updatedMeasureIds = [];
+
+        // Currently, nothing on this page is relevant to the ventilation calculations. Therefore, there is
+        // no benefit to recalculate from here
+//        if (! empty($dirtyAttributes)) {
+//            $updatedMeasureIds = MeasureApplication::findByShorts([
+//                'ventilation-balanced-wtw', 'ventilation-decentral-wtw', 'ventilation-demand-driven', 'crack-sealing',
+//            ])
+//                ->pluck('id')
+//                ->toArray();
+//        }
+
+        $values = $request->only('building_ventilations');
+        $values['considerables'] = $considerables;
+        $values['updated_measure_ids'] = $updatedMeasureIds;
 
         (new VentilationHelper($buildingOwner, $inputSource))
-            ->setValues($valuesToSet)
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
-
-        StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
 
         return $this->completeStore($this->step, $building, $inputSource);
     }

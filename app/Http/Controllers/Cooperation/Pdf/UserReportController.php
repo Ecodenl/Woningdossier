@@ -15,6 +15,7 @@ use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\Log;
 
 class UserReportController extends Controller
 {
@@ -105,7 +106,6 @@ class UserReportController extends Controller
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep($building);
 
-        // the comments that have been made on the action plan
         $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
             ->with('inputSource')
             ->get()

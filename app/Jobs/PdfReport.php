@@ -163,9 +163,6 @@ class PdfReport implements ShouldQueue
             'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
 
-        $cooperationLogo = $userCooperation->firstMedia(\App\Helpers\MediaHelper::LOGO);
-
-        Log::debug('cooperation url: '. $cooperationLogo->getUrl());
         // save the pdf report
         Storage::disk('downloads')->put($this->fileStorage->filename, $pdf->output());
 

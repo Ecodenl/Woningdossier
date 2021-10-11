@@ -13,12 +13,21 @@
 
 
     @if($userCooperation->hasMedia(\App\Helpers\MediaHelper::LOGO))
-        @php($cooperationLogo = $userCooperation->firstMedia(\App\Helpers\MediaHelper::LOGO))
+        <?php
+            $cooperationLogo = $userCooperation->firstMedia(\App\Helpers\MediaHelper::LOGO);
+
+            $paardemiddelOplossing = $cooperationLogo->getUrl();
+            if($userCooperation->slug == 'deltawind') {
+                $absolutePath = $cooperationLogo->getAbsolutePath();
+                $imagePath = explode('app', $absolutePath)[1];
+                $paardemiddelOplossing = "deltawind.hoomdossier.nl{$imagePath}";
+            }
+        ?>
 
         <div style="text-align: center;">
 
             <img style="display: block; margin-top: 250px; width: 250px"
-                 src="{{ $cooperationLogo->getUrl() }}">
+                 src="{{ $paardemiddelOplossing }}">
         </div>
     @else
         <div id="img-front-page">

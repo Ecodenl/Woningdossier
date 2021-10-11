@@ -155,23 +155,12 @@ class ExampleBuildingService
                                 $extra = null;
                                 $elementValues = [];
                                 if (is_array($elementValueData)) {
-                                    if (!array_key_exists(
-                                        'element_value_id',
-                                        $elementValueData
-                                    )) {
+                                    if (!array_key_exists('element_value_id', $elementValueData)) {
                                         // perhaps a nested array (e.g. wood elements)
                                         foreach ($elementValueData as $elementValueDataItem) {
-                                            if (is_array(
-                                                    $elementValueDataItem
-                                                ) && array_key_exists(
-                                                    'element_value_id',
-                                                    $elementValueDataItem
-                                                )) {
+                                            if (is_array($elementValueDataItem) && array_key_exists('element_value_id', $elementValueDataItem)) {
                                                 $d = ['element_value_id' => (int)$elementValueDataItem['element_value_id']];
-                                                if (array_key_exists(
-                                                    'extra',
-                                                    $elementValueDataItem
-                                                )) {
+                                                if (array_key_exists('extra', $elementValueDataItem)) {
                                                     $d['extra'] = $elementValueDataItem['extra'];
                                                 }
                                                 $elementValues[] = $d;
@@ -185,10 +174,7 @@ class ExampleBuildingService
                                             $elementValueData
                                         )) {
                                             $d = ['element_value_id' => (int)$elementValueData['element_value_id']];
-                                            if (array_key_exists(
-                                                'extra',
-                                                $elementValueData
-                                            )) {
+                                            if (array_key_exists('extra', $elementValueData)) {
                                                 $d['extra'] = $elementValueData['extra'];
                                             }
                                             $elementValues[] = $d;
@@ -482,27 +468,7 @@ class ExampleBuildingService
                             }
                         }
                     }
-                    // deprecated in favor of considerables.
-                    if ('user_interests' == $columnOrTable) {
-                        foreach ($values as $modelClass => $modelInterest) {
-                            foreach ($modelInterest as $id => $interest) {
-                                $interestId = $interest['interest_id'] ?? null;
 
-                                if (!is_null($interestId)) {
-                                    self::log("Building " . $building->id . " Setting interest for user " . $building->user->id . " for " . $modelClass . " (" . $id . ") to " . $interestId);
-                                    $userInterest = new UserInterest([
-                                        'input_source_id' => $inputSource->id,
-                                        'interested_in_type' => $modelClass,
-                                        'interested_in_id' => $id,
-                                        'interest_id' => $interestId,
-                                    ]);
-                                    $building->user->userInterests()
-                                        ->allInputSources()
-                                        ->save($userInterest);
-                                }
-                            }
-                        }
-                    }
                     if ('tool_question_answers' == $columnOrTable) {
                         foreach ($values as $questionShort => $answers) {
                             if (!is_array($answers)) {

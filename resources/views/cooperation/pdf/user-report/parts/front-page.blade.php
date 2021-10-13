@@ -17,10 +17,10 @@
             $cooperationLogo = $userCooperation->firstMedia(\App\Helpers\MediaHelper::LOGO);
 
             $paardemiddelOplossing = $cooperationLogo->getUrl();
-            if($userCooperation->slug == 'deltawind') {
+            if(in_array($userCooperation->slug, ['deltawind'])) {
                 $absolutePath = $cooperationLogo->getAbsolutePath();
                 $imagePath = explode('public', $absolutePath)[1];
-                $paardemiddelOplossing = "https://deltawind.hoomdossier.nl/storage{$imagePath}";
+                $paardemiddelOplossing = "https://{$userCooperation->slug}.hoomdossier.nl/storage{$imagePath}";
             }
         ?>
 

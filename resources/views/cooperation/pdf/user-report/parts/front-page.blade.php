@@ -17,7 +17,7 @@
             $cooperationLogo = $userCooperation->firstMedia(\App\Helpers\MediaHelper::LOGO);
 
             $paardemiddelOplossing = $cooperationLogo->getUrl();
-            if(in_array($userCooperation->slug, ['deltawind'])) {
+            if(in_array($userCooperation->slug, ['deltawind', 'duec', 'lochemenergie', 'nhec', 'energiehuis'])) {
                 $absolutePath = $cooperationLogo->getAbsolutePath();
                 $imagePath = explode('public', $absolutePath)[1];
                 $paardemiddelOplossing = "https://{$userCooperation->slug}.hoomdossier.nl/storage{$imagePath}";

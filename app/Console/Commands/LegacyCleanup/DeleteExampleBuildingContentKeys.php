@@ -42,9 +42,10 @@ class DeleteExampleBuildingContentKeys extends Command
 
         $keysToRemove = [
             'heater.-.user_energy_habits',
+            'solar-panels.-.building_pv_panels.total_installed_power',
         ];
 
-        foreach(ExampleBuildingContent::all() as $exampleBuildingContent) {
+        foreach(ExampleBuildingContent::all()->where('id', ) as $exampleBuildingContent) {
             $content = $exampleBuildingContent->content;
             // forget the keys we need to remove
             foreach($keysToRemove as $keyToRemove) {

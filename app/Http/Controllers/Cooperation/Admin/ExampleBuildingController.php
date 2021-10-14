@@ -167,9 +167,6 @@ class ExampleBuildingController extends Controller
             return false === stristr($key, 'user_interest');
         }, ARRAY_FILTER_USE_KEY);
 
-        // Remove total sun panels, we require the pv panels instead
-        $totalSolarPanels = Service::findByShort('total-sun-panels');
-        unset($contentStructure['general-data']['current-state']["service.{$totalSolarPanels->id}.extra.value"]);
         // Remove general data considerables
         foreach (($contentStructure['general-data']['interest'] ?? []) as $interestField => $interestData) {
             if (Str::endsWith($interestField, 'is_considering')) {

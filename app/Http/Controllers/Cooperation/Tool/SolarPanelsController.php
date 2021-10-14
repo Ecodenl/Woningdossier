@@ -9,6 +9,7 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Tool\SolarPanelFormRequest;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelOrientation;
+use App\Models\Service;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
@@ -37,10 +38,17 @@ class SolarPanelsController extends ToolController
             $building->pvPanels()
         )->get();
 
+
+        $totalSolarPanelService = Service::findByShort('total-sun-panels');
+        $totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $building->buildingServices()->where('service_id', $totalSolarPanelService->id)
+        )->get();
+
+
         return view('cooperation.tool.solar-panels.index',
             compact(
-                'building', 'pvPanelOrientations', 'buildingOwner', 'typeIds',
-                'energyHabitsOrderedOnInputSourceCredibility', 'pvPanelsOrderedOnInputSourceCredibility'
+                'building', 'pvPanelOrientations', 'buildingOwner', 'typeIds', 'totalSolarPanelService',
+                'energyHabitsOrderedOnInputSourceCredibility', 'pvPanelsOrderedOnInputSourceCredibility', 'totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility'
             )
         );
     }
@@ -82,9 +90,9 @@ class SolarPanelsController extends ToolController
                 ->toArray();
         }
 
-        $values = $request->only('building_pv_panels', 'user_energy_habits', 'considerables');
-        $values['updated_measure_ids'] = $updatedMeasureIds;
 
+        $values = $request->only('building_pv_panels', 'user_energy_habits', 'considerables', 'building_services');
+        $values['updated_measure_ids'] = $updatedMeasureIds;
         (new SolarPanelHelper($user, $inputSource))
             ->setValues($values)
             ->saveValues()

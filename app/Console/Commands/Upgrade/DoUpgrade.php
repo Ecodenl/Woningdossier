@@ -3,6 +3,8 @@
 namespace App\Console\Commands\Upgrade;
 
 use App\Console\Commands\ConvertUuidTranslationsToJson;
+use App\Console\Commands\LegacyCleanup\DeleteExampleBuildingContentKeys;
+use App\Console\Commands\LegacyCleanup\DeleteLanguageLines;
 use App\Models\Account;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -105,6 +107,9 @@ class DoUpgrade extends Command
                     ConvertExampleBuildingContents::class,
                     UpdateCompletedStepsForMasterInputSource::class,
                     FixTranslations::class, // Reset translations which have changed
+
+                    DeleteExampleBuildingContentKeys::class,
+                    DeleteLanguageLines::class // differs from the fix translations, this just removes old one.
                 ];
 
                 foreach ($afterCommands as $command) {

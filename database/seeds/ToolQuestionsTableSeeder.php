@@ -1220,10 +1220,10 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                         [
                             'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'integer', 'min:1', 'max:50'],
-                            'save_in' => "building_pv_panels.number",
+                            'save_in' => "building_services.{$solarPanels->id}.extra.value",
                             'short' => 'solar-panel-count',
                             // was current-state -> hoeveel zonnepanelen zijn er aanwezig
-                            'translation' => "Hoeveel zonnepanelen?",
+                            'translation' => "Hoeveel zonnepanelen zijn er aanwezig?",
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [

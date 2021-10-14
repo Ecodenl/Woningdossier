@@ -286,7 +286,7 @@ class ToolHelper
                     ],
 
                     'service.' . $solarPanels->id . '.extra.value' => [
-                        'label' => $solarPanels->name,
+                        'label' => ToolQuestion::findByShort('solar-panel-count')->name,
                         'type' => 'text',
                         'unit' => __('general.unit.pieces.title'),
                     ],

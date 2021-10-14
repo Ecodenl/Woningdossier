@@ -73,7 +73,7 @@
             <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
                 <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', [
-                        'id' => 'building_pv_panels.number', 'translation' => $totalSolarPanelService->name,
+                        'id' => 'building_pv_panels.number', 'translation' => App\Models\ToolQuestion::findByShort('solar-panel-count')->name,
                         'required' => false
                     ])
                         @slot('sourceSlot')

@@ -71,7 +71,24 @@
             </div>
 
             <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
-                <div class="w-full sm:w-1/3">
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'building_pv_panels.number', 'translation' => $totalSolarPanelService->name,
+                        'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input', 'userInputValues' => $totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'extra.value'
+                            ])
+                        @endslot
+
+                        <span class="input-group-prepend">@lang('general.unit.pieces.title')</span>
+                        <input type="text" class="form-input" name="building_services[{{$totalSolarPanelService->id}}][extra][value]"
+                               value="{{ old('building_pv_panels.number', Hoomdossier::getMostCredibleValueFromCollection($totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility, 'extra.value', 0)) }}"/>
+                    @endcomponent
+                </div>
+                <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', [
                         'id' => 'building_pv_panels.number', 'translation' => 'solar-panels.number',
                         'required' => false
@@ -88,8 +105,10 @@
                                value="{{ old('building_pv_panels.number', Hoomdossier::getMostCredibleValueFromCollection($pvPanelsOrderedOnInputSourceCredibility, 'number', 0)) }}"/>
                     @endcomponent
                 </div>
+            </div>
 
-                <div class="w-full sm:w-1/3">
+            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', [
                         'id' => 'building_pv_panels.pv_panel_orientation_id',
                         'translation' => 'solar-panels.pv-panel-orientation-id', 'required' => false
@@ -116,7 +135,7 @@
                     @endcomponent
                 </div>
 
-                <div class="w-full sm:w-1/3">
+                <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', [
                         'id' => 'building_pv_panels.angle', 'translation' => 'solar-panels.angle', 'required' => false
                     ])

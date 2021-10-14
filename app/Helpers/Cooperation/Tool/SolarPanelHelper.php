@@ -5,9 +5,12 @@ namespace App\Helpers\Cooperation\Tool;
 use App\Calculations\SolarPanel;
 use App\Events\StepCleared;
 use App\Models\Building;
+use App\Models\BuildingElement;
 use App\Models\BuildingPvPanel;
+use App\Models\BuildingService;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\Service;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
@@ -30,6 +33,26 @@ class SolarPanelHelper extends ToolHelper
             ->energyHabit()
             ->forInputSource($this->inputSource)
             ->update($this->getValues('user_energy_habits'));
+
+        $totalSunPanelsService = Service::findByShort('total-sun-panels');
+
+        // the building service also saves the placed date, however its not questioned on the solar panel page itself.
+        // so we will retrieve it and merge it wil the given solar panel count
+        $buildingService = $this->building->getBuildingService('total-sun-panels', $this->inputSource);
+        $extra['value'] = $this->getValues("building_services.{$totalSunPanelsService->id}.extra.value");
+        if ($buildingService instanceof BuildingService) {
+            $extra['year'] = $buildingService->extra['year'];
+        }
+
+        BuildingService::allInputSources()->updateOrCreate(
+            [
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
+                'service_id' => $totalSunPanelsService->id,
+            ],
+            compact('extra')
+        );
+
 
         return $this;
     }

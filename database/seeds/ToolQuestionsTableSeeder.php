@@ -1223,7 +1223,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'save_in' => "building_services.{$solarPanels->id}.extra.value",
                             'short' => 'solar-panel-count',
                             // was current-state -> hoeveel zonnepanelen zijn er aanwezig
-                            'translation' => "Hoeveel zonnepanelen?",
+                            'translation' => "Hoeveel zonnepanelen zijn er aanwezig?",
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [

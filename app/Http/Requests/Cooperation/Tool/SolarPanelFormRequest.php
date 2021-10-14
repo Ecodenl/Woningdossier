@@ -33,6 +33,7 @@ class SolarPanelFormRequest extends FormRequest
             'building_services.*.extra.value' => 'required|numeric|min:0|max:50',
             'building_pv_panels.angle' => 'required|numeric',
             'building_pv_panels.pv_panel_orientation_id' => 'required|exists:pv_panel_orientations,id',
+            'building_pv_panels.total_installed_power' => 'nullable|numeric|max:18000|min:0',
 
             'user_energy_habits.amount_electricity' => 'required|numeric|max:20000',
         ];

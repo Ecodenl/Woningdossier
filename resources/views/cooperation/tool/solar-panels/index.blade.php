@@ -73,7 +73,44 @@
             <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
                 <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', [
-                        'id' => 'building_pv_panels.number', 'translation' => App\Models\ToolQuestion::findByShort('solar-panel-count')->name,
+                        'id' => 'building_pv_panels.total_installed_power', 'translation' => App\Models\ToolQuestion::findByShort('total-installed-power')->name,
+
+                        'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input', 'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'building_pv_panels.total_installed_power'
+                            ])
+                        @endslot
+
+                        <span class="input-group-prepend">@lang('general.unit.wp.title')</span>
+                        <input type="text" class="form-input" name="building_pv_panels[total_installed_power]"
+                               value="{{ old('building_pv_panels.total_installed_power', Hoomdossier::getMostCredibleValueFromCollection($pvPanelsOrderedOnInputSourceCredibility, 'total_installed_power', 0)) }}"/>
+                    @endcomponent
+                </div>
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => "building_services.{$totalSolarPanelService->id}.extra.year", 'translation' => App\Models\ToolQuestion::findByShort('solar-panels-placed-date')->name,
+                        'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input', 'userInputValues' => $totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'extra.year'
+                            ])
+                        @endslot
+
+                        <span class="input-group-prepend">@lang('general.unit.year.title')</span>
+                        <input type="text" class="form-input" name="building_services[{{$totalSolarPanelService->id}}][extra][year]"
+                               value="{{ old("building_services.{$totalSolarPanelService->id}.extra.year", Hoomdossier::getMostCredibleValueFromCollection($totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility, 'extra.year')) }}"/>
+                    @endcomponent
+                </div>
+            </div>
+            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => "building_services.{$totalSolarPanelService->id}.extra.value", 'translation' => App\Models\ToolQuestion::findByShort('solar-panel-count')->name,
                         'required' => false
                     ])
                         @slot('sourceSlot')
@@ -85,7 +122,7 @@
 
                         <span class="input-group-prepend">@lang('general.unit.pieces.title')</span>
                         <input type="text" class="form-input" name="building_services[{{$totalSolarPanelService->id}}][extra][value]"
-                               value="{{ old('building_pv_panels.number', Hoomdossier::getMostCredibleValueFromCollection($totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility, 'extra.value', 0)) }}"/>
+                               value="{{ old("building_services.{$totalSolarPanelService->id}.extra.value", Hoomdossier::getMostCredibleValueFromCollection($totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility, 'extra.value', 0)) }}"/>
                     @endcomponent
                 </div>
                 <div class="w-full sm:w-1/2">

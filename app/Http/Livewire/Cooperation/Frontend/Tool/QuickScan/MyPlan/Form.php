@@ -466,7 +466,8 @@ class Form extends Component
         foreach ($this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] as $order => $card) {
             $cardInvestment = $investmentPerCard[$order];
             // Calculate the weight of this card
-            $weight = $cardInvestment / $investment;
+            // the card and investment could both be 0, so we use the highest investment amount and default it to 1 to prevent divisions by zero.
+            $weight = $cardInvestment / max(1, $investment);
 
             // Calculate the interest just like in the expert tool
             $interest = BankInterestCalculator::getComparableInterest($cardInvestment, $card['savings']);

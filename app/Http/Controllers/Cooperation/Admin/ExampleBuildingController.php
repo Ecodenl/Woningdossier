@@ -159,7 +159,8 @@ class ExampleBuildingController extends Controller
             $contentStructure['solar-panels']['-']['user_energy_habits.amount_electricity'],
             $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.resident_count'],
 
-            $contentStructure['heater']['-']['user_energy_habits.water_comfort_id']
+            $contentStructure['heater']['-']['user_energy_habits.water_comfort_id'],
+            $contentStructure['solar-panels']['-']['building_pv_panels.total_installed_power']
         );
 
         // filter out interest stuff from the interest page

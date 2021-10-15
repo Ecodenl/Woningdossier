@@ -46,12 +46,12 @@ class DoUpgrade extends Command
         if ($force || $this->confirm('This will 100% mess up your environment when ran unintentionally, do you want to continue')) {
             $this->info('<fg=yellow>May the force be with you...</>');
 
-            if (app()->environment() == 'local') {
-                $this->info('Rolling back migrations..');
-                Artisan::call('migrate:rollback');
-                $this->info('Running migrations..');
-                Artisan::call('migrate');
-            }
+//            if (app()->environment() == 'local') {
+//                $this->info('Rolling back migrations..');
+//                Artisan::call('migrate:rollback');
+//                $this->info('Running migrations..');
+//                Artisan::call('migrate');
+//            }
             $beforeCommands = [
                 ConvertUuidTranslationsToJson::class,
             ];
@@ -98,7 +98,7 @@ class DoUpgrade extends Command
 
             // This processes all buildings, almost 7000 of them! It takes a long time to process, so we won't run it
             // locally
-            if (! app()->environment('local')) {
+            if ($force || ! app()->environment('local')) {
                 $afterCommands = [
                     MapAnswers::class,
                     MapActionPlan::class,

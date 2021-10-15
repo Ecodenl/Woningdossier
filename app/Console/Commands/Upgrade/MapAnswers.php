@@ -68,7 +68,8 @@ class MapAnswers extends Command
             ->with('building', 'inputSource')
             ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
             ->where('s.short', 'boiler')
-            ->get(['building_services.*']);
+            ->select(['building_services.*'])
+            ->cursor();
 
         $date = null;
         $year = date('Y');
@@ -108,7 +109,7 @@ class MapAnswers extends Command
     {
         $toolQuestion = ToolQuestion::findByShort('heat-source');
         $data = ['tool_question_id' => $toolQuestion->id];
-        $buildings = Building::all();
+        $buildings = Building::cursor();
 
         // the heat pump will actually handle the "onbekend" and "niet aanwezig" cases
         $hrBoilerMap = [
@@ -231,7 +232,7 @@ class MapAnswers extends Command
         $buildingFeatures = BuildingFeature::allInputSources()
             ->whereHas('building')
             ->with(['building'])
-            ->get();
+            ->cursor();
 
         $bar = $this->output->createProgressBar($buildingFeatures->count());
         $bar->start();
@@ -277,7 +278,7 @@ class MapAnswers extends Command
     {
         $users = User::has('building')
             ->with(['building.user'])
-            ->get();
+            ->cursor();
 
         // let me explain;
         // in the beginning we saved the order starting from 1, later on we saved the order starting from 0
@@ -343,7 +344,7 @@ class MapAnswers extends Command
         $userEnergyHabits = UserEnergyHabit::allInputSources()
             ->whereHas('user.building')
             ->with('user.building')
-            ->get();
+            ->cursor();
 
         $bar = $this->output->createProgressBar($userEnergyHabits->count());
         $bar->start();

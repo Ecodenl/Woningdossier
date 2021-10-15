@@ -56,8 +56,8 @@
                         <label for="building-coach-status">@lang('cooperation/admin/buildings.show.status.label')</label>
                         <select autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
                             @foreach($statuses as $status)
-                                <option {{$mostRecentStatus->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
-                                    @if($mostRecentStatus->status_id == $status->id)
+                                <option {{optional($mostRecentStatus)->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
+                                    @if(optional($mostRecentStatus)->status_id == $status->id)
                                         @lang('cooperation/admin/buildings.show.status.current')
                                     @endif
                                     {{$status->name}}

@@ -45,7 +45,7 @@ class AddMasterInputSource extends Command
     public function handle()
     {
         $ids = $this->argument('id');
-        $buildings = empty($ids) ? Building::all() : Building::whereIn('id', $ids)->get();
+        $buildings = empty($ids) ? Building::cursor() : Building::whereIn('id', $ids)->cursor();
 
         $this->info('Starting process to add/update master input source on all/given buildings...');
         $bar = $this->output->createProgressBar($buildings->count());

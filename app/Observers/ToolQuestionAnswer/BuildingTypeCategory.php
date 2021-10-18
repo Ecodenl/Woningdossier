@@ -41,11 +41,16 @@ class BuildingTypeCategory implements ShouldApply
                 // if the current input source has no building feature
                 // for example; this can happen if the coach starts filling for the resident
 
-                // todo: replicate the $buildingFeatureForMasterInputSource for the current input source
-                // this way the current inputsource  has all the building feautures from the master, build_year, surfaces etc.
+                // for this, we replicate the $buildingFeatureForMasterInputSource
+                // for the current input source so it has all the building features
+                // from the master (build year, surfaces etc.)
+                if ($buildingFeatureForMasterInputSource instanceof BuildingFeature){
+                    $buildingFeatureForCurrentInputSource = $buildingFeatureForMasterInputSource->replicate(['id']);
+                    $buildingFeatureForCurrentInputSource->inputSource()
+                                                        ->associate($toolQuestionAnswer->inputSource)
+                                                        ->save();
+                }
             }
-
-
 
             // now we will try to apply the example building based on the only available building type, but only if the user has a build_year from pico.
             if (!is_null($buildingFeatureForMasterInputSource->build_year)) {

@@ -51,6 +51,7 @@ class FloorInsulationHelper extends ToolHelper
         ];
 
         $step = Step::findByShort('floor-insulation');
+
         $this->setValues([
             'considerables' => [
                 $step->id => [

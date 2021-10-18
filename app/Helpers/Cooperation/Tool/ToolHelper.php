@@ -42,6 +42,7 @@ abstract class ToolHelper
     /**
      * Get the values or a direct value from the value array.
      *
+     *
      * @param null $key
      *
      * @return array|\ArrayAccess|mixed
@@ -60,7 +61,9 @@ abstract class ToolHelper
     public function considers(Model $model): bool
     {
         $considers = $this->getValues("considerables.{$model->id}.is_considering");
+
         // when not set, it will be null. not set = not considering
+        // almost impossible to happen as the $user->considers() method already returns a default but a fallback is never bet.
         if (is_null($considers)) {
             $considers = true;
         }

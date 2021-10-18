@@ -128,7 +128,9 @@ class User extends Model implements AuthorizableContract
         if ($considerableModel instanceof Model) {
             return $considerableModel->pivot->is_considering;
         }
-        return false;
+        // no considerable found ? We will return true
+        // we do this so the Woonplan won't be left out empty.
+        return true;
     }
 
     public function allowedAccess(): bool

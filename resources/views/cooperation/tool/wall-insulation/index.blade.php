@@ -3,8 +3,7 @@
 @section('step_title', __('wall-insulation.title.title'))
 
 @section('content')
-    <form method="POST" id="wall-insulation-form"
-          action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
+    <form method="POST" id="wall-insulation-form" action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         @csrf
 
         <div id="intro">

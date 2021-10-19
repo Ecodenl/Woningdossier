@@ -84,12 +84,9 @@ class Hoomdossier
      */
     public static function getMostCredibleValueFromCollection(Collection $results, $column, $default = null)
     {
-        $results = $results->pluck($column, 'short');
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $masterInputSource = InputSource::findByShort('master');
-
-        return $results->get($masterInputSource->short);
-
+        return $results->pluck($column, 'input_source_id')->get($masterInputSource->id);
     }
 
     /**
@@ -116,9 +113,10 @@ class Hoomdossier
      */
     public static function getMostCredibleValue(Relation $relation, $column = null, $default = null, $onlyReturnForInputSource = null)
     {
+
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $found = $relation->where('input_source_id', $masterInputSource->id)->get();
+        $found = $relation->allInputSources()->where('input_source_id', $masterInputSource->id)->get();
 
         return self::getMostCredibleValueFromCollection($found, $column, $default);
     }

@@ -26,13 +26,13 @@ class FloorInsulationController extends ToolController
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
-        $buildingInsulation = $building->getBuildingElement('floor-insulation');
+        $buildingInsulation = $building->getBuildingElement('floor-insulation', $this->masterInputSource);
         $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
 
         $floorInsulation = optional($buildingInsulation)->element;
 
         $crawlspace = Element::where('short', 'crawlspace')->first();
-        $buildingCrawlspace = $building->getBuildingElement($crawlspace->short);
+        $buildingCrawlspace = $building->getBuildingElement($crawlspace->short, $this->masterInputSource);
 
         $crawlspacePresent = 2; // unknown
         if ($buildingCrawlspace instanceof \App\Models\BuildingElement) {

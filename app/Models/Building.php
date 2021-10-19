@@ -356,6 +356,7 @@ class Building extends Model
         return $this->has_answered_expert_question ?? false;
     }
 
+
     /**
      * Check if a step is not completed.
      *

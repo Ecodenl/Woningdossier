@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\InputSource;
 use App\Models\ToolQuestionAnswer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -34,7 +35,7 @@ class ToolQuestionAnswerObserver
     private function checkForCustomLogic(ToolQuestionAnswer $toolQuestionAnswer)
     {
         $toolQuestion = $toolQuestionAnswer->toolQuestion;
-        if ($toolQuestionAnswer->inputSource->short != 'master') {
+        if ($toolQuestionAnswer->inputSource->short != InputSource::MASTER_SHORT) {
 
             $className = Str::studly($toolQuestion->short);
             $questionValuesClass = "App\\Observers\\ToolQuestionAnswer\\{$className}";

@@ -33,7 +33,7 @@ class WallInsulationController extends ToolController
         $building = HoomdossierSession::getBuilding(true);
 
         $facadeInsulation = $building->getBuildingElement('wall-insulation', $this->masterInputSource);
-        $buildingFeature = $building->buildingFeatures;
+        $buildingFeature = $building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
         $buildingElements = $facadeInsulation->element;
 
         $buildingFeaturesRelationShip = $building->buildingFeatures();

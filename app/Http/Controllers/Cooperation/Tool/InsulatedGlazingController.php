@@ -66,7 +66,10 @@ class InsulatedGlazingController extends ToolController
 
             if ($measureApplication instanceof MeasureApplication) {
                 // get current situation
-                $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
+                $currentInsulatedGlazing = $building->currentInsulatedGlazing()
+                    ->forInputSource($this->masterInputSource)
+                    ->where('measure_application_id', $measureApplication->id)
+                    ->first();
                 $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
                 if (! $currentInsulatedGlazingInputs->isEmpty()) {

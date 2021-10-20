@@ -54,10 +54,10 @@ class RecalculateToolForUserListener
             if ($event->building->hasCompletedQuickScan(InputSource::findByShort(InputSource::MASTER_SHORT))) {
                 $userId = $event->building->user->id;
                 // default for recalculate it set at resident
-
+                $inputSource = HoomdossierSession::getInputSource(true);
                 // yes we check for the master, but recalculate the resident.
                 // we always insert / update to resident and retrieve the master.
-                Artisan::call(RecalculateForUser::class, ['--user' => [$userId]]);
+                Artisan::call(RecalculateForUser::class, ['--user' => [$userId], '--input-source' => $inputSource->short]);
             }
         }
     }

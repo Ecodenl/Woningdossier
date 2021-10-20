@@ -6,6 +6,7 @@ Prerequisites:
 ## Set up
 ```
 docker-compose up -d --build site
+docker-compose exec php composer install
 docker-compose exec php php /var/www/html/artisan key:generate
 docker-compose exec php php /var/www/html/artisan migrate:fresh --seed
 ```

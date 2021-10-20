@@ -109,7 +109,8 @@ class DoUpgrade extends Command
                     FixTranslations::class, // Reset translations which have changed
 
                     DeleteExampleBuildingContentKeys::class,
-                    DeleteLanguageLines::class // differs from the fix translations, this just removes old one.
+                    DeleteLanguageLines::class, // differs from the fix translations, this just removes old one.
+                    MapHouseVentilationBooleansToNumericBools::class,
                 ];
 
                 foreach ($afterCommands as $command) {

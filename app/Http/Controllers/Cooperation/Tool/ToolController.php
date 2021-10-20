@@ -18,10 +18,14 @@ class ToolController extends Controller
      */
     protected $step;
 
+    protected InputSource $masterInputSource;
+
     public function __construct(Request $request)
     {
         $slug = str_replace('/tool/', '', $request->getRequestUri());
         $this->step = Step::where('slug', $slug)->first();
+
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
 
     /**

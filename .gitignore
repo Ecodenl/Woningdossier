@@ -13,6 +13,9 @@ yarn-error.log
 .env.testing
 phpunit.xml
 
+# JS Output
+app.js.LICENSE.txt
+
 # translation file
 resources/lang/*/uuid.php
 

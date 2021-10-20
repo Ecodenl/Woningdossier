@@ -32,14 +32,12 @@ class RoofInsulationController extends ToolController
         /** var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
-        /** var BuildingFeature $features */
-        $features = $building->buildingFeatures;
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
 
         $primaryRoofTypes = RoofType::orderBy('order')->get();
         $secondaryRoofTypes = $primaryRoofTypes->whereIn('short', RoofType::SECONDARY_ROOF_TYPE_SHORTS);
 
-        $currentRoofTypes = $building->roofTypes;
+        $currentRoofTypes = $building->roofTypes()->forInputSource($this->masterInputSource)->get();
         $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
 
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
@@ -76,7 +74,7 @@ class RoofInsulationController extends ToolController
         }
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'building', 'features', 'primaryRoofTypes', 'secondaryRoofTypes', 'typeIds',
+            'building', 'primaryRoofTypes', 'secondaryRoofTypes', 'typeIds',
             'buildingFeaturesForMe', 'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
             'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
     }

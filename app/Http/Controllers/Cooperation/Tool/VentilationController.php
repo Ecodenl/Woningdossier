@@ -7,6 +7,7 @@ use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Tool\VentilationFormRequest;
 use App\Models\BuildingService;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
@@ -23,10 +24,13 @@ class VentilationController extends ToolController
      */
     public function index()
     {
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
         $building = HoomdossierSession::getBuilding(true);
 
         /** @var BuildingService $buildingVentilationService */
-        $buildingVentilationService = $building->getBuildingService('house-ventilation', HoomdossierSession::getInputSource(true));
+        $buildingVentilationService = $building->getBuildingService('house-ventilation', $masterInputSource);
+
         /** @var ServiceValue $buildingVentilation */
         $buildingVentilation = $buildingVentilationService->serviceValue;
 

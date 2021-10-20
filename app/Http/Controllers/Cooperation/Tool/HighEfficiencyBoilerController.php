@@ -31,7 +31,7 @@ class HighEfficiencyBoilerController extends ToolController
         $boiler = Service::where('short', 'boiler')->first();
         $boilerTypes = $boiler->values()->orderBy('order')->get();
 
-        $installedBoiler = $building->buildingServices()->where('service_id', $boiler->id)->first();
+        $installedBoiler = $building->buildingServices()->forInputSource($this->masterInputSource)->where('service_id', $boiler->id)->first();
 
         $userEnergyHabitsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
             $buildingOwner->energyHabit()

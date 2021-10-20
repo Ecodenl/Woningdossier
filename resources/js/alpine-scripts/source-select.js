@@ -21,9 +21,6 @@ export default (inputSource = 'no-match') => ({
         // Get children injected by PHP
         let children = this.$refs['source-select-options'].children;
 
-        let masterAnswers = [];
-        let indexes = [];
-
         // If there's no children, then there's no answers
         if (children.length === 0) {
             this.disabled = true;
@@ -40,27 +37,8 @@ export default (inputSource = 'no-match') => ({
                 if (short === null) {
                     this.disabled = true;
                     inputSource = null;
-                } else if (short === 'master') {
-                    // TODO: Remove this when the tool is logical again
-                    masterAnswers.push(children[i].getAttribute('data-input-value'));
-                    indexes.push(i);
                 }
             }
-        }
-
-        // There might be masterAnswers that need to be removed
-        if (indexes.length > 0) {
-            // We reverse the indexes. If we remove from top to bottom, the index count isn't correct anymore
-            // Javascript HTML collections update immediately
-            indexes.reverse();
-            indexes.forEach(index => {
-                children[index].remove();
-
-                if (children.length === 0) {
-                    this.disabled = true;
-                    inputSource = null;
-                }
-            });
         }
 
         // Fetch related input group
@@ -76,21 +54,6 @@ export default (inputSource = 'no-match') => ({
             this.$refs['source-select-input'].classList.add('disabled');
             this.open = false;
         }
-
-        // TODO: Remove this when the tool is logical again
-        let context = this;
-        document.addEventListener('DOMContentLoaded', function () {
-            if (! window.inQuickScan) {
-                // We're not in the quick scan, time to define logic to make JS carry half the tool
-                let loop = 0;
-                masterAnswers.forEach(answer => {
-                    let shouldClear = loop === 0;
-                    context.setElementValue(answer, shouldClear);
-
-                    ++loop;
-                });
-            }
-        });
     },
     toggle() {
         // If not disabled, we will handle the click

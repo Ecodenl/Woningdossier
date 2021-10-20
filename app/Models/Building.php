@@ -163,15 +163,6 @@ class Building extends Model
 
             // We still loop though, to ensure we get human-readable answers
             foreach ($values as $inputSourceId => $value) {
-                // our maps from the $questionValues will be keyed by 0 and 1 for bools
-                // sometimes a actual bool is retrieved from the database, something like true or "true" depending on where its saved
-                // so we change the values to something we know thats properly keyed.
-
-                if ($value === true || $value === "true") {
-                    $value = 1;
-                } else if ($value === false || $value === "false") {
-                    $value = 0;
-                }
 
                 $answer = $questionValues->isNotEmpty() && ! is_null($value) ? $questionValues[$value] : $value;
 

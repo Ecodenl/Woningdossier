@@ -56,18 +56,40 @@ class MapHouseVentilationBooleansToNumericBools extends Command
             ->where('service_id', $houseVentilationService->id)
             ->get();
 
-        foreach($buildingServices as $buildingService) {
-            if(isset($buildingService->extra['demand_driven']) && $buildingService->extra['demand_driven'] === true) {
-                $buildingService->extra['demand_driven'] = 1;
-                dd($buildingService);
-            }
-            if(isset($buildingService->extra['heat_recovery']) && $buildingService->extra['heat_recovery'] && $buildingService->extra['heat_recovery'] === false) {
-                dd('bier');
-                $buildingService->extra['heat_recovery'] = 0;
+        $bar = $this->output->createProgressBar($buildingServices->count());
+        foreach ($buildingServices as $buildingService) {
+
+            $oldExtra = $buildingService->extra;
+            $extra = $buildingService->extra;
+
+            if (isset($extra['demand_driven']) && ($extra['demand_driven'] === true || $extra['demand_driven'] === "true")) {
+                $extra['demand_driven'] = 1;
             }
 
-            // $buildingService->save();
+            if (isset($extra['demand_driven']) && ($extra['demand_driven'] === false || $extra['demand_driven'] === "false")) {
+                $extra['demand_driven'] = 0;
+            }
+
+            if (isset($extra['heat_recovery']) && ($extra['heat_recovery'] === true || $extra['heat_recovery'] === "true")) {
+                $extra['heat_recovery'] = 1;
+            }
+
+            if (isset($extra['heat_recovery']) && ($extra['heat_recovery'] === false || $extra['heat_recovery'] === "false")) {
+                $extra['heat_recovery'] = 0;
+            }
+
+
+            $buildingService->extra = $extra;
+
+            // so we dont do a enormous amount of queries.
+            if ($extra !== $oldExtra) {
+                $buildingService->save();
+
+            }
+            $bar->advance();
         }
 
+        $bar->finish();
+        $this->output->newLine();
     }
 }

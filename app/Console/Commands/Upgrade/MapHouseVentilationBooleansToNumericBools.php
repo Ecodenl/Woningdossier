@@ -54,7 +54,7 @@ class MapHouseVentilationBooleansToNumericBools extends Command
         // here we will map the true or false answers to a 1 or 0, so remain somewhat consistent.
         $buildingServices = BuildingService::withoutGlobalScopes()
             ->where('service_id', $houseVentilationService->id)
-            ->get();
+            ->cursor();
 
         $bar = $this->output->createProgressBar($buildingServices->count());
         foreach ($buildingServices as $buildingService) {

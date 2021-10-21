@@ -97,7 +97,7 @@ class RecalculateForUser extends Command
 
                     $stepsToRecalculateChain = [];
 
-                    $stepsToRecalculate = Step::expert()->whereNotIn('short', 'heat-pump')->get();
+                    $stepsToRecalculate = Step::expert()->where('short', '!=', 'heat-pump')->get();
 
                     foreach ($stepsToRecalculate as $stepToRecalculate) {
                         $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $stepToRecalculate))

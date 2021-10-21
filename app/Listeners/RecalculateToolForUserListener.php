@@ -51,6 +51,7 @@ class RecalculateToolForUserListener
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {
             $inputSource = HoomdossierSession::getInputSource(true);
             // Theres nothing to recalculate if the user did not complete the main step.
+
             if ($event->building->hasCompletedQuickScan(InputSource::findByShort(InputSource::MASTER_SHORT))) {
                 $userId = $event->building->user->id;
                 // default for recalculate it set at resident

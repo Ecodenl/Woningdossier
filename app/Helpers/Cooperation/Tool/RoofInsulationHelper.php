@@ -268,7 +268,7 @@ class RoofInsulationHelper extends ToolHelper
 
     public function createValues(): ToolHelper
     {
-        $buildingRoofTypes = $this->building->roofTypes()->forInputSource($this->inputSource)->get();
+        $buildingRoofTypes = $this->building->roofTypes()->forInputSource($this->masterInputSource)->get();
 
         // now lets handle the roof insulation stuff.
         $buildingRoofTypesArray = [];
@@ -301,14 +301,14 @@ class RoofInsulationHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step, $this->inputSource)
+                    'is_considering' => $this->user->considers($step, $this->masterInputSource)
                 ],
             ],
             'building_roof_types' => $buildingRoofTypesArray,
             'building_roof_type_ids' => $buildingRoofTypeIds,
             'building_features' => [
                 'roof_type_id' => optional(
-                    $this->building->buildingFeatures()->forInputSource($this->inputSource)->select('roof_type_id')->first()
+                    $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->select('roof_type_id')->first()
                 )->roof_type_id,
             ],
             'updated_measure_ids' => [],

@@ -169,13 +169,13 @@ class InsulatedGlazingHelper extends ToolHelper
         $buildingFeature = $this
             ->building
             ->buildingFeatures()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
         $buildingPaintworkStatus = $this
             ->building
             ->currentPaintworkStatus()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
         $buildingPaintworkStatusesArray = [
@@ -187,7 +187,7 @@ class InsulatedGlazingHelper extends ToolHelper
         /** @var Collection $buildingInsulatedGlazings */
         $buildingInsulatedGlazings = $this->building
             ->currentInsulatedGlazing()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->select('measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows')
             ->get();
 
@@ -204,7 +204,7 @@ class InsulatedGlazingHelper extends ToolHelper
 
         $woodElements = Element::findByShort('wood-elements');
         $frames = Element::findByShort('frames');
-        $buildingElements = $this->building->buildingElements()->forInputSource($this->inputSource)->get();
+        $buildingElements = $this->building->buildingElements()->forInputSource($this->masterInputSource)->get();
 
         // handle the wood / frame / crack sealing elements for the insulated glazing
         $buildingElementsArray = [];
@@ -226,7 +226,7 @@ class InsulatedGlazingHelper extends ToolHelper
         $considerablesForMeasures =
             $this->user
                 ->considerables(MeasureApplication::class)
-                ->wherePivot('input_source_id', $this->inputSource->id)
+                ->wherePivot('input_source_id', $this->masterInputSource->id)
                 ->wherePivotIn('considerable_id', $measureApplicationIds)
                 ->get()->keyBy('pivot.considerable_id')
                 ->map(function($considerable) {

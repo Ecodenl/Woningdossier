@@ -77,7 +77,7 @@ class VentilationHelper extends ToolHelper
         $buildingVentilation = $this
             ->building
             ->buildingVentilations()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
         $step = Step::findByShort('ventilation');
@@ -95,7 +95,7 @@ class VentilationHelper extends ToolHelper
 
         foreach ($measureApplications as $measureApplication) {
             $considerables[$measureApplication->id] = [
-                'is_considering'=> $this->user->considers($measureApplication, $this->inputSource),
+                'is_considering'=> $this->user->considers($measureApplication, $this->masterInputSource),
                 'name' => $measureApplication->measure_name
             ];
         }

@@ -15,6 +15,8 @@ abstract class ToolHelper
     /** @var InputSource */
     public $inputSource;
 
+    public InputSource $masterInputSource;
+
     /** @var \App\Models\Building */
     public $building;
 
@@ -30,6 +32,7 @@ abstract class ToolHelper
         $this->user = $user;
         $this->inputSource = $inputSource;
         $this->building = $user->building;
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
 
     public function setValues(array $values)

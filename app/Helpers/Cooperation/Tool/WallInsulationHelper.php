@@ -20,20 +20,20 @@ class WallInsulationHelper extends ToolHelper
 {
     public function createValues(): ToolHelper
     {
-        $buildingFeature = $this->building->buildingFeatures()->forInputSource($this->inputSource)->first();
+        $buildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
         $wallInsulationElement = Element::findByShort('wall-insulation');
         $step = Step::findByShort('wall-insulation');
 
         $wallInsulationBuildingElement = $this->building
             ->buildingElements()
             ->where('element_id', $wallInsulationElement->id)
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step, $this->inputSource),
+                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
                 ],
             ],
             'element' => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],

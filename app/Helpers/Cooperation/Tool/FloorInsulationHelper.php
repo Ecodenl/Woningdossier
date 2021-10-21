@@ -26,12 +26,12 @@ class FloorInsulationHelper extends ToolHelper
 
         $buildingFeature = $this->building
             ->buildingFeatures()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
         $buildingElements = $this->building
             ->buildingElements()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->get();
 
         $floorInsulationElementValueId = $buildingElements->where('element_id', $floorInsulationElement->id)->first()->element_value_id ?? null;
@@ -55,7 +55,7 @@ class FloorInsulationHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step, $this->inputSource),
+                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
                 ],
             ],
             'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],

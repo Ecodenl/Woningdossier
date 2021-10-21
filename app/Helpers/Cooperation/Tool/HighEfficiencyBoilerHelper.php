@@ -55,7 +55,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
             ->building
             ->buildingServices()
             ->where('service_id', $boilerService->id)
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
         $buildingBoilerArray = [
@@ -69,7 +69,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step, $this->inputSource),
+                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
                 ],
             ],
             'building_services' => $buildingBoilerArray,

@@ -84,8 +84,8 @@ class SolarPanelHelper extends ToolHelper
 
     public function createValues(): ToolHelper
     {
-        $buildingPvPanels = $this->building->pvPanels()->forInputSource($this->inputSource)->first();
-        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+        $buildingPvPanels = $this->building->pvPanels()->forInputSource($this->masterInputSource)->first();
+        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
 
         $step = Step::findByShort('solar-panels');
 
@@ -96,7 +96,7 @@ class SolarPanelHelper extends ToolHelper
             ],
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step, $this->inputSource),
+                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
                 ]
             ],
             'updated_measure_ids' => [],

@@ -37,13 +37,13 @@ class HeaterHelper extends ToolHelper
     public function createValues(): ToolHelper
     {
         $step = Step::findByShort('heater');
-        $buildingHeater = $this->building->heater()->forInputSource($this->inputSource)->first();
-        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+        $buildingHeater = $this->building->heater()->forInputSource($this->masterInputSource)->first();
+        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
 
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step, $this->inputSource),
+                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
                 ],
             ],
             'building_heaters' => $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],

@@ -55,8 +55,8 @@ class RecalculateForUser extends Command
      */
     public function handle()
     {
-        if (! is_null($this->option('cooperation'))) {
-            if (! Cooperation::find($this->option('cooperation'))) {
+        if (!is_null($this->option('cooperation'))) {
+            if (!Cooperation::find($this->option('cooperation'))) {
                 $this->error('Cooperation not found!');
 
                 return;
@@ -72,9 +72,9 @@ class RecalculateForUser extends Command
         $bar->setMessage('Queuing up the recalculate..');
 
 
-        $inputSourcesToRecalculate = [ InputSource::RESIDENT_SHORT ];
+        $inputSourcesToRecalculate = [InputSource::RESIDENT_SHORT];
 
-        if (! empty($this->option('input-source'))) {
+        if (!empty($this->option('input-source'))) {
             $inputSourcesToRecalculate = $this->option('input-source');
         }
 
@@ -87,38 +87,26 @@ class RecalculateForUser extends Command
 
             foreach ($inputSources as $inputSource) {
 
-                $completedSteps = $user->building
-                    ->completedSteps()
-                    ->forInputSource($inputSource)
-                    ->whereHas('step', function ($query) {
-                        $query
-                            ->whereNotIn('steps.short', ['general-data', 'heat-pump', 'building-data',
-                                'usage-quick-scan', 'living-requirements', 'residential-status'])
-                            ->whereNull('parent_id');
-                    })
-                    ->get();
+                if ($user->building->hasCompletedQuickScan($inputSource)) {
 
-                if ($completedSteps->isNotEmpty()) {
                     Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
                     Notification::setActive($user->building, $inputSource, true);
-                } else {
-                    Log::debug("No completed steps, no notification for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
-                }
 
-                $stepsToRecalculateChain = [];
+                    $stepsToRecalculateChain = [];
 
-                /** @var CompletedStep $completedStep */
-                foreach ($completedSteps as $completedStep) {
-                    // user is interested, so recreate the advices for each step
-                    $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $completedStep->step))
-                        ->onQueue(Queue::ASYNC);
-                }
+                    $stepsToRecalculate = Step::expert()->whereNotIn('short', 'heat-pump')->get();
 
-                if (! empty($stepsToRecalculateChain)) {
+                    foreach ($stepsToRecalculate as $stepToRecalculate) {
+                        $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $stepToRecalculate))
+                            ->onQueue(Queue::ASYNC);
+                    }
+
                     Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
                     ProcessRecalculate::withChain($stepsToRecalculateChain)
                         ->dispatch()
                         ->onQueue(Queue::ASYNC);
+                } else {
+                    Log::debug("User has not completed quick scan | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
                 }
             }
         }

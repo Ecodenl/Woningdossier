@@ -520,15 +520,6 @@ class ExampleBuildingService
             )
         );
 
-        // Get all expert tool steps and complete them for this building + input source
-        $stepsToComplete = Step::whereDoesntHave('parentStep')
-            ->whereDoesntHave('subSteps')
-            ->get();
-
-        foreach ($stepsToComplete as $stepToComplete) {
-            StepHelper::complete($stepToComplete, $building, $inputSource);
-        }
-
         ExampleBuildingChanged::dispatch(
             $building,
             $oldExampleBuilding,

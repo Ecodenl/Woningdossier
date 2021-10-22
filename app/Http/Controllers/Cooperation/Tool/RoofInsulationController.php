@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoofInsulation;
+use App\Helpers\StepHelper;
 use App\Helpers\Str;
 use App\Http\Requests\Cooperation\Tool\RoofInsulationFormRequest;
 use App\Models\Building;
@@ -142,6 +143,10 @@ class RoofInsulationController extends ToolController
         $values = $request->only('considerables', 'building_roof_type_ids', 'building_features',
             'building_roof_types', 'step_comments');
         $values['updated_measure_ids'] = $updatedMeasureIds;
+
+        // Usually we let the completeStore function handle the completion, but we NEED the step to be completed
+        // BEFORE we can calculate the roof insulation advices.
+        StepHelper::complete($this->step, $building, $inputSource);
 
         (new RoofInsulationHelper($user, $inputSource))
             ->setValues($values)

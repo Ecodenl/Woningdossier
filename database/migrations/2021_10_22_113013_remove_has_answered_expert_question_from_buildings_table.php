@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddHasAnsweredExpertQuestionToBuildingsTable extends Migration
+class RemoveHasAnsweredExpertQuestionFromBuildingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddHasAnsweredExpertQuestionToBuildingsTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('buildings', 'has_answered_expert_question')) {
+        if (Schema::hasColumn('buildings', 'has_answered_expert_question')) {
             Schema::table('buildings', function (Blueprint $table) {
-                $table->boolean('has_answered_expert_question')->default(false)->after('user_id');
+                $table->dropColumn('has_answered_expert_question');
             });
         }
     }
@@ -27,9 +27,9 @@ class AddHasAnsweredExpertQuestionToBuildingsTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasColumn('buildings', 'has_answered_expert_question')) {
+        if (! Schema::hasColumn('buildings', 'has_answered_expert_question')) {
             Schema::table('buildings', function (Blueprint $table) {
-                $table->dropColumn('has_answered_expert_question');
+                $table->boolean('has_answered_expert_question')->default(false)->after('user_id');
             });
         }
     }

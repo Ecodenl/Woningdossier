@@ -104,12 +104,10 @@ class Building extends Model
         'extension',
         'is_active',
         'example_building_id',
-        'has_answered_expert_question',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
-        'has_answered_expert_question' => 'boolean',
     ];
 
     public function toolQuestionAnswers(): HasMany

@@ -78,7 +78,6 @@ class UserService
         $building = $user->building;
         $building->update([
             'example_building_id' => null,
-            'has_answered_expert_question' => false,
         ]);
 
         // delete the services from a building

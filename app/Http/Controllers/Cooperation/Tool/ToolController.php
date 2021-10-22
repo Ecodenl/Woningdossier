@@ -40,9 +40,6 @@ class ToolController extends Controller
     public function completeStore(Step $step, Building $building, InputSource $inputSource)
     {
         StepHelper::complete($step, $building, $inputSource);
-        $building->update([
-            'has_answered_expert_question' => true,
-        ]);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
         $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);

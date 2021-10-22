@@ -1,6 +1,6 @@
 #Woonplan
 
-####Here we will try to explain the logic behind the Woonplan.
+####How does the Woonplan work?
 
 The Woonplan lists the advices that Hoomdossier gives you in different categories (to-do, later and complete), the advices on the Woonplan will be generated once after every Quickscan step has been completed.
 

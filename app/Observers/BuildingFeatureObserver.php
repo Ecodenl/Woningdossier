@@ -2,18 +2,11 @@
 
 namespace App\Observers;
 
-use App\Helpers\Arr;
-use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingRoofType;
-use App\Models\BuildingType;
-use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\RoofType;
-use App\Models\ToolQuestion;
-use App\Services\ExampleBuildingService;
-use Illuminate\Support\Facades\Log;
 
 class BuildingFeatureObserver
 {

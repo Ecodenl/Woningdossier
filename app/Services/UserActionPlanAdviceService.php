@@ -13,7 +13,6 @@ use App\Models\BuildingService;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
 use App\Models\Service;
@@ -23,9 +22,7 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
-use App\Scopes\VisibleScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
@@ -459,10 +456,10 @@ class UserActionPlanAdviceService
                 'hrpp-glass-frames' => 'glass',
                 'hr3p-frames' => 'glass',
                 'crack-sealing' => 'crack-sealing',
-                'roof-insulation-pitched-inside' => 'insulation',
-                'roof-insulation-pitched-replace-tiles' => 'insulation',
-                'roof-insulation-flat-current' => 'insulation',
-                'roof-insulation-flat-replace-current' => 'insulation',
+                'roof-insulation-pitched-inside' => 'roof-insulation',
+                'roof-insulation-pitched-replace-tiles' => 'roof-insulation',
+                'roof-insulation-flat-current' => 'roof-insulation',
+                'roof-insulation-flat-replace-current' => 'roof-insulation',
                 'high-efficiency-boiler-replace' => 'hr-boiler',
                 'heater-place-replace' => 'sun-boiler',
                 'solar-panels-place-replace' => 'solar-panels',
@@ -476,16 +473,10 @@ class UserActionPlanAdviceService
                 case 'insulation':
                     // Multiple types of insulation, we check based on measure which question is relevant
                     $floorShorts = ['floor-insulation', 'bottom-insulation', 'floor-insulation-research'];
-                    $wallShorts = ['cavity-wall-insulation', 'facade-wall-insulation', 'wall-insulation-research'];
-                    $roofShorts = [
-                        'roof-insulation-pitched-inside', 'roof-insulation-pitched-replace-tiles',
-                        'roof-insulation-flat-current', 'roof-insulation-flat-replace-current',
-                    ];
 
                     // Define tool question based on the measure short
                     $toolQuestionShort = in_array($measureApplication->short, $floorShorts) ? 'current-floor-insulation'
-                        : (in_array($measureApplication->short, $wallShorts) ? 'current-wall-insulation'
-                            : 'current-roof-insulation');
+                        : 'current-wall-insulation';
 
                     $relevantQuestion = ToolQuestion::findByShort($toolQuestionShort);
                     if ($relevantQuestion instanceof ToolQuestion) {
@@ -497,6 +488,44 @@ class UserActionPlanAdviceService
                             $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE
                                 : static::CATEGORY_TO_DO;
                         }
+                    }
+                    break;
+
+                case 'roof-insulation':
+                    // Due to the roof types, we need custom logic
+                    $roofStep = Step::findByShort('roof-insulation');
+                    $elementValueId = null;
+
+                    if ($building->hasAnsweredExpertQuestion($roofStep)) {
+                        // The user has completed the roof insulation step, so we must check the insulation type
+                        // for the roof types
+                        $flatShorts = ['roof-insulation-flat-current', 'roof-insulation-flat-replace-current'];
+                        // Check which roof to get
+                        $roofTypeShort = in_array($measureApplication->short, $flatShorts) ? 'flat' : 'pitched';
+                        $roofType = RoofType::findByShort($roofTypeShort);
+
+                        // Get the related roof type
+                        $buildingRoofType = $building->roofTypes()
+                            ->forInputSource($masterInputSource)
+                            ->where('roof_type_id', $roofType->id)
+                            ->first();
+
+                        $elementValueId = optional($buildingRoofType)->element_value_id;
+                    } else {
+                        // Still a quick-scan newbie, we check the tool question
+                        $relevantQuestion = ToolQuestion::findByShort('current-roof-insulation');
+                        if ($relevantQuestion instanceof ToolQuestion) {
+                            $elementValueId = $building->getAnswer($masterInputSource, $relevantQuestion);
+                        }
+                    }
+
+                    // Now we have the element value of the relevant roof type, so we set the category
+                    $elementValue = ElementValue::find($elementValueId);
+                    if ($elementValue instanceof ElementValue) {
+                        // If the value is 1 or 2 (onbekend, geen), we want it in to-do
+                        // If it's "niet van toepassing" it should be hidden, so we don't worry about it
+                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE
+                            : static::CATEGORY_TO_DO;
                     }
                     break;
 

@@ -58,9 +58,10 @@ class RoofInsulationHelper extends ToolHelper
                 $primaryRoof = RoofType::find($this->getValues('building_features')['roof_type_id']);
                 $primaryRoofShort = optional($primaryRoof)->short;
 
-                // If the user has answered an expert question, we will continue with both possible roof categories
-                // However, if they have not, we must ensure that the primary roof matches the category
-                if ($this->building->hasAnsweredExpertQuestion() ||
+                $roofStep = Step::findByShort('roof-insulation');
+                // If the user has answered the step about roof insulation, we will continue with both possible roof
+                // categories. However, if they have not, we must ensure that the primary roof matches the category
+                if ($this->building->hasAnsweredExpertQuestion($roofStep) ||
                     (! is_null($primaryRoofShort) && $roofCat === RoofType::PRIMARY_TO_SECONDARY_MAP[$primaryRoofShort])
                 ) {
                     $isBitumenOnPitchedRoof = 'pitched' == $roofCat && 'bitumen' == $results['pitched']['type'];

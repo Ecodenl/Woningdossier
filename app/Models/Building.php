@@ -342,9 +342,28 @@ class Building extends Model
         return true;
     }
 
-    public function hasAnsweredExpertQuestion(): bool
+    /**
+     * Check if a building has answered any or a specific expert step
+     *
+     * @param  \App\Models\Step|null  $step
+     *
+     * @return bool
+     */
+    public function hasAnsweredExpertQuestion(Step $step = null): bool
     {
-        return $this->has_answered_expert_question ?? false;
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+        $query = $this->completedSteps()
+            ->forInputSource($masterInputSource)
+            ->whereHas('step', function ($query) {
+                $query->whereNotIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
+            });
+
+        if ($step instanceof Step) {
+            $query->where('step_id', $step->id);
+        }
+
+        return $query->count() > 0;
     }
 
 

@@ -58,7 +58,12 @@ class SolarPanel
         }
 
         if ($peakPower > 0) {
-            $number = ceil(($amountElectricity / $helpFactor) / $peakPower);
+
+            $number = 0;
+            // we cant calculate the amount of panels if someone has a negative amount of electricity
+            if ($amountElectricity > 0) {
+                $number = ceil(($amountElectricity / $helpFactor) / $peakPower);
+            }
             // \Log::debug(__METHOD__.' Advised number of panels: '.$number.' = ceil(( '.$amountElectricity.' / '.$helpFactor.') / '.$peakPower.')');
             $result['advice'] = Translation::translate('solar-panels.advice-text', ['number' => $number]);
             $wp = $panels * $peakPower;

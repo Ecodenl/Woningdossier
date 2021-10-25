@@ -153,4 +153,26 @@ class NumberFormatterTest extends TestCase
     {
         $this->assertEquals($expected, NumberFormatter::prefix($value, $prefix));
     }
+
+    public static function formatNumberForUserProvider()
+    {
+        return [
+            ['0,00', true, '0'],
+            ['0,00', false, '0'],
+            ['0.00', true, '0'],
+            ['2.000.000', true, '2000000'],
+            ['2001', true, '2001'],
+            ['2001', false, '2.001,0'],
+            ['2.001', false, '2,0'],
+            ['500', false, '500,0'],
+        ];
+    }
+
+    /**
+     * @dataProvider formatNumberForUserProvider
+     */
+    public function testFormatNumberForUser($number, $isInteger, $expected)
+    {
+        $this->assertEquals($expected, NumberFormatter::formatNumberForUser($number, $isInteger));
+    }
 }

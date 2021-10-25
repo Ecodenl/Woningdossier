@@ -155,6 +155,29 @@ class NumberFormatter
         return sprintf('%s%s', $prefix, $value);
     }
 
+    /**
+     * Format a number for user display
+     *
+     * @param $number
+     * @param  bool  $isInteger
+     *
+     * @return int|string
+     */
+    public static function formatNumberForUser($number, bool $isInteger = false)
+    {
+        $number = static::format($number, ($isInteger ? 0 : 1));
+        if ($isInteger) {
+            $number = str_replace('.', '', $number);
+        }
+
+        // We don't want decimals on a 0
+        if (Str::isConsideredEmptyAnswer($number)) {
+            $number = 0;
+        }
+
+        return $number;
+    }
+
     protected static function removeMultipleDecimals($number)
     {
         $locale = app()->getLocale();

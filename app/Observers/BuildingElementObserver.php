@@ -40,12 +40,12 @@ class BuildingElementObserver
 
                     // We need to check the lowest glass type, so we need to check the other element value also
                     $elementToCompare = $buildingElement->element_id === $livingRoomsWindows->id
-                        ? $livingRoomsWindows : $sleepingRoomsWindows;
+                        ? $sleepingRoomsWindows : $livingRoomsWindows;
 
-                    $otherElementValue = $building->buildingElements()
+                    $otherElementValue = optional($building->buildingElements()
                         ->where('element_id', $elementToCompare->id)
                         ->forInputSource($currentInputSource)
-                        ->first();
+                        ->first())->elementValue;
 
                     // Get the lowest comfort score
                     if ($otherElementValue instanceof ElementValue) {

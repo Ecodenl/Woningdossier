@@ -7,23 +7,15 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
-use App\Helpers\QuestionValues\QuestionValue;
-use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
 use App\Models\Building;
-use App\Models\BuildingFeature;
-use App\Models\BuildingType;
 use App\Models\CompletedSubStep;
-use App\Models\ExampleBuilding;
-use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
-use App\Services\ExampleBuildingService;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
@@ -200,10 +192,8 @@ class Form extends Component
                 foreach ($this->toolQuestions as $toolQuestion) {
                     if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
                         $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                        $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::format($this->filledInAnswers[$toolQuestion->id], $isInteger ? 0 : 1);
-                        if ($isInteger) {
-                            $this->filledInAnswers[$toolQuestion->id] = str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]);
-                        }
+                        $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::formatNumberForUser($this->filledInAnswers[$toolQuestion->id],
+                            $isInteger);
                     }
                 }
 
@@ -292,8 +282,8 @@ class Form extends Component
                     // and submits, the validation will fail because nothing is set.
 
                     // Format answer to remove leading decimals
-                    $this->filledInAnswers[$toolQuestion->id] = str_replace('.', '',
-                        NumberFormatter::format($answerForInputSource ?? $toolQuestion->options['value']));
+                    $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::formatNumberForUser(($answerForInputSource ?? $toolQuestion->options['value']),
+                        true);
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
                 case 'checkbox-icon':
@@ -310,10 +300,7 @@ class Form extends Component
                     // Check if question type is text, so we can format it if it's numeric
                     if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
                         $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                        $answerForInputSource = NumberFormatter::format($answerForInputSource, $isInteger ? 0 : 1);
-                        if ($isInteger) {
-                            $answerForInputSource = str_replace('.', '', $answerForInputSource);
-                        }
+                        $answerForInputSource = NumberFormatter::formatNumberForUser($answerForInputSource, $isInteger);
                     }
 
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;

@@ -406,7 +406,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 //                    });
 
                     Route::resource('key-figures', 'KeyFiguresController')->only('index');
-                    Route::resource('translations', 'TranslationController')->except(['show'])->parameter('translations', 'group');
+                    Route::resource('translations', 'TranslationController')
+                        ->only(['index', 'edit', 'update'])
+                        ->parameter('translations', 'group');
 
                     /* Section for the cooperations */
                     Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {

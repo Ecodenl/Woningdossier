@@ -13,7 +13,7 @@ class TranslationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
@@ -32,29 +32,13 @@ class TranslationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-    }
-
-    /**
+     * @param  \App\Models\Cooperation  $cooperation
      * @param string $group |   So we can get the translations / questions from language_line table for the step
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Cooperation $cooperation, $group)
+    public function edit(Cooperation $cooperation, string $group)
     {
         // see the index file, we change the "/" to "_" otherwise it wont be picked up by routing
 
@@ -87,9 +71,11 @@ class TranslationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param string $stepId
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Cooperation  $cooperation
+     * @param $group
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Cooperation $cooperation, $group)
     {
@@ -114,16 +100,5 @@ class TranslationController extends Controller
         return redirect()
             ->route('cooperation.admin.super-admin.translations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.translations.update.success'));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
     }
 }

@@ -10,17 +10,26 @@ class StrTest extends TestCase
     public static function isConsideredEmptyAnswerProvider()
     {
         return [
-            [null], ['null'], ['0'],
-            ['0.00'], ['0.0'],
+            [null, true],
+            ['null', true],
+            ['0', true],
+            [0, true],
+            ['0.00', true],
+            ['0.0', true],
+            ['0,0', true],
+            ['0,00', true],
+            ['test', false],
+            [' ', false],
+            [23, false],
         ];
     }
 
     /**
      * @dataProvider isConsideredEmptyAnswerProvider
      */
-    public function testisConsideredEmptyAnswer($values)
+    public function testIsConsideredEmptyAnswer($values, $expected)
     {
-        $this->assertEquals(true, Str::isConsideredEmptyAnswer($values));
+        $this->assertEquals($expected, Str::isConsideredEmptyAnswer($values));
     }
 
     public static function lcfirstProvider()

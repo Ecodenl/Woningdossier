@@ -541,7 +541,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'validation' => ['required', 'numeric', 'min:0', 'max:10000'],
+                            'validation' => ['required', 'numeric', 'integer', 'min:0', 'max:10000'],
                             'save_in' => 'user_energy_habits.amount_gas',
                             'short' => 'amount-gas',
                             'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.gas-usage',
@@ -549,7 +549,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'unit_of_measure' => __('general.unit.cubic-meters.title'),
                         ],
                         [
-                            'validation' => ['required', 'numeric', 'min:-10000', 'max:10000'],
+                            'validation' => ['required', 'numeric', 'integer', 'min:-10000', 'max:10000'],
                             'save_in' => 'user_energy_habits.amount_electricity',
                             'short' => 'amount-electricity',
                             'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity',

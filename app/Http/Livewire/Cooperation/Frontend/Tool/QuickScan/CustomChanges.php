@@ -10,6 +10,7 @@ use App\Models\InputSource;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\VisibleScope;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -187,27 +188,38 @@ class CustomChanges extends Component
             }
 
             // Before we can validate, we must convert human format to proper format
+            // TODO: Check for later; perhaps we should check if the variable has 1 comma or 2 or more dots to define the used format and set the str_replace only if it's a Dutch format
             $costs = $measure['costs'] ?? [];
             $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
             $costs['to'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['to'] ?? ''), 2);
             $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
             $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '', $measure['savings_money'] ?? 0), 2);
 
-            $measureData = $this->validate($customRules, [], $customAttributes);
+            $validator = Validator::make([
+                'customMeasureApplicationsFormData' => $this->customMeasureApplicationsFormData
+            ], $customRules, [], $customAttributes);
 
-            // It validated, let's re-fetch the measure so the values are correct
-            $measure = $this->customMeasureApplicationsFormData[$index];
+            if ($validator->fails()) {
+                // Validator failed, let's put it back as the user format
+                $costs['from'] = NumberFormatter::formatNumberForUser($costs['from']);
+                $costs['to'] = NumberFormatter::formatNumberForUser($costs['to']);
+                $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
+                $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::formatNumberForUser( $this->customMeasureApplicationsFormData[$index]['savings_money']);
+            }
+
+            // Validate, we don't need the data
+            $measureData = $validator->validate()['customMeasureApplicationsFormData'][$index];
 
             // Set update data for user action plan advice
             $updateData = [
                 'category' => 'to-do',
-                'costs' => $measure['costs'] ?? null,
+                'costs' => $measureData['costs'] ?? null,
                 'input_source_id' => $this->currentInputSource->id,
-                'savings_money' => $measure['savings_money'] ?? 0,
+                'savings_money' => $measureData['savings_money'] ?? 0,
             ];
 
             // If a hash and ID are set, then a measure has been edited
-            if (!is_null($measure['hash']) && !is_null($measure['id'])) {
+            if (! is_null($measure['hash']) && !is_null($measure['id'])) {
                 // ID is set for master input source, so we fetch the master input source custom measure
                 /** @var CustomMeasureApplication $customMeasureApplication */
                 $masterCustomMeasureApplication = CustomMeasureApplication::forInputSource($this->masterInputSource)

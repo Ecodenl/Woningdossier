@@ -18,6 +18,7 @@ use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Database\Eloquent\Collection;
 use App\Helpers\Arr;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -255,13 +256,26 @@ class Form extends Component
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
         // Before we can validate, we must convert human format to proper format
+        // TODO: Check for later; perhaps we should check if the variable has 1 comma or 2 or more dots to define the used format and set the str_replace only if it's a Dutch format
         $costs = $this->custom_measure_application['costs'] ?? [];
         $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
         $costs['to'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['to'] ?? ''), 2);
         $this->custom_measure_application['costs'] = $costs;
         $this->custom_measure_application['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '', $this->custom_measure_application['savings_money'] ?? 0), 2);
 
-        $measureData = $this->validate($this->rules)['custom_measure_application'];
+        $validator = Validator::make([
+            'custom_measure_application' => $this->custom_measure_application
+        ], $this->rules);
+
+        if ($validator->fails()) {
+            // Validator failed, let's put it back as the user format
+            $costs['from'] = NumberFormatter::formatNumberForUser($costs['from']);
+            $costs['to'] = NumberFormatter::formatNumberForUser($costs['to']);
+            $this->custom_measure_application['costs'] = $costs;
+            $this->custom_measure_application['savings_money'] = NumberFormatter::formatNumberForUser($this->custom_measure_application['savings_money']);
+        }
+
+        $measureData = $validator->validate()['custom_measure_application'];
 
         // Create custom measure
         $customMeasureApplication = CustomMeasureApplication::create([

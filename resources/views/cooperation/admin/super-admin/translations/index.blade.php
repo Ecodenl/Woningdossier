@@ -65,14 +65,22 @@
                                     </a>
                                 </td>
                             </tr>
-                        <tr>
-                            <td>Home</td>
-                            <td>
-                                <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', ['group' => 'home'])}}">
-                                    @lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')
-                                </a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>Home</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', ['group' => 'home'])}}">
+                                        @lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Help</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', ['group' => 'cooperation_frontend_help'])}}">
+                                        @lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')
+                                    </a>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
 

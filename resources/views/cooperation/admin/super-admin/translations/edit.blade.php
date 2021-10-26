@@ -67,8 +67,9 @@
                                                                    name="language_lines[{{$locale}}][question][{{$translation->id}}]"
                                                                    value="{{$text}}">
                                                         @endif
-                                                        <label for="">key: {{$translation->group}}
-                                                            .{{$translation->key}}</label>
+                                                        <label for="">
+                                                             {{"key: {$translation->group}.{$translation->key}"}}
+                                                        </label>
                                                     </div>
                                                 @endforeach
                                                 @if($translation->helpText instanceof \Spatie\TranslationLoader\LanguageLine)

@@ -7,6 +7,7 @@ use App\Models\Cooperation;
 use App\Models\LanguageLine;
 use App\Models\Step;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class TranslationController extends Controller
 {
@@ -34,16 +35,16 @@ class TranslationController extends Controller
     /**
      *
      * @param  \App\Models\Cooperation  $cooperation
-     * @param string $group |   So we can get the translations / questions from language_line table for the step
+     * @param  string  $group  So we can get the translations / questions from language_line table for the step
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit(Cooperation $cooperation, string $group)
     {
-        // see the index file, we change the "/" to "_" otherwise it wont be picked up by routing
+        // see the index file, we change the "/" to "_" otherwise it won't be picked up by routing
 
         $group = str_replace('_', '/', $group);
-        // it is what it is, for the time being this will do. should be refactored
+        // it is what it is, for the time being this will do. TODO: should be refactored
         $step = Step::findByShort($group);
 
         if ($step instanceof Step && $step->isChild()) {
@@ -83,7 +84,7 @@ class TranslationController extends Controller
 
         foreach ($languageLinesData as $locale => $languageLineData) {
             foreach ($languageLineData as $type => $languageLines) {
-                // we dont do stuff with the type yet, could be helpfull in the future.
+                // we don't do stuff with the type yet, could be helpful in the future.
                 foreach ($languageLines as $languageLineId => $text) {
                     $text = $text ?? '';
                     $languageLine = LanguageLine::find($languageLineId);
@@ -95,7 +96,7 @@ class TranslationController extends Controller
             }
         }
 
-        \Artisan::call('queue:restart');
+        Artisan::call('queue:restart');
 
         return redirect()
             ->route('cooperation.admin.super-admin.translations.index')

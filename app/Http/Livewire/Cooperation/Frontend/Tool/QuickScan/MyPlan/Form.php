@@ -86,7 +86,7 @@ class Form extends Component
         'custom_measure_application.info' => 'required',
         'custom_measure_application.costs.from' => 'required|numeric|min:0',
         'custom_measure_application.costs.to' => 'required|numeric|gt:custom_measure_application.costs.from',
-        'custom_measure_application.savings_money' => 'nullable|numeric',
+        'custom_measure_application.savings_money' => 'nullable|numeric|max:999999',
     ];
 
     protected $listeners = [

@@ -32,7 +32,7 @@ class CustomChanges extends Component
         'customMeasureApplicationsFormData.*.info' => 'required',
         'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
         'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gt:customMeasureApplicationsFormData.*.costs.from',
-        'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric',
+        'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric|max:999999',
     ];
 
     public array $attributes;

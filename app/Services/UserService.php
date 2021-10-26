@@ -261,6 +261,8 @@ class UserService
         $user->notificationSettings()->withoutGlobalScopes()->delete();
         // first detach the roles from the user
         $user->roles()->detach($user->roles);
+        // remove the user his motivations
+        $user->motivations()->delete();
 
         // remove the user itself.
         $user->delete();

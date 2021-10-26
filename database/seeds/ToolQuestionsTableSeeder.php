@@ -94,6 +94,7 @@ class ToolQuestionsTableSeeder extends Seeder
             'building-data' => [
                 // sub step name
                 'Woning type' => [
+                    'order' => 0,
                     // question data
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -127,6 +128,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Wat voor woning' => [
+                    'order' => 1,
                     'conditions' => [
                         [
                             [
@@ -184,6 +186,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Wat voor dak' => [
+                    'order' => 3,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -225,6 +228,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Bouwjaar en oppervlak' => [
+                    'order' => 2,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -247,6 +251,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Monument en energielabel' => [
+                    'order' => 4,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -310,6 +315,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Gebruikersoppervlak en bijzonderheden' => [
+                    'order' => 5,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -329,6 +335,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Samenvatting woninggegevens' => [
+                    'order' => 6,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [
@@ -352,6 +359,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             'usage-quick-scan' => [
                 'Hoeveel bewoners' => [
+                    'order' => 0,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -414,6 +422,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Thermostaat gebruik' => [
+                    'order' => 1,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -446,6 +455,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Gebruik warm tapwater' => [
+                    'order' => 2,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -512,6 +522,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Gas en elektra gebruik' => [
+                    'order' => 3,
                     'sub_step_template_id' => $template2rows1top2bottom->id,
                     'questions' => [
                         [
@@ -559,6 +570,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Samenvatting bewoners-gebruik' => [
+                    'order' => 4,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [
@@ -582,6 +594,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             'living-requirements' => [
                 'Hoelang blijven wonen' => [
+                    'order' => 0,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -599,6 +612,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ],
                 ],
                 'Welke zaken vindt u belangrijk?' => [
+                    'order' => 1,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -655,10 +669,12 @@ class ToolQuestionsTableSeeder extends Seeder
 
                 ],
                 'Welke zaken vervangen' => [
+                    'order' => 2,
                     // note: dit is een custom vraag, zie slide 18
                     'sub_step_template_id' => $templateCustomChanges->id,
                 ],
                 'Samenvatting woonwensen' => [
+                    'order' => 3,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [
@@ -682,6 +698,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             'residential-status' => [
                 'Muurisolatie' => [
+                    'order' => 0,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -715,6 +732,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Vloerisolatie' => [
+                    'order' => 1,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -751,6 +769,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Dakisolatie' => [
+                    'order' => 2,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -788,6 +807,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 // TODO: Decided to do this later, or different. Might need to make changes after production release
 //                'Glasisolatie' => [
+//                    'order' => 3???,
 //                    'sub_step_template_id' => $templateDefault->id,
 //                    'questions' => [
 //                        [
@@ -818,6 +838,7 @@ class ToolQuestionsTableSeeder extends Seeder
 //                    ]
 //                ],
                 'Glasisolatie eerste woonlaag' => [
+                    'order' => 3,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -848,6 +869,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Glasisolatie tweede woonlaag' => [
+                    'order' => 4,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -878,6 +900,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Verwarming' => [
+                    'order' => 5,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -922,6 +945,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Warmtepomp' => [
+                    'order' => 6,
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
@@ -967,6 +991,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Gasketel vragen' => [
+                    'order' => 7,
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
@@ -1011,6 +1036,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Hoe is de verwarming' => [
+                    'order' => 8,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -1061,6 +1087,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Zonnenboiler' => [
+                    'order' => 9,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -1091,6 +1118,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Ventilatie' => [
+                    'order' => 10,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -1173,6 +1201,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Kierdichting' => [
+                    'order' => 11,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -1196,6 +1225,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Zonnepanelen' => [
+                    'order' => 12,
                     'sub_step_template_id' => $template2rows3top1bottom->id,
                     'questions' => [
                         [
@@ -1279,6 +1309,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Samenvatting woonstatus' => [
+                    'order' => 13,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [
@@ -1320,7 +1351,6 @@ class ToolQuestionsTableSeeder extends Seeder
 
         foreach ($structure as $stepShort => $subQuestions) {
             $step = Step::findByShort($stepShort);
-            $orderForSubQuestions = 0;
 
             foreach ($subQuestions as $subQuestionName => $subQuestionData) {
                 $names = ['nl' => $subQuestionName];
@@ -1328,7 +1358,7 @@ class ToolQuestionsTableSeeder extends Seeder
 
                 $subStepData = [
                     'name' => $names,
-                    'order' =>  $orderForSubQuestions,
+                    'order' =>  $subQuestionData['order'],
                     'slug' => $slugs,
                     'step_id' => $step->id,
                     'sub_step_template_id' => $subQuestionData['sub_step_template_id'],
@@ -1463,7 +1493,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         $orderForSubStepToolQuestions++;
                     }
                 }
-                $orderForSubQuestions++;
             }
         }
     }

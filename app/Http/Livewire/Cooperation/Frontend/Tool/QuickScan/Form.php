@@ -2,13 +2,18 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Console\Commands\Tool\RecalculateForUser;
+use App\Events\QuickScanNeedsRecalculate;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
+use App\Helpers\Queue;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
+use App\Jobs\ProcessRecalculate;
+use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
@@ -16,6 +21,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
@@ -225,6 +231,9 @@ class Form extends Component
             }
         }
 
+
+        $stepShortsToRecalculate = [];
+        $shouldDoFullRecalculate = false;
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
@@ -238,10 +247,65 @@ class Form extends Component
                         // this *can't* handle a checkbox / multiselect answer.
                         $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
                     }
+
+                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion)) {
+                        Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
+                        $shouldDoFullRecalculate = true;
+                    }
+
+                    // get the expert step equivalent
+                    // we will filter out duplicates later on.
+                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion));
                 }
             }
+        }
 
-            StepDataHasBeenChanged::dispatch($this->step, $this->building, Hoomdossier::user());
+        // this is a key check, if the user has already completed the quick scan we should not do a full recalculate
+        // so we only to the checks within the if when the user has not finished the quick scan
+        // its also very important that this if happens BEFORE the sub step is finished.
+        if ($shouldDoFullRecalculate === false && $this->building->hasCompletedQuickScan($this->masterInputSource) === false) {
+            $firstIncompleteStep = null;
+            $incompleteSubStep = null;
+
+            // so no question were dirty that had to trigger a recalculate
+            // we will now check if the user just finished the last step, because if so we have to calculate his advices
+            $firstIncompleteStep = $this->building->getFirstIncompleteStep([$this->step->id]);
+
+            if ($firstIncompleteStep instanceof Step) {
+                $incompleteSubStep = $this->building->getFirstIncompleteSubStep($firstIncompleteStep);
+            }
+
+            // no incomplete step & sub steps left, so the user finished the quick scan
+            // we should do a full recalculate now
+            if (is_null($incompleteSubStep) && is_null($firstIncompleteStep)) {
+                Log::debug("User has no incomplete step or sub step left to do, we recalculate now.");
+                $shouldDoFullRecalculate = true;
+            }
+        }
+
+        if ($shouldDoFullRecalculate) {
+            Log::debug("Dispatching full recalculate..");
+
+            Artisan::call(RecalculateForUser::class, [
+                '--user' => [$this->building->user->id],
+                '--input-source' => [$this->currentInputSource->short],
+                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
+                '--withOldAdvices' => true,
+            ]);
+
+        } else if ($this->building->hasCompletedQuickScan($this->masterInputSource)) {
+            $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
+
+            // since we are just re-calculating specific parts of the tool we do it without the old advices
+            // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
+            // but it moves the re-calculated advices to the proper column.
+            Artisan::call(RecalculateForUser::class, [
+                '--user' => [$this->building->user->id],
+                '--input-source' => [$this->currentInputSource->short],
+                '--step-shorts' => $stepShortsToRecalculate,
+                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
+                '--withOldAdvices' => false,
+            ]);
         }
 
         // TODO: @bodhi what is the use of this line

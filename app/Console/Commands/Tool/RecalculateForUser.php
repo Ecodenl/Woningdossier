@@ -29,7 +29,9 @@ class RecalculateForUser extends Command
     protected $signature = 'tool:recalculate 
                                             {--user=* : The ID\'s of the users }
                                             {--input-source=* : Input source shorts, will only use the given input sources. When left empty all input sources will be used.} 
-                                            {--cooperation= : Cooperation ID, use full to recalculate all users for a specific cooperation}';
+                                            {--cooperation= : Cooperation ID, use full to recalculate all users for a specific cooperation}
+                                            {--withOldAdvices=true}
+                                            ';
 
     /**
      * The console command description.
@@ -80,6 +82,8 @@ class RecalculateForUser extends Command
 
         $inputSources = InputSource::whereIn('short', $inputSourcesToRecalculate)->get();
 
+        $withOldAdvices = filter_var($this->option('withOldAdvices'), FILTER_VALIDATE_BOOL);
+
         Log::debug("tool:recalculate");
         /** @var User $user */
         foreach ($users as $user) {
@@ -100,7 +104,7 @@ class RecalculateForUser extends Command
                     $stepsToRecalculate = Step::expert()->where('short', '!=', 'heat-pump')->get();
 
                     foreach ($stepsToRecalculate as $stepToRecalculate) {
-                        $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $stepToRecalculate))
+                        $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $stepToRecalculate, $withOldAdvices))
                             ->onQueue(Queue::ASYNC);
                     }
 

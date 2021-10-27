@@ -25,12 +25,14 @@ class RecalculateStepForUser implements ShouldQueue
     public $user;
     public $inputSource;
     public $step;
+    public $withOldAdvices;
 
-    public function __construct(User $user, InputSource $inputSource, Step $step)
+    public function __construct(User $user, InputSource $inputSource, Step $step, bool $withOldAdvices = true)
     {
         $this->user = $user;
         $this->inputSource = $inputSource;
         $this->step = $step;
+        $this->withOldAdvices = $withOldAdvices;
     }
 
     /**
@@ -47,6 +49,10 @@ class RecalculateStepForUser implements ShouldQueue
         if (class_exists($stepClass)) {
             /** @var ToolHelper $stepHelperClass */
             $stepHelperClass = new $stepClass($this->user, $this->inputSource);
+            // if we dont want the old advices, turn it of.
+            if (!$this->withOldAdvices) {
+                $stepHelperClass = $stepHelperClass->withoutOldAdvices();
+            }
             $stepHelperClass->createValues()->createAdvices();
         }
     }

@@ -23,6 +23,108 @@ class ToolQuestionHelper {
     ];
 
     /**
+     * An array map of tool questions that should do a full recalculate on change.
+     */
+    const TOOL_QUESTION_FULL_RECALCULATE = [
+        'building-type' => [],
+        'building-type-category' => [],
+        'build-year' => [],
+        'building-layers' => [],
+        'monument' => [],
+        'energy-label' => [],
+        'surface' => [],
+        'resident-count' => [],
+        'thermostat-high' => [],
+        'thermostat-low' => [],
+        'hours-high' => [],
+        'heating-first-floor' => [],
+        'heating-second-floor' => [],
+        'water-comfort' => [],
+        'cook-type' => [],
+        'amount-gas' => [],
+        'amount-electricity' => [],
+        'heat-source' => [],
+        'heat-pump-type' => [],
+        'heat-pump-placed-date' => [],
+        'boiler-type' => [],
+        'building-heating-application' => [],
+        'heater-type' => [],
+        'crack-sealing-type' => [],
+    ];
+
+    /**
+     * Array map that will link the tool question short to matching step shorts; eg
+     * The tool question "current-floor-insulation" will also be questioned on the expert step "floor-insulation"
+     * Thus we will map it to floor insulation step.
+     */
+    const TOOL_QUESTION_STEP_MAP = [
+        'building-type' => [],
+        'building-type-category' => [],
+        'roof-type' => ['roof-insulation'],
+        'build-year' => [],
+        'building-layers' => [],
+        'monument' => [],
+        'energy-label' => [],
+        'surface' => [],
+        'building-data-comment-resident' => [],
+        'building-data-comment-coach' => [],
+        'resident-count' => [],
+        'thermostat-high' => [],
+        'thermostat-low' => [],
+        'hours-high' => [],
+        'heating-first-floor' => [],
+        'heating-second-floor' => [],
+        'water-comfort' => [],
+        'cook-type' => [],
+        'amount-gas' => [],
+        'amount-electricity' => [],
+        'usage-quick-scan-comment-resident' => [],
+        'usage-quick-scan-comment-coach' => [],
+        'remaining-living-years' => [],
+        'comfort-priority' => [],
+        'living-requirements-comment-resident' => [],
+        'living-requirements-comment-coach' => [],
+        'current-wall-insulation' => ['wall-insulation'],
+        'current-floor-insulation' => ['floor-insulation'],
+        'current-roof-insulation' => ['roof-insulation'],
+        'current-living-rooms-windows' => ['insulated-glazing'],
+        'current-sleeping-rooms-windows' => ['insulated-glazing'],
+        'heat-source' => [],
+        'heat-pump-type' => [],
+        'heat-pump-placed-date' => [],
+        'boiler-type' => [],
+        'boiler-placed-date' => ['high-efficiency-boiler'],
+        'building-heating-application' => [],
+        'heater-type' => [],
+        'ventilation-type' => ['ventilation'],
+        'ventilation-demand-driven' => ['ventilation'],
+        'ventilation-heat-recovery' => ['ventilation'],
+        'crack-sealing-type' => [],
+        'has-solar-panels' => ['solar-panels'],
+        'solar-panel-count' => ['solar-panels'],
+        'total-installed-power' => ['solar-panels'],
+        'solar-panels-placed-date' => ['solar-panels'],
+        'residential-status-element-comment-resident' => [],
+        'residential-status-element-comment-coach' => [],
+        'residential-status-service-comment-resident' => [],
+        'residential-status-service-comment-coach' => [],
+    ];
+
+    public static function stepShortsForToolQuestion(ToolQuestion $toolQuestion): array
+    {
+        return self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short];
+    }
+
+    /**
+     * Simple method to determine whether the given tool question should use the old advice on a recalculate
+     *
+     */
+    public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion): bool
+    {
+        return array_key_exists($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE);
+    }
+
+    /**
      * Simple method to resolve the save in to something we can use.
      *
      * @param ToolQuestion $toolQuestion

@@ -9,6 +9,7 @@ use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
+use App\Events\QuickScanNeedsRecalculate;
 use App\Events\Registered;
 use App\Events\StepCleared;
 use App\Events\StepDataHasBeenChanged;

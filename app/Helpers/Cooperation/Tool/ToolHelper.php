@@ -37,9 +37,11 @@ abstract class ToolHelper
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
 
-    public function withoutOldAdvices()
+    public function withoutOldAdvices(): ToolHelper
     {
         $this->withOldAdvices = false;
+
+        return $this;
     }
 
     /**

@@ -126,12 +126,6 @@ trait GetMyValuesTrait
                 }
             }
 
-            if ($this instanceof BuildingInsulatedGlazing){
-                Log::debug(__METHOD__);
-                Log::debug($wheres);
-                Log::debug($data);
-            }
-
             ($this)::withoutGlobalScope(VisibleScope::class)
                 ->allInputSources()
                 ->updateOrCreate(

@@ -184,7 +184,7 @@
                         <select id="building_features.facade_plastered_surface_id" class="form-input"
                                 name="building_features[facade_plastered_surface_id]">
                             @foreach($facadePlasteredSurfaces as $facadePlasteredSurface)
-                                <option @if(old('building_features.facade_plastered_surface_id', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'building_features.facade_plastered_surface_id'))  == $facadePlasteredSurface->id) selected="selected"
+                                <option @if(old('building_features.facade_plastered_surface_id', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'facade_plastered_surface_id'))  == $facadePlasteredSurface->id) selected="selected"
                                         @endif value="{{ $facadePlasteredSurface->id }}">
                                     {{ $facadePlasteredSurface->name }}
                                 </option>

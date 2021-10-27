@@ -20,6 +20,8 @@ abstract class ToolHelper
     /** @var \App\Models\Building */
     public $building;
 
+    public bool $withOldAdvices = true;
+
     /**
      * What values the controller expects.
      *
@@ -33,6 +35,21 @@ abstract class ToolHelper
         $this->inputSource = $inputSource;
         $this->building = $user->building;
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+    }
+
+    public function withoutOldAdvices()
+    {
+        $this->withOldAdvices = false;
+    }
+
+    /**
+     * Simple method to determine whether we should check the old advices.
+     *
+     * @return bool
+     */
+    public function shouldCheckOldAdvices(): bool
+    {
+        return $this->withOldAdvices;
     }
 
     public function setValues(array $values)

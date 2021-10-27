@@ -507,10 +507,10 @@ class Form extends Component
 
         // calculate to kg. (set gas and electricity to same unit)
         $co2Reductions = $totalGasSavings * Kengetallen::CO2_SAVING_GAS +
-                         $totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY;
+        $totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY;
 
         $co2Current = $usageGas * Kengetallen::CO2_SAVING_GAS +
-                      $usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY;
+        $usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY;
 
         // To calculate the new percentage, we need the new situation
         $co2New = $co2Current - $co2Reductions;
@@ -524,8 +524,22 @@ class Form extends Component
         // ---------------------------------------------------------------------
         // comfort
         // ---------------------------------------------------------------------
-        $comfort = UserActionPlanAdviceService::getComfortForBuilding($this->building);
-        $this->evaluateCalculationResult('comfort', $comfort);
+        $completeComfortCards = Arr::where($this->cards[UserActionPlanAdviceService::CATEGORY_COMPLETE],
+            function ($value, $key) {
+                return isset($value['comfort']);
+            }
+        );
+        $completeComfort = array_sum(Arr::pluck($completeComfortCards, 'comfort'));
+
+        $toDoComfortCards = Arr::where($this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO],
+            function ($value, $key) {
+                return isset($value['comfort']);
+            }
+        );
+        $toDoComfort = array_sum(Arr::pluck($toDoComfortCards, 'comfort'));
+
+        $totalComfort = $completeComfort + $toDoComfort;
+        $this->evaluateCalculationResult('comfort', $totalComfort);
     }
 
     public function reorder($category)
@@ -668,6 +682,7 @@ class Form extends Component
                     'subsidy' => $this->SUBSIDY_AVAILABLE,
                     'info' => nl2br($advisable->measure_info),
                     'route' => StepHelper::buildStepUrl($advisable->step),
+                    'comfort' => $advisable->configurations['comfort'] ?? 0,
                 ];
             } else {
                 // Custom measure has input source so we must fetch the advisable from the master input source
@@ -704,6 +719,7 @@ class Form extends Component
         // TODO: This will most likely come from the database at one point
         $calculationConditions = $this->calculationMap[$field];
         $value = 0;
+        // TODO: Can we use the evaluator for this?
         foreach ($calculationConditions as $calculationCondition) {
             $condition = $calculationCondition['condition'];
             // Upper range only

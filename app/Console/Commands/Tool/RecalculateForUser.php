@@ -86,6 +86,7 @@ class RecalculateForUser extends Command
         $withOldAdvices = filter_var($this->option('withOldAdvices'), FILTER_VALIDATE_BOOL);
         $stepShorts = $this->option('step-shorts');
 
+        dd($stepShorts, $withOldAdvices, $inputSourcesToRecalculate);
         Log::debug("tool:recalculate");
         /** @var User $user */
         foreach ($users as $user) {

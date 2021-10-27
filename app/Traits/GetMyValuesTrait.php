@@ -66,7 +66,7 @@ trait GetMyValuesTrait
     protected function saveForMasterInputSource()
     {
         $tablesToIgnore = [
-            'user_action_plan_advice_comments', 'step_comments',
+            'user_action_plan_advice_comments', 'step_comments', 'private_message_views',
         ];
 
         // Sometimes we won't need the master input source, so we will ignore these

@@ -1,6 +1,6 @@
 <div>
     {{-- Header row --}}
-    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3 px-3 lg:px-8" x-data="modal()">
+    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3" x-data="modal()">
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <h5 class="heading-5">
@@ -112,7 +112,7 @@
          @if(! \App\Helpers\HoomdossierSession::isUserObserving()) x-data="draggables()" @endif
          x-on:draggable-dragged.window="livewire.emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id, $event.detail.order)"
          x-on:draggable-trashed.window="livewire.emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'cardTrashed', $event.detail.from.getAttribute('data-category'), $event.detail.id)">
-        <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 px-3 lg:px-8">
+        <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10">
             @foreach($cards as $cardCategory => $cardCollection)
                 <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
                     @foreach($cardCollection as $order => $card)
@@ -232,7 +232,7 @@
             @endif
         </div>
     </div>
-    <div class="w-full grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-6 grid-flow-row gap-3 mt-5 px-3 py-8 lg:px-8 content-center border-t-2 border-b-2 border-blue-500 border-opacity-10">
+    <div class="w-full grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-6 grid-flow-row gap-3 mt-5 py-8 content-center border-t-2 border-b-2 border-blue-500 border-opacity-10">
         <div class="w-full flex flex-wrap items-center space-x-3">
             <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">
                 <i class="icon-sm icon-moneybag-orange"></i>

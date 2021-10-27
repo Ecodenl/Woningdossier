@@ -386,6 +386,8 @@ class Form extends Component
 
             $this->recalculate();
         }
+
+        $this->dispatchBrowserEvent('moved-card');
     }
 
     public function cardTrashed($fromCategory, $id)
@@ -412,6 +414,8 @@ class Form extends Component
 
             $this->recalculate();
         }
+
+        $this->dispatchBrowserEvent('trashed-card');
     }
 
     public function recalculate()

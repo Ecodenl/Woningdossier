@@ -117,6 +117,10 @@
                 <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
                     @foreach($cardCollection as $order => $card)
                         <div class="card" id="{{ $card['id'] }}"
+                             x-on:draggable-dragged.window="$el.classList.add('disabled');"
+                             x-on:draggable-trashed.window="$el.classList.add('disabled');"
+                             x-on:moved-card="$el.classList.remove('disabled');"
+                             x-on:trashed-card="$el.classList.remove('disabled');"
                              {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
                              x-bind="draggable"
                              @if(\App\Helpers\HoomdossierSession::isUserObserving()) draggable="false" @else draggable="true" @endif>

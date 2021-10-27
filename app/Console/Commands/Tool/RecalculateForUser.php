@@ -30,7 +30,8 @@ class RecalculateForUser extends Command
                                             {--user=* : The ID\'s of the users }
                                             {--input-source=* : Input source shorts, will only use the given input sources. When left empty all input sources will be used.} 
                                             {--cooperation= : Cooperation ID, use full to recalculate all users for a specific cooperation}
-                                            {--withOldAdvices=true}
+                                            {--withOldAdvices=true : If you want to keep the current categories, keep this set on true.}
+                                            {--step-shorts= : If you only want to recalculate specific steps, pass the shorts here.}
                                             ';
 
     /**
@@ -83,6 +84,7 @@ class RecalculateForUser extends Command
         $inputSources = InputSource::whereIn('short', $inputSourcesToRecalculate)->get();
 
         $withOldAdvices = filter_var($this->option('withOldAdvices'), FILTER_VALIDATE_BOOL);
+        $stepShorts = $this->option('step-shorts');
 
         Log::debug("tool:recalculate");
         /** @var User $user */
@@ -101,7 +103,11 @@ class RecalculateForUser extends Command
 
                     $stepsToRecalculateChain = [];
 
-                    $stepsToRecalculate = Step::expert()->where('short', '!=', 'heat-pump')->get();
+                    if (!empty($stepShorts)) {
+                        $stepsToRecalculate = Step::expert()->whereIn('short', $stepShorts)->get();
+                    } else {
+                        $stepsToRecalculate = Step::expert()->where('short', '!=', 'heat-pump')->get();
+                    }
 
                     foreach ($stepsToRecalculate as $stepToRecalculate) {
                         $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $stepToRecalculate, $withOldAdvices))
@@ -119,6 +125,8 @@ class RecalculateForUser extends Command
             }
         }
         $bar->finish();
+
+        $this->output->newLine();
     }
 
     private function isFirstTimeToolIsFilled(Building $building)

@@ -60,6 +60,8 @@ class RecalculateForUser extends Command
 
         $userIds = $this->option('user');
         $inputSourceShorts = $this->option('input-source');
+        // default to resident.
+        $inputSourcesToRecalculate = empty($inputSourceShorts) ? [InputSource::RESIDENT_SHORT] : $inputSourceShorts;
         $withOldAdvices = $this->option('with-old-advices');
         $stepShorts = $this->option('step-short');
         $cooperationId = $this->option('cooperation');
@@ -90,13 +92,6 @@ class RecalculateForUser extends Command
 
         $bar->setFormat("%message%\n %current%/%max% [%bar%] %percent:3s%%");
         $bar->setMessage('Queuing up the recalculate..');
-
-
-        $inputSourcesToRecalculate = [InputSource::RESIDENT_SHORT];
-
-        if (!empty($inputSourceShorts)) {
-            $inputSourcesToRecalculate = $this->option('input-source');
-        }
 
         $inputSources = InputSource::whereIn('short', $inputSourcesToRecalculate)->get();
 

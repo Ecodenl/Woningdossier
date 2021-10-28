@@ -262,29 +262,6 @@ class Form extends Component
             }
         }
 
-        // this is a key check, if the user has already completed the quick scan we should not do a full recalculate
-        // so we only to the checks within the if when the user has not finished the quick scan
-        // its also very important that this if happens BEFORE the sub step is finished.
-        if ($shouldDoFullRecalculate === false && $masterHasCompletedQuickScan === false) {
-            $firstIncompleteStep = null;
-            $incompleteSubStep = null;
-
-            // so no question was dirty that had to trigger a recalculate
-            // we will now check if the user just finished the last step, because if so we have to calculate his advices
-            $firstIncompleteStep = $this->building->getFirstIncompleteStep([], $this->masterInputSource);
-
-            if ($firstIncompleteStep instanceof Step) {
-                $incompleteSubStep = $this->building->getFirstIncompleteSubStep($firstIncompleteStep, [], $this->masterInputSource);
-            }
-
-            // no incomplete step & sub steps left, so the user finished the quick scan
-            // we should do a full recalculate now
-            if (is_null($incompleteSubStep) && is_null($firstIncompleteStep)) {
-                Log::debug("User has no incomplete step or sub step left to do, we recalculate now.");
-                $shouldDoFullRecalculate = true;
-            }
-        }
-
         if ($shouldDoFullRecalculate) {
             // We should do a full recalculate because some base value that has impact on every calculation is changed.
             Log::debug("Dispatching full recalculate..");
@@ -299,7 +276,6 @@ class Form extends Component
         } else if ($masterHasCompletedQuickScan) {
             // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
             $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
-
             // since we are just re-calculating specific parts of the tool we do it without the old advices
             // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
             // but it moves the re-calculated advices to the proper column.

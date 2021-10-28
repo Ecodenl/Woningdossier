@@ -26,8 +26,6 @@ class ToolQuestionHelper {
      * An array map of tool questions that should do a full recalculate on change.
      */
     const TOOL_QUESTION_FULL_RECALCULATE = [
-        'building-type',
-        'building-type-category',
         'thermostat-high',
         'thermostat-low',
         'hours-high',
@@ -70,7 +68,10 @@ class ToolQuestionHelper {
 
     public static function stepShortsForToolQuestion(ToolQuestion $toolQuestion): array
     {
-        return self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short];
+        if (isset(self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short])) {
+            return self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short];
+        }
+        return [];
     }
 
     /**

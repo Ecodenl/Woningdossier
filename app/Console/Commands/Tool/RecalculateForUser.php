@@ -6,17 +6,12 @@ use App\Helpers\Queue;
 use App\Jobs\ProcessRecalculate;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
-use App\Models\CompletedStep;
 use App\Models\Cooperation;
-use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\Notification;
 use App\Models\Step;
-use App\Models\ToolQuestion;
 use App\Models\User;
-use App\Services\ExampleBuildingService;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
 class RecalculateForUser extends Command

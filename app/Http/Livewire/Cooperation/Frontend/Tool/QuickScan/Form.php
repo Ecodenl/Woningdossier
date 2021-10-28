@@ -262,6 +262,8 @@ class Form extends Component
             }
         }
 
+        // the INITIAL calculation will be handled by the CompletedSubStepObserver
+
         if ($shouldDoFullRecalculate) {
             // We should do a full recalculate because some base value that has impact on every calculation is changed.
             Log::debug("Dispatching full recalculate..");

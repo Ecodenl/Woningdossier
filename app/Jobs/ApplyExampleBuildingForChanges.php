@@ -148,11 +148,11 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         $buildYearToolQuestion = ToolQuestion::findByShort('build-year');
         // get the sub step of the build year, that way we can get the next sub step for it
         // if the next sub step is completed we wont override the user his data with example building
-        $subStepForRoofType = $buildYearToolQuestion->subSteps()->orderBy('order')->first();
+        $subStepForBuildYear = $buildYearToolQuestion->subSteps()->orderBy('order')->first();
 
         // the sub step that comes after the build year question sub step
         // if this one is completed we wont override the user data with the example building data
-        $nextSubStep = SubStep::where('order', '>', $subStepForRoofType->order)->orderBy('order')->first();
+        $nextSubStep = SubStep::where('order', '>', $subStepForBuildYear->order)->orderBy('order')->first();
 
         if ($this->building->completedSubSteps()->forInputSource($this->masterInputSource)->where('sub_step_id', $nextSubStep->id)->doesntExist()) {
             Log::debug(__CLASS__. ' Override user data with example building data.');

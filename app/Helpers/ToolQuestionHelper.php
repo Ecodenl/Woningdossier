@@ -26,30 +26,21 @@ class ToolQuestionHelper {
      * An array map of tool questions that should do a full recalculate on change.
      */
     const TOOL_QUESTION_FULL_RECALCULATE = [
-        'building-type' => [],
-        'building-type-category' => [],
-        'build-year' => [],
-        'building-layers' => [],
-        'monument' => [],
-        'energy-label' => [],
-        'surface' => [],
-        'resident-count' => [],
-        'thermostat-high' => [],
-        'thermostat-low' => [],
-        'hours-high' => [],
-        'heating-first-floor' => [],
-        'heating-second-floor' => [],
-        'water-comfort' => [],
-        'cook-type' => [],
-        'amount-gas' => [],
-        'amount-electricity' => [],
-        'heat-source' => [],
-        'heat-pump-type' => [],
-        'heat-pump-placed-date' => [],
-        'boiler-type' => [],
-        'building-heating-application' => [],
-        'heater-type' => [],
-        'crack-sealing-type' => [],
+        'building-type',
+        'building-type-category',
+        'build-year',
+        'building-layers',
+        'monument',
+        'surface',
+        'resident-count',
+        'thermostat-high',
+        'thermostat-low',
+        'hours-high',
+        'heating-first-floor',
+        'heating-second-floor',
+        'water-comfort',
+        'amount-gas',
+        'amount-electricity',
     ];
 
     /**
@@ -121,7 +112,7 @@ class ToolQuestionHelper {
      */
     public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion): bool
     {
-        return array_key_exists($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE);
+        return array_key_exists($toolQuestion->short, array_flip(self::TOOL_QUESTION_FULL_RECALCULATE));
     }
 
     /**

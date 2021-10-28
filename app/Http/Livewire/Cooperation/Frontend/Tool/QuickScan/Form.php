@@ -284,16 +284,18 @@ class Form extends Component
         }
 
         if ($shouldDoFullRecalculate) {
+            // We should do a full recalculate because some base value that has impact on every calculation is changed.
             Log::debug("Dispatching full recalculate..");
 
             Artisan::call(RecalculateForUser::class, [
-                '--user' => [$this->building->user->id],
+                '--user' => $this->building->user->id,
                 '--input-source' => [$this->currentInputSource->short],
                 // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
-                '--withOldAdvices' => true,
+                '--with-old-advices' => true,
             ]);
 
         } else if ($this->building->hasCompletedQuickScan($this->masterInputSource)) {
+            // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
             $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
 
             // since we are just re-calculating specific parts of the tool we do it without the old advices
@@ -302,9 +304,9 @@ class Form extends Component
             Artisan::call(RecalculateForUser::class, [
                 '--user' => [$this->building->user->id],
                 '--input-source' => [$this->currentInputSource->short],
-                '--step-shorts' => $stepShortsToRecalculate,
+                '--step-short' => $stepShortsToRecalculate,
                 // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
-                '--withOldAdvices' => false,
+                '--with-old-advices' => false,
             ]);
         }
 

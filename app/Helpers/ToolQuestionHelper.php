@@ -23,6 +23,67 @@ class ToolQuestionHelper {
     ];
 
     /**
+     * An array map of tool questions that should do a full recalculate on change.
+     */
+    const TOOL_QUESTION_FULL_RECALCULATE = [
+        'thermostat-high',
+        'thermostat-low',
+        'hours-high',
+        'heating-first-floor',
+        'heating-second-floor',
+        'surface',
+        'resident-count',
+        'water-comfort',
+        'amount-gas',
+        'amount-electricity',
+    ];
+
+    /**
+     * Array map that will link the tool question short to matching step shorts; eg
+     * The tool question "current-floor-insulation" will also be questioned on the expert step "floor-insulation"
+     * Thus we will map it to floor insulation step.
+     */
+    const TOOL_QUESTION_STEP_MAP = [
+        'roof-type' => ['roof-insulation'],
+        'water-comfort' => ['heater'],
+        'cook-type' => ['high-efficiency-boiler'],
+        'current-wall-insulation' => ['wall-insulation'],
+        'current-floor-insulation' => ['floor-insulation'],
+        'current-roof-insulation' => ['roof-insulation'],
+        'current-living-rooms-windows' => ['insulated-glazing'],
+        'current-sleeping-rooms-windows' => ['insulated-glazing'],
+        'heat-source' => ['high-efficiency-boiler'],
+        'boiler-type' => ['high-efficiency-boiler'],
+        'boiler-placed-date' => ['high-efficiency-boiler'],
+        'heater-type' => ['heater'],
+        'ventilation-type' => ['ventilation'],
+        'ventilation-demand-driven' => ['ventilation'],
+        'ventilation-heat-recovery' => ['ventilation'],
+        'crack-sealing-type' => ['ventilation'],
+        'has-solar-panels' => ['solar-panels'],
+        'solar-panel-count' => ['solar-panels'],
+        'total-installed-power' => ['solar-panels'],
+        'solar-panels-placed-date' => ['solar-panels'],
+    ];
+
+    public static function stepShortsForToolQuestion(ToolQuestion $toolQuestion): array
+    {
+        if (isset(self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short])) {
+            return self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short];
+        }
+        return [];
+    }
+
+    /**
+     * Simple method to determine whether the given tool question should use the old advice on a recalculate
+     *
+     */
+    public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion): bool
+    {
+        return in_array($toolQuestion->short,self::TOOL_QUESTION_FULL_RECALCULATE, true);
+    }
+
+    /**
      * Simple method to resolve the save in to something we can use.
      *
      * @param ToolQuestion $toolQuestion

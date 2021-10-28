@@ -2,13 +2,18 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Console\Commands\Tool\RecalculateForUser;
+use App\Events\QuickScanNeedsRecalculate;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
+use App\Helpers\Queue;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
+use App\Jobs\ProcessRecalculate;
+use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
@@ -16,6 +21,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
@@ -225,6 +231,11 @@ class Form extends Component
             }
         }
 
+
+        $stepShortsToRecalculate = [];
+        $shouldDoFullRecalculate = false;
+
+        $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
@@ -238,10 +249,45 @@ class Form extends Component
                         // this *can't* handle a checkbox / multiselect answer.
                         $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
                     }
+
+                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion) && $masterHasCompletedQuickScan) {
+                        Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
+                        $shouldDoFullRecalculate = true;
+                    }
+
+                    // get the expert step equivalent
+                    // we will filter out duplicates later on.
+                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion));
                 }
             }
+        }
 
-            StepDataHasBeenChanged::dispatch($this->step, $this->building, Hoomdossier::user());
+        // the INITIAL calculation will be handled by the CompletedSubStepObserver
+
+        if ($shouldDoFullRecalculate) {
+            // We should do a full recalculate because some base value that has impact on every calculation is changed.
+            Log::debug("Dispatching full recalculate..");
+
+            Artisan::call(RecalculateForUser::class, [
+                '--user' => [$this->building->user->id],
+                '--input-source' => [$this->currentInputSource->short],
+                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
+                '--with-old-advices' => true,
+            ]);
+
+        } else if ($masterHasCompletedQuickScan) {
+            // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
+            $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
+            // since we are just re-calculating specific parts of the tool we do it without the old advices
+            // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
+            // but it moves the re-calculated advices to the proper column.
+            Artisan::call(RecalculateForUser::class, [
+                '--user' => [$this->building->user->id],
+                '--input-source' => [$this->currentInputSource->short],
+                '--step-short' => $stepShortsToRecalculate,
+                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
+                '--with-old-advices' => false,
+            ]);
         }
 
         // TODO: @bodhi what is the use of this line

@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\SubStep;
@@ -16,6 +17,8 @@ class Buttons extends Component
     private $account;
     /** @var Building */
     public $building;
+    public $masterInputSource;
+
     public $step;
     public $nextStep;
     public $previousStep;
@@ -38,6 +41,7 @@ class Buttons extends Component
         $this->account = $request->user();
         $this->building = HoomdossierSession::getBuilding(true);
 
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         // set default steps, the checks will come later on.
         $this->step = $step;
         $this->previousStep = $step;
@@ -170,12 +174,12 @@ class Buttons extends Component
 
         if (! $this->nextStep instanceof Step) {
             // No next step set, let's see if there are any steps left incomplete
-            $this->firstIncompleteStep = $this->building->getFirstIncompleteStep([$this->step->id]);
+            $this->firstIncompleteStep = $this->building->getFirstIncompleteStep([$this->step->id], $this->masterInputSource);
         }
 
         // There are incomplete steps left, set the sub step
         if ($this->firstIncompleteStep instanceof Step) {
-            $this->firstIncompleteSubStep = $this->building->getFirstIncompleteSubStep($this->firstIncompleteStep);
+            $this->firstIncompleteSubStep = $this->building->getFirstIncompleteSubStep($this->firstIncompleteStep, [], $this->masterInputSource);
         }
     }
 }

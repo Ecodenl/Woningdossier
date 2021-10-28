@@ -6,17 +6,12 @@ use App\Helpers\Queue;
 use App\Jobs\ProcessRecalculate;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
-use App\Models\CompletedStep;
 use App\Models\Cooperation;
-use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\Notification;
 use App\Models\Step;
-use App\Models\ToolQuestion;
 use App\Models\User;
-use App\Services\ExampleBuildingService;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
 class RecalculateForUser extends Command
@@ -29,14 +24,16 @@ class RecalculateForUser extends Command
     protected $signature = 'tool:recalculate 
                                             {--user=* : The ID\'s of the users }
                                             {--input-source=* : Input source shorts, will only use the given input sources. When left empty all input sources will be used.} 
-                                            {--cooperation= : Cooperation ID, use full to recalculate all users for a specific cooperation}';
+                                            {--cooperation= : Expects a cooperation ID, will be used to recalculate each user from the cooperation, can be combined with step short, input source and old advice params.}
+                                            {--with-old-advices=true : If you want to keep the current categories, keep this set on true.}
+                                            {--step-short=* : If you only want to recalculate specific steps, pass the shorts here.}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Calculate the tool for a given user, will create new user action plan advices.';
+    protected $description = 'Command to calculate / recalculate advices for a user or cooperation';
 
     /**
      * Create a new command instance.
@@ -55,15 +52,35 @@ class RecalculateForUser extends Command
      */
     public function handle()
     {
-        if (!is_null($this->option('cooperation'))) {
-            if (!Cooperation::find($this->option('cooperation'))) {
-                $this->error('Cooperation not found!');
 
-                return;
+        $userIds = $this->option('user');
+        $inputSourceShorts = $this->option('input-source');
+        // default to resident.
+        $inputSourcesToRecalculate = empty($inputSourceShorts) ? [InputSource::RESIDENT_SHORT] : $inputSourceShorts;
+        $withOldAdvices = $this->option('with-old-advices');
+        $stepShorts = $this->option('step-short');
+        $cooperationId = $this->option('cooperation');
+
+        if (!is_null($cooperationId)) {
+            $cooperation = Cooperation::find($cooperationId);
+            if (!$cooperation instanceof Cooperation) {
+                $this->error("No cooperation found for ID {$cooperationId}");
+                return 0;
+            } else {
+                $this->info("Calculating each user for cooperation {$cooperation->name}...");
             }
-            $users = User::forMyCooperation($this->option('cooperation'))->with('building')->get();
+            $users = User::forMyCooperation($cooperationId)->with('building')->get();
         } else {
-            $users = User::findMany($this->option('user'))->load('building');
+            if (empty($userIds)) {
+                $this->error("No user id's or cooperation id has been given..");
+                return 0;
+            }
+            $users = User::findMany($userIds)->load('building');
+        }
+
+        if ($users->isEmpty()) {
+            $this->error("No users found...");
+            return 0;
         }
 
         $bar = $this->output->createProgressBar($users->count());
@@ -71,14 +88,9 @@ class RecalculateForUser extends Command
         $bar->setFormat("%message%\n %current%/%max% [%bar%] %percent:3s%%");
         $bar->setMessage('Queuing up the recalculate..');
 
-
-        $inputSourcesToRecalculate = [InputSource::RESIDENT_SHORT];
-
-        if (!empty($this->option('input-source'))) {
-            $inputSourcesToRecalculate = $this->option('input-source');
-        }
-
         $inputSources = InputSource::whereIn('short', $inputSourcesToRecalculate)->get();
+
+        $withOldAdvices = filter_var($withOldAdvices, FILTER_VALIDATE_BOOL);
 
         Log::debug("tool:recalculate");
         /** @var User $user */
@@ -97,10 +109,14 @@ class RecalculateForUser extends Command
 
                     $stepsToRecalculateChain = [];
 
-                    $stepsToRecalculate = Step::expert()->where('short', '!=', 'heat-pump')->get();
+                    if (!empty($stepShorts)) {
+                        $stepsToRecalculate = Step::expert()->whereIn('short', $stepShorts)->get();
+                    } else {
+                        $stepsToRecalculate = Step::expert()->where('short', '!=', 'heat-pump')->get();
+                    }
 
                     foreach ($stepsToRecalculate as $stepToRecalculate) {
-                        $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $stepToRecalculate))
+                        $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $stepToRecalculate, $withOldAdvices))
                             ->onQueue(Queue::ASYNC);
                     }
 
@@ -115,6 +131,8 @@ class RecalculateForUser extends Command
             }
         }
         $bar->finish();
+
+        $this->output->newLine();
     }
 
     private function isFirstTimeToolIsFilled(Building $building)

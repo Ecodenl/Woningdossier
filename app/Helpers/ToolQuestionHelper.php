@@ -106,7 +106,7 @@ class ToolQuestionHelper {
      */
     public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion): bool
     {
-        return array_key_exists($toolQuestion->short, array_flip(self::TOOL_QUESTION_FULL_RECALCULATE));
+        return in_array($toolQuestion->short,self::TOOL_QUESTION_FULL_RECALCULATE, true);
     }
 
     /**

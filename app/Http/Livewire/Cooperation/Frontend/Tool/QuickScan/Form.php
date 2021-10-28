@@ -269,12 +269,12 @@ class Form extends Component
             $firstIncompleteStep = null;
             $incompleteSubStep = null;
 
-            // so no question were dirty that had to trigger a recalculate
+            // so no question was dirty that had to trigger a recalculate
             // we will now check if the user just finished the last step, because if so we have to calculate his advices
-            $firstIncompleteStep = $this->building->getFirstIncompleteStep([$this->step->id]);
+            $firstIncompleteStep = $this->building->getFirstIncompleteStep([], $this->masterInputSource);
 
             if ($firstIncompleteStep instanceof Step) {
-                $incompleteSubStep = $this->building->getFirstIncompleteSubStep($firstIncompleteStep);
+                $incompleteSubStep = $this->building->getFirstIncompleteSubStep($firstIncompleteStep, [], $this->masterInputSource);
             }
 
             // no incomplete step & sub steps left, so the user finished the quick scan

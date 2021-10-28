@@ -269,7 +269,7 @@ class Form extends Component
             Log::debug("Dispatching full recalculate..");
 
             Artisan::call(RecalculateForUser::class, [
-                '--user' => $this->building->user->id,
+                '--user' => [$this->building->user->id],
                 '--input-source' => [$this->currentInputSource->short],
                 // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
                 '--with-old-advices' => true,

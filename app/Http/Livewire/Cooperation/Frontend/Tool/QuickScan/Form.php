@@ -234,6 +234,8 @@ class Form extends Component
 
         $stepShortsToRecalculate = [];
         $shouldDoFullRecalculate = false;
+
+        $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
@@ -248,7 +250,7 @@ class Form extends Component
                         $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
                     }
 
-                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion)) {
+                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion) && $masterHasCompletedQuickScan) {
                         Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
                         $shouldDoFullRecalculate = true;
                     }
@@ -263,7 +265,7 @@ class Form extends Component
         // this is a key check, if the user has already completed the quick scan we should not do a full recalculate
         // so we only to the checks within the if when the user has not finished the quick scan
         // its also very important that this if happens BEFORE the sub step is finished.
-        if ($shouldDoFullRecalculate === false && $this->building->hasCompletedQuickScan($this->masterInputSource) === false) {
+        if ($shouldDoFullRecalculate === false && $masterHasCompletedQuickScan === false) {
             $firstIncompleteStep = null;
             $incompleteSubStep = null;
 
@@ -294,7 +296,7 @@ class Form extends Component
                 '--with-old-advices' => true,
             ]);
 
-        } else if ($this->building->hasCompletedQuickScan($this->masterInputSource)) {
+        } else if ($masterHasCompletedQuickScan) {
             // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
             $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
 

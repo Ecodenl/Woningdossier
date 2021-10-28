@@ -120,7 +120,7 @@ class FloorInsulationHelper extends ToolHelper
                 ->first();
 
             // don't save if not applicable
-            if ($floorInsulationValue instanceof ElementValue && $floorInsulationValue->calculate_value < 5) {
+            if ($floorInsulationValue instanceof ElementValue) {
                 $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
                 $results = FloorInsulation::calculate($this->building, $this->inputSource, $userEnergyHabit, $this->getValues());
 

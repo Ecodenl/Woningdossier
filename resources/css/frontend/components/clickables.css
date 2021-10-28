@@ -134,3 +134,7 @@ a.in-text {
 .has-btn:focus ~ button {
     @apply opacity-20;
 }
+
+#app-body .disabled {
+    @apply cursor-not-allowed bg-gray bg-opacity-50 pointer-events-none;
+}

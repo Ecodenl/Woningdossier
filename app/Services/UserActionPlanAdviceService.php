@@ -8,14 +8,10 @@ use App\Helpers\Number;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\Building;
-use App\Models\BuildingElement;
-use App\Models\BuildingService;
-use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
-use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\ToolQuestion;
@@ -25,7 +21,6 @@ use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService
@@ -386,30 +381,28 @@ class UserActionPlanAdviceService
     {
         $building = $userActionPlanAdvice->user->building;
 
-        // Chance of a building not being set is small, but not impossible!
-        if ($building instanceof Building && $building->hasAnsweredExpertQuestion()) {
-            // we don't need to check further, if the building has answered an expert question, then it will be shown
-            $visible = true;
-        } else {
-            // It's always going to be visible by default. Further logic follows.
-            $visible = true;
+        // It's always going to be visible by default. Further logic follows.
+        $visible = true;
 
-            $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
 
-            if ($advisable instanceof MeasureApplication) {
-                if ($advisable->measure_type === MeasureApplication::MAINTENANCE) {
-                    // If it's maintenance, change logic. We never show maintenance, with 2 exceptions (of course...)
-                    $visible = false;
+        if ($advisable instanceof MeasureApplication && $advisable->measure_type === MeasureApplication::MAINTENANCE) {
+            // If it's maintenance, change logic. We never show maintenance in the quickscan, only in expert
+            $visible = false;
 
-                    $shorts = ['replace-tiles', 'replace-roof-insulation'];
+            if ($building instanceof Building && $building->hasAnsweredExpertQuestion()) {
+                // Building has answered an expert question, so it's visible, with 2 exceptions...
+                $visible = true;
 
-                    // Logic is simple for these 2 exceptions. If it's within 5 years, then we _do_ show it
-                    if (in_array($advisable->short, $shorts) && !is_null($userActionPlanAdvice->year)) {
-                        $visible = $userActionPlanAdvice->year - now()->format('Y') <= 5;
-                    }
+                $shorts = ['replace-tiles', 'replace-roof-insulation'];
+
+                // Logic is simple for these 2 exceptions. If it's within 5 years, then we _do_ show it
+                if (in_array($advisable->short, $shorts) && ! is_null($userActionPlanAdvice->year)) {
+                    $visible = $userActionPlanAdvice->year - now()->format('Y') <= 5;
                 }
             }
         }
+
         $userActionPlanAdvice->visible = $visible;
     }
 

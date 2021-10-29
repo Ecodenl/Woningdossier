@@ -10,6 +10,7 @@ use App\Models\Questionnaire;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use App\Policies\BuildingPolicy;
 use App\Policies\CooperationPolicy;
 use App\Policies\FileStoragePolicy;
@@ -17,6 +18,7 @@ use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
 use App\Policies\SubStepPolicy;
 use App\Policies\ToolQuestionPolicy;
+use App\Policies\UserActionPlanAdvicePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -37,6 +39,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Building::class => BuildingPolicy::class,
         FileStorage::class => FileStoragePolicy::class,
+        UserActionPlanAdvice::class => UserActionPlanAdvicePolicy::class,
     ];
 
     /**

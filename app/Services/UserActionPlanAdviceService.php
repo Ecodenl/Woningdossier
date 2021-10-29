@@ -8,14 +8,10 @@ use App\Helpers\Number;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\Building;
-use App\Models\BuildingElement;
-use App\Models\BuildingService;
-use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
-use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\ToolQuestion;
@@ -25,7 +21,6 @@ use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService

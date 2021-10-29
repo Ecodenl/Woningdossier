@@ -44,8 +44,20 @@ class RoofType extends Model
         'rounded-roof' => 'pitched',
         'straw-roof' => 'pitched',
     ];
+
     const SECONDARY_ROOF_TYPE_SHORTS = [
         'pitched', 'flat', 'none',
+    ];
+
+    const MEASURE_MAP = [
+        'pitched' => [
+            'roof-insulation-flat-current' => 'roof-insulation-pitched-inside',
+            'roof-insulation-flat-replace-current' => 'roof-insulation-pitched-replace-tiles',
+        ],
+        'flat' => [
+            'roof-insulation-pitched-inside' => 'roof-insulation-flat-current',
+            'roof-insulation-pitched-replace-tiles' => 'roof-insulation-flat-replace-current',
+        ],
     ];
 
     protected $translatable = [

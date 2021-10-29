@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingRoofType;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
 use App\Models\RoofType;
 
 class BuildingFeatureObserver
@@ -66,10 +67,29 @@ class BuildingFeatureObserver
                             }
 
                             if ($exampleBuildingRoofType instanceof BuildingRoofType) {
+                                $extra = $exampleBuildingRoofType->extra;
+                                $measureApplicationId = $extra['measure_application_id'] ?? null;
+                                $measureApplication = MeasureApplication::find($measureApplicationId);
+
+                                // Check the measure application from the extra data to ensure we set the correct
+                                // measure
+                                if ($measureApplication instanceof MeasureApplication) {
+                                    // We check the old measure short with the new roof type to link,
+                                    // which will give us the map to a potential new measure
+                                    $newShort = RoofType::MEASURE_MAP[$roofTypeToLink->short][$measureApplication->short] ?? null;
+
+                                    $measureApplication = MeasureApplication::findByShort($newShort);
+
+                                    if ($measureApplication instanceof MeasureApplication) {
+                                        $extra['measure_application_id'] = $measureApplication->id;
+                                    }
+                                }
+
                                 $exampleBuildingRoofType->replicate()
                                     ->fill([
                                         'input_source_id' => $currentInputSource->id,
                                         'roof_type_id' => $roofTypeToLink->id,
+                                        'extra' => $extra,
                                     ])
                                     ->save();
                             } else {

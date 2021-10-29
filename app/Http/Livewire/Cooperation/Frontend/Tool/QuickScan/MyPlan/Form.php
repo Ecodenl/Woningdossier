@@ -18,12 +18,14 @@ use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Database\Eloquent\Collection;
 use App\Helpers\Arr;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Form extends Component
 {
+    use AuthorizesRequests;
     public array $cards = [
         UserActionPlanAdviceService::CATEGORY_COMPLETE => [
 
@@ -575,6 +577,8 @@ class Form extends Component
         $advice = UserActionPlanAdvice::allInputSources()
             ->withoutGlobalScope(VisibleScope::class)
             ->find($id);
+
+        $this->authorize('view', $advice);
 
         // If it's a custom measure, we need to get the sibling because the custom measure also has an input source
         if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {

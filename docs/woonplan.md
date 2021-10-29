@@ -32,7 +32,27 @@ be fully recalculated. This means that besides investment/cost values, their cat
 also be recalculated. The advices that have no changes (from updated questions) will not be re-categorized.
 
 An example: Say a user has filled in that his wall insulation is good, the calculations will categorize 
-the advice to "complete". If a coach then notices there is no insulation at all, and changes this question,
-the advice will be re-categorized to "to-do", to reflect the new made change. Another advice, say glass 
-insulation, which was positioned in category "complete" by the user, will still be in the category "complete".
+the advice to `complete`. If a coach then notices there is no insulation at all, and changes this question,
+the advice will be re-categorized to `to-do`, to reflect the new made change. Another advice, say glass 
+insulation, which was positioned in category `complete` by the user, will still be in the category `complete`.
 
+#### Mapping
+
+Categories and visibility are calculated for each advice separately. Visibility has a relatively 
+easy mapping; Always visible, except for maintenance measures. Maintenance is only visible if 
+the user has answered an expert question, and for roof maintenance measures, they are only visible if the
+measure year is within 5 years. 
+
+Category mapping is more complex and is on a measure-basis. The most measures are mapped as being "if you 
+have it, it's `complete`, else `to-do`". An example is insulation; insulation is `complete` if the user
+has any insulation, and `to-do` if the user has no or unknown insulation. 
+
+Some measures have custom logic:
+- Glass is mapped to `complete` if the glass type is HR++ or better, else `to-do`.
+- HR-Boiler is mapped to `complete` if it was placed less than 10 years ago, `later` if between 10 and 13
+years, and `to-do` if older than 13 years.
+- Solar panels are mapped to `complete` if the user has panels and no placing year, or less than 25 years ago, 
+and `to-do` if the user has no panels or if the placing year is above 25.
+- Ventilation is the most complex; if the user has natural ventilation, it is always `to-do`.
+If the user has mechanical ventilation, we check if it is demand driven. If so, `complete`, else `to-do`.
+For the other two, we check the heat recovery. If the user has heat recovery, `complete`, else `to-do`.

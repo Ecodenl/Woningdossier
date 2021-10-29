@@ -29,13 +29,14 @@ class EnsureQuickScanCompleted
         }
 
         if ($building instanceof Building) {
-            if ($building->hasCompletedQuickScan(InputSource::findByShort(InputSource::MASTER_SHORT))) {
+            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+            if ($building->hasCompletedQuickScan($masterInputSource)) {
                 return $next($request);
             } else {
                 $firstIncompleteStep = $building->getFirstIncompleteStep();
 
                 if ($firstIncompleteStep instanceof Step) {
-                    $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep);
+                    $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, [], $masterInputSource);
 
                     if ($firstIncompleteSubStep instanceof SubStep) {
                         return redirect()->route('cooperation.frontend.tool.quick-scan.index', [

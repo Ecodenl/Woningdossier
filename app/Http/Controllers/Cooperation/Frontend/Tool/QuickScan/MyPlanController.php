@@ -20,11 +20,12 @@ class MyPlanController extends Controller
 
         // For quick testing purposes, we really don't want to run through the tool each time
         if (! app()->environment('local')) {
-            $firstIncompleteStep = $building->getFirstIncompleteStep();
+            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+            $firstIncompleteStep = $building->getFirstIncompleteStep([], $masterInputSource);
 
             // There are incomplete steps left, set the sub step
             if ($firstIncompleteStep instanceof Step) {
-                $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep);
+                $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, [], $masterInputSource);
 
                 if ($firstIncompleteSubStep instanceof SubStep) {
                     return redirect()->route('cooperation.frontend.tool.quick-scan.index', [

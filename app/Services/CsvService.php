@@ -90,7 +90,7 @@ class CsvService
             $createdAt = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
             $mostRecentStatus = $building->getMostRecentBuildingStatus();
-            $buildingStatus = $mostRecentStatus->status->name;
+            $buildingStatus = optional($mostRecentStatus)->status->name ?? '';
             $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
             $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
             $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))

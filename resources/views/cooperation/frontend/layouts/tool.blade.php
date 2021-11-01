@@ -186,15 +186,10 @@
 @if(RouteLogic::inExpertTool(Route::currentRouteName()))
     @push('js')
         <script>
-
-            function removeError(input) {
-                input.parents('.has-error').removeClass('has-error');
-                input.parents('.form-group').next('.help-block').remove()
-            }
-
             $('input').keypress(function (event) {
                 // get the current keycode
                 var keycode = (event.keyCode ? event.keyCode : event.which);
+                // Enter
                 if (keycode === 13) {
                     event.preventDefault();
                     return false;

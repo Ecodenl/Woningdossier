@@ -10,6 +10,17 @@ use Illuminate\Support\Str;
  */
 class ExampleBuildingHelper
 {
+    /**
+     * All relevant sub steps for example buildings. ! This assumes the NL slug !
+     *
+     * @var array
+     */
+    const RELEVANT_SUB_STEPS = [
+        'wat-voor-woning',
+        'woning-type',
+        'bouwjaar-en-oppervlak',
+    ];
+
     const DECIMALS_BY_NAME = [
         2 => [
             // Surfaces

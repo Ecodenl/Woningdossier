@@ -96,7 +96,8 @@
                         @endif
 
 
-                        <div class="w-full divide-y divide-blue-500 divide-opacity-50" id="main-tab" x-ref="main-tab">
+                        <div class="w-full divide-y divide-blue-500 divide-opacity-50" id="main-tab" x-ref="main-tab"
+                             x-show="currentTab === $el">
                             <div class="px-4 py-8">
                                 <h3 class="heading-3 inline-block">
                                     @yield('step_title', $currentSubStep->name ?? $currentStep->name ?? '')

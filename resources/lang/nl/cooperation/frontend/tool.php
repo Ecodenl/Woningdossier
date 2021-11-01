@@ -33,9 +33,26 @@ return [
             \App\Services\UserActionPlanAdviceService::CATEGORY_LATER => 'Later uitvoeren',
         ],
         'cards' => [
-            'hidden' => [
-                'title' => 'Maatregelen toevoegen',
-                'help' => 'Klik op een maatregel om deze weer toe te voegen aan het woonplan.',
+            'add-advices' => [
+                'header' => 'Selecteer een optie',
+                'options' => [
+                    'trashed' => [
+                        'button' => 'Verwijderde maatregel terugzetten',
+                        'title' => 'Maatregelen toevoegen',
+                        'help' => 'Klik op een maatregel om deze weer toe te voegen aan het woonplan.',
+                    ],
+                    'expert' => [
+                        'button' => 'Standaard maatregel toevoegen',
+                        'title' => 'Naar een verdiepingsvraag',
+                        'help' => 'Ga hier verder naar een verdiepingsvraag.',
+                    ],
+                    'add' => [
+                        'button' => 'Eigen maatregel toevoegen',
+                    ],
+                ],
+
+
+
             ],
             'see-info' => 'Zie info',
             'subsidy' => [

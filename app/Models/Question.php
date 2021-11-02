@@ -104,13 +104,6 @@ class Question extends Model
         return $this->hasMany(QuestionOption::class);
     }
 
-    public function getQuestionAnswersForInputSource(InputSource $inputSource)
-    {
-        return $this
-            ->questionAnswers()
-            ->forInputSource($inputSource)->get();
-    }
-
     /**
      * Check if a question has a question option.
      *

@@ -51,14 +51,16 @@ class QuestionnaireController extends Controller
             }
         }
 
-        $building->user->completeQuestionnaire($questionnaire);
+        $currentInputSource = HoomdossierSession::getInputSource(true);
+
+        $building->user->completeQuestionnaire($questionnaire, $currentInputSource);
 
         // Next url will only be defined if we come from the quick scan, so we can go back to the quick scan
         if ($request->has('nextUrl')) {
             return redirect($request->input('nextUrl'));
         }
 
-        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $questionnaire->step, $questionnaire);
+        $nextStep = StepHelper::getNextStep($building, $currentInputSource, $questionnaire->step, $questionnaire);
         $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {

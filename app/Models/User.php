@@ -469,13 +469,22 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function completedQuestionnaires(InputSource $inputSource = null)
+    public function completedQuestionnaires()
     {
-        // global scopes wont work on the intermediary table
-        $inputSource = is_null($inputSource) ? HoomdossierSession::getInputSource(true) : $inputSource;
-
         return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires')
-            ->wherePivot('input_source_id', $inputSource->id);
+            ->using(CompletedQuestionnaire::class);
+    }
+
+    /**
+     * Retrieve the completed questionnaires from the user for a specific input source.
+     *
+     * @param  \App\Models\InputSource  $source
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function completedQuestionnairesForSource(InputSource $source)
+    {
+        return $this->completedQuestionnaires()->wherePivot('input_source_id', $source->id);
     }
 
     /**
@@ -487,7 +496,7 @@ class User extends Model implements AuthorizableContract
     {
         if ($inputSource instanceof InputSource) {
             return $this
-                ->completedQuestionnaires($inputSource)
+                ->completedQuestionnairesForSource($inputSource)
                 ->where('questionnaire_id', $questionnaire->id)
                 ->exists();
         }
@@ -500,13 +509,12 @@ class User extends Model implements AuthorizableContract
     /**
      * Complete a questionnaire for a user.
      *
-     * @param InputSource $inputSource
+     * @param  \App\Models\Questionnaire  $questionnaire
+     * @param  \App\Models\InputSource  $inputSource
      */
-    public function completeQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null)
+    public function completeQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource)
     {
-        $inputSource = is_null($inputSource) ? HoomdossierSession::getInputSource(true) : $inputSource;
-
-        $this->completedQuestionnaires()->syncWithoutDetaching(/* @scrutinizer ignore-type, uses parseIds method. */
+        $this->completedQuestionnairesForSource($inputSource)->syncWithoutDetaching(/* @scrutinizer ignore-type, uses parseIds method. */
             [
                 $questionnaire->id => [
                     'input_source_id' => $inputSource->id,

@@ -3,6 +3,7 @@
 namespace App\Http\ViewComposers\Frontend\Tool;
 
 use App\Helpers\StepHelper;
+use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use Illuminate\Http\Request;
@@ -61,12 +62,16 @@ class QuickScanComposer
         // Additional logic to set question answers if a questionnaire is available
         $questionnaire = $this->request->route('questionnaire');
         if ($questionnaire instanceof Questionnaire) {
-            $questionnaire->load(['questions' => function ($query) {
+            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+            $questionnaire->load(['questions' => function ($query) use ($masterInputSource) {
                 $query->orderBy('order')
-                    ->with(['questionAnswers' => function ($query) {
-                        $query->where('building_id', \App\Helpers\HoomdossierSession::getBuilding());
-                    }])
-                    ->with('questionAnswersForMe');
+                    ->with(['questionAnswers' => function ($query) use ($masterInputSource) {
+                        $query->where('building_id', \App\Helpers\HoomdossierSession::getBuilding())
+                            ->forInputSource($masterInputSource);
+                    }, 'questionAnswersForMe' => function ($query) use ($masterInputSource) {
+                        $query->where('input_source_id', '!=', $masterInputSource->id);
+                    }]);
             }]);
 
             $view->with('questionnaire', $questionnaire);

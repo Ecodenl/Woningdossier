@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Upgrade;
 
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -55,17 +56,17 @@ class MapAnswers extends Command
      */
     public function handle()
     {
-        // keep in mind that the order of this map is important!
-        $this->info('Cook gas field to the tool question answers...');
-        $this->mapUserEnergyHabits();
-        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-        $this->mapUserMotivations();
-        $this->info('Mapping building heating applications from building features to tool question building heating application');
-        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
-        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
-        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
-        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
-        $this->mapHrBoilerPlacedDate();
+//        // keep in mind that the order of this map is important!
+//        $this->info('Cook gas field to the tool question answers...');
+//        $this->mapUserEnergyHabits();
+//        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
+//        $this->mapUserMotivations();
+//        $this->info('Mapping building heating applications from building features to tool question building heating application');
+//        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+//        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
+//        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+//        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
+//        $this->mapHrBoilerPlacedDate();
         $this->info("Mapping the build type back to a building type category");
         $this->mapBuildingTypeBackToBuildingTypeCategory();
         $this->info("Mapping the total-solar-panels to has-solar-panels");
@@ -157,7 +158,12 @@ class MapAnswers extends Command
 
                     $cantSee = 0;
                     foreach ($leftoverSubSteps as $subStep) {
-                        if (! $building->user->account->can('show', [$building->user, $subStep])) {
+                        $canShowSubStep = ConditionEvaluator::init()
+                            ->building($building)
+                            ->inputSource($inputSource)
+                            ->evaluate($subStep->conditions ?? []);
+
+                        if (!$canShowSubStep) {
                             ++$cantSee;
                         }
                     }

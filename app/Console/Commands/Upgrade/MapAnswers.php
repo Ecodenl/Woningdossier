@@ -63,8 +63,8 @@ class MapAnswers extends Command
 //        $this->mapHrBoilerPlacedDate();
 //        $this->info("Mapping the build type back to a building type category");
 //        $this->mapBuildingTypeBackToBuildingTypeCategory();
-        $this->info("Mapping the total-solar-panels to has-solar-panels");
-        $this->mapSolarPanelCountToHasSolarPanels();
+//        $this->info("Mapping the total-solar-panels to has-solar-panels");
+//        $this->mapSolarPanelCountToHasSolarPanels();
     }
 
     public function mapSolarPanelCountToHasSolarPanels()
@@ -92,8 +92,6 @@ class MapAnswers extends Command
                 'tool_question_custom_value_id' => $toolQuestionCustomValues[$answer],
             ];
             DB::table('tool_question_answers')->insert($data);
-
-            $this->info("Count {$value} so map = {$answer}");
         }
     }
 

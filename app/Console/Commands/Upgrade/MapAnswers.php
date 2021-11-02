@@ -2,11 +2,19 @@
 
 namespace App\Console\Commands\Upgrade;
 
+use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
+use App\Models\BuildingType;
+use App\Models\CompletedSubStep;
 use App\Models\InputSource;
+use App\Models\Service;
 use App\Models\ServiceValue;
+use App\Models\Step;
+use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
@@ -48,17 +56,185 @@ class MapAnswers extends Command
      */
     public function handle()
     {
-        // keep in mind that the order of this map is important!
-        $this->info('Cook gas field to the tool question answers...');
-        $this->mapUserEnergyHabits();
-        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-        $this->mapUserMotivations();
-        $this->info('Mapping building heating applications from building features to tool question building heating application');
-        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
-        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
-        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
-        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
-        $this->mapHrBoilerPlacedDate();
+//        // keep in mind that the order of this map is important!
+//        $this->info('Cook gas field to the tool question answers...');
+//        $this->mapUserEnergyHabits();
+//        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
+//        $this->mapUserMotivations();
+//        $this->info('Mapping building heating applications from building features to tool question building heating application');
+//        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+//        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
+//        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+//        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
+//        $this->mapHrBoilerPlacedDate();
+        $this->info("Mapping the build type back to a building type category");
+        $this->mapBuildingTypeBackToBuildingTypeCategory();
+        $this->info("Mapping the total-solar-panels to has-solar-panels");
+        $this->mapSolarPanelCountToHasSolarPanels();
+        $this->info("Creating default remaining-living-years for every building..");
+        $this->setDefaultRemainingLivingYears();
+        $this->info("Completed the quick scan sub steps if needed.");
+        $this->completeQuickScanSubStepsIfNeeded();
+    }
+
+    public function completeQuickScanSubStepsIfNeeded()
+    {
+        $buildings = Building::cursor();
+        $inputSources = InputSource::findByShorts([
+            InputSource::RESIDENT_SHORT,
+            InputSource::COACH_SHORT,
+        ]);
+        $subSteps = SubStep::all();
+
+        /** @var Building $building */
+        foreach ($buildings as $building) {
+            foreach ($inputSources as $inputSource) {
+                foreach ($subSteps as $subStep) {
+                    $completeStep = true;
+                    foreach ($subStep->toolQuestions as $toolQuestion) {
+                        // one answer is not filled, so we cant complete it.
+                        if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
+                            $completeStep = false;
+                        }
+                    }
+
+                    if ($completeStep) {
+                        // insert he completed sub step
+                        $subStepCreated = DB::table('completed_sub_steps')->insert([
+                            'sub_step_id' => $subStep->id,
+                            'building_id' => $building->id,
+                            'input_source_id' => $inputSource->id
+                        ]);
+                        if ($subStepCreated) {
+                            // hydrate the model, this way we can use the observer code we actually need.
+                            $completeSubStep = CompletedSubStep::hydrate([[
+                                'sub_step_id' => $subStep->id,
+                                'building_id' => $building->id,
+                                'input_source_id' => $inputSource->id
+                            ]])->first();
+                            $this->completedSubStepObserverSaved($completeSubStep);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * This code is the same as th CompletedSubStepObserver, but without the events for recalc etc
+     *
+     * @param $completedSubStep
+     */
+    private function completedSubStepObserverSaved($completedSubStep)
+    {
+        // Check if this sub step finished the step
+        $subStep = $completedSubStep->subStep;
+
+        if ($subStep instanceof SubStep) {
+            $step = $subStep->step;
+            $inputSource = $completedSubStep->inputSource;
+            $building = $completedSubStep->building;
+
+            if ($step instanceof Step && $inputSource instanceof InputSource && $building instanceof Building) {
+                $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
+                    ->forBuilding($building)
+                    ->whereHas('subStep', function ($query) use ($step) {
+                        $query->where('step_id', $step->id);
+                    })
+                    ->pluck('sub_step_id')->toArray();
+
+                $allSubStepIds = $step->subSteps()->pluck('id')->toArray();
+
+                $diff = array_diff($allSubStepIds, $allCompletedSubStepIds);
+
+                if (empty ($diff)) {
+                    // The sub step that has been completed finished up the set, so we complete the main step
+                    StepHelper::complete($step, $building, $inputSource);
+                } else {
+                    // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
+                    // that we didn't get. Let's check
+                    $leftoverSubSteps = SubStep::findMany($diff);
+
+                    $cantSee = 0;
+                    foreach ($leftoverSubSteps as $subStep) {
+                        $canShowSubStep = ConditionEvaluator::init()
+                            ->building($building)
+                            ->inputSource($inputSource)
+                            ->evaluate($subStep->conditions ?? []);
+
+                        if (!$canShowSubStep) {
+                            ++$cantSee;
+                        }
+                    }
+
+                    if ($cantSee === $leftoverSubSteps->count()) {
+                        // Conditions "passed", so we complete!
+                        StepHelper::complete($step, $building, $inputSource);
+                    }
+                }
+            }
+        }
+    }
+
+    public function setDefaultRemainingLivingYears()
+    {
+        $toolQuestion = ToolQuestion::findByShort('remaining-living-years');
+        $buildings = Building::cursor();
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        foreach ($buildings as $building) {
+            $data = [
+                'building_id' => $building->id,
+                'tool_question_id' => $toolQuestion->id,
+                'input_source_id' => $residentInputSource->id,
+                'answer' => 7
+            ];
+            DB::table('tool_question_answers')->insert($data);
+        }
+    }
+
+    public function mapSolarPanelCountToHasSolarPanels()
+    {
+        // logic is simple, user has above 0 solar panels
+        // set the has-solar-panels to true.
+        $service = Service::findByShort('total-sun-panels');
+        $buildingServices = BuildingService::withoutGlobalScopes()->where('service_id', $service->id)->cursor();
+
+        $toolQuestion = ToolQuestion::findByShort('has-solar-panels');
+        $toolQuestionCustomValues = $toolQuestion->toolQuestionCustomValues->pluck('id', 'short')->toArray();
+        foreach ($buildingServices as $buildingService) {
+            $answer = "no";
+            // user has more than 0 solar panels, set it to yes
+            if (isset($buildingService->extra['value']) && $buildingService->extra['value'] > 0) {
+                $answer = "yes";
+            }
+
+            $data = [
+                'building_id' => $buildingService->building_id,
+                'tool_question_id' => $toolQuestion->id,
+                'input_source_id' => $buildingService->input_source_id,
+                'answer' => $answer,
+                'tool_question_custom_value_id' => $toolQuestionCustomValues[$answer],
+            ];
+            DB::table('tool_question_answers')->insert($data);
+        }
+    }
+
+    public function mapBuildingTypeBackToBuildingTypeCategory()
+    {
+        $buildingFeatures = BuildingFeature::withoutGlobalScopes()->whereNotNull('building_type_id')->cursor();
+        $buildingTypeCategoryToolQuestion = ToolQuestion::findByShort('building-type-category');
+
+        /** @var BuildingFeature $buildingFeature */
+        foreach ($buildingFeatures as $buildingFeature) {
+            $buildingType = $buildingFeature->buildingType;
+            $data = [
+                'building_id' => $buildingFeature->building_id,
+                'tool_question_id' => $buildingTypeCategoryToolQuestion->id,
+                'input_source_id' => $buildingFeature->input_source_id,
+                'answer' => $buildingType->building_type_category_id,
+            ];
+            DB::table('tool_question_answers')->insert($data);
+        }
     }
 
     public function mapHrBoilerPlacedDate()

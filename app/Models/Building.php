@@ -198,10 +198,13 @@ class Building extends Model
         return $answers;
     }
 
-    public function getAnswer(
-        InputSource $inputSource,
-        ToolQuestion $toolQuestion
-    ) {
+    /**
+     * @param InputSource $inputSource
+     * @param ToolQuestion $toolQuestion
+     * @return array|mixed
+     */
+    public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
+    {
         $answer  = null;
         $where[] = ['input_source_id', '=', $inputSource->id];
         // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)

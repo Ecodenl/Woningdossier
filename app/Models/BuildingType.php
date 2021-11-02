@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\BuildingType
@@ -37,5 +38,10 @@ class BuildingType extends Model
     public function buildingFeatures()
     {
         return $this->hasMany(BuildingFeature::class);
+    }
+
+    public function buildingTypeCategory(): BelongsTo
+    {
+        return $this->belongsTo(BuildingTypeCategory::class);
     }
 }

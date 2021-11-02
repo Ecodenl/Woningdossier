@@ -72,11 +72,11 @@ class MapAnswers extends Command
         $this->mapSolarPanelCountToHasSolarPanels();
         $this->info("Creating default remaining-living-years for every building..");
         $this->setDefaultRemainingLivingYears();
-        $this->info("Completed the quick scan steps if user has completed general data");
-        $this->completeQuickScanIfGeneralDataIsCompleted();
+        $this->info("Completed the quick scan sub steps if needed.");
+        $this->completeQuickScanSubStepsIfNeeded();
     }
 
-    public function completeQuickScanIfGeneralDataIsCompleted()
+    public function completeQuickScanSubStepsIfNeeded()
     {
         $buildings = Building::cursor();
         $inputSources = InputSource::findByShorts([

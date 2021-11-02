@@ -58,9 +58,14 @@ if (token) {
  * Define functions that will be used throughout the whole application, that
  * are also required by Alpine.
  */
-window.triggerEvent = function (element, eventName) {
+window.triggerEvent = function (element, eventName, params = {}) {
+    if (! typeof params === 'object') {
+        console.error('Params is not a valid object!');
+        params = {};
+    }
+
     if (element && element.nodeType === Node.ELEMENT_NODE && eventName) {
-        let event = new Event(eventName, { bubbles: true });
+        let event = new CustomEvent(eventName, {bubbles: true, detail: params });
         element.dispatchEvent(event);
     }
 }
@@ -70,29 +75,29 @@ window.triggerEvent = function (element, eventName) {
  * the whole application.
  */
 import Alpine from 'alpinejs';
-import alpineSelect from './alpine-scripts/alpine-select.js';
-import sourceSelect from './alpine-scripts/source-select.js';
-import modal from './alpine-scripts/modal.js';
-import ratingSlider from './alpine-scripts/rating-slider.js';
-import slider from './alpine-scripts/slider.js';
-import register from './alpine-scripts/register.js';
-import picoAddress from './alpine-scripts/picoAddress.js';
-import draggables from './alpine-scripts/draggables.js';
-import dropdown from './alpine-scripts/dropdown.js';
-import tabs from './alpine-scripts/tabs.js';
-import adaptiveInputs from './alpine-scripts/adaptive-input.js';
+import AlpineSelect from './alpine-scripts/alpine-select.js';
+import SourceSelect from './alpine-scripts/source-select.js';
+import Modal from './alpine-scripts/modal.js';
+import RatingSlider from './alpine-scripts/rating-slider.js';
+import Slider from './alpine-scripts/slider.js';
+import Register from './alpine-scripts/register.js';
+import PicoAddress from './alpine-scripts/picoAddress.js';
+import Draggables from './alpine-scripts/draggables.js';
+import Dropdown from './alpine-scripts/dropdown.js';
+import Tabs from './alpine-scripts/tabs.js';
+import AdaptiveInputs from './alpine-scripts/adaptive-input.js';
 
-Alpine.data('alpineSelect', alpineSelect);
-Alpine.data('sourceSelect', sourceSelect);
-Alpine.data('modal', modal);
-Alpine.data('ratingSlider', ratingSlider);
-Alpine.data('slider', slider);
-Alpine.data('register', register);
-Alpine.data('picoAddress', picoAddress);
-Alpine.data('draggables', draggables);
-Alpine.data('dropdown', dropdown);
-Alpine.data('tabs', tabs);
-Alpine.data('adaptiveInputs', adaptiveInputs);
+Alpine.data('alpineSelect', AlpineSelect);
+Alpine.data('sourceSelect', SourceSelect);
+Alpine.data('modal', Modal);
+Alpine.data('ratingSlider', RatingSlider);
+Alpine.data('slider', Slider);
+Alpine.data('register', Register);
+Alpine.data('picoAddress', PicoAddress);
+Alpine.data('draggables', Draggables);
+Alpine.data('dropdown', Dropdown);
+Alpine.data('tabs', Tabs);
+Alpine.data('adaptiveInputs', AdaptiveInputs);
 
 window.Alpine = Alpine;
 

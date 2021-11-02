@@ -1,5 +1,6 @@
 export default (defaultTab = null) => ({
     currentTab: null,
+    lastTab: null,
 
     init() {
         document.addEventListener('DOMContentLoaded', () => {
@@ -17,6 +18,12 @@ export default (defaultTab = null) => ({
                 }
             } else if (defaultTab && defaultTab.nodeType === Node.ELEMENT_NODE) {
                 this.switchTab(defaultTab);
+            } else {
+                 let mainTab = this.$refs['main-tab'];
+                // Set main tab by default
+                if (mainTab) {
+                    this.currentTab = mainTab;
+                }
             }
         });
     },
@@ -30,16 +37,27 @@ export default (defaultTab = null) => ({
         if (href[0] === '#') {
             let tab = document.querySelector(href);
             if (tab && tab !== this.currentTab) {
-                // If tab is defined and different from current tab
-                if (! this.currentTab) {
-                    this.$refs['main-tab'].classList.add('hidden');
-                }
+                // Set last tab
+                this.lastTab = this.currentTab;
+                // Set current tab
                 this.currentTab = tab;
+                // Set hash
                 window.location.hash = element.hash;
 
-                this.$refs['nav-tabs'].querySelector('li.active').classList.remove('active');
-                element.parentElement.classList.add('active');
+                // Update buttons if needed
+                let navTabs = this.$refs['nav-tabs'];
+                if (navTabs) {
+                    navTabs.querySelector('li.active').classList.remove('active');
+                    element.parentElement.classList.add('active');
+                }
             }
         }
     },
+    back() {
+        // Go back to previous tab
+        if (null !== this.lastTab) {
+            this.currentTab = this.lastTab;
+            this.lastTab = null;
+        }
+    }
 });

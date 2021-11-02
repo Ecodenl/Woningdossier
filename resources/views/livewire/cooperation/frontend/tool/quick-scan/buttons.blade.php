@@ -1,4 +1,3 @@
-
 <div class="w-1/2 flex flex-wrap justify-center">
     @php
         $previousUrl = null;

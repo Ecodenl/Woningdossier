@@ -99,8 +99,7 @@ class MapAnswers extends Command
                     }
 
                     if ($completeStep) {
-                        // use model so the observer logic gets used.
-
+                        // insert he completed sub step
                         $subStepCreated = DB::table('completed_sub_steps')->insert([
                             'sub_step_id' => $subStep->id,
                             'building_id' => $building->id,

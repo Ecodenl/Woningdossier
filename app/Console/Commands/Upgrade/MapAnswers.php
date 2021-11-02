@@ -78,7 +78,7 @@ class MapAnswers extends Command
 
     public function completeQuickScanIfGeneralDataIsCompleted()
     {
-        $buildings = Building::where('id', 1)->get();
+        $buildings = Building::cursor();
         $inputSources = InputSource::findByShorts([
             InputSource::RESIDENT_SHORT,
             InputSource::COACH_SHORT,

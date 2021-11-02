@@ -35,7 +35,7 @@ class DownloadPdf extends Component
         $inputSource = HoomdossierSession::getInputSource(true);
         $this->fill(compact('user', 'fileType', 'inputSource', 'masterInputSource'));
 
-        $this->isFileBeingProcessed = $fileType->isBeingProcessed();
+        $this->isFileBeingProcessed = $fileType->isBeingProcessed($user->building, $inputSource);
         $this->fileStorage = $fileType->files()->forBuilding($user->building)->forInputSource($inputSource)->first();
 
         // as this checks for file processing, there's a chance it isn't picked up by the queue,
@@ -47,7 +47,7 @@ class DownloadPdf extends Component
 
     public function checkIfFileIsProcessed()
     {
-        $this->isFileBeingProcessed = $this->fileType->isBeingProcessed();
+        $this->isFileBeingProcessed = $this->fileType->isBeingProcessed($this->user->building, $this->inputSource);
 
         if (!$this->isFileBeingProcessed) {
             $this->fileStorage = $this->fileType->files()->forBuilding($this->user->building)->forInputSource($this->inputSource)->first();
@@ -68,7 +68,7 @@ class DownloadPdf extends Component
         $this->fileStorage = null;
 
 
-        abort_if($this->fileType->isBeingProcessed(), 403);
+        abort_if($this->fileType->isBeingProcessed($this->user->building, $this->inputSource), 403);
 
         $this->handleExistingFiles();
 

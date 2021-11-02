@@ -1,14 +1,12 @@
 <div>
     {{-- Header row --}}
-    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3" x-data="modal()">
+    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3">
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <h5 class="heading-5">
                     @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
                 </h5>
             </div>
-            <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
-               wire:click="setCategory('{{\App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE}}')"></i>
         </div>
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
@@ -16,8 +14,6 @@
                     @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO)
                 </h5>
             </div>
-            <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
-               wire:click="setCategory('{{\App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO}}')"></i>
         </div>
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
@@ -25,88 +21,7 @@
                     @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_LATER)
                 </h5>
             </div>
-            <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
-               wire:click="setCategory('{{\App\Services\UserActionPlanAdviceService::CATEGORY_LATER}}')"></i>
         </div>
-        @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
-            <form wire:submit.prevent="submit()">
-                <div class="flex flex-wrap mb-5">
-                    @component('cooperation.frontend.layouts.components.form-group', [
-                       'inputName' => 'custom_measure_application.name',
-                       'class' => 'w-full -mt-4 mb-4',
-                       'id' => 'custom-measure-application-name',
-                       'withInputSource' => false,
-                   ])
-                        <input class="form-input" wire:model="custom_measure_application.name" id="custom-measure-application-name"
-                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')">
-                    @endcomponent
-                    <div class="w-full flex items-center">
-                        <i class="icon-sm icon-info mr-3"></i>
-                        <h6 class="heading-6">
-                            @lang('cooperation/frontend/shared.modals.add-measure.info')
-                        </h6>
-                    </div>
-                    @component('cooperation.frontend.layouts.components.form-group', [
-                       'inputName' => "custom_measure_application.info",
-                       'class' => 'w-full mb-4',
-                       'id' => 'custom-measure-application-info',
-                       'withInputSource' => false,
-                   ])
-                        <textarea class="form-input" wire:model="custom_measure_application.info"
-                                  id="custom-measure-application-info"
-                                  placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
-                        ></textarea>
-                    @endcomponent
-                    <div class="w-full flex items-center">
-                        <i class="icon-sm icon-info mr-3"></i>
-                        <h6 class="heading-6">
-                            @lang('cooperation/frontend/shared.modals.add-measure.costs')
-                        </h6>
-                    </div>
-                    @component('cooperation.frontend.layouts.components.form-group', [
-                        'inputName' => 'custom_measure_application.costs.from',
-                        'class' => 'w-1/2 pr-1 mb-4',
-                        'id' => 'custom-measure-application-costs-from',
-                        'withInputSource' => false,
-                    ])
-                        <input class="form-input" wire:model="custom_measure_application.costs.from" id="custom-measure-application-costs-from"
-                               placeholder="@lang('default.from')">
-                    @endcomponent
-                    @component('cooperation.frontend.layouts.components.form-group', [
-                        'inputName' => 'custom_measure_application.costs.to',
-                        'class' => 'w-1/2 pl-1 mb-4',
-                        'id' => 'custom-measure-application-costs-to',
-                        'withInputSource' => false,
-                    ])
-                        <input class="form-input" wire:model="custom_measure_application.costs.to" id="custom-measure-application-costs-to"
-                               placeholder="@lang('default.to')">
-                    @endcomponent
-                    <div class="w-full flex items-center">
-                        <i class="icon-sm icon-info mr-3"></i>
-                        <h6 class="heading-6">
-                            @lang('cooperation/frontend/shared.modals.add-measure.savings-money')
-                        </h6>
-                    </div>
-                    @component('cooperation.frontend.layouts.components.form-group', [
-                        'inputName' => 'custom_measure_application.savings_money',
-                        'class' => 'w-full mb-4',
-                        'id' => 'custom-measure-application-savings-money',
-                        'withInputSource' => false,
-                    ])
-                        <input class="form-input" wire:model="custom_measure_application.savings_money"
-                               id="custom-measure-application-savings-money"
-                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.savings-money')">
-                    @endcomponent
-                </div>
-                <div class="w-full border border-gray fixed left-0"></div>
-                <div class="flex flex-wrap justify-center mt-14">
-                    <button class="btn btn-purple w-full" type="submit">
-                        <i class="icon-xs icon-plus-purple mr-3"></i>
-                        @lang('cooperation/frontend/shared.modals.add-measure.save')
-                    </button>
-                </div>
-            </form>
-        @endcomponent
     </div>
     <div class="w-full flex flex-wrap flex-row justify-center items-center"
          @if(! \App\Helpers\HoomdossierSession::isUserObserving()) x-data="draggables()" @endif
@@ -183,19 +98,44 @@
             <div class="w-full">
                 {{-- White space --}}
             </div>
-            <div class="w-full flex flex-row flex-wrap justify-center items-center">
-                <i class="w-20 h-20 icon-trash-can-red p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
-            </div>
+            <div class="w-full flex flex-row flex-wrap justify-center items-center space-x-5">
+                <div x-data="modal()" class="">
+                    <i class="icon-md icon-plus-purple clickable mt-3" x-on:click="toggle()"></i>
+                    @component('cooperation.frontend.layouts.components.modal', [
+                        'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.header'),
+                    ])
+                        <div class="w-full h-full">
+                            <div class="w-full h-full space-y-2">
+                                @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+                                    <button class="btn btn-green flex w-full items-center justify-center"
+                                            x-on:click="window.triggerEvent(document.querySelector('#trashed'), 'open-modal'); close();">
+                                        @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
+                                    </button>
+                                @endif
+                                <button class="btn btn-green flex w-full items-center justify-center"
+                                        x-on:click="window.triggerEvent(document.querySelector('#expert'), 'open-modal'); close();">
+                                    @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.button')
+                                </button>
+                                @if(! \App\Helpers\HoomdossierSession::isUserObserving())
+                                    <button class="btn btn-green flex w-full items-center justify-center"
+                                            x-on:click="window.triggerEvent(document.querySelector('#add'), 'open-modal'); close();">
+                                        @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.add.button')
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    @endcomponent
+                </div>
 
-            @if(! \App\Helpers\HoomdossierSession::isUserObserving())
-                @if(! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
-                    <div x-data="modal()" class="w-full flex flex-wrap flex-row justify-end items-center px-3 lg:px-8">
-                        <i class="icon-md icon-plus-purple clickable" x-on:click="toggle()"></i>
+                {{-- Modal for invisible measures --}}
+                @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+                    <div x-data="modal()" class="">
                         @component('cooperation.frontend.layouts.components.modal', [
-                            'header' => __('cooperation/frontend/tool.my-plan.cards.hidden.title')
+                            'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.title'),
+                            'id' => 'trashed',
                         ])
                             <p>
-                                @lang('cooperation/frontend/tool.my-plan.cards.hidden.help')
+                                @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.help')
                             </p>
 
                             <div class="w-full h-full rounded-lg mt-4 bg-blue-100 pb-3">
@@ -233,7 +173,120 @@
                         @endcomponent
                     </div>
                 @endif
-            @endif
+                {{-- Modal for expert steps --}}
+                <div x-data="modal()" class="">
+                    @component('cooperation.frontend.layouts.components.modal', [
+                        'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.title'),
+                        'id' => 'expert',
+                    ])
+                        <p>
+                            @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.help')
+                        </p>
+
+                        <ul class="mt-4 w-full text-blue-500 text-sm bg-white rounded-lg border border-blue-500 border-opacity-50 divide-y divide-blue-500 py-2 list-none pl-0">
+                            @foreach(\App\Models\Step::expert()->get() as $expertStep)
+                                <li class="py-1 px-3">
+                                    <a href="{{ route("cooperation.tool.{$expertStep->short}.index", compact('cooperation')) }}"
+                                       class="in-text">
+                                        <img src="{{ asset("images/icons/{$expertStep->slug}.png") }}"
+                                             alt="{{ $expertStep->name }}" class="rounded-1/2 inline-block h-8 w-8">
+                                        {{ $expertStep->name }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endcomponent
+                </div>
+                {{-- Modal for custom measures --}}
+                @if(! \App\Helpers\HoomdossierSession::isUserObserving())
+                    <div x-data="modal()" class="">
+                        @component('cooperation.frontend.layouts.components.modal', [
+                            'header' => __('cooperation/frontend/tool.form.subject'),
+                            'id' => 'add',
+                        ])
+                            <form wire:submit.prevent="submit()">
+                                <div class="flex flex-wrap mb-5">
+                                    @component('cooperation.frontend.layouts.components.form-group', [
+                                       'inputName' => 'custom_measure_application.name',
+                                       'class' => 'w-full -mt-4 mb-4',
+                                       'id' => 'custom-measure-application-name',
+                                       'withInputSource' => false,
+                                   ])
+                                        <input class="form-input" wire:model="custom_measure_application.name" id="custom-measure-application-name"
+                                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')">
+                                    @endcomponent
+                                    <div class="w-full flex items-center">
+                                        <i class="icon-sm icon-info mr-3"></i>
+                                        <h6 class="heading-6">
+                                            @lang('cooperation/frontend/shared.modals.add-measure.info')
+                                        </h6>
+                                    </div>
+                                    @component('cooperation.frontend.layouts.components.form-group', [
+                                       'inputName' => "custom_measure_application.info",
+                                       'class' => 'w-full mb-4',
+                                       'id' => 'custom-measure-application-info',
+                                       'withInputSource' => false,
+                                   ])
+                                        <textarea class="form-input" wire:model="custom_measure_application.info"
+                                                  id="custom-measure-application-info"
+                                                  placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
+                                        ></textarea>
+                                    @endcomponent
+                                    <div class="w-full flex items-center">
+                                        <i class="icon-sm icon-info mr-3"></i>
+                                        <h6 class="heading-6">
+                                            @lang('cooperation/frontend/shared.modals.add-measure.costs')
+                                        </h6>
+                                    </div>
+                                    @component('cooperation.frontend.layouts.components.form-group', [
+                                        'inputName' => 'custom_measure_application.costs.from',
+                                        'class' => 'w-1/2 pr-1 mb-4',
+                                        'id' => 'custom-measure-application-costs-from',
+                                        'withInputSource' => false,
+                                    ])
+                                        <input class="form-input" wire:model="custom_measure_application.costs.from" id="custom-measure-application-costs-from"
+                                               placeholder="@lang('default.from')">
+                                    @endcomponent
+                                    @component('cooperation.frontend.layouts.components.form-group', [
+                                        'inputName' => 'custom_measure_application.costs.to',
+                                        'class' => 'w-1/2 pl-1 mb-4',
+                                        'id' => 'custom-measure-application-costs-to',
+                                        'withInputSource' => false,
+                                    ])
+                                        <input class="form-input" wire:model="custom_measure_application.costs.to" id="custom-measure-application-costs-to"
+                                               placeholder="@lang('default.to')">
+                                    @endcomponent
+                                    <div class="w-full flex items-center">
+                                        <i class="icon-sm icon-info mr-3"></i>
+                                        <h6 class="heading-6">
+                                            @lang('cooperation/frontend/shared.modals.add-measure.savings-money')
+                                        </h6>
+                                    </div>
+                                    @component('cooperation.frontend.layouts.components.form-group', [
+                                        'inputName' => 'custom_measure_application.savings_money',
+                                        'class' => 'w-full mb-4',
+                                        'id' => 'custom-measure-application-savings-money',
+                                        'withInputSource' => false,
+                                    ])
+                                        <input class="form-input" wire:model="custom_measure_application.savings_money"
+                                               id="custom-measure-application-savings-money"
+                                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.savings-money')">
+                                    @endcomponent
+                                </div>
+                                <div class="w-full border border-gray fixed left-0"></div>
+                                <div class="flex flex-wrap justify-center mt-14">
+                                    <button class="btn btn-purple w-full" type="submit">
+                                        <i class="icon-xs icon-plus-purple mr-3"></i>
+                                        @lang('cooperation/frontend/shared.modals.add-measure.save')
+                                    </button>
+                                </div>
+                            </form>
+                        @endcomponent
+                    </div>
+                @endif
+
+                <i class="w-20 h-20 icon-trash-can-red p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
+            </div>
         </div>
     </div>
     <div class="w-full grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-6 grid-flow-row gap-3 mt-5 py-8 content-center border-t-2 border-b-2 border-blue-500 border-opacity-10">

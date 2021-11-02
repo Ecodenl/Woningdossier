@@ -70,8 +70,6 @@ class Form extends Component
     public $renewable = 0;
     public $investment = 0;
 
-    public string $category = '';
-
     /** @var null|UserActionPlanAdviceComments */
     public $residentComment;
     public string $residentCommentText = '';
@@ -288,9 +286,11 @@ class Form extends Component
             'info' => ['nl' => $measureData['info']],
         ]);
 
+        $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
+
         // Get order based on current total (we don't have to add or subtract since count gives us the total, which
         // is equal to indexable order + 1)
-        $order = count($this->cards[$this->category]);
+        $order = count($this->cards[$category]);
 
         // Build user advice
         $advice = $customMeasureApplication
@@ -299,7 +299,7 @@ class Form extends Component
                 [
                     'user_id' => $this->building->user->id,
                     'input_source_id' => $this->currentInputSource->id,
-                    'category' => $this->category,
+                    'category' => $category,
                     'visible' => true,
                     'order' => $order,
                     'costs' => $measureData['costs'],
@@ -308,7 +308,7 @@ class Form extends Component
             );
 
         // Append card
-        $this->cards[$this->category][$order] = [
+        $this->cards[$category][$order] = [
             'id' => $advice->id,
             'name' => $customMeasureApplication->name,
             'info' => $customMeasureApplication->info,
@@ -323,11 +323,6 @@ class Form extends Component
         $this->custom_measure_application = [];
 
         $this->recalculate();
-    }
-
-    public function setCategory($category)
-    {
-        $this->category = $category;
     }
 
     public function cardMoved($fromCategory, $toCategory, $id, $newOrder)

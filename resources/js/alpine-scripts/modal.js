@@ -1,12 +1,16 @@
 export default () => ({
-    open: false,
+    opened: false,
 
+    open() {
+        this.$event.preventDefault();
+        this.opened = true;
+    },
     toggle() {
         this.$event.preventDefault();
-        this.open = ! this.open
+        this.opened = ! this.opened
     },
     close() {
         this.$event.preventDefault();
-        this.open = false;
+        this.opened = false;
     },
 });

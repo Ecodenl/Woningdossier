@@ -5,6 +5,7 @@ namespace App\Console\Commands\Upgrade;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
+use App\Models\BuildingType;
 use App\Models\InputSource;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
@@ -49,16 +50,36 @@ class MapAnswers extends Command
     public function handle()
     {
         // keep in mind that the order of this map is important!
-        $this->info('Cook gas field to the tool question answers...');
-        $this->mapUserEnergyHabits();
-        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-        $this->mapUserMotivations();
-        $this->info('Mapping building heating applications from building features to tool question building heating application');
-        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
-        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
-        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
-        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
-        $this->mapHrBoilerPlacedDate();
+//        $this->info('Cook gas field to the tool question answers...');
+//        $this->mapUserEnergyHabits();
+//        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
+//        $this->mapUserMotivations();
+//        $this->info('Mapping building heating applications from building features to tool question building heating application');
+//        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+//        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
+//        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+//        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
+//        $this->mapHrBoilerPlacedDate();
+        $this->info("Mapping the build type back to a building type category");
+        $this->mapBuildingTypeBackToBuildingTypeCategory();
+    }
+
+    public function mapBuildingTypeBackToBuildingTypeCategory()
+    {
+        $buildingFeatures = BuildingFeature::withoutGlobalScopes()->whereNotNull('building_type_id')->cursor();
+        $buildingTypeCategoryToolQuestion = ToolQuestion::findByShort('building-type-category');
+
+        /** @var BuildingFeature $buildingFeature */
+        foreach ($buildingFeatures as $buildingFeature) {
+            $buildingType = $buildingFeature->buildingType;
+            $data = [
+                'building_id' => $buildingFeature->building_id,
+                'tool_question_id' => $buildingTypeCategoryToolQuestion->id,
+                'input_source_id' => $buildingFeature->input_source_id,
+                'answer' => $buildingType->building_type_category_id,
+            ];
+            DB::table('tool_question_answers')->insert($data);
+        }
     }
 
     public function mapHrBoilerPlacedDate()

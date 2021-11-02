@@ -65,6 +65,24 @@ class MapAnswers extends Command
 //        $this->mapBuildingTypeBackToBuildingTypeCategory();
 //        $this->info("Mapping the total-solar-panels to has-solar-panels");
 //        $this->mapSolarPanelCountToHasSolarPanels();
+        $this->info("Creating default remaining-living-years for every building..");
+        $this->setDefaultRemainingLivingYears();
+    }
+
+    public function setDefaultRemainingLivingYears()
+    {
+        $toolQuestion = ToolQuestion::findByShort('remaining-living-years');
+        $buildings = Building::cursor();
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        foreach ($buildings as $building) {
+            $data = [
+                'building_id' => $building->id,
+                'tool_question_id' => $toolQuestion->id,
+                'input_source_id' => $residentInputSource->id,
+                'answer' => 7
+            ];
+            DB::table('tool_question_answers')->insert($data);
+        }
     }
 
     public function mapSolarPanelCountToHasSolarPanels()
@@ -78,7 +96,6 @@ class MapAnswers extends Command
         $toolQuestionCustomValues = $toolQuestion->toolQuestionCustomValues->pluck('id', 'short')->toArray();
         foreach ($buildingServices as $buildingService) {
             $answer = "no";
-            $value = $buildingService->extra['value'] ?? 0;
             // user has more than 0 solar panels, set it to yes
             if (isset($buildingService->extra['value']) && $buildingService->extra['value'] > 0) {
                 $answer = "yes";

@@ -7,6 +7,7 @@ use App\Models\BuildingFeature;
 use App\Models\BuildingService;
 use App\Models\BuildingType;
 use App\Models\InputSource;
+use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
@@ -60,8 +61,40 @@ class MapAnswers extends Command
 //        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
 //        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
 //        $this->mapHrBoilerPlacedDate();
-        $this->info("Mapping the build type back to a building type category");
-        $this->mapBuildingTypeBackToBuildingTypeCategory();
+//        $this->info("Mapping the build type back to a building type category");
+//        $this->mapBuildingTypeBackToBuildingTypeCategory();
+        $this->info("Mapping the total-solar-panels to has-solar-panels");
+        $this->mapSolarPanelCountToHasSolarPanels();
+    }
+
+    public function mapSolarPanelCountToHasSolarPanels()
+    {
+        // logic is simple, user has above 0 solar panels
+        // set the has-solar-panels to true.
+        $service = Service::findByShort('total-sun-panels');
+        $buildingServices = BuildingService::withoutGlobalScopes()->where('service_id', $service->id)->cursor();
+
+        $toolQuestion = ToolQuestion::findByShort('has-solar-panels');
+        $toolQuestionCustomValues = $toolQuestion->toolQuestionCustomValues->pluck('id', 'short')->toArray();
+        foreach ($buildingServices as $buildingService) {
+            $answer = "no";
+            $value = $buildingService->extra['value'] ?? 0;
+            // user has more than 0 solar panels, set it to yes
+            if (isset($buildingService->extra['value']) && $buildingService->extra['value'] > 0) {
+                $answer = "yes";
+            }
+
+            $data = [
+                'building_id' => $buildingService->building_id,
+                'tool_question_id' => $toolQuestion->id,
+                'input_source_id' => $buildingService->input_source_id,
+                'answer' => $answer,
+                'tool_question_custom_value_id' => $toolQuestionCustomValues[$answer],
+            ];
+            DB::table('tool_question_answers')->insert($data);
+
+            $this->info("Count {$value} so map = {$answer}");
+        }
     }
 
     public function mapBuildingTypeBackToBuildingTypeCategory()

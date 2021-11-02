@@ -2,13 +2,18 @@
 
 namespace App\Console\Commands\Upgrade;
 
+use App\Events\StepDataHasBeenChanged;
+use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
 use App\Models\BuildingType;
+use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\Service;
 use App\Models\ServiceValue;
+use App\Models\Step;
+use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
@@ -65,8 +70,105 @@ class MapAnswers extends Command
 //        $this->mapBuildingTypeBackToBuildingTypeCategory();
 //        $this->info("Mapping the total-solar-panels to has-solar-panels");
 //        $this->mapSolarPanelCountToHasSolarPanels();
-        $this->info("Creating default remaining-living-years for every building..");
-        $this->setDefaultRemainingLivingYears();
+//        $this->info("Creating default remaining-living-years for every building..");
+//        $this->setDefaultRemainingLivingYears();
+        $this->info("Completed the quick scan steps if user has completed general data");
+        $this->completeQuickScanIfGeneralDataIsCompleted();
+    }
+
+    public function completeQuickScanIfGeneralDataIsCompleted()
+    {
+        $buildings = Building::where('id', 1)->get();
+        $inputSources = InputSource::findByShorts([
+            InputSource::RESIDENT_SHORT,
+            InputSource::COACH_SHORT,
+        ]);
+        $subSteps = SubStep::all();
+
+        /** @var Building $building */
+        foreach ($buildings as $building) {
+            foreach ($inputSources as $inputSource) {
+                foreach ($subSteps as $subStep) {
+                    $completeStep = true;
+                    foreach ($subStep->toolQuestions as $toolQuestion) {
+                        // one answer is not filled, so we cant complete it.
+                        if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
+                            $completeStep = false;
+                        }
+                    }
+
+                    if ($completeStep) {
+                        // use model so the observer logic gets used.
+
+                        $subStepCreated = DB::table('completed_sub_steps')->insert([
+                            'sub_step_id' => $subStep->id,
+                            'building_id' => $building->id,
+                            'input_source_id' => $inputSource->id
+                        ]);
+                        if ($subStepCreated) {
+                            // hydrate the model, this way we can use the observer code we actually need.
+                            $completeSubStep = CompletedSubStep::hydrate([[
+                                'sub_step_id' => $subStep->id,
+                                'building_id' => $building->id,
+                                'input_source_id' => $inputSource->id
+                            ]])->first();
+                            $this->completedSubStepObserverSaved($completeSubStep);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * This code is the same as th CompletedSubStepObserver, but without the events for recalc etc
+     *
+     * @param $completedSubStep
+     */
+    private function completedSubStepObserverSaved($completedSubStep)
+    {
+        // Check if this sub step finished the step
+        $subStep = $completedSubStep->subStep;
+
+        if ($subStep instanceof SubStep) {
+            $step = $subStep->step;
+            $inputSource = $completedSubStep->inputSource;
+            $building = $completedSubStep->building;
+
+            if ($step instanceof Step && $inputSource instanceof InputSource && $building instanceof Building) {
+                $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
+                    ->forBuilding($building)
+                    ->whereHas('subStep', function ($query) use ($step) {
+                        $query->where('step_id', $step->id);
+                    })
+                    ->pluck('sub_step_id')->toArray();
+
+                $allSubStepIds = $step->subSteps()->pluck('id')->toArray();
+
+                $diff = array_diff($allSubStepIds, $allCompletedSubStepIds);
+
+                if (empty ($diff)) {
+                    // The sub step that has been completed finished up the set, so we complete the main step
+                    StepHelper::complete($step, $building, $inputSource);
+                } else {
+                    // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
+                    // that we didn't get. Let's check
+                    $leftoverSubSteps = SubStep::findMany($diff);
+
+                    $cantSee = 0;
+                    foreach ($leftoverSubSteps as $subStep) {
+                        if (! $building->user->account->can('show', [$building->user, $subStep])) {
+                            ++$cantSee;
+                        }
+                    }
+
+                    if ($cantSee === $leftoverSubSteps->count()) {
+                        // Conditions "passed", so we complete!
+                        StepHelper::complete($step, $building, $inputSource);
+                    }
+                }
+            }
+        }
     }
 
     public function setDefaultRemainingLivingYears()

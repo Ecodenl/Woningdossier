@@ -258,7 +258,7 @@ class ToolQuestionsTableSeeder extends Seeder
                         [
                             'validation' => ['required', 'exists:example_buildings,id'],
                             'short' => 'specific-example-building',
-                            'save_in' => 'building_features.example_building_id',
+                            'save_in' => 'buildings.example_building_id',
                             'translation' => 'Welke woning lijkt het meest op jouw woning?',
                             'tool_question_type_id' => $radioType->id,
                         ]

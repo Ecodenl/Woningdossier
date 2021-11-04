@@ -111,8 +111,6 @@ class ToolQuestion extends Model
 
                     return $questionValue;
                 });
-
-
         }
         return $this->toolQuestionCustomValues()
             ->visible()

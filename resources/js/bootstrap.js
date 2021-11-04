@@ -58,7 +58,28 @@ if (token) {
  * Define functions that will be used throughout the whole application, that
  * are also required by Alpine.
  */
-window.triggerEvent = function (element, eventName, params = {}) {
+
+/**
+ * Trigger a default event
+ *
+ * @param element
+ * @param eventName
+ */
+window.triggerEvent = function (element, eventName) {
+    if (element && element.nodeType === Node.ELEMENT_NODE && eventName) {
+        let event = new Event(eventName, {bubbles: true});
+        element.dispatchEvent(event);
+    }
+}
+
+/**
+ * Trigger a custom event, with potential parameters
+ *
+ * @param element
+ * @param eventName
+ * @param params
+ */
+window.triggerCustomEvent = function (element, eventName, params = {}) {
     if (! typeof params === 'object') {
         console.error('Params is not a valid object!');
         params = {};

@@ -62,7 +62,6 @@ class WoningdossierServiceProvider extends ServiceProvider
         Translation::observe(TranslationObserver::class);
         CompletedSubStep::observe(CompletedSubStepObserver::class);
         ToolQuestionAnswer::observe(ToolQuestionAnswerObserver::class);
-        ExampleBuilding::observe(ExampleBuildingObserver::class);
 
 
         View::creator('cooperation.tool.*', ToolComposer::class);

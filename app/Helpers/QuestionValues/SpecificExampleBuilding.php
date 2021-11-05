@@ -12,12 +12,21 @@ class SpecificExampleBuilding implements ShouldReturnQuestionValues
     public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource): Collection
     {
         $conditionalQuestion = ToolQuestion::findByShort('building-type');
+        $cooperationId = $building->user->cooperation_id;
 
         $buildingTypeId = $building->getAnswer(
             $inputSource,
             $conditionalQuestion
         );
 
-        return $questionValues->where('building_type_id', $buildingTypeId)->where('cooperation_id', $building->user->cooperation_id);
+        return $questionValues
+            ->filter(function (array $questionValue) use ($buildingTypeId, $cooperationId) {
+
+                $matchesBuildingTypeAndIsForUserItsCooperation = $questionValue['building_type_id'] == $buildingTypeId && $questionValue['cooperation_id'] == $cooperationId;
+                $matchedBuildingTypeButIsGeneric = $questionValue['building_type_id'] == $buildingTypeId && $questionValue['cooperation_id'] == $cooperationId;
+                return $matchesBuildingTypeAndIsForUserItsCooperation || $matchedBuildingTypeButIsGeneric;
+
+            });
+
     }
 }

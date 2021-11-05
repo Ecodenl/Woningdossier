@@ -33,6 +33,12 @@ class ToolQuestionValuable extends Model
         return $this->morphTo('tool_question_valuable');
     }
 
+
+    public function limitable(): MorphTo
+    {
+        return $this->morphTo('limiteable');
+    }
+
     /**
      * Simple method to limit the valuables you want to retrieve, pass through a model and limit the valuables that match the model.
      *
@@ -42,9 +48,9 @@ class ToolQuestionValuable extends Model
      */
     public function scopeLimitedTo(Builder $query, Model $limitedTo): Builder
     {
-        return $query->where('limited_to_id', $limitedTo->id)
-            ->where('limited_to_type', get_class($limitedTo))
-            ->orWhereNull('limited_to_id');
+        return $query->where('limiteable_id', $limitedTo->id)
+            ->where('limiteable_type', get_class($limitedTo))
+            ->orWhereNull('limiteable_id');
     }
 
     public function scopeVisible(Builder $query): Builder

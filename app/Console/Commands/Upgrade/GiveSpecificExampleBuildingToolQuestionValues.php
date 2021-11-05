@@ -56,8 +56,8 @@ class GiveSpecificExampleBuildingToolQuestionValues extends Command
                 ];
 
                 if (!is_null($exampleBuilding->cooperation_id)) {
-                    $insertData['limited_to_id'] = $exampleBuilding->cooperation_id;
-                    $insertData['limited_to_type'] = Cooperation::class;
+                    $insertData['limiteable_id'] = $exampleBuilding->cooperation_id;
+                    $insertData['limiteable_type'] = Cooperation::class;
                 }
 
                 \DB::table('tool_question_valuables')->updateOrInsert([

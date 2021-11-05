@@ -70,7 +70,6 @@ class Form extends Component
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
-        $this->cooperation = HoomdossierSession::getCooperation(true);
         $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT
             ? $this->currentInputSource
             : InputSource::findByShort(InputSource::RESIDENT_SHORT);
@@ -310,7 +309,7 @@ class Form extends Component
         // base key where every answer is stored
         foreach ($this->toolQuestions as $index => $toolQuestion) {
 
-            $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion, $this->cooperation);
+            $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
             /** @var array|string $answerForInputSource */
             $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);

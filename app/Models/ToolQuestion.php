@@ -92,13 +92,12 @@ class ToolQuestion extends Model
      *
      * @return mixed
      */
-    public function getQuestionValues(Model $limitedTo): Collection
+    public function getQuestionValues(): Collection
     {
         if ($this->toolQuestionValuables()->exists()) {
             return $this->toolQuestionValuables()
                 ->visible()
                 ->ordered()
-                ->limitedTo($limitedTo)
                 ->with('toolQuestionValuables')
                 ->get()
                 ->map(function (ToolQuestionValuable $toolQuestionValuable) {

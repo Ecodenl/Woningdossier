@@ -15,8 +15,8 @@ class AddLimitedToMorphsOnToolQuestionValuablesTable extends Migration
     {
         Schema::table('tool_question_valuables', function (Blueprint $table) {
             if (!Schema::hasColumn('tool_question_valuables', 'limited_to_id')) {
-                $table->unsignedBigInteger('limited_to_id')->index()->after('order');
-                $table->string('limited_to_type')->index()->after('limited_to_id');
+                $table->unsignedBigInteger('limited_to_id')->index()->after('order')->nullable();
+                $table->string('limited_to_type')->index()->after('limited_to_id')->nullable();
             }
         });
     }
@@ -30,10 +30,10 @@ class AddLimitedToMorphsOnToolQuestionValuablesTable extends Migration
     {
         Schema::table('tool_question_valuables', function (Blueprint $table) {
             if (Schema::hasColumn('tool_question_valuables', 'limited_to_id')) {
-                $table->dropColumn('limited_to_id');
-                $table->dropColumn('limited_to_type');
                 $table->dropIndex(['limited_to_id']);
                 $table->dropIndex(['limited_to_type']);
+                $table->dropColumn('limited_to_id');
+                $table->dropColumn('limited_to_type');
             }
         });
     }

@@ -120,7 +120,7 @@ class Building extends Model
         return $this->hasMany(CustomMeasureApplication::class);
     }
 
-    public function getAnswerForAllInputSources(ToolQuestion $toolQuestion)
+    public function getAnswerForAllInputSources(ToolQuestion $toolQuestion, Model $limitedTo)
     {
         $inputSources = InputSource::all();
 
@@ -145,7 +145,7 @@ class Building extends Model
 
             // these contain the human-readable answers, we need this because the answer for a yes, no, unknown could be a 1,2,3
             // we can just use this one, as it doesnt really matter.
-            $questionValues = $toolQuestion->getQuestionValues()->pluck(
+            $questionValues = $toolQuestion->getQuestionValues($limitedTo)->pluck(
                 'name',
                 'value'
             );

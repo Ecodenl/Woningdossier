@@ -40,7 +40,8 @@ class GiveSpecificExampleBuildingToolQuestionValues extends Command
      */
     public function handle()
     {
-        $exampleBuildingsForCooperation = ExampleBuilding::withoutGlobalScopes()->get()->groupBy('cooperation_id');
+        $exampleBuildingsForCooperation = ExampleBuilding::withoutGlobalScopes()
+            ->get()->groupBy('cooperation_id');
 
         $toolQuestion = ToolQuestion::findByShort('specific-example-building');
         foreach ($exampleBuildingsForCooperation as $cooperationId => $exampleBuildings) {
@@ -52,9 +53,12 @@ class GiveSpecificExampleBuildingToolQuestionValues extends Command
                     'show' => true,
                     'tool_question_valuable_type' => ExampleBuilding::class,
                     'tool_question_valuable_id' => $exampleBuilding->id,
-                    'limited_to_id' => $exampleBuilding->cooperation_id,
-                    'limited_to_type' => Cooperation::class,
                 ];
+
+                if (!is_null($exampleBuilding->cooperation_id)) {
+                    $insertData['limited_to_id'] = $exampleBuilding->cooperation_id;
+                    $insertData['limited_to_type'] = Cooperation::class;
+                }
 
                 \DB::table('tool_question_valuables')->updateOrInsert([
                     'order' => $order,

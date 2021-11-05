@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use PhpParser\Node\Expr\AssignOp\Mod;
 
 class ToolQuestionValuable extends Model
 {
@@ -32,6 +33,19 @@ class ToolQuestionValuable extends Model
         return $this->morphTo('tool_question_valuable');
     }
 
+    /**
+     * Simple method to limit the valuables you want to retrieve, pass through a model and limit the valuables that match the model.
+     *
+     * @param Builder $query
+     * @param Model $limitedTo
+     * @return Builder
+     */
+    public function scopeLimitedTo(Builder $query, Model $limitedTo): Builder
+    {
+        return $query->where('limited_to_id', $limitedTo->id)
+            ->where('limited_to_type', get_class($limitedTo))
+            ->orWhereNull('limited_to_id');
+    }
 
     public function scopeVisible(Builder $query): Builder
     {

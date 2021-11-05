@@ -16,7 +16,7 @@ class MoveExampleBuildingIdToBuildingFeaturesTable extends Migration
         $buildings = DB::table('buildings')->get();
 
         Schema::table('building_features', function (Blueprint $table) {
-            $table->unsignedInteger('example_building_id')->nullable()->after('input_source_id')->default(null);
+            $table->unsignedInteger('example_building_id')->nullable()->after('input_source_id');
             $table->foreign('example_building_id')->references('id')->on('example_buildings')->onDelete('set null');
         });
 

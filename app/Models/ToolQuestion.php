@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use PhpParser\Node\Expr\AssignOp\Mod;
 
 class ToolQuestion extends Model
 {
@@ -91,12 +92,13 @@ class ToolQuestion extends Model
      *
      * @return mixed
      */
-    public function getQuestionValues(): Collection
+    public function getQuestionValues(Model $limitedTo): Collection
     {
         if ($this->toolQuestionValuables()->exists()) {
             return $this->toolQuestionValuables()
                 ->visible()
                 ->ordered()
+                ->limitedTo($limitedTo)
                 ->with('toolQuestionValuables')
                 ->get()
                 ->map(function (ToolQuestionValuable $toolQuestionValuable) {

@@ -18,8 +18,10 @@ class SpecificExampleBuilding implements ShouldReturnQuestionValues
 
         return $questionValues
             ->filter(function (array $questionValue) use ($buildingTypeId, $cooperationId) {
-                $matchesBuildingTypeAndIsForUserItsCooperation = $questionValue['building_type_id'] == $buildingTypeId && $questionValue['cooperation_id'] == $cooperationId;
-                $matchedBuildingTypeButIsGeneric = $questionValue['building_type_id'] == $buildingTypeId && $questionValue['cooperation_id'] == $cooperationId;
+
+                $matchesBuildingTypeAndIsForUserItsCooperation = ($questionValue['building_type_id'] == $buildingTypeId && $questionValue['cooperation_id'] == $cooperationId);
+                $matchedBuildingTypeButIsGeneric = ($questionValue['building_type_id'] == $buildingTypeId && is_null($questionValue['cooperation_id']));
+
 
                 return $matchesBuildingTypeAndIsForUserItsCooperation || $matchedBuildingTypeButIsGeneric;
             });

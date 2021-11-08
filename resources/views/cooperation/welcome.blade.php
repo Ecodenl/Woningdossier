@@ -39,5 +39,7 @@
         </h1>
         <h2>{{ config('app.name') }}</h2>
 
+        <h2>We werken nog aan de nieuwe versie van het Hoomdossier. De planning is dat die maandag 15 november wordt geïnstalleerd. Deze dag is het Hoomdossier niet beschikbaar. Dinsdag 16 november kan je met de nieuwe versie werken.</h2>
+
     </div>
 @endsection

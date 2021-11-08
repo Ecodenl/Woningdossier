@@ -180,6 +180,7 @@ class AddMasterInputSource extends Command
                     'insulation_roof_surface',
                     'zinc_surface',
                     'building_heating_id',
+                    'extra',
                 ],
             ],
             'building_insulated_glazings' => [

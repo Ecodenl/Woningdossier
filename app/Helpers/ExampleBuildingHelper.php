@@ -19,6 +19,7 @@ class ExampleBuildingHelper
         'wat-voor-woning',
         'woning-type',
         'bouwjaar-en-oppervlak',
+        'specifieke-voorbeeld-woning'
     ];
 
     const DECIMALS_BY_NAME = [

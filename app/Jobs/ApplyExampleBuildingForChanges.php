@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Helpers\ExampleBuildingHelper;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingType;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
-use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Services\ExampleBuildingService;
 use Illuminate\Bus\Queueable;
@@ -153,16 +153,15 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             $this->building
         );
 
-        $buildYearToolQuestion = ToolQuestion::findByShort('build-year');
-        // get the sub step of the build year, that way we can get the next sub step for it
-        // if the next sub step is completed we wont override the user his data with example building
-        $subStepForBuildYear = $buildYearToolQuestion->subSteps()->orderBy('order')->first();
+        // We apply the example building only if the user has not proceeded further than the example building
+        // sub steps. We simply check if the user has completed any sub step _besides_ the example building sub steps
+        $totalOtherCompletedSubSteps = $this->building->completedSubSteps()
+            ->forInputSource($this->masterInputSource)
+            ->leftJoin('sub_steps', 'completed_sub_steps.sub_step_id', '=', 'sub_steps.id')
+            ->whereNotIn('sub_steps.slug->nl', ExampleBuildingHelper::RELEVANT_SUB_STEPS)
+            ->count();
 
-        // the sub step that comes after the build year question sub step
-        // if this one is completed we wont override the user data with the example building data
-        $nextSubStep = SubStep::where('order', '>', $subStepForBuildYear->order)->orderBy('order')->first();
-
-        if ($this->building->completedSubSteps()->forInputSource($this->masterInputSource)->where('sub_step_id', $nextSubStep->id)->doesntExist()) {
+        if ($totalOtherCompletedSubSteps === 0) {
             Log::debug(__CLASS__. ' Override user data with example building data.');
             ExampleBuildingService::apply(
                 $exampleBuilding,

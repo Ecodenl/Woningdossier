@@ -31,7 +31,8 @@
             @foreach($cards as $cardCategory => $cardCollection)
                 <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
                     @foreach($cardCollection as $order => $card)
-                        <div class="card" id="{{ $card['id'] }}"
+                        <div class="card @if(HoomdossierSession::isUserObserving()) disabled @endif"
+                             id="{{ $card['id'] }}"
                              x-on:draggable-dragged.window="$el.classList.add('disabled');"
                              x-on:draggable-trashed.window="$el.classList.add('disabled');"
                              x-on:moved-card="$el.classList.remove('disabled');"

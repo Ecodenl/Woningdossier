@@ -61,7 +61,7 @@
                 ])
                     <input class="form-input" type="text" name="postal_code" value="{{ old('postal_code') }}"
                            placeholder="@lang('auth.register.form.postal-code')" x-bind="postcode">
-                    <p class="text-blue-800 -mt-2" x-show="showPossibleError">
+                    <p class="text-blue-800 -mt-2 w-full" x-show="showPossibleError">
                         @lang('auth.register.form.possible-wrong-postal-code')
                     </p>
                 @endcomponent

@@ -21,7 +21,9 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Models\ToolQuestionAnswer;
 use Illuminate\Console\Command;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class MapAnswers extends Command
 {
@@ -57,24 +59,26 @@ class MapAnswers extends Command
     public function handle()
     {
 //        // keep in mind that the order of this map is important!
-        $this->info('Cook gas field to the tool question answers...');
-        $this->mapUserEnergyHabits();
-        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-        $this->mapUserMotivations();
-        $this->info('Mapping building heating applications from building features to tool question building heating application');
-        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
-        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
-        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
-        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
-        $this->mapHrBoilerPlacedDate();
-        $this->info("Mapping the build type back to a building type category");
-        $this->mapBuildingTypeBackToBuildingTypeCategory();
-        $this->info("Mapping the total-solar-panels to has-solar-panels");
-        $this->mapSolarPanelCountToHasSolarPanels();
-        $this->info("Creating default remaining-living-years for every building..");
-        $this->setDefaultRemainingLivingYears();
-        $this->info("Completed the quick scan sub steps if needed.");
-        $this->completeQuickScanSubStepsIfNeeded();
+//        $this->info('Cook gas field to the tool question answers...');
+//        $this->mapUserEnergyHabits();
+//        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
+//        $this->mapUserMotivations();
+//        $this->info('Mapping building heating applications from building features to tool question building heating application');
+//        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+//        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
+//        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+//        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
+//        $this->mapHrBoilerPlacedDate();
+//        $this->info("Mapping the build type back to a building type category");
+//        $this->mapBuildingTypeBackToBuildingTypeCategory();
+//        $this->info("Mapping the total-solar-panels to has-solar-panels");
+//        $this->mapSolarPanelCountToHasSolarPanels();
+//        $this->info("Creating default remaining-living-years for every building..");
+//        $this->setDefaultRemainingLivingYears();
+//        $this->info("Completed the quick scan sub steps if needed.");
+//        $this->completeQuickScanSubStepsIfNeeded();
+        $this->info('Setting demand driven to false for each user (that has no demand driven set)');
+        $this->addFalseForDemandDriven();
     }
 
     public function completeQuickScanSubStepsIfNeeded()
@@ -553,5 +557,46 @@ class MapAnswers extends Command
         }
         $bar->finish();
         $this->output->newLine();
+    }
+
+    private function addFalseForDemandDriven()
+    {
+        $service = Service::findByShort('house-ventilation');
+
+        $buildingServices = DB::table('building_services')
+            ->where('service_id', '=', $service->id)
+            ->where(function ($query) {
+                $query->whereNull('extra')
+                    ->orWhere('extra', '=', 'null')
+                    ->orWhereNull('extra->demand_driven');
+            })
+            ->cursor();
+
+        foreach ($buildingServices as $buildingService) {
+            if (is_null($buildingService->extra) || 'null' == $buildingService->extra) {
+                $updateData = [
+                    'extra' => json_encode(['demand_driven' => 0])
+                ];
+            } else {
+                // We don't need to check the demand_driven key, it is never set with the above query
+                $extra = json_decode($buildingService->extra, true);
+                $extra['demand_driven'] = 0;
+
+                $updateData = [
+                    'extra' => json_encode($extra),
+                ];
+            }
+
+            DB::table('building_services')
+                ->where('id', $buildingService->id)
+                ->update($updateData);
+        }
+
+        // Set to JSON just because it should be
+        if ('json' !== Schema::getColumnType('building_services', 'extra')) {
+            Schema::table('building_services', function (Blueprint $table) {
+                $table->json('extra')->change();
+            });
+        }
     }
 }

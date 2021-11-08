@@ -6,7 +6,6 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
-use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
@@ -58,7 +57,8 @@ class MapActionPlan extends Command
     {
         $ids = $this->argument('id');
 
-        $query = $userActionPlanAdvices = UserActionPlanAdvice::allInputSources()
+        $query = UserActionPlanAdvice::allInputSources()
+            ->withInvisible()
             ->whereNull('category');
 
         if (! empty($ids)) {
@@ -106,7 +106,8 @@ class MapActionPlan extends Command
     {
         $ids = $this->argument('id');
 
-        $query = UserActionPlanAdvice::allInputSources();
+        $query = UserActionPlanAdvice::allInputSources()
+            ->withInvisible();
 
         if (! empty($ids)) {
             $query->whereIn('user_id', $ids);
@@ -214,7 +215,7 @@ class MapActionPlan extends Command
                 : UserActionPlanAdviceService::CATEGORY_LATER;
 
 
-            UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            UserActionPlanAdvice::withInvisible()
                 ->allInputSources()
                 ->updateOrCreate(
                 [

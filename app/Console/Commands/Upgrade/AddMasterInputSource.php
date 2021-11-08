@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Upgrade;
 
+use App\Helpers\Arr;
 use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -250,11 +251,40 @@ class AddMasterInputSource extends Command
                 }
 
                 $masterInputSourceAnswers = [];
+                $conditionalAdditionals = [];
 
                 // We will loop all the answer columns, as we must check them individually
                 foreach ($answerColumns as $answerColumn) {
                     if (! is_null($whereColumn)) {
                         foreach ($differentiatingValues as $differentiatingValue) {
+                            if ($table === 'tool_question_answers' && $answerColumn === 'answer') {
+                                // We need extra logic here, because the answer column might also be the
+                                // additional where column... We just couldn't keep one command exception free, right?
+                                // The differentiating value will be the tool question ID
+
+                                $type = DB::table($table)
+                                    ->leftJoin('tool_questions', $table . '.tool_question_id', '=', 'tool_questions.id')
+                                    ->leftJoin('tool_question_types', 'tool_questions.tool_question_type_id', '=', 'tool_question_types.id')
+                                    ->where($buildingOrUserColumn, $buildingOrUserId)
+                                    ->where($table . '.tool_question_id', $differentiatingValue)
+                                    ->select('tool_question_types.short')
+                                    ->first()->short;
+
+                                if ($type === 'checkbox-icon') {
+                                    $additionalWhereColumn = $answerColumn;
+                                    $differentiatingSubValues[$differentiatingValue] = $values
+                                        ->where($whereColumn, $differentiatingValue)
+                                        ->pluck($additionalWhereColumn)->unique()->toArray();
+                                    $conditionalAdditionals[$differentiatingValue] = [
+                                        'answerColumn' => $answerColumn,
+                                        'additionalWhereColumn' => $additionalWhereColumn,
+                                        'differentiatingSubValues' => $differentiatingSubValues
+                                    ];
+
+                                    $clearConditionals = true;
+                                }
+                            }
+
                             if (! is_null($additionalWhereColumn)) {
                                 foreach ($differentiatingSubValues[$differentiatingValue] as $differentiatingSubValue) {
                                     // Grab the answer of the coach
@@ -328,6 +358,12 @@ class AddMasterInputSource extends Command
                                 // Build answer structure with where
                                 $masterInputSourceAnswers[$answerColumn][$whereColumn][$differentiatingValue] = $answer;
                             }
+
+                            // Clear, next round might not require these
+                            if (($clearConditionals ?? false)) {
+                                $additionalWhereColumn = null;
+                                $differentiatingSubValues = [];
+                            }
                         }
                     } else {
                         // Grab the answer of the coach
@@ -382,6 +418,8 @@ class AddMasterInputSource extends Command
                     if (is_null($additionalWhereColumn)) {
                         // Only where column
                         foreach ($differentiatingValues as $differentiatingValue) {
+                            $conditionalColumns = Arr::pluck($conditionalAdditionals, 'answerColumn');
+
                             $answersToInsert = [];
 
                             // Set answers
@@ -393,9 +431,35 @@ class AddMasterInputSource extends Command
                             $customLogic = $baseUpdateOrInsertLogic;
                             $customLogic[$whereColumn] = $differentiatingValue;
 
-                            // Insert for each where
-                            DB::table($table)
-                                ->updateOrInsert($customLogic, $answersToInsert);
+                            if (! empty($conditionalColumns) && isset($conditionalAdditionals[$differentiatingValue])) {
+                                // Handle conditional logic
+
+                                // No better way to do this... each iteration we check the column. If it's the
+                                // correct column, we set the answers and logic for this additional logic
+                                $conditionalAdditionalWhereColumn = $conditionalAdditionals[$differentiatingValue]['additionalWhereColumn'];
+                                $conditionalDifferentiatingSubValues = $conditionalAdditionals[$differentiatingValue]['differentiatingSubValues'];
+
+                                foreach ($conditionalDifferentiatingSubValues[$differentiatingValue] as $differentiatingSubValue) {
+                                    // Set answers
+                                    foreach ($masterInputSourceAnswers as $answerColumn => $answers) {
+                                        if (in_array($answerColumn, $conditionalColumns)) {
+                                            $answersToInsert[$answerColumn] = $answers[$whereColumn][$differentiatingValue][$conditionalAdditionalWhereColumn][$differentiatingSubValue];
+                                        }
+                                    }
+
+                                    // Set custom logic for insert
+                                    $customLogic = $baseUpdateOrInsertLogic;
+                                    $customLogic[$whereColumn] = $differentiatingValue;
+                                    $customLogic[$conditionalAdditionalWhereColumn] = $differentiatingSubValue;
+
+                                    DB::table($table)
+                                        ->updateOrInsert($customLogic, $answersToInsert);
+                                }
+                            } else {
+                                // Insert answers as per usual (each where)
+                                DB::table($table)
+                                    ->updateOrInsert($customLogic, $answersToInsert);
+                            }
                         }
                     } else {
                         // With additional where column

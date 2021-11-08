@@ -58,7 +58,7 @@ class MapActionPlan extends Command
     {
         $ids = $this->argument('id');
 
-        $query = $userActionPlanAdvices = UserActionPlanAdvice::allInputSources()
+        $query = UserActionPlanAdvice::allInputSources()
             ->whereNull('category');
 
         if (! empty($ids)) {

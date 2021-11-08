@@ -205,6 +205,13 @@ class AddMasterInputSource extends Command
                     'answer',
                 ],
             ],
+            'completed_sub_steps' => [
+                'where_column' => 'sub_step_id',
+                'answer_columns' => [
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
         ];
 
         // Get the input sources

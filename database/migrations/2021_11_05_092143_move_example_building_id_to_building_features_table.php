@@ -13,24 +13,27 @@ class MoveExampleBuildingIdToBuildingFeaturesTable extends Migration
      */
     public function up()
     {
-        $buildings = DB::table('buildings')->get();
+        if (Schema::hasColumn('buildings', 'example_building_id')) {
+            $buildings = DB::table('buildings')->get();
 
-        Schema::table('building_features', function (Blueprint $table) {
-            $table->unsignedInteger('example_building_id')->nullable()->after('input_source_id');
-            $table->foreign('example_building_id')->references('id')->on('example_buildings')->onDelete('set null');
-        });
+            Schema::table('building_features', function (Blueprint $table) {
+                $table->unsignedInteger('example_building_id')->nullable()->after('input_source_id');
+                $table->foreign('example_building_id')->references('id')->on('example_buildings')->onDelete('set null');
+            });
 
-        foreach ($buildings as $building) {
-            // we just get all the building features for the building and give them the example building.
-            DB::table('building_features')
-                ->where('building_id', $building->id)
-                ->update(['example_building_id' => $building->example_building_id]);
+
+            foreach ($buildings as $building) {
+                // we just get all the building features for the building and give them the example building.
+                DB::table('building_features')
+                    ->where('building_id', $building->id)
+                    ->update(['example_building_id' => $building->example_building_id]);
+            }
+
+            Schema::table('buildings', function (Blueprint $table) {
+                $table->dropForeign(['example_building_id']);
+                $table->dropColumn('example_building_id');
+            });
         }
-
-        Schema::table('buildings', function (Blueprint $table) {
-            $table->dropForeign(['example_building_id']);
-            $table->dropColumn('example_building_id');
-        });
     }
 
     /**

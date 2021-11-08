@@ -85,6 +85,7 @@ class ToolQuestionsTableSeeder extends Seeder
         $template2rows3top1bottom = SubStepTemplate::findByShort('template-2-rows-3-top-1-bottom');
         $templateCustomChanges = SubStepTemplate::findByShort('template-custom-changes');
         $templateSummary = SubStepTemplate::findByShort('template-summary');
+        $templateSpecificExampleBuilding = SubStepTemplate::findByShort('specific-example-building');
 
         // Quick scan steps
         $stepBuildingData = Step::findByShort('building-data');
@@ -252,8 +253,22 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ]
                 ],
-                'Monument en energielabel' => [
+                'Specifieke voorbeeld woning' => [
                     'order' => 4,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:example_buildings,id'],
+                            'short' => 'specific-example-building',
+                            'save_in' => 'building_features.example_building_id',
+                            'translation' => 'Welke woning lijkt het meest op jouw woning?',
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => \App\Models\ExampleBuilding::all(),
+                        ]
+                    ],
+                ],
+                'Monument en energielabel' => [
+                    'order' => 5,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -317,7 +332,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Gebruikersoppervlak en bijzonderheden' => [
-                    'order' => 5,
+                    'order' => 6,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -337,7 +352,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Samenvatting woninggegevens' => [
-                    'order' => 6,
+                    'order' => 7,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [

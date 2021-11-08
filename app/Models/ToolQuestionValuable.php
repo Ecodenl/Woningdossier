@@ -32,7 +32,6 @@ class ToolQuestionValuable extends Model
         return $this->morphTo('tool_question_valuable');
     }
 
-
     public function scopeVisible(Builder $query): Builder
     {
         return $query->where('show', true);

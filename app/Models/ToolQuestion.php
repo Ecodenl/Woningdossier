@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use PhpParser\Node\Expr\AssignOp\Mod;
 
 class ToolQuestion extends Model
 {
@@ -103,7 +104,9 @@ class ToolQuestion extends Model
                     // so now get the actual morphed model.
                     $valuable = $toolQuestionValuable->tool_question_valuable;
 
-                    $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short']);
+                    // these will also be available in the frontend, to the user.
+                    // be careful choosing what you allow.
+                    $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short', 'building_type_id', 'cooperation_id']);
                     $questionValue['extra'] = $toolQuestionValuable->extra;
                     // the humane readable name is either set in the name or value column.
                     $questionValue['name'] = $valuable->name ?? $valuable->value;
@@ -111,8 +114,6 @@ class ToolQuestion extends Model
 
                     return $questionValue;
                 });
-
-
         }
         return $this->toolQuestionCustomValues()
             ->visible()

@@ -223,7 +223,7 @@ class DumpService
 
         $buildingType = $buildingFeature->buildingType->name ?? '';
         $buildYear = $buildingFeature->build_year ?? '';
-        $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
+        $exampleBuilding = optional($buildingFeature->exampleBuilding)->isSpecific() ? $buildingFeature->exampleBuilding->name : '';
 
         $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
 

@@ -3,7 +3,8 @@
         $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
             $toolQuestion,
             $building,
-            $masterInputSource
+            $masterInputSource,
+            $cooperation
         );
     @endphp
     @foreach($questionValues as $toolQuestionValue)

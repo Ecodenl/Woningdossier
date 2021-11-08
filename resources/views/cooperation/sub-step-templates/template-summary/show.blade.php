@@ -144,7 +144,7 @@
                                                 $answer = $answers[$toolQuestionToSummarize->short] ?? null;
 
                                                 if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
-                                                    $questionValues = $toolQuestionToSummarize->getQuestionValues();
+                                                    $questionValues = $toolQuestionToSummarize->getQuestionValues($cooperation);
 
                                                     if ($questionValues->isNotEmpty()) {
                                                         $humanReadableAnswers = [];

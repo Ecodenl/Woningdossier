@@ -68,7 +68,6 @@ class BuildingObserver
     {
         $building->user_id             = null;
         $building->country_code        = 'nl';
-        $building->example_building_id = null;
         $building->primary             = false;
         $building->save();
 

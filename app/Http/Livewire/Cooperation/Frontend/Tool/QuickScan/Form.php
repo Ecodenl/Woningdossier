@@ -49,6 +49,7 @@ class Form extends Component
     public $currentInputSource;
     public $residentInputSource;
     public $coachInputSource;
+    public $cooperation;
 
     public $step;
     public $subStep;
@@ -486,7 +487,7 @@ class Form extends Component
         // which will trigger the observer, which will start applying the
         // example building, which will delete and recreate records, which will
         // trigger the observer.. ah well: you get the idea.
-        if (in_array($table, ['building_features']) && in_array($column, ['build_year', 'building_type_id'])) {
+        if (in_array($table, ['building_features']) && in_array($column, ['build_year', 'building_type_id', 'example_building_id'])) {
             // set the boolean to the appropriate value. Example building will
             // be applied AFTER saving the current form (for getting the
             // appropriate values).

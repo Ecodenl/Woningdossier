@@ -11,6 +11,7 @@ use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
+use App\Models\ExampleBuilding;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
 use App\Models\QuestionsAnswer;
@@ -24,6 +25,7 @@ use App\Observers\BuildingElementObserver;
 use App\Observers\BuildingObserver;
 use App\Observers\CompletedSubStepObserver;
 use App\Observers\CooperationObserver;
+use App\Observers\ExampleBuildingObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
 use App\Observers\StepObserver;
@@ -59,7 +61,6 @@ class WoningdossierServiceProvider extends ServiceProvider
         Account::observe(AccountObserver::class);
         Translation::observe(TranslationObserver::class);
         CompletedSubStep::observe(CompletedSubStepObserver::class);
-
         ToolQuestionAnswer::observe(ToolQuestionAnswerObserver::class);
 
 

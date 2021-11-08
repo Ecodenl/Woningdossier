@@ -6,6 +6,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\BuildingFeature
@@ -92,6 +93,7 @@ class BuildingFeature extends Model
     use ToolSettingTrait;
 
     protected $fillable = [
+        'example_building_id',
         'element_values',
         'plastered_wall_surface',
         'building_type_id',
@@ -154,6 +156,11 @@ class BuildingFeature extends Model
     public function buildingCategory()
     {
         return $this->belongsTo(BuildingCategory::class);
+    }
+
+    public function exampleBuilding(): BelongsTo
+    {
+        return $this->belongsTo(ExampleBuilding::class);
     }
 
     public function buildingType()

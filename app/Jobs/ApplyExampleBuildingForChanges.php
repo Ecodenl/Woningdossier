@@ -63,6 +63,13 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         // objects for first checks
         $buildingFeature = $this->buildingFeature;
 
+
+        // Kinda obvious but still
+        // if the user changed his example building in the frontend we will just apply that one.
+        if (array_key_exists('example_building_id', $changes)) {
+            return ExampleBuilding::find($changes['example_building_id']);
+        }
+
         // We need this to do stuff
         if ($buildingFeature instanceof BuildingFeature && !is_null($buildingFeature->build_year)) {
             // current values for comparison later on
@@ -125,14 +132,15 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
     private function retriggerExampleBuildingApplication(ExampleBuilding $exampleBuilding)
     {
         Log::debug(__METHOD__);
+        $buildingFeatures =  $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
         if ($this->building->example_building_id !== $exampleBuilding->id) {
             Log::debug(__CLASS__." Example building ID changes (" . $this->building->example_building_id . " -> " . $exampleBuilding->id . ")");
             // change example building, let the observer do the rest
-            $this->building->exampleBuilding()->associate($exampleBuilding)->save();
+            $buildingFeatures->update(['example_building_id' => $exampleBuilding->id]);
         }
 
         // more of a fallback
-        $buildYear = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first()->build_year;
+        $buildYear = $buildingFeatures->build_year;
 
         if (array_key_exists('build_year', $this->changes)) {
             $buildYear = $this->changes['build_year'];

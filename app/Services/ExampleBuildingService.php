@@ -70,7 +70,9 @@ class ExampleBuildingService
         $boilerService = Service::where('short', 'boiler')->first();
 
         // used for throwing the event at the end
-        $oldExampleBuilding = $building->exampleBuilding;
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $buildingFeature = $building->buildingFeatures()->forInputSource($masterInputSource)->first();
+        $oldExampleBuilding = $buildingFeature->exampleBuilding;
 
         // traverse the contents:
         $exampleData = $contents->content;

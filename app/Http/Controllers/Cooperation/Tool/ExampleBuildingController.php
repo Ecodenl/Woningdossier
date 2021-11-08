@@ -31,7 +31,16 @@ class ExampleBuildingController extends Controller
             ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
 
             // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
-            $building->exampleBuilding()->associate($exampleBuilding);
+//            $building->exampleBuilding()->associate($exampleBuilding);
+            /**
+             *
+             *
+             *  REEEEEEAAAAAADDDMEEEEEEEE
+             *
+             * This controller is old, and comes from the general-data time. NO USAGE ANYMPROE.
+             *
+             *
+             */
             $building->save();
         } else {
             ExampleBuildingService::clearExampleBuilding($building);

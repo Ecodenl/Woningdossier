@@ -64,6 +64,8 @@ class ToolQuestionsTableSeeder extends Seeder
         $roofInsulation = Element::findByShort('roof-insulation');
         $roofTypes = RoofType::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
+
+        // Tool question types
         $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
         $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
@@ -233,12 +235,12 @@ class ToolQuestionsTableSeeder extends Seeder
                     'questions' => [
                         [
                             // TODO: Date is static, should be dynamic... (counts for other questions too)
-                            'validation' => ['numeric', 'integer', 'between:1900,' . date('Y')],
+                            'validation' => ['numeric', 'integer', 'between:1000,' . date('Y')],
                             'save_in' => 'building_features.build_year',
                             'short' => 'build-year',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year',
-                            'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 1900, 'max' => date('Y'), 'value' => 1930, 'step' => 1],
+                            'tool_question_type_id' => $textType->id,
+                            'options' => ['min' => 1000, 'max' => date('Y'), 'value' => 1930, 'step' => 1],
                         ],
                         [
                             'validation' => ['numeric', 'integer', 'between:1,5'],

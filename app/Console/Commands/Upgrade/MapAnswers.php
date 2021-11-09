@@ -57,23 +57,23 @@ class MapAnswers extends Command
     public function handle()
     {
         // keep in mind that the order of this map is important!
-        $this->info('Cook gas field to the tool question answers...');
-        $this->mapUserEnergyHabits();
-        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-        $this->mapUserMotivations();
-        $this->info('Mapping building heating applications from building features to tool question building heating application');
-        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
-        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
-        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
-        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
-        $this->mapHrBoilerPlacedDate();
-        $this->info("Mapping the build type back to a building type category");
-        $this->mapBuildingTypeBackToBuildingTypeCategory();
-        $this->info("Mapping the total-solar-panels to has-solar-panels");
-        $this->mapSolarPanelCountToHasSolarPanels();
-        $this->info("Creating default remaining-living-years for every building..");
-        $this->setDefaultRemainingLivingYears();
-        $this->info("Completed the quick scan sub steps if needed.");
+//        $this->info('Cook gas field to the tool question answers...');
+//        $this->mapUserEnergyHabits();
+//        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
+//        $this->mapUserMotivations();
+//        $this->info('Mapping building heating applications from building features to tool question building heating application');
+//        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+//        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
+//        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+//        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
+//        $this->mapHrBoilerPlacedDate();
+//        $this->info("Mapping the build type back to a building type category");
+//        $this->mapBuildingTypeBackToBuildingTypeCategory();
+//        $this->info("Mapping the total-solar-panels to has-solar-panels");
+//        $this->mapSolarPanelCountToHasSolarPanels();
+//        $this->info("Creating default remaining-living-years for every building..");
+//        $this->setDefaultRemainingLivingYears();
+//        $this->info("Completed the quick scan sub steps if needed.");
         $this->completeQuickScanSubStepsIfNeeded();
     }
 
@@ -86,15 +86,25 @@ class MapAnswers extends Command
         ]);
         $subSteps = SubStep::all();
 
+        $bar = $this->output->createProgressBar($buildings->count());
+        $bar->start();
         /** @var Building $building */
         foreach ($buildings as $building) {
             foreach ($inputSources as $inputSource) {
                 foreach ($subSteps as $subStep) {
                     $completeStep = true;
                     foreach ($subStep->toolQuestions as $toolQuestion) {
-                        // one answer is not filled, so we can't complete it.
-                        if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
-                            $completeStep = false;
+                        // If a question is for a specific input source, we won't be able to get an answer for it
+                        if (is_null($toolQuestion->for_specific_input_source)
+                            || $inputSource->id === $toolQuestion->for_specific_input_source
+                        ) {
+                            // A non-required question could be not answered but that shouldn't matter anyway
+                            if (in_array('required', $toolQuestion->validation)) {
+                                // one answer is not filled, so we can't complete it.
+                                if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
+                                    $completeStep = false;
+                                }
+                            }
                         }
                     }
 
@@ -117,7 +127,10 @@ class MapAnswers extends Command
                     }
                 }
             }
+            $bar->advance();
         }
+        $bar->finish();
+        $this->output->newLine();
     }
 
     /**

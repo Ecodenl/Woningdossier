@@ -59,7 +59,6 @@ class MapActionPlan extends Command
         // handles the user who has absolutely interest in the given measure.
         \DB::table('user_action_plan_advices')
             ->where('planned', 1)
-            ->where('planned_year', null)
             ->update([
                 'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
                 'visible' => true

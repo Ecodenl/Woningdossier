@@ -80,7 +80,7 @@ window.triggerEvent = function (element, eventName) {
  * @param params
  */
 window.triggerCustomEvent = function (element, eventName, params = {}) {
-    if (! typeof params === 'object') {
+    if (typeof params !== 'object') {
         console.error('Params is not a valid object!');
         params = {};
     }

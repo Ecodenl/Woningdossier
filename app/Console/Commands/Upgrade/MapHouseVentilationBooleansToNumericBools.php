@@ -14,7 +14,9 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Models\ToolQuestionAnswer;
 use Illuminate\Console\Command;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class MapHouseVentilationBooleansToNumericBools extends Command
 {
@@ -30,7 +32,7 @@ class MapHouseVentilationBooleansToNumericBools extends Command
      *
      * @var string
      */
-    protected $description = 'This command will map true or false to 1 or 2, for consistency reasons.';
+    protected $description = 'This command will map true or false to 1 or 0, for consistency reasons.';
 
     /**
      * Create a new command instance.
@@ -58,26 +60,35 @@ class MapHouseVentilationBooleansToNumericBools extends Command
 
         $bar = $this->output->createProgressBar($buildingServices->count());
         foreach ($buildingServices as $buildingService) {
-
             $oldExtra = $buildingService->extra;
             $extra = $buildingService->extra;
 
-            if (isset($extra['demand_driven']) && ($extra['demand_driven'] === true || $extra['demand_driven'] === "true")) {
-                $extra['demand_driven'] = 1;
-            }
+            if (is_null($extra) || 'null' == $extra) {
+                $extra = [
+                    'demand_driven' => 0,
+                    'heat_recovery' => 0,
+                ];
+            } else {
+                if (isset($extra['demand_driven'])) {
+                    if (is_null($extra['demand_driven']) || 'null' === $extra['demand_driven'] || $extra['demand_driven'] === false || $extra['demand_driven'] === "false") {
+                        $extra['demand_driven'] = 0;
+                    } elseif ($extra['demand_driven'] === true || $extra['demand_driven'] === "true") {
+                        $extra['demand_driven'] = 1;
+                    }
+                } else {
+                    $extra['demand_driven'] = 0;
+                }
 
-            if (isset($extra['demand_driven']) && ($extra['demand_driven'] === false || $extra['demand_driven'] === "false")) {
-                $extra['demand_driven'] = 0;
+                if (isset($extra['heat_recovery']) ) {
+                    if (is_null($extra['heat_recovery']) || 'null' === $extra['heat_recovery'] || $extra['heat_recovery'] === false || $extra['heat_recovery'] === "false") {
+                        $extra['heat_recovery'] = 0;
+                    } elseif ($extra['heat_recovery'] === true || $extra['heat_recovery'] === "true") {
+                        $extra['heat_recovery'] = 1;
+                    }
+                } else {
+                    $extra['heat_recovery'] = 0;
+                }
             }
-
-            if (isset($extra['heat_recovery']) && ($extra['heat_recovery'] === true || $extra['heat_recovery'] === "true")) {
-                $extra['heat_recovery'] = 1;
-            }
-
-            if (isset($extra['heat_recovery']) && ($extra['heat_recovery'] === false || $extra['heat_recovery'] === "false")) {
-                $extra['heat_recovery'] = 0;
-            }
-
 
             $buildingService->extra = $extra;
 
@@ -87,6 +98,13 @@ class MapHouseVentilationBooleansToNumericBools extends Command
 
             }
             $bar->advance();
+        }
+
+        // Set to JSON just because it should be
+        if ('json' !== Schema::getColumnType('building_services', 'extra')) {
+            Schema::table('building_services', function (Blueprint $table) {
+                $table->json('extra')->change();
+            });
         }
 
         $bar->finish();

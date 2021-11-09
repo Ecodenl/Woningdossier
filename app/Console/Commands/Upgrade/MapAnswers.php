@@ -2,13 +2,11 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
-use App\Models\BuildingType;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\Service;
@@ -19,11 +17,8 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
-use App\Models\ToolQuestionAnswer;
 use Illuminate\Console\Command;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class MapAnswers extends Command
 {
@@ -77,8 +72,6 @@ class MapAnswers extends Command
         $this->setDefaultRemainingLivingYears();
         $this->info("Completed the quick scan sub steps if needed.");
         $this->completeQuickScanSubStepsIfNeeded();
-        $this->info('Setting demand driven to false for each user (that has no demand driven set)');
-        $this->addFalseForDemandDriven();
     }
 
     public function completeQuickScanSubStepsIfNeeded()
@@ -557,46 +550,5 @@ class MapAnswers extends Command
         }
         $bar->finish();
         $this->output->newLine();
-    }
-
-    private function addFalseForDemandDriven()
-    {
-        $service = Service::findByShort('house-ventilation');
-
-        $buildingServices = DB::table('building_services')
-            ->where('service_id', '=', $service->id)
-            ->where(function ($query) {
-                $query->whereNull('extra')
-                    ->orWhere('extra', '=', 'null')
-                    ->orWhereNull('extra->demand_driven');
-            })
-            ->cursor();
-
-        foreach ($buildingServices as $buildingService) {
-            if (is_null($buildingService->extra) || 'null' == $buildingService->extra) {
-                $updateData = [
-                    'extra' => json_encode(['demand_driven' => 0])
-                ];
-            } else {
-                // We don't need to check the demand_driven key, it is never set with the above query
-                $extra = json_decode($buildingService->extra, true);
-                $extra['demand_driven'] = 0;
-
-                $updateData = [
-                    'extra' => json_encode($extra),
-                ];
-            }
-
-            DB::table('building_services')
-                ->where('id', $buildingService->id)
-                ->update($updateData);
-        }
-
-        // Set to JSON just because it should be
-        if ('json' !== Schema::getColumnType('building_services', 'extra')) {
-            Schema::table('building_services', function (Blueprint $table) {
-                $table->json('extra')->change();
-            });
-        }
     }
 }

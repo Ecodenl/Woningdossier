@@ -70,59 +70,45 @@ class MapActionPlan extends Command
 
     public function mapUserActionPlanAdvices()
     {
-        $ids = $this->argument('id');
-
-        $query = UserActionPlanAdvice::allInputSources()
-            ->withInvisible()
-            ->whereNull('category');
-
-        if (!empty($ids)) {
-            $query->whereIn('user_id', $ids);
-        }
-
-        // This will add the category to each row in the user_action_plan_advices table
-        $userActionPlanAdvices = $query->cursor();
-
-        $bar = $this->output->createProgressBar($userActionPlanAdvices->count());
-        $bar->start();
-
-
+        // handles the user who has absolutely interest in the given measure.
         \DB::table('user_action_plan_advices')
-            ->where('planned', 0)
+            ->where('planned', 1)
             ->where('planned_year', null)
             ->update([
                 'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
                 'visible' => true
             ]);
 
-        foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
-            if ($userActionPlanAdvice->planned) {
-                $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
-                $visible = true;
-            } else {
-                if (!empty($userActionPlanAdvice->planned_year)) {
-                    if ($userActionPlanAdvice->planned_year <= now()->addYears(4)->format('Y')) {
-                        $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
-                        $visible = true;
-                    } else {
-                        $category = UserActionPlanAdviceService::CATEGORY_LATER;
-                        $visible = true;
-                    }
-                } else {
-                    $category = UserActionPlanAdviceService::CATEGORY_LATER;
-                    $visible = false;
-                }
-            }
-
-            $userActionPlanAdvice->update([
-                'category' => $category,
-                'visible' => $visible,
+        // for the user who did not check the planned checkbox but filled in he had this measure planned within the next 5 years
+        // so at time or writing that would be users where planned = false and planned year is equal or below 2025
+        $year = now()->addYears(4)->format('Y');
+        \DB::table('user_action_plan_advices')
+            ->where('planned', 0)
+            ->where('planned_year', "<=", $year)
+            ->update([
+                'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
+                'visible' => true
             ]);
 
-            $bar->advance();
-        }
+        // this does what the above does, but updates each advice above 2025.
+        \DB::table('user_action_plan_advices')
+            ->where('planned', 0)
+            ->where('planned_year', ">", $year)
+            ->update([
+                'category' => UserActionPlanAdviceService::CATEGORY_LATER,
+                'visible' => true
+            ]);
 
-        $bar->finish();
+        // handles the user who has absolutely 0 interest
+        \DB::table('user_action_plan_advices')
+            ->where('planned', 0)
+            ->where('planned_year', null)
+            ->update([
+                'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
+                'visible' => false
+            ]);
+
+
         $this->output->newLine();
     }
 

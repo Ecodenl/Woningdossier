@@ -56,7 +56,7 @@ class MapAnswers extends Command
      */
     public function handle()
     {
-//        // keep in mind that the order of this map is important!
+        // keep in mind that the order of this map is important!
         $this->info('Cook gas field to the tool question answers...');
         $this->mapUserEnergyHabits();
         $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
@@ -92,7 +92,7 @@ class MapAnswers extends Command
                 foreach ($subSteps as $subStep) {
                     $completeStep = true;
                     foreach ($subStep->toolQuestions as $toolQuestion) {
-                        // one answer is not filled, so we cant complete it.
+                        // one answer is not filled, so we can't complete it.
                         if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
                             $completeStep = false;
                         }
@@ -121,7 +121,7 @@ class MapAnswers extends Command
     }
 
     /**
-     * This code is the same as th CompletedSubStepObserver, but without the events for recalc etc
+     * This code is the same as the CompletedSubStepObserver, but without the events for recalc etc.
      *
      * @param $completedSubStep
      */

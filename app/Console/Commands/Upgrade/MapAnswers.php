@@ -2,13 +2,12 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\StepHelper;
+use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
-use App\Models\BuildingType;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\Service;
@@ -19,7 +18,6 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
-use App\Models\ToolQuestionAnswer;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -57,23 +55,23 @@ class MapAnswers extends Command
     public function handle()
     {
         // keep in mind that the order of this map is important!
-//        $this->info('Cook gas field to the tool question answers...');
-//        $this->mapUserEnergyHabits();
-//        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-//        $this->mapUserMotivations();
-//        $this->info('Mapping building heating applications from building features to tool question building heating application');
-//        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
-//        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
-//        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
-//        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
-//        $this->mapHrBoilerPlacedDate();
-//        $this->info("Mapping the build type back to a building type category");
-//        $this->mapBuildingTypeBackToBuildingTypeCategory();
-//        $this->info("Mapping the total-solar-panels to has-solar-panels");
-//        $this->mapSolarPanelCountToHasSolarPanels();
-//        $this->info("Creating default remaining-living-years for every building..");
-//        $this->setDefaultRemainingLivingYears();
-//        $this->info("Completed the quick scan sub steps if needed.");
+        $this->info('Cook gas field to the tool question answers...');
+        $this->mapUserEnergyHabits();
+        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
+        $this->mapUserMotivations();
+        $this->info('Mapping building heating applications from building features to tool question building heating application');
+        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
+        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
+        $this->mapHrBoilerPlacedDate();
+        $this->info("Mapping the build type back to a building type category");
+        $this->mapBuildingTypeBackToBuildingTypeCategory();
+        $this->info("Mapping the total-solar-panels to has-solar-panels");
+        $this->mapSolarPanelCountToHasSolarPanels();
+        $this->info("Creating default remaining-living-years for every building..");
+        $this->setDefaultRemainingLivingYears();
+        $this->info("Completed the quick scan sub steps if needed.");
         $this->completeQuickScanSubStepsIfNeeded();
     }
 
@@ -99,8 +97,36 @@ class MapAnswers extends Command
                             || $inputSource->id === $toolQuestion->for_specific_input_source
                         ) {
                             // A non-required question could be not answered but that shouldn't matter anyway
-                            if (in_array('required', $toolQuestion->validation)) {
-                                // one answer is not filled, so we can't complete it.
+                            if (in_array('required', $toolQuestion->validation)
+                                || Str::arrContains($toolQuestion->validation, 'required_if', true)
+                            ) {
+                                // Conditions could not be met, time to check...
+                                if (! empty($toolQuestion->conditions)) {
+                                    $answers = [];
+
+                                    foreach ($toolQuestion->conditions as $conditionSet) {
+                                        foreach ($conditionSet as $condition) {
+                                            $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
+                                            if ($otherSubStepToolQuestion instanceof ToolQuestion) {
+                                                $otherSubStepAnswer = $building->getAnswer($inputSource,
+                                                    $otherSubStepToolQuestion);
+
+                                                $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
+                                            }
+                                        }
+                                    }
+
+                                    $evaluatableAnswers = collect($answers);
+
+                                    // Evaluation did not pass. We continue to the next tool question
+                                    if (! ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions,
+                                        $evaluatableAnswers)
+                                    ) {
+                                        continue;
+                                    }
+                                }
+
+                                // Final check, check the actual answer. If one answer is not filled, we can't complete it.
                                 if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
                                     $completeStep = false;
                                 }

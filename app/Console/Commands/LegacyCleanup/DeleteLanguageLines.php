@@ -46,10 +46,10 @@ class DeleteLanguageLines extends Command
      */
     public function handle()
     {
-        $degenMode = false;
-        if ($this->confirm("Do you want to remove all translations without confirmation each translation ?")) {
+        //$degenMode = false;
+        //if ($this->confirm("Do you want to remove all translations without confirmation each translation ?")) {
             $degenMode = true;
-        }
+        //}
         foreach ($this->translationKeys as $translationKey) {
             $groupAndKey = explode('.', $translationKey);
             $group = array_shift($groupAndKey);

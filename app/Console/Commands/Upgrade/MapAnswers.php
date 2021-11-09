@@ -2,13 +2,12 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\StepHelper;
+use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
-use App\Models\BuildingType;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\Service;
@@ -19,7 +18,6 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
-use App\Models\ToolQuestionAnswer;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -56,7 +54,7 @@ class MapAnswers extends Command
      */
     public function handle()
     {
-//        // keep in mind that the order of this map is important!
+        // keep in mind that the order of this map is important!
         $this->info('Cook gas field to the tool question answers...');
         $this->mapUserEnergyHabits();
         $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
@@ -86,15 +84,55 @@ class MapAnswers extends Command
         ]);
         $subSteps = SubStep::all();
 
+        $bar = $this->output->createProgressBar($buildings->count());
+        $bar->start();
         /** @var Building $building */
         foreach ($buildings as $building) {
             foreach ($inputSources as $inputSource) {
                 foreach ($subSteps as $subStep) {
                     $completeStep = true;
                     foreach ($subStep->toolQuestions as $toolQuestion) {
-                        // one answer is not filled, so we cant complete it.
-                        if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
-                            $completeStep = false;
+                        // If a question is for a specific input source, we won't be able to get an answer for it
+                        if (is_null($toolQuestion->for_specific_input_source)
+                            || $inputSource->id === $toolQuestion->for_specific_input_source
+                        ) {
+                            // A non-required question could be not answered but that shouldn't matter anyway
+                            if (in_array('required', $toolQuestion->validation)
+                                || Str::arrContains($toolQuestion->validation, 'required_if', true)
+                            ) {
+                                // Check the actual answer. If one answer is not filled, we can't complete it.
+                                if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
+                                    // Conditions could not be met, time to check...
+                                    if (! empty($toolQuestion->conditions)) {
+                                        $answers = [];
+
+                                        foreach ($toolQuestion->conditions as $conditionSet) {
+                                            foreach ($conditionSet as $condition) {
+                                                $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
+                                                if ($otherSubStepToolQuestion instanceof ToolQuestion) {
+                                                    $otherSubStepAnswer = $building->getAnswer($inputSource,
+                                                        $otherSubStepToolQuestion);
+
+                                                    $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
+                                                }
+                                            }
+                                        }
+
+                                        $evaluatableAnswers = collect($answers);
+
+                                        // Evaluation did not pass. We continue to the next tool question
+                                        if (! ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions,
+                                            $evaluatableAnswers)
+                                        ) {
+                                            continue;
+                                        }
+                                    }
+
+                                    $completeStep = false;
+                                    // No point in checking the other tool questions if we're not completing it anyway
+                                    break;
+                                }
+                            }
                         }
                     }
 
@@ -117,11 +155,14 @@ class MapAnswers extends Command
                     }
                 }
             }
+            $bar->advance();
         }
+        $bar->finish();
+        $this->output->newLine();
     }
 
     /**
-     * This code is the same as th CompletedSubStepObserver, but without the events for recalc etc
+     * This code is the same as the CompletedSubStepObserver, but without the events for recalc etc.
      *
      * @param $completedSubStep
      */

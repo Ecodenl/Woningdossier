@@ -213,6 +213,13 @@ class AddMasterInputSource extends Command
                     'updated_at',
                 ],
             ],
+            'considerables' => [
+                'where_column' => 'considerable_type',
+                'additional_where_column' => 'considerable_id',
+                'answer_columns' => [
+                    'is_considering',
+                ],
+            ],
         ];
 
         // Get the input sources

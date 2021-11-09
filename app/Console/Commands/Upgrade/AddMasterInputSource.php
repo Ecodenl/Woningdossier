@@ -213,6 +213,13 @@ class AddMasterInputSource extends Command
                     'updated_at',
                 ],
             ],
+            'completed_steps' => [
+                'where_column' => 'step_id',
+                'answer_columns' => [
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
             'considerables' => [
                 'where_column' => 'considerable_type',
                 'additional_where_column' => 'considerable_id',

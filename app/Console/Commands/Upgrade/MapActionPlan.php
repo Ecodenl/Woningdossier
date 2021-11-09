@@ -46,26 +46,12 @@ class MapActionPlan extends Command
      */
     public function handle()
     {
-        $start = microtime(true);
         $this->info('Converting cost from int to JSON...');
         $this->convertUserActionPlanAdvicesCostToJson();
         $this->info('Mapping categories for user_action_plan_advices...');
         $this->mapUserActionPlanAdvices();
         $this->info('Mapping renovation question to custom measure applications...');
         $this->mapRenovationToCustomMeasure();
-        $stop = microtime(true);
-
-        $time = $stop - $start;
-        $this->info("Took {$time}");
-
-        UserActionPlanAdvice::forUser(User::find(4))
-            ->withoutGlobalScopes()
-            ->update(['category' => null]);
-
-        UserActionPlanAdvice::forUser(User::find(4))
-            ->withoutGlobalScopes()->where('input_source_id', 5)->delete();
-
-
     }
 
     public function mapUserActionPlanAdvices()

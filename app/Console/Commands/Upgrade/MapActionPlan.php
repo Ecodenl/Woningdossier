@@ -4,6 +4,7 @@ namespace App\Console\Commands\Upgrade;
 
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
+use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Services\UserActionPlanAdviceService;
@@ -45,12 +46,26 @@ class MapActionPlan extends Command
      */
     public function handle()
     {
+        $start = microtime(true);
         $this->info('Converting cost from int to JSON...');
         $this->convertUserActionPlanAdvicesCostToJson();
         $this->info('Mapping categories for user_action_plan_advices...');
         $this->mapUserActionPlanAdvices();
         $this->info('Mapping renovation question to custom measure applications...');
         $this->mapRenovationToCustomMeasure();
+        $stop = microtime(true);
+
+        $time = $stop - $start;
+        $this->info("Took {$time}");
+
+        UserActionPlanAdvice::forUser(User::find(4))
+            ->withoutGlobalScopes()
+            ->update(['category' => null]);
+
+        UserActionPlanAdvice::forUser(User::find(4))
+            ->withoutGlobalScopes()->where('input_source_id', 5)->delete();
+
+
     }
 
     public function mapUserActionPlanAdvices()
@@ -61,7 +76,7 @@ class MapActionPlan extends Command
             ->withInvisible()
             ->whereNull('category');
 
-        if (! empty($ids)) {
+        if (!empty($ids)) {
             $query->whereIn('user_id', $ids);
         }
 
@@ -71,12 +86,21 @@ class MapActionPlan extends Command
         $bar = $this->output->createProgressBar($userActionPlanAdvices->count());
         $bar->start();
 
+
+        \DB::table('user_action_plan_advices')
+            ->where('planned', 0)
+            ->where('planned_year', null)
+            ->update([
+                'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
+                'visible' => true
+            ]);
+
         foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
             if ($userActionPlanAdvice->planned) {
                 $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
                 $visible = true;
             } else {
-                if (! empty($userActionPlanAdvice->planned_year)) {
+                if (!empty($userActionPlanAdvice->planned_year)) {
                     if ($userActionPlanAdvice->planned_year <= now()->addYears(4)->format('Y')) {
                         $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
                         $visible = true;
@@ -109,7 +133,7 @@ class MapActionPlan extends Command
         $query = UserActionPlanAdvice::allInputSources()
             ->withInvisible();
 
-        if (! empty($ids)) {
+        if (!empty($ids)) {
             $query->whereIn('user_id', $ids);
         }
 
@@ -132,7 +156,7 @@ class MapActionPlan extends Command
         foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
             $costs = $userActionPlanAdvice->costs;
 
-            if (! is_array($costs)) {
+            if (!is_array($costs)) {
                 if ($costs < 0) {
                     $newCosts = [
                         'from' => $costs,
@@ -176,7 +200,7 @@ class MapActionPlan extends Command
             ->whereNotNull('renovation_plans')
             ->where('renovation_plans', '!=', 0);
 
-        if (! empty($ids)) {
+        if (!empty($ids)) {
             $query->whereIn('user_id', $ids);
         }
 
@@ -198,7 +222,7 @@ class MapActionPlan extends Command
                 ->forInputSource($residentInputSource)
                 ->first();
 
-            if (! $customMeasure instanceof CustomMeasureApplication) {
+            if (!$customMeasure instanceof CustomMeasureApplication) {
                 $customMeasure = CustomMeasureApplication::create(
                     [
                         'name' => ['nl' => $name],
@@ -218,17 +242,17 @@ class MapActionPlan extends Command
             UserActionPlanAdvice::withInvisible()
                 ->allInputSources()
                 ->updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'user_action_plan_advisable_type' => CustomMeasureApplication::class,
-                    'user_action_plan_advisable_id' => $customMeasure->id,
-                    'input_source_id' => $residentInputSource->id,
-                ],
-                [
-                    'visible' => true,
-                    'category' => $category,
-                ],
-            );
+                    [
+                        'user_id' => $user->id,
+                        'user_action_plan_advisable_type' => CustomMeasureApplication::class,
+                        'user_action_plan_advisable_id' => $customMeasure->id,
+                        'input_source_id' => $residentInputSource->id,
+                    ],
+                    [
+                        'visible' => true,
+                        'category' => $category,
+                    ],
+                );
 
             $bar->advance();
         }

@@ -66,6 +66,7 @@ class MapHouseVentilationBooleansToNumericBools extends Command
             if (is_null($extra) || 'null' == $extra) {
                 $extra = [
                     'demand_driven' => 0,
+                    'heat_recovery' => 0,
                 ];
             } else {
                 if (isset($extra['demand_driven'])) {
@@ -74,14 +75,18 @@ class MapHouseVentilationBooleansToNumericBools extends Command
                     } elseif ($extra['demand_driven'] === true || $extra['demand_driven'] === "true") {
                         $extra['demand_driven'] = 1;
                     }
+                } else {
+                    $extra['demand_driven'] = 0;
                 }
 
                 if (isset($extra['heat_recovery']) ) {
-                    if ($extra['heat_recovery'] === true || $extra['heat_recovery'] === "true") {
-                        $extra['heat_recovery'] = 1;
-                    } elseif ($extra['heat_recovery'] === false || $extra['heat_recovery'] === "false") {
+                    if (is_null($extra['heat_recovery']) || 'null' === $extra['heat_recovery'] || $extra['heat_recovery'] === false || $extra['heat_recovery'] === "false") {
                         $extra['heat_recovery'] = 0;
+                    } elseif ($extra['heat_recovery'] === true || $extra['heat_recovery'] === "true") {
+                        $extra['heat_recovery'] = 1;
                     }
+                } else {
+                    $extra['heat_recovery'] = 0;
                 }
             }
 

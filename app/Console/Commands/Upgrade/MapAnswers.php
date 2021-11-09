@@ -100,35 +100,37 @@ class MapAnswers extends Command
                             if (in_array('required', $toolQuestion->validation)
                                 || Str::arrContains($toolQuestion->validation, 'required_if', true)
                             ) {
-                                // Conditions could not be met, time to check...
-                                if (! empty($toolQuestion->conditions)) {
-                                    $answers = [];
+                                // Check the actual answer. If one answer is not filled, we can't complete it.
+                                if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
+                                    // Conditions could not be met, time to check...
+                                    if (! empty($toolQuestion->conditions)) {
+                                        $answers = [];
 
-                                    foreach ($toolQuestion->conditions as $conditionSet) {
-                                        foreach ($conditionSet as $condition) {
-                                            $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
-                                            if ($otherSubStepToolQuestion instanceof ToolQuestion) {
-                                                $otherSubStepAnswer = $building->getAnswer($inputSource,
-                                                    $otherSubStepToolQuestion);
+                                        foreach ($toolQuestion->conditions as $conditionSet) {
+                                            foreach ($conditionSet as $condition) {
+                                                $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
+                                                if ($otherSubStepToolQuestion instanceof ToolQuestion) {
+                                                    $otherSubStepAnswer = $building->getAnswer($inputSource,
+                                                        $otherSubStepToolQuestion);
 
-                                                $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
+                                                    $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
+                                                }
                                             }
+                                        }
+
+                                        $evaluatableAnswers = collect($answers);
+
+                                        // Evaluation did not pass. We continue to the next tool question
+                                        if (! ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions,
+                                            $evaluatableAnswers)
+                                        ) {
+                                            continue;
                                         }
                                     }
 
-                                    $evaluatableAnswers = collect($answers);
-
-                                    // Evaluation did not pass. We continue to the next tool question
-                                    if (! ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions,
-                                        $evaluatableAnswers)
-                                    ) {
-                                        continue;
-                                    }
-                                }
-
-                                // Final check, check the actual answer. If one answer is not filled, we can't complete it.
-                                if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
                                     $completeStep = false;
+                                    // No point in checking the other tool questions if we're not completing it anyway
+                                    break;
                                 }
                             }
                         }

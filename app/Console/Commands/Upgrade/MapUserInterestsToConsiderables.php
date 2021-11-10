@@ -48,8 +48,8 @@ class MapUserInterestsToConsiderables extends Command
         /** @var UserInterest $userInterest */
         foreach ($userInterests as $userInterest) {
             $considerable = false;
-            // calculate_value = "maybe more information"
-            if ($userInterest->interest->calculate_value >= 3) {
+            // calculate_value = "maybe more information and everything "below it", aka yes on short term, yes on quick term.
+            if ($userInterest->interest->calculate_value <= 3) {
                 $considerable = true;
             }
 

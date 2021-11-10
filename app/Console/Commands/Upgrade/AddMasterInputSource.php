@@ -94,6 +94,7 @@ class AddMasterInputSource extends Command
             ],
             'building_features' => [
                 'answer_columns' => [
+                    'example_building_id',
                     'building_heating_application_id',
                     'building_category_id',
                     'building_type_id',

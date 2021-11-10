@@ -2,13 +2,15 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Models\User;
+use App\Console\Commands\BenchmarkCommand;
 use App\Models\UserInterest;
-use App\Services\ConsiderableService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class MapUserInterestsToConsiderables extends Command
 {
+    use BenchmarkCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -40,8 +42,9 @@ class MapUserInterestsToConsiderables extends Command
      */
     public function handle()
     {
-        $userInterests = UserInterest::withoutGlobalScopes()->cursor();
+        $userInterests = UserInterest::withoutGlobalScopes()->where('user_id', 4)->cursor();
 
+        $this->startTimer();
         /** @var UserInterest $userInterest */
         foreach ($userInterests as $userInterest) {
             $considerable = false;
@@ -49,7 +52,17 @@ class MapUserInterestsToConsiderables extends Command
             if ($userInterest->interest->calculate_value >= 3) {
                 $considerable = true;
             }
-            ConsiderableService::save($userInterest->interestedIn, $userInterest->user, $userInterest->inputSource, ['is_considering' => $considerable]);
+
+            DB::table('considerables')->insert([
+                'user_id' => $userInterest->user_id,
+                'input_source_id' => $userInterest->input_source_id,
+                'considerable_id' => $userInterest->interested_in_id,
+                'considerable_type' => $userInterest->interested_in_type,
+                'is_considering' => $considerable
+            ]);
         }
+
+        $time = $this->stopTimer();
+        $this->info("Execution took {$time} seconds");
     }
 }

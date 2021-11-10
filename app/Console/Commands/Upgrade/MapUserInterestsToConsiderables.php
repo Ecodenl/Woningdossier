@@ -42,7 +42,7 @@ class MapUserInterestsToConsiderables extends Command
      */
     public function handle()
     {
-        $userInterests = UserInterest::withoutGlobalScopes()->where('user_id', 4)->cursor();
+        $userInterests = UserInterest::withoutGlobalScopes()->cursor();
 
         $this->startTimer();
         /** @var UserInterest $userInterest */

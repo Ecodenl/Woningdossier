@@ -103,15 +103,18 @@ class DoUpgrade extends Command
                     MapAnswers::class,
                     MapActionPlan::class,
                     MapComments::class,
+
+                    MapUserInterestsToConsiderables::class, // responsible for changing the interests to considerables
+                    MapHouseVentilationBooleansToNumericBools::class,
+
                     AddMasterInputSource::class,
+
                     ConvertExampleBuildingContents::class,
-                    UpdateCompletedStepsForMasterInputSource::class,
                     FixTranslations::class, // Reset translations which have changed
 
                     DeleteExampleBuildingContentKeys::class,
                     DeleteLanguageLines::class, // differs from the fix translations, this just removes old one.
-                    MapHouseVentilationBooleansToNumericBools::class,
-                    MapUserInterestsToConsiderables::class, // responsible for changing the interests to considerables
+
                 ];
 
                 foreach ($afterCommands as $command) {

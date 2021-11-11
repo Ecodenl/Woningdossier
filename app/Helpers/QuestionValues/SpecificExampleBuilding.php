@@ -16,15 +16,9 @@ class SpecificExampleBuilding implements ShouldReturnQuestionValues
 
         $buildingTypeId = $building->getAnswer($inputSource, $conditionalQuestion);
 
-        return $questionValues
-            ->filter(function (array $questionValue) use ($buildingTypeId, $cooperationId) {
+        $specificExampleBuildings = $questionValues->where('building_type_id', $buildingTypeId)->where('cooperation_id', $cooperationId);
+        $genericExampleBuildings = $questionValues->where('building_type_id', $buildingTypeId)->whereNull('cooperation_id');
 
-                $matchesBuildingTypeAndIsForUserItsCooperation = ($questionValue['building_type_id'] == $buildingTypeId && $questionValue['cooperation_id'] == $cooperationId);
-                $matchedBuildingTypeButIsGeneric = ($questionValue['building_type_id'] == $buildingTypeId && is_null($questionValue['cooperation_id']));
-
-
-                return $matchesBuildingTypeAndIsForUserItsCooperation || $matchedBuildingTypeButIsGeneric;
-            });
-
+        return $genericExampleBuildings->merge($specificExampleBuildings);
     }
 }

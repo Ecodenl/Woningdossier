@@ -254,6 +254,14 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Specifieke voorbeeld woning' => [
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'fn',
+                                'value' => 'SpecificExampleBuilding',
+                            ],
+                        ],
+                    ],
                     'order' => 4,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [

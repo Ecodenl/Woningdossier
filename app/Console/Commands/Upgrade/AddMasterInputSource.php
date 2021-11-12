@@ -385,6 +385,7 @@ class AddMasterInputSource extends Command
                             if (($clearConditionals ?? false)) {
                                 $additionalWhereColumn = null;
                                 $differentiatingSubValues = [];
+                                $clearConditionals = false;
                             }
                         }
                     } else {

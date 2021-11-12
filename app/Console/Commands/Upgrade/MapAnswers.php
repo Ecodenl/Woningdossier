@@ -75,7 +75,7 @@ class MapAnswers extends Command
         $this->completeQuickScanSubStepsIfNeeded();
     }
 
-    public function completeQuickScanSubStepsIfNeeded()
+    private function completeQuickScanSubStepsIfNeeded()
     {
         $stepMap = [
             'building-characteristics' => 'building-data',
@@ -118,7 +118,7 @@ class MapAnswers extends Command
         }
     }
 
-    public function setDefaultRemainingLivingYears()
+    private function setDefaultRemainingLivingYears()
     {
         $toolQuestion = ToolQuestion::findByShort('remaining-living-years');
         $buildings = Building::cursor();
@@ -134,7 +134,7 @@ class MapAnswers extends Command
         }
     }
 
-    public function mapSolarPanelCountToHasSolarPanels()
+    private function mapSolarPanelCountToHasSolarPanels()
     {
         // logic is simple, user has above 0 solar panels
         // set the has-solar-panels to true.
@@ -161,7 +161,7 @@ class MapAnswers extends Command
         }
     }
 
-    public function mapBuildingTypeBackToBuildingTypeCategory()
+    private function mapBuildingTypeBackToBuildingTypeCategory()
     {
         $buildingFeatures = BuildingFeature::withoutGlobalScopes()->whereNotNull('building_type_id')->cursor();
         $buildingTypeCategoryToolQuestion = ToolQuestion::findByShort('building-type-category');
@@ -179,7 +179,7 @@ class MapAnswers extends Command
         }
     }
 
-    public function mapHrBoilerPlacedDate()
+    private function mapHrBoilerPlacedDate()
     {
         // this method will add a placed date for the boiler.
         $buildingServicesBoiler = BuildingService::allInputSources()
@@ -458,7 +458,6 @@ class MapAnswers extends Command
 
     private function mapUserEnergyHabits()
     {
-
         $userEnergyHabits = UserEnergyHabit::allInputSources()
             ->whereHas('user.building')
             ->with('user.building')

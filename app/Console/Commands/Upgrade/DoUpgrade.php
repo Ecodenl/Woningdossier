@@ -120,7 +120,7 @@ class DoUpgrade extends Command
 
                 foreach ($afterCommands as $command) {
                     $time = Carbon::now()->format('Y-m-d H:i:s');
-                    $this->info("Running $command [$time]");
+                    $this->info("[$time] Running $command");
                     Artisan::call($command);
                 }
             }

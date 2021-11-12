@@ -33,7 +33,7 @@ class EnsureQuickScanCompleted
             if ($building->hasCompletedQuickScan($masterInputSource)) {
                 return $next($request);
             } else {
-                $firstIncompleteStep = $building->getFirstIncompleteStep();
+                $firstIncompleteStep = $building->getFirstIncompleteStep([], $masterInputSource);
 
                 if ($firstIncompleteStep instanceof Step) {
                     $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, [], $masterInputSource);

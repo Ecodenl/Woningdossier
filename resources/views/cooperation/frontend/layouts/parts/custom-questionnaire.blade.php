@@ -4,7 +4,7 @@
      @if(($isTab ?? false)) x-cloak x-show="currentTab === $el" @endif
      id="questionnaire-{{$questionnaire->id}}">
     @if($isInExpertTool)
-        <div class="px-4 py-8">
+        <div class="py-8">
             <h3 class="heading-3 inline-block">
                 {{$questionnaire->name}}
             </h3>
@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <div class="px-4 py-8">
+    <div class="py-8">
         <form action="{{ route('cooperation.tool.questionnaire.store') }}"
               id="questionnaire-form-{{$questionnaire->id}}" method="post">
             @csrf

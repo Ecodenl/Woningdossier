@@ -3,7 +3,7 @@
         @php
             $stepWasCompleted = $building->hasCompleted($step, \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT));
             $route = route('cooperation.frontend.tool.quick-scan.index', ['step' => $step, 'subStep' => $step->subSteps()->orderBy('order')->first()]);
-            if ($stepWasCompleted){
+            if ($stepWasCompleted) {
                 $route = route('cooperation.frontend.tool.quick-scan.index', ['step' => $step, 'subStep' => $step->subSteps()->orderByDesc('order')->first()]);
             }
         @endphp

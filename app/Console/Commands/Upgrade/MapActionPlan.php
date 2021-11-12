@@ -56,17 +56,37 @@ class MapActionPlan extends Command
 
     public function mapUserActionPlanAdvices()
     {
-        // handles the user who has absolutely interest in the given measure.
+        // When the planned the measure but has no planned year we put it into the todo column.
         \DB::table('user_action_plan_advices')
             ->where('planned', 1)
+            ->whereNull('planned_year')
             ->update([
                 'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
                 'visible' => true
             ]);
 
+
+        $year = now()->addYears(4)->format('Y');
+        // for the user who did check the planned box but filled in he had this measure planned within the next 5 years
+        \DB::table('user_action_plan_advices')
+            ->where('planned', 1)
+            ->where('planned_year', "<=", $year)
+            ->update([
+                'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
+                'visible' => true
+            ]);
+
+        // this does what the above does, but updates each advice above 2025.
+        \DB::table('user_action_plan_advices')
+            ->where('planned', 1)
+            ->where('planned_year', ">", $year)
+            ->update([
+                'category' => UserActionPlanAdviceService::CATEGORY_LATER,
+                'visible' => true
+            ]);
+
         // for the user who did not check the planned checkbox but filled in he had this measure planned within the next 5 years
         // so at time or writing that would be users where planned = false and planned year is equal or below 2025
-        $year = now()->addYears(4)->format('Y');
         \DB::table('user_action_plan_advices')
             ->where('planned', 0)
             ->where('planned_year', "<=", $year)

@@ -6,6 +6,7 @@ use App\Console\Commands\ConvertUuidTranslationsToJson;
 use App\Console\Commands\LegacyCleanup\DeleteExampleBuildingContentKeys;
 use App\Console\Commands\LegacyCleanup\DeleteLanguageLines;
 use App\Models\Account;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
@@ -118,7 +119,8 @@ class DoUpgrade extends Command
                 ];
 
                 foreach ($afterCommands as $command) {
-                    $this->info("Running $command");
+                    $time = Carbon::now()->format('Y-m-d H:i:s');
+                    $this->info("Running $command [$time]");
                     Artisan::call($command);
                 }
             }

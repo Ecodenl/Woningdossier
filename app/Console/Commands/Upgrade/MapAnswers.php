@@ -71,147 +71,48 @@ class MapAnswers extends Command
         $this->mapSolarPanelCountToHasSolarPanels();
         $this->info("Creating default remaining-living-years for every building..");
         $this->setDefaultRemainingLivingYears();
-        $this->info("Completed the quick scan sub steps if needed.");
+        $this->info("Completed the quick scan steps and sub steps if needed.");
         $this->completeQuickScanSubStepsIfNeeded();
     }
 
     public function completeQuickScanSubStepsIfNeeded()
     {
-        $buildings = Building::cursor();
-        $inputSources = InputSource::findByShorts([
-            InputSource::RESIDENT_SHORT,
-            InputSource::COACH_SHORT,
-        ]);
-        $subSteps = SubStep::all();
+        $stepMap = [
+            'building-characteristics' => 'building-data',
+            'current-state' => 'residential-status',
+            'usage' => 'usage-quick-scan',
+            'interest' => 'living-requirements',
+        ];
 
-        $bar = $this->output->createProgressBar($buildings->count());
-        $bar->start();
-        /** @var Building $building */
-        foreach ($buildings as $building) {
-            foreach ($inputSources as $inputSource) {
-                foreach ($subSteps as $subStep) {
-                    $completeStep = true;
-                    foreach ($subStep->toolQuestions as $toolQuestion) {
-                        // If a question is for a specific input source, we won't be able to get an answer for it
-                        if (is_null($toolQuestion->for_specific_input_source)
-                            || $inputSource->id === $toolQuestion->for_specific_input_source
-                        ) {
-                            // A non-required question could be not answered but that shouldn't matter anyway
-                            if (in_array('required', $toolQuestion->validation)
-                                || Str::arrContains($toolQuestion->validation, 'required_if', true)
-                            ) {
-                                // Check the actual answer. If one answer is not filled, we can't complete it.
-                                if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
-                                    // Conditions could not be met, time to check...
-                                    if (! empty($toolQuestion->conditions)) {
-                                        $answers = [];
+        foreach ($stepMap as $fromStepShort => $toStepShort) {
+            $fromStep = DB::table('steps')->where('short', '=', $fromStepShort)->first();
+            $toStep = DB::table('steps')->where('short', '=', $toStepShort)->first();
 
-                                        foreach ($toolQuestion->conditions as $conditionSet) {
-                                            foreach ($conditionSet as $condition) {
-                                                $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
-                                                if ($otherSubStepToolQuestion instanceof ToolQuestion) {
-                                                    $otherSubStepAnswer = $building->getAnswer($inputSource,
-                                                        $otherSubStepToolQuestion);
+            // Map completed steps to new steps
+            DB::table('completed_steps')->where('step_id', '=', $fromStep->id)
+                ->update([
+                    'step_id' => $toStep->id,
+                    'updated_at' => now(),
+                ]);
 
-                                                    $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
-                                                }
-                                            }
-                                        }
+            // Get the now swapped steps
+            $completedSteps = DB::table('completed_steps')->where('step_id', '=', $toStep->id)
+                ->cursor();
 
-                                        $evaluatableAnswers = collect($answers);
+            // Get all sub steps for this step
+            $subStepsForStep = DB::table('sub_steps')->where('step_id', '=', $toStep->id)
+                ->get();
 
-                                        // Evaluation did not pass. We continue to the next tool question
-                                        if (! ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions,
-                                            $evaluatableAnswers)
-                                        ) {
-                                            continue;
-                                        }
-                                    }
-
-                                    $completeStep = false;
-                                    // No point in checking the other tool questions if we're not completing it anyway
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if ($completeStep) {
-                        // insert he completed sub step
-                        $subStepCreated = DB::table('completed_sub_steps')->insert([
-                            'sub_step_id' => $subStep->id,
-                            'building_id' => $building->id,
-                            'input_source_id' => $inputSource->id
-                        ]);
-                        if ($subStepCreated) {
-                            // hydrate the model, this way we can use the observer code we actually need.
-                            $completeSubStep = CompletedSubStep::hydrate([[
-                                'sub_step_id' => $subStep->id,
-                                'building_id' => $building->id,
-                                'input_source_id' => $inputSource->id
-                            ]])->first();
-                            $this->completedSubStepObserverSaved($completeSubStep);
-                        }
-                    }
-                }
-            }
-            $bar->advance();
-        }
-        $bar->finish();
-        $this->output->newLine();
-    }
-
-    /**
-     * This code is the same as the CompletedSubStepObserver, but without the events for recalc etc.
-     *
-     * @param $completedSubStep
-     */
-    private function completedSubStepObserverSaved($completedSubStep)
-    {
-        // Check if this sub step finished the step
-        $subStep = $completedSubStep->subStep;
-
-        if ($subStep instanceof SubStep) {
-            $step = $subStep->step;
-            $inputSource = $completedSubStep->inputSource;
-            $building = $completedSubStep->building;
-
-            if ($step instanceof Step && $inputSource instanceof InputSource && $building instanceof Building) {
-                $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
-                    ->forBuilding($building)
-                    ->whereHas('subStep', function ($query) use ($step) {
-                        $query->where('step_id', $step->id);
-                    })
-                    ->pluck('sub_step_id')->toArray();
-
-                $allSubStepIds = $step->subSteps()->pluck('id')->toArray();
-
-                $diff = array_diff($allSubStepIds, $allCompletedSubStepIds);
-
-                if (empty ($diff)) {
-                    // The sub step that has been completed finished up the set, so we complete the main step
-                    StepHelper::complete($step, $building, $inputSource);
-                } else {
-                    // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
-                    // that we didn't get. Let's check
-                    $leftoverSubSteps = SubStep::findMany($diff);
-
-                    $cantSee = 0;
-                    foreach ($leftoverSubSteps as $subStep) {
-                        $canShowSubStep = ConditionEvaluator::init()
-                            ->building($building)
-                            ->inputSource($inputSource)
-                            ->evaluate($subStep->conditions ?? []);
-
-                        if (!$canShowSubStep) {
-                            ++$cantSee;
-                        }
-                    }
-
-                    if ($cantSee === $leftoverSubSteps->count()) {
-                        // Conditions "passed", so we complete!
-                        StepHelper::complete($step, $building, $inputSource);
-                    }
+            foreach ($completedSteps as $completedStep) {
+                // Set each sub step as complete
+                foreach ($subStepsForStep as $subStep) {
+                    DB::table('completed_sub_steps')->updateOrInsert([
+                        'sub_step_id' => $subStep->id,
+                        'building_id' => $completedStep->building_id,
+                        'input_source_id' => $completedStep->input_source_id,
+                    ], [
+                        'updated_at' => now(),
+                    ]);
                 }
             }
         }

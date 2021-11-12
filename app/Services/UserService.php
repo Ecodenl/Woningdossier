@@ -76,7 +76,7 @@ class UserService
         Log::debug(__METHOD__ . " " . $user->id . " for input source " . $inputSource->short);
         // only remove the example building id from the building
         $building = $user->building;
-        $building->update([
+        $building->buildingFeatures()->forInputSource($inputSource)->update([
             'example_building_id' => null,
         ]);
 

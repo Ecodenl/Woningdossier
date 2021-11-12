@@ -55,6 +55,8 @@ class MapAnswers extends Command
     public function handle()
     {
         // keep in mind that the order of this map is important!
+        $this->info('Set old situation values before mapping starts');
+        $this->setDefaultsForOldSituation();
         $this->info('Cook gas field to the tool question answers...');
         $this->mapUserEnergyHabits();
         $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
@@ -73,6 +75,45 @@ class MapAnswers extends Command
         $this->setDefaultRemainingLivingYears();
         $this->info("Completed the quick scan steps and sub steps if needed.");
         $this->completeQuickScanSubStepsIfNeeded();
+    }
+
+    private function setDefaultsForOldSituation()
+    {
+        // Get input sources that are relevant
+        $inputSources = DB::table('input_sources')->whereIn('short', [
+            InputSource::RESIDENT_SHORT, InputSource::COACH_SHORT,
+        ])->get();
+
+        // Set default for building heating application ID
+        $radiators = DB::table('building_heating_applications')->where('short', '=', 'radiators')->first();
+
+        DB::table('building_features')->whereNull('building_heating_application_id')->update([
+            'building_heating_application_id' => $radiators->id,
+        ]);
+
+        // Get solar panel
+        $solarPanels = DB::table('services')->where('short', '=', 'total-sun-panels')->first();
+
+        foreach ($inputSources as $inputSource) {
+            $pvPanelsWithoutPower = DB::table('building_pv_panels as b_p_p')
+                ->select('b_p_p.id', DB::raw('CAST(b_s.extra->"$.value" AS SIGNED) as total_panels'), 'peak_power')
+                ->leftJoin('building_services as b_s', 'b_p_p.building_id', '=', 'b_s.building_id')
+                ->where('b_s.service_id', '=', $solarPanels->id)
+                ->where('b_s.extra->value', '>', 0)
+                ->where('b_s.input_source_id', '=', $inputSource->id)
+                ->where('b_p_p.input_source_id', '=', $inputSource->id)
+                ->whereNull('b_p_p.total_installed_power')
+                ->cursor();
+
+            foreach ($pvPanelsWithoutPower as $pvPanelWithoutPower) {
+                $peakPower = $pvPanelWithoutPower->peak_power ?? 260;
+                DB::table('building_pv_panels')
+                    ->where('id', $pvPanelWithoutPower->id)
+                    ->update([
+                        'total_installed_power' => $peakPower * $pvPanelWithoutPower->total_panels,
+                    ]);
+            }
+        }
     }
 
     private function completeQuickScanSubStepsIfNeeded()

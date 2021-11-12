@@ -6,6 +6,7 @@ use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\Translation;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -30,7 +31,7 @@ class CsvService
     {
         // get the users from the cooperations
         $users = $cooperation->users()->whereHas('buildings')->get();
-        
+
         if ($anonymize) {
             $csvHeaders = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
@@ -117,7 +118,11 @@ class CsvService
 
             $buildingType = $buildingFeatures->buildingType->name ?? '';
             $buildYear = $buildingFeatures->build_year ?? '';
-            $exampleBuilding = optional($buildingFeatures->exampleBuilding)->isSpecific() ? $buildingFeatures->exampleBuilding->name : '';
+
+            $exampleBuilding = '';
+            if ($buildingFeatures instanceof BuildingFeature) {
+                $exampleBuilding = optional($buildingFeatures->exampleBuilding)->isSpecific() ? $buildingFeatures->exampleBuilding->name : '';
+            }
 
             $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
 
@@ -132,7 +137,7 @@ class CsvService
                 $row[$key] = [
                     $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                     $firstName, $lastName, $email, $phoneNumber,
-                    $street, trim($number.' '.$extension), $postalCode, $city,
+                    $street, trim($number . ' ' . $extension), $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
                 ];
             }
@@ -292,7 +297,7 @@ class CsvService
                     $rows[$building->id] = [
                         $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                         $firstName, $lastName, $email, $phoneNumber,
-                        $street, trim($number.' '.$extension), $postalCode, $city,
+                        $street, trim($number . ' ' . $extension), $postalCode, $city,
                         $buildingType, $buildYear,
                     ];
                 }
@@ -324,7 +329,7 @@ class CsvService
                     if ($currentQuestion instanceof Question) {
                         // when the question has options, the answer is imploded.
                         if ($currentQuestion->hasQuestionOptions()) {
-                            if (! empty($answer)) {
+                            if (!empty($answer)) {
                                 // this will contain the question option ids
                                 // and filter out the empty answers.
                                 $answers = array_filter(explode('|', $answer));
@@ -378,38 +383,14 @@ class CsvService
         // steps
         $users = $cooperation->users()
             ->whereHas('building')
-            ->with(['building' => function ($query) use ($lastQuickScanStep, $masterInputSource) {
-                    $query->with(['completedSteps' => function ($query) use ($lastQuickScanStep, $masterInputSource) {
-                        $query->withoutGlobalScope(GetValueScope::class)
-                            ->where('input_source_id', '=', $masterInputSource)
-                            ->where('step_id', $lastQuickScanStep->id);
-                    }]);
-            }])->get();
-
-        $users = $users->filter(fn($u) => $u->building->hasCompletedQuickScan($masterInputSource));
-
-//        $coachIds = [];
-//        $residentIds = [];
-//        // We first check each user
-//        foreach ($users as $user) {
-//            // we eager loaded the completed steps from the coach, so if its not empty we use that
-//            if ($user->building->completedSteps->contains('input_source_id', $coachInputSource->id)) {
-//                $coachIds[] = $user->id;
-//            } else {
-//                $residentIds[] = $user->id;
-//            }
-//        }
-//
-//        // We separate users based on ID and eager load the collection with most relations;
-//        $residents = UserService::eagerLoadUserData($users->whereIn('id', $residentIds), $residentInputSource);
-//        $coaches = UserService::eagerLoadUserData($users->whereIn('id', $coachIds), $coachInputSource);
+            ->with(['building'])
+            ->get();
 
         $users = UserService::eagerLoadUserData($users, $masterInputSource);
 
+
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
 
-        // Then we merge
-        //$users = $residents->merge($coaches);
         $rows[] = $headers;
 
         /**
@@ -438,7 +419,7 @@ class CsvService
             return $value;
         }
 
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return $value;
         }
 
@@ -460,9 +441,9 @@ class CsvService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed  $value
-     * @param int    $decimals
-     * @param bool   $shouldRound
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $shouldRound
      *
      * @return float|int|string
      */
@@ -500,7 +481,7 @@ class CsvService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (! is_null($column)) {
+        if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

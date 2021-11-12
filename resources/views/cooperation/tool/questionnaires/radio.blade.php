@@ -25,6 +25,5 @@
                 </div>
             @endforeach
         @endcomponent
-        </div>
     </div>
 </div>

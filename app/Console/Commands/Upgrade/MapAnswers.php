@@ -55,6 +55,8 @@ class MapAnswers extends Command
     public function handle()
     {
         // keep in mind that the order of this map is important!
+        $this->info('Set old situation values before mapping starts');
+        $this->setDefaultsForOldSituation();
         $this->info('Cook gas field to the tool question answers...');
         $this->mapUserEnergyHabits();
         $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
@@ -71,153 +73,93 @@ class MapAnswers extends Command
         $this->mapSolarPanelCountToHasSolarPanels();
         $this->info("Creating default remaining-living-years for every building..");
         $this->setDefaultRemainingLivingYears();
-        $this->info("Completed the quick scan sub steps if needed.");
+        $this->info("Completed the quick scan steps and sub steps if needed.");
         $this->completeQuickScanSubStepsIfNeeded();
     }
 
-    public function completeQuickScanSubStepsIfNeeded()
+    private function setDefaultsForOldSituation()
     {
-        $buildings = Building::cursor();
-        $inputSources = InputSource::findByShorts([
-            InputSource::RESIDENT_SHORT,
-            InputSource::COACH_SHORT,
+        // Get input sources that are relevant
+        $inputSources = DB::table('input_sources')->whereIn('short', [
+            InputSource::RESIDENT_SHORT, InputSource::COACH_SHORT,
+        ])->get();
+
+        // Set default for building heating application ID
+        $radiators = DB::table('building_heating_applications')->where('short', '=', 'radiators')->first();
+
+        DB::table('building_features')->whereNull('building_heating_application_id')->update([
+            'building_heating_application_id' => $radiators->id,
         ]);
-        $subSteps = SubStep::all();
 
-        $bar = $this->output->createProgressBar($buildings->count());
-        $bar->start();
-        /** @var Building $building */
-        foreach ($buildings as $building) {
-            foreach ($inputSources as $inputSource) {
-                foreach ($subSteps as $subStep) {
-                    $completeStep = true;
-                    foreach ($subStep->toolQuestions as $toolQuestion) {
-                        // If a question is for a specific input source, we won't be able to get an answer for it
-                        if (is_null($toolQuestion->for_specific_input_source)
-                            || $inputSource->id === $toolQuestion->for_specific_input_source
-                        ) {
-                            // A non-required question could be not answered but that shouldn't matter anyway
-                            if (in_array('required', $toolQuestion->validation)
-                                || Str::arrContains($toolQuestion->validation, 'required_if', true)
-                            ) {
-                                // Check the actual answer. If one answer is not filled, we can't complete it.
-                                if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
-                                    // Conditions could not be met, time to check...
-                                    if (! empty($toolQuestion->conditions)) {
-                                        $answers = [];
+        // Get solar panel
+        $solarPanels = DB::table('services')->where('short', '=', 'total-sun-panels')->first();
 
-                                        foreach ($toolQuestion->conditions as $conditionSet) {
-                                            foreach ($conditionSet as $condition) {
-                                                $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
-                                                if ($otherSubStepToolQuestion instanceof ToolQuestion) {
-                                                    $otherSubStepAnswer = $building->getAnswer($inputSource,
-                                                        $otherSubStepToolQuestion);
+        foreach ($inputSources as $inputSource) {
+            $pvPanelsWithoutPower = DB::table('building_pv_panels as b_p_p')
+                ->select('b_p_p.id', DB::raw('CAST(b_s.extra->"$.value" AS SIGNED) as total_panels'), 'peak_power')
+                ->leftJoin('building_services as b_s', 'b_p_p.building_id', '=', 'b_s.building_id')
+                ->where('b_s.service_id', '=', $solarPanels->id)
+                ->where('b_s.extra->value', '>', 0)
+                ->where('b_s.input_source_id', '=', $inputSource->id)
+                ->where('b_p_p.input_source_id', '=', $inputSource->id)
+                ->whereNull('b_p_p.total_installed_power')
+                ->cursor();
 
-                                                    $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
-                                                }
-                                            }
-                                        }
-
-                                        $evaluatableAnswers = collect($answers);
-
-                                        // Evaluation did not pass. We continue to the next tool question
-                                        if (! ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions,
-                                            $evaluatableAnswers)
-                                        ) {
-                                            continue;
-                                        }
-                                    }
-
-                                    $completeStep = false;
-                                    // No point in checking the other tool questions if we're not completing it anyway
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if ($completeStep) {
-                        // insert he completed sub step
-                        $subStepCreated = DB::table('completed_sub_steps')->insert([
-                            'sub_step_id' => $subStep->id,
-                            'building_id' => $building->id,
-                            'input_source_id' => $inputSource->id
-                        ]);
-                        if ($subStepCreated) {
-                            // hydrate the model, this way we can use the observer code we actually need.
-                            $completeSubStep = CompletedSubStep::hydrate([[
-                                'sub_step_id' => $subStep->id,
-                                'building_id' => $building->id,
-                                'input_source_id' => $inputSource->id
-                            ]])->first();
-                            $this->completedSubStepObserverSaved($completeSubStep);
-                        }
-                    }
-                }
+            foreach ($pvPanelsWithoutPower as $pvPanelWithoutPower) {
+                $peakPower = $pvPanelWithoutPower->peak_power ?? 260;
+                DB::table('building_pv_panels')
+                    ->where('id', $pvPanelWithoutPower->id)
+                    ->update([
+                        'total_installed_power' => $peakPower * $pvPanelWithoutPower->total_panels,
+                    ]);
             }
-            $bar->advance();
         }
-        $bar->finish();
-        $this->output->newLine();
     }
 
-    /**
-     * This code is the same as the CompletedSubStepObserver, but without the events for recalc etc.
-     *
-     * @param $completedSubStep
-     */
-    private function completedSubStepObserverSaved($completedSubStep)
+    private function completeQuickScanSubStepsIfNeeded()
     {
-        // Check if this sub step finished the step
-        $subStep = $completedSubStep->subStep;
+        $stepMap = [
+            'building-characteristics' => 'building-data',
+            'current-state' => 'residential-status',
+            'usage' => 'usage-quick-scan',
+            'interest' => 'living-requirements',
+        ];
 
-        if ($subStep instanceof SubStep) {
-            $step = $subStep->step;
-            $inputSource = $completedSubStep->inputSource;
-            $building = $completedSubStep->building;
+        foreach ($stepMap as $fromStepShort => $toStepShort) {
+            $fromStep = DB::table('steps')->where('short', '=', $fromStepShort)->first();
+            $toStep = DB::table('steps')->where('short', '=', $toStepShort)->first();
 
-            if ($step instanceof Step && $inputSource instanceof InputSource && $building instanceof Building) {
-                $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
-                    ->forBuilding($building)
-                    ->whereHas('subStep', function ($query) use ($step) {
-                        $query->where('step_id', $step->id);
-                    })
-                    ->pluck('sub_step_id')->toArray();
+            // Map completed steps to new steps
+            DB::table('completed_steps')->where('step_id', '=', $fromStep->id)
+                ->update([
+                    'step_id' => $toStep->id,
+                    'updated_at' => now(),
+                ]);
 
-                $allSubStepIds = $step->subSteps()->pluck('id')->toArray();
+            // Get the now swapped steps
+            $completedSteps = DB::table('completed_steps')->where('step_id', '=', $toStep->id)
+                ->cursor();
 
-                $diff = array_diff($allSubStepIds, $allCompletedSubStepIds);
+            // Get all sub steps for this step
+            $subStepsForStep = DB::table('sub_steps')->where('step_id', '=', $toStep->id)
+                ->get();
 
-                if (empty ($diff)) {
-                    // The sub step that has been completed finished up the set, so we complete the main step
-                    StepHelper::complete($step, $building, $inputSource);
-                } else {
-                    // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
-                    // that we didn't get. Let's check
-                    $leftoverSubSteps = SubStep::findMany($diff);
-
-                    $cantSee = 0;
-                    foreach ($leftoverSubSteps as $subStep) {
-                        $canShowSubStep = ConditionEvaluator::init()
-                            ->building($building)
-                            ->inputSource($inputSource)
-                            ->evaluate($subStep->conditions ?? []);
-
-                        if (!$canShowSubStep) {
-                            ++$cantSee;
-                        }
-                    }
-
-                    if ($cantSee === $leftoverSubSteps->count()) {
-                        // Conditions "passed", so we complete!
-                        StepHelper::complete($step, $building, $inputSource);
-                    }
+            foreach ($completedSteps as $completedStep) {
+                // Set each sub step as complete
+                foreach ($subStepsForStep as $subStep) {
+                    DB::table('completed_sub_steps')->updateOrInsert([
+                        'sub_step_id' => $subStep->id,
+                        'building_id' => $completedStep->building_id,
+                        'input_source_id' => $completedStep->input_source_id,
+                    ], [
+                        'updated_at' => now(),
+                    ]);
                 }
             }
         }
     }
 
-    public function setDefaultRemainingLivingYears()
+    private function setDefaultRemainingLivingYears()
     {
         $toolQuestion = ToolQuestion::findByShort('remaining-living-years');
         $buildings = Building::cursor();
@@ -233,7 +175,7 @@ class MapAnswers extends Command
         }
     }
 
-    public function mapSolarPanelCountToHasSolarPanels()
+    private function mapSolarPanelCountToHasSolarPanels()
     {
         // logic is simple, user has above 0 solar panels
         // set the has-solar-panels to true.
@@ -260,7 +202,7 @@ class MapAnswers extends Command
         }
     }
 
-    public function mapBuildingTypeBackToBuildingTypeCategory()
+    private function mapBuildingTypeBackToBuildingTypeCategory()
     {
         $buildingFeatures = BuildingFeature::withoutGlobalScopes()->whereNotNull('building_type_id')->cursor();
         $buildingTypeCategoryToolQuestion = ToolQuestion::findByShort('building-type-category');
@@ -278,7 +220,7 @@ class MapAnswers extends Command
         }
     }
 
-    public function mapHrBoilerPlacedDate()
+    private function mapHrBoilerPlacedDate()
     {
         // this method will add a placed date for the boiler.
         $buildingServicesBoiler = BuildingService::allInputSources()
@@ -557,7 +499,6 @@ class MapAnswers extends Command
 
     private function mapUserEnergyHabits()
     {
-
         $userEnergyHabits = UserEnergyHabit::allInputSources()
             ->whereHas('user.building')
             ->with('user.building')

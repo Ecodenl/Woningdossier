@@ -273,6 +273,15 @@ class AddMasterInputSource extends Command
                     }
                 }
 
+                // Small exception of the rule, we only save for the resident value if there is no coach value or the
+                // coach value matches
+                if ($table === 'building_roof_types') {
+                    if ($values->where('input_source_id', $coachInputSource->id)->count() > 0) {
+                        $differentiatingValues = $values->where('input_source_id', $coachInputSource->id)
+                            ->pluck('roof_type_id')->unique()->toArray();
+                    }
+                }
+
                 $masterInputSourceAnswers = [];
                 $conditionalAdditionals = [];
 

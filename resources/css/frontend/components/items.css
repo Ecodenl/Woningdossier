@@ -11,7 +11,7 @@
 }
 
 .modal-container .modal {
-    @apply rounded-lg filter drop-shadow-xl bg-white w-1/2 xl:w-2/10 h-auto p-2;
+    @apply rounded-lg filter drop-shadow-xl bg-white w-1/2 xl:w-2/10 h-auto p-2 max-h-19/20 overflow-auto;
 }
 
 .modal-container .modal .modal-header {

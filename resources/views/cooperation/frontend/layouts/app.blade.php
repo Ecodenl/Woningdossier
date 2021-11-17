@@ -25,7 +25,7 @@
     @stack('css')
 
 </head>
-<body id="app-body">
+<body id="app-body" style="overflow: auto;">
 
 @yield('header')
 <?php
@@ -60,6 +60,18 @@
 
     // Handle Polyfill for IOS 10
     window.addEventListener( 'touchmove', function() {});
+
+    window.addEventListener('modal-toggled', function (event) {
+        let scrollable = document.getElementById('app-body');
+        let modalOpened = event.detail.modalOpened;
+        // Handle scrollbar of the scrollable content when modal is opened
+        if (modalOpened) {
+            // We can't use Tailwind classes since the specificity on them triggers only INSIDE the app-body
+            scrollable.style.overflow = 'hidden';
+        } else {
+            scrollable.style.overflow = 'auto';
+        }
+    });
 </script>
 @stack('js')
 </body>

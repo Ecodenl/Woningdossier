@@ -73,7 +73,7 @@ window.triggerEvent = function (element, eventName) {
 }
 
 /**
- * Trigger a custom event, with potential parameters
+ * Trigger a custom event, with potential parameters.
  *
  * @param element
  * @param eventName
@@ -125,7 +125,7 @@ window.Alpine = Alpine;
 Alpine.start();
 
 /**
- * Set up mobile-drag-drop to allow touch events on native HTML 5 desktop drag events
+ * Set up mobile-drag-drop to allow touch events on native HTML 5 desktop drag events.
  */
 import {polyfill} from "mobile-drag-drop";
 

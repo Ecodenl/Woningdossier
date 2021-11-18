@@ -28,7 +28,7 @@
                         <div class="w-1/2">
                             <a href="{{ $subStepRoute }}" class="no-underline">
                                 <h6 class="as-text font-bold">
-                                    @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label'):
+                                    @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label')
                                 </h6>
                             </a>
                         </div>
@@ -107,7 +107,7 @@
                                 <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
                                     <a href="{{ $subStepRoute }}" class="no-underline">
                                         <h6 class="as-text font-bold">
-                                            {{ $toolQuestionToSummarize->name }}:
+                                            {{ $toolQuestionToSummarize->name }}
                                         </h6>
                                     </a>
                                 </div>
@@ -117,7 +117,7 @@
                                         <div class="w-1/2 pl-2">
                                             <a href="{{ $subStepRoute }}" class="no-underline">
                                                 <h6 class="as-text font-bold">
-                                                    {{ $option['name'] }}:
+                                                    {{ $option['name'] }}
                                                 </h6>
                                             </a>
                                         </div>

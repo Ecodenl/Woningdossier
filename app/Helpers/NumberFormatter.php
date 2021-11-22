@@ -161,10 +161,15 @@ class NumberFormatter
      * @param $number
      * @param  bool  $isInteger
      *
-     * @return int|string
+     * @return int|string|null
      */
-    public static function formatNumberForUser($number, bool $isInteger = false)
+    public static function formatNumberForUser($number, bool $isInteger = false, $alwaysNumber = true)
     {
+        // Return null if value is not a useful number
+        if (! $alwaysNumber && empty($number) && ! is_numeric($number)) {
+            return null;
+        }
+
         $number = static::format($number, ($isInteger ? 0 : 1));
         if ($isInteger) {
             $number = str_replace('.', '', $number);

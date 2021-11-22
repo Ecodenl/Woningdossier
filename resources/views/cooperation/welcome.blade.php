@@ -4,7 +4,7 @@
     <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">
         <div class="w-full sm:w-1/2 xl:w-1/3 bg-white rounded-3xl p-20 text-center space-y-10">
             @include('cooperation.frontend.layouts.parts.logo')
-            <h1 class="heading-1">
+            <h1 class="heading-2">
                 {{ $cooperation->name }}
             </h1>
             <h2 class="heading-2">

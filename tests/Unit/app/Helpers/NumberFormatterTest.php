@@ -157,22 +157,28 @@ class NumberFormatterTest extends TestCase
     public static function formatNumberForUserProvider()
     {
         return [
-            ['0,00', true, '0'],
-            ['0,00', false, '0'],
-            ['0.00', true, '0'],
-            ['2.000.000', true, '2000000'],
-            ['2001', true, '2001'],
-            ['2001', false, '2.001,0'],
-            ['2.001', false, '2,0'],
-            ['500', false, '500,0'],
+            ['0,00', true, true, '0'],
+            ['0,00', false, true, '0'],
+            ['0.00', true, true, '0'],
+            ['2.000.000', true, true, '2000000'],
+            ['2001', true, true, '2001'],
+            ['2001', false, true, '2.001,0'],
+            ['2.001', false, true, '2,0'],
+            ['500', false, true, '500,0'],
+            ['0', false, false, '0.0'],
+            ['0.00', false, false, '0.0'],
+            ['10.3', false, false, '10,3'],
+            ['10.3', true, false, 10],
+            [null, true, false, null],
+            ['', true, false, null],
         ];
     }
 
     /**
      * @dataProvider formatNumberForUserProvider
      */
-    public function testFormatNumberForUser($number, $isInteger, $expected)
+    public function testFormatNumberForUser($number, $isInteger, $alwaysNumber, $expected)
     {
-        $this->assertEquals($expected, NumberFormatter::formatNumberForUser($number, $isInteger));
+        $this->assertEquals($expected, NumberFormatter::formatNumberForUser($number, $isInteger, $alwaysNumber));
     }
 }

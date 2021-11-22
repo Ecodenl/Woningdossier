@@ -200,7 +200,7 @@ class Form extends Component
                     if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
                         $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
                         $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::formatNumberForUser($this->filledInAnswers[$toolQuestion->id],
-                            $isInteger);
+                            $isInteger, false);
                     }
                 }
 
@@ -330,7 +330,7 @@ class Form extends Component
 
                     // Format answer to remove leading decimals
                     $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::formatNumberForUser(($answerForInputSource ?? $toolQuestion->options['value']),
-                        true);
+                        true, false);
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
                 case 'checkbox-icon':
@@ -347,7 +347,7 @@ class Form extends Component
                     // Check if question type is text, so we can format it if it's numeric
                     if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
                         $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                        $answerForInputSource = NumberFormatter::formatNumberForUser($answerForInputSource, $isInteger);
+                        $answerForInputSource = NumberFormatter::formatNumberForUser($answerForInputSource, $isInteger, false);
                     }
 
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;

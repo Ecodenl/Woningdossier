@@ -451,7 +451,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'numeric', 'min:10', 'max:30', 'gt:thermostat_low'],
+                            'validation' => ['required', 'numeric', 'min:10', 'max:30', 'gte:thermostat_low'],
                             'save_in' => 'user_energy_habits.thermostat_high',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
                             'short' => 'thermostat-high',

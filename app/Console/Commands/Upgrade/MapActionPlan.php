@@ -51,6 +51,8 @@ class MapActionPlan extends Command
         $this->convertUserActionPlanAdvicesCostToJson();
         $this->info('Mapping categories for user_action_plan_advices...');
         $this->mapUserActionPlanAdvices();
+        $this->info('Mapping advices to master...');
+        $this->mapAdviceMasterInputSource();
         $this->info('Mapping renovation question to custom measure applications...');
         $this->mapRenovationToCustomMeasure();
     }
@@ -113,16 +115,13 @@ class MapActionPlan extends Command
                 'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
                 'visible' => false
             ]);
-
-
-        $this->output->newLine();
     }
 
     public function convertUserActionPlanAdvicesCostToJson()
     {
-        // We expect a DECIMAL column. This means we can't just set it to json
+        // We expect a DECIMAL column. This means we can't just set it to JSON.
         // We do 2 things: we alter the table to TEXT so we can set the cost, and then
-        // set it to JSON
+        // set it to JSON.
         if ('json' !== Schema::getColumnType('user_action_plan_advices', 'costs')) {
             Schema::table('user_action_plan_advices', function (Blueprint $table) {
                 $table->text('costs')->change();
@@ -133,7 +132,7 @@ class MapActionPlan extends Command
         DB::statement("UPDATE user_action_plan_advices as a 
                 JOIN user_action_plan_advices as b on a.id = b.id
                 SET a.costs = CONCAT('{\"from\": ', b.costs, ', \"to\": null}')
-                WHERE a.costs <= 0;"
+                WHERE a.costs <= 0 AND a.costs NOT LIKE '%{%';"
         );
 
         DB::statement("UPDATE user_action_plan_advices
@@ -144,14 +143,63 @@ class MapActionPlan extends Command
         DB::statement("UPDATE user_action_plan_advices as a 
                 JOIN user_action_plan_advices as b on a.id = b.id
                 SET a.costs = CONCAT('{\"from\": null', ', \"to\": ', b.costs, '}')
-                WHERE a.costs > 0;"
+                WHERE a.costs > 0 AND a.costs NOT LIKE '%{%';"
         );
 
-        // Convert column to json if not already JSON. We convert after, to prevent weird behaviour
+        // Convert column to JSON if not already JSON. We convert after, to prevent weird behaviour.
         if ('json' !== Schema::getColumnType('user_action_plan_advices', 'costs')) {
             Schema::table('user_action_plan_advices', function (Blueprint $table) {
                 $table->json('costs')->change();
             });
+        }
+    }
+
+    public function mapAdviceMasterInputSource()
+    {
+        $ids = $this->argument('id');
+
+        if (! empty($ids)) {
+            $users = DB::table('users')->whereIn('id', $ids)->cursor();
+        } else {
+            $users = DB::table('users')->cursor();
+        }
+
+        $masterInputSource = DB::table('input_sources')
+            ->where('short', InputSource::MASTER_SHORT)
+            ->first();
+        $coachInputSource = DB::table('input_sources')
+            ->where('short', InputSource::COACH_SHORT)
+            ->first();
+        $residentInputSource = DB::table('input_sources')
+            ->where('short', InputSource::RESIDENT_SHORT)
+            ->first();
+
+        foreach ($users as $user) {
+            $totalMasterAdvices = DB::table('user_action_plan_advices')
+                ->where('user_id', $user->id)
+                ->where('input_source_id', $masterInputSource->id)
+                ->count();
+
+            if ($totalMasterAdvices === 0) {
+                $rowsToReplicate = DB::table('user_action_plan_advices')
+                    ->where('user_id', $user->id)
+                    ->where('input_source_id', $coachInputSource->id)
+                    ->get();
+
+                if ($rowsToReplicate->count() === 0) {
+                    $rowsToReplicate = DB::table('user_action_plan_advices')
+                        ->where('user_id', $user->id)
+                        ->where('input_source_id', $residentInputSource->id)
+                        ->get();
+                }
+
+                foreach ($rowsToReplicate as $row) {
+                    $row->input_source_id = $masterInputSource->id;
+                    $row = (array) $row;
+                    unset($row['id']);
+                    DB::table('user_action_plan_advices')->insert($row);
+                }
+            }
         }
     }
 

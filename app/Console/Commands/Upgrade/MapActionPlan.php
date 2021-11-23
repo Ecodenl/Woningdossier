@@ -10,6 +10,7 @@ use App\Models\UserEnergyHabit;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -57,7 +58,7 @@ class MapActionPlan extends Command
     public function mapUserActionPlanAdvices()
     {
         // When the planned the measure but has no planned year we put it into the todo column.
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 1)
             ->whereNull('planned_year')
             ->update([
@@ -68,7 +69,7 @@ class MapActionPlan extends Command
 
         $year = now()->addYears(4)->format('Y');
         // for the user who did check the planned box but filled in he had this measure planned within the next 5 years
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 1)
             ->where('planned_year', "<=", $year)
             ->update([
@@ -77,7 +78,7 @@ class MapActionPlan extends Command
             ]);
 
         // this does what the above does, but updates each advice above 2025.
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 1)
             ->where('planned_year', ">", $year)
             ->update([
@@ -87,7 +88,7 @@ class MapActionPlan extends Command
 
         // for the user who did not check the planned checkbox but filled in he had this measure planned within the next 5 years
         // so at time or writing that would be users where planned = false and planned year is equal or below 2025
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 0)
             ->where('planned_year', "<=", $year)
             ->update([
@@ -96,7 +97,7 @@ class MapActionPlan extends Command
             ]);
 
         // this does what the above does, but updates each advice above 2025.
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 0)
             ->where('planned_year', ">", $year)
             ->update([
@@ -105,7 +106,7 @@ class MapActionPlan extends Command
             ]);
 
         // handles the user who has absolutely 0 interest
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 0)
             ->where('planned_year', null)
             ->update([
@@ -119,18 +120,6 @@ class MapActionPlan extends Command
 
     public function convertUserActionPlanAdvicesCostToJson()
     {
-        $ids = $this->argument('id');
-
-        $query = UserActionPlanAdvice::allInputSources()
-            ->withInvisible();
-
-        if (!empty($ids)) {
-            $query->whereIn('user_id', $ids);
-        }
-
-        // This will convert the numeric cost to JSON
-        $userActionPlanAdvices = $query->cursor();
-
         // We expect a DECIMAL column. This means we can't just set it to json
         // We do 2 things: we alter the table to TEXT so we can set the cost, and then
         // set it to JSON
@@ -140,33 +129,23 @@ class MapActionPlan extends Command
             });
         }
 
-        $bar = $this->output->createProgressBar($userActionPlanAdvices->count());
-        $bar->start();
+        // Update data quickly
+        DB::statement("UPDATE user_action_plan_advices as a 
+                JOIN user_action_plan_advices as b on a.id = b.id
+                SET a.costs = CONCAT('{\"from\": ', b.costs, ', \"to\": null}')
+                WHERE a.costs <= 0;"
+        );
 
-        // Loop each advice to alter the data
-        foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
-            $costs = $userActionPlanAdvice->costs;
+        DB::statement("UPDATE user_action_plan_advices
+                SET costs = '{\"from\": null, \"to\": null}'
+                WHERE costs IS NULL;"
+        );
 
-            if (!is_array($costs)) {
-                if ($costs < 0) {
-                    $newCosts = [
-                        'from' => $costs,
-                        'to' => null,
-                    ];
-                } else {
-                    $newCosts = [
-                        'from' => null,
-                        'to' => $costs,
-                    ];
-                }
-
-                $userActionPlanAdvice->update([
-                    'costs' => $newCosts,
-                ]);
-            }
-
-            $bar->advance();
-        }
+        DB::statement("UPDATE user_action_plan_advices as a 
+                JOIN user_action_plan_advices as b on a.id = b.id
+                SET a.costs = CONCAT('{\"from\": null', ', \"to\": ', b.costs, '}')
+                WHERE a.costs > 0;"
+        );
 
         // Convert column to json if not already JSON. We convert after, to prevent weird behaviour
         if ('json' !== Schema::getColumnType('user_action_plan_advices', 'costs')) {
@@ -174,9 +153,6 @@ class MapActionPlan extends Command
                 $table->json('costs')->change();
             });
         }
-
-        $bar->finish();
-        $this->output->newLine();
     }
 
     public function mapRenovationToCustomMeasure()

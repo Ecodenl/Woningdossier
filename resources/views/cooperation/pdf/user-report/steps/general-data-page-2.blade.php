@@ -19,14 +19,10 @@
                 }
             @endphp
             @if(! is_null($name))
-                @php
-                    $costs = $userActionPlanAdvice->costs;
-                    // Todo: Range logic
-                    $cost = max($costs['from'] ?? 0, $costs['to'] ?? 0);
-                @endphp
             <tr>
                 <td>{{$name}}</td>
-                <td>{{\App\Helpers\NumberFormatter::format($cost)}}</td>
+                {{-- TODO: Awaiting range logic --}}
+                <td>{{ $userActionPlanAdvice->getCost(false, false) }}</td>
                 <td>{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->savings_money, 0, true)}}</td>
             </tr>
             @endif

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\Hoomdossier;
+use App\Helpers\NumberFormatter;
 use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
 use App\Traits\GetMyValuesTrait;
@@ -10,7 +12,6 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Symfony\Component\Console\Input\Input;
 
 /**
  * App\Models\UserActionPlanAdvice
@@ -156,5 +157,19 @@ class UserActionPlanAdvice extends Model
     public function scopeCategory(Builder $query, string $category)
     {
         return $query->where('category', $category);
+    }
+
+    public function getCost(bool $range = false, bool $prefixUnit = false)
+    {
+        $unit = Hoomdossier::getUnitForColumn('costs');
+        $prefix = $prefixUnit ? "{$unit} " : '';
+
+        // Get the default formatting for the
+        $costs = $this->costs;
+        if ($range) {
+            NumberFormatter::range($costs['from'] ?? 0, $costs['to'] ?? 0, 0, ' - ', $prefix);
+        } else {
+            return $prefix . NumberFormatter::format(max($costs['from'] ?? 0, $costs['to'] ?? 0), 0, true);
+        }
     }
 }

@@ -82,7 +82,7 @@ class RoofInsulationHelper extends ToolHelper
                                 // take the array $roofCat array
                                 $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]);
                                 $actionPlanAdvice->year = $advicedYear;
-                                $actionPlanAdvice->costs = ['from' => $results[$roofCat]['cost_indication']];
+                                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results[$roofCat]['cost_indication']);
                             }
 
                             if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
@@ -129,7 +129,7 @@ class RoofInsulationHelper extends ToolHelper
                             $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
 
                             $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
-                            $actionPlanAdvice->costs = ['from' => $costs];
+                            $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);
                             $actionPlanAdvice->input_source_id = $this->inputSource->id;
                             $actionPlanAdvice->user()->associate($this->user);
                             $actionPlanAdvice->userActionPlanAdvisable()->associate($zincReplaceMeasure);
@@ -161,7 +161,7 @@ class RoofInsulationHelper extends ToolHelper
                                 $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                                 $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
-                                $actionPlanAdvice->costs = ['from' => $costs];
+                                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);
                                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
                                 $actionPlanAdvice->user()->associate($this->user);
                                 $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
@@ -195,7 +195,7 @@ class RoofInsulationHelper extends ToolHelper
                             $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                             $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
-                            $actionPlanAdvice->costs = ['from' => $costs];
+                            $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);
                             $actionPlanAdvice->input_source_id = $this->inputSource->id;
                             $actionPlanAdvice->user()->associate($this->user);
                             $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);

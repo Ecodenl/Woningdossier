@@ -159,6 +159,37 @@ class UserActionPlanAdvice extends Model
         return $query->where('category', $category);
     }
 
+    /**
+     * Check if the costs are a valid range.
+     *
+     * @return bool
+     */
+    public function costIsRange(): bool
+    {
+        $costs = $this->costs;
+        return isset($costs['from']) && is_numeric($costs['from']) && isset($costs['to']) && is_numeric($costs['to']);
+    }
+
+    /**
+     * Get average of the from and to values of the costs.
+     *
+     * @return int
+     */
+    public function getCostAverage(): int
+    {
+        $costs = $this->costs;
+
+        return (($costs['from'] ?? 0) + ($costs['to'] ?? 0)) / 2;
+    }
+
+    /**
+     * Get the most logical cost value (if not range) and format it accordingly.
+     *
+     * @param  bool  $range
+     * @param  bool  $prefixUnit
+     *
+     * @return string|void
+     */
     public function getCost(bool $range = false, bool $prefixUnit = false)
     {
         $unit = Hoomdossier::getUnitForColumn('costs');

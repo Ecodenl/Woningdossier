@@ -33,8 +33,7 @@
             @if(! is_null($name))
                 <tr>
                     <td>{{$name}}</td>
-                    {{-- TODO: Awaiting range logic --}}
-                    <td>{{ $userActionPlanAdvice->getCost(false, false) }}</td>
+                    <td>{{ $userActionPlanAdvice->costIsRange() ? $userActionPlanAdvice->getCostAverage() : $userActionPlanAdvice->getCost(false, false) }}</td>
                     <td>{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->savings_money, 0, true)}}</td>
                 </tr>
             @endif

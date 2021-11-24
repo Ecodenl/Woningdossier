@@ -9,20 +9,9 @@
         </tr>
         </thead>
         <tbody>
-        @php
-            $masterInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT);
-        @endphp
         @foreach($userActionPlanAdvices as $userActionPlanAdvice)
             @php
                 $name = null;
-
-                // Data gets eager loaded, but doesn't check the input source of a Custom Measure.
-                // We do it here, just in case.
-                if ($userActionPlanAdvice->user_action_plan_advisable_type === \App\Models\CustomMeasureApplication::class) {
-                    $userActionPlanAdvice->userActionPlanAdvisable = $userActionPlanAdvice->userActionPlanAdvisable()
-                        ->forInputSource($masterInputSource)
-                        ->first();
-                }
 
                 if ($userActionPlanAdvice->userActionPlanAdvisable instanceof \Illuminate\Database\Eloquent\Model) {
                     $name = $userActionPlanAdvice->userActionPlanAdvisable->name ?? $userActionPlanAdvice->userActionPlanAdvisable->measure_name;

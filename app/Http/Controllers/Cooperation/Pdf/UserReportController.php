@@ -6,15 +6,20 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
+use App\Models\CooperationMeasureApplication;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Interest;
+use App\Models\MeasureApplication;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class UserReportController extends Controller
 {
@@ -52,12 +57,31 @@ class UserReportController extends Controller
 
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
-        $userActionPlanAdvices = $user
+
+        // unfortunately we cant load the whereHasMorph
+        // so we have to do 2 separate queries and merge the collections together.
+        $userActionPlanAdvicesForCustomMeasureApplications = $user
             ->actionPlanAdvices()
             ->forInputSource($inputSource)
             ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
-            ->with('userActionPlanAdvisable')
-            ->get();
+            ->whereHasMorph(
+                'userActionPlanAdvisable',
+                [CustomMeasureApplication::class],
+                function ($query) use ($inputSource) {
+                    $query
+                        ->forInputSource($inputSource);
+                })->with(['userActionPlanAdvisable' => fn($query) => $query->forInputSource($inputSource)])->get();
+
+        $remainingUserActionPlanAdvices = $user
+            ->actionPlanAdvices()
+            ->forInputSource($inputSource)
+            ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
+            ->whereHasMorph(
+                'userActionPlanAdvisable',
+                [MeasureApplication::class, CooperationMeasureApplication::class]
+            )->get();
+
+        $userActionPlanAdvices = $userActionPlanAdvicesForCustomMeasureApplications->merge($remainingUserActionPlanAdvices);
 
         // we don't want the actual advices, we have to show them in a different way
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
@@ -79,7 +103,7 @@ class UserReportController extends Controller
                 $tableData = array_splice($keys, 2);
 
                 // we dont want the calculations in the report data, we need them separate
-                if (! in_array('calculation', $tableData)) {
+                if (!in_array('calculation', $tableData)) {
                     $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
                 }
             }

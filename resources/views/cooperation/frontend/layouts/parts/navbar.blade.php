@@ -17,6 +17,11 @@
                     @lang('cooperation/frontend/layouts.navbar.back-to-cooperation')
                 </a>
             @endif
+
+            @if(Hoomdossier::user()->isFillingToolForOtherBuilding())
+                @php($building = \App\Helpers\HoomdossierSession::getBuilding(true))
+                    <p class="btn btn-purple">Woning: {{$building->user->getFullName()}} - {{"{$building->postal_code} - {$building->number} {$building->extension}"}}</p>
+            @endif
         @endauth
         @if(App::environment() == 'local') {{-- currently only for local development --}}
             @if(count(config('hoomdossier.supported_locales')) > 1)

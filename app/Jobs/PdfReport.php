@@ -89,15 +89,32 @@ class PdfReport implements ShouldQueue
 
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
-        $userActionPlanAdvices = $user
+
+        // unfortunately we cant load the whereHasMorph
+        // so we have to do 2 separate queries and merge the collections together.
+        $userActionPlanAdvicesForCustomMeasureApplications = $user
             ->actionPlanAdvices()
             ->forInputSource($inputSource)
             ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
-            ->orWhereHasMorph('userActionPlanAdvisable', [CustomMeasureApplication::class], function ($query) {
-                $query->forInputSource($this->inputSource);
-            })
-            ->whereHasMorph('userActionPlanAdvisable', [MeasureApplication::class, CooperationMeasureApplication::class])
-            ->get();
+            ->whereHasMorph(
+                'userActionPlanAdvisable',
+                [CustomMeasureApplication::class],
+                function ($query) use ($inputSource) {
+                    $query
+                        ->forInputSource($inputSource);
+                })->with(['userActionPlanAdvisable' => fn($query) => $query->forInputSource($inputSource)])->get();
+
+        $remainingUserActionPlanAdvices = $user
+            ->actionPlanAdvices()
+            ->forInputSource($inputSource)
+            ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
+            ->whereHasMorph(
+                'userActionPlanAdvisable',
+                [MeasureApplication::class, CooperationMeasureApplication::class]
+            )->get();
+
+        $userActionPlanAdvices = $userActionPlanAdvicesForCustomMeasureApplications->merge($remainingUserActionPlanAdvices);
+
 
         // we don't want the actual advices, we have to show them in a different way
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);

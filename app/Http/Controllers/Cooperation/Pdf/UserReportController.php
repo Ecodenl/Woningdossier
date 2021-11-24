@@ -30,7 +30,6 @@ class UserReportController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-//        $inputSource = HoomdossierSession::getInputSource(true);
         // Always retrieve from master
         $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 

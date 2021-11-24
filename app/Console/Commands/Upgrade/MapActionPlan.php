@@ -10,6 +10,7 @@ use App\Models\UserEnergyHabit;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -50,6 +51,8 @@ class MapActionPlan extends Command
         $this->convertUserActionPlanAdvicesCostToJson();
         $this->info('Mapping categories for user_action_plan_advices...');
         $this->mapUserActionPlanAdvices();
+        $this->info('Mapping advices to master...');
+        $this->mapAdviceMasterInputSource();
         $this->info('Mapping renovation question to custom measure applications...');
         $this->mapRenovationToCustomMeasure();
     }
@@ -57,7 +60,7 @@ class MapActionPlan extends Command
     public function mapUserActionPlanAdvices()
     {
         // When the planned the measure but has no planned year we put it into the todo column.
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 1)
             ->whereNull('planned_year')
             ->update([
@@ -68,7 +71,7 @@ class MapActionPlan extends Command
 
         $year = now()->addYears(4)->format('Y');
         // for the user who did check the planned box but filled in he had this measure planned within the next 5 years
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 1)
             ->where('planned_year', "<=", $year)
             ->update([
@@ -77,7 +80,7 @@ class MapActionPlan extends Command
             ]);
 
         // this does what the above does, but updates each advice above 2025.
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 1)
             ->where('planned_year', ">", $year)
             ->update([
@@ -87,7 +90,7 @@ class MapActionPlan extends Command
 
         // for the user who did not check the planned checkbox but filled in he had this measure planned within the next 5 years
         // so at time or writing that would be users where planned = false and planned year is equal or below 2025
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 0)
             ->where('planned_year', "<=", $year)
             ->update([
@@ -96,7 +99,7 @@ class MapActionPlan extends Command
             ]);
 
         // this does what the above does, but updates each advice above 2025.
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 0)
             ->where('planned_year', ">", $year)
             ->update([
@@ -105,78 +108,99 @@ class MapActionPlan extends Command
             ]);
 
         // handles the user who has absolutely 0 interest
-        \DB::table('user_action_plan_advices')
+        DB::table('user_action_plan_advices')
             ->where('planned', 0)
             ->where('planned_year', null)
             ->update([
                 'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
                 'visible' => false
             ]);
-
-
-        $this->output->newLine();
     }
 
     public function convertUserActionPlanAdvicesCostToJson()
     {
-        $ids = $this->argument('id');
-
-        $query = UserActionPlanAdvice::allInputSources()
-            ->withInvisible();
-
-        if (!empty($ids)) {
-            $query->whereIn('user_id', $ids);
-        }
-
-        // This will convert the numeric cost to JSON
-        $userActionPlanAdvices = $query->cursor();
-
-        // We expect a DECIMAL column. This means we can't just set it to json
+        // We expect a DECIMAL column. This means we can't just set it to JSON.
         // We do 2 things: we alter the table to TEXT so we can set the cost, and then
-        // set it to JSON
+        // set it to JSON.
         if ('json' !== Schema::getColumnType('user_action_plan_advices', 'costs')) {
             Schema::table('user_action_plan_advices', function (Blueprint $table) {
                 $table->text('costs')->change();
             });
         }
 
-        $bar = $this->output->createProgressBar($userActionPlanAdvices->count());
-        $bar->start();
+        // Update data quickly
+        DB::statement("UPDATE user_action_plan_advices as a 
+                JOIN user_action_plan_advices as b on a.id = b.id
+                SET a.costs = CONCAT('{\"from\": ', b.costs, ', \"to\": null}')
+                WHERE a.costs <= 0 AND a.costs NOT LIKE '%{%';"
+        );
 
-        // Loop each advice to alter the data
-        foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
-            $costs = $userActionPlanAdvice->costs;
+        DB::statement("UPDATE user_action_plan_advices
+                SET costs = '{\"from\": null, \"to\": null}'
+                WHERE costs IS NULL;"
+        );
 
-            if (!is_array($costs)) {
-                if ($costs < 0) {
-                    $newCosts = [
-                        'from' => $costs,
-                        'to' => null,
-                    ];
-                } else {
-                    $newCosts = [
-                        'from' => null,
-                        'to' => $costs,
-                    ];
-                }
+        DB::statement("UPDATE user_action_plan_advices as a 
+                JOIN user_action_plan_advices as b on a.id = b.id
+                SET a.costs = CONCAT('{\"from\": null', ', \"to\": ', b.costs, '}')
+                WHERE a.costs > 0 AND a.costs NOT LIKE '%{%';"
+        );
 
-                $userActionPlanAdvice->update([
-                    'costs' => $newCosts,
-                ]);
-            }
-
-            $bar->advance();
-        }
-
-        // Convert column to json if not already JSON. We convert after, to prevent weird behaviour
+        // Convert column to JSON if not already JSON. We convert after, to prevent weird behaviour.
         if ('json' !== Schema::getColumnType('user_action_plan_advices', 'costs')) {
             Schema::table('user_action_plan_advices', function (Blueprint $table) {
                 $table->json('costs')->change();
             });
         }
+    }
 
-        $bar->finish();
-        $this->output->newLine();
+    public function mapAdviceMasterInputSource()
+    {
+        $ids = $this->argument('id');
+
+        if (! empty($ids)) {
+            $users = DB::table('users')->whereIn('id', $ids)->cursor();
+        } else {
+            $users = DB::table('users')->cursor();
+        }
+
+        $masterInputSource = DB::table('input_sources')
+            ->where('short', InputSource::MASTER_SHORT)
+            ->first();
+        $coachInputSource = DB::table('input_sources')
+            ->where('short', InputSource::COACH_SHORT)
+            ->first();
+        $residentInputSource = DB::table('input_sources')
+            ->where('short', InputSource::RESIDENT_SHORT)
+            ->first();
+
+        foreach ($users as $user) {
+            $totalMasterAdvices = DB::table('user_action_plan_advices')
+                ->where('user_id', $user->id)
+                ->where('input_source_id', $masterInputSource->id)
+                ->count();
+
+            if ($totalMasterAdvices === 0) {
+                $rowsToReplicate = DB::table('user_action_plan_advices')
+                    ->where('user_id', $user->id)
+                    ->where('input_source_id', $coachInputSource->id)
+                    ->get();
+
+                if ($rowsToReplicate->count() === 0) {
+                    $rowsToReplicate = DB::table('user_action_plan_advices')
+                        ->where('user_id', $user->id)
+                        ->where('input_source_id', $residentInputSource->id)
+                        ->get();
+                }
+
+                foreach ($rowsToReplicate as $row) {
+                    $row->input_source_id = $masterInputSource->id;
+                    $row = (array) $row;
+                    unset($row['id']);
+                    DB::table('user_action_plan_advices')->insert($row);
+                }
+            }
+        }
     }
 
     public function mapRenovationToCustomMeasure()

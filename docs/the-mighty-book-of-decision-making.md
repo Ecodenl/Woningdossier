@@ -12,6 +12,8 @@ However, that made no sense, because if a value is higher than 0, it isn't logic
 a 'from' if a 'to' isn't set. Therefore, if the value is higher than 0, it will be set in the 
 'to' option. This also applies to how formatting is done within the application as well.
 It will only be saved to the 'from' option if the value is less than or equal to 0.
+The only exception is, of course, if both 'from' and 'to' are set. Then, it's a valid
+range and 'from' should contain the smallest value.
 
 #### Master input source 
 The mapping for `user_action_plan_advices` also includes mapping to the master input source.

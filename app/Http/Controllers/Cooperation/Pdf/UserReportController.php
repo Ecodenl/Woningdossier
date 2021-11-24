@@ -6,9 +6,9 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\User;
-use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
@@ -25,7 +25,9 @@ class UserReportController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-        $inputSource = HoomdossierSession::getInputSource(true);
+//        $inputSource = HoomdossierSession::getInputSource(true);
+        // Always retrieve from master
+        $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $headers = DumpService::getStructureForTotalDumpService(false, false);
 

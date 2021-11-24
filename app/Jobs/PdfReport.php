@@ -19,7 +19,6 @@ use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -63,7 +62,9 @@ class PdfReport implements ShouldQueue
 
         $user = $this->user;
         $userCooperation = $this->user->cooperation;
-        $inputSource = $this->inputSource;
+//        $inputSource = $this->inputSource;
+        // Always retrieve from master
+        $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $headers = DumpService::getStructureForTotalDumpService(false, false);
 

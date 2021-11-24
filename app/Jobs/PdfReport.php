@@ -19,7 +19,6 @@ use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -63,7 +62,9 @@ class PdfReport implements ShouldQueue
 
         $user = $this->user;
         $userCooperation = $this->user->cooperation;
-        $inputSource = $this->inputSource;
+//        $inputSource = $this->inputSource;
+        // Always retrieve from master
+        $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $headers = DumpService::getStructureForTotalDumpService(false, false);
 
@@ -88,15 +89,32 @@ class PdfReport implements ShouldQueue
 
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
-        $userActionPlanAdvices = $user
+
+        // unfortunately we cant load the whereHasMorph
+        // so we have to do 2 separate queries and merge the collections together.
+        $userActionPlanAdvicesForCustomMeasureApplications = $user
             ->actionPlanAdvices()
             ->forInputSource($inputSource)
             ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
-            ->orWhereHasMorph('userActionPlanAdvisable', [CustomMeasureApplication::class], function ($query) {
-                $query->forInputSource($this->inputSource);
-            })
-            ->whereHasMorph('userActionPlanAdvisable', [MeasureApplication::class, CooperationMeasureApplication::class])
-            ->get();
+            ->whereHasMorph(
+                'userActionPlanAdvisable',
+                [CustomMeasureApplication::class],
+                function ($query) use ($inputSource) {
+                    $query
+                        ->forInputSource($inputSource);
+                })->with(['userActionPlanAdvisable' => fn($query) => $query->forInputSource($inputSource)])->get();
+
+        $remainingUserActionPlanAdvices = $user
+            ->actionPlanAdvices()
+            ->forInputSource($inputSource)
+            ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
+            ->whereHasMorph(
+                'userActionPlanAdvisable',
+                [MeasureApplication::class, CooperationMeasureApplication::class]
+            )->get();
+
+        $userActionPlanAdvices = $userActionPlanAdvicesForCustomMeasureApplications->merge($remainingUserActionPlanAdvices)->sortBy('order');
+
 
         // we don't want the actual advices, we have to show them in a different way
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);

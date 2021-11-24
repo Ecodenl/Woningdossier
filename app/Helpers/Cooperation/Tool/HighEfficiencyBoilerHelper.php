@@ -105,7 +105,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                $actionPlanAdvice->costs = ['from' => $results['cost_indication']];
+                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
                 $actionPlanAdvice->year = $results['replace_year'];
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);

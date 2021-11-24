@@ -142,7 +142,7 @@ class UserActionPlanAdviceService
                             'measure_short' => $advice->userActionPlanAdvisable->short,
                             // In the table the costs are indexed based on the advice year
                             // Now re-index costs based on user planned year in the personal plan
-                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs['from'] ?? 0,
+                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->getCost(false, false),
                                 $costYear)),
                             'savings_gas' => Number::isNegative($savingsGas) ? 0 : $savingsGas,
                             'savings_electricity' => Number::isNegative($savingsElectricity) ? 0 : $savingsElectricity,
@@ -343,7 +343,7 @@ class UserActionPlanAdviceService
             $energySavingForVentilation = $energySaving['ventilation'];
 
             foreach ($energySavingForVentilation as $measureShort => $advice) {
-                if (empty(($advice->costs['from'] ?? null)) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
+                if (empty($advice->getCost(false, false)) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
                     // this will have to change in the near future for the pdf.
                     $categorizedActionPlan['energy_saving']['ventilation'][$measureShort]['warning'] = static::getWarning('ventilation');
                 }
@@ -693,5 +693,20 @@ class UserActionPlanAdviceService
 
         Log::debug("Mapped category {$category} for measure application {$measureApplication->short}");
         return $category;
+    }
+
+    /**
+     * Format cost array based on value of cost indication.
+     *
+     * @param $costIndication
+     *
+     * @return array|null[]
+     */
+    public static function formatCosts($costIndication): array
+    {
+        return [
+            'from' => $costIndication <= 0 ? $costIndication : null,
+            'to' => $costIndication > 0 ? $costIndication : null,
+        ];
     }
 }

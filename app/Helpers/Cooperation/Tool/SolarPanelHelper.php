@@ -63,7 +63,7 @@ class SolarPanelHelper extends ToolHelper
             $measureApplication = MeasureApplication::where('short', 'solar-panels-place-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = ['from' => $results['cost_indication']];
+                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->savings_electricity = $results['yield_electricity'];
                 $actionPlanAdvice->user()->associate($this->user);

@@ -12,18 +12,19 @@
         @foreach($userActionPlanAdvices as $userActionPlanAdvice)
             @php
                 $name = null;
+
                 if ($userActionPlanAdvice->userActionPlanAdvisable instanceof \Illuminate\Database\Eloquent\Model) {
                     $name = $userActionPlanAdvice->userActionPlanAdvisable->name ?? $userActionPlanAdvice->userActionPlanAdvisable->measure_name;
                 } else {
                     \Illuminate\Support\Facades\Log::debug("User action plan advise its advisable does not exist; user_action_plan_advice_id: {$userActionPlanAdvice->id}");
                 }
             @endphp
-            @if(!is_null($name))
-            <tr>
-                <td>{{$name}}</td>
-                <td>{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->costs['from'] ?? 0)}}</td>
-                <td>{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->savings_money)}}</td>
-            </tr>
+            @if(! is_null($name))
+                <tr>
+                    <td>{{$name}}</td>
+                    <td>{{ $userActionPlanAdvice->costIsRange() ? $userActionPlanAdvice->getCostAverage() : $userActionPlanAdvice->getCost(false, false) }}</td>
+                    <td>{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->savings_money, 0, true)}}</td>
+                </tr>
             @endif
         @endforeach
 

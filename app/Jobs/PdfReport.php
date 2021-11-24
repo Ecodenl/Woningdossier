@@ -113,7 +113,7 @@ class PdfReport implements ShouldQueue
                 [MeasureApplication::class, CooperationMeasureApplication::class]
             )->get();
 
-        $userActionPlanAdvices = $userActionPlanAdvicesForCustomMeasureApplications->merge($remainingUserActionPlanAdvices);
+        $userActionPlanAdvices = $userActionPlanAdvicesForCustomMeasureApplications->merge($remainingUserActionPlanAdvices)->sortBy('order');
 
 
         // we don't want the actual advices, we have to show them in a different way

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\ToolQuestionAnswer;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -11,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use PhpParser\Node\Expr\AssignOp\Mod;
 
 class ToolQuestion extends Model
 {
@@ -126,7 +123,5 @@ class ToolQuestion extends Model
 
                 return $questionValue;
             });
-
-
     }
 }

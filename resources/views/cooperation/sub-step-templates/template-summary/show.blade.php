@@ -6,6 +6,9 @@
     </div>
 
     @php
+        // TODO: Use ToolQuestionHelper::getHumanReadableAnswer for answer formatting
+
+
         $subStepsToSummarize = $step->subSteps()->where('id', '!=', $subStep->id)->orderBy('order')->get();
 
         // TODO: Make this dynamic

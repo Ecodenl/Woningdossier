@@ -162,6 +162,7 @@ class CsvService
             foreach ($userActionPlanAdvices as $actionPlanAdvice) {
                 $measureName = $actionPlanAdvice->userActionPlanAdvisable->measure_name;
 
+                // TODO: Should this be null? Results in nothing...
                 $plannedYear = null;
                 // fill the measure with the planned year
                 $row[$key][$measureName] = $plannedYear;

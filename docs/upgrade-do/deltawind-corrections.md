@@ -1,4 +1,6 @@
-# Corrects the tool_questions table
+## Corrections for environments that are deployed in the same manor as Deltawind
+
+### Corrects the tool_questions table
 ```sql
 set foreign_key_checks = 0;
 -- increments the id's its necessery 
@@ -21,4 +23,26 @@ where short = "building-type-category";
 update tool_questions
 set id = 6
 where short = "specific-example-building"
+```
+### Correct the sub step questions
+```sql
+set foreign_key_checks = 0;
+
+update sub_steps
+set id = id + 2
+where id >= 4
+order by id desc;
+
+update sub_steps
+set id = id + 1
+where id <= 3
+order by id desc;
+-- the building type 
+update sub_steps
+set id = 1
+where id = 30;
+-- the specific example building 
+update sub_steps
+set id = 5
+where id = 31; 
 ```

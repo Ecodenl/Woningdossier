@@ -207,4 +207,21 @@ class Str
         }
         return $dotted;
     }
+
+    /**
+     * Check if a string has replaceables.
+     *
+     * @param  string  $string
+     *
+     * @return bool
+     */
+    public static function hasReplaceables(string $string): bool
+    {
+        // See https://regex101.com/r/ckEDG4/1
+        $pattern = ':{1}([\w]*)';
+
+        preg_match("/{$pattern}/i", $string, $matches);
+
+        return ! empty($matches);
+    }
 }

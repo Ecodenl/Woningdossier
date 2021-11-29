@@ -3,7 +3,8 @@
 ```sql
 -- Corrects the tool_questions table
 
--- increments the id's its necessery 
+-- increments the id's its necessery
+set foreign_key_checks = 0; 
 update tool_questions
 set id = id + 2
 where id >= 5 
@@ -59,15 +60,15 @@ order by tool_question_id desc;
 -- now we correct the tool questions that are out of order.
 update sub_step_tool_questions
 set tool_question_id = 1
-where id = 50;
+where tool_question_id = 52;
 
 update sub_step_tool_questions
 set tool_question_id = 6
-where id = 51;
+where tool_question_id = 53;
 
 -- now correct the sub_step_id's
 update sub_step_tool_questions
-set sub_step_id = id + 2
+set sub_step_id = sub_step_id + 2
 where sub_step_id >= 4
 order by sub_step_id desc;
 
@@ -98,12 +99,12 @@ order by tool_question_id desc;
 -- the building type 
 update tool_question_answers
 set tool_question_id = 1
-where tool_question_id = 30;
+where tool_question_id = 52;
 
 -- the specific example building 
 update tool_question_answers
 set tool_question_id = 5
-where tool_question_id = 31; 
+where tool_question_id = 53; 
 
 -- Corrects the tool_question_custom_values
 
@@ -119,12 +120,12 @@ order by tool_question_id desc;
 -- the building type 
 update tool_question_custom_values
 set tool_question_id = 1
-where tool_question_id = 30;
+where tool_question_id = 52;
 
 -- the specific example building 
 update tool_question_custom_values
 set tool_question_id = 5
-where tool_question_id = 31; 
+where tool_question_id = 53; 
 
 -- Corrects the tool_question_valuables
 
@@ -140,10 +141,10 @@ order by tool_question_id desc;
 -- the building type 
 update tool_question_valuables
 set tool_question_id = 1
-where tool_question_id = 30;
+where tool_question_id = 52;
 
 -- the specific example building 
 update tool_question_valuables
 set tool_question_id = 5
-where tool_question_id = 31; 
+where tool_question_id = 53; 
 ```

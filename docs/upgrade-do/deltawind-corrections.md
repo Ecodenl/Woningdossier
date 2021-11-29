@@ -40,11 +40,11 @@ order by id desc;
 -- the building type 
 update sub_steps
 set id = 1
-where id = 30;
+where id = 32;
 -- the specific example building 
 update sub_steps
 set id = 5
-where id = 31; 
+where id = 34; 
 ```
 
 ### Corrects the sub_step_tool_questions table

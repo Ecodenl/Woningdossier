@@ -92,3 +92,75 @@ update sub_step_tool_questions
 set sub_step_id = 5
 where sub_step_id = 31; 
 ```
+
+###Corrects the tool_question_answers
+```sql
+set foreign_key_checks = 0;
+
+update tool_question_answers
+set tool_question_id = tool_question_id + 2
+where tool_question_id >= 4
+order by tool_question_id desc;
+
+update tool_question_answers
+set tool_question_id = tool_question_id + 1
+where tool_question_id <= 3
+order by tool_question_id desc;
+-- the building type 
+update tool_question_answers
+set tool_question_id = 1
+where tool_question_id = 30;
+
+-- the specific example building 
+update tool_question_answers
+set tool_question_id = 5
+where tool_question_id = 31; 
+```
+
+###Corrects the tool_question_custom_values
+```sql
+set foreign_key_checks = 0;
+
+update tool_question_custom_values
+set tool_question_id = tool_question_id + 2
+where tool_question_id >= 4
+order by tool_question_id desc;
+
+update tool_question_custom_values
+set tool_question_id = tool_question_id + 1
+where tool_question_id <= 3
+order by tool_question_id desc;
+-- the building type 
+update tool_question_custom_values
+set tool_question_id = 1
+where tool_question_id = 30;
+
+-- the specific example building 
+update tool_question_custom_values
+set tool_question_id = 5
+where tool_question_id = 31; 
+```
+
+###Corrects the tool_question_valuables
+```sql
+set foreign_key_checks = 0;
+
+update tool_question_valuables
+set tool_question_id = tool_question_id + 2
+where tool_question_id >= 4
+order by tool_question_id desc;
+
+update tool_question_valuables
+set tool_question_id = tool_question_id + 1
+where tool_question_id <= 3
+order by tool_question_id desc;
+-- the building type 
+update tool_question_valuables
+set tool_question_id = 1
+where tool_question_id = 30;
+
+-- the specific example building 
+update tool_question_valuables
+set tool_question_id = 5
+where tool_question_id = 31; 
+```

@@ -86,11 +86,11 @@ order by sub_step_id desc;
 -- the building type 
 update sub_step_tool_questions
 set sub_step_id = 1
-where sub_step_id = 30;
+where sub_step_id = 32;
 -- the specific example building 
 update sub_step_tool_questions
 set sub_step_id = 5
-where sub_step_id = 31; 
+where sub_step_id = 33; 
 ```
 
 ###Corrects the tool_question_answers

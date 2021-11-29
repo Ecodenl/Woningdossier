@@ -1,8 +1,8 @@
 ## Corrections for environments that are deployed in the same manor as Deltawind
 
+### Corrects the tool_questions table
 ```sql
--- Corrects the tool_questions table
-
+set foreign_key_checks = 0;
 -- increments the id's its necessery 
 update tool_questions
 set id = id + 2
@@ -22,9 +22,12 @@ where short = "building-type-category";
 
 update tool_questions
 set id = 6
-where short = "specific-example-building";
+where short = "specific-example-building"
+```
+### Corrects the sub step questions
+```sql
+set foreign_key_checks = 0;
 
--- Corrects the sub step questions
 update sub_steps
 set id = id + 2
 where id >= 4
@@ -42,8 +45,13 @@ where id = 32;
 update sub_steps
 set id = 5
 where id = 34; 
+```
 
--- Corrects the sub_step_tool_questions table
+### Corrects the sub_step_tool_questions table
+```sql
+-- This is a bit more complex, we have to update the tool_question_id and sub_step_id 
+-- increments the id's its necessary
+set foreign_key_checks = 0;
 
 update sub_step_tool_questions
 set tool_question_id = tool_question_id + 2
@@ -83,8 +91,11 @@ where sub_step_id = 32;
 update sub_step_tool_questions
 set sub_step_id = 5
 where sub_step_id = 33; 
+```
 
--- Corrects the tool_question_answers
+###Corrects the tool_question_answers
+```sql
+set foreign_key_checks = 0;
 
 update tool_question_answers
 set tool_question_id = tool_question_id + 2
@@ -104,8 +115,11 @@ where tool_question_id = 30;
 update tool_question_answers
 set tool_question_id = 5
 where tool_question_id = 31; 
+```
 
--- Corrects the tool_question_custom_values
+###Corrects the tool_question_custom_values
+```sql
+set foreign_key_checks = 0;
 
 update tool_question_custom_values
 set tool_question_id = tool_question_id + 2
@@ -125,8 +139,11 @@ where tool_question_id = 30;
 update tool_question_custom_values
 set tool_question_id = 5
 where tool_question_id = 31; 
+```
 
--- Corrects the tool_question_valuables
+###Corrects the tool_question_valuables
+```sql
+set foreign_key_checks = 0;
 
 update tool_question_valuables
 set tool_question_id = tool_question_id + 2

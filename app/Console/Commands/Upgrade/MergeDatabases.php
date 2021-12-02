@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\BuildingService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class MergeDatabases extends Command
 {
@@ -58,62 +59,77 @@ class MergeDatabases extends Command
             'wijdemeren'
         ])->get();
 
+
+        $buildingIdTables = [
+            'tool_question_answers',
+            'completed_steps',
+            'private_messages',
+            'step_comments',
+            'building_appliances',
+            'building_elements',
+            'building_services',
+            'building_features',
+            'building_heaters',
+            'building_insulated_glazings',
+            'building_pv_panels',
+            'building_roof_types',
+            'building_paintwork_statuses',
+
+        ];
+        $userIdTables = [
+            'user_interests',
+            'considerables',
+            'user_energy_habits',
+            'notification_settings',
+            'user_motivations',
+            'user_action_plan_advices',
+        ];
+
         // first we will delete all the data of the cooperations on our migrated database.
         // After that we will merge the data from the corresponding  cooperation sub live database
         /** @var Cooperation $mergeableCooperation */
+        Schema::enableForeignKeyConstraints();
         foreach ($mergeableCooperations as $mergeableCooperation) {
-            $mergeableCooperation->users()->delete();
-            $userIds = [];
-            $buildingIds = [];
+            $this->info("Deleting rows for cooperation {$mergeableCooperation->slug}");
 
-            DB::table('completed_steps')->whereIn('building_id', $buildingIds)->delete();
-            // delete the private messages from the cooperation
-            DB::table('private_messages')->whereIn('building_id', $buildingIds)->delete();
+            $userIds = $mergeableCooperation->users->pluck('id')->toArray();
 
-            DB::table('step_comments')->whereIn('building_id', $buildingIds)->delete();
+            $buildingIds = Building::whereIn('user_id', $userIds)->pluck('id')->toArray();
 
-            // table will be removed anyways.
-            DB::table('building_appliances')->whereIn('building_id', $buildingIds)->delete();
+            foreach ($buildingIdTables as $buildingTable) {
+                $deleteCount = DB::table($buildingTable)->whereIn('building_id', $buildingIds)->delete();
+                $this->info("Deleted {$deleteCount} {$buildingTable}");
+            }
 
-            DB::table('user_action_plan_advices')->whereIn('user_id', $userIds)->delete();
+            foreach ($userIdTables as $userIdTable) {
+                $deleteCount = DB::table($userIdTable)->whereIn('user_id', $userIds)->delete();
+                $this->info("Deleted {$deleteCount} {$userIdTable}");
+            }
 
-            // remove the user interests
-            // we keep the user interests table until we are 100% sure it can be removed
-            // but because of gdpr we have to keep this until the table is removed
-            DB::table('user_interests')->whereIn('user_id', $userIds)->delete();
-            // we cant use the relationship because we just want to delete everything
-            DB::table('considerables')->whereIn('user_id', $userIds)->delete();
-            // remove the energy habits from a user
-            DB::table('user_energy_habits')->whereIn('user_id', $userIds)->delete();
-            // remove the notification settings
-            DB::table('notification_settings')->whereIn('user_id', $userIds)->delete();
-            // first detach the roles from the user
-            DB::table('model_has_roles')->whereIn('model_id', $userIds)->delete();
-            DB::table('user_motivations')->whereIn('model_id', $userIds)->delete();
+            // and now we want to delete the actual buildings and user itself
+            $deleteCount = DB::table('model_has_roles')->whereIn('model_id', $userIds)->delete();
+            $this->info("Deleted {$deleteCount} model_has_roles");
 
+            // and now we want to delete the actual buildings and user itself
+            $deleteCount = DB::table('buildings')->whereIn('id', $buildingIds)->delete();
+            $this->info("Deleted {$deleteCount} buildings");
 
-            DB::table('users')->whereIn('user_id', $userIds)->delete();
-            DB::table('tool_question_answers')->whereIn('user_id', $userIds)->delete();
+            $deleteCount = DB::table('users')->whereIn('id', $userIds)->delete();
+            $this->info("Deleted {$deleteCount} users");
 
         }
 
+        Schema::disableForeignKeyConstraints();
+
         // this deletes all the accounts related to the sub live environments
-        $sql = `delete accounts from cooperations
-                left join users on users.cooperation_id = cooperations.id
-                left join accounts on accounts.id = users.account_id
-                where cooperations.slug in ('blauwvingerenergie',
-                        'cnme',
-                        'deltawind',
-                        'duec',
-                        'energiehuis',
-                        'leimuidenduurzaam',
-                        'lochemenergie',
-                        'nhec',
-                        'wijdemeren')
+        // these will all be reimported anyway so it doesnt matter anyway.
+        $deleteCount = DB::table('accounts')
+            ->leftJoin('users', 'users.account_id', '=', 'accounts.id')
+            ->leftJoin('cooperations', 'cooperations.id', '=', 'users.cooperation_id')
+            ->whereIn('cooperations.slug', $mergeableCooperations->pluck('slug')->toArray())
+            ->delete();
 
-            `;
-
-        DB::raw($sql);
+        $this->info("Deleted {$deleteCount} accounts");
 
     }
 }

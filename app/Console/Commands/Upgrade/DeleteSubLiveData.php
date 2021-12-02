@@ -12,21 +12,21 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class MergeDatabases extends Command
+class DeleteSubLiveData extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'upgrade:merge';
+    protected $signature = 'upgrade:delete-sub-live-data';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Merges the current live environments into the freshly migrated live database (deltawind.hoomdossier.nl env into hoomdossier.nl)';
+    protected $description = 'Deletes the data in the freshly migrated database, that could be present in the sub live environments (deltawind.hoomdossier.nl env into hoomdossier.nl)';
 
     /**
      * Create a new command instance.
@@ -119,7 +119,7 @@ class MergeDatabases extends Command
 
         }
 
-        Schema::disableForeignKeyConstraints();
+        Schema::enableForeignKeyConstraints();
 
         // this deletes all the accounts related to the sub live environments
         // these will all be reimported anyway so it doesnt matter anyway.

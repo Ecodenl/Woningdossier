@@ -65,7 +65,6 @@ class MergeDatabases extends Command
             'element_values',
             'elements',
             'energy_labels',
-            'example_buildings',
             'experience_air_quality_in_homes',
             'facade_damaged_paintworks',
             'facade_plastered_surfaces',
@@ -210,7 +209,12 @@ class MergeDatabases extends Command
             'present_windows',
         ];
 
+        // because of translations or manual action
         $tablesToDoNothingWith = [
+
+            'example_buildings',
+
+
             'sub_step_tool_questions',
             'sub_steps',
 
@@ -224,6 +228,7 @@ class MergeDatabases extends Command
             'password_resets',
             'migrations',
         ];
+
 
     }
 }

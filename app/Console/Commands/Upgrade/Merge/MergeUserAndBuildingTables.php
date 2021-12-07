@@ -97,36 +97,50 @@ class MergeUserAndBuildingTables extends Command
             ->whereIn('user_id', $userIds)
             ->pluck('id')->toArray();
 
+
+        Schema::disableForeignKeyConstraints();
         foreach (self::TABLES as $table) {
 
-            $columnNames = DB::table('information_schema.columns')
-                ->selectRaw('group_concat(COLUMN_NAME) as concat_string')
-                ->where('table_schema', 'db')
-                ->where('table_name', $table)
-                ->where('column_name', '!=', 'id')
-                ->groupBy('table_name')
-                ->pluck('concat_string')
-                ->first();
+            // first set some defaults
+            $column = 'building_id';
+            $ids = $buildingIds;
 
-            // first delete the rows
-            // and insert the data afterwards
+            // if the table has a user_id col, we will use the user_id as coll and userIds as values.
+            // pretty obvious but ok.
             if (Schema::hasColumn($table, 'user_id')) {
-                DB::table($table)->whereIn('user_id', $userIds)->delete();
+                $column = 'user_id';
+                $ids = $userIds;
+            }
 
-                Schema::disableForeignKeyConstraints();
-                $db = DB::getPdo();
+            // first delete the rows from the db connection
+            DB::table($table)->whereIn($column, $ids)->delete();
+            // and insert the data afterwards
+            $this->copyForTable($table, $column, $ids);
+        }
+    }
 
-                $userIds = implode(',', $userIds);
-                $sql = "insert into db.{$table} 
+    /**
+     * Method to copy data from the sub_live connection to the db connection.
+     */
+    private function copyForTable(string $table, string $column, array $values)
+    {
+        // gets all the column names, except the id coll.
+        $columnNames = DB::table('information_schema.columns')
+            ->selectRaw('group_concat(COLUMN_NAME) as concat_string')
+            ->where('table_schema', 'db')
+            ->where('table_name', $table)
+            ->where('column_name', '!=', 'id')
+            ->groupBy('table_name')
+            ->pluck('concat_string')
+            ->first();
+
+        $values = implode(',', $values);
+        $sql = "insert into db.{$table} 
                         ({$columnNames})
                     select {$columnNames} 
                     from sub_live.{$table} 
-                    where sub_live.{$table}.user_id in ({$userIds})";
-                $db->prepare($sql)->execute();
+                    where sub_live.{$table}.{$column} in ({$values})";
 
-            } else {
-                DB::table($table)->whereIn('building_id', $buildingIds)->delete();
-            }
-        }
+        DB::getPdo()->prepare($sql)->execute();
     }
 }

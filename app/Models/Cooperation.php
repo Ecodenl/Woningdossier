@@ -131,16 +131,6 @@ class Cooperation extends Model
         return false;
     }
 
-    /**
-     * get the active steps with its substeps ordered on the order column.
-     *
-     * @return Collection|mixed
-     */
-    public function getActiveOrderedSteps()
-    {
-        return \App\Helpers\Cache\Cooperation::getActiveOrderedSteps($this);
-    }
-
     public function getRouteKeyName()
     {
         return 'slug';

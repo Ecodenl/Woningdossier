@@ -27,29 +27,4 @@ class StepController extends Controller
 
         return view('cooperation.admin.cooperation.cooperation-admin.steps.index', compact('steps'));
     }
-
-    /**
-     * Set the active status for a cooperation step.
-     */
-    public function setActive(Request $request, Cooperation $cooperation)
-    {
-        // Route is disabled. Die if they somehow still manage to get here
-        die();
-        
-        $stepId = $request->get('step_id');
-        $active = 'true' == $request->get('step_active') ? true : false;
-
-        // get the cooperation steps query
-        $cooperationStepsQuery = $cooperation->steps();
-        // now find the selected step
-        $cooperationStep = $cooperationStepsQuery->find($stepId);
-
-        if ($cooperationStep instanceof Step) {
-            // update the pivot table / cooperation_step
-            $cooperationStepsQuery->updateExistingPivot($cooperationStep->id, ['is_active' => $active]);
-        }
-
-        // wipe the cache.
-        CooperationCache::wipe(CooperationCache::CACHE_KEY_GET_ACTIVE_ORDERED_STEPS, $cooperation->id);
-    }
 }

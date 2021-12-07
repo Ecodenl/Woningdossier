@@ -79,16 +79,7 @@ class PdfReport implements ShouldQueue
 
         $buildingInsulatedGlazings = $building->currentInsulatedGlazing->load('measureApplication', 'insulatedGlazing', 'buildingHeating');
 
-        $steps = $userCooperation
-            ->steps()
-            ->withGeneralData()
-            ->where('steps.parent_id', '=', null)
-            ->orderBy('cooperation_steps.order')
-            ->where('cooperation_steps.is_active', '1')
-            ->get();
-
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
-
 
         // unfortunately we cant load the whereHasMorph
         // so we have to do 2 separate queries and merge the collections together.
@@ -142,10 +133,6 @@ class PdfReport implements ShouldQueue
             }
         }
 
-        // intersect the data, we don't need the data we won't show anyway
-        $activeOrderedStepShorts = $steps->pluck('short')->flip()->toArray();
-        $reportData = array_intersect_key($reportData, $activeOrderedStepShorts);
-
         // steps that are considered to be measures.
         $stepShorts = DB::table('steps')
             ->where('short', '!=', 'general-data')
@@ -177,7 +164,7 @@ class PdfReport implements ShouldQueue
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-            'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
+            'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
 
         // save the pdf report

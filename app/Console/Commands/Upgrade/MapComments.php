@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Models\Step;
-use App\Scopes\NoGeneralDataScope;
+use App\Models\InputSource;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class MapComments extends Command
 {
@@ -69,8 +69,8 @@ class MapComments extends Command
 
         foreach ($commentMap as $commentMapData) {
             // Get relevant steps
-            $fromStep = Step::withoutGlobalScope(NoGeneralDataScope::class)->where('short', $commentMapData['fromStep'])->first();
-            $toStep = Step::withoutGlobalScope(NoGeneralDataScope::class)->where('short', $commentMapData['toStep'])->first();
+            $fromStep = DB::table('steps')->where('short', $commentMapData['fromStep'])->first();
+            $toStep = DB::table('steps')->where('short', $commentMapData['toStep'])->first();
 
             // If it's not an array, it's null. We will wrap it in an array to keep the code concise
             $shorts = is_array($commentMapData['commentShort']) ? $commentMapData['commentShort'] : [$commentMapData['commentShort']];
@@ -85,6 +85,46 @@ class MapComments extends Command
 
                 $baseQuery->update([
                     'step_id' => $toStep->id,
+                ]);
+            }
+        }
+
+        // We have mapped the comments. Now we need to add building complaints to the step comment of building data
+        $step = DB::table('steps')->where('short', 'building-data')->first();
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        // Get all user energy habits that have building complaints, with the building attached
+        $userEnergyHabits = DB::table('user_energy_habits')
+            ->whereNotNull('building_complaints')
+            ->where('input_source_id', '!=', $masterInputSource->id)
+            ->select('user_energy_habits.*', 'buildings.id as building_id')
+            ->leftJoin('buildings', 'buildings.user_id', '=', 'user_energy_habits.user_id')
+            ->get();
+
+        foreach ($userEnergyHabits as $userEnergyHabit) {
+            $wheres = [
+                ['building_id', $userEnergyHabit->building_id],
+                ['input_source_id', $userEnergyHabit->input_source_id],
+                ['step_id', $step->id],
+            ];
+
+            $comment = DB::table('step_comments')
+                ->where($wheres)
+                ->first();
+
+            // If it exists, we append the complaints to the existing comment
+            if ($comment instanceof stdClass) {
+                DB::table('step_comments')
+                    ->where('id', $comment->id)
+                    ->update([
+                        'comment' => $comment->comment . PHP_EOL . PHP_EOL . $userEnergyHabit->building_complaints,
+                    ]);
+            } else {
+                // Else we obviously build a whole new comment
+                DB::table('step_comments')->insert([
+                    'building_id' => $userEnergyHabit->building_id,
+                    'input_source_id' => $userEnergyHabit->input_source_id,
+                    'step_id' => $step->id,
+                    'comment' => $userEnergyHabit->building_complaints,
                 ]);
             }
         }

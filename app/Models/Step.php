@@ -28,7 +28,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $questionnaires_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Step[] $subSteps
  * @property-read int|null $sub_steps_count
- * @method static Builder|Step activeOrderedSteps()
  * @method static Builder|Step newModelQuery()
  * @method static Builder|Step newQuery()
  * @method static Builder|Step onlyChildren()
@@ -123,18 +122,6 @@ class Step extends Model
     public function hasChildren()
     {
         return $this->children()->exists();
-    }
-
-    /**
-     * Method to scope the active steps in a ordered order.
-     *
-     * @return Builder
-     */
-    public function scopeActiveOrderedSteps(Builder $query)
-    {
-        return $query->where('steps.short', '!=', 'building-detail')
-            ->orderBy('cooperation_steps.order')
-            ->where('cooperation_steps.is_active', '1');
     }
 
     public function scopeChildrenForStep(Builder $query, Step $step)

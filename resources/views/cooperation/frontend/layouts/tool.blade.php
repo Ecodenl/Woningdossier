@@ -51,7 +51,7 @@
                     <ul class="nav-tabs mt-5 hidden" x-ref="nav-tabs">
                         @if(isset($currentStep))
                             @php
-                                $subStepsForStep = $cooperation->getchildrenForStep($currentStep);
+                                $subStepsForStep = $currentStep->children;
                             @endphp
                             @if($subStepsForStep->isEmpty())
                                 <li class="active @if($building->hasCompleted($currentStep, $masterInputSource)) completed @endif">

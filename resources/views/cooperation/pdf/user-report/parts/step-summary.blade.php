@@ -38,7 +38,7 @@
                             $building,
                             ($toolQuestionToSummarize->forSpecificInputSource ?? $inputSource),
                             $toolQuestionToSummarize,
-                            true,
+                            false,
                             ($answers[$toolQuestionToSummarize->short] ?? null)
                         );
 

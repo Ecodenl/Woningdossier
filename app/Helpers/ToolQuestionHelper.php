@@ -194,12 +194,18 @@ class ToolQuestionHelper {
                 $humanReadableAnswer = $answer;
             }
 
-            // Format numbers
+            // Format answers
             if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
                 $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
                 $humanReadableAnswer = NumberFormatter::formatNumberForUser($humanReadableAnswer, $isInteger);
-            } elseif($toolQuestion->toolQuestionType->short === 'slider') {
+            } elseif ($toolQuestion->toolQuestionType->short === 'slider') {
                 $humanReadableAnswer = str_replace('.', '', NumberFormatter::format($humanReadableAnswer, 0));
+            } elseif ($toolQuestion->toolQuestionType->short === 'rating-slider') {
+                $humanReadableAnswerArray = json_decode($humanReadableAnswer, true);
+                $humanReadableAnswer = [];
+                foreach ($toolQuestion->options as $option) {
+                    $humanReadableAnswer[$option['name']] = $humanReadableAnswerArray[$option['short']];
+                }
             }
         }
 

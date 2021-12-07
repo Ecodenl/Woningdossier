@@ -93,19 +93,26 @@
                             if (\Illuminate\Support\Str::contains($toolQuestionToSummarize->short, 'comment')) {
                                 $showQuestion = false;
                             }
-
-                            // TODO: Make this more dynamic
-                            // ToolQuestion name could have a replacable
-                            if ($toolQuestionToSummarize->short === 'building-type') {
-                                $toolQuestionToSummarize->name = str_replace(
-                                    ':name',
-                                    \Illuminate\Support\Str::lower($buildingTypeCategory ?? ''),
-                                    $toolQuestionToSummarize->name
-                                );
-                            }
                         @endphp
 
                         @if ($showQuestion)
+                            @php
+                                $humanReadableAnswer = \App\Helpers\ToolQuestionHelper::getHumanReadableAnswer(
+                                    $building,
+                                    ($toolQuestionToSummarize->forSpecificInputSource ?? $masterInputSource),
+                                    $toolQuestionToSummarize,
+                                    true,
+                                    ($answers[$toolQuestionToSummarize->short] ?? null)
+                                );
+
+                                // Handle replaceables
+                                $toolQuestionToSummarize = \App\Helpers\ToolQuestionHelper::handleToolQuestionReplaceables(
+                                    $building,
+                                    ($toolQuestionToSummarize->forSpecificInputSource ?? $masterInputSource),
+                                    $toolQuestionToSummarize,
+                                );
+                            @endphp
+
                             <div class="flex flex-row flex-wrap w-full">
                                 <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
                                     <a href="{{ $subStepRoute }}" class="no-underline">
@@ -115,82 +122,24 @@
                                     </a>
                                 </div>
 
-                                @if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider')
-                                    @foreach($toolQuestionToSummarize->options as $option)
+                                @if(is_array($humanReadableAnswer))
+                                    @foreach($humanReadableAnswer as $name => $answer)
                                         <div class="w-1/2 pl-2">
                                             <a href="{{ $subStepRoute }}" class="no-underline">
                                                 <h6 class="as-text font-bold">
-                                                    {{ $option['name'] }}
+                                                    {{ $name }}
                                                 </h6>
                                             </a>
                                         </div>
                                         <div class="w-1/2">
                                             <p class="flex items-center">
-                                                @php
-                                                    $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
-                                                    $answer = $answers[$toolQuestionToSummarize->short] ?? null;
-
-                                                    if (! empty($answer)) {
-                                                        $humanReadableAnswer = json_decode($answer, true)[$option['short']];
-                                                    }
-                                                @endphp
-
-                                                {{ $humanReadableAnswer }}
+                                                {{ $answer }}
                                             </p>
                                         </div>
                                     @endforeach
                                 @else
                                     <div class="w-1/2">
                                         <p class="flex items-center">
-                                            @php
-                                                $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
-                                                $answer = $answers[$toolQuestionToSummarize->short] ?? null;
-
-                                                if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
-                                                    $questionValues = $toolQuestionToSummarize->getQuestionValues($cooperation);
-
-                                                    if ($questionValues->isNotEmpty()) {
-                                                        $humanReadableAnswers = [];
-
-                                                        $answer = is_array($answer) ? $answer : [$answer];
-
-                                                        foreach ($answer as $subAnswer) {
-                                                            $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
-
-                                                            if (! empty($questionValue)) {
-                                                                $answerToAppend = $questionValue['name'];
-
-                                                                // TODO: Make this dynamic
-                                                                if ($toolQuestionToSummarize->short === 'building-type-category') {
-                                                                    $buildingTypeCategory = $answerToAppend;
-                                                                }
-
-                                                                if (! empty($questionValue['extra']['icon'])) {
-                                                                    $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';
-                                                                }
-
-                                                                $humanReadableAnswers[] = $answerToAppend;
-                                                            }
-                                                        }
-
-                                                        if (! empty($humanReadableAnswers)) {
-                                                            $humanReadableAnswer = implode(', ', $humanReadableAnswers);
-                                                        }
-                                                    } else {
-                                                        // If there are no question values, then it's user input
-                                                        $humanReadableAnswer = $answer;
-                                                    }
-
-                                                    // Format numbers
-                                                    if ($toolQuestionToSummarize->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestionToSummarize->validation, 'numeric')) {
-                                                        $isInteger = \App\Helpers\Str::arrContains($toolQuestionToSummarize->validation, 'integer');
-                                                        $humanReadableAnswer = \App\Helpers\NumberFormatter::formatNumberForUser($humanReadableAnswer, $isInteger);
-                                                    } elseif($toolQuestionToSummarize->toolQuestionType->short === 'slider') {
-                                                        $humanReadableAnswer = str_replace('.', '', \App\Helpers\NumberFormatter::format($humanReadableAnswer, 0));
-                                                    }
-                                                }
-                                            @endphp
-
                                             {!! $humanReadableAnswer !!}
                                         </p>
                                     </div>

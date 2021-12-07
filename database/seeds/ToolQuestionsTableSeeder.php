@@ -189,7 +189,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Wat voor dak' => [
-                    'order' => 3,
+                    'order' => 4,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -254,6 +254,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Specifieke voorbeeld woning' => [
+                    'order' => 3,
                     'conditions' => [
                         [
                             [
@@ -262,7 +263,6 @@ class ToolQuestionsTableSeeder extends Seeder
                             ],
                         ],
                     ],
-                    'order' => 4,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [

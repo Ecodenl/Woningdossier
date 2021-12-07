@@ -61,14 +61,14 @@ return [
             ]) : [],
         ],
 
-        'migration' => [
+        'sub_live' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_MIGRATION_DATABASE', 'forge'),
-            'username' => env('DB_MIGRATION_USERNAME', 'forge'),
-            'password' => env('DB_MIGRATION_PASSWORD', ''),
+            'database' => env('DB_SUB_LIVE_DATABASE', 'forge'),
+            'username' => env('DB_SUB_LIVE_USERNAME', 'forge'),
+            'password' => env('DB_SUB_LIVE_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

@@ -107,9 +107,6 @@ class MergeUserAndBuildingTables extends Command
                 ->groupBy('table_name')
                 ->pluck('concat_string')
                 ->first();
-//
-
-
 
             // first delete the rows
             // and insert the data afterwards
@@ -119,13 +116,13 @@ class MergeUserAndBuildingTables extends Command
                 Schema::disableForeignKeyConstraints();
                 $db = DB::getPdo();
 
-                $sql = "
-                    insert into db.{$table} 
+                $userIds = implode(',', $userIds);
+                $sql = "insert into db.{$table} 
                         ({$columnNames})
                     select {$columnNames} 
                     from sub_live.{$table} 
-                    where user_id in (?)";
-                $db->prepare($sql)->execute($userIds);
+                    where user_id in ({$userIds})";
+                $db->prepare($sql)->execute();
 
             } else {
                 DB::table($table)->whereIn('building_id', $buildingIds)->delete();

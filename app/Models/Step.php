@@ -70,7 +70,6 @@ class Step extends Model
         return 'slug';
     }
 
-
     public function scopeWithGeneralData(Builder $query): Builder
     {
         return $query->withoutGlobalScope(NoGeneralDataScope::class);

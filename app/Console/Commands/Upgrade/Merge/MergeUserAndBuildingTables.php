@@ -98,12 +98,6 @@ class MergeUserAndBuildingTables extends Command
             ->pluck('id')->toArray();
 
 
-        Schema::disableForeignKeyConstraints();
-
-
-        $start = Carbon::now();
-        $this->info('[ ' . $start->format('Y-m-d H:i:s') . ' ] START');
-
         foreach (self::TABLES as $table) {
             $this->info("Starting migration for {$table}");
             // first set some defaults

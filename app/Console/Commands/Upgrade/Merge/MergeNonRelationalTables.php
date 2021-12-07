@@ -39,7 +39,6 @@ class MergeNonRelationalTables extends Command
     public function handle()
     {
         $tables = [
-            'accounts',
             'appliances',
             'appliance_building_services',
             'appliance_properties',
@@ -90,7 +89,6 @@ class MergeNonRelationalTables extends Command
             'measure_measure_category',
             'measure_properties',
             'measure_service_type',
-            'media',
             'mediables',
             'migrations',
             'model_has_permissions',
@@ -109,8 +107,6 @@ class MergeNonRelationalTables extends Command
             'pv_panel_location_factors',
             'pv_panel_orientations',
             'pv_panel_yields',
-            'questions',
-            'question_options',
             'roles',
             'role_has_permissions',
             'roof_tile_statuses',
@@ -138,8 +134,8 @@ class MergeNonRelationalTables extends Command
 
 
 
-        foreach ($mergeableCooperations as $mergeableCooperation) {
+//        foreach ($mergeableCooperations as $mergeableCooperation) {
 
-        }
+//        }
     }
 }

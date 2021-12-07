@@ -5,6 +5,7 @@ namespace App\Console\Commands\Upgrade\Merge;
 use App\Console\Commands\Upgrade\Merge\MergeUserAndBuildingTables;
 use App\Models\Cooperation;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Schema;
 
 class MergeDatabases extends Command
 {
@@ -53,6 +54,8 @@ class MergeDatabases extends Command
             );
             exec($cmd);
             $this->info('Database dump imported');
+
+        Schema::disableForeignKeyConstraints();
 //            $commands = [
 //                MergeUserAndBuildingTables::class => ['--cooperation' => $mergeableCooperation->slug],
 //            ];

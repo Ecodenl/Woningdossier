@@ -121,7 +121,7 @@ class MergeUserAndBuildingTables extends Command
                         ({$columnNames})
                     select {$columnNames} 
                     from sub_live.{$table} 
-                    where user_id in ({$userIds})";
+                    where sub_live.{$table}.user_id in ({$userIds})";
                 $db->prepare($sql)->execute();
 
             } else {

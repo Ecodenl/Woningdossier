@@ -72,8 +72,11 @@ class ToolQuestionHelper {
      * and which tool question to get the answer for, for the replaceable.
      */
     const TOOL_QUESTION_ANSWER_REPLACEABLES = [
+        // the question where we will replace something.
         'building-type' => [
+            // the question that will be used to replace
             'short' => 'building-type-category',
+            // the attribute that we will use as a replacer
             'replaceable' => 'name',
         ],
     ];
@@ -224,18 +227,16 @@ class ToolQuestionHelper {
     public static function handleToolQuestionReplaceables(Building $building, InputSource $inputSource, ToolQuestion $toolQuestion): ToolQuestion
     {
         if (\App\Helpers\Str::hasReplaceables($toolQuestion->name)) {
-            $data = \App\Helpers\ToolQuestionHelper::TOOL_QUESTION_ANSWER_REPLACEABLES[$toolQuestion->short];
-            $toolQuestionForAnswer = \App\Models\ToolQuestion::findByShort($data['short']);
+            $data = self::TOOL_QUESTION_ANSWER_REPLACEABLES[$toolQuestion->short];
+            $toolQuestionForAnswer = ToolQuestion::findByShort($data['short']);
 
-            $toolQuestion->name = str_replace(
-                ":{$data['replaceable']}",
-                static::getHumanReadableAnswer(
-                    $building,
-                    ($toolQuestion->forSpecificInputSource ?? $inputSource),
-                    $toolQuestionForAnswer
-                ),
-                $toolQuestion->name
+            $humanReadableAnswer = static::getHumanReadableAnswer(
+                $building,
+                ($toolQuestion->forSpecificInputSource ?? $inputSource),
+                $toolQuestionForAnswer
             );
+
+            $toolQuestion->name = __($toolQuestion->name, [$data['replaceable'] => $humanReadableAnswer]);
         }
 
         return $toolQuestion;

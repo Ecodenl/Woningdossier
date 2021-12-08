@@ -26,7 +26,7 @@ class DeleteSubLiveData extends Command
      *
      * @var string
      */
-    protected $description = 'Deletes the data in the freshly migrated database, that could be present in the sub live environments (deltawind.hoomdossier.nl env into hoomdossier.nl)';
+    protected $description = 'Deletes the data in the freshly migrated database (db connection), that could be present in the sub live environments (deltawind.hoomdossier.nl env into hoomdossier.nl)';
 
     /**
      * Create a new command instance.
@@ -119,7 +119,10 @@ class DeleteSubLiveData extends Command
 
         }
 
+
         Schema::enableForeignKeyConstraints();
+
+        // todo: save the account_ids BEFORE tdeleting the user, this way we can actuallt delete the accounts.
 
         // this deletes all the accounts related to the sub live environments
         // these will all be reimported anyway so it doesnt matter anyway.

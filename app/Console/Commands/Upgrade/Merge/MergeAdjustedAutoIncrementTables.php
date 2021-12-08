@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Upgrade\Merge;
 
+use App\Models\Account;
 use App\Models\Cooperation;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -239,6 +240,7 @@ class MergeAdjustedAutoIncrementTables extends Command
 
 
         Schema::disableForeignKeyConstraints();
+        
 //        foreach (self::TABLES[$cooperationSlug] as $table => $autoIncremented) {
 //
 //            // first set some defaults
@@ -280,9 +282,9 @@ class MergeAdjustedAutoIncrementTables extends Command
                 WHERE t1.id = t2.id and t1.id in ({$implodedAccountIds})";
 
 //        dd($userIds, $accountIds, $updat);
-        DB::getPdo()
-            ->prepare($updateStatementForUsersTable)
-            ->execute(['cooperation_id' => $cooperation->id]);
+//        DB::getPdo()
+//            ->prepare($updateStatementForUsersTable)
+//            ->execute(['cooperation_id' => $cooperation->id]);
 
 
     }

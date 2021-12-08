@@ -82,10 +82,13 @@ class ToolHelper
             'order'
         )->get();
 
-
         $hrBoilerStep = Step::findByShort('high-efficiency-boiler');
         $solarPanelStep = Step::findByShort('solar-panels');
         $heaterStep = Step::findByShort('heater');
+        $wallInsulationStep = Step::findByShort('wall-insulation');
+        $floorInsulationStep = Step::findByShort('floor-insulation');
+        $roofInsulationStep = Step::findByShort('roof-insulation');
+
         // Wall insulation
         $wallInsulation = Element::findByShort('wall-insulation');
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')
@@ -472,7 +475,7 @@ class ToolHelper
 
             'wall-insulation' => [
                 '-' => [
-                    "{$stepConsiderableKey}.{$wallInsulation->id}.is_considering" => self::considerationOptions($wallInsulation->name),
+                    "{$stepConsiderableKey}.{$wallInsulationStep->id}.is_considering" => self::considerationOptions($wallInsulationStep->name),
                     'building_features.cavity_wall' => [
                         'label' => __(
                             'wall-insulation.intro.has-cavity-wall.title'
@@ -662,7 +665,7 @@ class ToolHelper
 
             'floor-insulation' => [
                 '-' => [
-                    "{$stepConsiderableKey}.{$floorInsulation->id}.is_considering" => self::considerationOptions($floorInsulation->name),
+                    "{$stepConsiderableKey}.{$floorInsulationStep->id}.is_considering" => self::considerationOptions($floorInsulationStep->name),
                     'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
                         'label' => __(
                             'floor-insulation.has-crawlspace.title'
@@ -722,7 +725,7 @@ class ToolHelper
 
             'roof-insulation' => [
                 '-' => [
-                    "{$stepConsiderableKey}.{$roofInsulation->id}.is_considering" => self::considerationOptions($roofInsulation->name),
+                    "{$stepConsiderableKey}.{$roofInsulationStep->id}.is_considering" => self::considerationOptions($roofInsulationStep->name),
                     'building_features.roof_type_id' => [
                         'label' => __(
                             'roof-insulation.current-situation.main-roof.title'
@@ -855,7 +858,7 @@ class ToolHelper
 
             'heater' => [
                 '-' => [
-                    "{$stepConsiderableKey}.{$heater->id}.is_considering" => self::considerationOptions($heater->name),
+                    "{$stepConsiderableKey}.{$heaterStep->id}.is_considering" => self::considerationOptions($heaterStep->name),
                     'user_energy_habits.water_comfort_id' => [
                         'label' => __(
                             'heater.comfort-level-warm-tap-water.title'

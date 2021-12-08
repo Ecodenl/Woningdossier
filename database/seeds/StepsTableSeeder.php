@@ -196,19 +196,5 @@ class StepsTableSeeder extends Seeder
 
             DB::table('steps')->updateOrInsert(['short' => $step['short']], $insertStepData);
         }
-
-        $allCooperations = \App\Models\Cooperation::all();
-
-        $steps = \App\Models\Step::whereNotIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])->get();
-
-        foreach ($allCooperations as $cooperation) {
-            foreach ($steps as $step) {
-                // Only attach if not available
-                if (! $cooperation->steps()->find($step->id) instanceof \App\Models\Step) {
-                    $cooperation->steps()->attach($step);
-                }
-                $cooperation->steps()->updateExistingPivot($step->id, ['order' => $step->order]);
-            }
-        }
     }
 }

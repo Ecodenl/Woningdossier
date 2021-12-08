@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStepsTable extends Migration
+class DropCooperationStepsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,7 @@ class CreateStepsTable extends Migration
      */
     public function up()
     {
-        Schema::create('steps', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('slug');
-            $table->json('name');
-            $table->integer('order');
-
-            $table->timestamps();
-        });
+        Schema::dropIfExists('cooperation_steps');
     }
 
     /**
@@ -30,6 +23,6 @@ class CreateStepsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('steps');
+        // We don't want to revert this.
     }
 }

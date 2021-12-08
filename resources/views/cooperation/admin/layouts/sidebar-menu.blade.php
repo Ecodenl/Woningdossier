@@ -51,11 +51,6 @@
                                 @lang('cooperation/admin/shared.sidebar.cooperation-measure-applications')
                             </a>
                         </li>
-{{--                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.steps.index'])) active @endif">--}}
-{{--                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.steps.index')}}">--}}
-{{--                                @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.step')--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.settings.index'])) active @endif">
                             <a href="{{route('cooperation.admin.cooperation.cooperation-admin.settings.index')}}">
                                 @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.settings')

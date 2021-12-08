@@ -95,52 +95,6 @@ class Cooperation extends Model
         return $this->hasMany(ExampleBuilding::class);
     }
 
-    /**
-     * Get all the steps from the cooperation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function steps()
-    {
-        return $this->belongsToMany(Step::class, 'cooperation_steps')->withPivot('order', 'is_active');
-    }
-
-    /**
-     * Get the sub steps for a given step.
-     *
-     * @return mixed
-     */
-    public function getchildrenForStep(Step $step)
-    {
-        return $this->steps()->childrenForStep($step)->activeOrderedSteps()->get();
-    }
-
-    /**
-     * Check if the cooperation has a active step.
-     */
-    public function isStepActive(Step $step): bool
-    {
-        $cooperationSteps = $this->steps();
-        $cooperationStep = $cooperationSteps->find($step->id);
-        if ($cooperationStep instanceof Step) {
-            if ($cooperationStep->pivot->is_active) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * get the active steps with its substeps ordered on the order column.
-     *
-     * @return Collection|mixed
-     */
-    public function getActiveOrderedSteps()
-    {
-        return \App\Helpers\Cache\Cooperation::getActiveOrderedSteps($this);
-    }
-
     public function getRouteKeyName()
     {
         return 'slug';

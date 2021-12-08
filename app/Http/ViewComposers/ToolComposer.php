@@ -74,8 +74,6 @@ class ToolComposer
             $view->with('inputSources', \App\Helpers\Cache\InputSource::getOrdered());
             //$view->with('myUnreadMessagesCount', $this->unreadMessageCount);
 
-            // TODO: Should this stay? (Last usage is to define a previous step, tool.blade.php @137)
-            $view->with('steps', $this->cooperation->getActiveOrderedSteps());
             // TODO: Should this stay?
             $view->with('interests', \App\Helpers\Cache\Interest::getOrdered());
             $view->with('currentStep', $this->currentStep);

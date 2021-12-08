@@ -12,14 +12,12 @@ use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\User;
-use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class UserReportController extends Controller
 {
@@ -46,18 +44,9 @@ class UserReportController extends Controller
 
         $buildingInsulatedGlazings = $building->currentInsulatedGlazing->load('measureApplication', 'insulatedGlazing', 'buildingHeating');
 
-        $steps = $userCooperation
-            ->steps()
-            ->withGeneralData()
-            ->where('steps.parent_id', '=', null)
-            ->orderBy('cooperation_steps.order')
-            ->where('cooperation_steps.is_active', '1')
-            ->get();
-
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
-
-        // unfortunately we cant load the whereHasMorph
+        // unfortunately we can't load the whereHasMorph
         // so we have to do 2 separate queries and merge the collections together.
         $userActionPlanAdvicesForCustomMeasureApplications = $user
             ->actionPlanAdvices()
@@ -108,10 +97,6 @@ class UserReportController extends Controller
             }
         }
 
-        // intersect the data, we dont need the data we wont show anyway
-        $activeOrderedStepShorts = $steps->pluck('short')->flip()->toArray();
-        $reportData = array_intersect_key($reportData, $activeOrderedStepShorts);
-
         // steps that are considered to be measures.
         $stepShorts = \DB::table('steps')
             ->where('short', '!=', 'general-data')
@@ -143,7 +128,7 @@ class UserReportController extends Controller
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-            'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
+            'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
 //
         return $pdf->stream();
@@ -151,7 +136,7 @@ class UserReportController extends Controller
         return view('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'connectedCoachNames', 'userEnergyHabit',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-            'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
+            'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
     }
 }

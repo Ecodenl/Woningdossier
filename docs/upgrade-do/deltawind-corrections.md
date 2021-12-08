@@ -147,4 +147,6 @@ where tool_question_id = 52;
 update tool_question_valuables
 set tool_question_id = 5
 where tool_question_id = 53; 
+
+set foreign_key_checks = 1;
 ```

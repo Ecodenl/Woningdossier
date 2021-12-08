@@ -200,6 +200,9 @@ class MergeAdjustedAutoIncrementTables extends Command
 
         // the deleted rows in these tables cant be recreated.
         // they may have been updated so we have to do that
+
+        // TODO; copy the data that is related to the given cooperation.
+        // (almost same as copy table)
         $tablesThatNeedUpdate = [
             'accounts',
             'buildings',
@@ -240,7 +243,7 @@ class MergeAdjustedAutoIncrementTables extends Command
 
 
         Schema::disableForeignKeyConstraints();
-        
+
 //        foreach (self::TABLES[$cooperationSlug] as $table => $autoIncremented) {
 //
 //            // first set some defaults
@@ -264,22 +267,6 @@ class MergeAdjustedAutoIncrementTables extends Command
 //            }
 //        }
 
-        // unfortunately we need custom queries to update the buildings, accounts and users table.
-        $updateStatementForUsersTable = "UPDATE db.users as t1, sub_live.users as t2
-                SET t1.`account_id` = t2.`account_id`, t1.`cooperation_id` = t2.`cooperation_id`, t1.`first_name` = t2.`first_name`, t1.`last_name` = t2.`last_name`, t1.`phone_number` = t2.`phone_number`, t1.`extra` = t2.`extra`, t1.`allow_access` = t2.`allow_access`, t1.`created_at` = t2.`created_at`, t1.`updated_at` = t2.`updated_at`
-                WHERE t1.id = t2.id and t1.cooperation_id = :cooperation_id";
-
-        $implodedUserIds = implode(',', $userIds);
-        $updateStatementForBuildingsTable = "UPDATE db.buildings as t1, sub_live.buildings as t2
-                SET t1.`user_id` = t2.`user_id`, t1.`street` = t2.`street`, t1.`number` = t2.`number`, t1.`extension` = t2.`extension`, t1.`city` = t2.`city`, t1.`postal_code` = t2.`postal_code`, t1.`country_code` = t2.`country_code`, t1.`owner` = t2.`owner`, t1.`primary` = t2.`primary`, t1.`bag_addressid` = t2.`bag_addressid`, t1.`created_at` = t2.`created_at`, t1.`updated_at` = t2.`updated_at`, t1.`deleted_at` = t2.`deleted_at`
-                WHERE t1.id = t2.id and t1.user_id in ({$implodedUserIds})";
-
-
-        $implodedAccountIds = implode(',', $accountIds);
-        $updateStatementForAccountsTable =
-            "UPDATE db.accounts as t1, sub_live.accounts as t2
-                SET t1.`email` = t2.`email`, t1.`password` = t2.`password`, t1.`remember_token` = t2.`remember_token`, t1.`email_verified_at` = t2.`email_verified_at`, t1.`old_email` = t2.`old_email`, t1.`old_email_token` = t2.`old_email_token`, t1.`active` = t2.`active`, t1.`is_admin` = t2.`is_admin`, t1.`created_at` = t2.`created_at`, t1.`updated_at` = t2.`updated_at`
-                WHERE t1.id = t2.id and t1.id in ({$implodedAccountIds})";
 
 //        dd($userIds, $accountIds, $updat);
 //        DB::getPdo()

@@ -98,7 +98,7 @@ class MapComments extends Command
             ->where('input_source_id', '!=', $masterInputSource->id)
             ->select('user_energy_habits.*', 'buildings.id as building_id')
             ->leftJoin('buildings', 'buildings.user_id', '=', 'user_energy_habits.user_id')
-            ->get();
+            ->cursor();
 
         foreach ($userEnergyHabits as $userEnergyHabit) {
             $wheres = [

@@ -210,7 +210,7 @@ class MapActionPlan extends Command
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
         // Get all user energy habits that have renovation plans, we will map them to a custom measure
-        // We don't need null (not answered) or 0 (no plans)
+        // We don't need null (not answered) or 0 (no plans).
         $query = UserEnergyHabit::forInputSource($residentInputSource)
             ->whereNotNull('renovation_plans')
             ->where('renovation_plans', '!=', 0);
@@ -253,7 +253,7 @@ class MapActionPlan extends Command
             $category = $userEnergyHabit->renovation_plans === 1 ? UserActionPlanAdviceService::CATEGORY_TO_DO
                 : UserActionPlanAdviceService::CATEGORY_LATER;
 
-
+            // We need the model, so this will trigger model events to automatically save it on the master input source.
             UserActionPlanAdvice::withInvisible()
                 ->allInputSources()
                 ->updateOrCreate(

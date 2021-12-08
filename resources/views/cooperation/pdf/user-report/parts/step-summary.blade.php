@@ -33,50 +33,30 @@
                 @endphp
 
                 @if ($showQuestion)
-
-
                     @php
-                        $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
-                        $answer = $answers[$toolQuestionToSummarize->short] ?? null;
+                        $humanReadableAnswer = \App\Helpers\ToolQuestionHelper::getHumanReadableAnswer(
+                            $building,
+                            ($toolQuestionToSummarize->forSpecificInputSource ?? $inputSource),
+                            $toolQuestionToSummarize,
+                            false,
+                            ($answers[$toolQuestionToSummarize->short] ?? null)
+                        );
 
-                        if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
-                            $questionValues = $toolQuestionToSummarize->getQuestionValues();
-
-                            if ($questionValues->isNotEmpty()) {
-                                $humanReadableAnswers = [];
-
-                                $answer = is_array($answer) ? $answer : [$answer];
-
-                                foreach ($answer as $subAnswer) {
-                                    $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
-
-                                    if (! empty($questionValue)) {
-                                        $answerToAppend = $questionValue['name'];
-
-                                        if (! empty($questionValue['extra']['icon'])) {
-                                            $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';
-                                        }
-
-                                        $humanReadableAnswers[] = $answerToAppend;
-                                    }
-                                }
-
-                                if (! empty($humanReadableAnswers)) {
-                                    $humanReadableAnswer = implode(', ', $humanReadableAnswers);
-                                }
-                            } else {
-                                // If there are no question values, then it's user input
-                                $humanReadableAnswer = $answer;
-                            }
-
-                            // Format numbers
-                            if ($toolQuestionToSummarize->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestionToSummarize->validation, 'numeric')) {
-                            } elseif($toolQuestionToSummarize->toolQuestionType->short === 'slider') {
-                                $humanReadableAnswer = str_replace('.', '', \App\Helpers\NumberFormatter::format($humanReadableAnswer, 0));
+                        if ($toolQuestionToSummarize->toolQuestionType->short === 'text'
+                            && \App\Helpers\Str::arrContains($toolQuestionToSummarize->validation, 'numeric')) {
+                            // Apparently feedback said, no formatting for this, so we revert...
+                            if (isset($answers[$toolQuestionToSummarize->short])) {
+                                $humanReadableAnswer = $answers[$toolQuestionToSummarize->short];
                             }
                         }
-                    @endphp
 
+                        // Handle replaceables
+                        $toolQuestionToSummarize = \App\Helpers\ToolQuestionHelper::handleToolQuestionReplaceables(
+                            $building,
+                            ($toolQuestionToSummarize->forSpecificInputSource ?? $inputSource),
+                            $toolQuestionToSummarize,
+                        );
+                    @endphp
 
                     <tr class="h-20">
                         <td class="w-380">{{ $toolQuestionToSummarize->name }}</td>

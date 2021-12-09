@@ -246,36 +246,28 @@ class MergeAdjustedAutoIncrementTables extends Command
         // now we gotta do the accounts
 
 
-//        foreach (self::TABLES[$cooperationSlug] as $table => $autoIncremented) {
-//
-//            // first set some defaults11
-//            $column = 'building_id';
-//            $ids = $buildingIds;
-//
-//            // if the table has a user_id col, we will use the user_id as coll and userIds as values.
-//            // pretty obvious but ok.
-//            if (Schema::hasColumn($table, 'user_id')) {
-//                $column = 'user_id';
-//                $ids = $userIds;
-//            }
-//
-//            $this->info("Starting migration for {$table}");
-//            if (in_array($table, $onlyAboveTables)) {
-////                $this->copyForTable($table, 'id', $autoIncremented);
-//            }
-//
+        foreach (self::TABLES[$cooperationSlug] as $table => $autoIncremented) {
+
+            // first set some defaults11
+            $column = 'building_id';
+            $ids = $buildingIds;
+
+            // if the table has a user_id col, we will use the user_id as coll and userIds as values.
+            // pretty obvious but ok.
+            if (Schema::hasColumn($table, 'user_id')) {
+                $column = 'user_id';
+                $ids = $userIds;
+            }
+
+            $this->info("Starting migration for {$table}");
+            if (in_array($table, $onlyAboveTables)) {
+                $this->copyForTableAutoIncrement($table, 'id', $autoIncremented);
+            }
+
 //            if (in_array($table, $bogged)) {
 //                $this->info("Table has a {$column} column");
 //            }
-//        }
-
-
-//        dd($userIds, $accountIds, $updat);
-//        DB::getPdo()
-//            ->prepare($updateStatementForUsersTable)
-//            ->execute(['cooperation_id' => $cooperation->id]);
-
-
+        }
     }
 
     /**

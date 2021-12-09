@@ -3,9 +3,12 @@
 namespace App\Console\Commands\Upgrade\Merge;
 
 use App\Console\Commands\Upgrade\Merge\MergeUserAndBuildingTables;
+use App\Models\Building;
 use App\Models\Cooperation;
+use App\Services\BuildingService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class MergeDatabases extends Command
@@ -43,15 +46,37 @@ class MergeDatabases extends Command
     {
         $mergeableCooperations = Cooperation::whereIn('slug', [
             'blauwvingerenergie',
-            'cnme',
+            'cnme', // geen errors ?..
             'deltawind',
             'duec',
             'energiehuis',
-            'leimuidenduurzaam',
-            'lochemenergie',
+            'leimuidenduurzaam',//  'geen errors'
+            'lochemenergie', // geen errors
 //            'nhec',
 //            'wijdemeren'
         ])->get();
+
+
+
+        // so there are a couple custom queries we have to run in order to unduck the database
+        Schema::disableForeignKeyConstraints();
+        DB::table('users')
+            ->where('account_id', 13511)
+            ->update(['account_id' => 70024]);
+
+        DB::table('users')
+            ->where('account_id', 12808)
+            ->update(['account_id' => 30001]);
+
+        DB::table('users')
+            ->where('account_id', 13676)
+            ->update(['account_id' => 60006]);
+
+        DB::table('accounts')->whereIn('id', [13511, 12808, 13676])->delete();
+
+        BuildingService::deleteBuilding(Building::withTrashed()->find(4775));
+
+        Schema::disableForeignKeyConstraints();
 
 
         foreach ($mergeableCooperations as $mergeableCooperation) {
@@ -75,6 +100,7 @@ class MergeDatabases extends Command
                 MergeUserAndBuildingTables::class,
                 MergeAdjustedAutoIncrementTables::class,
             ];
+
 
             foreach ($commands as $command) {
                 Artisan::call($command, ['cooperation' => $mergeableCooperation->slug]);

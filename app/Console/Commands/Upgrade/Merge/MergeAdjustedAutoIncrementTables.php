@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands\Upgrade\Merge;
 
-use App\Models\Account;
-use App\Models\Cooperation;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class MergeAdjustedAutoIncrementTables extends Command
@@ -201,13 +200,6 @@ class MergeAdjustedAutoIncrementTables extends Command
         // the deleted rows in these tables cant be recreated.
         // they may have been updated so we have to do that
 
-        // TODO; copy the data that is related to the given cooperation.
-        // (almost same as copy table)
-        $tablesThatNeedInsert = [
-            'buildings' => 'id',
-            'users' => 'id',
-        ];
-
 
         // hard case, these rows can have old rows and new ones. but we cant decide what is what.
         // this will be a slow one.
@@ -233,22 +225,30 @@ class MergeAdjustedAutoIncrementTables extends Command
             ->get();
 
         $userIds = $users->pluck('id')->toArray();
-
+        $accountIds = $users->pluck('account_id')->toArray();
 
         $buildingIds = DB::connection('sub_live')
             ->table('buildings')
             ->whereIn('user_id', $userIds)
             ->pluck('id')->toArray();
 
+
         Schema::disableForeignKeyConstraints();
 
+
+        // we made sure these rows were deleted before
+        Log::debug("Starting migration for users table");
         $this->copyForTableInValues('users', 'id', $userIds);
-//        $this->copyForTableInValues('buildings', 'id', $buildingIds);
+        Log::debug("Starting migration for buildings table");
+        $this->copyForTableInValues('buildings', 'id', $buildingIds);
+        Log::debug("Starting migration for accounts table");
+        $this->copyForTableInValues('accounts', 'id', $accountIds);
+        // now we gotta do the accounts
 
 
 //        foreach (self::TABLES[$cooperationSlug] as $table => $autoIncremented) {
 //
-//            // first set some defaults
+//            // first set some defaults11
 //            $column = 'building_id';
 //            $ids = $buildingIds;
 //

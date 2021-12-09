@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class MergeUserAndBuildingTables extends Command
@@ -101,6 +102,7 @@ class MergeUserAndBuildingTables extends Command
 
         foreach (self::TABLES as $table) {
             $this->info("Starting migration for {$table}");
+            Log::debug("Starting migration for {$table}");
             // first set some defaults
             $column = 'building_id';
             $ids = $buildingIds;

@@ -100,34 +100,22 @@ class DeleteSubLiveData extends Command
         $deleteCount = DB::table('buildings')->whereIn('id', $buildingIds)->delete();
         $this->info("Deleted {$deleteCount} buildings");
 
-        // now gather al the accounts that have only 1 user
-        // we can safely delete these.
-        // we HAVE to to this query before deleting the users
-        // we HAVE to delete the accounts after the users are deleted.
-        $accountIds = DB::table('users')
-            ->selectRaw('users.account_id, count(users.account_id) as user_count_for_account')
-            ->join('users as users_for_specific_cooperation', function ($join) use ($cooperation) {
-                $join
-                    ->select('account_id')
-                    ->where('users_for_specific_cooperation.cooperation_id', $cooperation->id)
-                    ->on('users_for_specific_cooperation.account_id', '=', 'users.account_id');
-            })
-            ->groupBy('users.account_id')
-            ->havingRaw('user_count_for_account = 1')
-            ->pluck('account_id')
-            ->toArray();
+
+        $accountIds = DB::table('users')->where('cooperation_id', $cooperation->id)->pluck('account_id')->toArray();
 
 
         $deleteCount = DB::table('users')->whereIn('id', $userIds)->delete();
         $this->info("Deleted {$deleteCount} users");
 
 
+        Schema::disableForeignKeyConstraints();
         $deleteCount = DB::table('accounts')
             ->whereIn('id', $accountIds)
             ->delete();
 
         $this->info("Deleted {$deleteCount} accounts");
 
+        Schema::enableForeignKeyConstraints();
 
     }
 }

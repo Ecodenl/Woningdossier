@@ -42,37 +42,40 @@ class MergeDatabases extends Command
     public function handle()
     {
         $mergeableCooperations = Cooperation::whereIn('slug', [
-//            'blauwvingerenergie',
-//            'cnme',
+            'blauwvingerenergie',
+            'cnme',
             'deltawind',
-//            'duec',
-//            'energiehuis',
-//            'leimuidenduurzaam',
-//            'lochemenergie',
+            'duec',
+            'energiehuis',
+            'leimuidenduurzaam',
+            'lochemenergie',
 //            'nhec',
 //            'wijdemeren'
         ])->get();
 
 
         foreach ($mergeableCooperations as $mergeableCooperation) {
+            $this->info("==={{$mergeableCooperation->slug}}===");
             // import the sub live environment.
-//            $string = 'mysql -u %s -p%s %s < %s';
-//            $cmd = sprintf(
-//                $string,
-//                config('database.connections.sub_live.username'),
-//                config('database.connections.sub_live.password'),
-//                config('database.connections.sub_live.database'),
-//                storage_path("app/wijdemeren.sql")
-//            );
-//            exec($cmd);
-//            $this->info('Database dump imported');
+
+            Artisan::call('db:wipe', ['--database' => 'sub_live']);
+            $string = 'mysql -u %s -p%s %s < %s';
+            $cmd = sprintf(
+                $string,
+                config('database.connections.sub_live.username'),
+                config('database.connections.sub_live.password'),
+                config('database.connections.sub_live.database'),
+                storage_path("app/woonplan_{$mergeableCooperation->slug}.sql")
+            );
+            exec($cmd);
+            $this->info('Database dump imported');
 
             $commands = [
                 DeleteSubLiveData::class,
-//                MergeUserAndBuildingTables::class,
+                MergeUserAndBuildingTables::class,
                 MergeAdjustedAutoIncrementTables::class,
             ];
-            $this->info("==={{$mergeableCooperation->slug}}===");
+
             foreach ($commands as $command) {
                 Artisan::call($command, ['cooperation' => $mergeableCooperation->slug]);
                 $this->info("Completed {$command}");

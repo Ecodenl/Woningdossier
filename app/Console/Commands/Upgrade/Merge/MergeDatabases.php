@@ -5,6 +5,7 @@ namespace App\Console\Commands\Upgrade\Merge;
 use App\Console\Commands\Upgrade\Merge\MergeUserAndBuildingTables;
 use App\Models\Cooperation;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 
 class MergeDatabases extends Command
@@ -40,26 +41,42 @@ class MergeDatabases extends Command
      */
     public function handle()
     {
+        $mergeableCooperations = Cooperation::whereIn('slug', [
+//            'blauwvingerenergie',
+//            'cnme',
+            'deltawind',
+//            'duec',
+//            'energiehuis',
+//            'leimuidenduurzaam',
+//            'lochemenergie',
+//            'nhec',
+//            'wijdemeren'
+        ])->get();
 
 
-//        foreach ($mergeableCooperations as $mergeableCooperation) {
+        foreach ($mergeableCooperations as $mergeableCooperation) {
             // import the sub live environment.
-            $string = 'mysql -u %s -p%s %s < %s';
-            $cmd = sprintf(
-                $string,
-                config('database.connections.sub_live.username'),
-                config('database.connections.sub_live.password'),
-                config('database.connections.sub_live.database'),
-                storage_path("app/wijdemeren.sql")
-            );
-            exec($cmd);
-            $this->info('Database dump imported');
+//            $string = 'mysql -u %s -p%s %s < %s';
+//            $cmd = sprintf(
+//                $string,
+//                config('database.connections.sub_live.username'),
+//                config('database.connections.sub_live.password'),
+//                config('database.connections.sub_live.database'),
+//                storage_path("app/wijdemeren.sql")
+//            );
+//            exec($cmd);
+//            $this->info('Database dump imported');
 
-        Schema::disableForeignKeyConstraints();
-//            $commands = [
-//                MergeUserAndBuildingTables::class => ['--cooperation' => $mergeableCooperation->slug],
-//            ];
-
-//        }
+            $commands = [
+                DeleteSubLiveData::class,
+//                MergeUserAndBuildingTables::class,
+                MergeAdjustedAutoIncrementTables::class,
+            ];
+            $this->info("==={{$mergeableCooperation->slug}}===");
+            foreach ($commands as $command) {
+                Artisan::call($command, ['cooperation' => $mergeableCooperation->slug]);
+                $this->info("Completed {$command}");
+            }
+        }
     }
 }

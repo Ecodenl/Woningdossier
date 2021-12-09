@@ -69,19 +69,16 @@ class DeleteSubLiveData extends Command
 
         // first we will delete all the data of the cooperations on our migrated database.
         // After that we will merge the data from the corresponding  cooperation sub live database
-        /** @var Cooperation $mergeableCooperation */
 
         // make sure the foreign keys are enabled, we want to be noticed if something goes south in this command.
         Schema::enableForeignKeyConstraints();
 
         $cooperationSlug = $this->argument('cooperation');
-        $cooperation = DB::table('cooperations')
-            ->where('slug', $cooperationSlug)
-            ->first();
+        $cooperation = Cooperation::where('slug', $cooperationSlug)->first();
 
-        $this->info("Deleting rows for cooperation {$mergeableCooperation->slug}");
+        $this->info("Deleting rows for cooperation {$cooperation->slug}");
 
-        $userIds = $mergeableCooperation->users->pluck('id')->toArray();
+        $userIds = $cooperation->users->pluck('id')->toArray();
 
         $buildingIds = Building::whereIn('user_id', $userIds)->pluck('id')->toArray();
 

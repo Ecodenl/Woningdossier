@@ -203,11 +203,11 @@ class MergeAdjustedAutoIncrementTables extends Command
 
         // TODO; copy the data that is related to the given cooperation.
         // (almost same as copy table)
-        $tablesThatNeedUpdate = [
-            'accounts',
-            'buildings',
-            'users',
+        $tablesThatNeedInsert = [
+            'buildings' => 'id',
+            'users' => 'id',
         ];
+
 
         // hard case, these rows can have old rows and new ones. but we cant decide what is what.
         // this will be a slow one.
@@ -233,7 +233,6 @@ class MergeAdjustedAutoIncrementTables extends Command
             ->get();
 
         $userIds = $users->pluck('id')->toArray();
-        $accountIds = $users->pluck('account_id')->toArray();
 
 
         $buildingIds = DB::connection('sub_live')
@@ -241,8 +240,11 @@ class MergeAdjustedAutoIncrementTables extends Command
             ->whereIn('user_id', $userIds)
             ->pluck('id')->toArray();
 
-
         Schema::disableForeignKeyConstraints();
+
+        $this->copyForTableInValues('users', 'id', $userIds);
+//        $this->copyForTableInValues('buildings', 'id', $buildingIds);
+
 
 //        foreach (self::TABLES[$cooperationSlug] as $table => $autoIncremented) {
 //
@@ -280,7 +282,7 @@ class MergeAdjustedAutoIncrementTables extends Command
      * Method to copy data from the sub_live connection to the db connection.
      * different from the other one as this copies the rows above or same as given auto increment.
      */
-    private function copyForTable(string $table, string $column, int $autoIncrement)
+    private function copyForTableAutoIncrement(string $table, string $column, int $autoIncrement)
     {
         // gets all the column names, except the id coll.
         $columnNames = DB::table('information_schema.columns')
@@ -297,6 +299,31 @@ class MergeAdjustedAutoIncrementTables extends Command
                     select {$columnNames} 
                     from sub_live.{$table} 
                     where sub_live.{$table}.{$column} >= {$autoIncrement}";
+
+        DB::getPdo()->prepare($sql)->execute();
+    }
+
+    /**
+     * Method to copy data from the sub_live connection to the db connection.
+     */
+    private function copyForTableInValues(string $table, string $column, array $values)
+    {
+        // gets all the column names, except the id coll.
+        $columnNames = DB::table('information_schema.columns')
+            ->selectRaw('column_name')
+            ->where('table_schema', 'db')
+            ->where('table_name', $table)
+            ->pluck('column_name')
+            ->map(fn($columnName) => "`$columnName`")
+            ->implode(',');
+
+
+        $values = implode(',', $values);
+        $sql = "insert into db.{$table} 
+                        ({$columnNames})
+                    select {$columnNames} 
+                    from sub_live.{$table} 
+                    where sub_live.{$table}.{$column} in ({$values})";
 
         DB::getPdo()->prepare($sql)->execute();
     }

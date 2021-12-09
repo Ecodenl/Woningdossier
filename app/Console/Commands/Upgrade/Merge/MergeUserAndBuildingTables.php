@@ -78,6 +78,7 @@ class MergeUserAndBuildingTables extends Command
      */
     public function handle()
     {
+        Schema::disableForeignKeyConstraints();
         // the cooperation we are currently migrating
         $cooperationSlug = $this->argument('cooperation');
         $cooperation = DB::connection('sub_live')
@@ -117,6 +118,7 @@ class MergeUserAndBuildingTables extends Command
             // and insert the data afterwards
             $this->copyForTable($table, $column, $ids);
         }
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

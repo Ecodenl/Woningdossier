@@ -74,15 +74,17 @@ class MergeDatabases extends Command
 
         DB::table('accounts')->whereIn('id', [13511, 12808, 13676])->delete();
 
-        BuildingService::deleteBuilding(Building::withTrashed()->find(4775));
+        $building = Building::withTrashed()->find(4775);
+        if ($building instanceof Building) {
+            BuildingService::deleteBuilding($building);
+        }
 
-        Schema::disableForeignKeyConstraints();
+        Schema::enableForeignKeyConstraints();
 
 
         foreach ($mergeableCooperations as $mergeableCooperation) {
             $this->info("==={{$mergeableCooperation->slug}}===");
             // import the sub live environment.
-
             Artisan::call('db:wipe', ['--database' => 'sub_live']);
             $string = 'mysql -u %s -p%s %s < %s';
             $cmd = sprintf(

@@ -82,6 +82,11 @@ END$$
 
 CALL loopBuildings()$$
 
+-- Cleanup
+DROP PROCEDURE IF EXISTS fixBuildings $$
+DROP PROCEDURE IF EXISTS loopBuildings $$
+    
+-- Reset delimiter
 DELIMITER ;
 
 -- Re-enable foreign key checks

@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Upgrade\Merge;
 
-use App\Console\Commands\Upgrade\Merge\MergeUserAndBuildingTables;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Services\BuildingService;
@@ -44,6 +43,7 @@ class MergeDatabases extends Command
      */
     public function handle()
     {
+
         $mergeableCooperations = Cooperation::whereIn('slug', [
             'blauwvingerenergie',
             'cnme', // geen errors ?..

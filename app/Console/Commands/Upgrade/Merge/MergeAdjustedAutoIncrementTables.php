@@ -26,7 +26,6 @@ class MergeAdjustedAutoIncrementTables extends Command
 
     const TABLES = [
         'deltawind' => [
-
             'accounts' => 20000,
             'buildings' => 20000,
             'users' => 20000,
@@ -224,6 +223,7 @@ class MergeAdjustedAutoIncrementTables extends Command
             ->where('cooperation_id', $cooperation->id)
             ->get();
 
+
         $userIds = $users->pluck('id')->toArray();
         $accountIds = $users->pluck('account_id')->toArray();
 
@@ -243,30 +243,14 @@ class MergeAdjustedAutoIncrementTables extends Command
         $this->copyForTableInValues('buildings', 'id', $buildingIds);
         Log::debug("Starting migration for accounts table");
         $this->copyForTableInValues('accounts', 'id', $accountIds);
-        // now we gotta do the accounts
+
 
 
         foreach (self::TABLES[$cooperationSlug] as $table => $autoIncremented) {
-
-            // first set some defaults11
-            $column = 'building_id';
-            $ids = $buildingIds;
-
-            // if the table has a user_id col, we will use the user_id as coll and userIds as values.
-            // pretty obvious but ok.
-            if (Schema::hasColumn($table, 'user_id')) {
-                $column = 'user_id';
-                $ids = $userIds;
-            }
-
-            $this->info("Starting migration for {$table}");
             if (in_array($table, $onlyAboveTables)) {
+                Log::debug("Starting migration for {$table} table");
                 $this->copyForTableAutoIncrement($table, 'id', $autoIncremented);
             }
-
-//            if (in_array($table, $bogged)) {
-//                $this->info("Table has a {$column} column");
-//            }
         }
     }
 

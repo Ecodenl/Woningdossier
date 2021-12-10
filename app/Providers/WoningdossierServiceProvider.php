@@ -10,12 +10,8 @@ use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\CompletedSubStep;
-use App\Models\Cooperation;
-use App\Models\ExampleBuilding;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
-use App\Models\QuestionsAnswer;
-use App\Models\Step;
 use App\Models\Translation;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
@@ -24,11 +20,8 @@ use App\Observers\BuildingFeatureObserver;
 use App\Observers\BuildingElementObserver;
 use App\Observers\BuildingObserver;
 use App\Observers\CompletedSubStepObserver;
-use App\Observers\CooperationObserver;
-use App\Observers\ExampleBuildingObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
-use App\Observers\StepObserver;
 use App\Observers\ToolQuestionAnswerObserver;
 use App\Observers\TranslationObserver;
 use App\Observers\UserActionPlanAdviceObserver;
@@ -49,8 +42,6 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Cooperation::observe(CooperationObserver::class);
-        Step::observe(StepObserver::class);
         PrivateMessage::observe(PrivateMessageObserver::class);
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
         PrivateMessageView::observe(PrivateMessageViewObserver::class);

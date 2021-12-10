@@ -2,13 +2,12 @@
 // we need to check if there is a answer from one input source
 $masterInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT);
 if($userInputValues instanceof \Illuminate\Support\Collection) {
-    $hasAnswer = $userInputValues->contains($userInputColumn, '!=', '');
-
     // remove the master input source his answer from the collection of models
     $userInputValues = $userInputValues->reject(fn($model) => $model->input_source_id == $masterInputSource->id);
+    $hasAnswer = $userInputValues->contains($userInputColumn, '!=', '')|| $userInputValues->contains($userInputColumn, '===', 0);
 } else {
     $userInputValues = collect($userInputValues)->reject(fn($model) => $model->input_source_id == $masterInputSource->id);
-    $hasAnswer = $userInputValues->contains($userInputColumn, '!=', '');
+    $hasAnswer = $userInputValues->contains($userInputColumn, '!=', '') || $userInputValues->contains($userInputColumn, '===', 0);
 }
 
 ?>

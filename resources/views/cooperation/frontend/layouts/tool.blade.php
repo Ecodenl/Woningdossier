@@ -51,7 +51,7 @@
                     <ul class="nav-tabs mt-5 hidden" x-ref="nav-tabs">
                         @if(isset($currentStep))
                             @php
-                                $subStepsForStep = $cooperation->getchildrenForStep($currentStep);
+                                $subStepsForStep = $currentStep->children;
                             @endphp
                             @if($subStepsForStep->isEmpty())
                                 <li class="active @if($building->hasCompleted($currentStep, $masterInputSource)) completed @endif">
@@ -131,28 +131,6 @@
                                 @if(!\App\helpers\HoomdossierSession::isUserObserving() && !Request::routeIs('cooperation.tool.my-plan.index'))
                                     <div class="flex flex-row flex-wrap w-full">
                                         <div class="w-full sm:w-1/2">
-                                            <?php
-                                            // some way of determining the previous step
-
-                                            if ($currentSubStep instanceof \App\Models\Step) {
-                                                $subStepsForCurrentStep = $currentStep->children;
-                                                $previousStep = $subStepsForCurrentStep->where('order', '<', $currentSubStep->order)->last();
-                                            } else {
-                                                $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();
-                                            }
-
-//                                            if ($currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step) {
-//                                                $previousUrl = route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index");
-//                                            } elseif ($previousStep instanceof \App\Models\Step) {
-//                                                $previousUrl = route("cooperation.tool.{$previousStep->short}.index");
-//                                            }
-                                            ?>
-{{--                                            @if($previousStep instanceof \App\Models\Step)--}}
-{{--                                                <a class="btn btn-green float-left"--}}
-{{--                                                   href="{{$previousUrl}}">--}}
-{{--                                                    @lang('default.buttons.previous')--}}
-{{--                                                </a>--}}
-{{--                                            @endif--}}
                                             <a class="btn btn-green float-left"
                                                href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.index') }}">
                                                 @lang('default.buttons.cancel')

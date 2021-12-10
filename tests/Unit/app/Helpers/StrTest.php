@@ -160,4 +160,22 @@ class StrTest extends TestCase
     {
         $this->assertEquals($expected, Str::htmlArrToDot($value));
     }
+
+    public static function hasReplaceablesProvider()
+    {
+        return [
+            ['this is :name', true],
+            ['this is a :replacable within', true],
+            ['this has no replacable', false],
+            ['this has :count :replacables!', true],
+        ];
+    }
+
+    /**
+     * @dataProvider hasReplaceablesProvider
+     */
+    public function testHasReplaceables($string, $expected)
+    {
+        $this->assertEquals($expected, Str::hasReplaceables($string));
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -64,6 +65,20 @@ class ToolQuestionHelper {
         'solar-panel-count' => ['solar-panels'],
         'total-installed-power' => ['solar-panels'],
         'solar-panels-placed-date' => ['solar-panels'],
+    ];
+
+    /**
+     * Array map from tool question to another tool question short, giving the data that should be replaced,
+     * and which tool question to get the answer for, for the replaceable.
+     */
+    const TOOL_QUESTION_ANSWER_REPLACEABLES = [
+        // the question where we will replace something.
+        'building-type' => [
+            // the question that will be used to replace
+            'short' => 'building-type-category',
+            // the attribute that we will use as a replacer
+            'replaceable' => 'name',
+        ],
     ];
 
     public static function stepShortsForToolQuestion(ToolQuestion $toolQuestion): array
@@ -131,5 +146,99 @@ class ToolQuestionHelper {
         }
 
         return compact('table', 'column', 'where');
+    }
+
+    /**
+     * Get a human readable answer.
+     *
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     * @param  \App\Models\ToolQuestion  $toolQuestion
+     * @param  bool  $withIcons
+     * @param  null  $answer
+     *
+     * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Translation\Translator|int|mixed|string|string[]|null
+     */
+    public static function getHumanReadableAnswer(Building $building, InputSource $inputSource, ToolQuestion $toolQuestion, bool $withIcons = false, $answer = null)
+    {
+        $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
+
+        if (empty($answer)) {
+            $answer = $building->getAnswer($inputSource, $toolQuestion);
+        }
+
+        if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
+            $questionValues = $toolQuestion->getQuestionValues();
+
+            if ($questionValues->isNotEmpty()) {
+                $humanReadableAnswers = [];
+
+                $answer = is_array($answer) ? $answer : [$answer];
+
+                foreach ($answer as $subAnswer) {
+                    $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
+
+                    if (! empty($questionValue)) {
+                        $answerToAppend = $questionValue['name'];
+
+                        if (! empty($questionValue['extra']['icon']) && $withIcons) {
+                            $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';
+                        }
+
+                        $humanReadableAnswers[] = $answerToAppend;
+                    }
+                }
+
+                if (! empty($humanReadableAnswers)) {
+                    $humanReadableAnswer = implode(', ', $humanReadableAnswers);
+                }
+            } else {
+                // If there are no question values, then it's user input
+                $humanReadableAnswer = $answer;
+            }
+
+            // Format answers
+            if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
+                $humanReadableAnswer = NumberFormatter::formatNumberForUser($humanReadableAnswer, $isInteger);
+            } elseif ($toolQuestion->toolQuestionType->short === 'slider') {
+                $humanReadableAnswer = str_replace('.', '', NumberFormatter::format($humanReadableAnswer, 0));
+            } elseif ($toolQuestion->toolQuestionType->short === 'rating-slider') {
+                $humanReadableAnswerArray = json_decode($humanReadableAnswer, true);
+                $humanReadableAnswer = [];
+                foreach ($toolQuestion->options as $option) {
+                    $humanReadableAnswer[$option['name']] = $humanReadableAnswerArray[$option['short']];
+                }
+            }
+        }
+
+        return $humanReadableAnswer;
+    }
+
+    /**
+     * Handle potential replaceables in a tool question name.
+     *
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     * @param  \App\Models\ToolQuestion  $toolQuestion
+     *
+     * @return \App\Models\ToolQuestion
+     */
+    public static function handleToolQuestionReplaceables(Building $building, InputSource $inputSource, ToolQuestion $toolQuestion): ToolQuestion
+    {
+        if (\App\Helpers\Str::hasReplaceables($toolQuestion->name)) {
+            $data = self::TOOL_QUESTION_ANSWER_REPLACEABLES[$toolQuestion->short];
+            $toolQuestionForAnswer = ToolQuestion::findByShort($data['short']);
+
+            $humanReadableAnswer = static::getHumanReadableAnswer(
+                $building,
+                ($toolQuestion->forSpecificInputSource ?? $inputSource),
+                $toolQuestionForAnswer
+            );
+
+            $toolQuestion->name = __($toolQuestion->name, [$data['replaceable'] => $humanReadableAnswer]);
+        }
+
+        return $toolQuestion;
     }
 }

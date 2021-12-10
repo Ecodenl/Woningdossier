@@ -159,16 +159,18 @@ class InsulatedGlazing
             $paintworkStatus = null;
             $woodRotStatus = null;
             $lastPaintedYear = 2000;
-            if (array_key_exists('paintwork_status_id', $buildingPaintworkStatuses)) {
-                $paintworkStatus = PaintworkStatus::find($buildingPaintworkStatuses['paintwork_status_id']);
-            }
-            if (array_key_exists('wood_rot_status_id', $buildingPaintworkStatuses)) {
-                $woodRotStatus = WoodRotStatus::find($buildingPaintworkStatuses['wood_rot_status_id']);
-            }
-            if (array_key_exists('last_painted_year', $buildingPaintworkStatuses)) {
+            // Only calculate if last painted year is set
+            if (array_key_exists('last_painted_year', $buildingPaintworkStatuses) && ! is_null($buildingPaintworkStatuses['last_painted_year'])) {
                 $year = (int)$buildingPaintworkStatuses['last_painted_year'];
                 if ($year > 1950) {
                     $lastPaintedYear = $year;
+                }
+
+                if (array_key_exists('paintwork_status_id', $buildingPaintworkStatuses)) {
+                    $paintworkStatus = PaintworkStatus::find($buildingPaintworkStatuses['paintwork_status_id']);
+                }
+                if (array_key_exists('wood_rot_status_id', $buildingPaintworkStatuses)) {
+                    $woodRotStatus = WoodRotStatus::find($buildingPaintworkStatuses['wood_rot_status_id']);
                 }
             }
 

@@ -57,8 +57,8 @@ class MergeDatabases extends Command
         ])->get();
 
 
-
         // so there are a couple custom queries we have to run in order to unduck the database
+        // mostly consist of fixes for inconsistent user data that is not fixable by a query.
         Schema::disableForeignKeyConstraints();
         DB::table('users')
             ->where('account_id', 13511)
@@ -72,7 +72,13 @@ class MergeDatabases extends Command
             ->where('account_id', 13676)
             ->update(['account_id' => 60006]);
 
-        DB::table('accounts')->whereIn('id', [13511, 12808, 13676])->delete();
+        DB::table('accounts')->whereIn('id', [
+            13511,
+            12808,
+            13676,
+            9549 // this one will be copied from the sub_live environment.
+        ])->delete();
+
 
         $building = Building::withTrashed()->find(4775);
         if ($building instanceof Building) {
@@ -86,13 +92,19 @@ class MergeDatabases extends Command
             $this->info("==={{$mergeableCooperation->slug}}===");
             // import the sub live environment.
             Artisan::call('db:wipe', ['--database' => 'sub_live']);
+            $dump = storage_path("app/woonplan_{$mergeableCooperation->slug}.sql");
+            if (!file_exists(storage_path("app/woonplan_{$mergeableCooperation->slug}.sql"))) {
+                $this->error("No dump file found for {$mergeableCooperation->slug}");
+                return 0;
+            }
+
             $string = 'mysql -u %s -p%s %s < %s';
             $cmd = sprintf(
                 $string,
                 config('database.connections.sub_live.username'),
                 config('database.connections.sub_live.password'),
                 config('database.connections.sub_live.database'),
-                storage_path("app/woonplan_{$mergeableCooperation->slug}.sql")
+                $dump
             );
             exec($cmd);
             $this->info('Database dump imported');
@@ -109,5 +121,8 @@ class MergeDatabases extends Command
                 $this->info("Completed {$command}");
             }
         }
+
+        Schema::enableForeignKeyConstraints();
+        $this->info("Merge is completed!");
     }
 }

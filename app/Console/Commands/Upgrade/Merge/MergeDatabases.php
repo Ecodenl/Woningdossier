@@ -52,8 +52,7 @@ class MergeDatabases extends Command
             'energiehuis',
             'leimuidenduurzaam',//  'geen errors'
             'lochemenergie', // geen errors
-//            'nhec',
-//            'wijdemeren'
+            'wijdemeren'
         ])->get();
 
 

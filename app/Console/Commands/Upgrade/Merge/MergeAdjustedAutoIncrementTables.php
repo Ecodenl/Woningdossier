@@ -232,9 +232,55 @@ class MergeAdjustedAutoIncrementTables extends Command
             ->whereIn('user_id', $userIds)
             ->pluck('id')->toArray();
 
+        ####################
+        # HANDLE QUESTIONNAIRES BEGIN
+        ####################
+
+        Schema::enableForeignKeyConstraints();
+
+        // Delete all questionnaires from live DB (foreign key will delete answers, options, etc.)
+        DB::table('questionnaires')
+            ->where('cooperation_id', $cooperation->id)
+            ->delete();
+
+        // Get all questionnaires from sub_live
+        $questionnaires = DB::connection('sub_live')
+            ->table('questionnaires')
+            ->where('cooperation_id', $cooperation->id)
+            ->get();
+
+        $completedQuestionnaires = DB::connection('sub_live')
+            ->table('completed_questionnaires')
+            ->whereIn('questionnaire_id', $questionnaires->pluck('id')->toArray())
+            ->get();
+
+        $questions = DB::connection('sub_live')
+            ->table('questions')
+            ->whereIn('questionnaire_id', $questionnaires->pluck('id')->toArray())
+            ->get();
+
+        $questionOptions = DB::connection('sub_live')
+            ->table('question_options')
+            ->whereIn('question_id', $questions->pluck('id')->toArray())
+            ->get();
+
+        $questionAnswers = DB::connection('sub_live')
+            ->table('questions_answers')
+            ->whereIn('question_id', $questions->pluck('id')->toArray())
+            ->get();
+
+        // Insert data back into live DB
+        DB::table('questionnaires')->insert(json_decode(json_encode($questionnaires->toArray()), true));
+        DB::table('completed_questionnaires')->insert(json_decode(json_encode($completedQuestionnaires->toArray()), true));
+        DB::table('questions')->insert(json_decode(json_encode($questions->toArray()), true));
+        DB::table('question_options')->insert(json_decode(json_encode($questionOptions->toArray()), true));
+        DB::table('questions_answers')->insert(json_decode(json_encode($questionAnswers->toArray()), true));
+
+        ####################
+        # HANDLE QUESTIONNAIRES END
+        ####################
 
         Schema::disableForeignKeyConstraints();
-
 
         // we made sure these rows were deleted before
         Log::debug("Starting migration for users table");

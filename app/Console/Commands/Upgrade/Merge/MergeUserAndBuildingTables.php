@@ -120,6 +120,10 @@ class MergeUserAndBuildingTables extends Command
             // and insert the data afterwards
             $this->copyForTable($table, $column, $ids);
         }
+
+        DB::table('model_has_roles')->whereIn('model_id', $userIds)->delete();
+        $this->copyForTable('model_has_roles', 'model_id', $userIds);
+
         Schema::enableForeignKeyConstraints();
     }
 

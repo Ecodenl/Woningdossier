@@ -91,8 +91,6 @@ class MergeNonRelationalTables extends Command
             'measure_service_type',
             'mediables',
             'migrations',
-            'model_has_permissions',
-            'model_has_roles',
             'motivations',
             'notification_intervals',
             'notification_types',

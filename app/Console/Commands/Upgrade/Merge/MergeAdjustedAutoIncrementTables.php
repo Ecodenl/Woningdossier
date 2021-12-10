@@ -196,19 +196,6 @@ class MergeAdjustedAutoIncrementTables extends Command
             'tool_question_answers',
         ];
 
-        // the deleted rows in these tables cant be recreated.
-        // they may have been updated so we have to do that
-
-
-        // hard case, these rows can have old rows and new ones. but we cant decide what is what.
-        // this will be a slow one.
-        $bogged = [
-            'example_buildings',
-            'questions',
-            'question_options',
-            'questionnaires',
-        ];
-
         // the cooperation we are currently migrating
         $cooperationSlug = $this->argument('cooperation');
         $cooperation = DB::connection('sub_live')
@@ -266,8 +253,12 @@ class MergeAdjustedAutoIncrementTables extends Command
 
         $questionAnswers = DB::connection('sub_live')
             ->table('questions_answers')
+            ->select('question_id', 'building_id', 'input_source_id', 'answer')
             ->whereIn('question_id', $questions->pluck('id')->toArray())
             ->get();
+
+        // we have to do this BEFORE the insertion, otherwise there may not be a user available
+        Schema::disableForeignKeyConstraints();
 
         // Insert data back into live DB
         DB::table('questionnaires')->insert(json_decode(json_encode($questionnaires->toArray()), true));
@@ -280,7 +271,7 @@ class MergeAdjustedAutoIncrementTables extends Command
         # HANDLE QUESTIONNAIRES END
         ####################
 
-        Schema::disableForeignKeyConstraints();
+
 
         // we made sure these rows were deleted before
         Log::debug("Starting migration for users table");

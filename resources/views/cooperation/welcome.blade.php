@@ -39,7 +39,7 @@
         </h1>
         <h2>{{ config('app.name') }}</h2>
 
-        <h2>We werken nog aan de nieuwe versie van het Hoomdossier. Deze komt binnenkort beschikbaar. Je kan tot die tijd gewoon in deze versie werken.</h2>
+        <h2>Maandag 13 december wordt de nieuwe versie van het Hoomdossier geïnstalleerd. Deze dag is het Hoomdossier niet beschikbaar.</h2>
 
     </div>
 @endsection

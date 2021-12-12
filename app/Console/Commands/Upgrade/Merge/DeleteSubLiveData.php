@@ -101,6 +101,7 @@ class DeleteSubLiveData extends Command
         $this->info("Deleted {$deleteCount} buildings");
 
 
+        $db = config('database.connections.mysql.database');
         // we have 2 queries to delete the proper accounts
 
         // 1 for the existing account + users, aka the user and cooperation that already existed before the sub live environment
@@ -111,10 +112,10 @@ class DeleteSubLiveData extends Command
         // aka we know that this account is the same because of the email and the id are the same
         // that said, we can safely delete it from the db connection so we dont get duplicates.
         Schema::disableForeignKeyConstraints();
-        $sql = "delete db.accounts 
+        $sql = "delete ".$db.".accounts 
                 from sub_live.users
                 join sub_live.accounts on sub_live.accounts.id = sub_live.users.account_id
-                join db.accounts on db.accounts.id = sub_live.accounts.id and db.accounts.email = sub_live.accounts.email
+                join ".$db.".accounts on db.accounts.id = sub_live.accounts.id and ".$db.".accounts.email = sub_live.accounts.email
                 where sub_live.users.cooperation_id = {$cooperation->id}";
 
         DB::getPdo()->prepare($sql)->execute();

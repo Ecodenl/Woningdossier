@@ -132,6 +132,8 @@ class MergeUserAndBuildingTables extends Command
      */
     private function copyForTable(string $table, string $column, array $values)
     {
+        $db = config('database.connections.mysql.database');
+
         // gets all the column names, except the id coll.
         $columnNames = DB::table('information_schema.columns')
             ->selectRaw('column_name')
@@ -142,9 +144,8 @@ class MergeUserAndBuildingTables extends Command
             ->map(fn($columnName) => "`$columnName`")
             ->implode(',');
 
-
         $values = implode(',', $values);
-        $sql = "insert into db.{$table} 
+        $sql = "insert into ".$db.".{$table} 
                         ({$columnNames})
                     select {$columnNames} 
                     from sub_live.{$table} 

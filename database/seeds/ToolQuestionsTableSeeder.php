@@ -271,7 +271,6 @@ class ToolQuestionsTableSeeder extends Seeder
                             'save_in' => 'building_features.example_building_id',
                             'translation' => 'Welke woning lijkt het meest op jouw woning?',
                             'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => \App\Models\ExampleBuilding::all(),
                         ]
                     ],
                 ],

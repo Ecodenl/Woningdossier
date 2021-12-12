@@ -66,7 +66,7 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_SUB_LIVE_DATABASE', 'forge'),
+            'database' => env('DB_SUB_LIVE_DATABASE', 'sub_live'),
             'username' => env('DB_SUB_LIVE_USERNAME', 'forge'),
             'password' => env('DB_SUB_LIVE_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),

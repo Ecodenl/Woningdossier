@@ -297,16 +297,16 @@ class MergeAdjustedAutoIncrementTables extends Command
      */
     private function copyForTableAutoIncrement(string $table, string $column, int $autoIncrement)
     {
+        $db = config('database.connections.mysql.database');
+
         // gets all the column names, except the id coll.
         $columnNames = DB::table('information_schema.columns')
             ->selectRaw('column_name')
-            ->where('table_schema', 'db')
+            ->where('table_schema', $db)
             ->where('table_name', $table)
             ->pluck('column_name')
             ->map(fn($columnName) => "`$columnName`")
             ->implode(',');
-
-        $db = config('database.connections.mysql.database');
 
         $sql = "insert into ".$db.".{$table} 
                         ({$columnNames})
@@ -327,7 +327,7 @@ class MergeAdjustedAutoIncrementTables extends Command
         // gets all the column names, except the id coll.
         $columnNames = DB::table('information_schema.columns')
             ->selectRaw('column_name')
-            ->where('table_schema', 'db')
+            ->where('table_schema', $db)
             ->where('table_name', $table)
             ->pluck('column_name')
             ->map(fn($columnName) => "`$columnName`")

@@ -137,7 +137,7 @@ class MergeUserAndBuildingTables extends Command
         // gets all the column names, except the id coll.
         $columnNames = DB::table('information_schema.columns')
             ->selectRaw('column_name')
-            ->where('table_schema', 'db')
+            ->where('table_schema', $db)
             ->where('table_name', $table)
             ->where('column_name', '!=', 'id')
             ->pluck('column_name')

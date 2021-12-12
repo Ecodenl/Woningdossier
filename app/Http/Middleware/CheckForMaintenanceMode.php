@@ -7,6 +7,7 @@ use App\Models\Cooperation;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode as Middleware;
 use Illuminate\Support\Facades\URL;
 use Closure;
+use Illuminate\Support\Str;
 
 class CheckForMaintenanceMode extends Middleware
 {
@@ -30,6 +31,12 @@ class CheckForMaintenanceMode extends Middleware
         $host = $_SERVER['HTTP_HOST'];
         preg_match('/(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i', $host, $match);
         $cooperation = $match[1] ?? '';
+
+        if (empty($cooperation) && ! Str::contains(strtolower($host), 'http')) {
+            // Why does this URL not have HTTP? We don't know. Probably local development in Docker
+            // Grab cooperation as first element of the host instead
+            $cooperation = explode('.', $host)[0] ?? '';
+        }
 
         $cooperation = Cooperation::where('slug', '=', $cooperation)->first();
 

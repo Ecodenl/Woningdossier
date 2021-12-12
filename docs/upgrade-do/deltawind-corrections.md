@@ -1,9 +1,9 @@
-## Corrections for environments that are deployed in the same manor as Deltawind
+### Corrections for environments that are deployed in the same manor as Deltawind
 
 ```sql
 -- Corrects the tool_questions table
 
--- increments the id's its necessery
+-- increments the id's its necessary
 set foreign_key_checks = 0; 
 update tool_questions
 set id = id + 2
@@ -147,4 +147,6 @@ where tool_question_id = 52;
 update tool_question_valuables
 set tool_question_id = 5
 where tool_question_id = 53; 
+
+set foreign_key_checks = 1;
 ```

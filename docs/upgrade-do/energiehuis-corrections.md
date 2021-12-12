@@ -1,4 +1,4 @@
-###Corrections for environments that are deployed in the same manor as Energiehuis.
+### Corrections for environments that are deployed in the same manor as Energiehuis.
 
 ```sql
 set foreign_key_checks = 0; 
@@ -84,5 +84,7 @@ order by tool_question_id desc;
 update tool_question_valuables
 set tool_question_id = 6
 where tool_question_id = 52; 
+
+set foreign_key_checks = 1;
 
 ```

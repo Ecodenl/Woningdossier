@@ -115,7 +115,7 @@ class DeleteSubLiveData extends Command
         $sql = "delete ".$db.".accounts 
                 from sub_live.users
                 join sub_live.accounts on sub_live.accounts.id = sub_live.users.account_id
-                join ".$db.".accounts on db.accounts.id = sub_live.accounts.id and ".$db.".accounts.email = sub_live.accounts.email
+                join ".$db.".accounts on ".$db.".accounts.id = sub_live.accounts.id and ".$db.".accounts.email = sub_live.accounts.email
                 where sub_live.users.cooperation_id = {$cooperation->id}";
 
         DB::getPdo()->prepare($sql)->execute();

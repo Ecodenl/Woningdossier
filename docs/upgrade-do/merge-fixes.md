@@ -14,9 +14,13 @@ php artisan merge:fix-building-category
 php artisan merge:fix-roof-type-valuables
 php artisan merge:fix-cooperation-measures
 
+- EXPORT ALL **EXPERT** STEPS FROM THE CURRENT LIVE ENVIRONMENT (1 TO 10) (`completed_steps`)
 - TRUNCATE `completed_steps` && `completed_sub_steps`
 - IMPORT OLD `completed_steps`
-php artisan merge:final-integrity-fix // TODO: WIP
+- DELETE ALL **EXPERT** STEPS FROM THE IMPORTED DATA (`completed_steps`)
+- IMPORT ALL **EXPERT** STEPS EXPORTED EARLIER
+
+php artisan merge:final-integrity-fix
 ```
 
 ## Explanation

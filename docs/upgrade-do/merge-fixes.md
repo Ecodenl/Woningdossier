@@ -20,6 +20,7 @@ php artisan merge:fix-cooperation-measures
 - DELETE ALL **EXPERT** STEPS FROM THE IMPORTED DATA (`completed_steps`)
 - IMPORT ALL **EXPERT** STEPS EXPORTED EARLIER
 
+php artisan upgrade:add-master-input-source
 php artisan merge:final-integrity-fix
 ```
 

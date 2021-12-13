@@ -86,6 +86,9 @@ class FinalIntegrityFix extends Command
                 ->get();
 
             foreach ($completedSteps as $completedStep) {
+                if (!Building::where('id', '=', $completedStep->building_id)->exists()) {
+                    continue;
+                }
                 // Set each sub step as complete
                 foreach ($subStepsForStep as $subStep) {
                     DB::table('completed_sub_steps')->updateOrInsert([

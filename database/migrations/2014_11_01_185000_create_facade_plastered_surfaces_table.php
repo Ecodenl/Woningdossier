@@ -15,7 +15,7 @@ class CreateFacadePlasteredSurfacesTable extends Migration
     {
         Schema::create('facade_plastered_surfaces', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('name');
+            $table->json('name');
             $table->integer('calculate_value')->nullable();
             $table->integer('order');
             $table->timestamps();

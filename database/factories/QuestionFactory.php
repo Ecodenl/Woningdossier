@@ -3,17 +3,11 @@
 use Faker\Generator as Faker;
 
 $factory->define(\App\Models\Question::class, function (Faker $faker) {
-    $uuid = \App\Helpers\Str::uuid();
-
-    \App\Models\Translation::create([
-        'key' => $uuid,
-        'translation' => $faker->text(80),
-        'language' => 'nl',
-    ]);
-
     return [
         'type' => 'text',
-        'name' => $uuid,
+        'name' => [
+            'nl' => $faker->text(80),
+        ],
         'required' => $faker->boolean,
         'validation' => [],
     ];

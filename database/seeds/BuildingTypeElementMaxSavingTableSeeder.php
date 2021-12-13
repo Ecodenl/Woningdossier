@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class BuildingTypeElementMaxSavingTableSeeder extends Seeder
 {
@@ -85,22 +86,20 @@ class BuildingTypeElementMaxSavingTableSeeder extends Seeder
         ];
 
         foreach ($maxSavings as $buildingType => $elements) {
-            $bt = \DB::table('building_types')->leftJoin('translations', 'building_types.name', '=', 'translations.key')
-                ->where('language', 'nl')
-                ->where('translation', $buildingType)
+            $bt = DB::table('building_types')
+                ->where('name->nl', $buildingType)
                 ->first(['building_types.id']);
 
             $buildingTypeId = $bt->id;
 
             foreach ($elements as $element => $percentage) {
-                $el = \DB::table('elements')->leftJoin('translations', 'elements.name', '=', 'translations.key')
-                    ->where('language', 'nl')
-                    ->where('translation', $element)
+                $el = DB::table('elements')
+                    ->where('name->nl', $element)
                     ->first(['elements.id']);
 
                 $elementId = $el->id;
 
-                \DB::table('building_type_element_max_savings')->insert([
+                DB::table('building_type_element_max_savings')->insert([
                     'building_type_id' => $buildingTypeId,
                     'element_id' => $elementId,
                     'max_saving' => $percentage,

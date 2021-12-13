@@ -1,0 +1,79 @@
+/* Horizontal divider between steps in the header bar */
+.step-divider-line {
+    @apply border border-blue-500 border-opacity-50 w-full;
+
+    max-width: 2.5%;
+}
+
+/* Modals */
+.modal-container {
+    @apply fixed top-0 left-0 z-100 w-screen h-screen flex items-center justify-center bg-blue bg-opacity-90 cursor-default;
+}
+
+.modal-container .modal {
+    @apply rounded-lg filter drop-shadow-xl bg-white w-1/2 xl:w-2/10 h-auto p-2 max-h-19/20 overflow-auto;
+}
+
+.modal-container .modal .modal-header {
+    @apply relative h-10 flex items-center px-4 py-6;
+}
+
+.modal-container .modal .modal-header .modal-close {
+    @apply absolute top-0 right-0 cursor-pointer;
+}
+
+.modal-container .modal .modal-body {
+    @apply px-4 pb-6 break-words;
+}
+
+/* Drag and drop cards */
+.card-wrapper {
+    @apply rounded-lg bg-blue-100 p-1 lg:p-3 space-y-3;
+}
+
+.card-wrapper .card-placeholder,
+.card-wrapper .card {
+    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-24 p-2 lg:p-3 overflow-hidden;
+}
+
+.card-wrapper .card-placeholder {
+    @apply border-dashed bg-blue-500 bg-opacity-5;
+}
+
+.card-wrapper .card-placeholder > * {
+    @apply hidden;
+}
+
+.card-wrapper .card {
+    @apply border-solid bg-white flex flex-wrap justify-between items-center cursor-pointer relative;
+}
+
+.card-wrapper .card .icon-wrapper {
+    @apply w-0 lg:w-3/20 xl:w-1/4 h-full lg:pr-1;
+}
+
+.card-wrapper .card .icon-wrapper i {
+    @apply w-full h-full;
+}
+
+.card-wrapper .card .info {
+    @apply w-full lg:w-17/20 xl:w-3/4 h-full flex flex-wrap flex-col justify-center;
+}
+
+/* Dropdowns */
+.dropdown-wrapper {
+    @apply relative;
+}
+
+.dropdown-wrapper .dropdown-toggle {
+    @apply cursor-pointer;
+}
+
+.dropdown-wrapper .dropdown {
+    @apply w-48 absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-100 top-full filter drop-shadow-xl divide-y divide-blue-500 py-2 list-none pl-0;
+    min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
+}
+
+.dropdown-wrapper .dropdown > * {
+    @apply py-1 px-3
+}

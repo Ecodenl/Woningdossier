@@ -36,6 +36,7 @@ class Ventilation
         $improvement = '';
         $advices = null;
         $remark = '';
+        $considerables = [];
         $result = [
             'crack_sealing' => [
                 'savings_co2' => null,
@@ -46,6 +47,8 @@ class Ventilation
             ],
         ];
 
+
+
         if ($buildingVentilationService instanceof BuildingService) {
             /** @var ServiceValue $buildingVentilation */
             $buildingVentilation = $buildingVentilationService->serviceValue;
@@ -55,12 +58,7 @@ class Ventilation
             $currentlyDemandDriven = $buildingVentilationService->extra['demand_driven'] ?? false;
             $currentlyHeatRecovery = $buildingVentilationService->extra['heat_recovery'] ?? false;
 
-            $ventilationTypes = [
-                1 => 'natural',
-                2 => 'mechanic',
-                3 => 'balanced',
-                4 => 'decentral',
-            ];
+            $ventilationTypes = \App\Models\Ventilation::getTypes();
 
             $ventilationType = $ventilationTypes[$buildingVentilation->calculate_value];
 
@@ -73,96 +71,96 @@ class Ventilation
             ];
             $measures = array_flip($measures);
 
-            if ('natural' === $ventilationType) {
-                // "different" type which returns early
-                unset($measures['crack-sealing']);
-
-                $improvement = 'Natuurlijke ventilatie is  niet zo goed voor het comfort en zorgt voor een hoog energiegebruik. Daarom worden de huizen steeds luchtdichter gemaakt en van goede isolatie voorzien. Om een gezond binnenklimaat te bereiken is hierbij een andere vorm van ventilatie nodig. De volgende opties kunt u overwegen:';
-                $remark = __('my-plan.warnings.ventilation');
-            }
-            if ('mechanic' === $ventilationType) {
-                if ($currentlyDemandDriven) {
-                    // if the ventilation is already demand driven, remove that advice
-                    unset($measures['ventilation-demand-driven']);
-                }
-
-                // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
-                // Crack sealing measure should be added.
-                // As it's added on beforehand, it should be removed if:
-                // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
-                // because: either there is no crack sealing or it's all okay
-                $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
-
-                if (in_array('none', Arr::get($calculateData, 'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+            // now check al the conditions for the measures.
+            switch ($ventilationType) {
+                case \App\Models\Ventilation::NATURAL;
+                    // "different" type which returns early
                     unset($measures['crack-sealing']);
-                }
 
-                $improvement = 'Oude ventilatoren gebruiken soms nog wisselstroom en verbruiken voor dezelfde prestatie veel meer elektriciteit en maken meer geluid dan moderne gelijkstroom ventilatoren. De besparing op de gebruikte stroom kan oplopen tot ca. 80 %. Een installateur kan direct beoordelen of u nog een wisselstroom ventilator heeft.';
-                $remark = __('my-plan.warnings.ventilation');
-            }
-            if ('balanced' === $ventilationType) {
-                // always unset
-                unset($measures['ventilation-decentral-wtw']);
+                    $improvement = 'Natuurlijke ventilatie is niet zo goed voor het comfort en zorgt voor een hoog energiegebruik. Daarom worden de huizen steeds luchtdichter gemaakt en van goede isolatie voorzien. Om een gezond binnenklimaat te bereiken is hierbij een andere vorm van ventilatie nodig. De volgende opties kunt u overwegen:';
+                    $remark = __('my-plan.warnings.ventilation');
+                    break;
 
-                // if the ventilation already has heat recovery, remove that advice
-                if ($currentlyHeatRecovery) {
-                    unset($measures['ventilation-balanced-wtw']);
-                }
+                case \App\Models\Ventilation::MECHANICAL;
+                    if ($currentlyDemandDriven) {
+                        // if the ventilation is already demand driven, remove that advice
+                        unset($measures['ventilation-demand-driven']);
+                    }
 
-                // if the ventilation is already demand driven, remove that advice
-                if ($currentlyDemandDriven) {
-                    unset($measures['ventilation-demand-driven']);
-                }
+                    // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
+                    // Crack sealing measure should be added.
+                    // As it's added on beforehand, it should be removed if:
+                    // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
+                    // because: either there is no crack sealing or it's all okay
+                    $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-                // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
-                // Crack sealing measure should be added.
-                // As it's added on beforehand, it should be removed if:
-                // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
-                // because: either there is no crack sealing or it's all okay
-                $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
+                    if (in_array('none', Arr::get($calculateData, 'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                        unset($measures['crack-sealing']);
+                    }
 
-                if (in_array('none', Arr::get($calculateData, 'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
-                    unset($measures['crack-sealing']);
-                }
+                    $improvement = 'Oude ventilatoren gebruiken soms nog wisselstroom en verbruiken voor dezelfde prestatie veel meer elektriciteit en maken meer geluid dan moderne gelijkstroom ventilatoren. De besparing op de gebruikte stroom kan oplopen tot ca. 80 %. Een installateur kan direct beoordelen of u nog een wisselstroom ventilator heeft.';
+                    $remark = __('my-plan.warnings.ventilation');
+                    break;
 
-                $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
-                $remark = __('my-plan.warnings.ventilation');
-            }
-            if ('decentral' === $ventilationType) {
-                // always unset
-                unset($measures['ventilation-balanced-wtw']);
-
-                // if the ventilation already has heat recovery, remove that advice
-                if ($currentlyHeatRecovery) {
+                case \App\Models\Ventilation::BALANCED;
+                    // always unset
                     unset($measures['ventilation-decentral-wtw']);
-                }
 
-                // if the ventilation is already demand driven, remove that advice
-                if ($currentlyDemandDriven) {
-                    unset($measures['ventilation-demand-driven']);
-                }
+                    // if the ventilation already has heat recovery, remove that advice
+                    if ($currentlyHeatRecovery) {
+                        unset($measures['ventilation-balanced-wtw']);
+                    }
 
-                // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
-                // Crack sealing measure should be added.
-                // As it's added on beforehand, it should be removed if:
-                // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
-                // because: either there is no crack sealing or it's all okay
-                $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
+                    // if the ventilation is already demand driven, remove that advice
+                    if ($currentlyDemandDriven) {
+                        unset($measures['ventilation-demand-driven']);
+                    }
 
-                if (in_array('none', Arr::get($calculateData, 'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
-                    unset($measures['crack-sealing']);
-                }
+                    // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
+                    // Crack sealing measure should be added.
+                    // As it's added on beforehand, it should be removed if:
+                    // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
+                    // because: either there is no crack sealing or it's all okay
+                    $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-                $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
-                $remark = __('my-plan.warnings.ventilation');
+                    if (in_array('none', Arr::get($calculateData, 'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                        unset($measures['crack-sealing']);
+                    }
+
+                    $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
+                    $remark = __('my-plan.warnings.ventilation');
+                    break;
+
+                case \App\Models\Ventilation::DECENTRAL;
+                    // always unset
+                    unset($measures['ventilation-balanced-wtw']);
+
+                    // if the ventilation already has heat recovery, remove that advice
+                    if ($currentlyHeatRecovery) {
+                        unset($measures['ventilation-decentral-wtw']);
+                    }
+
+                    // if the ventilation is already demand driven, remove that advice
+                    if ($currentlyDemandDriven) {
+                        unset($measures['ventilation-demand-driven']);
+                    }
+
+                    // If "No crack sealing" is NOT checked AND crack sealing element calculate value is 2, 3 or 4 ( >= 2..)
+                    // Crack sealing measure should be added.
+                    // As it's added on beforehand, it should be removed if:
+                    // "no crack sealing" is checked OR crack sealing element calculate value is 1 ( < 2)
+                    // because: either there is no crack sealing or it's all okay
+                    $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
+
+                    if (in_array('none', Arr::get($calculateData, 'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                        unset($measures['crack-sealing']);
+                    }
+
+                    $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
+                    $remark = __('my-plan.warnings.ventilation');
+                    break;
+
             }
-
-            $advices = MeasureApplication::where('step_id', '=', $step->id)
-                ->whereIn('short', array_keys($measures))->get();
-
-            $advices->each(function ($advice) {
-                $advice->name = $advice->measure_name;
-            });
 
             if (array_key_exists('crack-sealing', $measures)) {
                 // Crack sealing gives a percentage of savings. This is dependent on the application (place or replace)
@@ -201,24 +199,24 @@ class Ventilation
                         $result['crack_sealing']['savings_money']), 1);
                 }
             }
+            // al conditions have been checked, we can safely get the measures
+            $measureApplications = MeasureApplication::where('step_id', '=', $step->id)
+                ->whereIn('short', array_keys($measures))->get();
 
-            // Add interest (or not)
-            // This is needed for the javascript
-            $buildingOwner = $building->user;
+            $considerables = [];
 
-            foreach ($advices as $advice) {
-                // exception for this page..
-                // 3 so the options "meer informatie" is also interested
-                if ($buildingOwner->hasInterestIn($advice, $inputSource, 3)) {
-                    $advice->interest = true;
-                }
+            foreach ($measureApplications as $measureApplication) {
+                $considerables[$measureApplication->id] = [
+                    'is_considerable' => $building->user->considers($measureApplication, $inputSource),
+                    'name' => $measureApplication->measure_name
+                ];
             }
 
-            if (count($advices) > 0 && 'natural' !== $ventilationType) {
+            if (count($considerables) > 0 && 'natural' !== $ventilationType) {
                 $improvement .= '  Om de ventilatie verder te verbeteren kunt u de volgende opties overwegen:';
             }
         }
 
-        return compact('improvement', 'advices', 'remark', 'result');
+        return compact('improvement', 'considerables', 'remark', 'result');
     }
 }

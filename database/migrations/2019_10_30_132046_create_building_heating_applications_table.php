@@ -15,7 +15,7 @@ class CreateBuildingHeatingApplicationsTable extends Migration
     {
         Schema::create('building_heating_applications', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->json('name');
             $table->string('short');
             $table->smallInteger('calculate_value');
             $table->smallInteger('order');

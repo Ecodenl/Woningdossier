@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="56px" height="89px" viewBox="0 0 56 89" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>stekker</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Styles" transform="translate(-476.000000, -3135.000000)" stroke="#394553" stroke-width="3">
+            <g id="stekker" transform="translate(478.000000, 3137.000000)">
+                <g id="Group" transform="translate(15.900000, 36.200000)">
+                    <circle id="Oval" fill="#2CA982" fill-rule="nonzero" cx="10.3" cy="10.3" r="10.3"></circle>
+                    <polyline id="Path" points="10.3 5.3 8.2 10.3 12.4 10.3 10.3 15.4"></polyline>
+                </g>
+                <path d="M50.4,28.8 L2,28.8 C0.9,28.8 -7.10542736e-15,27.9 -7.10542736e-15,26.8 L-7.10542736e-15,22.8 C-7.10542736e-15,21.7 0.9,20.8 2,20.8 L50.3,20.8 C51.4,20.8 52.3,21.7 52.3,22.8 L52.3,26.8 C52.4,27.9 51.5,28.8 50.4,28.8 Z" id="Path"></path>
+                <g id="Group" transform="translate(10.500000, 0.000000)">
+                    <path d="M0,20.8 L0,2.7 C0,1.2 1.2,0 2.7,0 L2.7,0 C4.2,0 5.4,1.2 5.4,2.7 L5.4,20.8" id="Path"></path>
+                    <path d="M26,20.8 L26,2.7 C26,1.2 27.2,0 28.7,0 L28.7,0 C30.2,0 31.4,1.2 31.4,2.7 L31.4,20.8" id="Path"></path>
+                </g>
+                <path d="M47.7,28.8 L47.7,51.9 C47.7,58.7 42.1,64.3 35.3,64.3 L17.2,64.3 C10.4,64.3 4.8,58.7 4.8,51.9 L4.8,28.8" id="Path"></path>
+                <g id="Group" transform="translate(18.800000, 64.300000)">
+                    <line x1="0.5" y1="1.42108547e-14" x2="0.5" y2="20.3" id="Path"></line>
+                    <line x1="14.3" y1="1.42108547e-14" x2="14.3" y2="20.7" id="Path"></line>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

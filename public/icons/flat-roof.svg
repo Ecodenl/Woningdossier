@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="109px" height="97px" viewBox="0 0 109 97" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Plat dak</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-1193.000000, -2555.000000)">
+            <g id="platdak" transform="translate(1195.000000, 2557.000000)">
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" points="36.92 60.43 104.96 21.15 68.04 -3.55271368e-15 -7.10542736e-15 39.28"></polygon>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="39.29 59.94 39.29 93.11 7.38 74.68 7.38 43.51"></polyline>
+                <line x1="97.62" y1="25.39" x2="97.62" y2="59.43" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="39.29" y1="93.1" x2="97.62" y2="59.43" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polygon id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="36.92 60.43 104.96 21.15 68.04 -3.55271368e-15 -7.10542736e-15 39.28"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

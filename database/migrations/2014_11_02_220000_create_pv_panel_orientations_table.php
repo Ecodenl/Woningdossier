@@ -15,7 +15,7 @@ class CreatePvPanelOrientationsTable extends Migration
     {
         Schema::create('pv_panel_orientations', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('name');
+            $table->json('name');
             $table->string('short');
             $table->integer('order')->unsigned();
             $table->timestamps();

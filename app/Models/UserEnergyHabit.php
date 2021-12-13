@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $heating_first_floor
  * @property int|null $heating_second_floor
  * @property int|null $heated_space_outside
- * @property int $cook_gas
  * @property int|null $water_comfort_id
  * @property int|null $amount_electricity
  * @property int|null $amount_gas
@@ -82,7 +81,6 @@ class UserEnergyHabit extends Model
         'hours_high',
         'heating_first_floor',
         'heating_second_floor',
-        'cook_gas',
         'water_comfort_id',
         'amount_electricity',
         'amount_gas',

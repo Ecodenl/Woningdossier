@@ -24,4 +24,23 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Ventilation extends Model
 {
+    const NATURAL = 'natural';
+    const MECHANICAL = 'mechanical';
+    const BALANCED = 'balanced';
+    const DECENTRAL = 'decentral';
+
+    /**
+     * Get ventilation types mapped by calculate value of the relevant service_value
+     *
+     * @return string[]
+     */
+    public static function getTypes(): array
+    {
+        return [
+            1 => static::NATURAL,
+            2 => static::MECHANICAL,
+            3 => static::BALANCED,
+            4 => static::DECENTRAL,
+        ];
+    }    
 }

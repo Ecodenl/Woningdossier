@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="140px" height="70px" viewBox="0 0 140 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Geen</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-549.000000, -2303.000000)">
+            <g id="dakisolatie-geen" transform="translate(549.000000, 2303.000000)">
+                <line x1="51.09" y1="7.04" x2="51.09" y2="25.52" id="Path" stroke="#394553" stroke-width="9"></line>
+                <polygon id="Path" fill="#394553" fill-rule="nonzero" points="12.73 69.54 69.54 12.73 126.35 69.54 139.08 69.54 69.54 -7.10542736e-15 0 69.54"></polygon>
+                <polygon id="Path" fill="#394553" fill-rule="nonzero" points="38.14 69.54 69.54 38.15 100.94 69.54 105.18 69.54 69.54 33.9 33.9 69.54"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

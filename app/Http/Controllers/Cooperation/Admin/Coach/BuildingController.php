@@ -22,6 +22,8 @@ class BuildingController extends Controller
             ->with('user')
             ->get();
 
+        $buildings = $buildings->pullTranslationFromJson('status_name_json', 'status');
+
         return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildings'));
     }
 }

@@ -13,7 +13,7 @@
                         <?php
                         $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.building_roof_types.' . $buildingRoofTypeId . '.' . $translationKey];
                         ?>
-                        @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interest'))
+                        @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'considerables'))
                             <tr class="h-20">
                                 <td class="w-380">{{$translationForAnswer}}</td>
                                 <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>

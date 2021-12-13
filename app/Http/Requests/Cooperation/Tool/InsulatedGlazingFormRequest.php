@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Tool;
 
+use App\Helpers\ConsiderableHelper;
 use App\Http\Requests\DecimalReplacementTrait;
 use App\Models\Interest;
 use Carbon\Carbon;
@@ -9,6 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class InsulatedGlazingFormRequest extends FormRequest
@@ -40,6 +42,7 @@ class InsulatedGlazingFormRequest extends FormRequest
 
         // m2 and window rules in the withValidator
         $rules = [
+            'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             'building_elements.*' => 'required|exists:element_values,id',
             'building_elements.*.*' => 'exists:element_values,id',
             'building_features.window_surface' => 'nullable|numeric|min:1',
@@ -55,36 +58,20 @@ class InsulatedGlazingFormRequest extends FormRequest
     {
         $big = 'building_insulated_glazings.';
 
-        foreach ($this->get('user_interests') as $measureApplicationId => $userInterest) {
-            // when the user his interest level is high enough, we should add rules. Otherwise there is no need to validate the fields.
+        foreach ($this->get('considerables') as $considerableId => $considerData) {
 
-            // when interest is yes, the field is required
-            // when no interest, its not required. The field should be empty, but the field can still be filled. So validate.
-            if ($this->isUserInterested($userInterest['interest_id'])) {
+            // if the user considers the measure we will add the rules, else we wont.
+            if ($considerData['is_considering']) {
                 $validator->addRules([
-                    $big.$measureApplicationId.'.m2' => 'required|numeric|min:1',
-                    $big.$measureApplicationId.'.windows' => 'required|numeric|min:1',
+                    $big.$considerableId.'.m2' => 'required|numeric|min:1',
+                    $big.$considerableId.'.windows' => 'required|numeric|min:1',
                 ]);
             } else {
                 $validator->addRules([
-                    $big.$measureApplicationId.'.m2' => 'nullable|numeric|min:1',
-                    $big.$measureApplicationId.'.windows' => 'nullable|numeric|min:1',
+                    $big.$considerableId.'.m2' => 'nullable|numeric|min:1',
+                    $big.$considerableId.'.windows' => 'nullable|numeric|min:1',
                 ]);
             }
         }
-    }
-
-    /**
-     * Check whether the user has interest in the particular measure.
-     *
-     * @param $userInterest
-     *
-     * @return bool
-     */
-    public function isUserInterested($userInterest)
-    {
-        $noInterestIds = Interest::where('calculate_value', 4)->orWhere('calculate_value', 5)->select('id')->get()->pluck('id')->toArray();
-
-        return ! in_array($userInterest, $noInterestIds);
     }
 }

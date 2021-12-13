@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * App\Models\CompletedQuestionnaire
@@ -32,8 +32,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire whereUserId($value)
  * @mixin \Eloquent
  */
-class CompletedQuestionnaire extends Model
+class CompletedQuestionnaire extends Pivot
 {
-    use GetMyValuesTrait;
-    use GetValueTrait;
+    protected $table = 'completed_questionnaires';
+
+    use GetMyValuesTrait,
+        GetValueTrait;
 }

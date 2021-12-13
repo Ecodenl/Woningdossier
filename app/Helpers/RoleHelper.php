@@ -6,6 +6,13 @@ use Spatie\Permission\Models\Role;
 
 class RoleHelper
 {
+    const ROLE_SUPERUSER = 'superuser';
+    const ROLE_SUPER_ADMIN = 'super-admin';
+    const ROLE_COOPERATION_ADMIN = 'cooperation-admin';
+    const ROLE_COACH = 'coach';
+    const ROLE_RESIDENT = 'resident';
+    const ROLE_COORDINATOR = 'coordinator';
+
     /**
      * Get the right route / url by a role name.
      *

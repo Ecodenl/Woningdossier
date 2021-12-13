@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Helpers\Cache\BaseCache;
+use Illuminate\Support\Facades\Cache;
 
 trait HasShortTrait
 {
@@ -19,11 +20,33 @@ trait HasShortTrait
         $className = get_class(self::getModel());
 
         // try to cache it so we get some medioker fast stuff
-        return \Cache::remember(
+        return Cache::remember(
             BaseCache::getCacheKey($cacheKey, $className, $short),
             config('hoomdossier.cache.times.default'),
             function () use ($short) {
                 return self::whereShort($short)->first();
+            }
+        );
+    }
+
+    /**
+     * Find multiple records by a set of shorts
+     *
+     * @param array  $shorts
+     *
+     * @return mixed
+     */
+    public static function findByShorts(array $shorts)
+    {
+        $cacheKey = 'HasShortTrait_find_by_shorts_%s_%s';
+        $className = get_class(self::getModel());
+
+        // try to cache it so we get some medioker fast stuff
+        return Cache::remember(
+            BaseCache::getCacheKey($cacheKey, $className, implode(',', $shorts)),
+            config('hoomdossier.cache.times.default'),
+            function () use ($shorts) {
+                return self::whereIn('short', $shorts)->get();
             }
         );
     }

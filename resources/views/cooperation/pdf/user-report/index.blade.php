@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link rel="stylesheet" href="{{asset('css/pdf.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pdf.css') }}">
     <title>Document</title>
 </head>
 
@@ -19,6 +19,7 @@
 
 {{--    General data is not structured like $reportData--}}
 {{--    So have to create our own order.--}}
+
 
 @include('cooperation.pdf.user-report.steps.general-data-page-1', [
     'stepShort' => 'general-data'
@@ -40,7 +41,7 @@
 @foreach ($reportData as $stepShort => $dataForStep)
     <?php
         $hasResidentCompletedStep = $building->hasCompleted(
-            \App\Models\Step::findByShort($stepShort),
+            \App\Models\Step::withGeneralData()->where('short', $stepShort)->first(),
             $inputSource
         );
     ?>

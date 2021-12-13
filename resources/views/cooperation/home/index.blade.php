@@ -1,44 +1,26 @@
-@extends('cooperation.layouts.app')
+@extends('cooperation.frontend.layouts.app')
 
-@section('content')
-    <div class="container" id="home">
-        <div class="row">
-            <div class="col-md-12">
+@section('main')
+    <div class="w-screen h-screen flex justify-center items-center flex-col">
+        <div class="bg-white rounded-3xl w-3/4 flex flex-wrap overflow-hidden min-h-15/20 max-h-19/20">
+            <div class="p-10 xl:p-20 w-1/2 flex flex-col justify-between h-full overflow-auto">
                 @if(session('verified'))
-                    @component('cooperation.tool.components.alert')
-                        @lang('cooperation/auth/verify.success')
+                    @component('cooperation.frontend.layouts.parts.alert', ['color' => 'blue-800'])
+                        @lang('cooperation/auth/verify.success-log-in')
                     @endcomponent
                 @endif
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        {!! \App\Helpers\Translation::translate('home.start.dear-user.title') !!}
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="col-sm-12 text-center">
-                                        <a class="start-button" href="{{route('cooperation.tool.general-data.index', ['cooperation' => $cooperation])}}">
-                                            <img src="{{asset('images/start-icon.png')}}" class="h-150">
-                                        </a>
-                                    </div>
-                                </div>
+                {!! __('home.start.description') !!}
 
-                            </div>
-                            <div class="col-sm-6">
-                                <img src="{{asset('images/pdf-main-images.jpg')}}" class="h-500 full-width home-img" alt="">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                {!! \App\Helpers\Translation::translate('home.start.your-cooperation.title', ['cooperation' => $cooperation->name]) !!}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <a class="btn btn-purple w-full xl:w-1/4 flex items-center justify-center mt-5"
+                    href="{{$url}}">
+                    @lang('default.start')
+                    <i class="icon-sm icon-arrow-right-circle ml-5"></i>
+                </a>
+            </div>
+            <div class="text-center w-1/2 relative bg-center bg-no-repeat bg-cover"
+                 style="background-image: url('{{ asset('images/family.png') }}')">
+                <i class="icon-hoomdossier-white absolute h-1/10 w-1/2 bottom-1/20" style="right: 12%"></i>
             </div>
         </div>
     </div>
 @endsection
-

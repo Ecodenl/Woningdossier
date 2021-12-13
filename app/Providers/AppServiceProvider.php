@@ -11,7 +11,9 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
@@ -50,7 +52,19 @@ class AppServiceProvider extends ServiceProvider
             return $this->where($attribute, 'LIKE', "%{$searchTerm}%");
         });
 
-        \Queue::before(function (JobProcessing $event) {
+        Collection::macro('addArrayOfWheres', function ($array, $method, $boolean) {
+            $this->whereNested(function ($query) use ($array, $method, $boolean) {
+                foreach ($array as $key => $value) {
+                    if (is_numeric($key) && is_array($value)) {
+                        $query->{$method}(...array_values($value));
+                    } else {
+                        $query->$method($key, '=', $value, $boolean);
+                    }
+                }
+            }, $boolean);
+        });
+
+        Queue::before(function (JobProcessing $event) {
             $payload = $event->job->payload();
             /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);
@@ -61,7 +75,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        \Queue::after(function (JobProcessed $event) {
+        Queue::after(function (JobProcessed $event) {
             $payload = $event->job->payload();
             /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);

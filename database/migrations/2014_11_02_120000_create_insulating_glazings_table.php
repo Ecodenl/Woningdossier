@@ -15,7 +15,7 @@ class CreateInsulatingGlazingsTable extends Migration
     {
         Schema::create('insulating_glazings', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('name');
+            $table->json('name');
             $table->integer('calculate_value')->nullable();
             $table->timestamps();
         });

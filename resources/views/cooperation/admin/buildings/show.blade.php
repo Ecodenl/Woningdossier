@@ -56,8 +56,8 @@
                         <label for="building-coach-status">@lang('cooperation/admin/buildings.show.status.label')</label>
                         <select autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
                             @foreach($statuses as $status)
-                                <option {{$mostRecentStatus->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
-                                    @if($mostRecentStatus->status_id == $status->id)
+                                <option {{optional($mostRecentStatus)->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
+                                    @if(optional($mostRecentStatus)->status_id == $status->id)
                                         @lang('cooperation/admin/buildings.show.status.current')
                                     @endif
                                     {{$status->name}}
@@ -241,6 +241,7 @@
 
             var appointmentDate = $('#appointment-date');
 
+            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
             $('table').DataTable({
                 'order': [[0, 'desc']]
             });
@@ -249,6 +250,7 @@
             $('.nav-tabs a').on('shown.bs.tab', function (event) {
                 $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
             });
+            @endif
 
             $('[data-toggle="tooltip"]').tooltip();
 

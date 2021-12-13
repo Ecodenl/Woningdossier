@@ -60,7 +60,7 @@
                                     <td>
                                         <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}"
                                               method="post">
-                                            {{csrf_field()}}
+                                            @csrf
                                             <button
                                                     @if($fileType->isBeingProcessed()) disabled="disabled" type="button"
                                                     data-toggle="tooltip"

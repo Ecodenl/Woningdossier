@@ -4,6 +4,7 @@ namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\RoofInsulation as RoofInsulationCalculate;
 use App\Events\StepCleared;
+use App\Helpers\Arr;
 use App\Helpers\Calculator;
 use App\Helpers\RoofInsulation;
 use App\Helpers\RoofInsulationCalculator;
@@ -11,7 +12,6 @@ use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingRoofType;
 use App\Models\InputSource;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
@@ -26,6 +26,8 @@ class RoofInsulationHelper extends ToolHelper
 {
     public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = RoofInsulationCalculate::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
@@ -34,12 +36,14 @@ class RoofInsulationHelper extends ToolHelper
         $step = Step::findByShort('roof-insulation');
 
         $buildingRoofTypeData = $this->getValues('building_roof_types');
-        // Remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+
+        // Loop all building roof types
         $roofTypeIds = $this->getValues('building_roof_type_ids');
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
+            // Get category and potential sub category
             if ($roofType instanceof RoofType) {
                 $cat = RoofInsulation::getRoofTypeCategory($roofType);
                 // add as key to result array
@@ -49,130 +53,163 @@ class RoofInsulationHelper extends ToolHelper
             }
         }
 
-        foreach (array_keys($result) as $roofCat) {
-            $isBitumenOnPitchedRoof = 'pitched' == $roofCat && 'bitumen' == $results['pitched']['type'];
-            // It's a bitumen roof is the category is not pitched or none (so currently only: flat)
-            $isBitumenRoof = ! in_array($roofCat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
+        if ($this->considers($step)) {
+            foreach (array_keys($result) as $roofCat) {
+                $primaryRoof = RoofType::find($this->getValues('building_features')['roof_type_id']);
+                $primaryRoofShort = optional($primaryRoof)->short;
 
-            // when "no roof" is selected there will still be a result, so extra ?? 0
-            $measureApplicationId = $buildingRoofTypeData[$roofCat]['extra']['measure_application_id'] ?? 0;
-            if ($measureApplicationId > 0) {
-                // results in an advice
-                $measureApplication = MeasureApplication::find($measureApplicationId);
-                if ($measureApplication instanceof MeasureApplication) {
-                    $actionPlanAdvice = null;
+                $roofStep = Step::findByShort('roof-insulation');
+                // If the user has answered the step about roof insulation, we will continue with both possible roof
+                // categories. However, if they have not, we must ensure that the primary roof matches the category
+                if ($this->building->hasAnsweredExpertQuestion($roofStep) ||
+                    (! is_null($primaryRoofShort) && $roofCat === RoofType::PRIMARY_TO_SECONDARY_MAP[$primaryRoofShort])
+                ) {
+                    $isBitumenOnPitchedRoof = 'pitched' == $roofCat && 'bitumen' == $results['pitched']['type'];
+                    // It's a bitumen roof is the category is not pitched or none (so currently only: flat)
+                    $isBitumenRoof = ! in_array($roofCat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
 
-                    $interest = Interest::find($this->getValues('user_interests.interest_id'));
+                    // when "no roof" is selected there will still be a result, so extra ?? 0
+                    $measureApplicationId = $buildingRoofTypeData[$roofCat]['extra']['measure_application_id'] ?? 0;
+                    if ($measureApplicationId > 0) {
+                        // results in an advice
+                        $measureApplication = MeasureApplication::find($measureApplicationId);
+                        if ($measureApplication instanceof MeasureApplication) {
+                            $actionPlanAdvice = null;
 
-                    if (1 == $interest->calculate_value) {
-                        // on short term: this year
-                        $advicedYear = Carbon::now()->year;
-                    } elseif (2 == $interest->calculate_value) {
-                        // on term: this year + 5
-                        $advicedYear = Carbon::now()->year + 5;
-                    } else {
-                        $advicedYear = $results[$roofCat]['replace']['year'];
+                            $advicedYear = $results[$roofCat]['replace']['year'];
+
+                            if (isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0) {
+                                // take the array $roofCat array
+                                $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]);
+                                $actionPlanAdvice->year = $advicedYear;
+                                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results[$roofCat]['cost_indication']);
+                            }
+
+                            if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
+                                $actionPlanAdvice->input_source_id = $this->inputSource->id;
+                                $actionPlanAdvice->user()->associate($this->user);
+                                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
+                                $actionPlanAdvice->step()->associate($step);
+
+                                // We only want to check old advices if the updated attributes are not relevant to this measure
+                                if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                                        $oldAdvices);
+                                }
+
+                                $actionPlanAdvice->save();
+                            }
+                        }
                     }
 
-                    if (isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0) {
-                        // take the array $roofCat array
-                        $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]);
-                        $actionPlanAdvice->year = $advicedYear;
-                        $actionPlanAdvice->costs = $results[$roofCat]['cost_indication'];
+                    $roofCatData = $buildingRoofTypeData[$roofCat] ?? [];
+                    $extra = $roofCatData['extra'] ?? [];
+                    if (array_key_exists('zinc_replaced_date', $extra)) {
+                        $zincReplaceYear = (int)$extra['zinc_replaced_date'];
+                        // todo Get surface for $roofCat from building_roof_types (or elsewhere) for this input source
+                        // Default: get from building_roof_types table for this input source
+                        $roofType = RoofType::where('short', '=', $roofCat)->first();
+
+                        $zincSurface = 0;
+                        if ($roofType instanceof RoofType) {
+                            $buildingRoofType = $this->building->roofTypes()->forInputSource($this->inputSource)->where('roof_type_id', '=', $roofType->id)->first();
+                            if ($buildingRoofType instanceof BuildingRoofType) {
+                                $zincSurface = $buildingRoofType->zinc_surface;
+                            }
+                        }
+                        // Note there's no such request input just yet. We're not sure this will be available for the user
+                        // to fill in.
+                        $zincSurface = $roofCatData['zinc_surface'] ?? $zincSurface;
+
+                        if ($zincReplaceYear > 0 && $zincSurface > 0) {
+                            /** @var MeasureApplication $zincReplaceMeasure */
+                            $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc-' . $roofCat)->first();
+
+                            $year = RoofInsulationCalculator::determineApplicationYear($zincReplaceMeasure, $zincReplaceYear, 1);
+                            $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
+
+                            $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
+                            $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);
+                            $actionPlanAdvice->input_source_id = $this->inputSource->id;
+                            $actionPlanAdvice->user()->associate($this->user);
+                            $actionPlanAdvice->userActionPlanAdvisable()->associate($zincReplaceMeasure);
+                            $actionPlanAdvice->step()->associate($step);
+
+                            // We only want to check old advices if the updated attributes are not relevant to this measure
+                            if (! in_array($zincReplaceMeasure->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $zincReplaceMeasure,
+                                    $oldAdvices);
+                            }
+
+                            $actionPlanAdvice->save();
+                        }
                     }
+                    if (array_key_exists('tiles_condition', $extra)) {
+                        $tilesCondition = (int)$extra['tiles_condition'];
 
-                    if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
-                        $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                        $actionPlanAdvice->user()->associate($this->user);
-                        $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                        $actionPlanAdvice->step()->associate($step);
-                        $actionPlanAdvice->save();
+                        $surface = $roofCatData['roof_surface'] ?? 0;
+                        if ($tilesCondition > 0 && $surface > 0) {
+                            $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
+                            // no year here. Default is this year. It is incremented by factor * maintenance years
+                            $year = Carbon::now()->year;
+                            $roofTilesStatus = RoofTileStatus::find($tilesCondition);
+
+                            if ($roofTilesStatus instanceof RoofTileStatus) {
+                                $factor = ($roofTilesStatus->calculate_value / 100);
+
+                                $year = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
+                                $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
+
+                                $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
+                                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);
+                                $actionPlanAdvice->input_source_id = $this->inputSource->id;
+                                $actionPlanAdvice->user()->associate($this->user);
+                                $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
+                                $actionPlanAdvice->step()->associate($step);
+
+                                // We only want to check old advices if the updated attributes are not relevant to this measure
+                                if (! in_array($replaceMeasure->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure,
+                                        $oldAdvices);
+                                }
+
+                                $actionPlanAdvice->save();
+                            }
+                        }
                     }
-                }
-            }
+                    if ($isBitumenRoof && array_key_exists('bitumen_replaced_date', $extra)) {
+                        $bitumenReplaceYear = (int)$extra['bitumen_replaced_date'];
+                        if ($bitumenReplaceYear <= 0) {
+                            $bitumenReplaceYear = Carbon::now()->year - 10;
+                        }
 
-            $roofCatData = $buildingRoofTypeData[$roofCat] ?? [];
-            $extra = $roofCatData['extra'] ?? [];
-            if (array_key_exists('zinc_replaced_date', $extra)) {
-                $zincReplaceYear = (int) $extra['zinc_replaced_date'];
-                // todo Get surface for $roofCat from building_roof_types (or elsewhere) for this input source
-                // Default: get from building_roof_types table for this input source
-                $roofType = RoofType::where('short', '=', $roofCat)->first();
+                        $surface = $roofCatData['roof_surface'] ?? 0;
 
-                $zincSurface = 0;
-                if ($roofType instanceof RoofType) {
-                    $buildingRoofType = $this->building->roofTypes()->forInputSource($this->inputSource)->where('roof_type_id', '=', $roofType->id)->first();
-                    if ($buildingRoofType instanceof BuildingRoofType) {
-                        $zincSurface = $buildingRoofType->zinc_surface;
+                        if ($bitumenReplaceYear > 0 && $surface > 0) {
+                            $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
+                            // no percentages here. We just do this to keep the determineApplicationYear definition in one place
+                            $year = $bitumenReplaceYear;
+                            $factor = 1;
+
+                            $year = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
+                            $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
+
+                            $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
+                            $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);
+                            $actionPlanAdvice->input_source_id = $this->inputSource->id;
+                            $actionPlanAdvice->user()->associate($this->user);
+                            $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
+                            $actionPlanAdvice->step()->associate($step);
+
+                            // We only want to check old advices if the updated attributes are not relevant to this measure
+                            if (! in_array($replaceMeasure->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure,
+                                    $oldAdvices);
+                            }
+
+                            $actionPlanAdvice->save();
+                        }
                     }
-                }
-                // Note there's no such request input just yet. We're not sure this will be available for the user
-                // to fill in.
-                $zincSurface = $roofCatData['zinc_surface'] ?? $zincSurface;
-
-                if ($zincReplaceYear > 0 && $zincSurface > 0) {
-                    /** @var MeasureApplication $zincReplaceMeasure */
-                    $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc-'.$roofCat)->first();
-
-                    $year = RoofInsulationCalculator::determineApplicationYear($zincReplaceMeasure, $zincReplaceYear, 1);
-                    $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
-
-                    $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                    $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                    $actionPlanAdvice->user()->associate($this->user);
-                    $actionPlanAdvice->measureApplication()->associate($zincReplaceMeasure);
-                    $actionPlanAdvice->step()->associate($step);
-                    $actionPlanAdvice->save();
-                }
-            }
-            if (array_key_exists('tiles_condition', $extra)) {
-                $tilesCondition = (int) $extra['tiles_condition'];
-
-                $surface = $roofCatData['roof_surface'] ?? 0;
-                if ($tilesCondition > 0 && $surface > 0) {
-                    $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
-                    // no year here. Default is this year. It is incremented by factor * maintenance years
-                    $year = Carbon::now()->year;
-                    $roofTilesStatus = RoofTileStatus::find($tilesCondition);
-
-                    if ($roofTilesStatus instanceof RoofTileStatus) {
-                        $factor = ($roofTilesStatus->calculate_value / 100);
-
-                        $year = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                        $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
-
-                        $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                        $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                        $actionPlanAdvice->user()->associate($this->user);
-                        $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
-                        $actionPlanAdvice->step()->associate($step);
-                        $actionPlanAdvice->save();
-                    }
-                }
-            }
-            if ($isBitumenRoof && array_key_exists('bitumen_replaced_date', $extra)) {
-                $bitumenReplaceYear = (int) $extra['bitumen_replaced_date'];
-                if ($bitumenReplaceYear <= 0) {
-                    $bitumenReplaceYear = Carbon::now()->year - 10;
-                }
-
-                $surface = $roofCatData['roof_surface'] ?? 0;
-
-                if ($bitumenReplaceYear > 0 && $surface > 0) {
-                    $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
-                    // no percentages here. We just do this to keep the determineApplicationYear definition in one place
-                    $year = $bitumenReplaceYear;
-                    $factor = 1;
-
-                    $year = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                    $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
-
-                    $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                    $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                    $actionPlanAdvice->user()->associate($this->user);
-                    $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
-                    $actionPlanAdvice->step()->associate($step);
-                    $actionPlanAdvice->save();
                 }
             }
         }
@@ -216,13 +253,15 @@ class RoofInsulationHelper extends ToolHelper
             $buildingFeatureData
         );
 
-        // we dont know which roof_type_id we will get, so we delete all the rows and create new ones.
-        ModelService::deleteAndCreate(BuildingRoofType::class,
+        // we don't know which roof_type_id we will get, so we delete all the rows and create new ones.
+        ModelService::deleteAndCreate(
+            BuildingRoofType::class,
             [
                 'building_id' => $this->building->id,
                 'input_source_id' => $this->inputSource->id,
             ],
-            $buildingRoofTypeCreateData
+            $buildingRoofTypeCreateData,
+            true
         );
 
         return $this;
@@ -230,7 +269,7 @@ class RoofInsulationHelper extends ToolHelper
 
     public function createValues(): ToolHelper
     {
-        $buildingRoofTypes = $this->building->roofTypes()->forInputSource($this->inputSource)->get();
+        $buildingRoofTypes = $this->building->roofTypes()->forInputSource($this->masterInputSource)->get();
 
         // now lets handle the roof insulation stuff.
         $buildingRoofTypesArray = [];
@@ -261,27 +300,26 @@ class RoofInsulationHelper extends ToolHelper
 
         $step = Step::findByShort('roof-insulation');
         $this->setValues([
-            'user_interests' => [
-                'interest_id' => optional(
-                    $this->user->userInterestsForSpecificType(Step::class, $step->id, $this->inputSource)->first()
-                )->interest_id,
-                'interested_in_type' => Step::class,
-                'interested_in_id' => $step->id,
+            'considerables' => [
+                $step->id => [
+                    'is_considering' => $this->user->considers($step, $this->masterInputSource)
+                ],
             ],
             'building_roof_types' => $buildingRoofTypesArray,
             'building_roof_type_ids' => $buildingRoofTypeIds,
             'building_features' => [
                 'roof_type_id' => optional(
-                    $this->building->buildingFeatures()->forInputSource($this->inputSource)->select('roof_type_id')->first()
+                    $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->select('roof_type_id')->first()
                 )->roof_type_id,
             ],
+            'updated_measure_ids' => [],
         ]);
 
         return $this;
     }
 
     /**
-     * Method to clear the building feature data for wall insulation step.
+     * Method to clear the building feature data for roof insulation step.
      */
     public static function clear(Building $building, InputSource $inputSource)
     {

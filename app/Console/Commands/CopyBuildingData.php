@@ -43,8 +43,8 @@ class CopyBuildingData extends Command
         if (app()->environment() === "local") {
 
             $buildings = Building::all();
-            $residentInputSource = InputSource::findByShort('resident');
-            $coachInputSource = InputSource::findByShort('coach');
+            $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+            $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
             $bar = $this->output->createProgressBar($buildings->count());
             $bar->start();

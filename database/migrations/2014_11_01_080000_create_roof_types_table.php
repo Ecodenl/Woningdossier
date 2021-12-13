@@ -15,8 +15,8 @@ class CreateRoofTypesTable extends Migration
     {
         Schema::create('roof_types', function (Blueprint $table) {
             $table->increments('id');
-            //$table->string('translation_key');
-            $table->uuid('name');
+            $table->json('name');
+            $table->string('short');
             $table->integer('calculate_value');
             $table->integer('order')->nullable();
             $table->timestamps();

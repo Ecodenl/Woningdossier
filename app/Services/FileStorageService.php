@@ -59,7 +59,7 @@ class FileStorageService
     public static function isFileTypeBeingProcessedForUser(FileType $fileType, User $user, InputSource $inputSource): bool
     {
         return $fileType->whereHas('files', function ($q) use ($user, $inputSource) {
-            $q->beingProcessed()->forMe($user)->forInputSource($inputSource);
+            $q->withExpired()->beingProcessed()->forMe($user)->forInputSource($inputSource);
         })->first() instanceof FileType;
     }
 }

@@ -31,7 +31,6 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
     @endif
 </div>
 
-
 <table class="table table-responsive table-condensed">
     <thead>
     <tr>
@@ -41,7 +40,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
     </thead>
     <tbody>
         @foreach($contentStructure as $step => $dataForSubSteps)
-            <?php $stepName = \App\Models\Step::findByShort($step)->name ?>
+            <?php $stepName = \App\Models\Step::findByShort($step)->name ?? __('cooperation/admin/example-buildings.form.general-data') ?>
             <tr>
                 <td colspan="2">
                     <h3>{{$stepName}}</h3>
@@ -51,11 +50,11 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
             @foreach($dataForSubSteps as $subStep => $subStepData)
                 <?php $possibleSubStep = \App\Models\Step::findByShort($subStep); ?>
                 @if($possibleSubStep instanceof \App\Models\Step)
-                <tr>
-                    <td colspan="2">
-                        <h4>{{$possibleSubStep->name}}</h4>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="2">
+                            <h4>{{$possibleSubStep->name}}</h4>
+                        </td>
+                    </tr>
                 @endif
                 @foreach($subStepData as $formFieldName => $rowData)
                     @if($formFieldName != 'calculations' )

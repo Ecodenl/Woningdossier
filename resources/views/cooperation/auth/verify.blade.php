@@ -1,31 +1,50 @@
-@extends('layouts.app')
+@extends('cooperation.frontend.layouts.app')
 
-@section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">@lang('cooperation/auth/verify.heading')</div>
+@section('main')
+    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">
+        <div class="bg-white rounded-3xl p-20 text-center space-y-10">
+            @include('cooperation.frontend.layouts.parts.logo')
+            <h1 class="heading-1">
+                @lang('cooperation/auth/verify.heading')
+            </h1>
+            @if (session('resent'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                    @lang('cooperation/auth/verify.resent')
+                @endcomponent
+            @endif
+            @if(session('status'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                    {{ session('status') }}
+                @endcomponent
+            @endif
+            <p>
+                @lang('cooperation/auth/verify.body')
+                <a onclick="document.getElementById('resend-form').submit()">
+                    @lang('cooperation/auth/verify.do-it')
+                </a>
+            </p>
+            <button class="btn btn-outline-purple" onclick="location.reload()">
+                @lang('cooperation/auth/verify.reload-page')
+            </button>
 
-                    <div class="panel-body">
-                        @if (session('resent'))
-                            <div class="alert alert-success" role="alert">
-                                @lang('cooperation/auth/verify.resent')
-                            </div>
-                        @endif
-
-                        @lang('cooperation/auth/verify.body')
-                            <form id="resend-form" method="POST" action="{{ route('cooperation.auth.verification.resend') }}" style="display: inline">
-                                @csrf
-
-                                <a onclick="document.getElementById('resend-form').submit()">{{ __('cooperation/auth/verify.do-it') }}</a>
-                            </form>
-                        @lang('cooperation/auth/verify.already-verified')
-                        <br>
-                        <button class="btn btn-default" onclick="location.reload()">@lang('cooperation/auth/verify.reload-page')</button>
-                    </div>
-                </div>
-            </div>
+            <p>
+                @if(\Illuminate\Support\Facades\Auth::check())
+                    @include('cooperation.frontend.shared.parts.logout')
+                @else
+                    <a href="{{ route('cooperation.auth.login') }}">
+                        @lang('auth.login.form.header')
+                    </a>
+                    <br><br>
+                    @lang('auth.login.no-account')
+                    <a href="{{ route('cooperation.register') }}">
+                        @lang('auth.register.form.header')
+                    </a>
+                @endif
+            </p>
         </div>
     </div>
+    <form method="POST" class="hidden" id="resend-form"
+          action="{{ route('cooperation.auth.verification.resend') }}">
+        @csrf
+    </form>
 @endsection

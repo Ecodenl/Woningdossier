@@ -16,7 +16,7 @@ class CreateQuestionnairesTable extends Migration
         Schema::create('questionnaires', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name');
+            $table->json('name');
 
             $table->integer('step_id')->unsigned()->nullable();
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('set null');

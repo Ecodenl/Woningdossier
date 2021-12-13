@@ -31,32 +31,40 @@ class VentilationHelper extends ToolHelper
 
     public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $step = Step::findByShort('ventilation');
 
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
 
         $results = Ventilation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        $interestsInMeasureApplications = $this->getValues('user_interests');
-        $relevantAdvices = collect($results['advices'])->whereIn('id', $interestsInMeasureApplications);
+        $considerables = $this->getValues('considerables');
 
-        foreach ($relevantAdvices as $advice) {
-            $measureApplication = MeasureApplication::find($advice['id']);
-            if ($measureApplication instanceof MeasureApplication) {
+        foreach ($considerables as $considerableId => $considerableData) {
+            $measureApplication = MeasureApplication::find($considerableId);
+            if ($this->considers($measureApplication) && $measureApplication instanceof MeasureApplication) {
                 if ('crack-sealing' == $measureApplication->short) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
-                    $actionPlanAdvice->costs = $results['result']['crack_sealing']['cost_indication'] ?? null; // only outlier
+                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['result']['crack_sealing']['cost_indication'] ?? null);
                 } else {
                     $actionPlanAdvice = new UserActionPlanAdvice();
                 }
 
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->planned = true;
+                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts(null); // To force an array format
                 $actionPlanAdvice->user()->associate($this->user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
+
+                // We only want to check old advices if the updated attributes are not relevant to this measure
+                if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                }
+
                 $actionPlanAdvice->save();
             }
         }
@@ -70,41 +78,37 @@ class VentilationHelper extends ToolHelper
         $buildingVentilation = $this
             ->building
             ->buildingVentilations()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
-        // this is all necessary to build the interest array..
-        $measures = [
-            'ventilation-balanced-wtw',
-            'ventilation-decentral-wtw',
-            'ventilation-demand-driven',
-            'crack-sealing',
-        ];
-
-        $measures = array_flip($measures);
-
         $step = Step::findByShort('ventilation');
-        $advices = MeasureApplication::where('step_id', '=', $step->id)
-            ->whereIn('short', array_keys($measures))->get();
 
-        $advices->each(function ($advice) {
-            $advice->name = $advice->measure_name;
-        });
-        foreach ($advices as $advice) {
-            // exception for this page..
-            // 3 so the options "meer informatie" is also interested
-            if ($this->user->hasInterestIn($advice, $this->inputSource, 3)) {
-                $advice->interest = true;
-            }
+        $measureApplications = MeasureApplication::where('step_id', '=', $step->id)
+            ->whereIn('short', [
+                'ventilation-balanced-wtw',
+                'ventilation-decentral-wtw',
+                'ventilation-demand-driven',
+                'crack-sealing',
+            ])
+            ->get();
+
+        $considerables = [];
+
+        foreach ($measureApplications as $measureApplication) {
+            $considerables[$measureApplication->id] = [
+                'is_considering'=> $this->user->considers($measureApplication, $this->masterInputSource),
+                'name' => $measureApplication->measure_name
+            ];
         }
 
         $this->setValues([
-            'user_interests' => $advices->where('interest', true)->pluck('id')->toArray(),
+            'considerables' => $considerables,
             'building_ventilations' => [
                 'how' => optional($buildingVentilation)->how,
                 'living_situation' => optional($buildingVentilation)->living_situation,
                 'usage' => optional($buildingVentilation)->usage,
             ],
+            'updated_measure_ids' => [],
         ]);
 
         return $this;
@@ -204,7 +208,7 @@ class VentilationHelper extends ToolHelper
 
         $allWarnings = array_merge($allWarnings, self::getHowWarnings(), self::getUsageWarnings(), self::getLivingSituationWarnings());
 
-        if (! is_null($value)) {
+        if (!is_null($value)) {
             return $allWarnings[$value];
         }
 

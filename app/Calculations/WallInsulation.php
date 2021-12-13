@@ -68,7 +68,7 @@ class WallInsulation
         $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
         $measureApplication = MeasureApplication::where('short', '=', 'repair-joint')->first();
-        //$measureApplication = MeasureApplication::translated('measure_name', 'Reparatie voegwerk', 'nl')->first(['measure_applications.*']);
+        //$measureApplication = MeasureApplication::where('measure_name->nl', 'Reparatie voegwerk')->first(['measure_applications.*']);
         $surfaceId = $buildingFeatureData['wall_joints'] ?? 1;
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
@@ -81,7 +81,7 @@ class WallInsulation
         $result['repair_joint'] = compact('costs', 'year');
 
         $measureApplication = MeasureApplication::where('short', '=', 'clean-brickwork')->first();
-        //$measureApplication = MeasureApplication::translated('measure_name', 'Reinigen metselwerk', 'nl')->first(['measure_applications.*']);
+        //$measureApplication = MeasureApplication::where('measure_name->nl', 'Reinigen metselwerk')->first(['measure_applications.*']);
         $surfaceId = $buildingFeatureData['contaminated_wall_joints'] ?? 1;
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
@@ -94,7 +94,7 @@ class WallInsulation
         $result['clean_brickwork'] = compact('costs', 'year');
 
         $measureApplication = MeasureApplication::where('short', '=', 'impregnate-wall')->first();
-        //$measureApplication = MeasureApplication::translated('measure_name', 'Impregneren gevel', 'nl')->first(['measure_applications.*']);
+        //$measureApplication = MeasureApplication::where('measure_name->nl', 'Impregneren gevel')->first(['measure_applications.*']);
         $surfaceId = $buildingFeatureData['contaminated_wall_joints'] ?? 1;
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
@@ -104,6 +104,7 @@ class WallInsulation
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
         $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
+
         $result['impregnate_wall'] = compact('costs', 'year');
 
         // Note: these answer options are hardcoded in template
@@ -111,7 +112,7 @@ class WallInsulation
 
         if ($isPlastered) {
             $measureApplication = MeasureApplication::where('short', '=', 'paint-wall')->first();
-            //$measureApplication = MeasureApplication::translated('measure_name', 'Gevelschilderwerk op stuk- of metselwerk', 'nl')->first(['measure_applications.*']);
+            //$measureApplication = MeasureApplication::where('measure_name->nl', 'Gevelschilderwerk op stuk- of metselwerk')->first(['measure_applications.*']);
             $surfaceId = $buildingFeatureData['facade_plastered_surface_id'];
             $facadePlasteredSurface = FacadePlasteredSurface::find($surfaceId);
             $damageId = $buildingFeatureData['facade_damaged_paintwork_id'];

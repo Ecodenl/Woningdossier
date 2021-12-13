@@ -14,7 +14,7 @@ php artisan merge:fix-building-category
 php artisan merge:fix-roof-type-valuables
 php artisan merge:fix-cooperation-measures
 
-- EXPORT ALL **EXPERT** STEPS FROM THE CURRENT LIVE ENVIRONMENT (1 TO 10) (`completed_steps`)
+- EXPORT ALL **EXPERT** STEPS FROM THE MIGRATION ENVIRONMENT (1 TO 10) (`completed_steps`)
 - TRUNCATE `completed_steps` && `completed_sub_steps`
 - IMPORT OLD `completed_steps`
 - DELETE ALL **EXPERT** STEPS FROM THE IMPORTED DATA (`completed_steps`)

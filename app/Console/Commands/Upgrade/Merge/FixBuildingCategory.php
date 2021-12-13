@@ -49,40 +49,12 @@ class FixBuildingCategory extends Command
      */
     public function handle()
     {
-        $subStep = DB::table('sub_steps')->where('slug->nl', 'woning-type')->first();
-
         $buildingIds = DB::table('building_features')
             ->distinct()
             ->whereNotNull('building_type_id')
             ->pluck('building_id')->toArray();
 
-        $setSubStepBuildingIds = DB::table('completed_sub_steps')
-            ->distinct()
-            ->where('sub_step_id', $subStep->id)
-            ->whereIn('building_id', $buildingIds)
-            ->pluck('building_id')->toArray();
-
-        // All building ids missing the first sub step as completed
-        $diffIds = array_diff($buildingIds, $setSubStepBuildingIds);
-
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-
-        $default = [
-            'sub_step_id' => $subStep->id,
-            'input_source_id' => $masterInputSource->id,
-            'created_at' => now(),
-        ];
-
-        $data = [];
-
-        foreach ($diffIds as $diffId) {
-            $temp = $default;
-            $temp['building_id'] = $diffId;
-            $data[] = $temp;
-        }
-
-        // Insert missing data into DB
-        DB::table('completed_sub_steps')->insert($data);
 
         // Cool fact: Sub step could not be completed, but the answer could be set...
         $toolQuestion = DB::table('tool_questions')
@@ -92,12 +64,12 @@ class FixBuildingCategory extends Command
         $setAnswers = DB::table('tool_question_answers')
             ->distinct()
             ->where('tool_question_id', $toolQuestion->id)
-            ->whereIn('building_id', $diffIds)
+            ->whereIn('building_id', $buildingIds)
             ->where('input_source_id', $masterInputSource->id)
             ->pluck('building_id')->toArray();
 
         // Grab all building ids we need to answer for
-        $diffIds = array_diff($diffIds, $setAnswers);
+        $diffIds = array_diff($buildingIds, $setAnswers);
 
         $mapping = DB::table('building_types')
             ->pluck('building_type_category_id', 'id')->toArray();

@@ -110,7 +110,7 @@ class Calculator
     public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null, $applyIndexing = true)
     {
         self::debug(__METHOD__.' for measure '.$measure->measure_name);
-        if ($number <= 0) {
+        if (! is_numeric($number) || $number <= 0) {
             return 0;
         }
         // if $applicationYear is null, we assume this year.

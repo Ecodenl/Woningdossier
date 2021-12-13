@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Plank\Mediable\Mediable;
 
 /**
  * App\Models\Cooperation
@@ -17,6 +19,8 @@ use Illuminate\Support\Collection;
  * @property string|null $cooperation_email
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuilding[] $exampleBuildings
  * @property-read int|null $example_buildings_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
  * @property-read int|null $questionnaires_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
@@ -24,20 +28,30 @@ use Illuminate\Support\Collection;
  * @property-read \App\Models\CooperationStyle|null $style
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  * @property-read int|null $users_count
+ * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
+ * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation query()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereCooperationEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereHasMedia($tags = [], bool $matchAll = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereHasMediaMatchAll(array $tags)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereWebsiteUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaAndVariants($tags = [], bool $matchAll = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaAndVariantsMatchAll($tags = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @mixin \Eloquent
  */
 class Cooperation extends Model
 {
+    use Mediable;
+
     public $fillable = [
         'name', 'website_url', 'slug', 'cooperation_email',
     ];
@@ -48,6 +62,12 @@ class Cooperation extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+
+    public function cooperationMeasureApplications(): HasMany
+    {
+        return $this->hasMany(CooperationMeasureApplication::class);
     }
 
     public function style()
@@ -73,52 +93,6 @@ class Cooperation extends Model
     public function exampleBuildings()
     {
         return $this->hasMany(ExampleBuilding::class);
-    }
-
-    /**
-     * Get all the steps from the cooperation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function steps()
-    {
-        return $this->belongsToMany(Step::class, 'cooperation_steps')->withPivot('order', 'is_active');
-    }
-
-    /**
-     * Get the sub steps for a given step.
-     *
-     * @return mixed
-     */
-    public function getSubStepsForStep(Step $step)
-    {
-        return $this->steps()->subStepsForStep($step)->activeOrderedSteps()->get();
-    }
-
-    /**
-     * Check if the cooperation has a active step.
-     */
-    public function isStepActive(Step $step): bool
-    {
-        $cooperationSteps = $this->steps();
-        $cooperationStep = $cooperationSteps->find($step->id);
-        if ($cooperationStep instanceof Step) {
-            if ($cooperationStep->pivot->is_active) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * get the active steps with its substeps ordered on the order column.
-     *
-     * @return Collection|mixed
-     */
-    public function getActiveOrderedSteps()
-    {
-        return \App\Helpers\Cache\Cooperation::getActiveOrderedSteps($this);
     }
 
     public function getRouteKeyName()

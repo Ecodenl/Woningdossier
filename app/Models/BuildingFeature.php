@@ -6,6 +6,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\BuildingFeature
@@ -92,7 +93,7 @@ class BuildingFeature extends Model
     use ToolSettingTrait;
 
     protected $fillable = [
-        'building_heating_application_id',
+        'example_building_id',
         'element_values',
         'plastered_wall_surface',
         'building_type_id',
@@ -132,11 +133,6 @@ class BuildingFeature extends Model
         return $this->belongsTo(FacadePlasteredSurface::class, 'facade_plastered_surface_id', 'id');
     }
 
-    public function buildingHeatingApplication()
-    {
-        return $this->belongsTo(BuildingHeatingApplication::class);
-    }
-
     /**
      * Column is named wall_joints.
      *
@@ -160,6 +156,11 @@ class BuildingFeature extends Model
     public function buildingCategory()
     {
         return $this->belongsTo(BuildingCategory::class);
+    }
+
+    public function exampleBuilding(): BelongsTo
+    {
+        return $this->belongsTo(ExampleBuilding::class);
     }
 
     public function buildingType()

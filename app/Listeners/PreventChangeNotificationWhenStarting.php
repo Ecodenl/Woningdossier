@@ -61,7 +61,7 @@ class PreventChangeNotificationWhenStarting
     {
         // second step was not completed yet: if a notification for
         // the input source 'example-building' is set, set it to false
-        $inputSourceExampleBuilding = InputSource::findByShort('example-building');
+        $inputSourceExampleBuilding = InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
         if ($inputSourceExampleBuilding instanceof InputSource) {
             // Explicitly update to false
             ToolSetting::withoutGlobalScope(GetValueScope::class)

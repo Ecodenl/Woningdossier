@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="86px" height="89px" viewBox="0 0 86 89" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Vloerverwarming</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-143.000000, -2986.000000)">
+            <g id="vloerverwarming-icon" transform="translate(145.000000, 2988.000000)">
+                <path d="M9.4,7.9 L3.1,7.9 C1.4,7.9 0,6.5 0,4.8 C0,3.1 1.4,1.7 3.1,1.7 L9.4,1.7" id="Path" stroke="#394553" stroke-width="3" fill="#2CA982" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M51.9,26.8 L12.6,26.8 C9.1,26.8 6.3,29.6 6.3,33.1 C6.3,36.6 9.1,39.4 12.6,39.4 L66.1,39.4 C73,39.4 78.7,45 78.7,52 C78.7,59 73.1,64.6 66.1,64.6 L12.6,64.6 C9.1,64.6 6.3,67.4 6.3,70.9 C6.3,74.4 9.1,77.2 12.6,77.2 L74,77.2 C75.7,77.2 77.1,78.6 77.1,80.3 C77.1,82 75.7,83.4 74,83.4 L12.6,83.4 C5.7,83.4 0,77.8 0,70.8 C0,63.9 5.6,58.2 12.6,58.2 L66.1,58.2 C69.6,58.2 72.4,55.4 72.4,51.9 C72.4,48.4 69.6,45.6 66.1,45.6 L12.6,45.6 C5.7,45.6 0,40 0,33 C0,26.1 5.6,20.4 12.6,20.4 L51.9,20.4" id="Path" stroke="#394553" stroke-width="3" fill="#2CA982" fill-rule="nonzero" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M81.8,34.6 L81.8,0 L9.4,0 L9.4,6.3 C9.4,11.5 13.6,15.7 18.8,15.7 L44,15.7 C49.2,15.7 53.4,19.9 53.4,25.1 C53.4,30.3 57.6,34.5 62.8,34.5 L81.8,34.5 L81.8,34.6 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="15.7" cy="7.9" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="25.2" cy="7.9" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="34.6" cy="7.9" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="44" cy="7.9" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="25.2" cy="14.2" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="34.6" cy="14.2" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="44" cy="14.2" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="53.5" cy="7.9" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="62.9" cy="7.9" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="72.4" cy="7.9" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="15.7" cy="1.6" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="25.2" cy="1.6" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="34.6" cy="1.6" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="44" cy="1.6" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="53.5" cy="1.6" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="62.9" cy="1.6" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="72.4" cy="1.6" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="53.5" cy="14.2" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="62.9" cy="14.2" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="72.4" cy="14.2" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="20.4" cy="11" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="29.9" cy="11" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="39.3" cy="11" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="48.8" cy="11" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="58.2" cy="11" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="67.7" cy="11" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="77.1" cy="11" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="20.4" cy="4.7" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="11" cy="4.7" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="29.9" cy="4.7" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="39.3" cy="4.7" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="48.8" cy="4.7" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="58.2" cy="4.7" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="67.7" cy="4.7" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="77.1" cy="4.7" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="62.9" cy="20.5" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="53.5" cy="20.5" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="72.4" cy="20.5" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="62.9" cy="26.8" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="58.2" cy="29.9" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="72.4" cy="26.8" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="62.9" cy="33.1" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="72.4" cy="33.1" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="58.2" cy="23.6" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="67.7" cy="23.6" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="77.1" cy="23.6" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="67.7" cy="29.9" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="77.1" cy="29.9" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="58.2" cy="17.3" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="67.7" cy="17.3" r="1.6"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="77.1" cy="17.3" r="1.6"></circle>
+                <line x1="22" y1="85" x2="22" y2="75.6" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="22" y1="66.1" x2="22" y2="56.7" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="22" y1="47.2" x2="22" y2="37.8" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="22" y1="28.4" x2="22" y2="18.9" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="51.9" y1="85" x2="51.9" y2="75.6" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="51.9" y1="66.1" x2="51.9" y2="56.7" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="51.9" y1="47.2" x2="51.9" y2="37.8" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="51.9" y1="28.4" x2="51.9" y2="20.5" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+            </g>
+        </g>
+    </g>
+</svg>

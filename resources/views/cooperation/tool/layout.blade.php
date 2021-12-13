@@ -2,6 +2,7 @@
 
 @section('content')
 
+    {{-- THIS FILE ONLY GETS USED IN THE OLD SUB STEPS, so this file should not be used anymore and removed when the time is ripe --}}
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -23,7 +24,7 @@
                 <ul class="nav nav-tabs mt-20">
 
                     @if(isset($currentStep))
-                        <?php $subStepsForStep = $cooperation->getSubStepsForStep($currentStep); ?>
+                        <?php $subStepsForStep = $cooperation->getchildrenForStep($currentStep); ?>
                         @if($subStepsForStep->isEmpty())
                             <li class="active @if($building->hasCompleted($currentStep)) completed @endif">
                                 <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">{{$currentStep->name}}</a>
@@ -50,7 +51,7 @@
                 </ul>
 
                 <div class="tab-content">
-                    @include('cooperation.layouts.custom-questionnaire')
+                    @include('cooperation.frontend.layouts.parts.custom-questionnaire')
 
                     <div class="panel tab-pane active tab-pane panel-default" id="main-tab">
                         <div class="panel-heading">
@@ -63,7 +64,7 @@
                                     @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
                                         @lang('default.buttons.next-page')
                                     @else
-                                        @lang('default.buttons.next')
+                                        @lang('default.buttons.save')
                                     @endif
                                 </button>
                             @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
@@ -91,7 +92,7 @@
                                         // some way of determining the previous step
 
                                         if ($currentSubStep instanceof \App\Models\Step) {
-                                            $subStepsForCurrentStep = $currentStep->subSteps;
+                                            $subStepsForCurrentStep = $currentStep->children;
                                             $previousStep = $subStepsForCurrentStep->where('order', '<', $currentSubStep->order)->last();
                                         } else {
                                             $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();
@@ -105,7 +106,9 @@
                                         ?>
                                         @if($previousStep instanceof \App\Models\Step)
                                             <a class="btn btn-success pull-left"
-                                               href="{{$previousUrl}}">@lang('default.buttons.prev')</a>
+                                               href="{{$previousUrl}}">
+                                                @lang('default.buttons.previous')
+                                            </a>
                                         @endif
                                     </div>
 {{--                                    @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')--}}
@@ -118,7 +121,7 @@
 {{--                                    @else--}}
                                     <div class="col-sm-6">
                                         <button class="pull-right btn btn-primary submit-main-form">
-                                            @lang('default.buttons.next')
+                                            @lang('default.buttons.save')
                                         </button>
                                     </div>
 {{--                                    @endif--}}

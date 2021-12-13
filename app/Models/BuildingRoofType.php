@@ -73,6 +73,10 @@ class BuildingRoofType extends Model
         'building_heating_id', 'extra',
     ];
 
+    protected $crucialRelations = [
+        'roof_type_id',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

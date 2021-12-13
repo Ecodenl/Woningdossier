@@ -4,6 +4,7 @@ namespace App\Helpers\Cooperation\Tool;
 
 use App\Models\InputSource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 abstract class ToolHelper
@@ -14,8 +15,12 @@ abstract class ToolHelper
     /** @var InputSource */
     public $inputSource;
 
+    public InputSource $masterInputSource;
+
     /** @var \App\Models\Building */
     public $building;
+
+    public bool $withOldAdvices = true;
 
     /**
      * What values the controller expects.
@@ -29,6 +34,24 @@ abstract class ToolHelper
         $this->user = $user;
         $this->inputSource = $inputSource;
         $this->building = $user->building;
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+    }
+
+    public function withoutOldAdvices(): ToolHelper
+    {
+        $this->withOldAdvices = false;
+
+        return $this;
+    }
+
+    /**
+     * Simple method to determine whether we should check the old advices.
+     *
+     * @return bool
+     */
+    public function shouldCheckOldAdvices(): bool
+    {
+        return $this->withOldAdvices;
     }
 
     public function setValues(array $values)
@@ -41,6 +64,7 @@ abstract class ToolHelper
     /**
      * Get the values or a direct value from the value array.
      *
+     *
      * @param null $key
      *
      * @return array|\ArrayAccess|mixed
@@ -52,6 +76,20 @@ abstract class ToolHelper
         }
 
         return Arr::get($this->values, $key);
+    }
+
+    // check whether the user considers something, this checks the set values from the $values property
+    // so no, its not the same as $user->considers(), and should also be avoided in these helpers.
+    public function considers(Model $model): bool
+    {
+        $considers = $this->getValues("considerables.{$model->id}.is_considering");
+
+        // when not set, it will be null. not set = not considering
+        // almost impossible to happen as the $user->considers() method already returns a default but a fallback is never bet.
+        if (is_null($considers)) {
+            $considers = true;
+        }
+        return $considers;
     }
 
     /**

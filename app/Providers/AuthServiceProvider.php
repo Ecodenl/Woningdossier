@@ -7,12 +7,18 @@ use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\PrivateMessage;
 use App\Models\Questionnaire;
+use App\Models\SubStep;
+use App\Models\ToolQuestion;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use App\Policies\BuildingPolicy;
 use App\Policies\CooperationPolicy;
 use App\Policies\FileStoragePolicy;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
+use App\Policies\SubStepPolicy;
+use App\Policies\ToolQuestionPolicy;
+use App\Policies\UserActionPlanAdvicePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -25,12 +31,15 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
+        SubStep::class => SubStepPolicy::class,
+        ToolQuestion::class => ToolQuestionPolicy::class,
         PrivateMessage::class => PrivateMessagePolicy::class,
         Questionnaire::class => QuestionnairePolicy::class,
         Cooperation::class => CooperationPolicy::class,
         User::class => UserPolicy::class,
         Building::class => BuildingPolicy::class,
         FileStorage::class => FileStoragePolicy::class,
+        UserActionPlanAdvice::class => UserActionPlanAdvicePolicy::class,
     ];
 
     /**

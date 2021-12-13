@@ -61,13 +61,21 @@
             @endforeach
         </div>
 
-        @include('cooperation.pdf.user-report.parts.measure-page.filled-in-data', [
-            'title' => __('pdf/user-report.ventilation.points-of-improvement'),
-            'dataForSubStep' => \Illuminate\Support\Arr::dot(
-                $ventilationData['user_interests'],
-                'user_interests.'
-            )
-        ])
+            <div class="question-answer-section">
+                <p class="lead">@lang('pdf/user-report.ventilation.points-of-improvement')</p>
+                <table class="full-width">
+                    <tbody>
+                    @php
+                        $ventilationStepId = App\Models\Step::findByShort($stepShort)->id;
+                    @endphp
+                    @foreach($userActionPlanAdvices->where('step_id', $ventilationStepId) as $userActionPlanAdvice)
+                            <tr class="h-20">
+                                <td class="w-380">{{$userActionPlanAdvice->userActionPlanAdvisable->measure_name}}</td>
+                            </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
         @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
 

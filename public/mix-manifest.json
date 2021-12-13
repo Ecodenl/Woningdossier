@@ -1,13 +1,14 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css",
-    "/css/pdf.css": "/css/pdf.css",
-    "/css/datatables/responsive.bootstrap.min.css": "/css/datatables/responsive.bootstrap.min.css",
-    "/css/datatables/responsive.dataTables.min.css": "/css/datatables/responsive.dataTables.min.css",
-    "/css/datatables/dataTables.bootstrap.min.css": "/css/datatables/dataTables.bootstrap.min.css",
-    "/js/are-you-sure.js": "/js/are-you-sure.js",
-    "/js/datatables.js": "/js/datatables.js",
-    "/js/select2.js": "/js/select2.js",
-    "/js/disable-auto-fill.js": "/js/disable-auto-fill.js",
-    "/js/hoomdossier.js": "/js/hoomdossier.js"
+    "/js/app.js": "/js/app.js?id=be5893a3b00c6706ab90",
+    "/css/admin/app.css": "/css/admin/app.css?id=b6e881e4bec464b4e1a9",
+    "/css/pdf.css": "/css/pdf.css?id=9c957fb9a061eca83540",
+    "/css/admin/datatables/responsive.bootstrap.min.css": "/css/admin/datatables/responsive.bootstrap.min.css?id=06f6a00dad0d74b1c883",
+    "/css/admin/datatables/responsive.dataTables.min.css": "/css/admin/datatables/responsive.dataTables.min.css?id=1c92451f74e3d6ffdd52",
+    "/css/admin/datatables/dataTables.bootstrap.min.css": "/css/admin/datatables/dataTables.bootstrap.min.css?id=415d3b9afed75ff12241",
+    "/css/frontend/app.css": "/css/frontend/app.css?id=d5876533f200079e703a",
+    "/js/are-you-sure.js": "/js/are-you-sure.js?id=01a07340a35a3383abc9",
+    "/js/datatables.js": "/js/datatables.js?id=07830c31a3de4e2588e7",
+    "/js/select2.js": "/js/select2.js?id=b8f26dd6733ccc6263cb",
+    "/js/disable-auto-fill.js": "/js/disable-auto-fill.js?id=d14b1f33dba26bfedbb8",
+    "/js/hoomdossier.js": "/js/hoomdossier.js?id=5ef64bb0e2516800eaf0"
 }

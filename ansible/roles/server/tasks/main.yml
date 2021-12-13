@@ -7,17 +7,16 @@
 - name: Install System Packages
   become: yes
   become_user: root
-  apt: pkg={{ item }} state=latest
-  with_items:
-    - curl
-    - wget
-    - python-software-properties
+  apt:
+    pkg: [ 'curl', 'wget', 'software-properties-common' ]
+    state: latest
 
 - name: Install Extra Packages
   become: yes
   become_user: root
-  apt: pkg={{ item }} state=latest
-  with_items: '{{ server.packages }}'
+  apt:
+    pkg: '{{ server.packages }}'
+    state: latest
   when: server.packages is defined
 
 - name: Configure the timezone

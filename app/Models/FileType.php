@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
+use App\Traits\HasShortTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -37,7 +38,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class FileType extends Model
 {
-    use TranslatableTrait;
+    use HasTranslations, HasShortTrait;
+
+    protected $translatable = [
+        'name',
+    ];
 
     /**
      * Attributes that should be casted to native types.
@@ -72,10 +77,13 @@ class FileType extends Model
     /**
      * Check if the filetype has a file that is being processed.
      */
-    public function isBeingProcessed(): bool
+    public function isBeingProcessed(Building $building = null, InputSource $inputSource = null): bool
     {
-        return FileType::whereHas('files', function ($q) {
-            return $q->withExpired()->beingProcessed();
+        return FileType::whereHas('files', function ($q) use ($building, $inputSource) {
+            $q = $q->withExpired()->beingProcessed();
+            if ($building instanceof Building && $inputSource instanceof InputSource) {
+                $q->where('building_id', $building->id)->forInputSource($inputSource);
+            }
         })->where('id', $this->id)->first() instanceof FileType;
     }
 

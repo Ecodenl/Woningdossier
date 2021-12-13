@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128px" height="94px" viewBox="0 0 128 94" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Dakkapel (selected)</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-424.000000, -2709.000000)">
+            <g id="dakkapel-icon" transform="translate(426.000000, 2711.000000)">
+                <g id="Group-9" stroke="#414C57" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+                    <line x1="94.0152" y1="0.0003" x2="123.9042" y2="53.0083" id="Stroke-1"></line>
+                    <line x1="59.6983" y1="89.638" x2="123.6463" y2="52.971" id="Stroke-3"></line>
+                    <polygon id="Stroke-5" points="0 55.2039 29.809 36.6289 59.698 89.6379"></polygon>
+                    <line x1="30.1465" y1="36.471" x2="94.0155" y2="0" id="Stroke-7"></line>
+                </g>
+                <polygon id="Path-2" fill="#2CA982" points="61.5 34.2522 77.125 25.8932 93.5596 36.471 93.5596 51.2453 76.163 60.5"></polygon>
+                <line x1="77.125" y1="43.6009" x2="60.917" y2="34.2519" id="Stroke-10" stroke="#414C57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="91.2696" y1="34.1902" x2="76.8846" y2="25.8932" id="Stroke-11" stroke="#414C57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="60.917" y1="34.2522" x2="76.163" y2="61.2902" id="Stroke-12" stroke="#414C57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="60.917" y1="34.2522" x2="76.885" y2="25.8932" id="Stroke-13" stroke="#414C57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="76.1626" y1="61.2903" x2="93.5596" y2="51.2453" id="Stroke-14" stroke="#414C57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <path d="M76.1626,61.2903 L76.1626,49.0193 C76.1626,35.3903 93.5596,27.9903 93.5596,38.9753 L93.5596,51.2453" id="Stroke-15" stroke="#414C57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+        </g>
+    </g>
+</svg>

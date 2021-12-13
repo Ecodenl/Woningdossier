@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\BuildingType
@@ -28,10 +29,19 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingType extends Model
 {
-    use TranslatableTrait;
+    use HasTranslations;
+
+    protected $translatable = [
+        'name',
+    ];
 
     public function buildingFeatures()
     {
         return $this->hasMany(BuildingFeature::class);
+    }
+
+    public function buildingTypeCategory(): BelongsTo
+    {
+        return $this->belongsTo(BuildingTypeCategory::class);
     }
 }

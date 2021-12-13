@@ -20,22 +20,27 @@ class InputSourcesTableSeeder extends Seeder
             [
                 'name' => 'Voorbeeld woning',
                 'short' => 'example-building',
-                'order' => 2,
+                'order' => 3,
             ],
             [
                 'name' => 'Coach',
                 'short' => 'coach',
-                'order' => 3,
+                'order' => 2,
             ],
             [
                 'name' => 'Coöperatie',
                 'short' => 'cooperation',
                 'order' => 4,
             ],
+            [
+                'name' => 'Master',
+                'short' => 'master',
+                'order' => 5
+            ]
         ];
 
         foreach ($inputSources as $inputSource) {
-            \App\Models\InputSource::firstOrCreate($inputSource);
+            \App\Models\InputSource::updateOrCreate(['short' => $inputSource['short']], $inputSource);
         }
     }
 }

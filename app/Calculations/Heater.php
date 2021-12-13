@@ -9,11 +9,13 @@ use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\HeaterComponentCost;
-use App\Models\Interest;
+use App\Models\InputSource;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
+use App\Models\ServiceValue;
+use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
@@ -42,7 +44,6 @@ class Heater
 
         $comfortLevelId = $calculateData['user_energy_habits']['water_comfort_id'] ?? 0;
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
-        $userInterests = $calculateData['user_interests'] ?? [];
 
         if ($energyHabit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
             $consumption = KeyFigures::getCurrentConsumption($energyHabit, $comfortLevel);
@@ -92,30 +93,33 @@ class Heater
 
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-                $interest = Interest::find($userInterests['interest_id']);
 
-                if (isset($interest) && $interest instanceof Interest) {
-                    $currentYear = Carbon::now()->year;
-                    if (1 == $interest->calculate_value) {
-                        $result['year'] = $currentYear;
-                    } elseif (2 == $interest->calculate_value) {
-                        $result['year'] = $currentYear + 5;
+                $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+                $hasSunBoilerQuestion = ToolQuestion::findByShort('heater-type');
+                if ($hasSunBoilerQuestion instanceof ToolQuestion) {
+                    $answer = $building->getAnswer($masterInputSource, $hasSunBoilerQuestion);
+                    $serviceValue = ServiceValue::find($answer);
+
+                    if ($serviceValue instanceof ServiceValue) {
+                        $currentYear = Carbon::now()->year;
+                        // If the value is 1 (geen), we want it in to-do
+                        $result['year'] = $serviceValue->calculate_value > 1 ? $currentYear + 5 : $currentYear;
                     }
                 }
 
                 if ($helpFactor >= 0.84) {
                     $result['performance'] = [
-                        'alert' => 'success',
+                        'alert' => 'green',
                         'text' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.ideal'),
                     ];
                 } elseif ($helpFactor < 0.70) {
                     $result['performance'] = [
-                        'alert' => 'danger',
+                        'alert' => 'red',
                         'text' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.no-go'),
                     ];
                 } else {
                     $result['performance'] = [
-                        'alert' => 'warning',
+                        'alert' => 'yellow',
                         'text' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.possible'),
                     ];
                 }

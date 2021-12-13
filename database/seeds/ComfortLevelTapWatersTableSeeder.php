@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ComfortLevelTapWatersTableSeeder extends Seeder
 {
@@ -13,22 +14,22 @@ class ComfortLevelTapWatersTableSeeder extends Seeder
     {
         $statuses = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Standaard',
                 ],
                 'calculate_value' => 1,
                 'order' => 0,
             ],
             [
-                'names' => [
-                    'nl' => 'Comfort',
+                'name' => [
+                    'nl' => 'Comfortabel',
                 ],
                 'calculate_value' => 2,
                 'order' => 1,
             ],
             [
-                'names' => [
-                    'nl' => 'Comfort plus',
+                'name' => [
+                    'nl' => 'Extra comfortabel',
                 ],
                 'calculate_value' => 3,
                 'order' => 2,
@@ -36,20 +37,13 @@ class ComfortLevelTapWatersTableSeeder extends Seeder
         ];
 
         foreach ($statuses as $status) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($status['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
+            DB::table('comfort_level_tap_waters')->updateOrInsert(
+                ['calculate_value' => $status['calculate_value']],
+                [
+                    'name' => json_encode($status['name']),
+                    'calculate_value' => $status['calculate_value'],
+                    'order' => $status['order'],
                 ]);
-            }
-
-            \DB::table('comfort_level_tap_waters')->insert([
-                'name' => $uuid,
-                'calculate_value' => $status['calculate_value'],
-                'order' => $status['order'],
-            ]);
         }
     }
 }

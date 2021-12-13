@@ -2,39 +2,25 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoofInsulation;
 use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
+use App\Helpers\Str;
 use App\Http\Requests\Cooperation\Tool\RoofInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingHeating;
-use App\Models\BuildingRoofType;
 use App\Models\Element;
+use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
-use App\Models\Step;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class RoofInsulationController extends Controller
+class RoofInsulationController extends ToolController
 {
-    /**
-     * @var Step
-     */
-    protected $step;
-
-    public function __construct(Request $request)
-    {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first();
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -47,13 +33,12 @@ class RoofInsulationController extends Controller
         /** var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
-        /** var BuildingFeature $features */
-        $features = $building->buildingFeatures;
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
 
-        $roofTypes = RoofType::all();
+        $primaryRoofTypes = RoofType::orderBy('order')->get();
+        $secondaryRoofTypes = $primaryRoofTypes->whereIn('short', RoofType::SECONDARY_ROOF_TYPE_SHORTS);
 
-        $currentRoofTypes = $building->roofTypes;
+        $currentRoofTypes = $building->roofTypes()->forInputSource($this->masterInputSource)->get();
         $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
 
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
@@ -90,9 +75,9 @@ class RoofInsulationController extends Controller
         }
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'building', 'features', 'roofTypes', 'typeIds', 'buildingFeaturesForMe',
-             'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
-             'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
+            'building', 'primaryRoofTypes', 'secondaryRoofTypes', 'typeIds',
+            'buildingFeaturesForMe', 'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
+            'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
     }
 
     public function calculate(Request $request)
@@ -100,7 +85,8 @@ class RoofInsulationController extends Controller
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
-        $result = \App\Calculations\RoofInsulation::calculate($building, HoomdossierSession::getInputSource(true), $building->user->energyHabit, $request->all());
+        $result = \App\Calculations\RoofInsulation::calculate($building,
+            HoomdossierSession::getInputSource(true), $building->user->energyHabit, $request->all());
 
         return response()->json($result);
     }
@@ -113,30 +99,60 @@ class RoofInsulationController extends Controller
     public function store(RoofInsulationFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
+        $user = $building->user;
 
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+        ConsiderableService::save($this->step, $user, $inputSource,
+            $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        $dirtyNames = array_keys($dirtyAttributes);
+        $updatedMeasureIds = [];
+
+        $dirtyPitched = Str::arrStartsWith($dirtyNames, 'building_roof_types[pitched]');
+        $dirtyFlat = Str::arrStartsWith($dirtyNames, 'building_roof_types[flat]');
+
+        // We update everything if the primary roof is changed, otherwise we will update the relevant measures for the
+        // changed roof category
+        if (Str::arrStartsWith($dirtyNames, 'building_features')
+            || Str::arrStartsWith($dirtyNames, 'building_roof_type_ids') || ($dirtyFlat && $dirtyPitched)
+        ) {
+            $updatedMeasureIds = MeasureApplication::findByShorts([
+                'roof-insulation-pitched-inside', 'roof-insulation-pitched-replace-tiles',
+                'roof-insulation-flat-current', 'roof-insulation-flat-replace-current',
+                'replace-tiles', 'replace-roof-insulation', 'replace-zinc-pitched',
+                'replace-zinc-flat',
+            ])->pluck('id')->toArray();
+        } else {
+            if ($dirtyFlat) {
+                $updatedMeasureIds = MeasureApplication::findByShorts([
+                    'roof-insulation-flat-current', 'roof-insulation-flat-replace-current', 'replace-roof-insulation',
+                    'replace-zinc-flat',
+                ])->pluck('id')->toArray();
+            } elseif ($dirtyPitched) {
+                $updatedMeasureIds = MeasureApplication::findByShorts([
+                    'roof-insulation-pitched-inside', 'roof-insulation-pitched-replace-tiles',
+                    'replace-tiles', 'replace-zinc-pitched',
+                ])->pluck('id')->toArray();
+            }
+        }
+
+        $values = $request->only('considerables', 'building_roof_type_ids', 'building_features',
+            'building_roof_types', 'step_comments');
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
+        // Usually we let the completeStore function handle the completion, but we NEED the step to be completed
+        // BEFORE we can calculate the roof insulation advices.
+        StepHelper::complete($this->step, $building, $inputSource);
+
         (new RoofInsulationHelper($user, $inputSource))
-            ->setValues($request->all())
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
 
-        StepHelper::complete($this->step, $building, $inputSource);
-        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-
-        $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
-        $url = $nextStep['url'];
-
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
-
-        return redirect($url);
+        return $this->completeStore($this->step, $building, $inputSource);
     }
 }

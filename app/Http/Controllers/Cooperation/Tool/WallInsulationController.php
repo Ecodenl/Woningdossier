@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\WallInsulation;
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -16,30 +13,17 @@ use App\Models\BuildingFeature;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
-use App\Models\Interest;
-use App\Models\Step;
+use App\Models\MeasureApplication;
 use App\Scopes\GetValueScope;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
-use Illuminate\Http\Request;
 
-class WallInsulationController extends Controller
+class WallInsulationController extends ToolController
 {
-    /**
-     * @var Step
-     */
-    protected $step;
-
-    public function __construct(Request $request)
-    {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first();
-    }
-
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
@@ -48,8 +32,8 @@ class WallInsulationController extends Controller
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
-        $facadeInsulation = $building->getBuildingElement('wall-insulation');
-        $buildingFeature = $building->buildingFeatures;
+        $facadeInsulation = $building->getBuildingElement('wall-insulation', $this->masterInputSource);
+        $buildingFeature = $building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
         $buildingElements = $facadeInsulation->element;
 
         $buildingFeaturesRelationShip = $building->buildingFeatures();
@@ -63,11 +47,9 @@ class WallInsulationController extends Controller
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
 
-        $interests = Interest::orderBy('order')->get();
-
         return view('cooperation.tool.wall-insulation.index', compact(
              'building', 'facadeInsulation', 'buildingFeaturesOrderedOnCredibility',
-            'surfaces', 'buildingFeature', 'interests', 'typeIds',
+            'surfaces', 'buildingFeature', 'typeIds',
             'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
             'buildingElements', 'buildingFeaturesRelationShip'
         ));
@@ -76,9 +58,9 @@ class WallInsulationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \App\Http\Requests\Cooperation\Tool\WallInsulationRequest  $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(WallInsulationRequest $request)
     {
@@ -86,28 +68,32 @@ class WallInsulationController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        $updatedMeasureIds = [];
+        // If anything's dirty, all measures must be recalculated (we can't really check specifics here)
+        if (! empty($dirtyAttributes)) {
+            $updatedMeasureIds = MeasureApplication::findByShorts([
+                'cavity-wall-insulation', 'facade-wall-insulation', 'wall-insulation-research',
+                'paint-wall', 'repair-joint', 'clean-brickwork', 'impregnate-wall',
+            ])
+                ->pluck('id')
+                ->toArray();
+        }
+
+        $values = $request->validated();
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new WallInsulationHelper($user, $inputSource))
-            ->setValues($request->validated())
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
 
-        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
-        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-
-        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
-        $url = $nextStep['url'];
-
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
-
-        return redirect($url);
+        return $this->completeStore($this->step, $building, $inputSource);
     }
 
     public function calculate(WallInsulationRequest $request)

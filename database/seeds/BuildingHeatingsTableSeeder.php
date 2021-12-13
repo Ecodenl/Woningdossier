@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class BuildingHeatingsTableSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class BuildingHeatingsTableSeeder extends Seeder
     {
         $buildingHeatings = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Verwarmd',
                 ],
                 'degree' => 18,
@@ -21,7 +22,7 @@ class BuildingHeatingsTableSeeder extends Seeder
                 'is_default' => false,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Matig verwarmd',
                 ],
                 'degree' => 13,
@@ -29,7 +30,7 @@ class BuildingHeatingsTableSeeder extends Seeder
                 'is_default' => false,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Onverwarmd',
                 ],
                 'degree' => 10,
@@ -37,7 +38,7 @@ class BuildingHeatingsTableSeeder extends Seeder
                 'is_default' => true,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Niet van toepassing',
                 ],
                 'degree' => 18,
@@ -47,17 +48,8 @@ class BuildingHeatingsTableSeeder extends Seeder
         ];
 
         foreach ($buildingHeatings as $buildingHeating) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($buildingHeating['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('building_heatings')->insert([
-                'name' => $uuid,
+            DB::table('building_heatings')->insert([
+                'name' => json_encode($buildingHeating['name']),
                 'degree' => $buildingHeating['degree'],
                 'calculate_value' => $buildingHeating['calculate_value'],
                 'is_default' => $buildingHeating['is_default'],

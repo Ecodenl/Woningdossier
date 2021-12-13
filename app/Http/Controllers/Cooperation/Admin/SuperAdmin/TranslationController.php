@@ -7,13 +7,14 @@ use App\Models\Cooperation;
 use App\Models\LanguageLine;
 use App\Models\Step;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class TranslationController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
@@ -32,37 +33,21 @@ class TranslationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * @param  \App\Models\Cooperation  $cooperation
+     * @param  string  $group  So we can get the translations / questions from language_line table for the step
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function store(Request $request)
+    public function edit(Cooperation $cooperation, string $group)
     {
-    }
-
-    /**
-     * @param string $group |   So we can get the translations / questions from language_line table for the step
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Cooperation $cooperation, $group)
-    {
-        // see the index file, we change the "/" to "_" otherwise it wont be picked up by routing
+        // see the index file, we change the "/" to "_" otherwise it won't be picked up by routing
 
         $group = str_replace('_', '/', $group);
-        // it is what it is, for the time being this will do. should be refactored
+        // it is what it is, for the time being this will do. TODO: should be refactored
         $step = Step::findByShort($group);
 
-        if ($step instanceof Step && $step->isSubStep()) {
+        if ($step instanceof Step && $step->isChild()) {
             $group = "cooperation/tool/general-data/{$group}";
         }
         if ('ventilation' == $group) {
@@ -87,9 +72,11 @@ class TranslationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param string $stepId
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Cooperation  $cooperation
+     * @param $group
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Cooperation $cooperation, $group)
     {
@@ -97,7 +84,7 @@ class TranslationController extends Controller
 
         foreach ($languageLinesData as $locale => $languageLineData) {
             foreach ($languageLineData as $type => $languageLines) {
-                // we dont do stuff with the type yet, could be helpfull in the future.
+                // we don't do stuff with the type yet, could be helpful in the future.
                 foreach ($languageLines as $languageLineId => $text) {
                     $text = $text ?? '';
                     $languageLine = LanguageLine::find($languageLineId);
@@ -109,21 +96,10 @@ class TranslationController extends Controller
             }
         }
 
-        \Artisan::call('queue:restart');
+        Artisan::call('queue:restart');
 
         return redirect()
             ->route('cooperation.admin.super-admin.translations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.translations.update.success'));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
     }
 }

@@ -1,0 +1,29 @@
+.table {
+    @apply w-full;
+}
+
+.table.fancy-table {
+    @apply table-fixed border border-blue-500 border-opacity-50;
+    /* Can't add rounded corners (rounded-lg), border is staying square, TODO */
+}
+
+.table.fancy-table thead tr th {
+    @apply px-6 py-3 bg-blue-500 bg-opacity-25 text-left text-sm font-semibold text-blue-500 tracking-wide;
+}
+
+.table.fancy-table tbody {
+    @apply divide-y divide-blue-500 divide-opacity-50;
+}
+
+.table.fancy-table tbody tr:nth-of-type(even) {
+    @apply bg-gray;
+}
+
+.table.fancy-table tbody tr td {
+    @apply px-6 py-4 text-blue-500 font-light text-sm;
+}
+
+
+
+
+

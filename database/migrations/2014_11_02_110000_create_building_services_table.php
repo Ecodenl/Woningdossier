@@ -25,7 +25,7 @@ class CreateBuildingServicesTable extends Migration
             $table->integer('service_value_id')->unsigned()->nullable()->default(null);
             $table->foreign('service_value_id')->references('id')->on('service_values')->onDelete('restrict');
 
-            $table->text('extra')->nullable();
+            $table->json('extra')->nullable();
 
             $table->timestamps();
         });

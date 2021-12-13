@@ -6,10 +6,10 @@ if (isset($id)) {
 }
 ?>
 
-@component('cooperation.tool.components.step-question', ['id' => $infoAlertId, 'translation' => $translation])
-    <div class="input-group">
-        <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-        <input type="text" id="{{isset($id) ? $id.'_' : ''}}interest_comparable" class="form-control disabled"
-               disabled="" value="0,0">
-    </div>
+@component('cooperation.tool.components.step-question', [
+    'id' => $infoAlertId, 'translation' => $translation, 'withInputSource' => false,
+])
+    <span class="input-group-prepend">% / @lang('general.unit.year.title')</span>
+    <input type="text" id="{{isset($id) ? $id.'_' : ''}}interest_comparable" class="form-input disabled"
+           disabled="" value="0,0">
 @endcomponent

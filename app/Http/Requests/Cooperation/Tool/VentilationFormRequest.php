@@ -4,6 +4,7 @@ namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\HoomdossierSession;
+use App\Models\InputSource;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Fluent;
 use Illuminate\Validation\Rule;
@@ -38,7 +39,7 @@ class VentilationFormRequest extends FormRequest
     {
         $validator->sometimes('building_ventilations.how', ['required', 'array', Rule::in(array_keys(VentilationHelper::getHowValues()))], function (Fluent $input) {
             $building = HoomdossierSession::getBuilding(true);
-            $buildingVentilationService = $building->getBuildingService('house-ventilation', HoomdossierSession::getInputSource(true));
+            $buildingVentilationService = $building->getBuildingService('house-ventilation', InputSource::findByShort(InputSource::MASTER_SHORT));
             $buildingVentilation = $buildingVentilationService->serviceValue;
 
             // determine whether the field is required.

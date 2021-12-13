@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
 use App\Services\UserActionPlanAdviceService;
 
 class UserActionPlanAdviceObserver
@@ -13,34 +12,20 @@ class UserActionPlanAdviceObserver
      */
     public function creating(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        $buildingOwner = $userActionPlanAdvice->user;
-        $step = $userActionPlanAdvice->step;
-        $measureApplication = $userActionPlanAdvice->measureApplication;
-        $inputSource = $userActionPlanAdvice->inputSource;
-        $planned = false;
 
-        // set the default user interest on the step.
-        $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id, $inputSource)->with('interest')->first();
-        // try to obtain a specific interest on the measure application
-        $userInterestOnMeasureApplication = $buildingOwner
-            ->userInterestsForSpecificType(get_class($measureApplication), $measureApplication->id, $inputSource)
-            ->with('interest')
-            ->first();
+        // previously custom logic decided if the advice should be planned or not.
+        // since the "quick scan" we ask the user if he considers the measure, when he considers it an advice will be created
+        // when he considers it it might as well be planned.
+        $userActionPlanAdvice->planned = true;
 
-        // when thats available use that.
-        if ($userInterestOnMeasureApplication instanceof UserInterest) {
-            $userInterest = $userInterestOnMeasureApplication;
+        if (! $userActionPlanAdvice->isDirty('visible')) {
+            // Visibility isn't set. Let's define it
+            UserActionPlanAdviceService::setAdviceVisibility($userActionPlanAdvice);
         }
+        if (! $userActionPlanAdvice->isDirty('category') || is_null($userActionPlanAdvice->category)) {
+            // Category isn't set. Let's define it.
 
-        // Ja op korte termijn, ja op termijn and more informatie
-        if ($userInterest->interest->calculate_value <= 3) {
-            $planned = true;
-        }
-
-        $userActionPlanAdvice->planned = $planned;
-
-        if (is_null($userActionPlanAdvice->year)) {
-            $userActionPlanAdvice->year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice);
+            UserActionPlanAdviceService::setAdviceCategory($userActionPlanAdvice);
         }
     }
 }

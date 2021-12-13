@@ -3,7 +3,7 @@
     <section class="section">
         <div class="container">
             <form action="{{ route('cooperation.admin.cooperation.questionnaires.store') }}" method="post">
-                {{csrf_field()}}
+                @csrf
                 <div class="row">
                     <div class="col-sm-6">
                         <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.questionnaires.index')}}" class="btn btn-warning">
@@ -27,15 +27,30 @@
                                         <label for="name">Naam:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon">{{$locale}}</span>
-                                                <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]" placeholder="Nieuwe vragenlijst">
+                                                <input type="text" class="form-control" id="name"
+                                                       name="questionnaire[name][{{$locale}}]"
+                                                       value="{{ old("questionnaire.name.{$locale}")}}"
+                                                       placeholder="Nieuwe vragenlijst">
                                             </div>
                                         </div>
                                     @endforeach
                                     <div class="form-group {{ $errors->has('questionnaire.step_id') ? ' has-error' : '' }}">
-                                        <label for="step_id">Na stap:</label>
-                                        <select name="questionnaire[step_id]" class="form-control">
-                                            @foreach($steps as $i => $step)
-                                            <option value="{{ $step->id }}">{{ $i+1 }}: {{ $step->name }}</option>
+                                        <label for="step-id">Na stap:</label>
+                                        <select name="questionnaire[step_id]" class="form-control" id="step-id">
+                                            @php $order = 1; @endphp
+                                            @foreach($quickScanSteps as $step)
+                                                <option value="{{ $step->id }}"
+                                                        @if(old('questionnaire.step_id') == $step->id) selected="selected" @endif>
+                                                    {{ $order }}: {{ $step->name }} (quick-scan)
+                                                </option>
+                                                @php ++$order; @endphp
+                                            @endforeach
+                                            @foreach($expertSteps as $step)
+                                                <option value="{{ $step->id }}"
+                                                        @if(old('questionnaire.step_id') == $step->id) selected="selected" @endif>
+                                                    {{ $order }}: {{ $step->name }} (expert)
+                                                </option>
+                                                @php ++$order; @endphp
                                             @endforeach
                                         </select>
                                     </div>

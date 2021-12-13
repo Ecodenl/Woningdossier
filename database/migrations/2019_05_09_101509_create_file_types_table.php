@@ -19,8 +19,9 @@ class CreateFileTypesTable extends Migration
             $table->unsignedInteger('file_type_category_id');
             $table->foreign('file_type_category_id')->references('id')->on('file_type_categories')->onDelete('cascade');
 
-            $table->string('name');
+            $table->json('name');
             $table->string('short');
+            $table->string('content_type');
 
             $table->dateTime('duration')->nullable()->default(null);
             $table->timestamps();

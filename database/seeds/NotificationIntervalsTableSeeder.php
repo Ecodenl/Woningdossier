@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class NotificationIntervalsTableSeeder extends Seeder
 {
@@ -13,21 +14,21 @@ class NotificationIntervalsTableSeeder extends Seeder
     {
         $notificationIntervals = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Elke dag',
                     'en' => 'Every day',
                 ],
                 'short' => 'daily',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Wekelijks',
                     'en' => 'Weekly',
                 ],
                 'short' => 'weekly',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Geen interesse',
                     'en' => 'No interest',
                 ],
@@ -38,17 +39,8 @@ class NotificationIntervalsTableSeeder extends Seeder
         foreach ($notificationIntervals as $notificationInterval) {
             // only create it when there is no interval.
             if (! DB::table('notification_intervals')->where('short', $notificationInterval['short'])->first() instanceof stdClass) {
-                $uuid = \App\Helpers\Str::uuid();
-                foreach ($notificationInterval['names'] as $locale => $name) {
-                    \DB::table('translations')->insert([
-                        'key'         => $uuid,
-                        'language'    => $locale,
-                        'translation' => $name,
-                    ]);
-                }
-
                 DB::table('notification_intervals')->insert([
-                    'name'  => $uuid,
+                    'name'  => json_encode($notificationInterval['name']),
                     'short' => $notificationInterval['short'],
                 ]);
             }

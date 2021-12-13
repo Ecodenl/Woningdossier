@@ -17,6 +17,9 @@ class UsageController extends Controller
 {
     public function index()
     {
+        // Route is disabled. Die if they somehow still manage to get here
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -36,6 +39,9 @@ class UsageController extends Controller
 
     public function store(UsageFormRequest $request)
     {
+        // Route is disabled. Die if they somehow still manage to get here
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);

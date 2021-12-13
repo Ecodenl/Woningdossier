@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="115px" height="101px" viewBox="0 0 115 101" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Puntdak</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-885.000000, -2558.000000)">
+            <g id="puntdak" transform="translate(887.000000, 2560.000000)">
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" points="19.53 41.68 39.11 66.14 111.3 24.46 91.72 0 72.19 1.9 0 43.58"></polygon>
+                <line x1="19.53" y1="41.68" x2="91.72" y2="0" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="42.31 64.29 42.31 96.98 10.39 78.55 10.39 42.63"></polyline>
+                <line x1="100.63" y1="30.62" x2="100.63" y2="63.3" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="42.31" y1="96.97" x2="100.63" y2="63.3" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polygon id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="19.53 41.68 39.11 66.14 111.3 24.46 91.72 0 72.19 1.9 0 43.58"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

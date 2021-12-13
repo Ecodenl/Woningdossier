@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="52px" height="89px" viewBox="0 0 52 89" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>temperatuur</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Styles" transform="translate(-706.000000, -3279.000000)" stroke="#394553" stroke-width="3">
+            <g id="temperatuur" transform="translate(708.000000, 3281.000000)">
+                <circle id="Oval" fill="#2CA982" fill-rule="nonzero" cx="18.3" cy="66.6" r="8.7"></circle>
+                <path d="M29,51.6 L29,10.6 C29,4.8 24.2,-7.10542736e-15 18.4,-7.10542736e-15 C12.6,-7.10542736e-15 7.8,4.8 7.8,10.6 L7.8,51.6 C3.1,54.9 7.10542736e-15,60.4 7.10542736e-15,66.6 C7.10542736e-15,76.8 8.2,85 18.4,85 C28.6,85 36.8,76.8 36.8,66.6 C36.7,60.4 33.6,54.9 29,51.6 Z" id="Path"></path>
+                <line x1="18.3" y1="57.9" x2="18.3" y2="20.8" id="Path"></line>
+                <line x1="37.7" y1="11.4" x2="48.5" y2="11.4" id="Path"></line>
+                <line x1="37.7" y1="21.9" x2="48.5" y2="21.9" id="Path"></line>
+                <line x1="37.7" y1="32.3" x2="48.5" y2="32.3" id="Path"></line>
+                <line x1="37.7" y1="42.8" x2="48.5" y2="42.8" id="Path"></line>
+            </g>
+        </g>
+    </g>
+</svg>

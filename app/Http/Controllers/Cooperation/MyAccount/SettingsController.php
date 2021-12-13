@@ -9,11 +9,10 @@ use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Account;
-use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
 {
@@ -69,7 +68,11 @@ class SettingsController extends Controller
 
         $inputSourceIds = $request->input('input_sources.id');
 
+        // Reset master first.
+        UserService::resetUser($user, InputSource::findByShort(InputSource::MASTER_SHORT));
+
         foreach ($inputSourceIds as $inputSourceId) {
+            Log::debug("resetting for input source " . $inputSourceId);
             UserService::resetUser($user, InputSource::find($inputSourceId));
         }
 

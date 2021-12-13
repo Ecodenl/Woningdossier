@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Queue;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\FileStorageFormRequest;
@@ -100,8 +101,8 @@ class FileStorageController extends Controller
 
         $questionnaire = Questionnaire::find($request->input('file_storages.questionnaire_id'));
 
-        \Log::debug('Generate '.$fileType->short.' file..');
-        \Log::debug('Context:');
+        Log::debug('Generate '.$fileType->short.' file..');
+        Log::debug('Context:');
         $account = Hoomdossier::account();
         $inputSourceValue = HoomdossierSession::getInputSourceValue();
         if (! is_null($inputSourceValue)) {
@@ -123,13 +124,13 @@ class FileStorageController extends Controller
             'building:owner' => $building->user->id,
         ];
 
-        \Log::debug('User info:');
-        \Log::debug(json_encode($u));
-        \Log::debug('Building info:');
-        \Log::debug(json_encode($tags));
+        Log::debug('User info:');
+        Log::debug(json_encode($u));
+        Log::debug('Building info:');
+        Log::debug(json_encode($tags));
 
-        \Log::debug('--- end of debug log stuff ---');
-        \Log::debug(' ');
+        Log::debug('--- end of debug log stuff ---');
+        Log::debug(' ');
 
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         $fileName = $this->getFileNameForFileType($fileType, $user, $inputSource);
@@ -240,7 +241,7 @@ class FileStorageController extends Controller
 
     private function getRedirectUrl(InputSource $inputSource)
     {
-        $url = route('cooperation.tool.my-plan.index').'#download-section';
+        $url = route('cooperation.frontend.tool.quick-scan.my-plan.index').'#download-section';
         if (InputSource::COOPERATION_SHORT == $inputSource->short) {
             $url = route('cooperation.admin.cooperation.reports.index');
         }

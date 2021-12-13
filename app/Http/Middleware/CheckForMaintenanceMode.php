@@ -27,22 +27,24 @@ class CheckForMaintenanceMode extends Middleware
      */
     public function handle($request, Closure $next)
     {
-        $host = $_SERVER['HTTP_HOST'];
-        preg_match('/(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i', $host, $match);
-        $cooperation = $match[1] ?? '';
+        if (! app()->environment('local')) {
+            $host = $_SERVER['HTTP_HOST'];
+            preg_match('/(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i', $host, $match);
+            $cooperation = $match[1] ?? '';
 
-        $cooperation = Cooperation::where('slug', '=', $cooperation)->first();
+            $cooperation = Cooperation::where('slug', '=', $cooperation)->first();
 
-        // if no valid cooperation is found, return to index
-        if (!$cooperation instanceof Cooperation) {
-            return redirect()->route('index');
-        }
+            // if no valid cooperation is found, return to index
+            if (!$cooperation instanceof Cooperation) {
+                return redirect()->route('index');
+            }
 
-        HoomdossierSession::setCooperation($cooperation);
+            HoomdossierSession::setCooperation($cooperation);
 
-        // Set as default URL parameter
-        if (HoomdossierSession::hasCooperation()) {
-            URL::defaults(['cooperation' => $cooperation->slug]);
+            // Set as default URL parameter
+            if (HoomdossierSession::hasCooperation()) {
+                URL::defaults(['cooperation' => $cooperation->slug]);
+            }
         }
 
         return parent::handle($request, $next);

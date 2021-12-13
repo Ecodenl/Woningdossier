@@ -71,149 +71,149 @@ class AddMasterInputSource extends Command
     public function setMasterInputSources(Building $building)
     {
         $tables = [
-            'building_elements' => [
-                'where_column' => 'element_id',
-                'answer_columns' => [
-                    'element_value_id',
-                    'extra',
-                ],
-            ],
-            'building_services' => [
-                'where_column' => 'service_id',
-                'answer_columns' => [
-                    'service_value_id',
-                    'extra',
-                ],
-            ],
-            'user_interests' => [
-                'where_column' => 'interested_in_type',
-                'additional_where_column' => 'interested_in_id',
-                'answer_columns' => [
-                    'interest_id',
-                ],
-            ],
-            'building_features' => [
-                'answer_columns' => [
-                    'example_building_id',
-                    'building_heating_application_id',
-                    'building_category_id',
-                    'building_type_id',
-                    'roof_type_id',
-                    'energy_label_id',
-                    'cavity_wall',
-                    'wall_surface',
-                    'insulation_wall_surface',
-                    'facade_plastered_painted',
-                    'wall_joints',
-                    'contaminated_wall_joints',
-                    'element_values',
-                    'facade_plastered_surface_id',
-                    'facade_damaged_paintwork_id',
-                    'surface',
-                    'floor_surface',
-                    'insulation_surface',
-                    'window_surface',
-                    'volume',
-                    'build_year',
-                    'building_layers',
-                    'monument',
-                ],
-            ],
-            'building_paintwork_statuses' => [
-                'answer_columns' => [
-                    'last_painted_year',
-                    'paintwork_status_id',
-                    'wood_rot_status_id',
-                ],
-            ],
-            'building_ventilations' => [
-                'answer_columns' => [
-                    'how',
-                    'living_situation',
-                    'usage',
-                ],
-            ],
-            'building_pv_panels' => [
-                'answer_columns' => [
-                    'total_installed_power',
-                    'peak_power',
-                    'number',
-                    'pv_panel_orientation_id',
-                    'angle',
-                ],
-            ],
-            'building_heaters' => [
-                'answer_columns' => [
-                    'pv_panel_orientation_id',
-                    'angle',
-                ],
-            ],
-            'building_appliances' => [
-                'answer_columns' => [
-                    'appliance_id',
-                ],
-            ],
-            'user_energy_habits' => [
-                'answer_columns' => [
-                    'resident_count',
-                    'thermostat_high',
-                    'thermostat_low',
-                    'hours_high',
-                    'heating_first_floor',
-                    'heating_second_floor',
-                    'heated_space_outside',
-                    'cook_gas',
-                    'water_comfort_id',
-                    'amount_electricity',
-                    'amount_gas',
-                    'amount_water',
-                    'renovation_plans',
-                    'building_complaints',
-                    'start_date',
-                    'end_date',
-                ],
-            ],
-            'building_roof_types' => [
-                'where_column' => 'roof_type_id',
-                'answer_columns' => [
-                    'element_value_id',
-                    'roof_surface',
-                    'insulation_roof_surface',
-                    'zinc_surface',
-                    'building_heating_id',
-                    'extra',
-                ],
-            ],
-            'building_insulated_glazings' => [
-                'where_column' => 'measure_application_id',
-                'answer_columns' => [
-                    'insulating_glazing_id',
-                    'building_heating_id',
-                    'm2',
-                    'windows',
-                    'extra',
-                ],
-            ],
-            'questions_answers' => [
-                'where_column' => 'question_id',
-                'answer_columns' => [
-                    'answer',
-                ],
-            ],
-            'tool_question_answers' => [
-                'where_column' => 'tool_question_id',
-                'answer_columns' => [
-                    'tool_question_custom_value_id',
-                    'answer',
-                ],
-            ],
-            'completed_sub_steps' => [
-                'where_column' => 'sub_step_id',
-                'answer_columns' => [
-                    'created_at',
-                    'updated_at',
-                ],
-            ],
+//            'building_elements' => [
+//                'where_column' => 'element_id',
+//                'answer_columns' => [
+//                    'element_value_id',
+//                    'extra',
+//                ],
+//            ],
+//            'building_services' => [
+//                'where_column' => 'service_id',
+//                'answer_columns' => [
+//                    'service_value_id',
+//                    'extra',
+//                ],
+//            ],
+//            'user_interests' => [
+//                'where_column' => 'interested_in_type',
+//                'additional_where_column' => 'interested_in_id',
+//                'answer_columns' => [
+//                    'interest_id',
+//                ],
+//            ],
+//            'building_features' => [
+//                'answer_columns' => [
+//                    'example_building_id',
+//                    'building_heating_application_id',
+//                    'building_category_id',
+//                    'building_type_id',
+//                    'roof_type_id',
+//                    'energy_label_id',
+//                    'cavity_wall',
+//                    'wall_surface',
+//                    'insulation_wall_surface',
+//                    'facade_plastered_painted',
+//                    'wall_joints',
+//                    'contaminated_wall_joints',
+//                    'element_values',
+//                    'facade_plastered_surface_id',
+//                    'facade_damaged_paintwork_id',
+//                    'surface',
+//                    'floor_surface',
+//                    'insulation_surface',
+//                    'window_surface',
+//                    'volume',
+//                    'build_year',
+//                    'building_layers',
+//                    'monument',
+//                ],
+//            ],
+//            'building_paintwork_statuses' => [
+//                'answer_columns' => [
+//                    'last_painted_year',
+//                    'paintwork_status_id',
+//                    'wood_rot_status_id',
+//                ],
+//            ],
+//            'building_ventilations' => [
+//                'answer_columns' => [
+//                    'how',
+//                    'living_situation',
+//                    'usage',
+//                ],
+//            ],
+//            'building_pv_panels' => [
+//                'answer_columns' => [
+//                    'total_installed_power',
+//                    'peak_power',
+//                    'number',
+//                    'pv_panel_orientation_id',
+//                    'angle',
+//                ],
+//            ],
+//            'building_heaters' => [
+//                'answer_columns' => [
+//                    'pv_panel_orientation_id',
+//                    'angle',
+//                ],
+//            ],
+//            'building_appliances' => [
+//                'answer_columns' => [
+//                    'appliance_id',
+//                ],
+//            ],
+//            'user_energy_habits' => [
+//                'answer_columns' => [
+//                    'resident_count',
+//                    'thermostat_high',
+//                    'thermostat_low',
+//                    'hours_high',
+//                    'heating_first_floor',
+//                    'heating_second_floor',
+//                    'heated_space_outside',
+//                    'cook_gas',
+//                    'water_comfort_id',
+//                    'amount_electricity',
+//                    'amount_gas',
+//                    'amount_water',
+//                    'renovation_plans',
+//                    'building_complaints',
+//                    'start_date',
+//                    'end_date',
+//                ],
+//            ],
+//            'building_roof_types' => [
+//                'where_column' => 'roof_type_id',
+//                'answer_columns' => [
+//                    'element_value_id',
+//                    'roof_surface',
+//                    'insulation_roof_surface',
+//                    'zinc_surface',
+//                    'building_heating_id',
+//                    'extra',
+//                ],
+//            ],
+//            'building_insulated_glazings' => [
+//                'where_column' => 'measure_application_id',
+//                'answer_columns' => [
+//                    'insulating_glazing_id',
+//                    'building_heating_id',
+//                    'm2',
+//                    'windows',
+//                    'extra',
+//                ],
+//            ],
+//            'questions_answers' => [
+//                'where_column' => 'question_id',
+//                'answer_columns' => [
+//                    'answer',
+//                ],
+//            ],
+//            'tool_question_answers' => [
+//                'where_column' => 'tool_question_id',
+//                'answer_columns' => [
+//                    'tool_question_custom_value_id',
+//                    'answer',
+//                ],
+//            ],
+//            'completed_sub_steps' => [
+//                'where_column' => 'sub_step_id',
+//                'answer_columns' => [
+//                    'created_at',
+//                    'updated_at',
+//                ],
+//            ],
             'completed_steps' => [
                 'where_column' => 'step_id',
                 'answer_columns' => [
@@ -221,13 +221,13 @@ class AddMasterInputSource extends Command
                     'updated_at',
                 ],
             ],
-            'considerables' => [
-                'where_column' => 'considerable_type',
-                'additional_where_column' => 'considerable_id',
-                'answer_columns' => [
-                    'is_considering',
-                ],
-            ],
+//            'considerables' => [
+//                'where_column' => 'considerable_type',
+//                'additional_where_column' => 'considerable_id',
+//                'answer_columns' => [
+//                    'is_considering',
+//                ],
+//            ],
         ];
 
         // Get the input sources

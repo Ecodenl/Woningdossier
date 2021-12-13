@@ -129,6 +129,9 @@ class FinalIntegrityFix extends Command
         $subSteps = SubStep::all();
         /** @var Building $building */
         foreach ($buildings as $building) {
+            if (!$building instanceof Building){
+                continue;
+            }
             foreach ($inputSources as $inputSource) {
                 foreach ($subSteps as $subStep) {
                     $completeStep = true;

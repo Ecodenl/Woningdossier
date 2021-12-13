@@ -51,27 +51,68 @@ class FixCooperationMeasures extends Command
      */
     public function handle()
     {
-        $cooperations = Cooperation::all();
+        // Which cooperation decided to add a measure
+        $cooperationSlug = 'duec';
+        // The id of the old measure
+        $boggedMeasureId = 464;
 
-        $data = [];
-        foreach ($cooperations as $cooperation) {
+        $cooperation = DB::table('cooperations')
+            ->where('slug', $cooperationSlug)
+            ->first();
+
+        if($cooperation instanceof \stdClass) {
+            // The measure data
+            $cooperationMeasureApplicationData = [
+                'name' => json_encode([
+                    'nl' => 'Zonnepanelen',
+                ]),
+                'info' => json_encode([
+                    'nl' => 'Zonnepanelen actie',
+                ]),
+                'costs' => json_encode([
+                    'from' => 1000,
+                    'to' => 2000,
+                ]),
+                'savings_money' => 300.00,
+                'extra' => json_encode([
+                    'icon' => 'icon-solar-panels',
+                ]),
+                'cooperation_id' => $cooperation->id,
+                'created_at' => '2021-11-02 17:06:58',
+                'updated_at' => '2021-11-02 17:06:58',
+            ];
+
             $userIds = DB::table('cooperations')
                 ->select('users.id')
                 ->leftJoin('users', 'users.cooperation_id', '=', 'cooperations.id')
-                ->where('cooperations.slug', $cooperation->slug)
+                ->where('cooperations.slug', $cooperationSlug)
                 ->pluck('id')->toArray();
 
+            $cooperationMeasureApplication = DB::table('cooperation_measure_applications')
+                ->where('cooperation_id', $cooperation->id)
+                ->where('name->nl', 'Zonnepanelen')
+                ->first();
+
+            if (! $cooperationMeasureApplication instanceof \stdClass) {
+                $cooperationMeasureApplication = DB::table('cooperation_measure_applications')
+                    ->insert($cooperationMeasureApplicationData);
+            }
+
+            // Do this to make it atomic. If we check these, even if the new ID equals the bogged ID, it will
+            // be in this set, so it won't update anything
             $cooperationMeasureIds = DB::table('cooperation_measure_applications')
                 ->where('cooperation_id', $cooperation->id)
                 ->pluck('id')->toArray();
 
-            $data[$cooperation->slug] = DB::table('user_action_plan_advices')
+            DB::table('user_action_plan_advices')
                 ->whereIn('user_id', $userIds)
                 ->whereNotIn('user_action_plan_advisable_id', $cooperationMeasureIds)
-                ->where('user_action_plan_advisable_Type', CooperationMeasureApplication::class)
-                ->pluck('user_action_plan_advisable_id', 'id')->toArray();
+                ->where('user_action_plan_advisable_id', $boggedMeasureId)
+                ->where('user_action_plan_advisable_type', CooperationMeasureApplication::class)
+                ->update([
+                    'user_action_plan_advisable_id' => $cooperationMeasureApplication->id,
+                ]);
         }
-        dd($data); // TODO: Decide how to handle this
 
         return 0;
     }

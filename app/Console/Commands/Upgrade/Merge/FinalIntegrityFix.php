@@ -51,7 +51,16 @@ class FinalIntegrityFix extends Command
      */
     public function handle()
     {
-        // Map all OLD steps to new steps
+        // QUERY To get all buildings that have an answer but no completed step
+
+//        SELECT tqa.building_id FROM tool_question_answers AS tqa
+//            WHERE tqa.tool_question_id = 1
+//                AND tqa.building_id NOT IN (
+//                    SELECT tqa.building_id FROM tool_question_answers AS tqa
+//                LEFT JOIN completed_steps AS cs ON cs.building_id = tqa.building_id
+//                WHERE tqa.tool_question_id = 1
+//                AND cs.step_id NOT IN (SELECT id FROM steps WHERE id != 16)
+//            )
 
         $stepMap = [
             'building-characteristics' => 'building-data',
@@ -60,95 +69,45 @@ class FinalIntegrityFix extends Command
             'interest' => 'living-requirements',
         ];
 
-        $this->info('Starting old mapping (general data to quickscan)');
-        $bar = $this->output->createProgressBar(4);
-        $bar->start();
+        foreach ($stepMap as $short) {
+            $stepIds = DB::table('steps')
+                ->where('short', $short)
+                ->pluck('id')->toArray();
 
-        foreach ($stepMap as $fromStepShort => $toStepShort) {
-            $fromStep = DB::table('steps')->where('short', '=', $fromStepShort)->first();
-            $toStep = DB::table('steps')->where('short', '=', $toStepShort)->first();
+            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-            // Map completed steps to new steps
-            DB::table('completed_steps')->where('step_id', '=', $fromStep->id)
-                ->update([
-                    'step_id' => $toStep->id,
-                    'updated_at' => now(),
-                ]);
+            // Re-use step map for the values
+            $buildingIdsFromCompletedSteps = DB::table('completed_steps')
+                ->distinct()
+                ->whereIn('step_id', $stepIds)
+                ->where('input_source_id', $masterInputSource->id)
+                ->pluck('building_id')->toArray();
 
-            // Get the now swapped steps
-            $completedSteps = DB::table('completed_steps')
-                ->where('step_id', '=', $toStep->id)
-                ->cursor();
-
-            // Get all sub steps for this step
-            $subStepsForStep = DB::table('sub_steps')
-                ->where('step_id', '=', $toStep->id)
+            $buildings = Building::whereNotIn('id', $buildingIdsFromCompletedSteps)
                 ->get();
 
-            foreach ($completedSteps as $completedStep) {
-                if (!Building::where('id', '=', $completedStep->building_id)->exists()) {
+            $bar = $this->output->createProgressBar($buildings->count());
+            $bar->start();
+
+            $subSteps = SubStep::all();
+            /** @var Building $building */
+            foreach ($buildings as $building) {
+                if (! $building instanceof Building){
                     continue;
                 }
-                // Set each sub step as complete
-                foreach ($subStepsForStep as $subStep) {
-                    DB::table('completed_sub_steps')->updateOrInsert([
-                        'sub_step_id' => $subStep->id,
-                        'building_id' => $completedStep->building_id,
-                        'input_source_id' => $completedStep->input_source_id,
-                    ], [
-                        'updated_at' => now(),
-                    ]);
-                }
-            }
-            $bar->advance();
-        }
-        $bar->finish();
-        $this->output->newLine();
-
-
-        $stepIds = DB::table('steps')
-            ->whereIn('short', $stepMap)
-            ->pluck('id')->toArray();
-
-        // Re-use step map for the values
-        $buildingIdsFromCompletedSteps = DB::table('completed_steps')
-            ->distinct()
-            ->whereIn('step_id', $stepIds)
-            ->pluck('building_id')->toArray();
-
-        $buildings = Building::whereNotIn('id', $buildingIdsFromCompletedSteps)
-            ->get();
-
-        $this->info('Starting new mapping (valid answers to (sub) steps)');
-        $bar = $this->output->createProgressBar($buildings->count());
-        $bar->start();
-
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-
-        $inputSources = InputSource::findByShorts([
-            InputSource::RESIDENT_SHORT,
-            InputSource::COACH_SHORT,
-        ]);
-        $subSteps = SubStep::all();
-        /** @var Building $building */
-        foreach ($buildings as $building) {
-            if (!$building instanceof Building){
-                continue;
-            }
-            foreach ($inputSources as $inputSource) {
                 foreach ($subSteps as $subStep) {
                     $completeStep = true;
                     foreach ($subStep->toolQuestions as $toolQuestion) {
                         // If a question is for a specific input source, we won't be able to get an answer for it
                         if (is_null($toolQuestion->for_specific_input_source)
-                            || $inputSource->id === $toolQuestion->for_specific_input_source
+                            || $masterInputSource->id === $toolQuestion->for_specific_input_source
                         ) {
                             // A non-required question could be not answered but that shouldn't matter anyway
                             if (in_array('required', $toolQuestion->validation)
                                 || Str::arrContains($toolQuestion->validation, 'required_if', true)
                             ) {
                                 // Check the actual answer. If one answer is not filled, we can't complete it.
-                                if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
+                                if (is_null($building->getAnswer($masterInputSource, $toolQuestion))) {
                                     // Conditions could not be met, time to check...
                                     if (! empty($toolQuestion->conditions)) {
                                         $answers = [];
@@ -157,7 +116,7 @@ class FinalIntegrityFix extends Command
                                             foreach ($conditionSet as $condition) {
                                                 $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
                                                 if ($otherSubStepToolQuestion instanceof ToolQuestion) {
-                                                    $otherSubStepAnswer = $building->getAnswer($inputSource,
+                                                    $otherSubStepAnswer = $building->getAnswer($masterInputSource,
                                                         $otherSubStepToolQuestion);
 
                                                     $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
@@ -184,12 +143,7 @@ class FinalIntegrityFix extends Command
                     }
 
                     if ($completeStep) {
-                        // insert he completed sub step
-                        $subStepCreated = DB::table('completed_sub_steps')->insert([
-                            'sub_step_id' => $subStep->id,
-                            'building_id' => $building->id,
-                            'input_source_id' => $inputSource->id
-                        ]);
+                        $created = false;
 
                         $masterStep = DB::table('completed_sub_steps')
                             ->where('sub_step_id', $subStep->id)
@@ -198,29 +152,31 @@ class FinalIntegrityFix extends Command
                             ->first();
 
                         if (! $masterStep instanceof \stdClass) {
-                            DB::table('completed_sub_steps')->insert([
+                            $created = DB::table('completed_sub_steps')->insert([
                                 'sub_step_id' => $subStep->id,
                                 'building_id' => $building->id,
                                 'input_source_id' => $masterInputSource->id
                             ]);
                         }
 
-                        if ($subStepCreated) {
+                        if ($created) {
                             // hydrate the model, this way we can use the observer code we actually need.
                             $completeSubStep = CompletedSubStep::hydrate([[
                                 'sub_step_id' => $subStep->id,
                                 'building_id' => $building->id,
-                                'input_source_id' => $inputSource->id
+                                'input_source_id' => $masterInputSource->id
                             ]])->first();
                             $this->completedSubStepObserverSaved($completeSubStep);
                         }
                     }
                 }
+                $bar->advance();
             }
-            $bar->advance();
+            $bar->finish();
+            $this->output->newLine();
         }
-        $bar->finish();
-        $this->output->newLine();
+
+
 
         return 0;
     }

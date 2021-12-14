@@ -162,7 +162,7 @@ class Building extends Model
             // We still loop though, to ensure we get human-readable answers
             foreach ($values as $inputSourceId => $value) {
 
-                $answer = $questionValues->isNotEmpty() && ! is_null($value) ? $questionValues[$value] : $value;
+                $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
 
                 $answers[$inputSources->where('id', $inputSourceId)->first()->short][] = [
                     'answer' => $answer,

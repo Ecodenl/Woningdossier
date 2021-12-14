@@ -113,7 +113,7 @@ class ToolQuestion extends Model
 
                         return $questionValue;
                     } else {
-                        (new DiscordNotifier())->notify("<@!184734207413583872>, <@!363259746859483136>: {$toolQuestionValuable->id} has a non-existing valuable!");
+                        (new DiscordNotifier())->notify("<@!184734207413583872>, <@!363259746859483136>: ToolQuestionValuable {$toolQuestionValuable->id} has a non-existing valuable!");
                     }
 
                     return null;

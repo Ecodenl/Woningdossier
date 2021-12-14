@@ -325,16 +325,19 @@ class UserActionPlanAdviceService
             // pitched roof
             if (isset($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']) && $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned']) {
                 $energySavingRoofInsulationPitchedReplaceTilesYear = $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned_year'];
-                $maintenanceReplaceTilesYear = $maintenanceForRoofInsulation['replace-tiles']['planned_year'];
-                if (!$maintenanceForRoofInsulation['replace-tiles']['planned']) {
-                    // set warning
-                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
-                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
-                    // both were planned, so check whether the planned year is the same
-                } elseif ($energySavingRoofInsulationPitchedReplaceTilesYear !== $maintenanceReplaceTilesYear) {
-                    // set warning
-                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
-                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
+                if (isset($maintenanceForRoofInsulation['replace-tiles'])) {
+
+                    $maintenanceReplaceTilesYear = $maintenanceForRoofInsulation['replace-tiles']['planned_year'];
+                    if (!$maintenanceForRoofInsulation['replace-tiles']['planned']) {
+                        // set warning
+                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
+                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
+                        // both were planned, so check whether the planned year is the same
+                    } elseif ($energySavingRoofInsulationPitchedReplaceTilesYear !== $maintenanceReplaceTilesYear) {
+                        // set warning
+                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
+                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
+                    }
                 }
             }
         }
@@ -397,7 +400,7 @@ class UserActionPlanAdviceService
                 $shorts = ['replace-tiles', 'replace-roof-insulation'];
 
                 // Logic is simple for these 2 exceptions. If it's within 5 years, then we _do_ show it
-                if (in_array($advisable->short, $shorts) && ! is_null($userActionPlanAdvice->year)) {
+                if (in_array($advisable->short, $shorts) && !is_null($userActionPlanAdvice->year)) {
                     $visible = $userActionPlanAdvice->year - now()->format('Y') <= 5;
                 }
             }

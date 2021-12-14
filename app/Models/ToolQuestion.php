@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\DiscordNotifier;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -111,6 +112,8 @@ class ToolQuestion extends Model
                         $questionValue['value'] = $valuable->id;
 
                         return $questionValue;
+                    } else {
+                        (new DiscordNotifier())->notify("<@!184734207413583872>, <@!363259746859483136>: {$toolQuestionValuable->id} has a non-existing valuable!");
                     }
 
                     return null;

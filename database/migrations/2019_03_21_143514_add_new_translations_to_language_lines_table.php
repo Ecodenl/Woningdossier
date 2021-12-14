@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 
 class AddNewTranslationsToLanguageLinesTable extends Migration
 {
+    // TODO: Should this stay? If so, move to a seeder
+
     /**
      * Run the migrations.
      *

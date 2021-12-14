@@ -2,6 +2,7 @@
 
 return
 [
+    // TODO: Should this go or be converted into valid data?
     'building-detail' => [
             'title' => [
                     'help' => '03c7eef0-919f-464d-bbed-83a8af2f948e',

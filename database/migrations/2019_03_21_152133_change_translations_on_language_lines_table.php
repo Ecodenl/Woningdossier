@@ -11,6 +11,8 @@ class ChangeTranslationsOnLanguageLinesTable extends Migration
      */
     public function up()
     {
+        // TODO: Should this stay? If so, move to a seeder
+
         // no fancy arrays..
         $step = DB::table('steps')->where('slug', 'insulated-glazing')->first();
         if ($step instanceof stdClass) {

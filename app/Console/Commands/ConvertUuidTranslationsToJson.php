@@ -12,6 +12,8 @@ use Illuminate\Support\Str;
 
 class ConvertUuidTranslationsToJson extends Command
 {
+    // TODO: Should this stay? If so, this should be a seeder
+
     /**
      * The name and signature of the console command.
      *

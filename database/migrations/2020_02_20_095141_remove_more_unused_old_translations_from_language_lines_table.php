@@ -11,6 +11,8 @@ class RemoveMoreUnusedOldTranslationsFromLanguageLinesTable extends Migration
      */
     public function up()
     {
+        // TODO: Should this go? We have the LegacyCleanup/DeleteLanguageLines now
+
         DB::table('language_lines')
             ->where('group', 'general')
             ->where('key', 'costs.indicative-costs-insulation.title')

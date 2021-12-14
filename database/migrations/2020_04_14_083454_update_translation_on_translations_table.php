@@ -11,6 +11,8 @@ class UpdateTranslationOnTranslationsTable extends Migration
      */
     public function up()
     {
+        // TODO: Should this stay? If so, move to a seeder
+
         $step = DB::table('steps')->where('short', 'ventilation')->first();
 
         if ($step instanceof stdClass) {

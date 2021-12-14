@@ -11,6 +11,8 @@ class DeleteOldMailTranslationsOnLanguageLinesTable extends Migration
      */
     public function up()
     {
+        // TODO: Should this go? We have the LegacyCleanup/DeleteLanguageLines now
+
         $groupsToDelete = [
             'cooperation/mail/account-associated-with-cooperation',
             'cooperation/mail/account-created',

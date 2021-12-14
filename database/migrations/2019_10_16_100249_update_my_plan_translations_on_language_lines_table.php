@@ -11,6 +11,8 @@ class UpdateMyPlanTranslationsOnLanguageLinesTable extends Migration
      */
     public function up()
     {
+        // TODO: Should this stay? If so, move to a seeder
+
         $keysToDelete = [
             'coach-comments.title',
             'description.help',

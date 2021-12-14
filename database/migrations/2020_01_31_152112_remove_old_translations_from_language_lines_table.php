@@ -11,6 +11,8 @@ class RemoveOldTranslationsFromLanguageLinesTable extends Migration
      */
     public function up()
     {
+        // TODO: Should this go? We have the LegacyCleanup/DeleteLanguageLines now
+
         // delete the old general translation to keep it a bit clean
         DB::table('language_lines')
             ->where('group', 'general')

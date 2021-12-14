@@ -9,6 +9,8 @@ use Illuminate\Console\Command;
 
 class LoadUuidTranslationsToLanguageLines extends Command
 {
+    // TODO: Should this stay? If so, this should be a seeder
+
     /**
      * The name and signature of the console command.
      *

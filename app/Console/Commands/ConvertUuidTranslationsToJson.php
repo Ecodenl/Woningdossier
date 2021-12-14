@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 
 class ConvertUuidTranslationsToJson extends Command
 {
-    // TODO: Should this stay? If so, this should be a seeder
+    // After upgrade, is this still required?
 
     /**
      * The name and signature of the console command.

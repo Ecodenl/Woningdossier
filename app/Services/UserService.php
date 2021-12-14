@@ -271,10 +271,12 @@ class UserService
         $building->toolQuestionAnswers()->withoutGlobalScopes()->delete();
         // remove the user itself.
         // if the account has no users anymore then we delete the account itself too.
-        if (0 == User::withoutGlobalScopes()->where('account_id',
-                $accountId)->count()) {
+        if (0 == User::withoutGlobalScopes()->where('account_id', $accountId)->count()) {
             // bye !
-            Account::find($accountId)->delete();
+            $account = Account::find($accountId);
+            if ($account instanceof Account) {
+                $account->delete();
+            }
         }
     }
 

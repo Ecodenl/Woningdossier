@@ -325,6 +325,7 @@ class CustomChanges extends Component
                 ->first();
 
             if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
+                $costs = $userActionPlanAdvice->costs;
 
                 $this->customMeasureApplicationsFormData[$index]['costs'] = [
                     'from' => NumberFormatter::format($costs['from'] ?? '', 1),

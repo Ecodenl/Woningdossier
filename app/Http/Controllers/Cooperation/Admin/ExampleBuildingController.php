@@ -263,13 +263,12 @@ class ExampleBuildingController extends Controller
         $exampleBuildingContents = $exampleBuilding->contents;
         $translations = $exampleBuilding->getTranslations('name');
         $names = [];
-        foreach ($translations as $translation) {
-            $names[$translation->language] = $translation->translation.' (copy)';
+        foreach ($translations as $locale => $translation) {
+            $names[$locale] = $translation . ' (copy)';
         }
 
         $newEB = new ExampleBuilding($exampleBuilding->toArray());
-        $name = $newEB->name = $names;
-        $newEB->name = $name;
+        $newEB->name = $names;
         $newEB->save();
 
         /** @var ExampleBuildingContent $exampleBuildingContent */

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\DiscordNotifier;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -100,16 +101,25 @@ class ToolQuestion extends Model
                 ->map(function (ToolQuestionValuable $toolQuestionValuable) {
                     // so now get the actual morphed model.
                     $valuable = $toolQuestionValuable->tool_question_valuable;
+                    if ($valuable instanceof Model) {
 
-                    // these will also be available in the frontend, to the user.
-                    // be careful choosing what you allow.
-                    $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short', 'building_type_id', 'cooperation_id']);
-                    $questionValue['extra'] = $toolQuestionValuable->extra;
-                    // the humane readable name is either set in the name or value column.
-                    $questionValue['name'] = $valuable->name ?? $valuable->value;
-                    $questionValue['value'] = $valuable->id;
+                        // these will also be available in the frontend, to the user.
+                        // be careful choosing what you allow.
+                        $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short', 'building_type_id', 'cooperation_id']);
+                        $questionValue['extra'] = $toolQuestionValuable->extra;
+                        // the humane readable name is either set in the name or value column.
+                        $questionValue['name'] = $valuable->name ?? $valuable->value;
+                        $questionValue['value'] = $valuable->id;
 
-                    return $questionValue;
+                        return $questionValue;
+                    } else {
+                        (new DiscordNotifier())->notify("<@!184734207413583872>, <@!363259746859483136>: ToolQuestionValuable {$toolQuestionValuable->id} has a non-existing valuable!");
+                    }
+
+                    return null;
+                })
+                ->filter(function ($value) {
+                    return ! is_null($value);
                 });
         }
         return $this->toolQuestionCustomValues()

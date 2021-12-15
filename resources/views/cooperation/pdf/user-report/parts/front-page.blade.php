@@ -17,7 +17,7 @@
 
         <div style="text-align: center;">
             <img style="display: block; margin-top: 250px; width: 250px"
-                 src="{{ public_path($cooperationLogo->getPath()) }}">
+                 src="{{ asset($cooperationLogo->getPath()) }}">
         </div>
     @else
         <div id="img-front-page">

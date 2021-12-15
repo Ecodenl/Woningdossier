@@ -8,7 +8,9 @@
         <h2>{{$userCooperation->name}}</h2>
         <h2>{{date('d-m-Y')}}</h2>
         @php($coachNames = implode(', ', $connectedCoachNames))
-        <h2>{{trans_choice('pdf/user-report.front-page.intro.connected-coaches', count($connectedCoachNames)).' '.$coachNames}}</h2>
+        @if(!empty($coachNames))
+            <h2>{{trans_choice('pdf/user-report.front-page.intro.connected-coaches', count($connectedCoachNames)).' '.$coachNames}}</h2>
+        @endif
     </div>
 
 

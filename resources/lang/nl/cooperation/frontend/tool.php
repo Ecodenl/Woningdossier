@@ -66,7 +66,7 @@ return [
             'coach' => 'Opmerkingen coach',
         ],
         'file-is-processing' => 'Rapportage wordt gemaakt..',
-        'download-report' => 'Download bestaand rapportage',
+        'download-report' => 'Download bestaande rapportage',
         'create-report' => 'Maak rapportage',
         'loading' => 'Woonplan wordt berekend...',
     ],

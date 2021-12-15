@@ -77,4 +77,19 @@
         'title' => __('pdf/user-report.general-data.comment'),
         'comments' => $commentsByStep[$summaryStep->short]['-'],
     ])
+@else
+    @foreach($commentsByStep[$summaryStep->short] as $stepCommentShort => $stepComment)
+        @php
+            // this is some custom code to retrieve the correct translation for the given comment.
+            $toolQuestionShort = "residential-status-{$stepCommentShort}-comment-service";
+            if (isset($stepComment["Bewoner"])) {
+                $toolQuestionShort = "residential-status-{$stepCommentShort}-comment-resident";
+            }
+            $toolQuestion = App\Models\ToolQuestion::findByShort($toolQuestionShort);
+        @endphp
+        @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+              'title' => $toolQuestion->name,
+            'comments' => $stepComment,
+       ])
+    @endforeach
 @endif

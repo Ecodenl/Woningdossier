@@ -45,11 +45,7 @@ class StepHelper
      * @param bool $withEmptyComments
      * @param null $specificInputSource
      */
-    public static function getAllCommentsByStep(
-        Building $building,
-        $withEmptyComments = false,
-        $specificInputSource = null
-    ): array {
+    public static function getAllCommentsByStep(Building $building, $withEmptyComments = false, $specificInputSource = null): array {
         $commentsByStep = [];
 
         if (! $building instanceof Building) {
@@ -69,17 +65,7 @@ class StepHelper
             // General data is now hidden, so we must check if the step is set
             // If everything is mapped correctly, it will be set under the quick scan steps, but just in case...
             if (! is_null($stepComment->step)) {
-                if ($stepComment->step->isChild()) {
-                    if (is_null($stepComment->short)) {
-                        $commentsByStep[$stepComment->step->parentStep->short][$stepComment->step->short][$stepComment->inputSource->name] = $stepComment->comment;
-                    } else {
-                        $commentsByStep[$stepComment->step->parentStep->short][$stepComment->step->short][$stepComment->inputSource->name][$stepComment->short] = $stepComment->comment;
-                    }
-                } else {
-                    if (is_null($stepComment->short)) {
-                        $commentsByStep[$stepComment->step->short]['-'][$stepComment->inputSource->name] = $stepComment->comment;
-                    }
-                }
+                $commentsByStep[$stepComment->step->short][$stepComment->short ?? '-'][$stepComment->inputSource->name] = $stepComment->comment;
             }
         }
 

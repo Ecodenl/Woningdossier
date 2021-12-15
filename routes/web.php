@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
 
 /** @noinspection PhpParamsInspection */
@@ -445,11 +446,21 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 });
 
 Route::get('/', function () {
-    if (stristr(\Request::url(), '://www.')) {
+    $url = Request::url();
+    if (stristr($url, '://www.')) {
         // The user has prefixed the subdomain with a www subdomain.
         // Remove the www part and redirect to that.
-        return redirect(str_replace('://www.', '://', Request::url()));
+        return redirect(str_replace('://www.', '://', $url));
     }
 
     return view('welcome');
 })->name('index');
+
+Route::fallback(function () {
+    $url = Request::url();
+    if (stristr($url, '://www.')) {
+        // The user has prefixed the subdomain with a www subdomain.
+        // Remove the www part and redirect to that.
+        return redirect(str_replace('://www.', '://', $url));
+    }
+});

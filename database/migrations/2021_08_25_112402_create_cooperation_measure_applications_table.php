@@ -27,6 +27,7 @@ class CreateCooperationMeasureApplicationsTable extends Migration
             $table->unsignedInteger('cooperation_id');
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

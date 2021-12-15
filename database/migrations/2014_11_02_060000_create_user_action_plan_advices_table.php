@@ -33,7 +33,7 @@ class CreateUserActionPlanAdvicesTable extends Migration
             $table->boolean('planned')->default(true);
             $table->integer('planned_year')->nullable()->default(null);
 
-            $table->integer('step_id')->unsigned();
+            $table->unsignedInteger('step_id')->nullable()->default(null);
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('cascade');
 
             $table->timestamps();

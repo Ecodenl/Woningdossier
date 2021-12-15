@@ -446,21 +446,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 });
 
 Route::get('/', function () {
-    $url = Request::url();
-    if (stristr($url, '://www.')) {
+    if (stristr(\Request::url(), '://www.')) {
         // The user has prefixed the subdomain with a www subdomain.
         // Remove the www part and redirect to that.
-        return redirect(str_replace('://www.', '://', $url));
+        return redirect(str_replace('://www.', '://', Request::url()));
     }
 
     return view('welcome');
 })->name('index');
-
-Route::fallback(function () {
-    $url = Request::url();
-    if (stristr($url, '://www.')) {
-        // The user has prefixed the subdomain with a www subdomain.
-        // Remove the www part and redirect to that.
-        return redirect(str_replace('://www.', '://', $url));
-    }
-});

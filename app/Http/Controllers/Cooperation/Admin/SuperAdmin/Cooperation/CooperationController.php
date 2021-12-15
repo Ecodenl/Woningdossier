@@ -59,7 +59,6 @@ class CooperationController extends Controller
     public function destroy(Cooperation $cooperation, Cooperation $cooperationToDestroy)
     {
         $this->authorize('delete', $cooperationToDestroy);
-        $cooperationToDestroy->steps()->detach();
 
         $exampleBuildings = $cooperationToDestroy->exampleBuildings;
 

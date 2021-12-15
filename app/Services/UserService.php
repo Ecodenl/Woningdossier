@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\CompletedQuestionnaire;
+use App\Models\Considerable;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\User;
@@ -31,7 +32,7 @@ class UserService
                         'buildingFeatures' => function ($query) use ($inputSource) {
                             $query->forInputSource($inputSource)
                                 ->with([
-                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                    'roofType', 'energyLabel', 'damagedPaintwork', 'plasteredSurface',
                                     'contaminatedWallJoints', 'wallJoints',
                                 ]);
                         },
@@ -72,10 +73,12 @@ class UserService
      */
     public static function resetUser(User $user, InputSource $inputSource)
     {
+        Log::debug(__METHOD__ . " " . $user->id . " for input source " . $inputSource->short);
         // only remove the example building id from the building
         $building = $user->building;
-        $building->example_building_id = null;
-        $building->save();
+        $building->buildingFeatures()->forInputSource($inputSource)->update([
+            'example_building_id' => null,
+        ]);
 
         // delete the services from a building
         $building->buildingServices()->forInputSource($inputSource)->delete();
@@ -95,21 +98,45 @@ class UserService
         $building->currentPaintworkStatus()->forInputSource($inputSource)->delete();
         // remove all progress made in the tool
         $building->completedSteps()->forInputSource($inputSource)->delete();
+        $building->completedSubSteps()->forInputSource($inputSource)->delete();
         // remove the step comments
         $building->stepComments()->forInputSource($inputSource)->delete();
         // remove the answers on the custom questionnaires
         $building->questionAnswers()->forInputSource($inputSource)->delete();
+        // remove Custom Measure Applications the user has made
+        $building->customMeasureApplications()->forInputSource($inputSource)->delete();
 
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->forInputSource($inputSource)->delete();
-        // remove the user interests
-        $user->userInterests()->forInputSource($inputSource)->delete();
         // remove the energy habits from a user
         $user->energyHabit()->forInputSource($inputSource)->delete();
-        // remove the motivations from a user
-        $user->motivations()->delete();
+        // remove the considerables for the user
+        Considerable::forUser($user)->forInputSource($inputSource)->delete();
+        // remove all the tool question anders for the building
+        $building->toolQuestionAnswers()->forInputSource($inputSource)->delete();
         // remove the progress of the completed questionnaires
         CompletedQuestionnaire::forMe($user)->forInputSource($inputSource)->delete();
+
+        if (!in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
+            // re-query pico
+            $picoAddressData = PicoHelper::getAddressData(
+                $building->postal_code,
+                $building->number
+            );
+
+            if ( ! empty(($picoAddressData['id'] ?? null))) {
+                $building->update(['bag_addressid' => $picoAddressData['id']]);
+            }
+
+            $features = new BuildingFeature([
+                'surface'         => $picoAddressData['surface'] ?? null,
+                'build_year'      => $picoAddressData['build_year'] ?? null,
+                'input_source_id' => $inputSource->id,
+            ]);
+            $features->building()->associate(
+                $building
+            )->save();
+        }
     }
 
     /**
@@ -169,8 +196,8 @@ class UserService
         $data['extension'] = $data['house_number_extension'] ?? null;
 
         $features = new BuildingFeature([
-            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
-            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
+            'surface' => $picoAddressData['surface'] ?? null,
+            'build_year' => $picoAddressData['build_year'] ?? null,
         ]);
 
         // create the building for the user
@@ -204,10 +231,7 @@ class UserService
      *
      * @throws \Exception
      */
-    public static function deleteUser(
-        User $user,
-        $shouldForceDeleteBuilding = false
-    )
+    public static function deleteUser(User $user, $shouldForceDeleteBuilding = false)
     {
         $accountId = $user->account_id;
         $building = $user->building;
@@ -224,26 +248,35 @@ class UserService
 
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->withoutGlobalScopes()->delete();
+
         // remove the user interests
+        // we keep the user interests table until we are 100% sure it can be removed
+        // but because of gdpr we have to keep this until the table is removed
         $user->userInterests()->withoutGlobalScopes()->delete();
+        // we cant use the relationship because we just want to delete everything
+        Considerable::forUser($user)->allInputSources()->delete();
         // remove the energy habits from a user
         $user->energyHabit()->withoutGlobalScopes()->delete();
-        // remove the motivations from a user
-        $user->motivations()->withoutGlobalScopes()->delete();
         // remove the notification settings
         $user->notificationSettings()->withoutGlobalScopes()->delete();
         // first detach the roles from the user
         $user->roles()->detach($user->roles);
+        // remove the user his motivations
+        $user->motivations()->delete();
 
         // remove the user itself.
         $user->delete();
 
+
+        $building->toolQuestionAnswers()->withoutGlobalScopes()->delete();
         // remove the user itself.
         // if the account has no users anymore then we delete the account itself too.
-        if (0 == User::withoutGlobalScopes()->where('account_id',
-                $accountId)->count()) {
+        if (0 == User::withoutGlobalScopes()->where('account_id', $accountId)->count()) {
             // bye !
-            Account::find($accountId)->delete();
+            $account = Account::find($accountId);
+            if ($account instanceof Account) {
+                $account->delete();
+            }
         }
     }
 

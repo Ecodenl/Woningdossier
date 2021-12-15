@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="56px" height="100px" viewBox="0 0 56 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Gas</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-151.000000, -2287.000000)" fill="#2CA982" fill-rule="nonzero" stroke="#414C57" stroke-width="3">
+            <g id="Gas" transform="translate(153.000000, 2291.000000)">
+                <path d="M51.9333009,67.8543046 C51.9333009,82.1721854 40.1864828,94 25.9666504,94 C11.7468181,94 0,82.1721854 0,67.8543046 C0.618253582,62.2516556 2.47301433,56.6490066 5.56428224,52.2913907 C5.56428224,52.2913907 12.9833252,63.4966887 21.0206218,62.8741722 C21.0206218,62.8741722 1.85476075,20.5430464 26.584904,0 C25.9666504,15.5629139 31.5309327,30.5033113 42.0412436,42.3311258 C48.842033,47.9337748 52.5515545,57.8940397 51.9333009,67.8543046" id="gas"></path>
+            </g>
+        </g>
+    </g>
+</svg>

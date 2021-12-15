@@ -11,8 +11,10 @@ use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class ExampleBuildingController extends Controller
 {
@@ -74,7 +76,7 @@ class ExampleBuildingController extends Controller
 
         $translations = $request->input('name', []);
         $translations = Arr::only($translations, config('hoomdossier.supported_locales'));
-        $exampleBuilding->createTranslations('name', $translations);
+        $exampleBuilding->name = $translations;
 
         $exampleBuilding->buildingType()->associate($buildingType);
         if (! is_null($cooperation)) {
@@ -143,7 +145,7 @@ class ExampleBuildingController extends Controller
             return false === stristr($key, 'user_interests');
         };
 
-        foreach (Arr::except($contentStructure, 'general-data') as $stepShort => $structureWithinStep) {
+        foreach (Arr::except($contentStructure, ['general-data', 'insulated-glazing', 'ventilation',]) as $stepShort => $structureWithinStep) {
             $contentStructure[$stepShort]['-'] = array_filter($structureWithinStep['-'], $filterOutUserInterests, ARRAY_FILTER_USE_KEY);
         }
 
@@ -155,13 +157,23 @@ class ExampleBuildingController extends Controller
             $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_gas'],
             $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_electricity'],
             $contentStructure['solar-panels']['-']['user_energy_habits.amount_electricity'],
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.resident_count']
+            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.resident_count'],
+
+            $contentStructure['heater']['-']['user_energy_habits.water_comfort_id'],
+            $contentStructure['solar-panels']['-']['building_pv_panels.total_installed_power']
         );
 
         // filter out interest stuff from the interest page
         $contentStructure['general-data']['interest'] = array_filter($contentStructure['general-data']['interest'], function ($key) {
             return false === stristr($key, 'user_interest');
         }, ARRAY_FILTER_USE_KEY);
+
+        // Remove general data considerables
+        foreach (($contentStructure['general-data']['interest'] ?? []) as $interestField => $interestData) {
+            if (Str::endsWith($interestField, 'is_considering')) {
+                unset($contentStructure['general-data']['interest'][$interestField]);
+            }
+        }
 
         return $contentStructure;
     }
@@ -181,11 +193,7 @@ class ExampleBuildingController extends Controller
         $cooperation = Cooperation::find($request->get('cooperation_id'));
 
         $translations = $request->input('name', []);
-        foreach (config('hoomdossier.supported_locales') as $locale) {
-            if (isset($translations[$locale]) && ! empty($translations[$locale])) {
-                $exampleBuilding->updateTranslation('name', $translations[$locale], $locale);
-            }
-        }
+        $exampleBuilding->name = $translations;
 
         $exampleBuilding->buildingType()->associate($buildingType);
         if (! is_null($cooperation)) {
@@ -255,13 +263,12 @@ class ExampleBuildingController extends Controller
         $exampleBuildingContents = $exampleBuilding->contents;
         $translations = $exampleBuilding->getTranslations('name');
         $names = [];
-        foreach ($translations as $translation) {
-            $names[$translation->language] = $translation->translation.' (copy)';
+        foreach ($translations as $locale => $translation) {
+            $names[$locale] = $translation . ' (copy)';
         }
 
         $newEB = new ExampleBuilding($exampleBuilding->toArray());
-        $name = $newEB->createTranslations('name', $names);
-        $newEB->name = $name;
+        $newEB->name = $names;
         $newEB->save();
 
         /** @var ExampleBuildingContent $exampleBuildingContent */

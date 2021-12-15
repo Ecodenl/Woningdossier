@@ -11,5 +11,6 @@ $factory->define(\App\Models\Building::class, function (Faker $faker) {
         'country_code' => $faker->countryCode,
         'owner' => $faker->boolean,
         'primary' => $faker->boolean,
+        'user_id' => factory(\App\Models\User::class),
     ];
 });

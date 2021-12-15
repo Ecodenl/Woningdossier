@@ -5,9 +5,12 @@ namespace App\Helpers\Cooperation\Tool;
 use App\Calculations\SolarPanel;
 use App\Events\StepCleared;
 use App\Models\Building;
+use App\Models\BuildingElement;
 use App\Models\BuildingPvPanel;
+use App\Models\BuildingService;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\Service;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
@@ -31,28 +34,47 @@ class SolarPanelHelper extends ToolHelper
             ->forInputSource($this->inputSource)
             ->update($this->getValues('user_energy_habits'));
 
+        $totalSunPanelsService = Service::findByShort('total-sun-panels');
+
+        BuildingService::allInputSources()->updateOrCreate(
+            [
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
+                'service_id' => $totalSunPanelsService->id,
+            ],
+            $this->getValues("building_services.{$totalSunPanelsService->id}")
+        );
+
+
         return $this;
     }
 
     public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $step = Step::findByShort('solar-panels');
 
         $results = SolarPanel::calculate($this->building, $this->getValues());
 
-        // remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+        if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0 ) {
             $measureApplication = MeasureApplication::where('short', 'solar-panels-place-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = $results['cost_indication'];
+                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->savings_electricity = $results['yield_electricity'];
                 $actionPlanAdvice->user()->associate($this->user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
+
+                // We only want to check old advices if the updated attributes are not relevant to this measure
+                if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                }
+
                 $actionPlanAdvice->save();
             }
         }
@@ -62,24 +84,22 @@ class SolarPanelHelper extends ToolHelper
 
     public function createValues(): ToolHelper
     {
-        $buildingPvPanels = $this->building->pvPanels()->forInputSource($this->inputSource)->first();
-        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+        $buildingPvPanels = $this->building->pvPanels()->forInputSource($this->masterInputSource)->first();
+        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
 
-        $userInterestsForSolarPanels = $this
-            ->user
-            ->userInterestsForSpecificType(Step::class, Step::findByShort('solar-panels')->id, $this->inputSource)
-            ->first();
+        $step = Step::findByShort('solar-panels');
 
         $this->setValues([
             'building_pv_panels' => $buildingPvPanels instanceof BuildingPvPanel ? $buildingPvPanels->toArray() : [],
             'user_energy_habits' => [
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
             ],
-            'user_interests' => [
-                'interested_in_id' => optional($userInterestsForSolarPanels)->interested_in_id,
-                'interested_in_type' => Step::class,
-                'interest_id' => optional($userInterestsForSolarPanels)->interest_id,
+            'considerables' => [
+                $step->id => [
+                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
+                ]
             ],
+            'updated_measure_ids' => [],
         ]);
 
         return $this;

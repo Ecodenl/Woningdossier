@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class FacadeSurfacesTableSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class FacadeSurfacesTableSeeder extends Seeder
     {
         $surfaces = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Nee',
                 ],
                 'calculate_value' => 0,
@@ -24,7 +25,7 @@ class FacadeSurfacesTableSeeder extends Seeder
                 'term_years' => null,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ja, tot 10 m2',
                 ],
                 'calculate_value' => 10,
@@ -35,7 +36,7 @@ class FacadeSurfacesTableSeeder extends Seeder
                 'term_years' => 5,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ja, 10 m2 tot 25 m2',
                 ],
                 'calculate_value' => 25,
@@ -46,7 +47,7 @@ class FacadeSurfacesTableSeeder extends Seeder
                 'term_years' => 5,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ja, 25 m2 tot 50 m2',
                 ],
                 'calculate_value' => 50,
@@ -57,7 +58,7 @@ class FacadeSurfacesTableSeeder extends Seeder
                 'term_years' => 0,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ja, 50 m2 tot 80 m2',
                 ],
                 'calculate_value' => 80,
@@ -68,7 +69,7 @@ class FacadeSurfacesTableSeeder extends Seeder
                 'term_years' => 0,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ja, meer dan 80 m2',
                 ],
                 'calculate_value' => 120,
@@ -80,35 +81,12 @@ class FacadeSurfacesTableSeeder extends Seeder
             ],
         ];
 
-        $termTranslations = [];
         foreach ($surfaces as $surface) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($surface['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-            foreach ($surface['execution_term_name'] as $locale => $termName) {
-                if (! array_key_exists($termName, $termTranslations)) {
-                    $termUuid = \App\Helpers\Str::uuid();
-                    \DB::table('translations')->insert([
-                        'key' => $termUuid,
-                        'language' => $locale,
-                        'translation' => $termName,
-                    ]);
-                    $termTranslations[$termName] = $termUuid;
-                } else {
-                    $termUuid = $termTranslations[$termName];
-                }
-            }
-
-            \DB::table('facade_surfaces')->insert([
-                'name' => $uuid,
+            DB::table('facade_surfaces')->insert([
+                'name' => json_encode($surface['name']),
                 'calculate_value' => $surface['calculate_value'],
                 'order' => $surface['order'],
-                'execution_term_name' => $termUuid,
+                'execution_term_name' => json_encode($surface['execution_term_name']),
                 'term_years' => $surface['term_years'],
             ]);
         }

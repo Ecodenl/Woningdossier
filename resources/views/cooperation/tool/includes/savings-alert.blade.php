@@ -1,7 +1,9 @@
 @isset($buildingElement)
     <div id="{{$buildingElement}}-info-alert">
-        @component('cooperation.tool.components.alert', ['type' => 'info', 'hide' => true])
-            {{\App\Helpers\Translation::translate('general.need-advice-from-specialist-alert')}}
+        @component('cooperation.frontend.layouts.parts.alert', [
+            'color' => 'blue-800', 'dismissible' => false, 'display' => false
+        ])
+            @lang('general.need-advice-from-specialist-alert')
         @endcomponent
     </div>
 @endisset

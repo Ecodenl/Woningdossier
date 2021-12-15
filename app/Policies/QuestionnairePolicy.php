@@ -24,20 +24,6 @@ class QuestionnairePolicy
     }
 
     /**
-     * Check if the user is permitted to edit the questionnaire.
-     *
-     * @return bool
-     */
-    public function edit(Account $account, Questionnaire $questionnaire)
-    {
-        // get the current cooperation
-        $currentCooperation = HoomdossierSession::getCooperation(true);
-
-        // check if the cooperation from the requested questionnaire is the same as the cooperation from the authenticated user
-        return $questionnaire->cooperation->slug == $currentCooperation->slug;
-    }
-
-    /**
      * Check if the user is permitted to set the active status of a questionnaire.
      *
      * @return bool
@@ -45,7 +31,7 @@ class QuestionnairePolicy
     public function setActiveStatus(Account $account, Questionnaire $questionnaire)
     {
         // same logic (for now)
-        return $this->edit($account, $questionnaire);
+        return $this->update($account, $questionnaire);
     }
 
     /**
@@ -53,7 +39,7 @@ class QuestionnairePolicy
      *
      * @return bool
      */
-    public function store(Account $account)
+    public function create(Account $account)
     {
         // if the user has the right roles
         return $account->user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
@@ -61,7 +47,11 @@ class QuestionnairePolicy
 
     public function update(Account $account, Questionnaire $questionnaire)
     {
-        return $this->edit($account, $questionnaire);
+        // get the current cooperation
+        $currentCooperation = HoomdossierSession::getCooperation(true);
+
+        // check if the cooperation from the requested questionnaire is the same as the cooperation from the authenticated user
+        return $questionnaire->cooperation->slug == $currentCooperation->slug;
     }
 
     public function delete(Account $account, Questionnaire $questionnaire)

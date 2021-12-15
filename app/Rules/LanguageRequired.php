@@ -8,16 +8,20 @@ class LanguageRequired implements Rule
 {
     protected string $requiredLocale = '';
 
+    protected bool $required = true;
+
     protected string $attribute = '';
 
     /**
      * Create a new rule instance.
      *
      * @param string $requiredLocale
+     * @param string $required
      */
-    public function __construct($requiredLocale = 'nl')
+    public function __construct($requiredLocale = 'nl', $required = true)
     {
         $this->requiredLocale = $requiredLocale;
+        $this->required = $required;
     }
 
     /**
@@ -37,7 +41,8 @@ class LanguageRequired implements Rule
             return true;
         }
 
-        return false;
+        // If it doesn't pass we will still pass it if it is not required
+        return ! $this->required;
     }
 
     /**

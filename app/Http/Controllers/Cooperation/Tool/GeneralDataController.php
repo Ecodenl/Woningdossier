@@ -12,10 +12,13 @@ class GeneralDataController extends Controller
     /**
      * Just here to redirect!
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function index()
     {
+        // Route is disabled. Die if they somehow still manage to get here
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
 
         // in short: when all the substeps are finished redirect to interest page
@@ -27,7 +30,8 @@ class GeneralDataController extends Controller
                 ->whereRaw('completed_steps.step_id = steps.id');
         })->get();
 
-        if (Step::onlySubSteps()->count() == $completedSubStepsOfGeneralData->count()) {
+
+        if (Step::onlyChildren()->count() == $completedSubStepsOfGeneralData->count()) {
             return redirect()->route('cooperation.tool.general-data.interest.index');
         }
 

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Account;
+use Illuminate\Support\Facades\Hash;
 
 class AccountService
 {
@@ -10,7 +11,7 @@ class AccountService
     {
         return Account::create([
             'email' => $email,
-            'password' => \Hash::make($password),
+            'password' => Hash::make($password),
         ]);
     }
 }

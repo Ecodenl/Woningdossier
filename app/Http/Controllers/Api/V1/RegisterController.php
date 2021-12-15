@@ -11,6 +11,7 @@ use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -86,6 +87,6 @@ class RegisterController extends Controller
         $token = app('auth.password.broker')->createToken($account);
 
         // send a mail to the user
-        \Mail::to($account->email)->sendNow(new UserCreatedEmail($cooperation, $account->user(), $token));
+        Mail::to($account->email)->send(new UserCreatedEmail($cooperation, $account->user(), $token));
     }
 }

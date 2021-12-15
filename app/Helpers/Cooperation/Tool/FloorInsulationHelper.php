@@ -14,6 +14,7 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class FloorInsulationHelper extends ToolHelper
@@ -25,12 +26,12 @@ class FloorInsulationHelper extends ToolHelper
 
         $buildingFeature = $this->building
             ->buildingFeatures()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
         $buildingElements = $this->building
             ->buildingElements()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->get();
 
         $floorInsulationElementValueId = $buildingElements->where('element_id', $floorInsulationElement->id)->first()->element_value_id ?? null;
@@ -49,10 +50,18 @@ class FloorInsulationHelper extends ToolHelper
             'insulation_surface' => $buildingFeature->insulation_surface ?? null,
         ];
 
+        $step = Step::findByShort('floor-insulation');
+
         $this->setValues([
+            'considerables' => [
+                $step->id => [
+                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
+                ],
+            ],
             'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],
             'building_elements' => $floorInsulationBuildingElements,
             'building_features' => $floorBuildingFeatures,
+            'updated_measure_ids' => [],
         ]);
 
         return $this;
@@ -96,33 +105,42 @@ class FloorInsulationHelper extends ToolHelper
 
     public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $step = Step::findByShort('floor-insulation');
 
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         $elementData = $this->getValues('element');
 
-        if (array_key_exists($floorInsulationElement->id, $elementData) && 'no' !== $this->getValues('building_elements.extra.has_crawlspace')) {
+        if ($this->considers($step) && array_key_exists($floorInsulationElement->id, $elementData) && 'no' !== $this->getValues('building_elements.extra.has_crawlspace')) {
             $floorInsulationValue = ElementValue::where('element_id', $floorInsulationElement->id)
                 ->where('id', $elementData[$floorInsulationElement->id])
                 ->first();
 
             // don't save if not applicable
-            if ($floorInsulationValue instanceof ElementValue && $floorInsulationValue->calculate_value < 5) {
+            if ($floorInsulationValue instanceof ElementValue) {
                 $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
                 $results = FloorInsulation::calculate($this->building, $this->inputSource, $userEnergyHabit, $this->getValues());
 
                 if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-                    $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')
+                    $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])
                         ->first(['measure_applications.*']);
                     if ($measureApplication instanceof MeasureApplication) {
                         $actionPlanAdvice = new UserActionPlanAdvice($results);
                         $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                        $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+                        $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
                         $actionPlanAdvice->user()->associate($this->user);
-                        $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                        $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
+
+                        // We only want to check old advices if the updated attributes are not relevant to this measure
+                        if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                            UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                                $oldAdvices);
+                        }
+
                         $actionPlanAdvice->save();
                     }
                 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="140px" height="70px" viewBox="0 0 140 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Zeer goed</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-1161.000000, -2303.000000)">
+            <g id="dakisolatie-zeer-goed" transform="translate(1161.000000, 2303.000000)">
+                <line x1="122.97" y1="61.71" x2="96.85" y2="61.71" id="Path" stroke="#2CA982" stroke-width="5"></line>
+                <line x1="95.49" y1="60.61" x2="95.49" y2="35.55" id="Path" stroke="#2CA982" stroke-width="5"></line>
+                <line x1="51.09" y1="7.04" x2="51.09" y2="25.52" id="Path" stroke="#394553" stroke-width="9"></line>
+                <line x1="17.11" y1="61.71" x2="43.25" y2="61.71" id="Path" stroke="#2CA982" stroke-width="5"></line>
+                <line x1="44.59" y1="60.61" x2="44.59" y2="35.55" id="Path" stroke="#2CA982" stroke-width="5"></line>
+                <line x1="39.88" y1="36.02" x2="69.04" y2="36.02" id="Path" stroke="#2CA982" stroke-width="5"></line>
+                <line x1="69.54" y1="36.06" x2="69.54" y2="11.09" id="Path" stroke="#2CA982" stroke-width="5"></line>
+                <line x1="99.2" y1="36.02" x2="70.19" y2="36.02" id="Path" stroke="#2CA982" stroke-width="5"></line>
+                <polygon id="Path" fill="#394553" fill-rule="nonzero" points="12.73 69.54 69.54 12.73 126.35 69.54 139.08 69.54 69.54 0 0 69.54"></polygon>
+                <polygon id="Path" fill="#394553" fill-rule="nonzero" points="38.14 69.54 69.54 38.15 100.94 69.54 105.18 69.54 69.54 33.9 33.9 69.54"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

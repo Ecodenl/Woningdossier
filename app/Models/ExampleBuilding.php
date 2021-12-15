@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\TranslatableTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -41,7 +41,11 @@ use Illuminate\Support\Collection;
  */
 class ExampleBuilding extends Model
 {
-    use TranslatableTrait;
+    use HasTranslations;
+
+    protected $translatable = [
+        'name',
+    ];
 
     /**
      * The attributes that should be cast to native types.
@@ -65,18 +69,10 @@ class ExampleBuilding extends Model
     {
         parent::boot();
 
-        self::deleting(function ($model) {
+        static::deleting(function ($model) {
             /* @var ExampleBuilding $model */
             // delete contents
             $model->contents()->delete();
-            // delete translations
-            $translations = $model->getTranslations('name');
-            if ($translations instanceof Collection) {
-                /** @var Translation $translation */
-                foreach ($translations as $translation) {
-                    $translation->delete();
-                }
-            }
             \Log::debug('Deleting done..');
         });
     }

@@ -6,8 +6,14 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
+use App\Models\CooperationMeasureApplication;
+use App\Models\CustomMeasureApplication;
+use App\Models\InputSource;
 use App\Models\Interest;
+use App\Models\MeasureApplication;
+use App\Models\User;
 use App\Models\UserActionPlanAdviceComments;
+use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\UserService;
@@ -22,7 +28,8 @@ class UserReportController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-        $inputSource = HoomdossierSession::getInputSource(true);
+        // Always retrieve from master
+        $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $headers = DumpService::getStructureForTotalDumpService(false, false);
 
@@ -37,16 +44,32 @@ class UserReportController extends Controller
 
         $buildingInsulatedGlazings = $building->currentInsulatedGlazing->load('measureApplication', 'insulatedGlazing', 'buildingHeating');
 
-        // the comments that have been made on the action plan
-        $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
-            ->with('inputSource')
-            ->get()
-            ->pluck('comment', 'inputSource.name')
-            ->toArray();
+        $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
-        $steps = $userCooperation->getActiveOrderedSteps();
+        // unfortunately we can't load the whereHasMorph
+        // so we have to do 2 separate queries and merge the collections together.
+        $userActionPlanAdvicesForCustomMeasureApplications = $user
+            ->actionPlanAdvices()
+            ->forInputSource($inputSource)
+            ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
+            ->whereHasMorph(
+                'userActionPlanAdvisable',
+                [CustomMeasureApplication::class],
+                function ($query) use ($inputSource) {
+                    $query
+                        ->forInputSource($inputSource);
+                })->with(['userActionPlanAdvisable' => fn($query) => $query->forInputSource($inputSource)])->get();
 
-        $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
+        $remainingUserActionPlanAdvices = $user
+            ->actionPlanAdvices()
+            ->forInputSource($inputSource)
+            ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
+            ->whereHasMorph(
+                'userActionPlanAdvisable',
+                [MeasureApplication::class, CooperationMeasureApplication::class]
+            )->get();
+
+        $userActionPlanAdvices = $userActionPlanAdvicesForCustomMeasureApplications->merge($remainingUserActionPlanAdvices)->sortBy('order');
 
         // we don't want the actual advices, we have to show them in a different way
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
@@ -68,15 +91,11 @@ class UserReportController extends Controller
                 $tableData = array_splice($keys, 2);
 
                 // we dont want the calculations in the report data, we need them separate
-                if (! in_array('calculation', $tableData)) {
+                if (!in_array('calculation', $tableData)) {
                     $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
                 }
             }
         }
-
-        // intersect the data, we dont need the data we wont show anyway
-        $activeOrderedStepShorts = $steps->pluck('short')->flip()->toArray();
-        $reportData = array_intersect_key($reportData, $activeOrderedStepShorts);
 
         // steps that are considered to be measures.
         $stepShorts = \DB::table('steps')
@@ -86,6 +105,12 @@ class UserReportController extends Controller
             ->pluck('short', 'id')
             ->flip()
             ->toArray();
+
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+        $connectedCoachNames = [];
+        foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
+            array_push($connectedCoachNames, User::find($coachId)->getFullName());
+        }
 
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep($building);
@@ -100,18 +125,18 @@ class UserReportController extends Controller
         $noInterest = Interest::where('calculate_value', 4)->first();
 
 //        /** @var \Barryvdh\DomPDF\PDF $pdf */
-//        $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-//            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource',
-//            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-//            'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
-//        ));
-
-//        return $pdf->stream();
+        $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
+            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
+            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
+            'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
+        ));
+//
+        return $pdf->stream();
 
         return view('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource',
+            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'connectedCoachNames', 'userEnergyHabit',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-            'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
+            'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
     }
 }

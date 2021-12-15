@@ -21,7 +21,7 @@
                         @forelse($questionnaires as $questionnaire)
                             <tr>
                                 <td>{{$questionnaire->name}}</td>
-                                <td>{{$questionnaire->step->name}}</td>
+                                <td>{{optional($questionnaire->step)->name}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.super-admin.questionnaires.show', compact('questionnaire'))}}" class="btn btn-default">@lang('cooperation/admin/super-admin/questionnaires.index.table.columns.copy')</a>
                                 </td>

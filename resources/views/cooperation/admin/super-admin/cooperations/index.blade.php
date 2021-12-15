@@ -5,7 +5,9 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.header')
-            <a href="{{route('cooperation.admin.super-admin.cooperations.create')}}" class=" btn-sm btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.create')</a>
+            <a href="{{route('cooperation.admin.super-admin.cooperations.create')}}" class=" btn-sm btn btn-primary pull-right">
+                @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.create')
+            </a>
         </div>
 
         <div class="panel-body">
@@ -48,6 +50,7 @@
                     {responsivePriority: 2, targets: 1},
                     {responsivePriority: 1, targets: 0}
                 ],
+                oSearch: {'sSearch': '{{ request()->input('search') }}'},
             });
         });
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="93px" height="30px" viewBox="0 0 93 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Geen</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-147.000000, -2189.000000)" stroke="#394553">
+            <g id="vloerisolatie-geen" transform="translate(147.000000, 2193.000000)">
+                <line x1="93" y1="24.24" x2="-7.10542736e-15" y2="24.24" id="Path" stroke-width="3"></line>
+                <line x1="93" y1="0.5" x2="-7.10542736e-15" y2="0.5" id="Path" stroke-width="9"></line>
+            </g>
+        </g>
+    </g>
+</svg>

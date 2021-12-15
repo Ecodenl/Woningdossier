@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
 use App\Traits\HasCooperationTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -40,8 +40,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Questionnaire extends Model
 {
-    use TranslatableTrait;
-    use HasCooperationTrait;
+    use HasCooperationTrait,
+        HasTranslations;
+
+    protected $translatable = [
+        'name',
+    ];
 
     protected $fillable = [
         'name', 'step_id', 'cooperation_id', 'is_active', 'order',
@@ -76,11 +80,7 @@ class Questionnaire extends Model
      */
     public function isActive(): bool
     {
-        if ($this->is_active) {
-            return true;
-        }
-
-        return false;
+        return $this->is_active;
     }
 
     public function isNotActive()

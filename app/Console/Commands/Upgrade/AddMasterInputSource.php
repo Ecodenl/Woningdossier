@@ -1,0 +1,598 @@
+<?php
+
+namespace App\Console\Commands\Upgrade;
+
+use App\Helpers\Arr;
+use App\Helpers\Str;
+use App\Models\Building;
+use App\Models\InputSource;
+use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+
+class AddMasterInputSource extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'upgrade:add-master-input-source {id?*}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Ensures each answer has a master input source';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $ids = $this->argument('id');
+        $buildings = empty($ids) ? Building::cursor() : Building::whereIn('id', $ids)->cursor();
+
+        $this->info('Starting process to add/update master input source on all/given buildings...');
+        $bar = $this->output->createProgressBar($buildings->count());
+        $bar->start();
+
+        foreach ($buildings as $building) {
+            Log::debug("Processing master input source for building {$building->id}.");
+            $this->setMasterInputSources($building);
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->output->newLine();
+        $this->info('All done.');
+    }
+
+    /**
+     * Set the master input sources for a building in all relevant tables
+     *
+     * @param  \App\Models\Building  $building
+     */
+    public function setMasterInputSources(Building $building)
+    {
+        $tables = [
+//            'building_elements' => [
+//                'where_column' => 'element_id',
+//                'answer_columns' => [
+//                    'element_value_id',
+//                    'extra',
+//                ],
+//            ],
+//            'building_services' => [
+//                'where_column' => 'service_id',
+//                'answer_columns' => [
+//                    'service_value_id',
+//                    'extra',
+//                ],
+//            ],
+//            'user_interests' => [
+//                'where_column' => 'interested_in_type',
+//                'additional_where_column' => 'interested_in_id',
+//                'answer_columns' => [
+//                    'interest_id',
+//                ],
+//            ],
+//            'building_features' => [
+//                'answer_columns' => [
+//                    'example_building_id',
+//                    'building_heating_application_id',
+//                    'building_category_id',
+//                    'building_type_id',
+//                    'roof_type_id',
+//                    'energy_label_id',
+//                    'cavity_wall',
+//                    'wall_surface',
+//                    'insulation_wall_surface',
+//                    'facade_plastered_painted',
+//                    'wall_joints',
+//                    'contaminated_wall_joints',
+//                    'element_values',
+//                    'facade_plastered_surface_id',
+//                    'facade_damaged_paintwork_id',
+//                    'surface',
+//                    'floor_surface',
+//                    'insulation_surface',
+//                    'window_surface',
+//                    'volume',
+//                    'build_year',
+//                    'building_layers',
+//                    'monument',
+//                ],
+//            ],
+//            'building_paintwork_statuses' => [
+//                'answer_columns' => [
+//                    'last_painted_year',
+//                    'paintwork_status_id',
+//                    'wood_rot_status_id',
+//                ],
+//            ],
+//            'building_ventilations' => [
+//                'answer_columns' => [
+//                    'how',
+//                    'living_situation',
+//                    'usage',
+//                ],
+//            ],
+//            'building_pv_panels' => [
+//                'answer_columns' => [
+//                    'total_installed_power',
+//                    'peak_power',
+//                    'number',
+//                    'pv_panel_orientation_id',
+//                    'angle',
+//                ],
+//            ],
+//            'building_heaters' => [
+//                'answer_columns' => [
+//                    'pv_panel_orientation_id',
+//                    'angle',
+//                ],
+//            ],
+//            'building_appliances' => [
+//                'answer_columns' => [
+//                    'appliance_id',
+//                ],
+//            ],
+//            'user_energy_habits' => [
+//                'answer_columns' => [
+//                    'resident_count',
+//                    'thermostat_high',
+//                    'thermostat_low',
+//                    'hours_high',
+//                    'heating_first_floor',
+//                    'heating_second_floor',
+//                    'heated_space_outside',
+//                    'cook_gas',
+//                    'water_comfort_id',
+//                    'amount_electricity',
+//                    'amount_gas',
+//                    'amount_water',
+//                    'renovation_plans',
+//                    'building_complaints',
+//                    'start_date',
+//                    'end_date',
+//                ],
+//            ],
+//            'building_roof_types' => [
+//                'where_column' => 'roof_type_id',
+//                'answer_columns' => [
+//                    'element_value_id',
+//                    'roof_surface',
+//                    'insulation_roof_surface',
+//                    'zinc_surface',
+//                    'building_heating_id',
+//                    'extra',
+//                ],
+//            ],
+//            'building_insulated_glazings' => [
+//                'where_column' => 'measure_application_id',
+//                'answer_columns' => [
+//                    'insulating_glazing_id',
+//                    'building_heating_id',
+//                    'm2',
+//                    'windows',
+//                    'extra',
+//                ],
+//            ],
+//            'questions_answers' => [
+//                'where_column' => 'question_id',
+//                'answer_columns' => [
+//                    'answer',
+//                ],
+//            ],
+//            'tool_question_answers' => [
+//                'where_column' => 'tool_question_id',
+//                'answer_columns' => [
+//                    'tool_question_custom_value_id',
+//                    'answer',
+//                ],
+//            ],
+//            'completed_sub_steps' => [
+//                'where_column' => 'sub_step_id',
+//                'answer_columns' => [
+//                    'created_at',
+//                    'updated_at',
+//                ],
+//            ],
+            'completed_steps' => [
+                'where_column' => 'step_id',
+                'answer_columns' => [
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+//            'considerables' => [
+//                'where_column' => 'considerable_type',
+//                'additional_where_column' => 'considerable_id',
+//                'answer_columns' => [
+//                    'is_considering',
+//                ],
+//            ],
+        ];
+
+        // Get the input sources
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+
+        foreach ($tables as $table => $tableData) {
+            if (Schema::hasColumn($table, 'user_id')) {
+                $buildingOrUserId = $building->user->id;
+                $buildingOrUserColumn = 'user_id';
+            } else {
+                $buildingOrUserId = $building->id;
+                $buildingOrUserColumn = 'building_id';
+            }
+
+            // Get all values for the current building for resident and coach input source
+            $values = DB::table($table)
+                ->where($buildingOrUserColumn, $buildingOrUserId)
+                ->whereIn('input_source_id', [$coachInputSource->id, $residentInputSource->id])
+                ->get();
+
+            if ($values->isNotEmpty()) {
+                $answerColumns = $tableData['answer_columns'];
+                $whereColumn = $tableData['where_column'] ?? null;
+                $additionalWhereColumn = $tableData['additional_where_column'] ?? null;
+
+                $differentiatingValues = [];
+                $differentiatingSubValues = [];
+
+                // Set conditional values
+                if (! is_null($whereColumn)) {
+                    // There is a where column. This means multiple values per input source. Let's grab them
+                    $differentiatingValues = $values->pluck($whereColumn)->unique()->toArray();
+
+                    if (! is_null($additionalWhereColumn)) {
+                        // There is an additional column... Let's grab these too
+                        foreach ($differentiatingValues as $differentiatingValue) {
+                            $differentiatingSubValues[$differentiatingValue] = $values
+                                ->where($whereColumn, $differentiatingValue)
+                                ->pluck($additionalWhereColumn)->unique()->toArray();
+                        }
+                    }
+                }
+
+                // Small exception of the rule, we only save for the resident value if there is no coach value or the
+                // coach value matches
+                if ($table === 'building_roof_types') {
+                    if ($values->where('input_source_id', $coachInputSource->id)->count() > 0) {
+                        $differentiatingValues = $values->where('input_source_id', $coachInputSource->id)
+                            ->pluck('roof_type_id')->unique()->toArray();
+                    }
+                }
+
+                $masterInputSourceAnswers = [];
+                $conditionalAdditionals = [];
+
+                // We will loop all the answer columns, as we must check them individually
+                foreach ($answerColumns as $answerColumn) {
+                    if (! is_null($whereColumn)) {
+                        foreach ($differentiatingValues as $differentiatingValue) {
+                            if ($table === 'tool_question_answers') {
+                                // We need extra logic here, because the answer columns might also be the
+                                // additional where columns... We just couldn't keep one command exception free, right?
+                                // The differentiating value will be the tool question ID
+
+                                $type = DB::table($table)
+                                    ->leftJoin('tool_questions', $table . '.tool_question_id', '=', 'tool_questions.id')
+                                    ->leftJoin('tool_question_types', 'tool_questions.tool_question_type_id', '=', 'tool_question_types.id')
+                                    ->where($buildingOrUserColumn, $buildingOrUserId)
+                                    ->where($table . '.tool_question_id', $differentiatingValue)
+                                    ->select('tool_question_types.short')
+                                    ->first()->short;
+
+                                if ($type === 'checkbox-icon') {
+                                    $additionalWhereColumn = $answerColumn;
+                                    $differentiatingSubValues[$differentiatingValue] = $values
+                                        ->where($whereColumn, $differentiatingValue)
+                                        ->pluck($additionalWhereColumn)->unique()->toArray();
+                                    $conditionalAdditionals[$differentiatingValue][$answerColumn] = [
+                                        'additionalWhereColumn' => $additionalWhereColumn,
+                                        'differentiatingSubValues' => $differentiatingSubValues
+                                    ];
+
+                                    $clearConditionals = true;
+                                }
+                            }
+
+                            if (! is_null($additionalWhereColumn)) {
+                                foreach ($differentiatingSubValues[$differentiatingValue] as $differentiatingSubValue) {
+                                    // Grab the answer of the coach
+                                    $coachAnswer = $this->searchCollectionForValue($values, $coachInputSource,
+                                        [
+                                            $whereColumn => $differentiatingValue,
+                                            $additionalWhereColumn => $differentiatingSubValue,
+                                        ]);
+
+                                    $answer = $this->getObjectProperty($coachAnswer, $answerColumn);
+
+                                    $isValidJson = Str::isValidJson($answer);
+
+                                    if ((empty($answer) && ! is_numeric($answer)) || $isValidJson || $answer === 'null') {
+                                        // Grab the answer of the resident if answer is TRULY empty
+                                        $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource,
+                                            [
+                                                $whereColumn => $differentiatingValue,
+                                                $additionalWhereColumn => $differentiatingSubValue,
+                                            ]);
+
+                                        $tempAnswer = $this->getObjectProperty($residentAnswer, $answerColumn);
+
+                                        // If the coach answer is valid JSON, we will check the resident keys for
+                                        // potential extra values
+                                        if ($isValidJson) {
+                                            // We can't check resident answers if the resident answer is not
+                                            // valid JSON, however. So we won't do anything, as the answer
+                                            // is already more valid from the coach side
+                                            if (Str::isValidJson($tempAnswer)) {
+                                                $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                            }
+                                        } else {
+                                            $answer = $tempAnswer;
+                                        }
+                                    }
+
+                                    // Build answer structure with where and additional where
+                                    $masterInputSourceAnswers[$answerColumn][$whereColumn][$differentiatingValue][$additionalWhereColumn][$differentiatingSubValue] = $answer;
+                                }
+                            } else {
+                                // Grab the answer of the coach
+                                $coachAnswer = $this->searchCollectionForValue($values, $coachInputSource,
+                                    [$whereColumn => $differentiatingValue]);
+
+                                $answer = $this->getObjectProperty($coachAnswer, $answerColumn);
+
+                                $isValidJson = Str::isValidJson($answer);
+
+                                if ((empty($answer) && ! is_numeric($answer)) || $isValidJson || $answer === 'null') {
+                                    // Grab the answer of the resident if answer is TRULY empty
+                                    $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource,
+                                        [$whereColumn => $differentiatingValue]);
+
+                                    $tempAnswer = $this->getObjectProperty($residentAnswer, $answerColumn);
+
+                                    // If the coach answer is valid JSON, we will check the resident keys for
+                                    // potential extra values
+                                    if ($isValidJson) {
+                                        // We can't check resident answers if the resident answer is not
+                                        // valid JSON, however. So we won't do anything, as the answer
+                                        // is already more valid from the coach side
+                                        if (Str::isValidJson($tempAnswer)) {
+                                            $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                        }
+                                    } else {
+                                        $answer = $tempAnswer;
+                                    }
+                                }
+
+                                // Build answer structure with where
+                                $masterInputSourceAnswers[$answerColumn][$whereColumn][$differentiatingValue] = $answer;
+                            }
+
+                            // Clear, next round might not require these
+                            if (($clearConditionals ?? false)) {
+                                $additionalWhereColumn = null;
+                                $differentiatingSubValues = [];
+                                $clearConditionals = false;
+                            }
+                        }
+                    } else {
+                        // Grab the answer of the coach
+                        $coachAnswer = $this->searchCollectionForValue($values, $coachInputSource);
+
+                        $answer = $this->getObjectProperty($coachAnswer, $answerColumn);
+
+                        $isValidJson = Str::isValidJson($answer);
+
+                        if ((empty($answer) && ! is_numeric($answer)) || $isValidJson || $answer === 'null') {
+                            // Grab the answer of the resident if answer is TRULY empty
+                            $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource);
+
+                            $tempAnswer = $this->getObjectProperty($residentAnswer, $answerColumn);
+
+                            // If the coach answer is valid JSON, we will check the resident keys for
+                            // potential extra values
+                            if ($isValidJson) {
+                                // We can't check resident answers if the resident answer is not
+                                // valid JSON, however. So we won't do anything, as the answer
+                                // is already more valid from the coach side
+                                if (Str::isValidJson($tempAnswer)) {
+                                    $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                }
+                            } else {
+                                $answer = $tempAnswer;
+                            }
+                        }
+
+                        // Build default answer structure
+                        $masterInputSourceAnswers[$answerColumn] = $answer;
+                    }
+                }
+
+                // We now have the structure for the row(s) of answers we need to put under the master input source
+                // Structure is default column => answer
+                // With one where: column => [whereColumn => [whereColumnValue => answer]]
+                // With additional where: column => [whereColumn => [whereColumnValue => additionalWhereColumn => [additionalWhereColumnValue => answer]]]
+
+                // Default logic
+                $baseUpdateOrInsertLogic = [
+                    $buildingOrUserColumn => $buildingOrUserId,
+                    'input_source_id' => $masterInputSource->id,
+                ];
+
+                if ($table === 'tool_question_answers') {
+                    // Exception on the rule, what a surprise
+                    $conditionalValues = array_keys($conditionalAdditionals);
+
+                    foreach ($differentiatingValues as $differentiatingValue) {
+                        $answersToInsert = [];
+
+                        if (in_array($differentiatingValue, $conditionalValues)) {
+                            $customLogic = $baseUpdateOrInsertLogic;
+                            $customLogic[$whereColumn] = $differentiatingValue;
+
+                            $count = count(Arr::first($conditionalAdditionals[$differentiatingValue])['differentiatingSubValues'][$differentiatingValue]);
+
+                            for ($i  = 0; $i < $count; $i++) {
+                                foreach ($masterInputSourceAnswers as $answerColumn => $answers) {
+                                    // This will always work, even though it's obscure
+                                    $conditionalAdditionalWhereColumn = $conditionalAdditionals[$differentiatingValue][$answerColumn]['additionalWhereColumn'];
+                                    $answersForColumn = $answers[$whereColumn][$differentiatingValue][$conditionalAdditionalWhereColumn];
+                                    $answersToInsert[$answerColumn] = array_values($answersForColumn)[$i];
+                                    $customLogic[$conditionalAdditionalWhereColumn] = $answersToInsert[$answerColumn];
+                                }
+
+                                // Insert for each where & additional where
+                                DB::table($table)
+                                    ->updateOrInsert($customLogic, $answersToInsert);
+                            }
+                        } else {
+                            // Set answers
+                            foreach ($masterInputSourceAnswers as $answerColumn => $answers) {
+                                $answersToInsert[$answerColumn] = $answers[$whereColumn][$differentiatingValue];
+                            }
+
+                            // Set custom logic for insert
+                            $customLogic = $baseUpdateOrInsertLogic;
+                            $customLogic[$whereColumn] = $differentiatingValue;
+
+                            // Insert answers as per usual (each where)
+                            DB::table($table)
+                                ->updateOrInsert($customLogic, $answersToInsert);
+                        }
+                    }
+                } else {
+                    if (is_null($whereColumn)) {
+                        // Default structure, easy pickins!
+                        $answersToInsert = $masterInputSourceAnswers;
+                        DB::table($table)
+                            ->updateOrInsert($baseUpdateOrInsertLogic, $answersToInsert);
+                    } else {
+                        if (is_null($additionalWhereColumn)) {
+                            // Only where column
+                            foreach ($differentiatingValues as $differentiatingValue) {
+                                $answersToInsert = [];
+
+                                // Set answers
+                                foreach ($masterInputSourceAnswers as $answerColumn => $answers) {
+                                    $answersToInsert[$answerColumn] = $answers[$whereColumn][$differentiatingValue];
+                                }
+
+                                // Set custom logic for insert
+                                $customLogic = $baseUpdateOrInsertLogic;
+                                $customLogic[$whereColumn] = $differentiatingValue;
+
+                                // Insert answers as per usual (each where)
+                                DB::table($table)
+                                    ->updateOrInsert($customLogic, $answersToInsert);
+                            }
+                        } else {
+                            // With additional where column
+                            foreach ($differentiatingValues as $differentiatingValue) {
+                                foreach ($differentiatingSubValues[$differentiatingValue] as $differentiatingSubValue) {
+                                    $answersToInsert = [];
+
+                                    // Set answers
+                                    foreach ($masterInputSourceAnswers as $answerColumn => $answers) {
+                                        $answersToInsert[$answerColumn] = $answers[$whereColumn][$differentiatingValue][$additionalWhereColumn][$differentiatingSubValue];
+                                    }
+
+                                    // Set custom logic for insert
+                                    $customLogic = $baseUpdateOrInsertLogic;
+                                    $customLogic[$whereColumn] = $differentiatingValue;
+                                    $customLogic[$additionalWhereColumn] = $differentiatingSubValue;
+
+                                    // Insert for each where & additional where
+                                    DB::table($table)
+                                        ->updateOrInsert($customLogic, $answersToInsert);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Find a value in a collection related to an input source, with potentially extra columns to check
+     *
+     * @param  \Illuminate\Support\Collection  $collection
+     * @param  \App\Models\InputSource  $inputSource
+     * @param  array  $extra
+     *
+     * @return mixed
+     */
+    public function searchCollectionForValue(Collection $collection, InputSource $inputSource, array $extra = [])
+    {
+        $search = $collection->where('input_source_id', $inputSource->id);
+
+        foreach ($extra as $column => $value) {
+            $search = $search->where($column, $value);
+        }
+
+        return $search->first();
+    }
+
+    /**
+     * Get the property of an object if it exists, save the countless inline repeated boilerplate code.
+     *
+     * @param $object
+     * @param $property
+     *
+     * @return mixed
+     */
+    public function getObjectProperty($object, $property)
+    {
+        if (! is_null($object) && $object instanceof \stdClass) {
+            if (property_exists($object, $property)) {
+                return $object->{$property};
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if the values of the resident, to see if they have extra keys the coach's answer doesn't have
+     *
+     * @param $coachJson
+     * @param $residentJson
+     *
+     * @return string
+     */
+    public function compareJsonKeys($coachJson, $residentJson): string
+    {
+        $coachOptions = json_decode($coachJson, true);
+        $residentOptions = json_decode($residentJson, true);
+
+        foreach($residentOptions as $key => $value) {
+            if (! array_key_exists($key, $coachOptions)) {
+                $coachOptions[$key] = $value;
+            }
+        }
+
+        return json_encode($coachOptions);
+    }
+}

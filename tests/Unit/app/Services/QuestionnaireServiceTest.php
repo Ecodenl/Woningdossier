@@ -7,14 +7,17 @@ use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Services\QuestionnaireService;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\CreatesApplication;
 use Tests\TestCase;
 
 class QuestionnaireServiceTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
 
     public static function hasQuestionOptionsProvider()
     {
@@ -36,21 +39,75 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertEquals($expected, QuestionnaireService::hasQuestionOptions($input));
     }
 
-    public static function getTranslationProvider()
+    public function testCreateQuestionnaire()
+    {
+        $cooperation = factory(Cooperation::class)->create();
+        $step = factory(Step::class)->create();
+
+        $questionnaire = QuestionnaireService::createQuestionnaire(
+            $cooperation, $step, ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling']
+        );
+
+        $this->assertInstanceOf(Questionnaire::class, $questionnaire);
+    }
+
+    public function createQuestionProvider()
     {
         return [
-            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], 'Dit is een engelse vertaling'],
-            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], 'Dit is een nederlandse vertaling'],
-            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], 'franse vertaling'],
+            [[
+                'question' => [
+                    'nl' => 'Test questionnaire',
+                ],
+                'required' => true,
+            ]],
         ];
     }
 
     /**
-     * @dataProvider getTranslationProvider
+     * @dataProvider createQuestionProvider
      */
-    public function testGetTranslation($translations, $expected)
+    public function testCreateQuestion($questionData)
     {
-        $this->assertEquals($expected, QuestionnaireService::getTranslation($translations, $expected));
+        // first we need to create a questionnaire with a question
+        $questionnaire = factory(Questionnaire::class)->create();
+
+        QuestionnaireService::createQuestion($questionnaire, $questionData, 'text', [], 0);
+
+        $this->assertDatabaseHas('questions', [
+            'questionnaire_id' => $questionnaire->id,
+        ]);
+    }
+
+    public function testCopyQuestionnaireToCooperation()
+    {
+        // first we need to create a questionnaire with a question
+        $questionnaire = factory(Questionnaire::class)->create();
+        for ($i = 0; $i < 10; ++$i) {
+            $questionnaire->questions()->save(
+                factory(Question::class)->make(['order' => $i])
+            );
+        }
+        // where we will copy the questionnaire to.
+        $cooperation = factory(Cooperation::class)->create();
+
+        // copy the questionnaire
+        QuestionnaireService::copyQuestionnaireToCooperation($cooperation, $questionnaire);
+
+        // check if the questionnaire is copied
+        $this->assertDatabaseHas('questionnaires', [
+            'cooperation_id' => $cooperation->id,
+        ]);
+        $this->assertCount(1, Questionnaire::forMyCooperation($cooperation->id)->get());
+
+        // check if questions have been copied
+        $copiedQuestionnaire = Questionnaire::forMyCooperation($cooperation->id)->first();
+
+        // check if the translations are the same
+        $this->assertSame($copiedQuestionnaire->name, $questionnaire->name);
+
+        $this->assertDatabaseHas('questions', [
+            'questionnaire_id' => $copiedQuestionnaire->id,
+        ]);
     }
 
     public function isEmptyTranslationProvider()
@@ -73,130 +130,23 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
     }
 
-    public function testCreateQuestionnaire()
-    {
-        $oldCount = Questionnaire::count();
-
-        $cooperation = factory(Cooperation::class)->create();
-        $this->seed(\StepsTableSeeder::class);
-
-        $step = Step::inRandomOrder()->first();
-        QuestionnaireService::createQuestionnaire(
-            $cooperation, $step, ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling']
-        );
-
-
-        $this->assertEquals($oldCount + 1, Questionnaire::count());
-    }
-
-    public function CreateQuestionProvider()
+    public function isNotEmptyTranslationProvider()
     {
         return [
-            [[
-                'question' => [
-                    'nl' => 'Test questionnaire',
-                ],
-                'required' => true,
-            ]],
+            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], true],
+            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], true],
+            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], true],
+            [['fr' => '', 'en' => '', 'nl' => ''], false],
+            [['fr' => '', 'en' => null, 'nl' => ''], false],
+            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'], true],
         ];
     }
 
     /**
-     * @dataProvider CreateQuestionProvider
+     * @dataProvider isNotEmptyTranslationProvider
      */
-    public function testCreateQuestion($questionData)
+    public function testisNotEmptyTranslation($translations, $expected)
     {
-        // first we need to create a questionnaire with a question
-        $cooperation = factory(Cooperation::class)->create();
-        $questionnaire = factory(Questionnaire::class)->create(['cooperation_id' => $cooperation->id]);
-
-        QuestionnaireService::createQuestion($questionnaire, $questionData, 'text', [], 0);
-
-        $this->assertDatabaseHas('questions', [
-            'questionnaire_id' => $questionnaire->id,
-        ]);
-    }
-
-    public function CreateQuestionWithOptionProvider()
-    {
-        $uuid = (string) \Ramsey\Uuid\Uuid::uuid4();
-
-        return [
-            [[
-                'question' => [
-                    'nl' => 'Test questionnaire',
-                ],
-                'required' => true,
-                'options' => [
-                    $uuid => [
-                        'nl' => 'Test option',
-                    ],
-                ],
-            ]],
-        ];
-    }
-
-    /**
-     * @dataProvider CreateQuestionWithOptionProvider
-     */
-    public function testCreateQuestionWithOption($questionData)
-    {
-        // first we need to create a questionnaire with a question
-        $cooperation = factory(Cooperation::class)->create();
-        $questionnaire = factory(Questionnaire::class)->create(['cooperation_id' => $cooperation->id]);
-
-        QuestionnaireService::createQuestion($questionnaire, $questionData, 'select', [], 0);
-
-        $this->assertDatabaseHas('questions', [
-            'questionnaire_id' => $questionnaire->id,
-        ]);
-
-        $question = Question::where('questionnaire_id', $questionnaire->id)->latest()->first();
-
-        $this->assertDatabaseHas('question_options', [
-            'question_id' => $question->id,
-        ]);
-    }
-
-    public function testCopyQuestionnaireToCooperation()
-    {
-        // first we need to create a questionnaire with a question
-        $cooperation = factory(Cooperation::class)->create();
-        $questionnaire = factory(Questionnaire::class)->create(['cooperation_id' => $cooperation->id]);
-        for ($i = 0; $i < 10; ++$i) {
-            $questionnaire->questions()->save(
-                factory(Question::class)->make(['order' => $i])
-            );
-        }
-
-        // test if the initial questionnaire has been created
-        $this->assertDatabaseHas('questionnaires', [
-            'cooperation_id' => $cooperation->id,
-        ]);
-
-        $cooperationToCopyTo = factory(Cooperation::class)->create();
-        $this->assertDatabaseMissing('questionnaires', [
-            'cooperation_id' => $cooperationToCopyTo->id,
-        ]);
-
-        // copy the questionnaire
-        QuestionnaireService::copyQuestionnaireToCooperation($cooperationToCopyTo, $questionnaire);
-
-        $this->assertDatabaseHas('questionnaires', [
-            'cooperation_id' => $cooperationToCopyTo->id,
-        ]);
-
-        $copiedQuestionnaire = Questionnaire::forMyCooperation($cooperationToCopyTo->id)->first();
-
-        // check if the translations are the same
-        $this->assertSame($copiedQuestionnaire->name, $questionnaire->name);
-
-        // now check if the uuid's are different
-        // this is important, otherwise the translations will run trough each other
-        $this->assertNotSame($copiedQuestionnaire->attributesToArray()['name'], $questionnaire->attributesToArray()['name']);
-
-        $this->assertDatabaseHas('questions', [
-            'questionnaire_id' => $copiedQuestionnaire->id,
-        ]);
+        $this->assertEquals($expected, QuestionnaireService::isNotEmptyTranslation($translations));
     }
 }

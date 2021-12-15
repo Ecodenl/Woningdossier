@@ -15,7 +15,7 @@ class CreateWoodRotStatusesTable extends Migration
     {
         Schema::create('wood_rot_statuses', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('name');
+            $table->json('name');
             $table->integer('calculate_value')->nullable();
             $table->integer('order');
             $table->timestamps();

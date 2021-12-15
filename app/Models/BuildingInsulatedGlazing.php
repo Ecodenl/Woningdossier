@@ -72,6 +72,10 @@ class BuildingInsulatedGlazing extends Model
         'extra',
     ];
 
+    protected $crucialRelations = [
+        'measure_application_id',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

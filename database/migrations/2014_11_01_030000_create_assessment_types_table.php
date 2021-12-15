@@ -16,7 +16,7 @@ class CreateAssessmentTypesTable extends Migration
         Schema::create('assessment_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type');
-            $table->uuid('name');
+            $table->json('name');
             $table->timestamps();
         });
     }

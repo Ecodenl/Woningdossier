@@ -74,7 +74,7 @@ class ToolComposer
             $view->with('inputSources', \App\Helpers\Cache\InputSource::getOrdered());
             //$view->with('myUnreadMessagesCount', $this->unreadMessageCount);
 
-            $view->with('steps', $this->cooperation->getActiveOrderedSteps());
+            // TODO: Should this stay?
             $view->with('interests', \App\Helpers\Cache\Interest::getOrdered());
             $view->with('currentStep', $this->currentStep);
             $view->with('currentSubStep', $this->currentSubStep);

@@ -7,6 +7,7 @@ use App\Models\ComfortLevelTapWater;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
+use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
@@ -86,7 +87,12 @@ class HighEfficiencyBoilerCalculator
         self::debug(__METHOD__.' boiler efficiencies of boiler: '.$boilerEfficiency->heating.'% (heating) and '.$boilerEfficiency->wtw.'% (tap water)');
 
         if ($habit instanceof UserEnergyHabit) {
-            if (1 == $habit->cook_gas) {
+            // so ideally a building + input source should be passed instead of a habit, but that's just to much work for now
+            $building = $habit->user->building;
+
+            $cookType = $building->getAnswer($habit->inputSource, ToolQuestion::findByShort('cook-type'));
+
+            if ($cookType == "gas") {
                 $result['cooking'] = 65; // m3
             }
 

@@ -15,9 +15,14 @@ class DiscordNotifier {
 
     public function notify(string $message)
     {
-        $this->client->post(config('hoomdossier.webhooks.discord'), [
-            'form_params' => [
-                'content' => $message
-            ]]);
+        $key = config('hoomdossier.webhooks.discord');
+
+        if (! empty($key)) {
+            $this->client->post($key, [
+                'form_params' => [
+                    'content' => $message
+                ]]);
+        }
+
     }
 };

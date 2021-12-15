@@ -7,6 +7,8 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Role;
 use Closure;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 
 class CurrentRoleMiddleware
@@ -24,8 +26,8 @@ class CurrentRoleMiddleware
 
         // if no role is set, logout and invalidate the session.
         if (empty(HoomdossierSession::getRole())) {
-            \Log::debug('Account id: '.Hoomdossier::account()->id.'is logged in but has no role in his session');
-            \Auth::logout();
+            Log::debug('Account id: '.Hoomdossier::account()->id.' is logged in but has no role in his session');
+            Auth::logout();
             session()->invalidate();
 
             return abort(401);

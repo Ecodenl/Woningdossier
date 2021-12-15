@@ -27,7 +27,7 @@ class ToolController extends Controller
 
         FillingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
-        return redirect()->route('cooperation.tool.index');
+        return redirect()->route('cooperation.frontend.tool.quick-scan.start');
     }
 
     /**
@@ -45,6 +45,6 @@ class ToolController extends Controller
 
         ObservingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
-        return redirect()->route('cooperation.tool.index');
+        return redirect()->route('cooperation.frontend.tool.quick-scan.start');
     }
 }

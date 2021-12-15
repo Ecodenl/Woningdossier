@@ -7,13 +7,13 @@ use App\Models\Building;
 use App\Models\InputSource;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class BuildingDataCopyService
 {
-
     /**
      * This method copies using a delete method, it does not care about the target its data.
      *
@@ -57,7 +57,7 @@ class BuildingDataCopyService
             $user = $building->user()->first();
 
             // set the building or user id, depending on which column exists on the table
-            if (\Schema::hasColumn($table, 'user_id')) {
+            if (Schema::hasColumn($table, 'user_id')) {
                 $buildingOrUserId = $user->id;
                 $buildingOrUserColumn = 'user_id';
             } else {
@@ -165,7 +165,7 @@ class BuildingDataCopyService
             Log::debug("Hard copy: table {$table}");
 
 
-            if (\Schema::hasColumn($table, 'user_id')) {
+            if (Schema::hasColumn($table, 'user_id')) {
                 $buildingOrUserId = $building->user()->first()->id;
                 $buildingOrUserColumn = 'user_id';
             } else {
@@ -174,7 +174,7 @@ class BuildingDataCopyService
             }
             // now we get all the answers from the desired input source
 
-            $fromValues = \DB::table($table)
+            $fromValues = DB::table($table)
                 ->where('input_source_id', $from->id)
                 ->where($buildingOrUserColumn, $buildingOrUserId)
                 ->get();
@@ -188,7 +188,7 @@ class BuildingDataCopyService
                 foreach ($fromValues as $fromValue) {
                     if ($fromValue instanceof \stdClass && isset($fromValue->$whereColumn)) {
                         // now build the query to get the resident his answers
-                        $toValueQuery = \DB::table($table)
+                        $toValueQuery = DB::table($table)
                             ->where('input_source_id', $to->id)
                             ->where($buildingOrUserColumn, $buildingOrUserId)
                             ->where($whereColumn, $fromValue->$whereColumn);
@@ -200,7 +200,7 @@ class BuildingDataCopyService
                 }
             } else {
                 // get the resident his input
-                $toValueQuery = \DB::table($table)
+                $toValueQuery = DB::table($table)
                     ->where('input_source_id', $to->id)
                     ->where($buildingOrUserColumn, $buildingOrUserId);
 
@@ -276,7 +276,7 @@ class BuildingDataCopyService
             $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
 
             // and insert a new row!
-            \DB::table($toValueQuery->from)->insert($fromValue);
+            DB::table($toValueQuery->from)->insert($fromValue);
         }
     }
 
@@ -285,7 +285,7 @@ class BuildingDataCopyService
      */
     public static function copy(Building $building, InputSource $from, InputSource $to)
     {
-        $userId = \Auth::id();
+        $userId = Auth::id();
 
         Log::debug("BUILDING_ID FOR COPY: {$building->id}");
         Log::debug("AUTH_USER_ID WHICH IS COPYING: {$userId}");

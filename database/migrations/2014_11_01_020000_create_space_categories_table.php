@@ -15,8 +15,8 @@ class CreateSpaceCategoriesTable extends Migration
     {
         Schema::create('space_categories', function (Blueprint $table) {
             $table->increments('id');
+            $table->json('name');
             $table->string('type');
-            $table->uuid('name');
             $table->timestamps();
         });
     }

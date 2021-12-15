@@ -19,7 +19,7 @@ class CreateServiceValuesTable extends Migration
             $table->integer('service_id')->unsigned()->nullable()->default(null);
             $table->foreign('service_id')->references('id')->on('services')->onDelete('restrict');
 
-            $table->uuid('value')->default('');
+            $table->json('value');
             $table->integer('calculate_value')->unsigned()->nullable();
             $table->integer('order');
             $table->boolean('is_default')->default(false);

@@ -11,8 +11,8 @@
 
                     <form action="{{ route('cooperation.admin.example-buildings.update', compact('exampleBuilding')) }}"
                           method="post">
-                        {{ csrf_field() }}
-                        {{ method_field("PUT") }}
+                        @csrf
+                        @method('PUT')
 
                         @include('cooperation.admin.example-buildings.components.names')
                         @include('cooperation.admin.example-buildings.components.building-type')

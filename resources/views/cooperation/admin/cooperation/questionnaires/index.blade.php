@@ -26,7 +26,7 @@
                         @forelse($questionnaires as $questionnaire)
                             <tr>
                                 <td>{{$questionnaire->name}}</td>
-                                <td>{{$questionnaire->step->name}}</td>
+                                <td>{{optional($questionnaire->step)->name}}</td> {{-- Step could be hidden, so we optional it --}}
                                 <td>
                                     <input data-active="{{$questionnaire->isActive() ? 'on' : 'off'}}" class="toggle-active"
                                            data-questionnaire-id="{{$questionnaire->id}}" type="checkbox" data-toggle="toggle"

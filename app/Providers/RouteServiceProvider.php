@@ -22,7 +22,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/';
+    public const HOME = '/home';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -36,7 +36,6 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('cooperation', Cooperation::class);
 
         Route::bind('cooperation', function ($value) {
-
             if ($this->getCurrentRequest()->hasHeader('X-Cooperation-Slug')) {
                 return Cooperation::whereSlug($this->getCurrentRequest()->header('X-Cooperation-Slug'))->firstOrFail();
             }
@@ -82,6 +81,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::prefix('api')
              ->middleware('api')
+            ->as('api.')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
     }

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Helpers\Hoomdossier;
 use Closure;
+use Illuminate\Support\Facades\Log;
 
 class RedirectIfIsFillingForOtherBuilding
 {
@@ -23,9 +24,10 @@ class RedirectIfIsFillingForOtherBuilding
 
         $user = Hoomdossier::user();
         if ($user->isFillingToolForOtherBuilding()) {
-            \Log::debug('Wow, user id '.$user->id.' tried to do something fishy!');
+            Log::debug('Wow, user id '.$user->id.' tried to do something fishy!');
 
-            return redirect()->route('cooperation.tool.general-data.index');
+            return redirect()->route('cooperation.tool.ventilation.index');
+//            return redirect()->route('cooperation.tool.general-data.index');
         }
 
         return $next($request);

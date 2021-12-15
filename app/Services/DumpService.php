@@ -10,6 +10,7 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
+use App\Helpers\ConsiderableHelper;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\HeaterHelper;
 use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
@@ -46,8 +47,11 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
+use App\Models\ToolQuestion;
+use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
+use App\Scopes\NoGeneralDataScope;
 use Illuminate\Support\Arr;
 
 class DumpService
@@ -69,7 +73,6 @@ class DumpService
     {
         if ($anonymized) {
             $headers = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -81,7 +84,6 @@ class DumpService
             ];
         } else {
             $headers = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.coach-appointment-date'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
@@ -135,9 +137,9 @@ class DumpService
                             // we will dot the array, map it so we can add the step name to it
                             $deeperContents = array_map(function ($content) use ($step, $subStep) {
                                 return self::makeHeaderText($step->name, $subStep, $content);
-                            }, Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.'));
+                            }, Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.'));
                         } else {
-                            $deeperContents = Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.');
+                            $deeperContents = Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.');
                         }
 
                         $headers = array_merge($headers, $deeperContents);
@@ -147,12 +149,12 @@ class DumpService
                         if ($prefixValuesWithStep) {
                             $subStepName = null;
                             if ('-' !== $subStep) {
-                                $subStepName = optional(Step::findByShort($subStep))->name;
+                                $subStepName = optional(Step::findByShort($subStep))->name ?? '';
                             }
 
-                            $headers[$stepShort.'.'.$subStep.'.'.$tableWithColumnOrAndId] = self::makeHeaderText($step->name, $subStepName, $labelWithEuroNormalization);
+                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = self::makeHeaderText($step->name ?? 'Algemeen', $subStepName, $labelWithEuroNormalization);
                         } else {
-                            $headers[$stepShort.'.'.$subStep.'.'.$tableWithColumnOrAndId] = $labelWithEuroNormalization;
+                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = $labelWithEuroNormalization;
                         }
                     }
                 }
@@ -170,9 +172,9 @@ class DumpService
      * Method to generate a total dump from a user for a specific input source.
      * This dump collects all possible data for a given user for the tool and returns it in an array.
      *
-     * @param array       $structureForTotalDump | we need the headers to get table and row data, provided from the self::dissectHeaders, using self::getStructureForTotalDumpService
-     * @param Cooperation $cooperation           ,
-     * @param bool        $withConditionalLogic  | when true, it will return the data as happens in the dump. So if an input gets hidden it wont be put in the dump
+     * @param array $structureForTotalDump | we need the headers to get table and row data, provided from the self::dissectHeaders, using self::getStructureForTotalDumpService
+     * @param Cooperation $cooperation ,
+     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if an input gets hidden it wont be put in the dump
      */
     public static function totalDump(array $structureForTotalDump, Cooperation $cooperation, User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
     {
@@ -221,7 +223,12 @@ class DumpService
 
         $buildingType = $buildingFeature->buildingType->name ?? '';
         $buildYear = $buildingFeature->build_year ?? '';
-        $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
+
+        $exampleBuilding = '';
+        if ($buildingFeature instanceof BuildingFeature) {
+            $exampleBuilding = optional($buildingFeature->exampleBuilding)->isSpecific() ? $buildingFeature->exampleBuilding->name : '';
+        }
+
 
         $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
 
@@ -229,16 +236,14 @@ class DumpService
         if ($anonymized) {
             // set the personal userinfo
             $row[$building->id] = [
-                $inputSource->name,
                 $createdAt, $buildingStatus, $postalCode, $city,
                 $buildingType, $buildYear, $exampleBuilding,
             ];
         } else {
             $row[$building->id] = [
-                $inputSource->name,
                 $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                 $firstName, $lastName, $email, $phoneNumber,
-                $street, trim($number.' '.$extension) , $postalCode, $city,
+                $street, trim($number . ' ' . $extension), $postalCode, $city,
                 $buildingType, $buildYear, $exampleBuilding,
             ];
         }
@@ -333,9 +338,6 @@ class DumpService
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
                                     }
                                     break;
-                                case 'building_heating_application_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($buildingFeature->buildingHeatingApplication)->name;
-                                    break;
                                 case 'facade_plastered_painted':
                                     $possibleAnswers = [
                                         1 => \App\Helpers\Translation::translate('general.options.yes.title'),
@@ -414,13 +416,13 @@ class DumpService
                                         if (in_array($extraKey, ['tiles_condition', 'measure_application_id'])) {
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
 
-                                            if (! empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
-                                                $status = RoofTileStatus::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                            if (!empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
+                                                $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
                                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
                                             }
                                             // The measure application id, in this case. can be 0, this means the option: "niet" has been chosen the option is not saved as a measure application
                                             if ('measure_application_id' == $extraKey) {
-                                                $measureApplication = MeasureApplication::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                                $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
                                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : __('roof-insulation.measure-application.no.title');
                                             }
                                         } else {
@@ -438,13 +440,15 @@ class DumpService
                         break;
 
                     // handle the user_interest table and its columns.
-                    case 'user_interests':
-                        $interestInType = $tableWithColumnOrAndId[3];
-                        $interestInId = $tableWithColumnOrAndId[4];
+                    case 'considerables':
+                        $considerableModel = $tableWithColumnOrAndId[3];
+                        $considerableId = $tableWithColumnOrAndId[4];
 
-                        $userInterest = $user->userInterestsForSpecificType($interestInType, $interestInId, $inputSource)->first();
+                        // returns a bool, the values are keyed by 0 and 1
+                        $considerable = $considerableModel::find($considerableId);
+                        $considers = $user->considers($considerable, $inputSource);
 
-                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $userInterest->interest->name ?? '';
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
                         break;
 
                     // handle the element table.
@@ -575,6 +579,35 @@ class DumpService
                         }
                         break;
 
+                    case 'tool_question_answers':
+                        $column = $columnOrId;
+                        switch ($column) {
+                            case 'cook-type':
+                                $cookType = $building->getAnswer($inputSource, ToolQuestion::findByShort('cook-type'));
+                                $answer = __('woningdossier.cooperation.radiobutton.no');
+                                if ($cookType == "gas") {
+                                    $answer = __('woningdossier.cooperation.radiobutton.yes');
+                                }
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer ?? '';
+                                break;
+                            default:
+                                $answer = "";
+                                $answers = $building->getAnswer($inputSource, ToolQuestion::findByShort($column));
+
+                                // this will allow us to translates the answers
+                                // only when its a array, it will be null when no answer is given.
+                                if (is_array($answers)) {
+                                    $answer = ToolQuestionCustomValue::whereIn('short', $answers)
+                                            ->get()
+                                            ->pluck('name')
+                                            ->implode(', ') ?? '';
+                                }
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
+
+                                break;
+                        }
+                        break;
+
                     // handle the user_energy_habits table and its column
                     case 'user_energy_habits':
                         $column = $columnOrId;
@@ -584,13 +617,6 @@ class DumpService
 
                         if ($userEnergyHabit instanceof UserEnergyHabit) {
                             switch ($column) {
-                                case 'cook_gas':
-                                    $radiobuttonsYesNo = [
-                                        1 => __('woningdossier.cooperation.radiobutton.yes'),
-                                        2 => __('woningdossier.cooperation.radiobutton.no'),
-                                    ];
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $radiobuttonsYesNo[$userEnergyHabit->cook_gas] ?? '';
-                                    break;
                                 case 'renovation_plans':
                                     $renovationPlanAnswerOptions = [
                                         1 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-2-year'),
@@ -750,7 +776,7 @@ class DumpService
             return $value;
         }
 
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return $value;
         }
 
@@ -772,9 +798,9 @@ class DumpService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed  $value
-     * @param int    $decimals
-     * @param bool   $shouldRound
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $shouldRound
      *
      * @return float|int|string
      */
@@ -814,7 +840,7 @@ class DumpService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (! is_null($column)) {
+        if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

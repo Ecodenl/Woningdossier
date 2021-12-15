@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="103px" height="87px" viewBox="0 0 103 87" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Badkamer</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-290.000000, -2713.000000)">
+            <g id="badkamer-icon" transform="translate(292.000000, 2713.000000)">
+                <g id="Group" transform="translate(0.000000, 13.838228)">
+                    <g transform="translate(13.572729, 62.863921)" id="Path" stroke="#414C57" stroke-linecap="round" stroke-width="3.26923077">
+                        <line x1="4.01640541" y1="0" x2="0" y2="8.29785112"></line>
+                        <line x1="67.8353017" y1="0" x2="71.8517071" y2="8.29785112"></line>
+                    </g>
+                    <path d="M91.8316942,30.7083497 L91.8316942,43.9599641 C91.8316942,55.6142494 82.2654499,65.1495737 70.5733734,65.1495737 L28.4266266,65.1495737 C16.7345501,65.1495737 7.16830578,55.6142494 7.16830578,43.9599641 L7.16830578,30.7083497" id="Path" stroke="#414C57" stroke-width="3" stroke-linecap="round"></path>
+                    <path d="M45.4488727,21.0878995 L94.7681769,21.0878995 C97.0980889,21.0878995 99,23.0401689 99,25.4204683 L99,26.1437403 C99,28.5268651 97.0952545,30.4748965 94.7681769,30.4748965 L44.9769379,30.4748965" id="Path" stroke="#414C57" stroke-width="3" stroke-linejoin="round"></path>
+                    <path d="M24.6023102,30.4748965 L4.23182306,30.4748965 C1.90332832,30.4748965 0,28.5254525 0,26.1437403 L0,25.4204683 C0,23.0387562 1.90474554,21.0878995 4.23182306,21.0878995 L24.5792007,21.0878995" id="Path" stroke="#414C57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M78.5254026,8.36565788 C78.5254026,4.31137924 81.478892,0.994499011 85.0885549,0.994499011 L85.0885549,0.994499011 C88.7010522,0.994499011 91.6517071,4.31137924 91.6517071,8.36565788 L91.6517071,20.3632148" id="Path" stroke="#414C57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <rect id="Rectangle" fill="#2CA982" x="25.021978" y="17.7643364" width="19.5824176" height="28.3333333"></rect>
+                    <path d="M44.9188319,17.7724319 L44.9188319,46.319074 L24.8481426,46.319074 L24.8481426,20.881654 C24.8481426,18.5705739 26.7443848,16.679048 29.062959,16.679048 L43.4080739,16.679048 C45.3567533,16.679048 48.3626798,16.7256652 48.3626798,20.8406874" id="Path" stroke="#414C57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <line x1="25.2619712" y1="37.9859068" x2="44.4837449" y2="37.9859068" id="Path" stroke="#414C57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                    <ellipse id="Oval" stroke="#414C57" stroke-width="3" cx="58.7055615" cy="5.2903392" rx="5.30749409" ry="5.2903392"></ellipse>
+                </g>
+                <ellipse id="Oval" fill="#414C57" fill-rule="nonzero" cx="51.4295469" cy="2.86624786" rx="2.87554219" ry="2.86624786"></ellipse>
+                <ellipse id="Oval" fill="#414C57" fill-rule="nonzero" cx="42.0163625" cy="16.1507204" rx="2.87554219" ry="2.86624786"></ellipse>
+            </g>
+        </g>
+    </g>
+</svg>

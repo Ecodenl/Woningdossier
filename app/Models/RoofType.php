@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -33,8 +33,36 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RoofType extends Model
 {
-    use TranslatableTrait;
-    use HasShortTrait;
+    use HasShortTrait,
+        HasTranslations;
+
+    const PRIMARY_TO_SECONDARY_MAP = [
+        'pitched' => 'pitched',
+        'flat' => 'flat',
+        'none' => 'none',
+        'gabled-roof' => 'pitched',
+        'rounded-roof' => 'pitched',
+        'straw-roof' => 'pitched',
+    ];
+
+    const SECONDARY_ROOF_TYPE_SHORTS = [
+        'pitched', 'flat', 'none',
+    ];
+
+    const MEASURE_MAP = [
+        'pitched' => [
+            'roof-insulation-flat-current' => 'roof-insulation-pitched-inside',
+            'roof-insulation-flat-replace-current' => 'roof-insulation-pitched-replace-tiles',
+        ],
+        'flat' => [
+            'roof-insulation-pitched-inside' => 'roof-insulation-flat-current',
+            'roof-insulation-pitched-replace-tiles' => 'roof-insulation-flat-replace-current',
+        ],
+    ];
+
+    protected $translatable = [
+        'name',
+    ];
 
     public function buildingFeatures()
     {

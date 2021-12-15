@@ -36,6 +36,10 @@ class BuildingStatus extends Model
         'appointment_date' => 'datetime',
     ];
 
+    protected $with = [
+        'status',
+    ];
+
     public function scopeMostRecent($query)
     {
         // the higher the id the newer it is, ideally we would want to order on the created_at

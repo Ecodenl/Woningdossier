@@ -43,7 +43,7 @@
                                     {{$appointmentDateFormatted ?? '-'}}
                                 </td>
                                 <td>
-                                    {{$building->status_translation}}
+                                    {{ $building->status }}
                                 </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>

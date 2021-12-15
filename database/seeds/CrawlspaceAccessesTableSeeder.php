@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CrawlspaceAccessesTableSeeder extends Seeder
 {
@@ -13,21 +14,21 @@ class CrawlspaceAccessesTableSeeder extends Seeder
     {
         $items = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ja',
                 ],
                 'calculate_value' => 0,
                 'order' => 0,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Nee',
                 ],
                 'calculate_value' => 2,
                 'order' => 1,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Gedeeltelijk',
                 ],
                 'calculate_value' => 1,
@@ -36,17 +37,8 @@ class CrawlspaceAccessesTableSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($item['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('crawlspace_accesses')->insert([
-                'name' => $uuid,
+            DB::table('crawlspace_accesses')->insert([
+                'name' => json_encode($item['name']),
                 'calculate_value' => $item['calculate_value'],
                 'order' => $item['order'],
             ]);

@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Account;
 use App\Models\NotificationInterval;
 use App\Models\NotificationType;
 use App\Models\User;
@@ -32,6 +33,8 @@ class UserObserver
 
     public function deleted(User $user)
     {
-        \App\Helpers\Cache\Account::wipe($user->account->id);
+        if ($user->account instanceof Account) {
+            \App\Helpers\Cache\Account::wipe($user->account->id);
+        }
     }
 }

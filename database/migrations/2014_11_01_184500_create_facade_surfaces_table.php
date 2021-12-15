@@ -15,10 +15,10 @@ class CreateFacadeSurfacesTable extends Migration
     {
         Schema::create('facade_surfaces', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('name');
+            $table->json('name');
             $table->integer('calculate_value')->nullable();
             $table->integer('order');
-            $table->uuid('execution_term_name');
+            $table->json('execution_term_name');
             $table->integer('term_years')->nullable();
             $table->timestamps();
         });

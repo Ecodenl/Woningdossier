@@ -3,17 +3,11 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Console\Commands\Tool\RecalculateForUser;
-use App\Events\QuickScanNeedsRecalculate;
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
-use App\Helpers\Queue;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
-use App\Jobs\ProcessRecalculate;
-use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;

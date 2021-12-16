@@ -286,6 +286,8 @@ class UserActionPlanAdviceService
      */
     public static function checkCoupledMeasuresAndMaintenance(array $categorizedActionPlan)
     {
+        return [];
+
         $energySaving = $categorizedActionPlan['energy_saving'] ?? [];
         $maintenance = $categorizedActionPlan['maintenance'] ?? [];
 

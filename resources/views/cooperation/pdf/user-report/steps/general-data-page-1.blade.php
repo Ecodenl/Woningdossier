@@ -60,6 +60,21 @@
         @include('cooperation.pdf.user-report.parts.step-summary', compact('subStepsToSummarize', 'summaryStep'))
 
 
+        @php
+            $summaryStep =  \App\Models\Step::findByShort('living-requirements');
+        @endphp
+        <div class="question-answer-section">
+            <p class="lead">
+                {{$summaryStep->name}}
+            </p>
+            @if(isset($commentsByStep[$summaryStep->short]['-']))
+                @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+                    'title' => __('pdf/user-report.general-data.comment'),
+                    'comments' => $commentsByStep[$summaryStep->short]['-'],
+                ])
+            @endif
+        </div>
+
     </div>
 @endcomponent
 

@@ -81,9 +81,9 @@
     @foreach($commentsByStep[$summaryStep->short] as $stepCommentShort => $stepComment)
         @php
             // this is some custom code to retrieve the correct translation for the given comment.
-            $toolQuestionShort = "residential-status-{$stepCommentShort}-comment-service";
+            $toolQuestionShort = "{$summaryStep->short}-{$stepCommentShort}-comment-coach";
             if (isset($stepComment["Bewoner"])) {
-                $toolQuestionShort = "residential-status-{$stepCommentShort}-comment-resident";
+                $toolQuestionShort = "{$summaryStep->short}-{$stepCommentShort}-comment-resident";
             }
             $toolQuestion = App\Models\ToolQuestion::findByShort($toolQuestionShort);
         @endphp

@@ -10,7 +10,7 @@
                     if ($toolQuestion->toolQuestionType->short === 'slider') {
                         $value = \App\Helpers\NumberFormatter::format($value, 0);
                         $humanReadableAnswer = \App\Helpers\NumberFormatter::format($answer, 0);
-                    } elseif(\App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                    } elseif (\App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric') && $toolQuestion->toolQuestionType->short === 'text') {
                         $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
                         $value = \App\Helpers\NumberFormatter::format($value, $isInteger ? 0 : 1);
                         $humanReadableAnswer = \App\Helpers\NumberFormatter::format($answer, $isInteger ? 0 : 1);

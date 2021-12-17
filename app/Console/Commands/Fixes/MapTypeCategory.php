@@ -47,5 +47,9 @@ class MapTypeCategory extends Command
                     'building_type_category_id' => $buildingType->building_type_category_id,
                 ]);
         }
+
+        DB::table('tool_question_answers')
+            ->where('tool_question_id', DB::table('tool_questions')->where('short', 'building-type-category')->first()->id)
+            ->delete();
     }
 }

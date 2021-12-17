@@ -174,7 +174,7 @@ class Form extends Component
             }
         }
 
-        if (!empty($this->rules)) {
+        if (! empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules, [], $this->attributes);
@@ -413,12 +413,16 @@ class Form extends Component
 
     private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)
     {
+        // TODO: We can use ToolQuestionHelper::resolveSaveIn here
+        // All we'd need to add is a return of the extra columns.
+        // And a rewrite of the indexes below (line 459 as of writing)
+
         $savedInParts = explode('.', $toolQuestion->save_in);
         $table = $savedInParts[0];
         $column = $savedInParts[1];
 
         // We will save it on the model, this way we keep the current events behind them
-        $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
+        $modelName = "App\\Models\\" . Str::studly(Str::singular($table));
 
         if (Schema::hasColumn($table, 'user_id')) {
             $where = ['user_id' => $this->building->user_id];

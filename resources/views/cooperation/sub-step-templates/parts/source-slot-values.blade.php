@@ -25,6 +25,11 @@
                     $json = json_decode($answer, true);
                     $formatted = [];
 
+                    // Value is null, we want to use the answer and prepare the JSON
+                    if (is_null($value)) {
+                        $value = \App\Helpers\Str::prepareJsonForHtml($answer);
+                    }
+
                     // We try to build the input source names based off the options, but if they aren't available,
                     // we will use the shorts provided
                     // TODO: Check how often a check is done for rating-slider, perhaps change this to a function to

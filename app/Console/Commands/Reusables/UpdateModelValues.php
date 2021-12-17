@@ -198,18 +198,18 @@ class UpdateModelValues extends Command
                     'costs' => 250,
                 ]
             ],
-//            "replace-zinc-pitched" => [
-//                'column' => 'short',
-//                'updateData' => [
-//                    'costs' => 130,
-//                ]
-//            ],
-//            "replace-zinc-flat" => [
-//                'column' => 'short',
-//                'updateData' => [
-//                    'costs' => 130,
-//                ]
-//            ],
+            "replace-zinc-pitched" => [
+                'column' => 'short',
+                'updateData' => [
+                    'costs' => 120,
+                ]
+            ],
+            "replace-zinc-flat" => [
+                'column' => 'short',
+                'updateData' => [
+                    'costs' => 30,
+                ]
+            ],
 //            "ventilation-balanced-wtw" => [
 //                'column' => 'short',
 //                'updateData' => [

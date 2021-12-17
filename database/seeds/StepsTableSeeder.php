@@ -174,7 +174,7 @@ class StepsTableSeeder extends Seeder
                 'short' => 'residential-status',
                 'name' => [
                     'en' => 'Residential status',
-                    'nl' => 'Woonstatus',
+                    'nl' => 'Woningstatus',
                 ],
                 'order' => 3,
             ],

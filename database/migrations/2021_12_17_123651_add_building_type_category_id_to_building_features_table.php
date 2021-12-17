@@ -18,6 +18,8 @@ class AddBuildingTypeCategoryIdToBuildingFeaturesTable extends Migration
                 $table->unsignedBigInteger('building_type_category_id')->nullable()->after('building_category_id');
                 $table->foreign('building_type_category_id')->references('id')->on('building_type_categories')->onDelete('restrict');
             });
+
+            \Illuminate\Support\Facades\Artisan::call(\App\Console\Commands\Fixes\MapTypeCategory::class);
         }
     }
 

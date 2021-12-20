@@ -132,7 +132,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
     private function retriggerExampleBuildingApplication(ExampleBuilding $exampleBuilding)
     {
         Log::debug(__METHOD__);
-        $buildingFeatures =  $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
+        $buildingFeatures =  $this->building->buildingFeatures()->forInputSource($this->applyForInputSource)->first();
         if ($this->building->example_building_id !== $exampleBuilding->id) {
             Log::debug(__CLASS__." Example building ID changes (" . $this->building->example_building_id . " -> " . $exampleBuilding->id . ")");
             // change example building, let the observer do the rest

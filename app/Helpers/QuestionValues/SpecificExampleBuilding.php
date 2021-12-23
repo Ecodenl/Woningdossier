@@ -16,24 +16,28 @@ class SpecificExampleBuilding implements ShouldReturnQuestionValues
         $cooperationId = $building->user->cooperation_id;
         $buildingTypeId = $building->getAnswer($inputSource, $conditionalQuestion);
 
+        // There should only ever be one building. If there's more, well, then they fucked it up themselves
+        $genericBuilding = ExampleBuilding::where('building_type_id', $buildingTypeId)
+            ->whereNull('cooperation_id')
+            ->first();
 
         // Get all available example buildings
         $exampleBuildings = ExampleBuilding::where('building_type_id', $buildingTypeId)
-            ->where(function ($query) use ($cooperationId) {
-                $query->whereNull('cooperation_id')
-                    ->orWhere('cooperation_id', $cooperationId);
-            })
+            ->where('cooperation_id', $cooperationId)
             ->get();
 
+        // Always add generic building last
+        $exampleBuildings->add($genericBuilding);
+
         // Map it to question values
-        return $exampleBuildings->map(function ($exampleBuilding) {
+        return $exampleBuildings->map(function ($exampleBuilding) use ($genericBuilding) {
             return [
                 'building_type_id' => $exampleBuilding->building_type_id,
                 'cooperation_id' => $exampleBuilding->cooperation_id,
                 'extra' => [
                     'icon' => 'icon-not-relevant',
                 ],
-                'name' => $exampleBuilding->name,
+                'name' => $genericBuilding->id === $exampleBuilding->id ? __('cooperation/frontend/tool/quick-scan/question-values.specific-example-building.no-option') : $exampleBuilding->name,
                 'value' => $exampleBuilding->id,
             ];
         });

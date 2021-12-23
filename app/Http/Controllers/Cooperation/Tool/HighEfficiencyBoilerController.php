@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Calculations\FloorInsulation;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
 use App\Helpers\Hoomdossier;
@@ -50,7 +51,13 @@ class HighEfficiencyBoilerController extends ToolController
 
     public function calculate(Request $request)
     {
-        $result = HighEfficiencyBoiler::calculate(HoomdossierSession::getBuilding(true)->user->energyHabit, $request->all());
+        $building = HoomdossierSession::getBuilding(true);
+        $user = $building->user;
+
+        $result = HighEfficiencyBoiler::calculate(
+            $user->energyHabit()->forInputSource($this->masterInputSource)->first(),
+            $request->all()
+        );
 
         return response()->json($result);
     }

@@ -26,3 +26,8 @@ The mapping for `user_action_plan_advices` also includes mapping to the master i
 The logic is simple: We check if there are coach rows. If so, we take those. Else we take
 the resident. This is because the `user_action_plan_advices` are too complex to map
 via the `AddMasterInputSource` command.
+
+#### Number formatting
+It was decided that numbers should always be formatted as "1,0" within the Quickscan,
+unless it is a Slider number, or a number that should logically not be formatted,
+like years.

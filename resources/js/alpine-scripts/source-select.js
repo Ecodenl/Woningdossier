@@ -172,7 +172,8 @@ export default (inputSource = 'no-match') => ({
     parseJson(value) {
         let parsed = null;
         try {
-            parsed = JSON.parse(value);
+            // Attempt a parse of JSON, which could be injected with purely single quotes
+            parsed = JSON.parse(value.replaceAll('\'', '"'));
         } catch (e) {
             parsed = null;
         }

@@ -20,9 +20,9 @@
 
             >
             <label for="{{$id}}">
-                            <span class="media-icon-wrapper">
-                                <i class="{{$toolQuestionValue['extra']['icon'] ?? ''}}"></i>
-                            </span>
+                <span class="media-icon-wrapper">
+                    <i class="{{$toolQuestionValue['extra']['icon'] ?? ''}}"></i>
+                </span>
                 <span class="checkmark"></span>
                 <span>{{$toolQuestionValue['name']}}</span>
             </label>

@@ -508,7 +508,6 @@ class Form extends Component
             // apply the example building for the given changes.
             // we give him the old building features, otherwise we cant verify the changes
             ApplyExampleBuildingForChanges::dispatchNow($oldBuildingFeature, $answerData, $this->currentInputSource);
-
         }
 
         // Now save it

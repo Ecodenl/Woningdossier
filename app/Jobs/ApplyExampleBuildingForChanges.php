@@ -133,8 +133,8 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
     {
         Log::debug(__METHOD__);
         $buildingFeatures =  $this->building->buildingFeatures()->forInputSource($this->applyForInputSource)->first();
-        if ($this->building->example_building_id !== $exampleBuilding->id) {
-            Log::debug(__CLASS__." Example building ID changes (" . $this->building->example_building_id . " -> " . $exampleBuilding->id . ")");
+        if ($buildingFeatures->example_building_id !== $exampleBuilding->id) {
+            Log::debug(__CLASS__." Example building ID changes (" . $buildingFeatures->example_building_id . " -> " . $exampleBuilding->id . ")");
             // change example building, let the observer do the rest
             $buildingFeatures->update(['example_building_id' => $exampleBuilding->id]);
         }

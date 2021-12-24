@@ -28,10 +28,10 @@ class SolarPanelHelper extends ToolHelper
             $this->getValues('building_pv_panels')
         );
 
-        $this
-            ->user
+        $this->user
             ->energyHabit()
             ->forInputSource($this->inputSource)
+            ->first() // Fetch first, else no model events
             ->update($this->getValues('user_energy_habits'));
 
         $totalSunPanelsService = Service::findByShort('total-sun-panels');

@@ -236,7 +236,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'questions' => [
                         [
                             // TODO: Date is static, should be dynamic... (counts for other questions too)
-                            'validation' => ['numeric', 'integer', 'between:1000,' . date('Y')],
+                            'validation' => ['required', 'numeric', 'integer', 'between:1000,' . date('Y')],
                             'save_in' => 'building_features.build_year',
                             'short' => 'build-year',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year',
@@ -1332,7 +1332,8 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ]
                 ],
-                'Samenvatting woonstatus' => [
+                'Samenvatting woningstatus' => [
+                    'slug' => 'samenvatting-woonstatus',
                     'order' => 13,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
@@ -1377,8 +1378,10 @@ class ToolQuestionsTableSeeder extends Seeder
             $step = Step::findByShort($stepShort);
 
             foreach ($subQuestions as $subQuestionName => $subQuestionData) {
+
+                $subStepSlug = $subQuestionData['slug'] ?? Str::slug($subQuestionName);
                 $names = ['nl' => $subQuestionName];
-                $slugs = ['nl' => Str::slug($subQuestionName)];
+                $slugs = ['nl' => $subStepSlug];
 
                 $subStepData = [
                     'name' => $names,

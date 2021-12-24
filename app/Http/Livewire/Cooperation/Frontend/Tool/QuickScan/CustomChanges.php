@@ -171,7 +171,7 @@ class CustomChanges extends Component
         $measure = $this->customMeasureApplicationsFormData[$index] ?? null;
 
         // We don't need to save each and every one every time one is saved, so we save by index
-        if (!empty($measure)) {
+        if (! empty($measure)) {
             // We must validate on index base, so we replace the wild card with the current index
             $customRules = [];
             foreach ($this->rules as $key => $rule) {
@@ -193,8 +193,8 @@ class CustomChanges extends Component
             $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
             $costs['to'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['to'] ?? ''), 2);
             $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
-            $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '', $measure['savings_money'] ?? 0), 2);
-
+            $savingsMoney = empty($measure['savings_money']) ? 0 : $measure['savings_money'];
+            $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '', $savingsMoney), 2);
             $validator = Validator::make([
                 'customMeasureApplicationsFormData' => $this->customMeasureApplicationsFormData
             ], $customRules, [], $customAttributes);
@@ -325,6 +325,7 @@ class CustomChanges extends Component
                 ->first();
 
             if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
+                $costs = $userActionPlanAdvice->costs;
 
                 $this->customMeasureApplicationsFormData[$index]['costs'] = [
                     'from' => NumberFormatter::format($costs['from'] ?? '', 1),

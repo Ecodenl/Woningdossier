@@ -2,7 +2,7 @@
 
 return [
     'question' => [
-        'label' => 'Welke zaken zou u willen veranderen aan uw woning?',
-        'help' => 'Hier kunt u bestaande maatregelen selecteren die u extra zou willen aanpassen aan uw woning. U kunt ook zelf maatregelen toevoegen of bewerken die u zelf aan zou willen passen.',
+        'label' => 'Welke zaken zou je aan jouw woning willen veranderen?',
+        'help' => 'Hier kan je bestaande maatregelen selecteren die je extra zou willen aanpassen aan jouw woning. Je kan ook zelf maatregelen toevoegen of bewerken die je zelf aan zou willen passen.',
     ],
 ];

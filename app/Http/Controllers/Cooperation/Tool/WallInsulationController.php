@@ -100,9 +100,9 @@ class WallInsulationController extends ToolController
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-        $userEnergyHabit = $user->energyHabit;
+        $userEnergyHabit = $user->energyHabit()->forInputSource($this->masterInputSource)->first();
 
-        $result = WallInsulation::calculate($building, HoomdossierSession::getInputSource(true), $userEnergyHabit, $request->toArray());
+        $result = WallInsulation::calculate($building, $this->masterInputSource, $userEnergyHabit, $request->toArray());
 
         return response()->json($result);
     }

@@ -103,6 +103,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:building_type_categories,id'],
+                            'save_in' => 'building_features.building_type_category_id',
                             'short' => 'building-type-category',
                             'translation' => 'Wat voor soort woning heeft u?',
                             'tool_question_type_id' => $radioIconType->id,

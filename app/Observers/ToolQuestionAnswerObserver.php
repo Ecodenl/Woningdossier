@@ -12,7 +12,7 @@ class ToolQuestionAnswerObserver
     /**
      * Handle the tool question answer "created" event.
      *
-     * @param \App\ToolQuestionAnswer $toolQuestionAnswer
+     * @param \App\Models\ToolQuestionAnswer $toolQuestionAnswer
      * @return void
      */
     public function created(ToolQuestionAnswer $toolQuestionAnswer)
@@ -23,7 +23,7 @@ class ToolQuestionAnswerObserver
     /**
      * Handle the tool question answer "updated" event.
      *
-     * @param \App\ToolQuestionAnswer $toolQuestionAnswer
+     * @param \App\Models\ToolQuestionAnswer $toolQuestionAnswer
      * @return void
      */
     public function updated(ToolQuestionAnswer $toolQuestionAnswer)

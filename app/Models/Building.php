@@ -213,7 +213,7 @@ class Building extends Model
             $column = $saveIn['column'];
             $where  = array_merge($saveIn['where'], $where);
 
-            $modelName = "App\\Models\\".Str::ucFirst(Str::camel(Str::singular($table)));
+            $modelName = "App\\Models\\".Str::studly(Str::singular($table));
 
             // we do a get, so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
             $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();

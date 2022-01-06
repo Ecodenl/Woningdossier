@@ -96,6 +96,7 @@ class BuildingFeature extends Model
         'example_building_id',
         'element_values',
         'plastered_wall_surface',
+        'building_type_category_id',
         'building_type_id',
         'building_id',
         'wall_joints',

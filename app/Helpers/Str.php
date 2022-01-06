@@ -224,4 +224,17 @@ class Str
 
         return ! empty($matches);
     }
+
+    /**
+     * Prepare a JSON string for dropping in HTML.
+     * TODO: Tests
+     *
+     * @param  string  $json
+     *
+     * @return string
+     */
+    public static function prepareJsonForHtml(string $json): string
+    {
+        return str_replace('"', '\'', $json);
+    }
 }

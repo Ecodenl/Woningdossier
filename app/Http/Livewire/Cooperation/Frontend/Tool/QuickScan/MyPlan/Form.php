@@ -453,10 +453,11 @@ class Form extends Component
                 $cardInvestment = $from;
             } elseif ($from > 0 && $to > 0) {
                 $cardInvestment = (($from + $to) / 2);
+            } else {
+                // Force to 0, else, if not set, the next loop iteration will use the same value
+                // from last loop, causing incorrect calculations
+                $cardInvestment = 0;
             }
-
-            // Sometimes there is no data
-            $cardInvestment = $cardInvestment ?? 0;
 
             $investmentPerCard[$order] = $cardInvestment;
             $investment += $cardInvestment;

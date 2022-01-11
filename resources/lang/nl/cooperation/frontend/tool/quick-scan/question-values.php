@@ -2,6 +2,6 @@
 
 return [
     'specific-example-building' => [
-        'no-option' => 'Geen van de overige opties.',
+        'no-option' => 'Geen van deze woningen',
     ],
 ];

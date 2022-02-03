@@ -146,6 +146,16 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         // more of a fallback
         $buildYear = $buildingFeature->build_year;
 
+        // so this could happen on old legacy accounts where there is no build year available on the master or current input source
+        // that case we will try to pull a build year from any other input source as this is more credible than guessing anything.
+        if (is_null($buildYear)) {
+            $buildYear = $this->building->buildingFeatures()->allInputSources()->whereNotNull('build_year')->pluck('build_year')->first();
+            // it can still be empty, if so we will just set the current year as we have nothing to rely on.
+            if (is_null($buildYear)) {
+                $buildYear = date('Y');
+            }
+        }
+
         if (array_key_exists('build_year', $this->changes)) {
             $buildYear = $this->changes['build_year'];
         }

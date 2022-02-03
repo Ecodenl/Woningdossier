@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Cooperation\Frontend\Layouts\Parts;
 
 use App\Models\PrivateMessageView;
 use App\Helpers\Hoomdossier;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Messages extends Component
@@ -22,7 +23,9 @@ class Messages extends Component
 
     public function render()
     {
-        $this->messageCount = PrivateMessageView::getTotalUnreadMessagesForCurrentRole();
+        if (Auth::check()) {
+            $this->messageCount = PrivateMessageView::getTotalUnreadMessagesForCurrentRole();
+        }
 
         return view('livewire.cooperation.frontend.layouts.parts.messages');
     }

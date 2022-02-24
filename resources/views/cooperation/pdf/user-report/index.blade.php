@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/pdf.css') }}">
+    @if(app()->environment() === 'local')
+        @php
+          $href = $_SERVER['DOCUMENT_ROOT'] . '/css/pdf.css';
+        @endphp
+    @else
+        @php
+            $href = asset('css/pdf.css');
+        @endphp
+    @endif
+    <link rel="stylesheet" type="text/css" href="{{ $href }}">
     <title>Document</title>
 </head>
 

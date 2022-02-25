@@ -57,6 +57,7 @@ class UserActionPlanAdviceService
         $oldAdvices = UserActionPlanAdvice::forUser($user)
             ->forInputSource($masterInputSource)
             ->forStep($step)
+            ->withInvisible()
             ->get();
 
         // now delete the old advices, the one for the given input source and the master source.

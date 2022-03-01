@@ -5,8 +5,6 @@ namespace App\Listeners;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\HoomdossierSession;
 use App\Models\InputSource;
-use App\Models\Notification;
-use App\Models\Step;
 use Illuminate\Support\Facades\Artisan;
 
 class RecalculateToolForUserListener

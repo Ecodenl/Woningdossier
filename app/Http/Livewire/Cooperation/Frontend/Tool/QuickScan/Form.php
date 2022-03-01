@@ -258,8 +258,8 @@ class Form extends Component
             }
         }
 
-        // the INITIAL calculation will be handled by the CompletedSubStepObserver
 
+        // the INITIAL calculation will be handled by the CompletedSubStepObserver
         if ($shouldDoFullRecalculate) {
             // We should do a full recalculate because some base value that has impact on every calculation is changed.
             Log::debug("Dispatching full recalculate..");
@@ -271,7 +271,8 @@ class Form extends Component
                 '--with-old-advices' => true,
             ]);
 
-        } else if ($masterHasCompletedQuickScan) {
+            // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
+        } else if ($masterHasCompletedQuickScan && !empty($stepShortsToRecalculate)) {
             // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
             $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
             // since we are just re-calculating specific parts of the tool we do it without the old advices
@@ -281,13 +282,9 @@ class Form extends Component
                 '--user' => [$this->building->user->id],
                 '--input-source' => [$this->currentInputSource->short],
                 '--step-short' => $stepShortsToRecalculate,
-                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
                 '--with-old-advices' => false,
             ]);
         }
-
-        // TODO: @bodhi what is the use of this line
-        $this->toolQuestions = $this->subStep->toolQuestions;
 
         // Now mark the sub step as complete
         CompletedSubStep::firstOrCreate([

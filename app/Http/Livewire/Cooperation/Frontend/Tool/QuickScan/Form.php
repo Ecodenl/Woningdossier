@@ -271,6 +271,7 @@ class Form extends Component
                 '--with-old-advices' => true,
             ]);
 
+            // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
         } else if ($masterHasCompletedQuickScan && !empty($stepShortsToRecalculate)) {
             // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
             $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
@@ -281,7 +282,6 @@ class Form extends Component
                 '--user' => [$this->building->user->id],
                 '--input-source' => [$this->currentInputSource->short],
                 '--step-short' => $stepShortsToRecalculate,
-                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
                 '--with-old-advices' => false,
             ]);
         }

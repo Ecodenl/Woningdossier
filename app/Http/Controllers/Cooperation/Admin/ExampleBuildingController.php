@@ -43,7 +43,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(Cooperation $cooperation)
+    public
+    function create(Cooperation $cooperation)
     {
         $buildingTypes = BuildingType::all();
 
@@ -68,7 +69,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function store(ExampleBuildingRequest $request)
+    public
+    function store(ExampleBuildingRequest $request)
     {
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
@@ -80,7 +82,7 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->name = $translations;
 
         $exampleBuilding->buildingType()->associate($buildingType);
-        if (! is_null($cooperation)) {
+        if (!is_null($cooperation)) {
             $exampleBuilding->cooperation()->associate($cooperation);
         }
         $exampleBuilding->is_default = $request->get('is_default', false);
@@ -99,7 +101,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public
+    function show($id)
     {
     }
 
@@ -111,13 +114,14 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(Cooperation $cooperation, $exampleBuilding)
+    public
+    function edit(Cooperation $cooperation, $exampleBuilding)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::with([
             'contents' => function (Relation $query) {
                 $query->orderBy('build_year');
-            }, ])->findOrFail($exampleBuilding);
+            },])->findOrFail($exampleBuilding);
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
@@ -140,7 +144,8 @@ class ExampleBuildingController extends Controller
      *
      * @return array
      */
-    private function onlyApplicableInputs($contentStructure)
+    private
+    function onlyApplicableInputs($contentStructure)
     {
         $filterOutUserInterests = function ($key) {
             return false === stristr($key, 'user_interests');
@@ -183,12 +188,13 @@ class ExampleBuildingController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $id
+     * @param int $id
      * @param  $cooperation
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function update(ExampleBuildingRequest $request, Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public
+    function update(ExampleBuildingRequest $request, Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
@@ -197,7 +203,7 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->name = $translations;
 
         $exampleBuilding->buildingType()->associate($buildingType);
-        if (! is_null($cooperation)) {
+        if (!is_null($cooperation)) {
             $exampleBuilding->cooperation()->associate($cooperation);
         }
         $exampleBuilding->is_default = $request->get('is_default', false);
@@ -210,16 +216,17 @@ class ExampleBuildingController extends Controller
         return redirect()->route('cooperation.admin.example-buildings.edit', compact('exampleBuilding'))->with('success', __('cooperation/admin/example-buildings.update.success'));
     }
 
-    private function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
+    private
+    function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
     {
         foreach ($contents as $cid => $data) {
-            if (! is_null($data['build_year'])) {
+            if (!is_null($data['build_year'])) {
                 $data['content'] = array_key_exists('content', $data) ? $data['content'] : [];
 
                 $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
 
                 $content = null;
-                if (! is_numeric($cid) && 'new' == $cid) {
+                if (!is_numeric($cid) && 'new' == $cid) {
                     if (1 == $new) {
                         // addition
                         $content = new ExampleBuildingContent($data);
@@ -244,7 +251,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public
+    function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
         $exampleBuilding->delete();
 
@@ -258,7 +266,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public
+    function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuildingContents = $exampleBuilding->contents;

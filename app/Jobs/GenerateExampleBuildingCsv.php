@@ -3,7 +3,9 @@
 namespace App\Jobs;
 
 use App\Exports\Cooperation\CsvExport;
+use App\Helpers\ToolHelper;
 use App\Models\Cooperation;
+use App\Models\ExampleBuilding;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Services\CsvService;
@@ -21,6 +23,7 @@ class GenerateExampleBuildingCsv implements ShouldQueue
     public $cooperation;
     public $fileType;
     public $fileStorage;
+
     /**
      * Create a new job instance.
      *
@@ -40,10 +43,50 @@ class GenerateExampleBuildingCsv implements ShouldQueue
      */
     public function handle()
     {
+        // todo: pull this method to a service or sumething
+        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getContentStructure());
 
-//        $rows = CsvService::totalReport($this->cooperation);
 
+        $rows[] = collect($contentStructure)->pluck('*.*.label')->flatten()->filter()->toArray();
+
+        $exampleBuildings = ExampleBuilding::generic()->with('content')->get();
+        foreach ($exampleBuildings as $exampleBuilding) {
+
+            foreach ($exampleBuilding->contents as $exampleBuildingContent) {
+                $rows[$exampleBuildingContent->id] = [
+                    $exampleBuilding->name,
+                    $exampleBuildingContent->year
+                ];
+
+
+                foreach ($contentStructure as $step => $dataForSubSteps) {
+                    foreach ($dataForSubSteps as $subStep => $subStepData) {
+                        foreach ($subStepData as $formFieldName => $rowData) {
+                            if ($formFieldName != 'calculations') {
+                                $contentKey = "{$step}.{$subStep}.{$formFieldName}";
+
+                                // what the admins filled in as value for the example building
+                                $exampleBuildingValue = $exampleBuildingContent->getValue($contentKey);
+
+                                if (array_key_exists('options', $rowData)) {
+                                    if (is_array($exampleBuildingValue)) {
+                                        $exampleBuildingValues = array_map(fn($value) => $rowData['options'][$value], $exampleBuildingValue);
+                                        $exampleBuildingValue = implode(',', $exampleBuildingValues);
+                                    } else if (!is_null($exampleBuildingValue)) {
+                                        $exampleBuildingValue = $rowData['options'][$exampleBuildingValue];
+                                    }
+                                }
+
+
+                                $rows[$exampleBuildingContent->id][$contentKey] = $exampleBuildingValue;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         // export the csv file
+
 //        Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);
 
         $this->fileStorage->isProcessed();

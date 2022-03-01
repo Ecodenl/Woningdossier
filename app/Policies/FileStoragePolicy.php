@@ -63,6 +63,8 @@ class FileStoragePolicy
                     return true;
                 }
                 break;
+            case 'example-building-overview':
+                return $user->hasRoleAndIsCurrentRole('super-admin');
             default:
                 // for now default, in the future more cases may be specified.
                 if ($user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {

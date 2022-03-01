@@ -1,6 +1,8 @@
 @extends('cooperation.admin.layouts.app')
 
 @section('content')
+    @livewire('cooperation.admin.example-buildings.csv-export', ['cooperation' => $cooperation])
+
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.example-buildings.index.header')

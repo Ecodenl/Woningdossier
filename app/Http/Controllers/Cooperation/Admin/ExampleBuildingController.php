@@ -23,7 +23,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function index()
+    public function index(Cooperation $cooperation)
     {
         $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id', 'asc')
             ->orderBy('order', 'asc');
@@ -34,8 +34,9 @@ class ExampleBuildingController extends Controller
 
         $exampleBuildings = $exampleBuildingsQuery->get();
 
-        return view('cooperation.admin.example-buildings.index', compact('exampleBuildings'));
+        return view('cooperation.admin.example-buildings.index', compact('exampleBuildings', 'cooperation'));
     }
+
 
     /**
      * Show the form for creating a new resource.

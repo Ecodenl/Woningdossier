@@ -21,6 +21,7 @@ use App\Models\Notification;
 use App\Models\Questionnaire;
 use App\Models\User;
 use App\Services\FileStorageService;
+use App\Services\FileTypeService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -259,21 +260,10 @@ class FileStorageController extends Controller
     private function getFileNameForFileType(FileType $fileType, User $user, InputSource $inputSource)
     {
         if ('pdf-report' == $fileType->short) {
-//            2013es14-Bewonster-A-g-Bewoner.pdf;
-
+            // 2013es14-Bewonster-A-g-Bewoner.pdf;
             $fileName = trim($user->building->postal_code).$user->building->number.'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
-
-//            $fileName = time().'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
         } else {
-            // create a short hash to prepend on the filename.
-            $substrBycrypted = substr(\Hash::make(Str::uuid()), 7, 5);
-            $substrUuid = substr(Str::uuid(), 0, 8);
-            $hash = $substrUuid.$substrBycrypted;
-
-            // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
-            // Because if there are multiple jobs in the queue, only the job thats being processed would show up as "generating"
-            // remove the / to prevent unwanted directories
-            $fileName = str_replace('/', '', $hash.\Illuminate\Support\Str::slug($fileType->name).'.csv');
+            $fileName = (new FileTypeService($fileType))->niceFileName();
         }
 
         return $fileName;

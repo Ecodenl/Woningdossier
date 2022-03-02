@@ -11,7 +11,9 @@
             </button>
 
             @if($fileStorage instanceof \App\Models\FileStorage)
-                <a href="{{route('cooperation.file-storage.download', ['cooperation' => $cooperation, 'fileStorage' => $fileStorage])}}" class="btn btn-success">Download bestaande voorbeeldwoning CSV</a>
+                <a href="{{route('cooperation.file-storage.download', ['cooperation' => $cooperation, 'fileStorage' => $fileStorage])}}" class="btn btn-success">
+                    Download bestaande voorbeeldwoning CSV ({{$fileStorage->created_at->format('Y-m-d H:i')}})
+                </a>
             @endif
         </div>
     </div>

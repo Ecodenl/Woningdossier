@@ -45,6 +45,8 @@ class UserFormRequest extends FormRequest
 
         $account = Account::where('email', $this->get('email'))->first();
 
+        // so at this point we already know the data in invalid because the account is already associated with the currrent cooperation
+        // however we add the unique rule so we let laravel do the error handling
         if ($account instanceof Account && $account->isAssociatedWith($this->route('cooperation'))) {
             $emailRules[] = 'unique:accounts,email';
         }

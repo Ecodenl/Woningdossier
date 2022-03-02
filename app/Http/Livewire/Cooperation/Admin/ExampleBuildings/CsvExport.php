@@ -38,6 +38,7 @@ class CsvExport extends Component
             'cooperation_id' => $this->cooperation->id,
             'file_type_id' => $this->fileType->id,
             'filename' => (new FileTypeService($this->fileType))->niceFileName(),
+            'is_being_processed' => true,
         ]);
 
         $this->authorize('store', [$this->fileStorage, $this->fileType]);

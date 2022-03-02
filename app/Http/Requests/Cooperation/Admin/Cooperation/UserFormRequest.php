@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 
+use App\Models\Account;
 use App\Rules\HouseNumber;
 use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
@@ -28,8 +29,8 @@ class UserFormRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'email' => 'required|email',
+        $emailRules = ['required', 'email'];
+        $rules = [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'postal_code' => ['required', new PostalCode('nl')],
@@ -41,6 +42,15 @@ class UserFormRequest extends FormRequest
             'roles' => 'required|exists:roles,id',
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
         ];
+
+        $account = Account::where('email', $this->get('email'))->first();
+
+        if ($account instanceof Account && $account->isAssociatedWith($this->route('cooperation'))) {
+            $emailRules[] = 'unique:accounts,email';
+        }
+        $rules['email'] = $emailRules;
+
+        return $rules;
     }
 
     /**

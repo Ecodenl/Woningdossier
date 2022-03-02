@@ -12,6 +12,7 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\Service;
+use App\Services\ContentStructureService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -32,6 +33,13 @@ class ExampleBuildingController extends Controller
             $exampleBuildingsQuery->forMyCooperation();
         }
 
+        $contentStructure = ContentStructureService::init(
+            ToolHelper::getContentStructure()
+        )->applicableForExampleBuildings();
+
+
+        $rows[] = ['Naam', 'Bouwjaar', ...collect($contentStructure)->pluck('*.*.label')->flatten()->filter()->toArray()];
+//        dd($rows);
         $exampleBuildings = $exampleBuildingsQuery->get();
 
         return view('cooperation.admin.example-buildings.index', compact('exampleBuildings', 'cooperation'));
@@ -53,7 +61,9 @@ class ExampleBuildingController extends Controller
             $cooperations = Cooperation::all();
         }
 
-        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getContentStructure());
+        $contentStructure = ContentStructureService::init(
+            ToolHelper::getContentStructure()
+        )->applicableForExampleBuildings();
 
         return view('cooperation.admin.example-buildings.create',
             compact(
@@ -88,6 +98,8 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->is_default = $request->get('is_default', false);
         $exampleBuilding->order = $request->get('order', null);
         $exampleBuilding->save();
+
+
 
         $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
@@ -125,63 +137,15 @@ class ExampleBuildingController extends Controller
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
-        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getContentStructure());
+        $contentStructure = ContentStructureService::init(
+            ToolHelper::getContentStructure()
+        )->applicableForExampleBuildings();
 
         return view('cooperation.admin.example-buildings.edit',
             compact(
                 'exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'
             )
         );
-    }
-
-    /**
-     * We only want the applicable inputs for the example building.
-     *
-     * NO element or service questions will be shown when already displayed in the general data page
-     * NO user interest questions throughout the steps
-     *
-     * @param $contentStructure
-     *
-     * @return array
-     */
-    private
-    function onlyApplicableInputs($contentStructure)
-    {
-        $filterOutUserInterests = function ($key) {
-            return false === stristr($key, 'user_interests');
-        };
-
-        foreach (Arr::except($contentStructure, ['general-data', 'insulated-glazing', 'ventilation',]) as $stepShort => $structureWithinStep) {
-            $contentStructure[$stepShort]['-'] = array_filter($structureWithinStep['-'], $filterOutUserInterests, ARRAY_FILTER_USE_KEY);
-        }
-
-        unset(
-            $contentStructure['general-data']['building-characteristics']['building_features.building_type_id'],
-            $contentStructure['general-data']['building-characteristics']['building_features.build_year'],
-            $contentStructure['general-data']['usage']['user_energy_habits.resident_count'],
-
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_gas'],
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_electricity'],
-            $contentStructure['solar-panels']['-']['user_energy_habits.amount_electricity'],
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.resident_count'],
-
-            $contentStructure['heater']['-']['user_energy_habits.water_comfort_id'],
-            $contentStructure['solar-panels']['-']['building_pv_panels.total_installed_power']
-        );
-
-        // filter out interest stuff from the interest page
-        $contentStructure['general-data']['interest'] = array_filter($contentStructure['general-data']['interest'], function ($key) {
-            return false === stristr($key, 'user_interest');
-        }, ARRAY_FILTER_USE_KEY);
-
-        // Remove general data considerables
-        foreach (($contentStructure['general-data']['interest'] ?? []) as $interestField => $interestData) {
-            if (Str::endsWith($interestField, 'is_considering')) {
-                unset($contentStructure['general-data']['interest'][$interestField]);
-            }
-        }
-
-        return $contentStructure;
     }
 
     /**

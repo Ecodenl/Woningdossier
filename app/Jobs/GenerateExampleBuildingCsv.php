@@ -8,7 +8,7 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\FileStorage;
 use App\Models\FileType;
-use App\Services\CsvService;
+use App\Services\ContentStructureService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -43,13 +43,13 @@ class GenerateExampleBuildingCsv implements ShouldQueue
      */
     public function handle()
     {
-        // todo: pull this method to a service or sumething
-        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getContentStructure());
+        $contentStructure = ContentStructureService::init(
+            ToolHelper::getContentStructure()
+        )->applicableForExampleBuildings();
 
+        $rows[] = ['Naam', 'Bouwjaar', ...collect($contentStructure)->pluck('*.*.label')->flatten()->filter()->toArray()];
 
-        $rows[] = collect($contentStructure)->pluck('*.*.label')->flatten()->filter()->toArray();
-
-        $exampleBuildings = ExampleBuilding::generic()->with('content')->get();
+        $exampleBuildings = ExampleBuilding::generic()->with('contents')->get();
         foreach ($exampleBuildings as $exampleBuilding) {
 
             foreach ($exampleBuilding->contents as $exampleBuildingContent) {
@@ -85,9 +85,8 @@ class GenerateExampleBuildingCsv implements ShouldQueue
                 }
             }
         }
-        // export the csv file
 
-//        Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);
+        Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);
 
         $this->fileStorage->isProcessed();
     }

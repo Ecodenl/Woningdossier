@@ -17,6 +17,11 @@ class FileStoragePolicy
     public function download(Account $account, FileStorage $fileStorage, Building $building = null)
     {
         $user = $account->user();
+
+        if ($user->hasRoleAndIsCurrentRole(['super-admin']) && $fileStorage->fileType->short === 'example-building-overview') {
+            return true;
+        }
+
         // some other logic for resident wil come in the near future.
         if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && $fileStorage->cooperation_id == HoomdossierSession::getCooperation()) {
             return true;

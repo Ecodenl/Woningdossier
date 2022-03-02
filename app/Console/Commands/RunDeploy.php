@@ -42,7 +42,7 @@ class RunDeploy extends Command
     {
 
         $commands = [
-            SeedCommand::class => ['--class' => 'FileTypesTableSeeder']
+            SeedCommand::class => ['--class' => 'FileTypesTableSeeder', '--force' => true]
         ];
 
         foreach ($commands as $command => $arguments) {

@@ -10,7 +10,7 @@
                 @endif
             </button>
 
-            @if($fileStorage instanceof \App\Models\FileStorage)
+            @if($fileStorage instanceof \App\Models\FileStorage && $fileStorage->isProcessed())
                 <a href="{{route('cooperation.file-storage.download', ['cooperation' => $cooperation, 'fileStorage' => $fileStorage])}}" class="btn btn-success">
                     Download bestaande voorbeeldwoning CSV ({{$fileStorage->created_at->format('Y-m-d H:i')}})
                 </a>

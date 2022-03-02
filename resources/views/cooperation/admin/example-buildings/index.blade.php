@@ -1,7 +1,9 @@
 @extends('cooperation.admin.layouts.app')
 
 @section('content')
-    @livewire('cooperation.admin.example-buildings.csv-export', ['cooperation' => $cooperation])
+    @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin'))
+        @livewire('cooperation.admin.example-buildings.csv-export', ['cooperation' => $cooperation])
+    @endif
 
     <div class="panel panel-default">
         <div class="panel-heading">

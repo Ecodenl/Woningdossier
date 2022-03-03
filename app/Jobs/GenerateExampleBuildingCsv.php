@@ -55,7 +55,7 @@ class GenerateExampleBuildingCsv implements ShouldQueue
             foreach ($exampleBuilding->contents as $exampleBuildingContent) {
                 $rows[$exampleBuildingContent->id] = [
                     $exampleBuilding->name,
-                    $exampleBuildingContent->year
+                    $exampleBuildingContent->build_year
                 ];
 
 

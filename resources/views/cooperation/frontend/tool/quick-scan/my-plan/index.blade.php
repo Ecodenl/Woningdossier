@@ -23,6 +23,7 @@
             </div>
 
             @livewire('cooperation.frontend.tool.quick-scan.my-plan.form', compact('building'))
+            @livewire('cooperation.frontend.tool.quick-scan.my-plan.comments', compact('building'))
 
         </div>
 

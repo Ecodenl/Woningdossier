@@ -29,9 +29,7 @@
                         <button class="btn btn-purple"
                                 @if($disableResident) disabled @endif
                                 wire:click="save('{{\App\Models\InputSource::RESIDENT_SHORT}}')"
-                                wire:loading.attr="disabled"
-                                x-on:click="close()"
-                                wire:target="saveComment">
+                                x-on:click="close()">
                             @lang('default.buttons.save')
                         </button>
                     </div>
@@ -60,12 +58,11 @@
                     <button class="btn btn-purple"
                             @if($disableCoach) disabled @endif
                             wire:click="save('{{\App\Models\InputSource::COACH_SHORT}}')"
-                            wire:loading.attr="disabled"
-                            wire:target="saveComment"
                             x-on:click="close()">
                         @lang('default.buttons.save')
                     </button>
                 @endcomponent
+                    </div>
             </div>
         @endcomponent
     </div>

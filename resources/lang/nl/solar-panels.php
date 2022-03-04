@@ -29,13 +29,6 @@ return [
             'help' => 'Hier kunt u opmerkingen over uw specifieke situatie vastleggen, bijvoorbeeld voor een gesprek met een energiecoach of een uitvoerend bedrijf.',
         ],
     ],
-    'indication-for-costs' => [
-        'performance' => [
-            'ideal'    => 'Ideaal',
-            'no-go'    => 'Onrendabel',
-            'possible' => 'Mogelijk',
-        ],
-    ],
     'comment' => [
         'title' => 'Toelichting op zonnepanelen',
     ],

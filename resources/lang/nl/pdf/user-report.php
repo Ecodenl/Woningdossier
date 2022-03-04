@@ -59,9 +59,8 @@ return [
                 'costs' => 'Kosten (€)',
                 'savings' => 'Besparing (€/jaar)',
             ],
+            'total' => 'Totaal',
 
-            'current-annual-energy-costs' => 'Indicatieve huidige energiekosten per jaar:',
-            'expected-annual-energy-costs' => 'Indicatieve verwachte energiekosten per jaar:'
         ],
 
         'comment-action-plan' => 'Toelichting op het stappenplan',

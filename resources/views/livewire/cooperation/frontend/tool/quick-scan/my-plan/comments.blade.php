@@ -18,7 +18,7 @@
                           x-on:click="toggle()"
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
 
-                @component('cooperation.frontend.layouts.components.modal', ['id' => $modalId ?? '',])
+                @component('cooperation.frontend.layouts.components.modal', ['class' => 'w-full md:w-1/2'])
                     <textarea class="w-full form-input" wire:model="residentCommentText"></textarea>
 
                     @slot('header')
@@ -52,7 +52,7 @@
             <textarea id="comments-coach" class="w-full form-input" wire:model="coachCommentText"
                       @if($disableCoach) disabled @endif x-bind="typable" wire:ignore x-on:click="open()"
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
-                @component('cooperation.frontend.layouts.components.modal', ['id' => $modalId ?? ''])
+                @component('cooperation.frontend.layouts.components.modal', ['class' => 'w-full md:w-1/2'])
                     <textarea class="w-full form-input" wire:model="coachCommentText"></textarea>
 
                     <div class="flex justify-end space-x-2">

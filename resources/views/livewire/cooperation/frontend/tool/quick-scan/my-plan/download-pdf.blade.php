@@ -1,4 +1,4 @@
-<div class="w-full flex pb-5">
+<div class="w-full flex pt-5 pb-5">
     <div class="flex w-full justify-end space-x-5">
         <div wire:poll="checkIfFileIsProcessed">
             @if($fileStorage instanceof \App\Models\FileStorage)

@@ -3,7 +3,7 @@
         @php
             $considerableName = $considerable->measure_name ?? $considerable->name;
             // TODO: Properly translate this
-            $translation = "Wilt u {$considerableName} laten doorrekenen?";
+            $translation = "Wilt je {$considerableName} meenemen in de berekening?";
         @endphp
         @component('cooperation.tool.components.step-question', [
                     'id' => 'considerable',

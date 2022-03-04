@@ -102,9 +102,9 @@ class VentilationController extends ToolController
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-        $userEnergyHabit = $user->energyHabit;
+        $userEnergyHabit = $user->energyHabit()->forInputSource($this->masterInputSource)->first();
 
-        $result = Ventilation::calculate($building, HoomdossierSession::getInputSource(true), $userEnergyHabit, $request->all());
+        $result = Ventilation::calculate($building, $this->masterInputSource, $userEnergyHabit, $request->all());
 
         return response()->json($result);
     }

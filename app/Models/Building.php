@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Helpers\Arr;
+use App\Helpers\QuestionValues\QuestionValue;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
-use App\Models\ToolQuestionAnswer;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -139,16 +139,7 @@ class Building extends Model
             $column = $saveIn['column'];
             $where  = array_merge($saveIn['where'], $where);
 
-            $modelName = "App\\Models\\".Str::ucFirst(
-                    Str::camel(Str::singular($table))
-                );
-
-            // these contain the human-readable answers, we need this because the answer for a yes, no, unknown could be a 1,2,3
-            // we can just use this one, as it doesnt really matter.
-            $questionValues = $toolQuestion->getQuestionValues()->pluck(
-                'name',
-                'value'
-            );
+            $modelName = "App\\Models\\" . Str::studly(Str::singular($table));
 
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
             $models = $modelName::allInputSources()
@@ -161,10 +152,18 @@ class Building extends Model
 
             // We still loop though, to ensure we get human-readable answers
             foreach ($values as $inputSourceId => $value) {
+                $inputSource = $inputSources->where('id', $inputSourceId)->first();
+
+                // these contain the human-readable answers, we need this because the answer for a yes, no, unknown
+                // could be a 1,2,3.
+                $questionValues = QuestionValue::getQuestionValues($toolQuestion, $this, $inputSource)->pluck(
+                    'name',
+                    'value'
+                );
 
                 $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
 
-                $answers[$inputSources->where('id', $inputSourceId)->first()->short][] = [
+                $answers[$inputSource->short][] = [
                     'answer' => $answer,
                     'value'  => $value,
                 ];
@@ -178,9 +177,7 @@ class Building extends Model
                 ->where($where)
                 ->get();
             foreach ($toolQuestionAnswers as $index => $toolQuestionAnswer) {
-                $answer                                                   = optional(
-                                                                                $toolQuestionAnswer->toolQuestionCustomValue
-                                                                            )->name ?? $toolQuestionAnswer->answer;
+                $answer = optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer;
                 $answers[$toolQuestionAnswer->inputSource->short][$index] = [
                     'answer' => $answer,
                     'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? null,
@@ -216,7 +213,7 @@ class Building extends Model
             $column = $saveIn['column'];
             $where  = array_merge($saveIn['where'], $where);
 
-            $modelName = "App\\Models\\".Str::ucFirst(Str::camel(Str::singular($table)));
+            $modelName = "App\\Models\\".Str::studly(Str::singular($table));
 
             // we do a get, so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
             $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();

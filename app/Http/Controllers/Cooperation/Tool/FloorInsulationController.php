@@ -9,6 +9,7 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Tool\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\Element;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
@@ -67,8 +68,12 @@ class FloorInsulationController extends ToolController
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $result = FloorInsulation::calculate($building, HoomdossierSession::getInputSource(true), $user->energyHabit,
-            $request->all());
+        $result = FloorInsulation::calculate(
+            $building,
+            $this->masterInputSource,
+            $user->energyHabit()->forInputSource($this->masterInputSource)->first(),
+            $request->all()
+        );
 
         return response()->json($result);
     }

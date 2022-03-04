@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Console\Commands\Tool\RecalculateForUser;
+use App\Helpers\Arr;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
@@ -174,7 +175,7 @@ class Form extends Component
             }
         }
 
-        if (!empty($this->rules)) {
+        if (! empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules, [], $this->attributes);
@@ -257,8 +258,8 @@ class Form extends Component
             }
         }
 
-        // the INITIAL calculation will be handled by the CompletedSubStepObserver
 
+        // the INITIAL calculation will be handled by the CompletedSubStepObserver
         if ($shouldDoFullRecalculate) {
             // We should do a full recalculate because some base value that has impact on every calculation is changed.
             Log::debug("Dispatching full recalculate..");
@@ -270,7 +271,8 @@ class Form extends Component
                 '--with-old-advices' => true,
             ]);
 
-        } else if ($masterHasCompletedQuickScan) {
+            // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
+        } else if ($masterHasCompletedQuickScan && !empty($stepShortsToRecalculate)) {
             // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
             $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
             // since we are just re-calculating specific parts of the tool we do it without the old advices
@@ -280,13 +282,9 @@ class Form extends Component
                 '--user' => [$this->building->user->id],
                 '--input-source' => [$this->currentInputSource->short],
                 '--step-short' => $stepShortsToRecalculate,
-                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
                 '--with-old-advices' => false,
             ]);
         }
-
-        // TODO: @bodhi what is the use of this line
-        $this->toolQuestions = $this->subStep->toolQuestions;
 
         // Now mark the sub step as complete
         CompletedSubStep::firstOrCreate([
@@ -413,12 +411,16 @@ class Form extends Component
 
     private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)
     {
+        // TODO: We can use ToolQuestionHelper::resolveSaveIn here
+        // All we'd need to add is a return of the extra columns.
+        // And a rewrite of the indexes below (line 459 as of writing)
+
         $savedInParts = explode('.', $toolQuestion->save_in);
         $table = $savedInParts[0];
         $column = $savedInParts[1];
 
         // We will save it on the model, this way we keep the current events behind them
-        $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
+        $modelName = "App\\Models\\" . Str::studly(Str::singular($table));
 
         if (Schema::hasColumn($table, 'user_id')) {
             $where = ['user_id' => $this->building->user_id];
@@ -474,6 +476,16 @@ class Form extends Component
             }
         }
 
+        $answerData = [$column => $givenAnswer];
+
+        // Before saving, we must do one last thing. We need to check if we need to apply some more logic.
+        $studlyShort = Str::studly($toolQuestion->short);
+        $questionAnswerClass = "App\\Helpers\\QuestionAnswers\\{$studlyShort}";
+        if (class_exists($questionAnswerClass)) {
+            $additionalData = $questionAnswerClass::apply($toolQuestion, $givenAnswer);
+            $answerData = array_merge($answerData, $additionalData);
+        }
+
         // Detect if the example building will be changing. If so, apply it.
         // I hear you thinking: wouldn't this be better off in an observer?
         // The answer is: No. Unless you want to trigger an infinite loop
@@ -481,27 +493,25 @@ class Form extends Component
         // which will trigger the observer, which will start applying the
         // example building, which will delete and recreate records, which will
         // trigger the observer.. ah well: you get the idea.
-        if (in_array($table, ['building_features']) && in_array($column, ['build_year', 'building_type_id', 'example_building_id'])) {
+        if (in_array($table, ['building_features']) && Arr::inArrayAny(['build_year', 'building_type_id', 'example_building_id'], array_keys($answerData))) {
             // set the boolean to the appropriate value. Example building will
             // be applied AFTER saving the current form (for getting the
             // appropriate values).
 
-            $changes = [$column => $givenAnswer];
-            Log::debug($table . "." . $column . " has changed:");
-            Log::debug($changes);
+            Log::debug("Changes for table '{$table}':");
+            Log::debug($answerData);
 
             $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
             // apply the example building for the given changes.
             // we give him the old building features, otherwise we cant verify the changes
-            ApplyExampleBuildingForChanges::dispatchNow($oldBuildingFeature, $changes, $this->currentInputSource);
-
+            ApplyExampleBuildingForChanges::dispatchNow($oldBuildingFeature, $answerData, $this->currentInputSource);
         }
 
         // Now save it
         $modelName::allInputSources()
             ->updateOrCreate(
                 $where,
-                [$column => $givenAnswer]
+                $answerData
             );
     }
 

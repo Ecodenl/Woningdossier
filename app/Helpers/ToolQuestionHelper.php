@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
@@ -168,7 +169,7 @@ class ToolQuestionHelper {
         }
 
         if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
-            $questionValues = $toolQuestion->getQuestionValues();
+            $questionValues = QuestionValue::getQuestionValues($toolQuestion, $building, $inputSource);
 
             if ($questionValues->isNotEmpty()) {
                 $humanReadableAnswers = [];

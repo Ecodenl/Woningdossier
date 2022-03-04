@@ -72,7 +72,7 @@ class InsulatedGlazingController extends ToolController
                     ->first();
                 $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
-                if (! $currentInsulatedGlazingInputs->isEmpty()) {
+                if (!$currentInsulatedGlazingInputs->isEmpty()) {
                     $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInputs;
                 }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
@@ -97,9 +97,13 @@ class InsulatedGlazingController extends ToolController
     public function calculate(Request $request)
     {
         $building = HoomdossierSession::getBuilding(true);
-        $inputSource = HoomdossierSession::getInputSource(true);
 
-        $result = InsulatedGlazing::calculate($building, $inputSource, $building->user->energyHabit, $request->all());
+        $result = InsulatedGlazing::calculate(
+            $building,
+            $this->masterInputSource,
+            $building->user->energyHabit()->forInputSource($this->masterInputSource)->first(),
+            $request->all()
+        );
 
         return response()->json($result);
     }
@@ -136,7 +140,7 @@ class InsulatedGlazingController extends ToolController
                 if (SupportStr::startsWith($dirtyName, 'building_insulated_glazings')) {
                     // Format always has the ID as second attr
                     $id = explode('.', Str::htmlArrToDot($dirtyName))[1] ?? null;
-                    if (! is_null($id) && ! in_array($id, $updatedMeasureIds)) {
+                    if (!is_null($id) && !in_array($id, $updatedMeasureIds)) {
                         // Add ID
                         $updatedMeasureIds[] = $id;
                     }

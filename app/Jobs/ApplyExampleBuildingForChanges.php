@@ -132,15 +132,29 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
     private function retriggerExampleBuildingApplication(ExampleBuilding $exampleBuilding)
     {
         Log::debug(__METHOD__);
-        $buildingFeatures =  $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
-        if ($this->building->example_building_id !== $exampleBuilding->id) {
-            Log::debug(__CLASS__." Example building ID changes (" . $this->building->example_building_id . " -> " . $exampleBuilding->id . ")");
+        $buildingFeature =  $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
+        if ($buildingFeature->example_building_id !== $exampleBuilding->id) {
+            Log::debug(__CLASS__." Example building ID changes (" . $buildingFeature->example_building_id . " -> " . $exampleBuilding->id . ")");
             // change example building, let the observer do the rest
-            $buildingFeatures->update(['example_building_id' => $exampleBuilding->id]);
+            $buildingFeatureToUpdate = $this->building->buildingFeatures()->forInputSource($this->applyForInputSource)->first();
+
+            if ($buildingFeatureToUpdate instanceof BuildingFeature) {
+                $buildingFeatureToUpdate->update(['example_building_id' => $exampleBuilding->id]);
+            }
         }
 
         // more of a fallback
-        $buildYear = $buildingFeatures->build_year;
+        $buildYear = $buildingFeature->build_year;
+
+        // so this could happen on old legacy accounts where there is no build year available on the master or current input source
+        // that case we will try to pull a build year from any other input source as this is more credible than guessing anything.
+        if (is_null($buildYear)) {
+            $buildYear = $this->building->buildingFeatures()->allInputSources()->whereNotNull('build_year')->pluck('build_year')->first();
+            // it can still be empty, if so we will just set the current year as we have nothing to rely on.
+            if (is_null($buildYear)) {
+                $buildYear = date('Y');
+            }
+        }
 
         if (array_key_exists('build_year', $this->changes)) {
             $buildYear = $this->changes['build_year'];

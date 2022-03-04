@@ -50,7 +50,7 @@ class HeaterController extends ToolController
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $result = Heater::calculate($building, $user->energyHabit, $request->all());
+        $result = Heater::calculate($building, $user->energyHabit()->forInputSource($this->masterInputSource), $request->all());
 
         return response()->json($result);
     }

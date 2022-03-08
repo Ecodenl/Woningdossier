@@ -268,18 +268,6 @@
             </div>
         </div>
 
-        <div class="flex flex-row flex-wrap w-full system-performance">
-            <div class="w-full md:w-8/12 md:ml-2/12">
-                @component('cooperation.frontend.layouts.parts.alert', [
-                    'color' => 'yellow',
-                    'dismissible' => false
-                ])
-                    <p id="performance-text" class="text-yellow"></p>
-                @endcomponent
-            </div>
-        </div>
-
-
         @include('cooperation.tool.includes.comment', [
              'translation' => 'solar-panels.index.specific-situation'
          ])
@@ -345,19 +333,6 @@
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
                             $("input#interest_comparable").val(hoomdossierNumberFormat(data.interest_comparable, '{{ app()->getLocale() }}', 1));
-                        }
-                        if (data.hasOwnProperty('performance')) {
-                            let $systemAlert = $(".system-performance .alert");
-                            let $systemText = $(".system-performance .alert #performance-text");
-
-                            $("#performance-text").html("<strong>" + data.performance.text + "</strong>");
-                            $systemAlert.removeClass('text-red border-red text-yellow border-yellow text-green border-green').addClass(`text-${data.performance.alert} border-${data.performance.alert}`);
-                            $systemText.removeClass('text-red text-yellow text-green').addClass(`text-${data.performance.alert}`);
-
-                            $(".system-performance").show();
-                        } else {
-                            $("#performance-text").html("");
-                            $(".system-performance").hide();
                         }
                         if (data.hasOwnProperty('total_power')) {
                             $("#solar-panels-total-power").html(data.total_power);

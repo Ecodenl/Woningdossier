@@ -12,6 +12,7 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\Service;
+use App\Services\ContentStructureService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -23,7 +24,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function index()
+    public function index(Cooperation $cooperation)
     {
         $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id', 'asc')
             ->orderBy('order', 'asc');
@@ -32,17 +33,26 @@ class ExampleBuildingController extends Controller
             $exampleBuildingsQuery->forMyCooperation();
         }
 
+        $contentStructure = ContentStructureService::init(
+            ToolHelper::getContentStructure()
+        )->applicableForExampleBuildings();
+
+
+        $rows[] = ['Naam', 'Bouwjaar', ...collect($contentStructure)->pluck('*.*.label')->flatten()->filter()->toArray()];
+//        dd($rows);
         $exampleBuildings = $exampleBuildingsQuery->get();
 
-        return view('cooperation.admin.example-buildings.index', compact('exampleBuildings'));
+        return view('cooperation.admin.example-buildings.index', compact('exampleBuildings', 'cooperation'));
     }
+
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(Cooperation $cooperation)
+    public
+    function create(Cooperation $cooperation)
     {
         $buildingTypes = BuildingType::all();
 
@@ -51,7 +61,9 @@ class ExampleBuildingController extends Controller
             $cooperations = Cooperation::all();
         }
 
-        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getContentStructure());
+        $contentStructure = ContentStructureService::init(
+            ToolHelper::getContentStructure()
+        )->applicableForExampleBuildings();
 
         return view('cooperation.admin.example-buildings.create',
             compact(
@@ -67,7 +79,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function store(ExampleBuildingRequest $request)
+    public
+    function store(ExampleBuildingRequest $request)
     {
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
@@ -79,12 +92,14 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->name = $translations;
 
         $exampleBuilding->buildingType()->associate($buildingType);
-        if (! is_null($cooperation)) {
+        if (!is_null($cooperation)) {
             $exampleBuilding->cooperation()->associate($cooperation);
         }
         $exampleBuilding->is_default = $request->get('is_default', false);
         $exampleBuilding->order = $request->get('order', null);
         $exampleBuilding->save();
+
+
 
         $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
@@ -98,7 +113,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public
+    function show($id)
     {
     }
 
@@ -110,17 +126,20 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(Cooperation $cooperation, $exampleBuilding)
+    public
+    function edit(Cooperation $cooperation, $exampleBuilding)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::with([
             'contents' => function (Relation $query) {
                 $query->orderBy('build_year');
-            }, ])->findOrFail($exampleBuilding);
+            },])->findOrFail($exampleBuilding);
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
-        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getContentStructure());
+        $contentStructure = ContentStructureService::init(
+            ToolHelper::getContentStructure()
+        )->applicableForExampleBuildings();
 
         return view('cooperation.admin.example-buildings.edit',
             compact(
@@ -130,64 +149,16 @@ class ExampleBuildingController extends Controller
     }
 
     /**
-     * We only want the applicable inputs for the example building.
-     *
-     * NO element or service questions will be shown when already displayed in the general data page
-     * NO user interest questions throughout the steps
-     *
-     * @param $contentStructure
-     *
-     * @return array
-     */
-    private function onlyApplicableInputs($contentStructure)
-    {
-        $filterOutUserInterests = function ($key) {
-            return false === stristr($key, 'user_interests');
-        };
-
-        foreach (Arr::except($contentStructure, ['general-data', 'insulated-glazing', 'ventilation',]) as $stepShort => $structureWithinStep) {
-            $contentStructure[$stepShort]['-'] = array_filter($structureWithinStep['-'], $filterOutUserInterests, ARRAY_FILTER_USE_KEY);
-        }
-
-        unset(
-            $contentStructure['general-data']['building-characteristics']['building_features.building_type_id'],
-            $contentStructure['general-data']['building-characteristics']['building_features.build_year'],
-            $contentStructure['general-data']['usage']['user_energy_habits.resident_count'],
-
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_gas'],
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_electricity'],
-            $contentStructure['solar-panels']['-']['user_energy_habits.amount_electricity'],
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.resident_count'],
-
-            $contentStructure['heater']['-']['user_energy_habits.water_comfort_id'],
-            $contentStructure['solar-panels']['-']['building_pv_panels.total_installed_power']
-        );
-
-        // filter out interest stuff from the interest page
-        $contentStructure['general-data']['interest'] = array_filter($contentStructure['general-data']['interest'], function ($key) {
-            return false === stristr($key, 'user_interest');
-        }, ARRAY_FILTER_USE_KEY);
-
-        // Remove general data considerables
-        foreach (($contentStructure['general-data']['interest'] ?? []) as $interestField => $interestData) {
-            if (Str::endsWith($interestField, 'is_considering')) {
-                unset($contentStructure['general-data']['interest'][$interestField]);
-            }
-        }
-
-        return $contentStructure;
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $id
+     * @param int $id
      * @param  $cooperation
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function update(ExampleBuildingRequest $request, Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public
+    function update(ExampleBuildingRequest $request, Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
@@ -196,7 +167,7 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->name = $translations;
 
         $exampleBuilding->buildingType()->associate($buildingType);
-        if (! is_null($cooperation)) {
+        if (!is_null($cooperation)) {
             $exampleBuilding->cooperation()->associate($cooperation);
         }
         $exampleBuilding->is_default = $request->get('is_default', false);
@@ -209,16 +180,17 @@ class ExampleBuildingController extends Controller
         return redirect()->route('cooperation.admin.example-buildings.edit', compact('exampleBuilding'))->with('success', __('cooperation/admin/example-buildings.update.success'));
     }
 
-    private function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
+    private
+    function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
     {
         foreach ($contents as $cid => $data) {
-            if (! is_null($data['build_year'])) {
+            if (!is_null($data['build_year'])) {
                 $data['content'] = array_key_exists('content', $data) ? $data['content'] : [];
 
                 $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
 
                 $content = null;
-                if (! is_numeric($cid) && 'new' == $cid) {
+                if (!is_numeric($cid) && 'new' == $cid) {
                     if (1 == $new) {
                         // addition
                         $content = new ExampleBuildingContent($data);
@@ -243,7 +215,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public
+    function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
         $exampleBuilding->delete();
 
@@ -257,7 +230,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
+    public
+    function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuildingContents = $exampleBuilding->contents;

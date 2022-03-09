@@ -64,15 +64,25 @@ class FileTypesTableSeeder extends Seeder
                 'content_type' => 'text/csv',
                 'short' => 'custom-questionnaire-report-anonymized',
             ],
+            [
+                'name' => [
+                    'nl' => 'Voorbeeld woning overzicht',
+                ],
+                'content_type' => 'text/csv',
+                'short' => 'example-building-overview',
+            ],
         ];
 
         foreach ($fileTypes as $fileType) {
-            DB::table('file_types')->insert([
-                'name' => json_encode($fileType['name']),
-                'file_type_category_id' => $fileTypeCategory->id,
-                'short' => $fileType['short'],
-                'content_type' => $fileType['content_type'],
-            ]);
+            DB::table('file_types')->updateOrInsert(
+                [
+                    'short' => $fileType['short'],
+                ],
+                [
+                    'name' => json_encode($fileType['name']),
+                    'file_type_category_id' => $fileTypeCategory->id,
+                    'content_type' => $fileType['content_type'],
+                ]);
         }
     }
 }

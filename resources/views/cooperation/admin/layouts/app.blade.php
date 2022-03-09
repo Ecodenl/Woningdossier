@@ -30,6 +30,7 @@
     <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/dataTables.bootstrap.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
 
+    @livewireStyles
 </head>
 <body class="@yield('page_class')">
 <div id="app">
@@ -77,6 +78,7 @@
 
 </div>
 
+@livewireScripts
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
 <!-- moment.js -->

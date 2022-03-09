@@ -16,7 +16,7 @@ class ReportController extends Controller
     {
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {
-                $query->where('short', '!=', 'pdf-report')
+                $query->whereNotIn('short', ['pdf-report', 'example-building-overview'])
                     ->with(['files' => function ($query) {
                         $query->leaveOutPersonalFiles();
                     }]);

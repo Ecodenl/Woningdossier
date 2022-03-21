@@ -96,7 +96,7 @@ class GenerateTotalReport implements ShouldQueue
             }, 'energyHabit' => function ($query) use ($inputSource) {
                 $query->forInputSource($inputSource);
             }])
-            ->chunk(200, function($users) use ($headers, $cooperation, $inputSource, $anonymized, &$rows) {
+            ->chunkById(200, function($users) use ($headers, $cooperation, $inputSource, $anonymized, &$rows) {
                 foreach ($users as $user) {
                     $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
                 }

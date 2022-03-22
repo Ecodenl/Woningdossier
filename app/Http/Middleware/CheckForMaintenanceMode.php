@@ -27,7 +27,7 @@ class CheckForMaintenanceMode extends Middleware
      */
     public function handle($request, Closure $next)
     {
-        if (! app()->environment('local')) {
+        if (!in_array(app()->environment(), ['local', 'testing'])) {
             $host = $_SERVER['HTTP_HOST'];
             preg_match('/(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i', $host, $match);
             $cooperation = $match[1] ?? '';

@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
-    use DatabaseTransactions, WithFaker;
+    use WithFaker;
 
     private array $formData;
 

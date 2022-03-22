@@ -54,6 +54,8 @@ class GenerateTotalReport implements ShouldQueue
 
         $rows[] = $headers;
 
+        $handle = fopen(Storage::disk('downloads')->path($this->fileStorage->filename), 'a');
+
         // Get all users with a building and who have completed the quick scan
         $cooperation->users()
             ->whereHas('building')
@@ -96,21 +98,13 @@ class GenerateTotalReport implements ShouldQueue
             }, 'energyHabit' => function ($query) use ($inputSource) {
                 $query->forInputSource($inputSource);
             }])
-            ->chunkById(200, function($users) use ($headers, $cooperation, $inputSource, $anonymized, &$rows) {
+            ->chunkById(200, function($users) use ($headers, $cooperation, $inputSource, $anonymized, &$rows, $handle) {
                 foreach ($users as $user) {
-                    $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
+                    fputcsv($handle, DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data']);
                 }
-
-                $handle = fopen(Storage::disk('downloads')->path($this->fileStorage->filename), 'a');
-                foreach ($rows as $row) {
-                    fputcsv($handle, $row);
-                }
-                fclose($handle);
-
-                // empty the rows, to prevent it from becoming to big and potentially slow.
-                $rows = [];
             });
 
+            fclose($handle);
 
         $this->fileStorage->isProcessed();
     }

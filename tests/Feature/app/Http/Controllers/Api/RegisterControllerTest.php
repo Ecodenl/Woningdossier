@@ -48,7 +48,6 @@ class RegisterControllerTest extends TestCase
         Sanctum::actingAs($client, ['*']);
 
         $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), $this->formData);
-        $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), $this->formData);
 
         $response->assertStatus(201);
 

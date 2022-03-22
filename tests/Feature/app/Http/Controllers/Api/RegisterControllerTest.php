@@ -5,6 +5,7 @@ namespace Tests\Feature\app\Http\Controllers\Api;
 use App\Helpers\Arr;
 use App\Models\Client;
 use App\Models\Cooperation;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
@@ -13,15 +14,13 @@ use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use WithFaker;
 
     private array $formData;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\StatusesTableSeeder::class);
-        $this->seed(\RoleTableSeeder::class);
 
         $this->formData = [
             "email" => $this->faker->email,
@@ -48,7 +47,7 @@ class RegisterControllerTest extends TestCase
 
         Sanctum::actingAs($client, ['*']);
 
-        $response = $this->post(route('api.V1.cooperation.register.store', compact('cooperation')), $this->formData);
+        $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), $this->formData);
 
         $response->assertStatus(201);
 

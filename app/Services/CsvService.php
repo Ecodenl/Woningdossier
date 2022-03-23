@@ -359,56 +359,7 @@ class CsvService
         return $rows;
     }
 
-    /**
-     * Get the total report for all users by the cooperation.
-     */
-    public static function totalReport(Cooperation $cooperation, bool $anonymized): array
-    {
-        //$generalDataStep = Step::findByShort('general-data');
-        // General data is replaced by 4 steps. All 4 should be filled, but
-        // this cannot be easily queried like so. Therefor, we take the last
-        // step (if filled, it's most likely the quick scan has been completed)
-        // to perform the first filtering.
 
-        // We double check quick scan completion later on.
-        $lastQuickScanStep = Step::findByShort('residential-status');
-
-        //$coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-
-        //$residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-
-        // Get all users with a building and who have completed the quick scan
-        // steps
-        $users = $cooperation->users()
-            ->whereHas('building')
-            ->with(['building'])
-            ->get();
-
-        $users = UserService::eagerLoadUserData($users, $masterInputSource);
-
-
-        $headers = DumpService::getStructureForTotalDumpService($anonymized);
-
-        $rows[] = $headers;
-
-        /**
-         * Get the data for every user.
-         *
-         * @var User $user
-         */
-        foreach ($users as $user) {
-            // A user that's within this dump will always have a building, a user without a building within this application is like a fish without its water.
-            // but sometimes a building does not have any building features, so in that case we will default to the resident its input source
-            //$inputSource = $user->building->buildingFeatures->inputSource ?? $residentInputSource;
-            $inputSource = $masterInputSource;
-
-            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
-        }
-
-        return $rows;
-    }
 
     protected static function formatFieldOutput($column, $value, $maybe1, $maybe2)
     {

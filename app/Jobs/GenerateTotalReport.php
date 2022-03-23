@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class GenerateTotalReport implements ShouldQueue
@@ -98,6 +99,7 @@ class GenerateTotalReport implements ShouldQueue
             }])
             ->chunkById(200, function($users) use ($headers, $cooperation, $inputSource, $anonymized, &$rows) {
                 foreach ($users as $user) {
+                    Log::debug("Report: {$user->id}");
                     $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
                 }
 

@@ -13,13 +13,17 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/appold.css') }}" rel="stylesheet">
     @if(isset($cooperationStyle->css_url))
         <link href="{{ asset($cooperationStyle->css_url) }}" rel="stylesheet">
     @endif
     <style>
         .add-space {
             padding: 0 10px 0 10px;
+        }
+
+        [x-cloak] {
+            display: none;
         }
     </style>
     @stack('css')

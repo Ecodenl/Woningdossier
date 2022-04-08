@@ -31,7 +31,7 @@
                         @foreach($users as $user)
                             <?php
                                 $building = $user->building;
-                                $mostRecentBuildingStatus = $building->buildingStatuses->first();
+                                $mostRecentBuildingStatus = $building->buildingStatuses->last();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
                                 $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
@@ -51,7 +51,9 @@
                                         {{$building->city}}
                                     </td>
                                     <td>
-                                        {{$mostRecentBuildingStatus->status->name}}
+                                        @if($mostRecentBuildingStatus instanceof \App\Models\BuildingStatus)
+                                            {{$mostRecentBuildingStatus->status->name}}
+                                        @endif
                                     </td>
                                 </tr>
                         @endforeach

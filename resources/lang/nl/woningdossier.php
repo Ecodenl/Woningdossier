@@ -63,6 +63,7 @@ return [
             'my-account' => 'Mijn account',
             'disclaimer' => 'Disclaimer',
             'privacy' => 'Privacy',
+            'help' => 'Help',
             'start' => 'Start',
         ],
         'admin' => [
@@ -78,11 +79,13 @@ return [
                 'side-nav' => [
                     'label' => 'Super admin menu',
                     'home' => 'Home',
+                    'clients' => 'Koppelingen',
                     'cooperations' => 'Cooperaties',
                     'users' => 'Gebruikers filteren',
                     'questionnaires' => 'Vragenlijsten',
                     'key-figures' => 'Kengetallen',
                     'translations' => 'Vertalingen',
+                    'tool-questions' => 'Quick scan vertalingen',
                     'example-buildings' => 'Voorbeeldwoningen',
                 ],
                 'index' => [
@@ -131,7 +134,7 @@ return [
                         ],
                     ],
                     'edit' => [
-                        'header' => 'Alle vragen die vertaalbaar zijn op de stap :step_name',
+                        'header' => 'Alle vragen die vertaalbaar zijn op de stap :step_name. <br><span class="text-danger">Let op! Eventuele iconen worden niet in de editor getoond, wel in de broncode.</span>',
                         'sub-question' => 'Laat sub-vragen zien',
                         'question' => 'Vraag in taal: :locale',
                         'help' => 'Helptext in taal: :locale',
@@ -555,6 +558,7 @@ return [
                         'reports' => 'Rapporten',
                         'example-buildings' => 'Voorbeeldwoningen',
                         'questionnaires' => 'Vragenlijsten',
+                        'settings' => 'Instellingen',
                         'step' => 'Stappen aan en uitzetten',
                     ],
 
@@ -676,14 +680,18 @@ return [
                 'hours' => 'uren',
             ],
 
-            'title' => 'Basisadvies',
-
             'general-data' => [
                 'title' => 'Algemene gegevens',
                 'coach-input' => [
                     'copy' => [
                         'title' => 'Neem coach antwoorden over',
                         'help' => 'Weet u zeker dat u alle antwoorden van de coach wilt overnemen? Uw huidige antwoorden zullen worden overschreven door die van de coach.',
+                    ],
+                ],
+
+                'example-building-input' => [
+                    'copy' => [
+                        'help' => 'Weet u zeker dat u alle waardes van de voorbeeldwoning wilt overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de voorbeeldwoning.',
                     ],
                 ],
 

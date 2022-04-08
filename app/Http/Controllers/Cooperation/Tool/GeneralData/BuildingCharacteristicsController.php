@@ -8,7 +8,6 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\GeneralData\BuildingCharacteristicsFormRequest;
-use App\Models\Building;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\EnergyLabel;
@@ -22,6 +21,9 @@ class BuildingCharacteristicsController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
+        // Route is disabled. Die if they somehow still manage to get here
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -43,12 +45,15 @@ class BuildingCharacteristicsController extends Controller
 
         return view('cooperation.tool.general-data.building-characteristics.index', compact(
             'building', 'buildingOwner', 'buildingTypes', 'energyLabels', 'roofTypes', 'exampleBuildings', 'myBuildingFeatures',
-            'prevBt', 'prevBy', 'buildingFeaturesOrderedOnCredibility'
+            'buildingFeaturesOrderedOnCredibility'
         ));
     }
 
     public function store(BuildingCharacteristicsFormRequest $request)
     {
+        // Route is disabled. Die if they somehow still manage to get here
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $step = Step::findByShort('building-characteristics');

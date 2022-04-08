@@ -33,8 +33,8 @@ What is done:
 Laravel couples these in the `User` model. Now, the `Account` model is 
 `Authenticatable` and the User model is `Authorizable` (as a user has roles and 
 might have different roles per cooperation)
-- There's a *custom user resolver* in `\App\Providers\AuthServiceProvider` which 
-was needed for injecting the actual `User` in the gates and policies.
+- By default, the `web` guard makes use of the `users` provider, 
+this has been changed to the `accounts` provider. 
 
 This has the following implication:
 

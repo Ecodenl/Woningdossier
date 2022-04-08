@@ -32,19 +32,22 @@
 
                         @foreach($buildings as $building)
                             <?php
-                                /**
-                                * @var \App\Models\Building $building
-                                */
-                                $user = $building->user;
-                                $buildingStatus = $building->buildingStatuses->first();
+                            /**
+                             * @var \App\Models\Building $building
+                             */
+                            $user = $building->user;
 
-                                $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
-                                $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+                            $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
+                            $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
 
-                                $appointmentDateFormatted = optional($building->getAppointmentDate())->format('d-m-Y');
-                                $appointmentDateStrotime = strtotime($appointmentDateFormatted);
+                            $appointmentDateFormatted = null;
 
-                                $userIsAuthUser = $user->id == \App\Helpers\Hoomdossier::user()->id;
+                            if (!is_null($building->appointment_date)) {
+                                $appointmentDateFormatted = \Carbon\Carbon::create($building->appointment_date)->format('Y-m-d');
+                            }
+                            $appointmentDateStrotime = strtotime($appointmentDateFormatted);
+
+                            $userIsAuthUser = $user->id == Hoomdossier::user()->id;
                             ?>
                             <tr>
                                 <td data-sort="{{$userCreatedAtStrotime}}">
@@ -55,9 +58,9 @@
                                     @if($userIsAuthUser)
                                         <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
                                     @else
-                                    <a href="{{route('cooperation.admin.buildings.show', ['id' => $building->id])}}">
-                                        {{$building->street}} {{$building->number}} {{$building->extension}}
-                                    </a>
+                                        <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                            {{$building->street}} {{$building->number}} {{$building->extension}}
+                                        </a>
                                     @endif
                                 </td>
                                 <td>{{$building->postal_code}}</td>
@@ -65,7 +68,7 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{$buildingStatus->status->name}}
+                                    {{ $building->status }}
                                 </td>
                                 <td data-sort="{{$appointmentDateStrotime}}">
                                     {{$appointmentDateFormatted ?? '-'}}

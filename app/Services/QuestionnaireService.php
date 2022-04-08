@@ -8,8 +8,6 @@ use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Models\Step;
-use App\Models\Translation;
-use Ramsey\Uuid\Uuid;
 
 class QuestionnaireService
 {
@@ -17,30 +15,23 @@ class QuestionnaireService
     {
         $cooperationId = $cooperation->id;
 
-        /** @var Questionnaire $questionnaireToReplicate */
         $questionnaireToReplicate = $questionnaire->replicate();
 
-        // for now this will do it as there is only one translation which is dutch.
-        // we MUST create a new translation because this will generate a new record in the translations table
-        // this way each cooperation can edit the question names without messing up the other cooperation its questionnaires.
         $questionnaireToReplicate->cooperation_id = $cooperationId;
-        $questionnaireToReplicate->createTranslations('name', ['nl' => $questionnaire->name]);
         $questionnaireToReplicate->is_active = false;
         $questionnaireToReplicate->save();
 
-        // here we will replicate all the questions with the new translation, questionnaire id and question options.
+        // here we will replicate all the questions with the new questionnaire id and question options.
         foreach ($questionnaire->questions as $question) {
             /** @var Question $questionToReplicate */
             $questionToReplicate = $question->replicate();
             $questionToReplicate->questionnaire_id = $questionnaireToReplicate->id;
-            $questionToReplicate->createTranslations('name', ['nl' => $question->name]);
             $questionToReplicate->save();
 
             // now replicate the question options and change the question id to the replicated question.
             foreach ($question->questionOptions as $questionOption) {
                 /** @var QuestionOption $questionOptionToReplicate */
                 $questionOptionToReplicate = $questionOption->replicate();
-                $questionOptionToReplicate->createTranslations('name', ['nl' => $questionOption->name]);
                 $questionOptionToReplicate->question_id = $questionToReplicate->id;
                 $questionOptionToReplicate->save();
             }
@@ -76,8 +67,11 @@ class QuestionnaireService
 
                 // create the "sub rule"
                 foreach ($rules as $subRule => $subRuleCheckValues) {
-                    $subRuleProperties = implode($subRuleCheckValues, ',');
-                    $subRule = "{$subRule}:$subRuleProperties";
+                    $subRuleProperties = implode(',', $subRuleCheckValues);
+                    // ex; max:200, min:100.
+                    if (!empty($subRuleProperties)) {
+                        $subRule = "{$subRule}:$subRuleProperties";
+                    }
                     array_push($rule, $subRule);
                 }
             }
@@ -89,34 +83,24 @@ class QuestionnaireService
     /**
      * Method to create a new questionnaire.
      *
+     * @param  \App\Models\Cooperation  $cooperation
+     * @param  \App\Models\Step  $step
+     * @param  array  $questionnaireNameTranslations
+     *
+     * @return \App\Models\Questionnaire
      * @throws \Exception
      */
     public static function createQuestionnaire(Cooperation $cooperation, Step $step, array $questionnaireNameTranslations): Questionnaire
     {
-        $questionnaireNameKey = Uuid::uuid4();
-
         $maxOrderForQuestionnairesInSelectedSteps = $step->questionnaires()->max('order');
 
         $questionnaire = Questionnaire::create([
-            'name' => $questionnaireNameKey,
+            'name' => $questionnaireNameTranslations,
             'step_id' => $step->id,
             'order' => ++$maxOrderForQuestionnairesInSelectedSteps,
             'cooperation_id' => $cooperation->id,
             'is_active' => false,
         ]);
-
-        if (self::isNotEmptyTranslation($questionnaireNameTranslations)) {
-            foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
-                if (empty($questionnaireNameTranslation)) {
-                    $questionnaireNameTranslation = current(array_filter($questionnaireNameTranslations));
-                }
-                Translation::create([
-                    'key' =>  $questionnaireNameKey,
-                    'language' => $locale,
-                    'translation' => $questionnaireNameTranslation,
-                ]);
-            }
-        }
 
         return $questionnaire;
     }
@@ -136,27 +120,6 @@ class QuestionnaireService
     }
 
     /**
-     * Update a questionnaire itself, its name and step.
-     *
-     * @param $questionnaireNameTranslations
-     * @param $stepId
-     */
-    public static function updateQuestionnaire(Questionnaire $questionnaire, $questionnaireNameTranslations, $stepId)
-    {
-        // update the step
-        $questionnaire->update([
-            'step_id' => $stepId,
-        ]);
-
-        // and update the translations
-        foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
-            $questionnaireNameTranslation = self::getTranslation($questionnaireNameTranslations, $questionnaireNameTranslation);
-
-            $questionnaire->updateTranslation('name', $questionnaireNameTranslation, $locale);
-        }
-    }
-
-    /**
      * Method to create a new question for a questionnaire.
      *
      * @param $order
@@ -164,19 +127,15 @@ class QuestionnaireService
     public static function createQuestion(Questionnaire $questionnaire, array $questionData, string $questionType, array $validation, $order)
     {
         $required = array_key_exists('required', $questionData);
-        $uuid = Str::uuid();
 
         if (self::isNotEmptyTranslation($questionData['question'])) {
-            // if the translations are not present, we do not want to create a question
             $createdQuestion = $questionnaire->questions()->create([
-                'name' => $uuid,
+                'name' => $questionData['question'],
                 'type' => $questionType,
                 'order' => $order,
                 'required' => $required,
                 'validation' => self::getValidationRule($questionData, $validation),
             ]);
-
-            self::createTranslationsForQuestion($questionData['question'], $uuid);
 
             if (self::hasQuestionOptions($questionType) && $createdQuestion instanceof Question) {
                 // create the options for the question
@@ -205,42 +164,17 @@ class QuestionnaireService
     }
 
     /**
-     * Method to create translations for a question.
-     *
-     * @param $translationForQuestions
-     * @param $translationKey
-     */
-    public static function createTranslationsForQuestion($translationForQuestions, $translationKey)
-    {
-        // multiple translations can be available
-        foreach ($translationForQuestions as $locale => $translation) {
-            $translation = self::getTranslation($translationForQuestions, $translation);
-
-            Translation::create([
-                'key' => $translationKey,
-                'translation' => $translation,
-                'language' => $locale,
-            ]);
-        }
-    }
-
-    /**
      * Create the options for a question.
      *
-     * Creates question option and 2 translations
+     * Creates question option
      */
     public static function createQuestionOptions(array $newOptions, Question $question)
     {
         if (self::isNotEmptyTranslation($newOptions)) {
-            $optionNameUuid = Str::uuid();
-            // for every option we need to create a option input
             QuestionOption::create([
                 'question_id' => $question->id,
-                'name' => $optionNameUuid,
+                'name' => $newOptions,
             ]);
-
-            // for every translation we need to create a new, you wont guess! Translation.
-            self::createTranslationsForQuestion($newOptions, $optionNameUuid);
         }
     }
 
@@ -251,50 +185,20 @@ class QuestionnaireService
      */
     public static function updateQuestionOptions(array $editedQuestion, $question)
     {
-        // we will store the new options for the question here.
-        $allNewOptions = [];
-
         // $questionOptionId will mostly contain the id of a QuestionOption
         // however, if a new option to a existing question is added, we set a guid.
-        // so if the $questionOptionId = a valid guid we need to create a new QuestionOption and the translation for it.
+        // so if the $questionOptionId = a valid guid we need to create a new QuestionOption.
         foreach ($editedQuestion['options'] as $questionOptionId => $translations) {
-            // check whether its a guid and its not empty
+            // check whether its a guid
             if (Str::isValidGuid($questionOptionId) && self::isNotEmptyTranslation($translations)) {
-                // its a new option, add it to the array
-                $allNewOptions[$questionOptionId] = $translations;
+                // its a new option, create it
+                self::createQuestionOptions($translations, $question);
             } elseif (self::isNotEmptyTranslation($translations)) {
-                // for every translation we need to create a new, you wont guess! Translation.
-                foreach ($translations as $locale => $option) {
-                    $option = self::getTranslation($translations, $option);
-
-                    QuestionOption::find($questionOptionId)->updateTranslation('name', $option, $locale);
-                }
+                QuestionOption::find($questionOptionId)->update([
+                    'name' => $translations,
+                ]);
             }
         }
-
-        // add the options
-        foreach ($allNewOptions as $newOptions) {
-            self::createQuestionOptions($newOptions, $question);
-        }
-    }
-
-    /**
-     * Method to return the translation for an array of translations.
-     *
-     * @param array       $translations array of all the translations
-     * @param string|null $translation  the current translation
-     *
-     * @return string
-     */
-    public static function getTranslation(array $translations, $translation)
-    {
-        // if a translation is empty, try to obtain a other translation.
-        // so we never have empty translations for questions
-        if (empty($translation)) {
-            $translation = current(array_filter($translations));
-        }
-
-        return $translation;
     }
 
     /**
@@ -306,48 +210,21 @@ class QuestionnaireService
 
         $currentQuestion = Question::find($questionId);
 
-        $currentQuestion->update([
+        $data = [
             'validation' => self::getValidationRule($editedQuestion, $validation),
             'order' => $order,
             'required' => $required,
-        ]);
+        ];
 
         if (self::isNotEmptyTranslation($editedQuestion['question'])) {
-            // multiple translations can be available
-            foreach ($editedQuestion['question'] as $locale => $question) {
-                $question = self::getTranslation($editedQuestion['question'], $question);
-
-                $currentQuestion->updateTranslation('name', $question, $locale);
-            }
+            $data['name'] = $editedQuestion['question'];
         }
+
+        $currentQuestion->update($data);
 
         if (self::hasQuestionOptions($currentQuestion->type)) {
             self::updateQuestionOptions($editedQuestion, $currentQuestion);
         }
-    }
-
-    /**
-     * Check if the translations from the request are empty.
-     *
-     * @param $translations
-     */
-    public static function isEmptyTranslation(array $translations): bool
-    {
-        foreach ($translations as $locale => $translation) {
-            if (! empty($translation)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns the inverse of isEmptyTranslation.
-     */
-    public static function isNotEmptyTranslation(array $translations): bool
-    {
-        return ! self::isEmptyTranslation($translations);
     }
 
     /**
@@ -393,5 +270,35 @@ class QuestionnaireService
         }
 
         return [];
+    }
+
+    /**
+     * Returns the inverse of isEmptyTranslation.
+     *
+     * @param  array  $translations
+     *
+     * @return bool
+     */
+    public static function isNotEmptyTranslation(array $translations): bool
+    {
+        return ! self::isEmptyTranslation($translations);
+    }
+
+    /**
+     * Check if the translations from the request are empty.
+     *
+     * @param  array  $translations
+     *
+     * @return bool
+     */
+    public static function isEmptyTranslation(array $translations): bool
+    {
+        foreach ($translations as $locale => $translation) {
+            if (! empty($translation)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

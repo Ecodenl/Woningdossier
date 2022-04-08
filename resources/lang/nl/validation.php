@@ -11,7 +11,6 @@ return [
     | as the size rules. Feel free to tweak each of these messages here.
     |
     */
-
     'accepted'             => 'De :attribute moeten geaccepteerd worden.',
     'active_url'           => 'De :attribute is geen geldige URL.',
     'after'                => 'De :attribute moet een datum zijn na :date.',
@@ -42,6 +41,18 @@ return [
     'exists'               => 'De geselecteerde waarde is ongeldig.',
     'file'                 => 'De :attribute moet een bestand zijn.',
     'filled'               => ':attribute veld moet ingevuld zijn.',
+    'gt'                   => [
+        'numeric' => 'De :attribute moet groter zijn dan :value.',
+        'file'    => 'De :attribute moet groter zijn dan :value kilobytes.',
+        'string'  => 'De :attribute moet meer dan :value tekens bevatten.',
+        'array'   => 'De :attribute moet meer dan :value waardes bevatten.',
+    ],
+    'gte'                  => [
+        'numeric' => 'De :attribute moet groter of gelijk zijn aan :value.',
+        'file'    => 'De :attribute moet groter of gelijk zijn aan :value kilobytes.',
+        'string'  => 'De :attribute moet minimaal :value tekens bevatten.',
+        'array'   => 'De :attribute moet :value waardes of meer bevatten.',
+    ],
     'image'                => 'De :attribute moet een image zijn.',
     'in'                   => 'De geselecteerde :attribute is ongeldig.',
     'in_array'             => ':attribute veld is geen optie in :other.',
@@ -64,12 +75,27 @@ return [
         'string'  => 'De :attribute moet tenminste :min karakters bevatten.',
         'array'   => 'De :attribute moet tenminste :min items bevatten.',
     ],
-    'not_in'               => 'De geselecteerde :attribute is ongeldig.',
+    'lt'                   => [
+        'numeric' => 'De :attribute moet kleiner zijn dan :value.',
+        'file'    => 'De :attribute moet kleiner zijn dan :value kilobytes.',
+        'string'  => 'De :attribute moet minder dan :value tekens bevatten.',
+        'array'   => 'De :attribute moet minder dan :value waardes bevatten.',
+    ],
+    'lte'                  => [
+        'numeric' => 'De :attribute moet kleiner of gelijk zijn aan :value.',
+        'file'    => 'De :attribute moet kleiner of gelijk zijn aan :value kilobytes.',
+        'string'  => 'De :attribute moet maximaal :value tekens bevatten.',
+        'array'   => 'De :attribute moet :value waardes of minder bevatten.',
+    ],
+    'multiple_of'          => ':Attribute moet een veelvoud van :value zijn.',
+    'not_in'               => 'Het formaat van :attribute is ongeldig.',
+    'not_regex'            => 'De :attribute formaat is ongeldig.',
     'numeric'              => ':attribute moet een getal bevatten',
     'present'              => 'De :attribute moet gevuld zijn.',
-    'phone_number'         => 'Telefoonnummer bevat geen geldig telefoonnummer.',
-    'postal_code'          => 'De opgegeven postcode is ongeldig.',
-    'house_number'         => 'opgegeven huisnummer is ongeldig.',
+    'phone_number'         => ':attribute is een ongeldig telefoonnummer.',
+    'postal_code'          => ':attribute is een ongeldige postcode.',
+    'house_number'         => ':attribute is een ongeldig huisnummer.',
+    'house_number_extension'    => ':attribute is een ongeldige huisnummer toevoeging.',
     'regex'                => ':attribute formaat is ongeldig.',
     'required'             => ':attribute veld is verplicht.',
     'required_if'          => ':attribute veld is verplicht wanneer :other :value is.',
@@ -85,11 +111,13 @@ return [
         'string'  => 'De :attribute moet :size karakters zijn.',
         'array'   => 'De :attribute moet :size items bevatten.',
     ],
+    'starts_with'          => ':Attribute moet starten met een van de volgende: :values.',
     'string'               => 'De :attribute moet een tekst zijn.',
     'timezone'             => 'De :attribute moet een geldig tijdzone zijn.',
     'unique'               => 'De :attribute is al geregistreerd.',
     'uploaded'             => 'is mislukt om :attribute failed to upload.',
     'url'                  => 'De :attribute formaat is ongeldig.',
+    'uuid'                 => ':Attribute moet een geldig UUID zijn.',
 
     /*
     |--------------------------------------------------------------------------
@@ -130,7 +158,20 @@ return [
         'accounts.email' => [
             'unique' => 'Dit e-mailadres is al geregistreerd.',
         ],
+
+        'password' => [
+            'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
+            'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
+        ],
+        'account.password' => [
+            'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
+            'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
+        ],
     ],
+    'custom-rules' => [
+        'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',
+    ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -155,9 +196,40 @@ return [
     // note, when a key needs a wildcard add it to the custom array.
     // A wildcard wont work in the attributes array but will in the custom array, needs more work but at least we dont need to hardcode the * numbers.
     'attributes' => [
+        'nl' => 'Nederlands',
+        'en' => 'Engels',
+
+        'email' => 'E-mailadres',
+        'password' => 'Wachtwoord',
+
+        // Register fields
+        'number' => 'Huisnummer',
+        'postal_code' => 'Postcode',
+        'first_name' => 'Voornaam',
+        'last_name' => 'Achternaam',
+        'street' => 'Straat',
+        'city' => 'Plaats',
+        'phone_number' => 'Telefoonnummer',
+        'house_number' => 'Huisnummer',
+        'house_number_extension' => 'Toevoeging',
+
+        // New measure
+        'custom_measure_application.name' => 'Onderwerp',
+        'custom_measure_application.info' => 'Beschrijving',
+        'custom_measure_application.costs.from' => 'Kosten van',
+        'custom_measure_application.costs.to' => 'Kosten tot',
+        'custom_measure_application.savings_money' => 'Verwachte besparing',
+
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',
+
+        // Measure applications
+        'measure_applications.measure_name' => 'Naam',
+        'measure_applications.measure_name.*' => 'Naam',
+        'measure_applications.measure_info' => 'Info',
+        'measure_applications.measure_info.*' => 'Info',
+        'measure_applications.configurations.icon' => 'Icoon',
 
         // general data
         'building_features.building_layers' => __('cooperation/tool/general-data/building-characteristics.index.building-layers.title'),
@@ -210,5 +282,21 @@ return [
         // solar panels
         'building_pv_panels.number' => __('solar-panels.number.title'),
         'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
+
+        // Cooperation measure applications
+        'cooperation_measure_applications.name' => 'Naam',
+        'cooperation_measure_applications.name.*' => 'Naam',
+        'cooperation_measure_applications.info' => 'Info',
+        'cooperation_measure_applications.info.*' => 'Info',
+        'cooperation_measure_applications.costs.from' => 'Investering vanaf',
+        'cooperation_measure_applications.costs.to' => 'Investering tot',
+        'cooperation_measure_applications.savings_money' => 'Besparing',
+        'cooperation_measure_applications.extra.icon' => 'Icoon',
+    ],
+
+    'values' => [
+        'defaults' => [
+            'yes' => 'Ja',
+        ],
     ],
 ];

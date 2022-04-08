@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\Questionnaire;
@@ -23,11 +24,28 @@ class QuestionnairePolicy
     }
 
     /**
-     * Check if the user is permitted to edit the questionnaire.
+     * Check if the user is permitted to set the active status of a questionnaire.
      *
      * @return bool
      */
-    public function edit(User $user, Questionnaire $questionnaire)
+    public function setActiveStatus(Account $account, Questionnaire $questionnaire)
+    {
+        // same logic (for now)
+        return $this->update($account, $questionnaire);
+    }
+
+    /**
+     * Check if the user is permitted to create a new questionnaire.
+     *
+     * @return bool
+     */
+    public function create(Account $account)
+    {
+        // if the user has the right roles
+        return $account->user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+    }
+
+    public function update(Account $account, Questionnaire $questionnaire)
     {
         // get the current cooperation
         $currentCooperation = HoomdossierSession::getCooperation(true);
@@ -36,35 +54,9 @@ class QuestionnairePolicy
         return $questionnaire->cooperation->slug == $currentCooperation->slug;
     }
 
-    /**
-     * Check if the user is permitted to set the active status of a questionnaire.
-     *
-     * @return bool
-     */
-    public function setActiveStatus(User $user, Questionnaire $questionnaire)
+    public function delete(Account $account, Questionnaire $questionnaire)
     {
-        // same logic (for now)
-        return $this->edit($user, $questionnaire);
-    }
-
-    /**
-     * Check if the user is permitted to create a new questionnaire.
-     *
-     * @return bool
-     */
-    public function store(User $user)
-    {
-        // if the user has the right roles
-        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
-    }
-
-    public function update(User $user, Questionnaire $questionnaire)
-    {
-        return $this->edit($user, $questionnaire);
-    }
-
-    public function delete(User $user, Questionnaire $questionnaire)
-    {
+        $user = $account->user();
         $currentCooperation = HoomdossierSession::getCooperation(true);
 
         // and check if the questionnaire from the question has a relation with the cooperation

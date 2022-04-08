@@ -1,75 +1,77 @@
-@extends('cooperation.layouts.app')
+@extends('cooperation.frontend.layouts.app')
 
-@section('content')
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            @if(session()->has('account_connected'))
-                @component('cooperation.tool.components.alert')
-                    {{session('account_connected')}}
+@section('main')
+    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">
+        <div class="bg-white rounded-3xl p-20 text-center space-y-10">
+            @include('cooperation.frontend.layouts.parts.logo')
+            <h1 class="heading-1">
+                @lang('auth.login.form.header')
+            </h1>
+            @if(session('verified'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'blue-800'])
+                    @lang('cooperation/auth/verify.success-log-in')
                 @endcomponent
             @endif
-            <div class="panel panel-default">
-                <div class="panel-heading">@lang('auth.login.form.header')</div>
-
-                <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.auth.login', ['cooperation' => $cooperation]) }}">
-                        {{ csrf_field() }}
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">@lang('auth.login.form.e-mail')</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">@lang('auth.login.form.password')</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> @lang('auth.login.form.remember_me')
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    @lang('auth.login.form.button')
-                                </button>
-
-                                <a class="btn btn-link" href="{{ route('cooperation.auth.password.request.index', ['cooperation' => $cooperation]) }}">
-                                    @lang('auth.login.form.forgot_password')
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            @if(session('success'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'blue-800'])
+                    {{session('success')}}
+                @endcomponent
+            @endif
+            @if(session('status'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                    {{ session('status') }}
+                @endcomponent
+            @endif
+            @if($errors->has('cooperation'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'red'])
+                    @foreach($errors->get('cooperation') as $message)
+                        {{ $message }}
+                    @endforeach
+                @endcomponent
+            @endif
+            <form class="w-full flex flex-wrap justify-center" method="POST"
+                  action="{{ route('cooperation.auth.login') }}">
+                @csrf
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'withInputSource' => false,
+                    'class' => 'w-full',
+                    'inputName' => 'email',
+                    'id' => 'email',
+                ])
+                    <input class="form-input" type="text" name="email" id="email" value="{{ old('email') }}"
+                           placeholder="@lang('auth.login.form.email')">
+                    <i class="icon-sm icon-mail-green absolute right-6 top-5/20"></i>
+                @endcomponent
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'withInputSource' => false,
+                    'class' => 'w-full -mt-5',
+                    'inputName' => 'password',
+                    'id' => 'password',
+                ])
+                    <div class="flex w-full" x-data="{showPass: false}">
+                        <input class="form-input" type="password" name="password" id="password"
+                               placeholder="@lang('auth.login.form.enter-password')" x-ref="password-input">
+                        <i class="icon-sm icon-show absolute right-6 top-5/20 cursor-pointer" x-show="showPass === false"
+                           x-on:click="showPass = true; $refs['password-input'].type = 'text'"></i>
+                        <i class="icon-sm icon-hide absolute right-6 top-5/20 cursor-pointer" x-show="showPass === true"
+                           x-on:click="showPass = false; $refs['password-input'].type = 'password'"></i>
+                    </div>
+                @endcomponent
+                <button class="btn btn-purple w-full mt-6">
+                    @lang('auth.login.form.submit')
+                </button>
+            </form>
+            <p>
+                <a href="{{ route('cooperation.auth.password.request.index') }}">
+                    @lang('auth.login.form.forgot-password')
+                </a>
+                <br><br>
+                @lang('auth.login.no-account')
+                <a href="{{ route('cooperation.register') }}">
+                    @lang('auth.register.form.header')
+                </a>
+            </p>
         </div>
+        @include('cooperation.frontend.shared.parts.privacy-disclaimer')
     </div>
-</div>
 @endsection

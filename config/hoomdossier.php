@@ -21,12 +21,19 @@ return [
     | method.
     |
     */
-    'supported_locales' => ['nl'],
+    'supported_locales' => [
+        'nl',
+//        'en',
+    ],
 
     'cache' => [
         'prefix' => env('CACHE_PREFIX', 'hoomdossier_'),
         'times' => [
-            'default' => 15, // minutes (watch it: this will change with the latest Laravel versions!)
+            'default' => 900, // ttl in seconds
         ],
     ],
+
+    'webhooks' => [
+        'discord' => env('DISCORD_WEBHOOK_URL')
+    ]
 ];

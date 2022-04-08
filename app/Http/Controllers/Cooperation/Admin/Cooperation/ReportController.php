@@ -6,11 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
-use App\Models\InputSource;
-use App\Models\User;
-use App\Services\DumpService;
-use App\Services\UserService;
-use Illuminate\Support\Facades\Cache;
 
 class ReportController extends Controller
 {
@@ -21,7 +16,7 @@ class ReportController extends Controller
     {
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {
-                $query->where('short', '!=', 'pdf-report')
+                $query->whereNotIn('short', ['pdf-report', 'example-building-overview'])
                     ->with(['files' => function ($query) {
                         $query->leaveOutPersonalFiles();
                     }]);
@@ -31,7 +26,6 @@ class ReportController extends Controller
 
         // Is there any file being processed for my cooperation
         $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
-
 
         return view('cooperation.admin.cooperation.reports.index', compact('questionnaires', 'reportFileTypeCategory', 'anyFilesBeingProcessed'));
     }

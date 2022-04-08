@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MeasuresTableSeeder extends Seeder
 {
@@ -14,453 +15,507 @@ class MeasuresTableSeeder extends Seeder
         $categorizedMeasures = [
             'Vloerisolatie' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Isolatie van de vloer',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Isolatie van de bodem',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Isolatie van de kruipruimte',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Leiding isolatie kruipruimte',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
             ],
             'Gevelisolatie' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Gevel isolatie spouw',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Gevel isolatie binnenzijde',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Gevel isolatie buitenzijde',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
             ],
             'Dakisolatie' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Isolatie hellend dak binnen',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Isolatie hellend dak, buiten (vervangen dakpannen, bitume isolerend onderdak etc)',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Isolatie plat dak, buiten (op huidige dakbedekking)',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Isolatie plat dak, buiten (vervanging huidige dakbedekking)',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Vegetatiedak',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Isolatie zoldervloer, bovenop',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Isolatie zoldervloer, tussen plafond',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
             ],
             'Isolatieglas' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Glas-in-lood',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Plaatsen isolatieglas, alleen beglazing',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Plaatsen isolatieglas, inclusief kozijn',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Plaatsen geïsoleerd kozijn met triple glas',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Plaatsen achterzetbeglazing',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
             ],
             'Kierdichting' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Kierdichting ramen en deuren',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Kierdichting aansluiting kozijn en muur',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Kierdichting aansluiting dak en muur',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Kierdichting aansluiting nok',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Kierdichting kruipluik, houten vloer',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
             ],
             'Ventilatie' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Ventilatie roosters',
                     ],
                     'service_types' => [
-                        'Ventilation',
+                        'locale' => 'en',
+                        'value' => 'Ventilation',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Vraag gestuurde ventilatie roosters',
                     ],
                     'service_types' => [
-                        'Ventilation',
+                        'locale' => 'en',
+                        'value' => 'Ventilation',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Ventilatie lucht/water warmtepomp',
                     ],
                     'service_types' => [
-                        'Ventilation',
+                        'locale' => 'en',
+                        'value' => 'Ventilation',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Decentrale wtw',
                     ],
                     'service_types' => [
-                        'Ventilation',
+                        'locale' => 'en',
+                        'value' => 'Ventilation',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Centrale wtw',
                     ],
                     'service_types' => [
-                        'Ventilation',
+                        'locale' => 'en',
+                        'value' => 'Ventilation',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Gelijkstroom ventilatiebox',
                     ],
                     'service_types' => [
-                        'Ventilation',
+                        'locale' => 'en',
+                        'value' => 'Ventilation',
                     ],
                 ],
             ],
             'Cv-ketel' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Ketelvervanging',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Waterzijdig inregelen',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Thermostaatknoppen',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Weersafhankelijke regeling',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Slimme thermostaat (thermosmart, nest, tado,…) opentherm of aan/uit',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Zone indeling',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Isolatie leiding onverwarmde ruimte',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
             ],
             'Warmtepomp' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Hybride (bron lucht)',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Volledig (bron lucht)',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Volledig (bron bodem)',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Volledig (bron ventilatielucht)',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Warmtepompboiler (tbv tapwater)',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Smart grid compatibel',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
             ],
             'Biomassa' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Pelletketel',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Pelletkachel',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Massakachel (Tulikivi, Ortner)',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Cv-gekoppeld',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Hoogrendementshoutkachel (laag emissie fijn stof)',
                     ],
                     'service_types' => [
-                        'Heating',
+                        'locale' => 'en',
+                        'value' => 'Heating',
                     ],
                 ],
             ],
             'Warmte afgifte' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Laag temperatuur vloerverwarming',
                     ],
                     'service_types' => [
-                        'PV-wind',
+                        'locale' => 'en',
+                        'value' => 'PV-wind',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Laag temperatuur wandverwarming',
                     ],
                     'service_types' => [
-                        'PV-wind',
+                        'locale' => 'en',
+                        'value' => 'PV-wind',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Laag temperatuur convectoren',
                     ],
                     'service_types' => [
-                        'PV-wind',
+                        'locale' => 'en',
+                        'value' => 'PV-wind',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Tralingspanelen',
                     ],
                     'service_types' => [
-                        'PV-wind',
+                        'locale' => 'en',
+                        'value' => 'PV-wind',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Luchtverwarming',
                     ],
                     'service_types' => [
-                        'PV-wind',
+                        'locale' => 'en',
+                        'value' => 'PV-wind',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Radiatoren (laag regime 55-45)',
                     ],
                     'service_types' => [
-                        'PV-wind',
+                        'locale' => 'en',
+                        'value' => 'PV-wind',
                     ],
                 ],
             ],
@@ -468,199 +523,216 @@ class MeasuresTableSeeder extends Seeder
             ],
             'Zonneboiler' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Vacuumbuiscollector',
                     ],
                     'service_types' => [
-                        'Heating',
-                        'Domestic hot water',
+                        'locale' => 'en',
+                        'value' => [
+                            'Heating', 
+                            'Domestic hot water',
+                        ],
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Vlakkeplaat',
                     ],
                     'service_types' => [
-                        'Heating',
-                        'Domestic hot water',
+                        'locale' => 'en',
+                        'value' => [
+                            'Heating',
+                            'Domestic hot water',
+                        ],
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Voorverwarming SWW',
                     ],
                     'service_types' => [
-                        'Heating',
-                        'Domestic hot water',
+                        'locale' => 'en',
+                        'value' => [
+                            'Heating',
+                            'Domestic hot water',
+                        ],
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'SWW naverwarming',
                     ],
                     'service_types' => [
-                        'Heating',
-                        'Domestic hot water',
+                        'locale' => 'en',
+                        'value' => [
+                            'Heating',
+                            'Domestic hot water',
+                        ],
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'SWW + verwarmingsondersteuning',
                     ],
                     'service_types' => [
-                        'Heating',
-                        'Domestic hot water',
+                        'locale' => 'en',
+                        'value' => [
+                            'Heating',
+                            'Domestic hot water',
+                        ],
                     ],
                 ],
             ],
             'PVT' => [],
             'Opslag' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Thermische opslag',
                     ],
                     'service_types' => [
-                        'Others',
+                        'locale' => 'en',
+                        'value' => 'Others',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Huisbatterij',
                     ],
                     'service_types' => [
-                        'Others',
+                        'locale' => 'en',
+                        'value' => 'Others',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Koppeling elektrische auto',
                     ],
                     'service_types' => [
-                        'Others',
+                        'locale' => 'en',
+                        'value' => 'Others',
                     ],
                 ],
             ],
             'Overig' => [
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Spaardouche',
                     ],
                     'service_types' => [
-                        'Domestic hot water',
+                        'locale' => 'en',
+                        'value' => 'Domestic hot water',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Douche wtw',
                     ],
                     'service_types' => [
-                        'Domestic hot water',
+                        'locale' => 'en',
+                        'value' => 'Domestic hot water',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Hotfill',
                     ],
                     'service_types' => [
-                        'Domestic hot water',
+                        'locale' => 'en',
+                        'value' => 'Domestic hot water',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'LED verlichting',
                     ],
                     'service_types' => [
-                        'Lighting',
+                        'locale' => 'en',
+                        'value' => 'Lighting',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Witgoed',
                     ],
                     'service_types' => [
-                        'Appliances',
+                        'locale' => 'en',
+                        'value' => 'Appliances',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Elektrische apparatuur',
                     ],
                     'service_types' => [
-                        'Appliances',
+                        'locale' => 'en',
+                        'value' => 'Appliances',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Monitoring verbruik',
                     ],
                     'service_types' => [
-                        'Building automation and control',
+                        'locale' => 'en',
+                        'value' => 'Building automation and control',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Energiemanagement',
                     ],
                     'service_types' => [
-                        'Building automation and control',
+                        'locale' => 'en',
+                        'value' => 'Building automation and control',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Zonwering',
                     ],
                     'service_types' => [
-                        'Others',
+                        'locale' => 'en',
+                        'value' => 'Others',
                     ],
                 ],
                 [
-                    'names' => [
+                    'name' => [
                         'nl' => 'Standbyverbruik',
                     ],
                     'service_types' => [
-                        'Others',
+                        'locale' => 'en',
+                        'value' => 'Others',
                     ],
                 ],
             ],
         ];
 
         foreach ($categorizedMeasures as $category => $measures) {
-            $nameUuid = \DB::table('translations')
-                          ->where('translation', $category)
-                            ->where('language', 'nl')
-                            ->first(['key']);
-
             // Get the category.
-            $cat = \DB::table('measure_categories')->where('name', $nameUuid->key)->first();
+            $cat = DB::table('measure_categories')->where('name->nl', $category)->first();
             if ($cat instanceof \stdClass) {
                 // Create the measures
                 foreach ($measures as $measure) {
-                    $uuid = \App\Helpers\Str::uuid();
-                    foreach ($measure['names'] as $locale => $name) {
-                        \DB::table('translations')->insert([
-                            'key'         => $uuid,
-                            'language'    => $locale,
-                            'translation' => $name,
-                        ]);
-                    }
-                    $mid = \DB::table('measures')->insertGetId(
-                        ['name' => $uuid]
+                    $mid = DB::table('measures')->insertGetId(
+                        ['name' => json_encode($measure['name'])]
                     );
                     // and link them
-                    \DB::table('measure_measure_category')->insert([
+                    DB::table('measure_measure_category')->insert([
                         'measure_id' => $mid,
                         'measure_category_id' => $cat->id,
                     ]);
-                    foreach ($measure['service_types'] as $serviceTypeName) {
-                        // Link to service type
-                        $nameUuid = \DB::table('translations')
-                                       ->where('translation', $serviceTypeName)
-                                       ->where('language', 'en')
-                                       ->first(['key']);
 
-                        $serviceType = \DB::table('service_types')->where('name', $nameUuid->key)->first();
+                    $serviceTypeData = $measure['service_types'];
+                    $typeLocale = $serviceTypeData['locale'];
+                    $serviceTypes = is_array($serviceTypeData['value']) ? $serviceTypeData['value'] : [$serviceTypeData['value']];
+
+                    foreach ($serviceTypes as $serviceTypeName) {
+                        $serviceType = DB::table('service_types')
+                            ->where("name->{$typeLocale}", $serviceTypeName)
+                            ->first();
+
                         if ($serviceType instanceof \stdClass) {
-                            \DB::table('measure_service_type')->insert([
+                            DB::table('measure_service_type')->insert([
                                 'measure_id' => $mid,
                                 'service_type_id' => $serviceType->id,
                             ]);

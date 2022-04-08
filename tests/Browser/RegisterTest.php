@@ -10,7 +10,7 @@ use Tests\DuskTestCase;
 
 class RegisterTest extends DuskTestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         return parent::setUp();
         User::where('email', 'test@example.org')->delete();
@@ -61,7 +61,7 @@ class RegisterTest extends DuskTestCase
         });
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         User::where('email', 'test@example.org')->delete();
         parent::tearDown();

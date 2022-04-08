@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="86px" viewBox="0 0 50 86" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Enkel glas</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-624.000000, -3424.000000)">
+            <g id="enkelglas" transform="translate(626.000000, 3426.000000)">
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" opacity="0.2" points="6.61 -7.10542736e-15 17.01 5.64 45.84 66.46 45.84 78.44 39.23 81.54 39.23 74.64 6.61 55.93"></polygon>
+                <polyline id="Path" stroke="#9CA1A7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="45.84 78.44 6.61 55.93 6.61 -7.10542736e-15"></polyline>
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" opacity="0.4" points="0 3.1 6.61 -7.10542736e-15 7.82 0.65 7.81 6.79 10.4 8.75 39.23 69.56 39.23 81.54 0 59.03"></polygon>
+                <polygon id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0 3.1 10.4 8.75 39.23 69.56 39.23 81.54 0 59.03"></polygon>
+                <line x1="0" y1="3.1" x2="6.61" y2="-7.10542736e-15" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="39.23" y1="81.54" x2="45.84" y2="78.44" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="39.23" y1="69.45" x2="45.84" y2="66.46" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="10.28" y1="8.8" x2="16.89" y2="5.7" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="6.61 -7.10542736e-15 17.01 5.64 45.84 66.46 45.84 78.44"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

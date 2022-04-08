@@ -3,11 +3,12 @@
 namespace App\Helpers;
 
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Str as SupportStr;
 
 class Str
 {
     const CHARACTERS = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
-    const CONSIDERED_EMPTY_ANSWERS = ['', '', null, 'null', '0.00', '0.0', '0', 0];
+    const CONSIDERED_EMPTY_ANSWERS = ['', null, 'null', '0.00', '0.0', '0', 0, '0,0', '0,00'];
 
     /**
      * Uuid generation wrapping. Laravel < 5.6 uses Ramsey\Uuid. From 5.6 it is
@@ -105,7 +106,7 @@ class Str
     }
 
     /**
-     * Check if the given answer is a empty answer, its considered empty when its in the array.
+     * Check if the given answer is an empty answer, its considered empty when it's in the array.
      *
      * @param $answer
      */
@@ -116,5 +117,124 @@ class Str
         }
 
         return false;
+    }
+
+    public static function lcfirst($string)
+    {
+        return SupportStr::lower(SupportStr::substr($string, 0, 1)).SupportStr::substr($string, 1);
+    }
+
+    public static function isValidJson($value, $arrayOnly = true): bool
+    {
+        $json = json_decode($value, true);
+
+        // There could be JSON strings or numeric values, we don't want them to be valid if $arrayOnly is true.
+        return ! is_null($json) && ($arrayOnly === false || ($arrayOnly === true && is_array($json)));
+    }
+
+    /**
+     * Check if a needle is somewhere (partially) in an array.
+     *
+     * @param  array  $array
+     * @param  $needle
+     * @param  bool  $ignoreCase
+     *
+     * @return bool
+     */
+    public static function arrContains(array $array, $needle, bool $ignoreCase = false)
+    {
+        $needle = $ignoreCase ? strtolower($needle) : $needle;
+
+        if (! empty($array)) {
+            // Dot to remove recursion
+            $array = Arr::dot($array);
+
+            foreach ($array as $key => $value) {
+                if (is_string($value)) {
+                    $value = $ignoreCase ? strtolower($value) : $value;
+                    if (SupportStr::contains($value, $needle)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if a needle is somewhere at the start in an array.
+     *
+     * @param  array  $array
+     * @param $needle
+     * @param  bool  $ignoreCase
+     *
+     * @return bool
+     */
+    public static function arrStartsWith(array $array, $needle, bool $ignoreCase = false)
+    {
+        $needle = $ignoreCase ? strtolower($needle) : $needle;
+
+        if (! empty($array)) {
+            // Dot to remove recursion
+            $array = Arr::dot($array);
+
+            foreach ($array as $key => $value) {
+                if (is_string($value)) {
+                    $value = $ignoreCase ? strtolower($value) : $value;
+                    if (SupportStr::startsWith($value, $needle)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Convert HTML array format to dot
+     *
+     * @param  string  $htmlArray
+     *
+     * @return string
+     */
+    public static function htmlArrToDot(string $htmlArray): string
+    {
+        $dotted = str_replace(']', '', str_replace('[', '.', $htmlArray));
+        if (substr($htmlArray, -2) === '[]') {
+            $dotted = substr($dotted, 0, strlen($dotted) - 1);
+        }
+        return $dotted;
+    }
+
+    /**
+     * Check if a string has replaceables.
+     *
+     * @param  string  $string
+     *
+     * @return bool
+     */
+    public static function hasReplaceables(string $string): bool
+    {
+        // See https://regex101.com/r/ckEDG4/1
+        $pattern = ':{1}([\w]*)';
+
+        preg_match("/{$pattern}/i", $string, $matches);
+
+        return ! empty($matches);
+    }
+
+    /**
+     * Prepare a JSON string for dropping in HTML.
+     * TODO: Tests
+     *
+     * @param  string  $json
+     *
+     * @return string
+     */
+    public static function prepareJsonForHtml(string $json): string
+    {
+        return str_replace('"', '\'', $json);
     }
 }

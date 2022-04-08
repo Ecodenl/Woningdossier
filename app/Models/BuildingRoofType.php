@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType query()
@@ -71,6 +71,10 @@ class BuildingRoofType extends Model
         'building_id', 'roof_type_id', 'input_source_id', 'element_value_id',
         'roof_surface', 'insulation_roof_surface', 'zinc_surface',
         'building_heating_id', 'extra',
+    ];
+
+    protected $crucialRelations = [
+        'roof_type_id',
     ];
 
     /**

@@ -31,9 +31,9 @@ class AddInputSourceIdsToExistingPrivateMessageViews extends Migration
                     // if so the $inputSourceId will be the coach input source id
                     // if not, the group participant is a resident.
                     if ($connectedCoachesForBuilding->contains('coach_id', $groupParticipant->id)) {
-                        $inputSourceId = InputSource::findByShort('coach')->id;
+                        $inputSourceId = InputSource::findByShort(InputSource::COACH_SHORT)->id;
                     } else {
-                        $inputSourceId = InputSource::findByShort('resident')->id;
+                        $inputSourceId = InputSource::findByShort(InputSource::RESIDENT_SHORT)->id;
                     }
 
                     // get the private message view.

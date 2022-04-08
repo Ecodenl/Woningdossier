@@ -39,7 +39,7 @@ class BuildingCharacteristicsFormRequest extends FormRequest
 
         return [
             'building_features.*' => 'required',
-            'building_features.surface' => 'numeric|min:20|max:600',
+            'building_features.surface' => 'numeric|min:20|max:999999',
             'building_features.building_layers' => 'numeric|between:1,5',
             'building_features.build_year' => 'numeric|between:1000,'.$max,
             'building_features.monument' => 'nullable|numeric|digits_between:0,2',

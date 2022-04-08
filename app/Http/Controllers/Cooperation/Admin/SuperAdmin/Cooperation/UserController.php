@@ -15,24 +15,22 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(
-        Cooperation $currentCooperation,
-        Cooperation $cooperationToManage
-    ) {
+    public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage)
+    {
         $users = $cooperationToManage->users()->withoutGlobalScopes()->get();
 
         $breadcrumbs = [
             [
                 'route' => 'cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index',
-                'url'   => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index',
+                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index',
                     [$currentCooperation, $cooperationToManage]),
-                'name'  => $cooperationToManage->name,
+                'name' => $cooperationToManage->name,
             ],
             [
                 'route' => 'cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index',
-                'url'   => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.coordinator.index',
+                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.coordinator.index',
                     [$currentCooperation, $cooperationToManage]),
-                'name'  => __('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.users'),
+                'name' => __('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.users'),
             ],
         ];
 
@@ -40,26 +38,21 @@ class UserController extends Controller
             compact('users', 'breadcrumbs', 'cooperationToManage'));
     }
 
-    public function show(
-        Cooperation $currentCooperation,
-        Cooperation $cooperationToManage,
-        $userId
-    ) {
+    public function show(Cooperation $currentCooperation, Cooperation $cooperationToManage, $userId)
+    {
         $user = User::withoutGlobalScopes()->findOrFail($userId);
         $roles = Role::where('name', '!=', 'superuser')
-                     ->where('name', '!=', 'super-admin')->get();
+            ->where('name', '!=', 'super-admin')->get();
 
         return view('cooperation.admin.super-admin.cooperations.users.show',
-            compact('user', 'breadcrumbs', 'cooperationToManage', 'roles'));
+            compact('user', 'cooperationToManage', 'roles'));
     }
 
     public function confirm(Cooperation $currentCooperation, Cooperation $cooperationToManage, $accountId)
     {
         $account = Account::findOrFail($accountId);
+        $account->markEmailAsVerified();
 
-        $account->confirm_token = null;
-        $account->save();
-
-        return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
+        return redirect()->back()->with('success', __('Account bevestigd'));
     }
 }

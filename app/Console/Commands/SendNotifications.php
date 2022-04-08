@@ -5,10 +5,10 @@ namespace App\Console\Commands;
 use App\Jobs\SendUnreadMessageCountEmail;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\NotificationSetting;
 use App\Models\NotificationType;
 use App\Models\PrivateMessageView;
 use App\Models\User;
-use App\NotificationSetting;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 

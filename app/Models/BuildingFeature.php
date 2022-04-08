@@ -6,6 +6,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\BuildingFeature
@@ -51,7 +52,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature query()
@@ -92,9 +93,10 @@ class BuildingFeature extends Model
     use ToolSettingTrait;
 
     protected $fillable = [
-        'building_heating_application_id',
+        'example_building_id',
         'element_values',
         'plastered_wall_surface',
+        'building_type_category_id',
         'building_type_id',
         'building_id',
         'wall_joints',
@@ -102,7 +104,6 @@ class BuildingFeature extends Model
         'contaminated_wall_joints',
         'wall_surface',
         'insulation_wall_surface',
-        'damage_paintwork',
         'building_layers',
         'surface',
         'floor_surface',
@@ -133,11 +134,6 @@ class BuildingFeature extends Model
         return $this->belongsTo(FacadePlasteredSurface::class, 'facade_plastered_surface_id', 'id');
     }
 
-    public function buildingHeatingApplication()
-    {
-        return $this->belongsTo(BuildingHeatingApplication::class);
-    }
-
     /**
      * Column is named wall_joints.
      *
@@ -161,6 +157,11 @@ class BuildingFeature extends Model
     public function buildingCategory()
     {
         return $this->belongsTo(BuildingCategory::class);
+    }
+
+    public function exampleBuilding(): BelongsTo
+    {
+        return $this->belongsTo(ExampleBuilding::class);
     }
 
     public function buildingType()

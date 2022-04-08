@@ -24,12 +24,12 @@
                         @forelse($questionnaires as $questionnaire)
                             <tr>
                                 <td>{{$questionnaire->name}}</td>
-                                <td>{{$questionnaire->step->name}}</td>
+                                <td>{{optional($questionnaire->step)->name}}</td> {{-- Step could be hidden, so we optional it --}}
                                 <td>
                                     <input data-active="{{$questionnaire->isActive() ? 'on' : 'off'}}" class="toggle-active" data-questionnaire-id="{{$questionnaire->id}}" type="checkbox" data-toggle="toggle" data-on="Actief" data-off="Niet actief">
                                 </td>
                                 <td>
-                                    <a class="btn btn-success" href="{{route('cooperation.admin.cooperation.questionnaires.edit', ['questionnaireId' => $questionnaire->id])}}">
+                                    <a class="btn btn-success" href="{{route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire'))}}">
                                         @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.edit')
                                     </a>
 
@@ -61,12 +61,12 @@
 
     <script>
         $(document).ready(function () {
-            var destroyQuestionnaireRoute = '{{route('cooperation.admin.cooperation.questionnaires.destroy', ['questionnaireId' => 'id'])}}';
+            var destroyQuestionnaireRoute = '{{route('cooperation.admin.cooperation.questionnaires.destroy', ['questionnaire' => ':questionnaire-id'])}}';
 
             $(document).on('click', '.destroy', function (event) {
                 if (confirm('@lang('woningdossier.cooperation.admin.cooperation.questionnaires.destroy.are-you-sure')')) {
                     $.ajax({
-                        url: destroyQuestionnaireRoute.replace('id', $(this).data('questionnaire-id')),
+                        url: destroyQuestionnaireRoute.replace(':questionnaire-id', $(this).data('questionnaire-id')),
                         method: 'delete',
                         success: function () {
                             window.location.reload();

@@ -19,16 +19,15 @@ class ToolController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function fillForUser(Cooperation $cooperation, $buildingId)
+    public function fillForUser(Cooperation $cooperation, Building $building)
     {
-        // The building the coach wants to edit
-        $building = Building::find($buildingId)->load('user');
+        $building->load('user');
 
         $this->authorize('access-building', $building);
 
         FillingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
-        return redirect()->route('cooperation.tool.index');
+        return redirect()->route('cooperation.frontend.tool.quick-scan.start');
     }
 
     /**
@@ -38,15 +37,14 @@ class ToolController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function observeToolForUser(Cooperation $cooperation, $buildingId)
+    public function observeToolForUser(Cooperation $cooperation, Building $building)
     {
-        // The building the user wants to observe
-        $building = Building::find($buildingId)->load('user');
+        $building->load('user');
 
         $this->authorize('access-building', $building);
 
         ObservingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
-        return redirect()->route('cooperation.tool.index');
+        return redirect()->route('cooperation.frontend.tool.quick-scan.start');
     }
 }

@@ -12,8 +12,11 @@ use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
+use App\Models\Service;
+use App\Services\ContentStructureService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class ExampleBuildingController extends Controller
 {
@@ -22,7 +25,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function index()
+    public function index(Cooperation $cooperation)
     {
         $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id', 'asc')
             ->orderBy('order', 'asc');
@@ -31,17 +34,26 @@ class ExampleBuildingController extends Controller
             $exampleBuildingsQuery->forMyCooperation();
         }
 
+        $contentStructure = ContentStructureService::init(
+            ToolHelper::getContentStructure()
+        )->applicableForExampleBuildings();
+
+
+        $rows[] = ['Naam', 'Bouwjaar', ...collect($contentStructure)->pluck('*.*.label')->flatten()->filter()->toArray()];
+//        dd($rows);
         $exampleBuildings = $exampleBuildingsQuery->get();
 
-        return view('cooperation.admin.example-buildings.index', compact('exampleBuildings'));
+        return view('cooperation.admin.example-buildings.index', compact('exampleBuildings', 'cooperation'));
     }
+
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(Cooperation $cooperation)
+    public
+    function create(Cooperation $cooperation)
     {
         $buildingTypes = BuildingType::all();
 
@@ -50,7 +62,9 @@ class ExampleBuildingController extends Controller
             $cooperations = Cooperation::all();
         }
 
-        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getContentStructure());
+        $contentStructure = ContentStructureService::init(
+            ToolHelper::getContentStructure()
+        )->applicableForExampleBuildings();
 
         return view('cooperation.admin.example-buildings.create',
             compact(
@@ -66,7 +80,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function store(ExampleBuildingRequest $request)
+    public
+    function store(ExampleBuildingRequest $request)
     {
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
@@ -74,20 +89,22 @@ class ExampleBuildingController extends Controller
         $exampleBuilding = new ExampleBuilding();
 
         $translations = $request->input('name', []);
-        $translations = array_only($translations, config('hoomdossier.supported_locales'));
-        $exampleBuilding->createTranslations('name', $translations);
+        $translations = Arr::only($translations, config('hoomdossier.supported_locales'));
+        $exampleBuilding->name = $translations;
 
         $exampleBuilding->buildingType()->associate($buildingType);
-        if (! is_null($cooperation)) {
+        if (!is_null($cooperation)) {
             $exampleBuilding->cooperation()->associate($cooperation);
         }
         $exampleBuilding->is_default = $request->get('is_default', false);
         $exampleBuilding->order = $request->get('order', null);
         $exampleBuilding->save();
 
+
+
         $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
-        return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', __('cooperation/admin/example-buildings.store.success'));
+        return redirect()->route('cooperation.admin.example-buildings.edit', compact('exampleBuilding'))->with('success', __('cooperation/admin/example-buildings.store.success'));
     }
 
     /**
@@ -98,17 +115,20 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(Cooperation $cooperation, $id)
+    public
+    function edit(Cooperation $cooperation, $exampleBuilding)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::with([
             'contents' => function (Relation $query) {
                 $query->orderBy('build_year');
-            }, ])->findOrFail($id);
+            },])->findOrFail($exampleBuilding);
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
-        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getContentStructure());
+        $contentStructure = ContentStructureService::init(
+            ToolHelper::getContentStructure()
+        )->applicableForExampleBuildings();
 
         return view('cooperation.admin.example-buildings.edit',
             compact(
@@ -118,70 +138,25 @@ class ExampleBuildingController extends Controller
     }
 
     /**
-     * We only want the applicable inputs for the example building.
-     *
-     * NO element or service questions will be shown when already displayed in the general data page
-     * NO user interest questions throughout the steps
-     *
-     * @param $contentStructure
-     *
-     * @return array
-     */
-    private function onlyApplicableInputs($contentStructure)
-    {
-        $filterOutUserInterests = function ($key) {
-            return false === stristr($key, 'user_interests');
-        };
-
-        foreach (Arr::except($contentStructure, 'general-data') as $stepShort => $structureWithinStep) {
-            $contentStructure[$stepShort]['-'] = array_filter($structureWithinStep['-'], $filterOutUserInterests, ARRAY_FILTER_USE_KEY);
-        }
-
-        unset(
-            $contentStructure['general-data']['building-characteristics']['building_features.building_type_id'],
-            $contentStructure['general-data']['building-characteristics']['building_features.build_year'],
-            $contentStructure['general-data']['usage']['user_energy_habits.resident_count'],
-
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_gas'],
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_electricity'],
-            $contentStructure['solar-panels']['-']['user_energy_habits.amount_electricity'],
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.resident_count']
-        );
-
-        // filter out interest stuff from the interest page
-        $contentStructure['general-data']['interest'] = array_filter($contentStructure['general-data']['interest'], function ($key) {
-            return false === stristr($key, 'user_interest');
-        }, ARRAY_FILTER_USE_KEY);
-
-        return $contentStructure;
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $id
+     * @param int $id
      * @param  $cooperation
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function update(ExampleBuildingRequest $request, Cooperation $cooperation, $id)
+    public
+    function update(ExampleBuildingRequest $request, Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
-        /** @var ExampleBuilding $exampleBuilding */
-        $exampleBuilding = ExampleBuilding::findOrFail($id);
-
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
 
         $translations = $request->input('name', []);
-        foreach (config('hoomdossier.supported_locales') as $locale) {
-            if (isset($translations[$locale]) && ! empty($translations[$locale])) {
-                $exampleBuilding->updateTranslation('name', $translations[$locale], $locale);
-            }
-        }
+        $exampleBuilding->name = $translations;
 
         $exampleBuilding->buildingType()->associate($buildingType);
-        if (! is_null($cooperation)) {
+        if (!is_null($cooperation)) {
             $exampleBuilding->cooperation()->associate($cooperation);
         }
         $exampleBuilding->is_default = $request->get('is_default', false);
@@ -193,19 +168,20 @@ class ExampleBuildingController extends Controller
 
         ProcessApplyExampleBuilding::dispatch($exampleBuilding);
 
-        return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', __('cooperation/admin/example-buildings.update.success'));
+        return redirect()->route('cooperation.admin.example-buildings.edit', compact('exampleBuilding'))->with('success', __('cooperation/admin/example-buildings.update.success'));
     }
 
-    private function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
+    private
+    function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
     {
         foreach ($contents as $cid => $data) {
-            if (! is_null($data['build_year'])) {
+            if (!is_null($data['build_year'])) {
                 $data['content'] = array_key_exists('content', $data) ? $data['content'] : [];
 
                 $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
 
                 $content = null;
-                if (! is_numeric($cid) && 'new' == $cid) {
+                if (!is_numeric($cid) && 'new' == $cid) {
                     if (1 == $new) {
                         // addition
                         $content = new ExampleBuildingContent($data);
@@ -230,15 +206,10 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function destroy(Cooperation $cooperation, $id)
+    public
+    function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
-        /** @var ExampleBuilding $exampleBuilding */
-        $exampleBuilding = ExampleBuilding::findOrFail($id);
-        try {
-            $exampleBuilding->delete();
-        } catch (\Exception $e) {
-            // do nothing
-        }
+        $exampleBuilding->delete();
 
         return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building deleted');
     }
@@ -250,20 +221,19 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function copy(Cooperation $cooperation, $id)
+    public
+    function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
         /** @var ExampleBuilding $exampleBuilding */
-        $exampleBuilding = ExampleBuilding::findOrFail($id);
         $exampleBuildingContents = $exampleBuilding->contents;
         $translations = $exampleBuilding->getTranslations('name');
         $names = [];
-        foreach ($translations as $translation) {
-            $names[$translation->language] = $translation->translation.' (copy)';
+        foreach ($translations as $locale => $translation) {
+            $names[$locale] = $translation . ' (copy)';
         }
 
         $newEB = new ExampleBuilding($exampleBuilding->toArray());
-        $name = $newEB->createTranslations('name', $names);
-        $newEB->name = $name;
+        $newEB->name = $names;
         $newEB->save();
 
         /** @var ExampleBuildingContent $exampleBuildingContent */

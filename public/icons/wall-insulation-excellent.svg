@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="31px" height="93px" viewBox="0 0 31 93" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Zeer goed (active)</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-1214.000000, -2159.000000)">
+            <g id="muurisolatie-zeer-goed" transform="translate(1218.000000, 2159.000000)">
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" points="0.77 5.57 21.06 25.86 3.83 43.09 3.53 42.79 0 46.33 21.06 67.39 0.13 88.31 3.67 91.85 24.59 70.92 24.59 63.85 7.36 46.62 24.59 29.39 24.59 22.32 4.3 2.03"></polygon>
+                <line x1="24.59" y1="0" x2="24.59" y2="93" id="Path" stroke="#394553" stroke-width="3"></line>
+                <line x1="0.86" y1="0" x2="0.86" y2="93" id="Path" stroke="#394553" stroke-width="9"></line>
+            </g>
+        </g>
+    </g>
+</svg>

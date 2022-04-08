@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $heating_first_floor
  * @property int|null $heating_second_floor
  * @property int|null $heated_space_outside
- * @property int $cook_gas
  * @property int|null $water_comfort_id
  * @property int|null $amount_electricity
  * @property int|null $amount_gas
@@ -39,7 +38,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit query()
@@ -82,7 +81,6 @@ class UserEnergyHabit extends Model
         'hours_high',
         'heating_first_floor',
         'heating_second_floor',
-        'cook_gas',
         'water_comfort_id',
         'amount_electricity',
         'amount_gas',

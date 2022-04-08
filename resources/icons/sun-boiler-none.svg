@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="119px" height="112px" viewBox="0 0 119 112" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 2</title>
+    <g id="Woonstatus" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="Woningstatus-vraag---Zonneboiler" transform="translate(-796.000000, -281.000000)">
+            <g id="Geen-zonneboiler" transform="translate(777.000000, 268.000000)">
+                <g id="Group-2" transform="translate(21.000000, 15.000000)">
+                    <g id="zonneboiler" stroke="#394553" stroke-linejoin="round" stroke-width="3">
+                        <g id="Group">
+                            <g transform="translate(0.000000, 19.300000)" id="Path">
+                                <line x1="3.55271368e-15" y1="16.7" x2="6.9" y2="14.6"></line>
+                                <line x1="48.5" y1="2" x2="55.3" y2="0"></line>
+                            </g>
+                            <path d="M41,25.5 C40.6,23.2 39.7,21 38.1,19 C33.4,13.3 24.9,12.4 19.1,17.1 C13.3,21.8 12.5,30.3 17.2,36.1 C19.1,38.5 21.7,40 24.4,40.6" id="Path"></path>
+                            <g transform="translate(14.000000, 2.200000)" id="Path">
+                                <line x1="7.10542736e-15" y1="50.9" x2="3.4" y2="44.6"></line>
+                                <line x1="23.9" y1="6.3" x2="27.3" y2="3.55271368e-15"></line>
+                            </g>
+                            <line x1="21.4" y1="6.8" x2="19.3" y2="-5.32907052e-15" id="Path"></line>
+                            <line x1="8.5" y1="17.4" x2="2.2" y2="14" id="Path"></line>
+                        </g>
+                        <path d="M95.5,49.3 L37.5,49.3 C34.2,49.3 31.5,46.6 31.5,43.3 L31.5,36.8 C31.5,33.5 34.2,30.8 37.5,30.8 L95.5,30.8 C98.8,30.8 101.5,33.5 101.5,36.8 L101.5,43.3 C101.5,46.6 98.8,49.3 95.5,49.3 Z" id="Path"></path>
+                        <path d="M94.4,105.6 L38.6,105.6 C36.6,105.6 34.9,103.9 34.9,101.9 L34.9,101.9 C34.9,99.9 36.6,98.2 38.6,98.2 L94.3,98.2 C96.3,98.2 98,99.9 98,101.9 L98,101.9 C98.1,103.9 96.4,105.6 94.4,105.6 Z" id="Path"></path>
+                        <path d="M47,48.5 L47,95.6 C47,97 45.9,98.1 44.5,98.1 L44.5,98.1 C43.1,98.1 42,97 42,95.6 L42,48.5 C42,47.1 43.1,46 44.5,46 L44.5,46 C45.9,46 47,47.1 47,48.5 Z" id="Path" fill="#2CA982" fill-rule="nonzero"></path>
+                        <path d="M58,48.3 L58,95.4 C58,96.8 56.9,97.9 55.5,97.9 L55.5,97.9 C54.1,97.9 53,96.8 53,95.4 L53,48.3 C53,46.9 54.1,45.8 55.5,45.8 L55.5,45.8 C56.9,45.8 58,46.9 58,48.3 Z" id="Path" fill="#2CA982" fill-rule="nonzero"></path>
+                        <path d="M69,48.5 L69,95.6 C69,97 67.9,98.1 66.5,98.1 L66.5,98.1 C65.1,98.1 64,97 64,95.6 L64,48.5 C64,47.1 65.1,46 66.5,46 L66.5,46 C67.9,46 69,47.1 69,48.5 Z" id="Path" fill="#2CA982" fill-rule="nonzero"></path>
+                        <path d="M80,48.3 L80,95.4 C80,96.8 78.9,97.9 77.5,97.9 L77.5,97.9 C76.1,97.9 75,96.8 75,95.4 L75,48.3 C75,46.9 76.1,45.8 77.5,45.8 L77.5,45.8 C78.9,45.8 80,46.9 80,48.3 Z" id="Path" fill="#2CA982" fill-rule="nonzero"></path>
+                        <path d="M91,48.3 L91,95.4 C91,96.8 89.9,97.9 88.5,97.9 L88.5,97.9 C87.1,97.9 86,96.8 86,95.4 L86,48.3 C86,46.9 87.1,45.8 88.5,45.8 L88.5,45.8 C89.9,45.8 91,46.9 91,48.3 Z" id="Path" fill="#2CA982" fill-rule="nonzero"></path>
+                    </g>
+                    <line x1="13" y1="106.050125" x2="113.959656" y2="10" id="Line-5-Copy" stroke="#E31440" stroke-width="6"></line>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

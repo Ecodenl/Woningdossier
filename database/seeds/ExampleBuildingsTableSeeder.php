@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ExampleBuildingsTableSeeder extends Seeder
 {
@@ -13,70 +14,70 @@ class ExampleBuildingsTableSeeder extends Seeder
     {
         $exampleBuildings = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Vrijstaande woning',
                 ],
                 'order' => 100,
                 'building_type_id' => 1,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => '2 onder 1 kap',
                 ],
                 'order' => 101,
                 'building_type_id' => 2,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Hoekwoning',
                 ],
                 'order' => 102,
                 'building_type_id' => 3,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Tussenwoning',
                 ],
                 'order' => 103,
                 'building_type_id' => 4,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Bovenwoning hoek',
                 ],
                 'order' => 104,
                 'building_type_id' => 5,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Bovenwoning tussen',
                 ],
                 'order' => 105,
                 'building_type_id' => 6,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Bovenwoning hoek',
                 ],
                 'order' => 106,
                 'building_type_id' => 7,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Bovenwoning tussen',
                 ],
                 'order' => 107,
                 'building_type_id' => 8,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Appartement tussen op een tussenverdieping',
                 ],
                 'order' => 108,
                 'building_type_id' => 9,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Appartement hoek op een tussenverdieping',
                 ],
                 'order' => 109,
@@ -85,17 +86,8 @@ class ExampleBuildingsTableSeeder extends Seeder
         ];
 
         foreach ($exampleBuildings as $exampleBuilding) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($exampleBuilding['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('example_buildings')->insert([
-                'name' => $uuid,
+            DB::table('example_buildings')->insert([
+                'name' => json_encode($exampleBuilding['name']),
                 'order' => $exampleBuilding['order'],
                 'building_type_id' => $exampleBuilding['building_type_id'],
             ]);

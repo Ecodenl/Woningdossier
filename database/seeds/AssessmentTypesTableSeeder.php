@@ -11,70 +11,61 @@ class AssessmentTypesTableSeeder extends Seeder
      */
     public function run()
     {
-        $categories = [
+        $types = [
             [
                 'type' => 'EPB_ASSESS_CALC_DESIGN',
-                'names' => [
+                'name' => [
                     'en' => 'Calculated design',
                 ],
             ],
             [
                 'type' => 'EPB_ASSESS_CALC_ASBUILT',
-                'names' => [
+                'name' => [
                     'en' => 'Calculated built',
                 ],
             ],
             [
                 'type' => 'EPB_ASSESS_CALC_ACTUAL',
-                'names' => [
+                'name' => [
                     'en' => 'Calculated actual',
                 ],
             ],
             [
                 'type' => 'EPB_ASSESS_CALC_TAILORED',
-                'names' => [
+                'name' => [
                     'en' => 'Calculated tailored',
                 ],
             ],
             [
                 'type' => 'EPB_ASSESS_MEAS_ACTUAL',
-                'names' => [
+                'name' => [
                     'en' => 'Measured actual',
                 ],
             ],
             [
                 'type' => 'EPB_ASSESS_MEAS_CORR_CLIM',
-                'names' => [
+                'name' => [
                     'en' => 'Measured corrected climate',
                 ],
             ],
             [
                 'type' => 'EPB_ASSESS_MEAS_CORR_USE',
-                'names' => [
+                'name' => [
                     'en' => 'Measured corrected for use',
                 ],
             ],
             [
                 'type' => 'EPB_ASSESS_MEAS_STAND',
-                'names' => [
+                'name' => [
                     'en' => 'Measured standard',
                 ],
             ],
         ];
 
-        foreach ($categories as $category) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($category['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
+        foreach ($types as $type) {
             \DB::table('assessment_types')->insert([
-                'type' => $category['type'],
-                'name' => $uuid,
+                'type' => $type['type'],
+                'name' => json_encode($type['name']),
             ]);
         }
     }

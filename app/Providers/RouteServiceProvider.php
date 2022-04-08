@@ -18,6 +18,13 @@ class RouteServiceProvider extends ServiceProvider
     protected $namespace = 'App\Http\Controllers';
 
     /**
+     * The path to the "home" route for your application.
+     *
+     * @var string
+     */
+    public const HOME = '/home';
+
+    /**
      * Define your route model bindings, pattern filters, etc.
      *
      * @return void
@@ -25,7 +32,16 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
+
         Route::model('cooperation', Cooperation::class);
+
+        Route::bind('cooperation', function ($value) {
+            if ($this->getCurrentRequest()->hasHeader('X-Cooperation-Slug')) {
+                return Cooperation::whereSlug($this->getCurrentRequest()->header('X-Cooperation-Slug'))->firstOrFail();
+            }
+
+            return Cooperation::whereSlug($value)->firstOrFail();
+        });
     }
 
     /**
@@ -65,6 +81,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::prefix('api')
              ->middleware('api')
+            ->as('api.')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
     }

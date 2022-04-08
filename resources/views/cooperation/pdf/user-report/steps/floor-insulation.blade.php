@@ -16,7 +16,7 @@
             @foreach ($dataForSubStep as $translationKey => $value)
                 <?php
                 $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.' . $translationKey];
-                $tableIsNotUserInterest = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interests');
+                $tableIsNotUserInterest = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'considerables');
                 $isNotCalculation = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'calculation');
 
                 $doesAnswerContainUnit = stripos($value, 'm2') !== false;

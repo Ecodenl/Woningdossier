@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ServiceTypesTableSeeder extends Seeder
 {
@@ -13,79 +14,79 @@ class ServiceTypesTableSeeder extends Seeder
     {
         $types = [
             [
-                'names' => [
+                'name' => [
                     'en' => 'Heating',
                 ],
                 'iso' => 'M3',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'Cooling',
                 ],
                 'iso' => 'M4',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'Ventilation',
                 ],
                 'iso' => 'M5',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'Humidification',
                 ],
                 'iso' => 'M6',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'Dehumidification',
                 ],
                 'iso' => 'M7',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'Domestic hot water',
                 ],
                 'iso' => 'M8',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'Lighting',
                 ],
                 'iso' => 'M9',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'External lighting',
                 ],
                 'iso' => '',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'Building automation and control',
                 ],
                 'iso' => 'M10',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'People transport',
                 ],
                 'iso' => '',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'PV-wind',
                 ],
                 'iso' => 'M11',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'Appliances',
                 ],
                 'iso' => '',
             ],
             [
-                'names' => [
+                'name' => [
                     'en' => 'Others',
                 ],
                 'iso' => '',
@@ -93,18 +94,9 @@ class ServiceTypesTableSeeder extends Seeder
         ];
 
         foreach ($types as $type) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($type['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('service_types')->insert([
+            DB::table('service_types')->insert([
                 'iso' => $type['iso'],
-                'name' => $uuid,
+                'name' => json_encode($type['name']),
             ]);
         }
     }

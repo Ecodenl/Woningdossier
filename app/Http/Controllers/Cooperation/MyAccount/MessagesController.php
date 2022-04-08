@@ -33,6 +33,7 @@ class MessagesController extends Controller
         if (! $privateMessages->first() instanceof PrivateMessage) {
             return redirect()->route('cooperation.conversation-requests.index', ['requestType' => PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION]);
         }
+
         $this->authorize('edit', $privateMessages->first());
 
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);

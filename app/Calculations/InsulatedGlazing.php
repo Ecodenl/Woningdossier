@@ -12,7 +12,6 @@ use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\InsulatingGlazing;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\WoodRotStatus;
@@ -35,46 +34,48 @@ class InsulatedGlazing
             'measure' => [],
         ];
 
-        $userInterests = $calculateData['user_interests'] ?? [];
 
         $buildingInsulatedGlazings = $calculateData['building_insulated_glazings'] ?? [];
 
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazingsData) {
             $measureApplication = MeasureApplication::find($measureApplicationId);
-            $buildingHeatingId = array_key_exists('building_heating_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['building_heating_id'] : 0;
-            $buildingHeating = BuildingHeating::find($buildingHeatingId);
-            $insulatedGlazingId = array_key_exists('insulating_glazing_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['insulating_glazing_id'] : 0;
-            $insulatedGlazing = InsulatingGlazing::find($insulatedGlazingId);
-            $interestId = $userInterests[$measureApplicationId]['interest_id'] ?? null;
-            $interest = Interest::find($interestId);
 
-            if ($measureApplication instanceof MeasureApplication && $buildingHeating instanceof BuildingHeating && $interest instanceof Interest && $interest->calculate_value <= 3) {
-                $m2 = NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']);
-                $gasSavings = 0;
-                if (is_numeric($m2)) {
-                    $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
-                        $m2,
-                        $measureApplication,
-                        $buildingHeating,
-                        $insulatedGlazing
-                    );
-                }
+            // we cant use the $user->considers() because this will also be used on the frontend
+            if (isset($calculateData['considerables'][$measureApplicationId]) && $calculateData['considerables'][$measureApplicationId]['is_considering']) {
 
-                $result['measure'][$measureApplication->id] = [
-                    'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, $interest, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']),
-                    'savings_gas' => $gasSavings,
+                $buildingHeatingId = array_key_exists('building_heating_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['building_heating_id'] : 0;
+                $buildingHeating = BuildingHeating::find($buildingHeatingId);
+                $insulatedGlazingId = array_key_exists('insulating_glazing_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['insulating_glazing_id'] : 0;
+                $insulatedGlazing = InsulatingGlazing::find($insulatedGlazingId);
+
+                if ($measureApplication instanceof MeasureApplication && $buildingHeating instanceof BuildingHeating) {
+                    $m2 = NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']);
+                    $gasSavings = 0;
+                    if (is_numeric($m2)) {
+                        $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
+                            $m2,
+                            $measureApplication,
+                            $buildingHeating,
+                            $insulatedGlazing
+                        );
+                    }
+
+                    $result['measure'][$measureApplication->id] = [
+                        'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, (int)$buildingInsulatedGlazingsData['m2'], (int)$buildingInsulatedGlazingsData['windows']),
+                        'savings_gas' => $gasSavings,
+                        // calculated outside this foreach
+                        //'savings_co2' => Calculator::calculateCo2Savings($gasSavings),
+                        //'savings_money' => Calculator::calculateMoneySavings($gasSavings),
+                    ];
+
+                    $result['cost_indication'] += $result['measure'][$measureApplication->id]['costs'];
+                    $result['savings_gas'] += $gasSavings;
                     // calculated outside this foreach
-                    //'savings_co2' => Calculator::calculateCo2Savings($gasSavings),
-                    //'savings_money' => Calculator::calculateMoneySavings($gasSavings),
-                ];
-
-                $result['cost_indication'] += $result['measure'][$measureApplication->id]['costs'];
-                $result['savings_gas'] += $gasSavings;
-                // calculated outside this foreach
-                /*
-                $result['savings_co2'] += $result['measure'][$measureApplication->id]['savings_co2'];
-                $result['savings_money'] += $result['measure'][$measureApplication->id]['savings_money'];
-                */
+                    /*
+                    $result['savings_co2'] += $result['measure'][$measureApplication->id]['savings_co2'];
+                    $result['savings_money'] += $result['measure'][$measureApplication->id]['savings_money'];
+                    */
+                }
             }
         }
 
@@ -117,13 +118,13 @@ class InsulatedGlazing
             'year' => null,
         ];
 
-        $frames = Element::where('short', 'frames')->first();
-        $woodElements = Element::where('short', 'wood-elements')->first();
+        $frames = Element::findByShort('frames');
+        $woodElements = Element::findByShort('wood-elements');
         $buildingElements = $calculateData['building_elements'] ?? [];
         $framesValueId = 0;
 
         if (array_key_exists($frames->id, $buildingElements)) {
-            $framesValueId = (int) $buildingElements[$frames->id];
+            $framesValueId = (int)$buildingElements[$frames->id];
         }
         $frameElementValue = ElementValue::find($framesValueId);
 
@@ -158,16 +159,18 @@ class InsulatedGlazing
             $paintworkStatus = null;
             $woodRotStatus = null;
             $lastPaintedYear = 2000;
-            if (array_key_exists('paintwork_status_id', $buildingPaintworkStatuses)) {
-                $paintworkStatus = PaintworkStatus::find($buildingPaintworkStatuses['paintwork_status_id']);
-            }
-            if (array_key_exists('wood_rot_status_id', $buildingPaintworkStatuses)) {
-                $woodRotStatus = WoodRotStatus::find($buildingPaintworkStatuses['wood_rot_status_id']);
-            }
-            if (array_key_exists('last_painted_year', $buildingPaintworkStatuses)) {
-                $year = (int) $buildingPaintworkStatuses['last_painted_year'];
+            // Only calculate if last painted year is set
+            if (array_key_exists('last_painted_year', $buildingPaintworkStatuses) && ! is_null($buildingPaintworkStatuses['last_painted_year'])) {
+                $year = (int)$buildingPaintworkStatuses['last_painted_year'];
                 if ($year > 1950) {
                     $lastPaintedYear = $year;
+                }
+
+                if (array_key_exists('paintwork_status_id', $buildingPaintworkStatuses)) {
+                    $paintworkStatus = PaintworkStatus::find($buildingPaintworkStatuses['paintwork_status_id']);
+                }
+                if (array_key_exists('wood_rot_status_id', $buildingPaintworkStatuses)) {
+                    $woodRotStatus = WoodRotStatus::find($buildingPaintworkStatuses['wood_rot_status_id']);
                 }
             }
 

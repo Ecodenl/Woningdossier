@@ -36,23 +36,21 @@ class HeaterHelper extends ToolHelper
 
     public function createValues(): ToolHelper
     {
-        $buildingHeater = $this->building->heater()->forInputSource($this->inputSource)->first();
-        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
-        $userInterestsForHeater = $this
-            ->user
-            ->userInterestsForSpecificType(Step::class, Step::findByShort('heater')->id, $this->inputSource)
-            ->first();
+        $step = Step::findByShort('heater');
+        $buildingHeater = $this->building->heater()->forInputSource($this->masterInputSource)->first();
+        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->masterInputSource)->first();
 
         $this->setValues([
+            'considerables' => [
+                $step->id => [
+                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
+                ],
+            ],
             'building_heaters' => $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
             'user_energy_habits' => [
                 'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
             ],
-            'user_interests' => [
-                'interested_in_id' => optional($userInterestsForHeater)->interested_in_id,
-                'interested_in_type' => Step::class,
-                'interest_id' => optional($userInterestsForHeater)->interest_id,
-            ],
+            'updated_measure_ids' => [],
         ]);
 
         return $this;
@@ -60,23 +58,30 @@ class HeaterHelper extends ToolHelper
 
     public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $step = Step::findByShort('heater');
 
         $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = Heater::calculate($this->building, $userEnergyHabit, $this->getValues());
 
-        // remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+        if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->user()->associate($this->user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
+
+                // We only want to check old advices if the updated attributes are not relevant to this measure
+                if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+                }
+
                 $actionPlanAdvice->save();
             }
         }

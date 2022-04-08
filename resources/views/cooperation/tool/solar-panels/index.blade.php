@@ -1,121 +1,215 @@
-@extends('cooperation.tool.layout')
+@extends('cooperation.frontend.layouts.tool')
 
-@section('step_title', \App\Helpers\Translation::translate('solar-panels.title.title'))
+@section('step_title', __('solar-panels.title.title'))
 
-@section('step_content')
-    <form  method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
-        {{ csrf_field() }}
+@section('content')
+    <form  method="POST" id="solar-panels-form" 
+           action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
+        @csrf
 
-        @include('cooperation.tool.includes.interested', [
-            'translation' => 'solar-panels.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
-        ])
+        @include('cooperation.tool.includes.considerable', ['considerable' => $currentStep])
+
         <div id="solar-panels">
-            <div class="row">
-                <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_electricity', 'translation' => 'solar-panels.electra-usage', 'required' => false])
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full sm:w-1/2 sm:pr-3">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'user_energy_habits.amount_electricity',
+                        'translation' => 'solar-panels.electra-usage', 'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input',
+                                'userInputValues' => $energyHabitsOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'amount_electricity'
+                            ])
+                        @endslot
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $energyHabitsOrderedOnInputSourceCredibility, 'userInputColumn' => 'amount_electricity'])
-                            <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]"
-                                   value="{{ old('user_energy_habits.amount_electricity', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'amount_electricity', 0)) }}"/>
-                            {{--<input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />--}}
-                        @endcomponent
+                        <span class="input-group-prepend">kWh / @lang('general.unit.year.title')</span>
+                        <input type="number" min="0" class="form-input" name="user_energy_habits[amount_electricity]"
+                               value="{{ old('user_energy_habits.amount_electricity', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'amount_electricity', 0)) }}"/>
+                        {{--<input type="number" min="0" class="form-input" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />--}}
                     @endcomponent
-
-
                 </div>
-                <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'building_pv_panels.peak_power', 'translation' => 'solar-panels.peak-power', 'required' => false])
+                <div class="w-full sm:w-1/2 sm:pl-3">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'building_pv_panels.peak_power',
+                        'translation' => 'solar-panels.peak-power', 'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'select',
+                                'inputValues' => \App\Helpers\KeyFigures\PvPanels\KeyFigures::getPeakPowers(),
+                                'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'peak_power'
+                            ])
+                        @endslot
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => \App\Helpers\KeyFigures\PvPanels\KeyFigures::getPeakPowers(), 'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility, 'userInputColumn' => 'peak_power'])
-                            <span class="input-group-addon">Wp</span>
-                            <select id="building_pv_panels_peak_power" class="form-control"
+                        @component('cooperation.frontend.layouts.components.alpine-select', ['prepend' => 'Wp'])
+                            <select id="building_pv_panels_peak_power" class="form-input"
                                     name="building_pv_panels[peak_power]">
                                 @foreach(\App\Helpers\KeyFigures\PvPanels\KeyFigures::getPeakPowers() as $peakPower)
                                     <option @if(old('building_pv_panels.peak_power', Hoomdossier::getMostCredibleValueFromCollection($pvPanelsOrderedOnInputSourceCredibility, 'peak_power') == $peakPower)) selected
-                                            @endif value="{{ $peakPower }}">{{ $peakPower }}</option>
+                                            @endif value="{{ $peakPower }}">
+                                        {{ $peakPower }}
+                                    </option>
                                 @endforeach
                             </select>
                         @endcomponent
-
                     @endcomponent
-
                 </div>
             </div>
 
-            <div class="row advice">
-                <div class="col-sm-12 col-md-8 col-md-offset-2">
-                    <div class="alert alert-info show" role="alert">
-                        <p id="solar-panels-advice"></p>
-                    </div>
+            <div class="flex flex-row flex-wrap w-full advice">
+                <div class="w-full md:w-8/12 md:ml-2/12">
+                    @component('cooperation.frontend.layouts.parts.alert', [
+                        'color' => 'blue-800',
+                        'dismissible' => false,
+                    ])
+                        <p id="solar-panels-advice" class="text-blue-800"></p>
+                    @endcomponent
                 </div>
             </div>
 
-            <div class="row">
+            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'building_pv_panels.total_installed_power', 'translation' => App\Models\ToolQuestion::findByShort('total-installed-power')->name,
 
-                <div class="col-sm-4">
-                    @component('cooperation.tool.components.step-question', ['id' => 'building_pv_panels.number', 'translation' => 'solar-panels.number', 'required' => false])
+                        'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input', 'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'building_pv_panels.total_installed_power'
+                            ])
+                        @endslot
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility, 'userInputColumn' => 'number'])
-                            <span class="input-group-addon">@lang('general.unit.pieces.title')</span>
-                            <input type="text" class="form-control" name="building_pv_panels[number]"
-                                   value="{{ old('building_pv_panels.number', Hoomdossier::getMostCredibleValueFromCollection($pvPanelsOrderedOnInputSourceCredibility, 'number', 0)) }}"/>
-                        @endcomponent
-
+                        <span class="input-group-prepend">@lang('general.unit.wp.title')</span>
+                        <input type="text" class="form-input" name="building_pv_panels[total_installed_power]"
+                               value="{{ old('building_pv_panels.total_installed_power', Hoomdossier::getMostCredibleValueFromCollection($pvPanelsOrderedOnInputSourceCredibility, 'total_installed_power', 0)) }}"/>
                     @endcomponent
-
                 </div>
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => "building_services.{$totalSolarPanelService->id}.extra.year", 'translation' => App\Models\ToolQuestion::findByShort('solar-panels-placed-date')->name,
+                        'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input', 'userInputValues' => $totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'extra.year'
+                            ])
+                        @endslot
 
-                <div class="col-sm-4">
-                    @component('cooperation.tool.components.step-question', ['id' => 'building_pv_panels.pv_panel_orientation_id', 'translation' => 'solar-panels.pv-panel-orientation-id', 'required' => false])
+                        <span class="input-group-prepend">@lang('general.unit.year.title')</span>
+                        <input type="text" class="form-input" name="building_services[{{$totalSolarPanelService->id}}][extra][year]"
+                               value="{{ old("building_services.{$totalSolarPanelService->id}.extra.year", Hoomdossier::getMostCredibleValueFromCollection($totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility, 'extra.year')) }}"/>
+                    @endcomponent
+                </div>
+            </div>
+            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => "building_services.{$totalSolarPanelService->id}.extra.value", 'translation' => App\Models\ToolQuestion::findByShort('solar-panel-count')->name,
+                        'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input', 'userInputValues' => $totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'extra.value'
+                            ])
+                        @endslot
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $pvPanelOrientations, 'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility, 'userInputColumn' => 'pv_panel_orientation_id'])
-                            <select id="building_pv_panels_pv_panel_orientation_id" class="form-control"
+                        <span class="input-group-prepend">@lang('general.unit.pieces.title')</span>
+                        <input type="text" class="form-input" name="building_services[{{$totalSolarPanelService->id}}][extra][value]"
+                               value="{{ old("building_services.{$totalSolarPanelService->id}.extra.value", Hoomdossier::getMostCredibleValueFromCollection($totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility, 'extra.value', 0)) }}"/>
+                    @endcomponent
+                </div>
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'building_pv_panels.number', 'translation' => 'solar-panels.number',
+                        'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input', 'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'number'
+                            ])
+                        @endslot
+
+                        <span class="input-group-prepend">@lang('general.unit.pieces.title')</span>
+                        <input type="text" class="form-input" name="building_pv_panels[number]"
+                               value="{{ old('building_pv_panels.number', Hoomdossier::getMostCredibleValueFromCollection($pvPanelsOrderedOnInputSourceCredibility, 'number', 0)) }}"/>
+                    @endcomponent
+                </div>
+            </div>
+
+            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'building_pv_panels.pv_panel_orientation_id',
+                        'translation' => 'solar-panels.pv-panel-orientation-id', 'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'select', 'inputValues' => $pvPanelOrientations,
+                                'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'pv_panel_orientation_id'
+                            ])
+                        @endslot
+
+                        @component('cooperation.frontend.layouts.components.alpine-select')
+                            <select id="building_pv_panels_pv_panel_orientation_id" class="form-input"
                                     name="building_pv_panels[pv_panel_orientation_id]">
                                 @foreach($pvPanelOrientations as $pvPanelOrientation)
                                     <option @if(old('building_pv_panels.pv_panel_orientation_id', Hoomdossier::getMostCredibleValueFromCollection($pvPanelsOrderedOnInputSourceCredibility, 'pv_panel_orientation_id')) == $pvPanelOrientation->id) selected="selected"
-                                            @endif value="{{ $pvPanelOrientation->id }}">{{ $pvPanelOrientation->name }}</option>
+                                            @endif value="{{ $pvPanelOrientation->id }}">
+                                        {{ $pvPanelOrientation->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         @endcomponent
                     @endcomponent
-
                 </div>
 
-                <div class="col-sm-4">
-                    @component('cooperation.tool.components.step-question', ['id' => 'building_pv_panels.angle', 'translation' => 'solar-panels.angle', 'required' => false])
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'building_pv_panels.angle', 'translation' => 'solar-panels.angle', 'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'select',
+                                'inputValues' => \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles(),
+                                'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'angle'
+                            ])
+                        @endslot
 
-                        <?php \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles(); ?>
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles(), 'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility, 'userInputColumn' => 'angle'])
-                            <span class="input-group-addon">&deg;</span>
-                            <select id="building_pv_panels_angle" class="form-control"
+                        @component('cooperation.frontend.layouts.components.alpine-select', ['prepend' => '&deg;'])
+                            <select id="building_pv_panels_angle" class="form-input"
                                     name="building_pv_panels[angle]">
                                 @foreach(\App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles() as $angle)
                                     <option @if(old('building_pv_panels.angle', Hoomdossier::getMostCredibleValueFromCollection($pvPanelsOrderedOnInputSourceCredibility, 'angle')) == $angle) selected="selected"
-                                            @endif value="{{ $angle }}">{{ $angle }}</option>
+                                            @endif value="{{ $angle }}">
+                                        {{ $angle }}
+                                    </option>
                                 @endforeach
                             </select>
                         @endcomponent
-
                     @endcomponent
-
-                </div>
-
-            </div>
-
-            <div class="row total-power">
-                <div class="col-sm-12 col-md-8 col-md-offset-2">
-                    <div class="alert alert-info show" role="alert">
-                        <p id="solar-panels-total-power"></p>
-                    </div>
                 </div>
             </div>
 
+            <div class="flex flex-row flex-wrap w-full total-power">
+                <div class="w-full md:w-8/12 md:ml-2/12">
+                    @component('cooperation.frontend.layouts.parts.alert', [
+                        'color' => 'blue-800',
+                        'dismissible' => false,
+                    ])
+                        <p id="solar-panels-total-power" class="text-blue-800"></p>
+                    @endcomponent
+                </div>
+            </div>
 
             <div id="indication-for-costs">
                 <hr>
@@ -124,93 +218,94 @@
                     'id' => 'indication-for-costs',
                 ])
 
-                <div id="costs" class="row">
-                    <div class="col-sm-4">
-                        @component('cooperation.tool.components.step-question', ['id' => 'yield-electricity', 'translation' => 'solar-panels.indication-for-costs.yield-electricity', 'required' => false])
-                            <div class="input-group">
-                                <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                <input type="text" id="yield_electricity" class="form-control disabled"
-                                       disabled="" value="0">
-                            </div>
+                <div id="costs" class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                    <div class="w-full sm:w-1/3">
+                        @component('cooperation.tool.components.step-question', [
+                            'id' => 'yield-electricity',
+                            'translation' => 'solar-panels.indication-for-costs.yield-electricity',
+                            'required' => false, 'withInputSource' => false,
+                        ])
+                            <span class="input-group-prepend">kWh / @lang('general.unit.year.title')</span>
+                            <input type="text" id="yield_electricity" class="form-input disabled"
+                                   disabled="" value="0">
                         @endcomponent
                     </div>
 
-                    <div class="col-sm-4">
-                            @component('cooperation.tool.components.step-question', ['id' => 'raise-own-consumption', 'translation' => 'solar-panels.indication-for-costs.raise-own-consumption', 'required' => false])
-                                <div class="input-group">
-                                    <span class="input-group-addon">%</span>
-                                    <input type="text" id="raise_own_consumption" class="form-control disabled"
-                                           disabled="" value="0">
-                                </div>
+                    <div class="w-full sm:w-1/3">
+                            @component('cooperation.tool.components.step-question', [
+                                'id' => 'raise-own-consumption',
+                                'translation' => 'solar-panels.indication-for-costs.raise-own-consumption',
+                                'required' => false, 'withInputSource' => false,
+                            ])
+                                <span class="input-group-prepend">%</span>
+                                <input type="text" id="raise_own_consumption" class="form-input disabled"
+                                       disabled="" value="0">
                             @endcomponent
                     </div>
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'solar-panels.index.costs.co2'])
+                    <div class="w-full sm:w-1/3">
+                        @include('cooperation.layouts.indication-for-costs.co2', [
+                            'translation' => 'solar-panels.index.costs.co2'
+                        ])
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-4">
+            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.savings-in-euro',[
-                                'translation' => 'solar-panels.index.savings-in-euro'
-                            ])
+                        'translation' => 'solar-panels.index.savings-in-euro'
+                    ])
                 </div>
-                <div class="col-sm-4">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.indicative-costs',[
-                                'translation' => 'solar-panels.index.indicative-costs'
-                            ])
+                        'translation' => 'solar-panels.index.indicative-costs'
+                    ])
                 </div>
-                <div class="col-sm-4">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.comparable-rent',[
-                                'translation' => 'solar-panels.index.comparable-rent'
-                            ])
+                        'translation' => 'solar-panels.index.comparable-rent'
+                    ])
                 </div>
             </div>
         </div>
-
-        <div class="row system-performance">
-            <div class="col-sm-12 col-md-8 col-md-offset-2">
-                <div class="alert show" role="alert">
-                    <p id="performance-text"></p>
-                </div>
-            </div>
-        </div>
-
 
         @include('cooperation.tool.includes.comment', [
              'translation' => 'solar-panels.index.specific-situation'
          ])
+        
+        @component('cooperation.tool.components.panel', [
+            'label' => __('default.buttons.download'),
+        ])
+            <ol>
+                <li><a download=""
+                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_Zonnepanelen.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Zonnepanelen.pdf')))))}}</a>
+                </li>
+            </ol>
+        @endcomponent
 
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">{{\App\Helpers\Translation::translate('general.download.title')}}</div>
-                    <div class="panel-body">
-                        <ol>
-                            <li><a download=""
-                                   href="{{asset('storage/hoomdossier-assets/Maatregelblad_Zonnepanelen.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Zonnepanelen.pdf')))))}}</a>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <input type="hidden" name="dirty_attributes" value="{{ old('dirty_attributes') }}">
     </form>
 @endsection
 
 @push('js')
     <script>
         $(document).ready(function () {
+            let data = {};
+            $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {
+                data[$(this).attr('name')] = $(this).val();
+            });
 
+            $('#solar-panels-form').submit(function () {
+                $('input[name="dirty_attributes"]').val(JSON.stringify(data));
+                return true;
+            });
 
-            $("select, input[type=radio], input[type=text]").change(formChange);
+            $("select, input[type=radio], input[type=text]").change(() => formChange());
 
             function formChange() {
-                var form = $(this).closest("form").serialize();
+                var form = $('#solar-panels-form').serialize();
                 $.ajax({
                     type: "POST",
-                    url: '{{ route('cooperation.tool.solar-panels.calculate', [ 'cooperation' => $cooperation ]) }}',
+                    url: '{{ route('cooperation.tool.solar-panels.calculate', compact('cooperation')) }}',
                     data: form,
                     success: function (data) {
                         if (data.hasOwnProperty('advice')) {
@@ -239,17 +334,6 @@
                         if (data.hasOwnProperty('interest_comparable')) {
                             $("input#interest_comparable").val(hoomdossierNumberFormat(data.interest_comparable, '{{ app()->getLocale() }}', 1));
                         }
-                        if (data.hasOwnProperty('performance')) {
-                            $("#performance-text").html("<strong>" + data.performance.text + "</strong>");
-                            $(".system-performance .alert").removeClass("alert-danger");
-                            $(".system-performance .alert").removeClass("alert-warning");
-                            $(".system-performance .alert").removeClass("alert-info");
-                            $(".system-performance .alert").addClass("alert-" + data.performance.alert);
-                            $(".system-performance").show();
-                        } else {
-                            $("#performance-text").html("");
-                            $(".system-performance").hide();
-                        }
                         if (data.hasOwnProperty('total_power')) {
                             $("#solar-panels-total-power").html(data.total_power);
                             $(".total-power").show();
@@ -265,8 +349,7 @@
                 });
             }
 
-            $('form').find('*').filter(':input:visible:first').trigger('change');
-
+            formChange();
         });
     </script>
 @endpush

@@ -25,7 +25,7 @@
                 @if($questionnaireForFileType instanceof \App\Models\FileStorage && !$questionnaireBeingProcessed)
                     <li>
                         <a @if(!$questionnaireBeingProcessed)
-                           href="{{route('cooperation.file-storage.download', compact('questionnaireForFileType'))}}" @endif>
+                           href="{{route('cooperation.file-storage.download', ['fileStorage' => $questionnaireForFileType])}}" @endif>
                             {{$fileName}}
                             ({{$questionnaireForFileType->created_at->format('Y-m-d H:i')}}
                             )

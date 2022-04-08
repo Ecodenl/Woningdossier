@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\ToolQuestion;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -81,7 +82,7 @@ class LoginController extends Controller
      */
     protected function credentials(Request $request)
     {
-        return array_merge($request->only($this->username(), 'password'), ['active' => 1, 'confirm_token' => null]);
+        return array_merge($request->only($this->username(), 'password'), ['active' => 1]);
     }
 
     /**
@@ -134,11 +135,6 @@ class LoginController extends Controller
             }
         }
 
-        // check if the account is confirmed.
-        if ($this->accountIsNotConfirmed($request->get('email'))) {
-            $this->sendAccountNotConfirmedResponse();
-        }
-
         // everything is ok with the user at this point, now we log him in.
         if ($this->attemptLogin($request)) {
             // the guard()->user() will return the auth model, in our case this is the Account model
@@ -154,30 +150,8 @@ class LoginController extends Controller
         // if the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
         // user surpasses their maximum number of attempts they will get locked out.
-//        $this->incrementLoginAttempts($request);
+        $this->incrementLoginAttempts($request);
 
         return $this->sendFailedLoginResponse($request);
-    }
-
-    /**
-     * Check if a account is confirmed based on its email address.
-     *
-     * @param $email
-     */
-    private function accountIsNotConfirmed($email): bool
-    {
-        // So it wasn't alright. Check if it was because of the confirm_token
-        $isPending = Account::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
-
-        return $isPending;
-    }
-
-    /**
-     * Send account not confirmed response.
-     */
-    private function sendAccountNotConfirmedResponse()
-    {
-        // throw validation exception, with a confirmation resend link.
-        throw ValidationException::withMessages(['confirm_token' => [__('auth.inactive', ['resend-link' => route('cooperation.auth.confirm.resend.show')])]]);
     }
 }

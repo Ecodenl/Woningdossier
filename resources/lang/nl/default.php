@@ -1,24 +1,32 @@
 <?php
 
 return [
+    'considering' => 'Wilt u :name meenemen in de berekeningen ?',
     'buttons' => [
         'download' => 'Download bijlagen',
         'store' => 'Aanmaken',
         'update' => 'Update',
         'destroy' => 'Verwijderen',
-        'next' => 'Opslaan',
         'next-page' => 'Volgende pagina',
-        'prev' => 'Vorige',
+        'next' => 'Volgende',
+        'previous' => 'Vorige',
+        'save' => 'Opslaan',
+        'cancel' => 'Annuleren',
     ],
 
     'form' => [
         'input' => [
             'comment' => 'Toelichting op de specifieke situatie',
+            'comment-placeholder' => 'Type hier uw opmerkingen...',
         ],
     ],
 
     'yes' => 'Ja',
     'no' => 'Nee',
+    'start' => 'Start',
+    'caution' => 'Let op!',
+    'from' => 'van',
+    'to' => 'tot',
 
     'progress' => [
         'not-completed' => ':step - deze stap is nog niet afgerond',
@@ -32,4 +40,14 @@ return [
         ],
     ],
     'new-message' => 'Nieuwe berichten',
+
+    'privacy-policy' => 'Privacybeleid',
+    'disclaimer' => 'Disclaimer',
+    'terms-and-conditions' => 'Algemene voorwaarden',
+
+    'language' => 'Taal',
+    'languages' => [
+        'nl' => 'Nederlands',
+        'en' => 'Engels',
+    ],
 ];

@@ -6,10 +6,14 @@ use App\Models\Account;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 
 class Hoomdossier
 {
+    /** @var int the length the password should be */
+    const PASSWORD_LENGTH = 8;
+
     public static function convertDecimal($input)
     {
         return str_replace(',', '.', $input);
@@ -80,78 +84,9 @@ class Hoomdossier
      */
     public static function getMostCredibleValueFromCollection(Collection $results, $column, $default = null)
     {
-        $results = $results->pluck($column, 'short');
-        // if the column name contains 'surface' there is particular logic:
-        // if $value <= 0 we don't return it. We just check next sources to
-        // see if there's a proper value and return that.
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        // additional there are some fields which are filled (with null) before
-        // the user actually gets to that step (building_features fields)
-        // these fields also get a 'fallthrough' via $fallthroughColumns
-        $falltroughColumns = [
-            'cavity_wall',
-            'facade_plastered_painted',
-            'facade_plastered_surface_id',
-            'facade_damaged_paintwork_id',
-            'wall_joints',
-            'contaminated_wall_joints',
-            'monument',
-            'building_layers',
-            'roof_type_id',
-
-            'energy_label_id',
-            'extra.date',
-        ];
-
-        // the columns that may return zero values from a resident
-        $valuesThatMayReturnZeroValues = [
-            'insulation_wall_surface', 'insulation_surface', 'insulation_roof_surface',
-        ];
-
-        // Always check my own input source first. If that is properly filled
-        // return that.
-        $myInputSource = HoomdossierSession::getInputSource(true);
-
-        if ($results->has($myInputSource->short)) {
-            $value = $results->get($myInputSource->short);
-
-            if ((false !== stristr($column, 'surface') && $value <= 0) && ! in_array($column, $valuesThatMayReturnZeroValues)) {
-                // skip this one
-                $value = null;
-            }
-            if (in_array($column, $falltroughColumns) && is_null($value)) {
-                // skip this one
-                $value = null;
-            }
-
-            if (! is_null($value) && '' !== $value) {
-                return $value;
-            }
-        }
-
-        // .. My own input source was not (properly) filled.
-        // Return the best match. Treat the results in order.
-        foreach ($results as $inputSourceShort => $value) {
-            if (false !== stristr($column, 'surface') && $value <= 0) {
-                // skip this one
-                continue;
-            }
-            if (in_array($column, $falltroughColumns) && is_null($value)) {
-                // skip this one
-                continue;
-            }
-            if (InputSource::RESIDENT_SHORT == $inputSourceShort) {
-                // no matter what
-
-                // since 'no matter what' it will also return a empty value, even when there may be a non null value from a other input source.
-                return $value;
-            }
-            if (! is_null($value) && '' !== $value) {
-                return $value;
-            }
-        }
-        // No value found
-        return $default;
+        return $results->pluck($column, 'input_source_id')->get($masterInputSource->id);
     }
 
     /**
@@ -178,16 +113,10 @@ class Hoomdossier
      */
     public static function getMostCredibleValue(Relation $relation, $column = null, $default = null, $onlyReturnForInputSource = null)
     {
-        $baseQuery = self::orderRelationShipOnInputSourceCredibility($relation);
 
-        // if is not empty, we need to search the answers for a particular input source
-        if (! is_null($onlyReturnForInputSource)) {
-            $inputSourceToReturn = InputSource::findByShort($onlyReturnForInputSource);
-            $found = $baseQuery->where('input_source_id', $inputSourceToReturn->id)->get();
-        } else {
-            // if the $onlyReturnForInputSource is empty, the base query is enough
-            $found = $baseQuery->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
-        }
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+        $found = $relation->allInputSources()->where('input_source_id', $masterInputSource->id)->get();
 
         return self::getMostCredibleValueFromCollection($found, $column, $default);
     }
@@ -241,6 +170,6 @@ class Hoomdossier
      */
     public static function account()
     {
-        return \Auth::user();
+        return Auth::user();
     }
 }

@@ -71,17 +71,4 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
     {
         return new ResetPasswordRequest($this->cooperation, $this->account, $this->token);
     }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param mixed $notifiable
-     *
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [
-        ];
-    }
 }

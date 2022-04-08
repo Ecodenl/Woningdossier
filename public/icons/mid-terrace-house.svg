@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120px" height="85px" viewBox="0 0 120 85" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Tussenwoning</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-585.000000, -2427.000000)">
+            <g id="tussenwoning" transform="translate(587.000000, 2429.000000)">
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" points="38.6 81.5 38.6 20.1 57.8 7.10542736e-15 77 20.4 77 81.5"></polygon>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="38.6 81.5 38.6 20.4 58 7.10542736e-15 77.3 20.4 77.3 81.5"></polyline>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="38.6 20.4 19.3 7.10542736e-15 7.10542736e-15 20.4 7.10542736e-15 81.5 116 81.5 116 20.4 96.6 7.10542736e-15 77.3 20.4"></polyline>
+                <path d="M26.7,46.1 L12.1,46.1 L12.1,29.1 C12.1,28.9 12.3,28.7 12.5,28.7 C12.5,28.7 12.5,28.7 12.5,28.7 L26.3,28.7 C26.5,28.7 26.7,28.9 26.7,29.1 C26.7,29.1 26.7,29.1 26.7,29.1 L26.7,46.1 L26.7,46.1 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M24.7,58.7 L14.1,58.7 C13.9,58.7 13.8,58.9 13.8,59.1 L13.8,81.5 L25.1,81.5 L25.1,59.2 C25,58.9 24.9,58.7 24.7,58.7 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></path>
+                <path d="M65.3,46.1 L50.6,46.1 L50.6,29.1 C50.6,28.9 50.8,28.7 51,28.7 C51,28.7 51,28.7 51,28.7 L64.9,28.7 C65.1,28.7 65.3,28.9 65.3,29.1 C65.3,29.1 65.3,29.1 65.3,29.1 L65.3,46.1 L65.3,46.1 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M63.3,58.7 L52.7,58.7 C52.5,58.7 52.4,58.9 52.4,59.1 L52.4,81.5 L63.7,81.5 L63.7,59.2 C63.6,58.9 63.5,58.7 63.3,58.7 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></path>
+                <path d="M104,46.1 L89.4,46.1 L89.4,29.1 C89.4,28.9 89.6,28.7 89.8,28.7 C89.8,28.7 89.8,28.7 89.8,28.7 L103.6,28.7 C103.8,28.7 104,28.9 104,29.1 L104,46.1 L104,46.1 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M102,58.7 L91.4,58.7 C91.2,58.7 91.1,58.9 91.1,59.1 L91.1,81.5 L102.4,81.5 L102.4,59.2 C102.3,58.9 102.2,58.7 102,58.7 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></path>
+            </g>
+        </g>
+    </g>
+</svg>

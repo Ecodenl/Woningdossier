@@ -3,8 +3,6 @@
 namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\InsulatedGlazing;
-use App\Events\StepCleared;
-use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingInsulatedGlazing;
@@ -102,25 +100,34 @@ class InsulatedGlazingHelper extends ToolHelper
 
     public function createAdvices(): ToolHelper
     {
+        $updatedMeasureIds = $this->getValues('updated_measure_ids');
+
         $step = Step::findByShort('insulated-glazing');
 
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = InsulatedGlazing::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
-        // remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         foreach ($results['measure'] as $measureId => $data) {
-            if (array_key_exists('costs', $data) && $data['costs'] > 0) {
-                $measureApplication = MeasureApplication::where('id',
-                    $measureId)->where('step_id', $step->id)->first();
+            $measureApplication = MeasureApplication::where('id', $measureId)->where('step_id', $step->id)->first();
+
+            if ($this->considers($measureApplication) && array_key_exists('costs', $data) && $data['costs'] > 0) {
 
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($data);
+                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($data['costs']);
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
-                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                    $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
+
+                    // We only want to check old advices if the updated attributes are not relevant to this measure
+                    if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                            $oldAdvices);
+                    }
+
                     $actionPlanAdvice->save();
                 }
             }
@@ -128,7 +135,8 @@ class InsulatedGlazingHelper extends ToolHelper
 
         $keysToMeasure = [
             'paintwork' => 'paint-wood-elements',
-            'crack-sealing' => 'crack-sealing',
+            // moved to ventilation, keeping this commented for future reference
+            // 'crack-sealing' => 'crack-sealing',
         ];
 
         foreach ($keysToMeasure as $key => $measureShort) {
@@ -136,10 +144,18 @@ class InsulatedGlazingHelper extends ToolHelper
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
+                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results[$key]['costs']);
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
-                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                    $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
+
+                    // We only want to check old advices if the updated attributes are not relevant to this measure
+                    if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                            $oldAdvices);
+                    }
+
                     $actionPlanAdvice->save();
                 }
             }
@@ -153,13 +169,13 @@ class InsulatedGlazingHelper extends ToolHelper
         $buildingFeature = $this
             ->building
             ->buildingFeatures()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
         $buildingPaintworkStatus = $this
             ->building
             ->currentPaintworkStatus()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->first();
 
         $buildingPaintworkStatusesArray = [
@@ -168,26 +184,10 @@ class InsulatedGlazingHelper extends ToolHelper
             'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id ?? null,
         ];
 
-        $measureApplicationIds = MeasureApplication::whereIn('short', [
-            'hrpp-glass-only',
-            'hrpp-glass-frames',
-            'hr3p-frames',
-            'glass-in-lead',
-        ])->select('id')->get()->pluck('id')->toArray();
-
-        $userInterestsForInsulatedGlazing = $this->user
-            ->userInterests()
-            ->select('interest_id', 'interested_in_id', 'interested_in_type')
-            ->forInputSource($this->inputSource)
-            ->where('interested_in_type', MeasureApplication::class)
-            ->whereIn('interested_in_id', $measureApplicationIds)
-            ->get()
-            ->keyBy('interested_in_id')->toArray();
-
         /** @var Collection $buildingInsulatedGlazings */
         $buildingInsulatedGlazings = $this->building
             ->currentInsulatedGlazing()
-            ->forInputSource($this->inputSource)
+            ->forInputSource($this->masterInputSource)
             ->select('measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows')
             ->get();
 
@@ -204,7 +204,7 @@ class InsulatedGlazingHelper extends ToolHelper
 
         $woodElements = Element::findByShort('wood-elements');
         $frames = Element::findByShort('frames');
-        $buildingElements = $this->building->buildingElements()->forInputSource($this->inputSource)->get();
+        $buildingElements = $this->building->buildingElements()->forInputSource($this->masterInputSource)->get();
 
         // handle the wood / frame / crack sealing elements for the insulated glazing
         $buildingElementsArray = [];
@@ -215,12 +215,33 @@ class InsulatedGlazingHelper extends ToolHelper
         $buildingFrameElement = $buildingElements->where('element_id', $frames->id)->first();
         $buildingElementsArray[$frames->id] = $buildingFrameElement->element_value_id ?? null;
 
+
+        $measureApplicationIds = MeasureApplication::whereIn('short', [
+            'hrpp-glass-only',
+            'hrpp-glass-frames',
+            'hr3p-frames',
+            'glass-in-lead',
+        ])->select('id')->pluck('id');
+
+        $considerablesForMeasures =
+            $this->user
+                ->considerables(MeasureApplication::class)
+                ->wherePivot('input_source_id', $this->masterInputSource->id)
+                ->wherePivotIn('considerable_id', $measureApplicationIds)
+                ->get()->keyBy('pivot.considerable_id')
+                ->map(function($considerable) {
+                    return [
+                        'is_considering' => $considerable->pivot->is_considering
+                    ];
+                })->toArray();
+
         $this->setValues([
-            'user_interests' => $userInterestsForInsulatedGlazing,
+            'considerables' => $considerablesForMeasures,
             'building_insulated_glazings' => $buildingInsulatedGlazingArray,
             'building_elements' => $buildingElementsArray,
             'building_features' => ['window_surface' => $buildingFeature->window_surface ?? null],
             'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
+            'updated_measure_ids' => [],
         ]);
 
         return $this;

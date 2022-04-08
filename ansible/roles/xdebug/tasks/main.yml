@@ -2,4 +2,4 @@
 - name: Install xDebug
   become: yes
   become_user: root
-  apt: pkg=php7.2-xdebug state=latest
+  apt: pkg=php7.4-xdebug state=latest

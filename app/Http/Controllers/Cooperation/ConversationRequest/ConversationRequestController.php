@@ -25,11 +25,12 @@ class ConversationRequestController extends Controller
     {
         // if the user is observing, he has nothing to do here.
         if (HoomdossierSession::isUserObserving()) {
-            return redirect()->route('cooperation.tool.my-plan.index');
+            return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index');
         }
 
         $title = __('conversation-requests.index.request-coach-conversation');
 
+        $measureApplicationName = null;
         if (! is_null($measureApplicationShort)) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->firstOrFail();
             // set the measure application name if there is a measure application
@@ -37,7 +38,7 @@ class ConversationRequestController extends Controller
             $title = __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
         }
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'requestType', 'measureApplicationName', 'title'));
+        return view('cooperation.conversation-requests.index', compact( 'requestType', 'measureApplicationName', 'title'));
     }
 
     /**
@@ -57,7 +58,7 @@ class ConversationRequestController extends Controller
             $successMessage = __('conversation-requests.store.success.'.InputSource::RESIDENT_SHORT, ['url' => route('cooperation.my-account.messages.index', compact('cooperation'))]);
         }
 
-        return redirect(route('cooperation.tool.my-plan.index'))
+        return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index')
             ->with('success', $successMessage);
     }
 }

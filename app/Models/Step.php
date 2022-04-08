@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
+use App\Helpers\StepHelper;
+use App\Scopes\NoGeneralDataScope;
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Step
@@ -25,13 +28,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $questionnaires_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Step[] $subSteps
  * @property-read int|null $sub_steps_count
- * @method static Builder|Step activeOrderedSteps()
  * @method static Builder|Step newModelQuery()
  * @method static Builder|Step newQuery()
- * @method static Builder|Step onlySubSteps()
+ * @method static Builder|Step onlyChildren()
  * @method static Builder|Step ordered()
  * @method static Builder|Step query()
- * @method static Builder|Step subStepsForStep(\App\Models\Step $step)
+ * @method static Builder|Step childrenForStep(\App\Models\Step $step)
  * @method static Builder|Step translated($attribute, $name, $locale = 'nl')
  * @method static Builder|Step whereCreatedAt($value)
  * @method static Builder|Step whereId($value)
@@ -46,14 +48,50 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Step extends Model
 {
+    use HasShortTrait,
+        HasTranslations;
+
     protected $fillable = ['slug', 'name', 'order'];
 
-    use TranslatableTrait;
-    use HasShortTrait;
+    protected $translatable = [
+        'name'
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new NoGeneralDataScope());
+    }
 
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function scopeWithGeneralData(Builder $query): Builder
+    {
+        return $query->withoutGlobalScope(NoGeneralDataScope::class);
+    }
+
+    public function subSteps(): HasMany
+    {
+        return $this->hasMany(SubStep::class);
+    }
+    public function nextQuickScan(): ?Step
+    {
+        return Step::quickScan()
+            ->where('order', '>', $this->order)
+            ->orderBy('order')
+            ->first();
+    }
+
+    public function previousQuickScan(): ?Step
+    {
+        return Step::quickScan()
+            ->where('order', '<', $this->order)
+            ->orderByDesc('order')
+            ->first();
     }
 
     /**
@@ -61,7 +99,7 @@ class Step extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function subSteps()
+    public function children()
     {
         return $this->hasMany(Step::class, 'parent_id', 'id');
     }
@@ -81,29 +119,17 @@ class Step extends Model
      *
      * @return bool
      */
-    public function hasSubSteps()
+    public function hasChildren()
     {
-        return $this->subSteps()->exists();
+        return $this->children()->exists();
     }
 
-    /**
-     * Method to scope the active steps in a ordered order.
-     *
-     * @return Builder
-     */
-    public function scopeActiveOrderedSteps(Builder $query)
-    {
-        return $query->where('steps.short', '!=', 'building-detail')
-            ->orderBy('cooperation_steps.order')
-            ->where('cooperation_steps.is_active', '1');
-    }
-
-    public function scopeSubStepsForStep(Builder $query, Step $step)
+    public function scopeChildrenForStep(Builder $query, Step $step)
     {
         return $query->where('parent_id', $step->id);
     }
 
-    public function scopeOnlySubSteps(Builder $query)
+    public function scopeOnlyChildren(Builder $query)
     {
         return $query->whereNotNull('parent_id');
     }
@@ -113,7 +139,7 @@ class Step extends Model
      *
      * @return Builder
      */
-    public function scopeWithoutSubSteps(Builder $query)
+    public function scopeWithoutChildren(Builder $query)
     {
         return $query->where('parent_id', null);
     }
@@ -121,29 +147,40 @@ class Step extends Model
     /**
      * Check whether a step is a sub step.
      */
-    public function isSubStep(): bool
+    public function isChild(): bool
     {
         // when the parent id is null, its a parent else its a sub step / child.
-        return ! is_null($this->parent_id);
+        return !is_null($this->parent_id);
     }
 
-    public function questionnaires()
+    public function questionnaires(): HasMany
     {
         return $this->hasMany(Questionnaire::class);
     }
 
-    public function hasQuestionnaires()
+    public function hasQuestionnaires(): bool
     {
-        if ($this->questionnaires()->count() > 0) {
-            return true;
-        }
+        return $this->questionnaires()->count() > 0;
+    }
 
-        return false;
+    public function hasActiveQuestionnaires(): bool
+    {
+        return $this->questionnaires()->active()->count() > 0;
     }
 
     public function scopeOrdered(Builder $query)
     {
         return $query->orderBy('order', 'asc');
+    }
+
+    public function scopeQuickScan(Builder $query)
+    {
+        return $query->whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
+    }
+
+    public function scopeExpert(Builder $query)
+    {
+        return $query->whereNotIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
     }
 
     /**

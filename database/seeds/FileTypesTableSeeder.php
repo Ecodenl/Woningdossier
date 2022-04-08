@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class FileTypesTableSeeder extends Seeder
 {
@@ -15,74 +16,73 @@ class FileTypesTableSeeder extends Seeder
 
         $fileTypes = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Alle ingevulde gegevens, met adresgegevens',
                 ],
                 'content_type' => 'text/csv',
                 'short' => 'total-report',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Alle ingevulde gegevens, zonder adresgegevens',
                 ],
                 'content_type' => 'text/csv',
                 'short' => 'total-report-anonymized',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Actieplan per maatregel, met adresgegevens',
                 ],
                 'content_type' => 'text/csv',
                 'short' => 'measure-report',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Actieplan per maatregel, zonder adresgegevens',
                 ],
                 'content_type' => 'text/csv',
                 'short' => 'measure-report-anonymized',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'PDF Rapportage',
                 ],
                 'content_type' => 'application/pdf',
                 'short' => 'pdf-report',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens',
                 ],
                 'content_type' => 'text/csv',
                 'short' => 'custom-questionnaire-report',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, zonder adresgegevens',
                 ],
                 'content_type' => 'text/csv',
                 'short' => 'custom-questionnaire-report-anonymized',
             ],
+            [
+                'name' => [
+                    'nl' => 'Voorbeeld woning overzicht',
+                ],
+                'content_type' => 'text/csv',
+                'short' => 'example-building-overview',
+            ],
         ];
 
         foreach ($fileTypes as $fileType) {
-            $uuid = \App\Helpers\Str::uuid();
-
-            // create the translations
-            foreach ($fileType['names'] as $locale => $translation) {
-                DB::table('translations')->insert([
-                    'key' => $uuid,
-                    'language' => $locale,
-                    'translation' => $translation,
+            DB::table('file_types')->updateOrInsert(
+                [
+                    'short' => $fileType['short'],
+                ],
+                [
+                    'name' => json_encode($fileType['name']),
+                    'file_type_category_id' => $fileTypeCategory->id,
+                    'content_type' => $fileType['content_type'],
                 ]);
-            }
-            // create the file type itself
-            DB::table('file_types')->insert([
-                'name' => $uuid,
-                'file_type_category_id' => $fileTypeCategory->id,
-                'short' => $fileType['short'],
-                'content_type' => $fileType['content_type'],
-            ]);
         }
     }
 }

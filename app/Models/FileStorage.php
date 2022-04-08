@@ -32,9 +32,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder|FileStorage beingProcessed()
  * @method static Builder|FileStorage forBuilding(\App\Models\Building $building)
  * @method static Builder|FileStorage forInputSource(\App\Models\InputSource $inputSource)
- * @method static Builder|FileStorage forMe(\App\Models\User $user = null)
+ * @method static Builder|FileStorage forMe(?\App\Models\User $user = null)
  * @method static Builder|FileStorage leaveOutPersonalFiles()
- * @method static Builder|FileStorage mostRecent(\App\Models\Questionnaire $questionnaire = null)
+ * @method static Builder|FileStorage mostRecent(?\App\Models\Questionnaire $questionnaire = null)
  * @method static Builder|FileStorage newModelQuery()
  * @method static Builder|FileStorage newQuery()
  * @method static Builder|FileStorage query()
@@ -67,7 +67,7 @@ class FileStorage extends Model
     }
 
     protected $fillable = [
-        'cooperation_id', 'questionnaire_id', 'filename', 'user_id', 'input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
+        'cooperation_id', 'questionnaire_id', 'filename', 'building_id', 'input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
     ];
 
     /**

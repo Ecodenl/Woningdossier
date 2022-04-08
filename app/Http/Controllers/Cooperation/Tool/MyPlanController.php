@@ -18,6 +18,9 @@ class MyPlanController extends Controller
 {
     public function index()
     {
+        // Route is disabled. Die if they somehow still manage to get here
+        die();
+
         $inputSource = HoomdossierSession::getInputSource(true);
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -58,7 +61,7 @@ class MyPlanController extends Controller
 
         return view('cooperation.tool.my-plan.index', compact(
             'actionPlanComments', 'pdfReportFileType', 'file', 'inputSourcesForPersonalPlanModal', 'advices',
-            'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources', 'isRecalculating'
+             'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources', 'isRecalculating'
         ));
     }
 
@@ -69,6 +72,9 @@ class MyPlanController extends Controller
      */
     public function storeComment(MyPlanRequest $request)
     {
+        // Route is disabled. Die if they somehow still manage to get here
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -86,6 +92,9 @@ class MyPlanController extends Controller
 
     public function store(Request $request)
     {
+        // Route is disabled. Die if they somehow still manage to get here
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $buildingOwner = $building->user;

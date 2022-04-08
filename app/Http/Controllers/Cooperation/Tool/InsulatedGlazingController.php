@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\InsulatedGlazing;
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
+use App\Helpers\Str;
 use App\Http\Requests\Cooperation\Tool\InsulatedGlazingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -16,33 +14,20 @@ use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\Element;
 use App\Models\InsulatingGlazing;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
-use App\Models\Step;
-use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str as SupportStr;
 
-class InsulatedGlazingController extends Controller
+class InsulatedGlazingController extends ToolController
 {
-    /**
-     * @var Step
-     */
-    protected $step;
-
-    public function __construct(Request $request)
-    {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first();
-    }
-
     /**
      * Display a listing of the resources.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
@@ -51,8 +36,6 @@ class InsulatedGlazingController extends Controller
          */
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
-
-        $interests = Interest::orderBy('order')->get();
 
         $buildingPaintworkStatusesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
             $building->currentPaintworkStatus()
@@ -66,6 +49,11 @@ class InsulatedGlazingController extends Controller
         $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
         $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
+        $buildingInsulatedGlazings = [];
+        $buildingInsulatedGlazingsForMe = [];
+
+        $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
+
         $measureApplicationShorts = [
             'hrpp-glass-only',
             'hrpp-glass-frames',
@@ -73,52 +61,35 @@ class InsulatedGlazingController extends Controller
             'glass-in-lead',
         ];
 
-        $buildingInsulatedGlazings = [];
-        $buildingInsulatedGlazingsForMe = [];
-
-        $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
-        $userInterests = [];
-
         foreach ($measureApplicationShorts as $measureApplicationShort) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
             if ($measureApplication instanceof MeasureApplication) {
                 // get current situation
-                $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
+                $currentInsulatedGlazing = $building->currentInsulatedGlazing()
+                    ->forInputSource($this->masterInputSource)
+                    ->where('measure_application_id', $measureApplication->id)
+                    ->first();
                 $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
-                if (! $currentInsulatedGlazingInputs->isEmpty()) {
+                if (!$currentInsulatedGlazingInputs->isEmpty()) {
                     $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInputs;
                 }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
 
-                // get interests for the measure
-                $measureInterestId = Hoomdossier::getMostCredibleValue(
-                    $buildingOwner->userInterestsForSpecificType(MeasureApplication::class, $measureApplication->id), 'interest_id'
-                );
-
-                // when there is no interest found and the short is for hrpp glass, then we will set the interest given for the step insulated glazing.
-                if (is_null($measureInterestId) && in_array($measureApplicationShort, ['hrpp-glass-only'])) {
-                    $measureInterestId = Hoomdossier::getMostCredibleValue(
-                        $buildingOwner->userInterestsForSpecificType(Step::class, $this->step->id), 'interest_id'
-                    );
-                }
-
-                $userInterests[$measureApplication->id] = $measureInterestId;
 
                 $measureApplications[] = $measureApplication;
             }
         }
 
         $myBuildingElements = BuildingElement::forMe()->get();
-        $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', MeasureApplication::class)->get();
 
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'interests', 'myBuildingElements', 'buildingOwner', 'userInterestsForMe',
+            'building', 'myBuildingElements', 'buildingOwner',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
-            'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
+            'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility'
         ));
     }
@@ -126,9 +97,13 @@ class InsulatedGlazingController extends Controller
     public function calculate(Request $request)
     {
         $building = HoomdossierSession::getBuilding(true);
-        $inputSource = HoomdossierSession::getInputSource(true);
 
-        $result = InsulatedGlazing::calculate($building, $inputSource, $building->user->energyHabit, $request->all());
+        $result = InsulatedGlazing::calculate(
+            $building,
+            $this->masterInputSource,
+            $building->user->energyHabit()->forInputSource($this->masterInputSource)->first(),
+            $request->all()
+        );
 
         return response()->json($result);
     }
@@ -144,38 +119,51 @@ class InsulatedGlazingController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        $userInterests = $request->input('user_interests');
-        $interests = collect();
-        foreach ($userInterests as $interestInId => $userInterest) {
+        foreach ($request->validated()['considerables'] as $considerableId => $considerableData) {
             // so we can determine the highest interest level later on.
-            $interests->push(Interest::find($userInterest['interest_id']));
-            UserInterestService::save($user, $inputSource, $userInterest['interested_in_type'], $interestInId, $userInterest['interest_id']);
+            ConsiderableService::save(MeasureApplication::findOrFail($considerableId), $user, $inputSource, $considerableData);
         }
-
-        // get the highest interest level (which is the lowst calculate value.)
-        $highestInterestLevelInterestId = $interests->unique('id')->min('calculate_value');
-        // we have to update the step interest based on the interest for the measure application.
-        UserInterestService::save($user, $inputSource, Step::class, Step::findByShort('insulated-glazing')->id, $highestInterestLevelInterestId);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+
+        // Time to check for building_insulated_glazings in the dirtyAttributes
+        // We don't care for the values attached, if they're here, it means the user has messed with them
+        $dirtyNames = array_keys($dirtyAttributes);
+        $updatedMeasureIds = [];
+        // Check if any of the values have the name we check for
+        if (Str::arrStartsWith($dirtyNames, 'building_insulated_glazings', true)) {
+            // There are some, let's fetch the measure IDs
+            foreach ($dirtyNames as $dirtyName) {
+                if (SupportStr::startsWith($dirtyName, 'building_insulated_glazings')) {
+                    // Format always has the ID as second attr
+                    $id = explode('.', Str::htmlArrToDot($dirtyName))[1] ?? null;
+                    if (!is_null($id) && !in_array($id, $updatedMeasureIds)) {
+                        // Add ID
+                        $updatedMeasureIds[] = $id;
+                    }
+                }
+            }
+        }
+
+        // Add the paint measure if any of the building elements were changed
+        if (Str::arrStartsWith($dirtyNames, 'building_elements', true)) {
+            if (($paintMeasure = MeasureApplication::findByShort('paint-wood-elements')) instanceof MeasureApplication) {
+                $updatedMeasureIds[] = $paintMeasure->id;
+            }
+        }
+
+        $values = $request->only('considerables', 'building_insulated_glazings', 'building_features',
+            'building_elements', 'building_paintwork_statuses');
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new InsulatedGlazingHelper($user, $inputSource))
-            ->setValues($request->only('user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
 
-        // Save progress
-        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
-        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-
-        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
-        $url = $nextStep['url'];
-
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
-
-        return redirect($url);
+        return $this->completeStore($this->step, $building, $inputSource);
     }
 }

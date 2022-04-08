@@ -28,7 +28,7 @@
                             <?php $step = $advice->step ?>
                             <tr>
                                 <input type="hidden" name="advice[{{ $advice->id }}][{{$stepSlug}}][measure_type]" value="{{$measureType}}">
-                                <input type="hidden" class="measure_short" value="{{$advice->measureApplication->short}}">
+                                <input type="hidden" class="measure_short" value="{{$advice->userActionPlanAdvisable->short}}">
                                 <td>
                                     <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
                                 </td>
@@ -37,14 +37,14 @@
                                     <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if($advice->planned) checked @endif />
                                 </td>
                                 <td>
-                                    {{ $advice->measureApplication->measure_name }}
+                                    {{ $advice->userActionPlanAdvisable->measure_name }}
                                     <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
                                 </td>
                                 <td>
-                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs, 0, true) }}
+                                    {{ $advice->getCost(false, true) }}
                                 </td>
                                 <td>
-                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money, 0, true) }}
+                                    {{ Hoomdossier::getUnitForColumn('costs') }} {{ \App\Helpers\NumberFormatter::format($advice->savings_money, 0, true) }}
                                 </td>
                                 <td class="advice-year">
                                     {{ $advice->year }}

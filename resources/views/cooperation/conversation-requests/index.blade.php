@@ -1,51 +1,47 @@
-@extends('cooperation.layouts.app')
+@extends('cooperation.frontend.layouts.tool')
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <form class="form-horizontal" method="POST" action="{{ route('cooperation.conversation-requests.store', ['cooperation' => $cooperation]) }}">
-                            {{ csrf_field() }}
+    <div class="flex flex-row flex-wrap w-full">
+        <div class="w-full md:w-8/12 md:ml-2/12">
+            <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
+                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-2 rounded-lg">
+                    <form class="form-horizontal" method="POST"
+                          action="{{ route('cooperation.conversation-requests.store', compact('cooperation')) }}">
+                        @csrf
 
-                            <h2>{{$title}}</h2>
-                            @isset($measureApplicationName)
+                        <h2 class="heading-2">
+                            {{$title}}
+                        </h2>
+                        @if(! is_null($measureApplicationName))
                             <input type="hidden" value="{{ $measureApplicationName }}" name="measure_application_name">
-                            @endisset
-                            <input type="hidden" name="request_type" value="{{$requestType}}">
+                        @endif
+                        <input type="hidden" name="request_type" value="{{$requestType}}">
 
+                        @component('cooperation.frontend.layouts.components.form-group', [
+                            'label' => __('conversation-requests.index.form.message'),
+                            'withInputSource' => false,
+                            'id' => 'message',
+                            'inputName' => 'message',
+                        ])
+                            <textarea name="message" class="form-input"
+                                      placeholder="@lang('conversation-requests.index.form.message')"
+                            >{{old('message')}}</textarea>
+                        @endcomponent
 
-                            <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
-                                <div class="col-sm-12">
-                                    <label for="">@lang('conversation-requests.index.form.message')</label>
-                                    <textarea name="message" class="form-control" placeholder="@lang('conversation-requests.index.form.message')">{{old('message')}}</textarea>
-
-                                    @if ($errors->has('message'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('message') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
+                        <div class="w-full flex flex-row flex-wrap">
+                            <div class="w-full flex flex-wrap">
+                                <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.index') }}"
+                                   class="btn btn-outline-orange flex items-center justify-center mr-2">
+                                    @lang('default.buttons.cancel')
+                                </a>
+                                <button type="submit" class="btn btn-green flex items-center justify-center">
+                                    @lang('conversation-requests.index.form.submit')
+                                </button>
                             </div>
-
-
-                            <div class="form-group">
-                                <div class="col-md-12 ">
-                                    <button type="submit" class="btn btn-primary">
-                                        @if(isset($privateMessage))
-                                            @lang('conversation-requests.index.form.update')
-                                        @else
-                                            @lang('conversation-requests.index.form.submit')
-                                        @endif
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-
     </div>
 @endsection

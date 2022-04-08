@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Queue;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\FileStorageFormRequest;
@@ -20,6 +21,7 @@ use App\Models\Notification;
 use App\Models\Questionnaire;
 use App\Models\User;
 use App\Services\FileStorageService;
+use App\Services\FileTypeService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -54,29 +56,29 @@ class FileStorageController extends Controller
 
         if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && 'pdf-report' != $fileType->short) {
             $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForCooperation($fileType, $cooperation);
-            $file = $fileType->files()->first();
-            $downloadLinkForFileType = route('cooperation.file-storage.download', compact('file'));
+            $fileStorage = $fileType->files()->first();
+            $downloadLinkForFileType = route('cooperation.file-storage.download', compact('fileStorage'));
 
-            if ($file instanceof FileStorage) {
-                $this->authorize('download', $file);
+            if ($fileStorage instanceof FileStorage) {
+                $this->authorize('download', $fileStorage);
             }
         } else {
             $building = HoomdossierSession::getBuilding(true);
             $buildingOwner = $building->user;
 
             $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $buildingOwner, $inputSource);
-            $file = $fileType->files()->forMe($buildingOwner)->forInputSource($inputSource)->first();
-            $downloadLinkForFileType = $file instanceof FileStorage ? route('cooperation.file-storage.download', compact('file')) : null;
+            $fileStorage = $fileType->files()->forMe($buildingOwner)->forInputSource($inputSource)->first();
+            $downloadLinkForFileType = $fileStorage instanceof FileStorage ? route('cooperation.file-storage.download', compact('fileStorage')) : null;
 
             // as this checks for file processing, there's a chance it isn't picked up by the queue
             // so we check if it actually exisits
-            if ($file instanceof FileStorage) {
-                $this->authorize('download', [$file, $building]);
+            if ($fileStorage instanceof FileStorage) {
+                $this->authorize('download', [$fileStorage, $building]);
             }
         }
 
         return response()->json([
-            'file_created_at' => $file instanceof FileStorage ? $file->created_at->format('Y-m-d H:i') : null,
+            'file_created_at' => $fileStorage instanceof FileStorage ? $fileStorage->created_at->format('Y-m-d H:i') : null,
             'file_type_name' => $fileType->name,
             'is_file_being_processed' => $isFileBeingProcessed,
             'file_download_link' => $downloadLinkForFileType,
@@ -100,8 +102,8 @@ class FileStorageController extends Controller
 
         $questionnaire = Questionnaire::find($request->input('file_storages.questionnaire_id'));
 
-        \Log::debug('Generate '.$fileType->short.' file..');
-        \Log::debug('Context:');
+        Log::debug('Generate '.$fileType->short.' file..');
+        Log::debug('Context:');
         $account = Hoomdossier::account();
         $inputSourceValue = HoomdossierSession::getInputSourceValue();
         if (! is_null($inputSourceValue)) {
@@ -123,13 +125,13 @@ class FileStorageController extends Controller
             'building:owner' => $building->user->id,
         ];
 
-        \Log::debug('User info:');
-        \Log::debug(json_encode($u));
-        \Log::debug('Building info:');
-        \Log::debug(json_encode($tags));
+        Log::debug('User info:');
+        Log::debug(json_encode($u));
+        Log::debug('Building info:');
+        Log::debug(json_encode($tags));
 
-        \Log::debug('--- end of debug log stuff ---');
-        \Log::debug(' ');
+        Log::debug('--- end of debug log stuff ---');
+        Log::debug(' ');
 
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         $fileName = $this->getFileNameForFileType($fileType, $user, $inputSource);
@@ -240,7 +242,7 @@ class FileStorageController extends Controller
 
     private function getRedirectUrl(InputSource $inputSource)
     {
-        $url = route('cooperation.tool.my-plan.index').'#download-section';
+        $url = route('cooperation.frontend.tool.quick-scan.my-plan.index').'#download-section';
         if (InputSource::COOPERATION_SHORT == $inputSource->short) {
             $url = route('cooperation.admin.cooperation.reports.index');
         }
@@ -258,21 +260,10 @@ class FileStorageController extends Controller
     private function getFileNameForFileType(FileType $fileType, User $user, InputSource $inputSource)
     {
         if ('pdf-report' == $fileType->short) {
-//            2013es14-Bewonster-A-g-Bewoner.pdf;
-
+            // 2013es14-Bewonster-A-g-Bewoner.pdf;
             $fileName = trim($user->building->postal_code).$user->building->number.'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
-
-//            $fileName = time().'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
         } else {
-            // create a short hash to prepend on the filename.
-            $substrBycrypted = substr(\Hash::make(Str::uuid()), 7, 5);
-            $substrUuid = substr(Str::uuid(), 0, 8);
-            $hash = $substrUuid.$substrBycrypted;
-
-            // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
-            // Because if there are multiple jobs in the queue, only the job thats being processed would show up as "generating"
-            // remove the / to prevent unwanted directories
-            $fileName = str_replace('/', '', $hash.\Illuminate\Support\Str::slug($fileType->name).'.csv');
+            $fileName = (new FileTypeService($fileType))->niceFileName();
         }
 
         return $fileName;

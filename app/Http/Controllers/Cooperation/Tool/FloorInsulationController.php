@@ -3,52 +3,37 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\FloorInsulationFormRequest;
 use App\Models\Building;
-use App\Models\Cooperation;
 use App\Models\Element;
-use App\Models\Step;
+use App\Models\InputSource;
+use App\Models\MeasureApplication;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
-use Illuminate\Http\Request;
 
-class FloorInsulationController extends Controller
+class FloorInsulationController extends ToolController
 {
-    /**
-     * @var Step
-     */
-    protected $step;
-
-    public function __construct(Request $request)
-    {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first();
-    }
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation)
+    public function index()
     {
         $typeIds = [4];
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
-        $buildingInsulation = $building->getBuildingElement('floor-insulation');
+        $buildingInsulation = $building->getBuildingElement('floor-insulation', $this->masterInputSource);
         $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
 
         $floorInsulation = optional($buildingInsulation)->element;
 
         $crawlspace = Element::where('short', 'crawlspace')->first();
-        $buildingCrawlspace = $building->getBuildingElement($crawlspace->short);
+        $buildingCrawlspace = $building->getBuildingElement($crawlspace->short, $this->masterInputSource);
 
         $crawlspacePresent = 2; // unknown
         if ($buildingCrawlspace instanceof \App\Models\BuildingElement) {
@@ -68,9 +53,10 @@ class FloorInsulationController extends Controller
         )->get();
 
         return view('cooperation.tool.floor-insulation.index', compact(
-            'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe', 'buildingElementsOrderedOnInputSourceCredibility',
+            'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe',
+            'buildingElementsOrderedOnInputSourceCredibility',
             'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
-            'crawlspacePresent', 'buildingFeatures', 'buildingElement', 'building'
+            'crawlspacePresent', 'building'
         ));
     }
 
@@ -82,7 +68,12 @@ class FloorInsulationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $result = FloorInsulation::calculate($building, HoomdossierSession::getInputSource(true), $user->energyHabit, $request->all());
+        $result = FloorInsulation::calculate(
+            $building,
+            $this->masterInputSource,
+            $user->energyHabit()->forInputSource($this->masterInputSource)->first(),
+            $request->all()
+        );
 
         return response()->json($result);
     }
@@ -98,27 +89,31 @@ class FloorInsulationController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+        ConsiderableService::save($this->step, $user, $inputSource,
+            $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+        $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        $updatedMeasureIds = [];
+        // If anything's dirty, all measures must be recalculated
+        if (! empty($dirtyAttributes)) {
+            $updatedMeasureIds = MeasureApplication::findByShorts([
+                'floor-insulation', 'bottom-insulation', 'floor-insulation-research',
+            ])
+                ->pluck('id')
+                ->toArray();
+        }
+
+        $values = $request->validated();
+        $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new FloorInsulationHelper($user, $inputSource))
-            ->setValues($request->validated())
+            ->setValues($values)
             ->saveValues()
             ->createAdvices();
 
-        StepHelper::complete($this->step, $building, $inputSource);
-        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-
-        $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
-        $url = $nextStep['url'];
-
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
-
-        return redirect($url);
+        return $this->completeStore($this->step, $building, $inputSource);
     }
 }

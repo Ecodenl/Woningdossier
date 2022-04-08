@@ -15,13 +15,13 @@
             // check if the input column has dots, ifso we need to use the array get function
             // else its a property that we can access
             if (false !== strpos($userInputColumn, '.')) {
-                $compareValue = array_get($userInputValue, $userInputColumn);
+                $compareValue = Arr::get($userInputValue, $userInputColumn);
             } else {
                 $compareValue = $userInputValue->$userInputColumn;
             }
             ?>
             @if(!is_null($compareValue) && $key == $compareValue)
-                <li class="change-input-value" data-input-value="{{ $key }}" data-input-source-short="{{$userInputValue->inputSource->short}}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputValue }}</a></li>
+                <li class="change-input-value" data-input-value="{{ $key }}" data-input-source-short="{{$userInputValue->inputSource->short}}">{{ $userInputValue->getInputSourceName() }}: {{ $inputValue }}</li>
             @endif
         @endforeach
     @endforeach
@@ -37,7 +37,7 @@
                 }
             } else {
                 if (false !== strpos($userInputColumn, '.')) {
-                    $value = array_get($userInputValue, $userInputColumn);
+                    $value = Arr::get($userInputValue, $userInputColumn);
                 } else {
                     $value = $userInputValue->$userInputColumn;
                 }
@@ -52,7 +52,7 @@
             }
             ?>
             @if(!is_null($value) && $inputValue->id == $value)
-                <li class="change-input-value" data-input-value="{{ $inputValue->id }}" data-input-source-short="{{$userInputValue->inputSource->short}}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</a></li>
+                <li class="change-input-value" data-input-value="{{ $inputValue->id }}" data-input-source-short="{{$userInputValue->inputSource->short}}">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</li>
             @endif
         @endforeach
     @endforeach

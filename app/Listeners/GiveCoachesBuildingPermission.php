@@ -34,7 +34,7 @@ class GiveCoachesBuildingPermission
         $building = $event->building;
 
         // the coaches can only get building permission when the user allowed it.
-        $building->user()->update([
+        $building->user->update([
             'allow_access' => true,
         ]);
 
@@ -70,9 +70,6 @@ class GiveCoachesBuildingPermission
                 'message' => 'Welkom bij het Hoomdossier, hier kunt u chatten met de coöperatie.',
                 'building_id' => $building->id,
             ]);
-
-            // what should we set the building status to ?
-            $building->setStatus('pending');
 
             // give the user a unread message.
             PrivateMessageView::create([

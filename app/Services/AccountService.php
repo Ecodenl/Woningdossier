@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Helpers\RegistrationHelper;
 use App\Models\Account;
+use Illuminate\Support\Facades\Hash;
 
 class AccountService
 {
@@ -11,8 +11,7 @@ class AccountService
     {
         return Account::create([
             'email' => $email,
-            'password' => \Hash::make($password),
-            'confirm_token' => RegistrationHelper::generateConfirmToken(),
+            'password' => Hash::make($password),
         ]);
     }
 }

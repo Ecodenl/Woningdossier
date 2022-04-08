@@ -12,7 +12,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/admin/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/datepicker/datetimepicker.min.css') }}">
     @if(isset($cooperationStyle->css_url))
         <link href="{{ asset($cooperationStyle->css_url) }}" rel="stylesheet">
@@ -30,6 +30,7 @@
     <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/dataTables.bootstrap.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
 
+    @livewireStyles
 </head>
 <body class="@yield('page_class')">
 <div id="app">
@@ -46,13 +47,14 @@
             <?php $cooperationToManage = request()->route()->parameters()['cooperationToManage']; ?>
             <div class="row">
                 <div class="col-md-2">
-                    <a href="{{route('cooperation.admin.super-admin.index')}}" class="btn btn-default btn-block" style="white-space: normal">
+                    <a class="btn btn-default btn-block" style="white-space: normal"
+                       href="{{route('cooperation.admin.super-admin.cooperations.index', ['search' => optional($cooperationToManage)->name])}}">
                         @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.back-to-normal-environment')
                     </a>
                 </div>
                 <div class="col-md-10">
                     <div class="alert alert-warning">
-                        <strong>Letop!</strong> @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.alert-on-top', ['cooperation' => $cooperationToManage->name])
+                        <strong>@lang('default.caution')</strong> @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.alert-on-top', ['cooperation' => $cooperationToManage->name])
                     </div>
                 </div>
             </div>
@@ -76,6 +78,7 @@
 
 </div>
 
+@livewireScripts
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
 <!-- moment.js -->

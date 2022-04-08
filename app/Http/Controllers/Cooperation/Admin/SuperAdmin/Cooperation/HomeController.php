@@ -12,9 +12,7 @@ class HomeController extends Controller
         $breadcrumbs = [
             [
                 'route' => 'cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index',
-                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', [
-                    'cooperation-to-manage' => $cooperationToManage,
-                ]),
+                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', compact('cooperationToManage')),
                 'name' => $cooperationToManage->name,
             ],
         ];

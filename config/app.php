@@ -183,7 +183,9 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\Providers\WoningdossierServiceProvider::class,
+        App\Providers\MacroServiceProvider::class,
         //\Ecodenl\PicoWrapper\PicoServiceProvider::class,
+        App\Providers\ViewServiceProvider::class,
     ],
 
     /*
@@ -198,8 +200,13 @@ return [
     */
 
     'aliases' => [
+        'MediaHelper' => \App\Helpers\MediaHelper::class,
+        'RoleHelper' => \App\Helpers\RoleHelper::class,
+        'RouteLogic' => \App\Helpers\Blade\RouteLogic::class,
+//        'NumberFormatter' => \App\Helpers\NumberFormatter::class, // We cannot alias NumberFormatter due to the native PHP class (https://www.php.net/manual/en/class.numberformatter.php)
         'Hoomdossier' => \App\Helpers\Hoomdossier::class,
         'App' => Illuminate\Support\Facades\App::class,
+        'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
         'Blade' => Illuminate\Support\Facades\Blade::class,
@@ -230,6 +237,7 @@ return [
         'Schema' => Illuminate\Support\Facades\Schema::class,
         'Session' => Illuminate\Support\Facades\Session::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
+        'Str' => Illuminate\Support\Str::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,

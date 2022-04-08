@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="87px" height="89px" viewBox="0 0 87 89" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>radiatorfolie</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-146.000000, -3279.000000)">
+            <g id="radiatorfolie" transform="translate(148.000000, 3281.000000)">
+                <path d="M34.5,54.0017554 L58,5.8017554 C58,5.8017554 61,-0.898244599 67.9,0.101755401 C74.8,1.1017554 79.7,4.9017554 80.9,6.5017554 C82.1,8.1017554 84.6,11.8017554 82.3,17.5017554 C80.1,23.2017554 60.9,77.5017554 60.9,77.5017554 C60.9,77.5017554 56.2,70.7017554 46.4,65.4017554 C36.6,60.1017554 32.4,59.1017554 34.5,54.0017554 Z" id="Path" fill="#2CA982" fill-rule="nonzero"></path>
+                <path d="M55.6,10.4017554 L4,10.4017554 C1.8,10.4017554 -7.10542736e-15,12.2017554 -7.10542736e-15,14.4017554 L-7.10542736e-15,81.4017554 C-7.10542736e-15,83.6017554 1.8,85.4017554 4,85.4017554 L52.8,85.4017554" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <line x1="60.3" y1="79.4017554" x2="82.3" y2="16.8017554" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <path d="M58,5.8017554 L34.3,54.4017554 C33.3,56.4017554 34.2,58.8017554 36.1,59.7017554 C36.1,59.7017554 60.2,71.3017554 60.2,78.3017554 C60.2,85.3017554 52.7,85.4017554 52.7,85.4017554" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M58,5.8017554 C61.3,-0.998244599 67.9,-1.0982446 74.7,2.2017554 C81.5,5.5017554 84.9,9.4017554 82.3,16.9017554" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+        </g>
+    </g>
+</svg>

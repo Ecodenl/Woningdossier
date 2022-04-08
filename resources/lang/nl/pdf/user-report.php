@@ -17,27 +17,17 @@ return [
     ],
     'front-page' => [
         'intro' => [
+            'connected-coaches' => 'Energiecoach:|Energiecoaches:',
             'title' => 'Stappenplan voor het <br> verduurzamen van uw woning',
             'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
         ],
     ],
-    'warnings' => [
-        'ventilation' => 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.',
-        'roof-insulation' => [
-            'check-order' => 'U probeert dakisolatie met vervanging van de dakbedekking te plannen, maar de onderhoudsmaatregel voor het vervangen van de dakpannen of dakbedekking staat uit',
-            'planned-year' => 'De uitvoeringsjaren van de energiebesparende maatregel en de onderhoudsmaatregel zijn niet gelijk! U heeft gekozen voor het isoleren van het dak met vervanging van de dakbedekking, Daarom moeten deze twee maatregelen gelijktijdig worden uitgevoerd.',
-        ],
-        'wall-insulation' => [
-            'cavity-wall-with-paint' => 'Geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie.',
-        ],
-    ],
-
     'comments' => [
         '',
     ],
 
     'ventilation' => [
-        'points-of-improvement' => 'Verbeteropties',
+        'points-of-improvement' => 'Geadviseerde verbeteropties',
     ],
 
     'general-data' => [
@@ -64,16 +54,17 @@ return [
 
         'resume-energy-saving-measures' => [
             'title' => 'Samenvatting van mogelijke energiebesparende maatregelen en onderhoudsmaatregelen',
-            'text' => 'Is er iets veranderd of past de volgorde van maatregelen niet bij uw persoonlijke planning? In het Hoomdossier kunt u alle gegevens aanpassen en bijhouden. In de bijlage vindt u alle details per maatregel.',
             'table' => [
-                'planned-year' => 'Jaar gepland',
                 'measure' => 'Maatregel',
                 'costs' => 'Kosten (€)',
                 'savings' => 'Besparing (€/jaar)',
             ],
+            'total' => 'Totaal',
+
         ],
 
         'comment-action-plan' => 'Toelichting op het stappenplan',
+        'comment-action-plan-by' => 'Toelichting door: :name',
 
         'calculations-are-indicative' => [
             'title' => 'Berekeningen zijn indicatief',
@@ -90,8 +81,6 @@ return [
 
         'attachment' => [
             'title' => 'Bijlage 1: overzicht maatregelen',
-            'lead' => 'U hebt aangegeven interesse te hebben in de volgende maatregelen:',
-
             'text' => 'Op de volgende bladzijden ziet u per maatregel een samenvatting van de ingevoerde gegevens en berekeningen voor de hierboven genoemde maatregelen. Meer informatie over de maatregelen kunt u ook vinden op de maatregelbladen in het Hoomdossier of op <a href="www.milieucentraal.nl">www.milieucentraal.nl</a>.',
         ],
     ],

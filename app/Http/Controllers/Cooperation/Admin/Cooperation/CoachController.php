@@ -20,6 +20,7 @@ class CoachController extends Controller
     {
         $users = $cooperation
             ->users()
+            ->with('building', 'roles')
             ->role(['coach', 'coordinator'])
             ->get();
 
@@ -35,21 +36,20 @@ class CoachController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Cooperation $cooperation, $userId)
+    public function show(Cooperation $cooperation, User $user)
     {
-        $userToShow = User::findOrFail($userId);
+        $userToShow = $user;
         $buildingFromUser = $userToShow->building;
 
         $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($userToShow)->pluck('building_id');
 
-        // now we got the connected buildings of the user, get the models.
-        $buildings = Building::findMany($connectedBuildingsForUser)
-            ->load(['user',
-                    'buildingStatuses' => function ($q) {
-                        $q->with('status')->mostRecent();
-                    },
-                ]
-            );
+        $buildings = Building::withRecentBuildingStatusInformation()
+            ->whereIn('buildings.id', $connectedBuildingsForUser)
+            ->orderByDesc('appointment_date')
+            ->with('user')
+            ->get();
+
+        $buildings = $buildings->pullTranslationFromJson('status_name_json', 'status');
 
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
 

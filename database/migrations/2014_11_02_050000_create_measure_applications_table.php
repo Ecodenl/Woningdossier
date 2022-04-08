@@ -16,18 +16,20 @@ class CreateMeasureApplicationsTable extends Migration
         Schema::create('measure_applications', function (Blueprint $table) {
             $table->increments('id');
             $table->enum('measure_type', ['energy_saving', 'maintenance']);
-            $table->uuid('measure_name');
+            $table->json('measure_name');
+            $table->json('measure_info')->nullable();
             $table->string('short');
             $table->enum('application', ['place', 'replace', 'remove', 'repair']);
             $table->double('costs', 8, 2);
-            $table->uuid('cost_unit');
+            $table->json('cost_unit');
             $table->double('minimal_costs', 8, 2);
             $table->integer('maintenance_interval');
-            $table->uuid('maintenance_unit');
+            $table->json('maintenance_unit');
 
             $table->integer('step_id')->unsigned();
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('restrict');
 
+            $table->json('configurations')->nullable();
             $table->timestamps();
         });
     }

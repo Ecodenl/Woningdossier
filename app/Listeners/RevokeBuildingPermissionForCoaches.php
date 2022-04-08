@@ -29,7 +29,7 @@ class RevokeBuildingPermissionForCoaches
     {
         $building = $event->building;
 
-        $building->user()->update([
+        $building->user->update([
             'allow_access' => false,
         ]);
 

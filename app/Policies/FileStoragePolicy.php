@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\FileStorage;
 use App\Models\FileType;
@@ -13,8 +14,14 @@ class FileStoragePolicy
 {
     use HandlesAuthorization;
 
-    public function download(User $user, FileStorage $fileStorage, Building $building = null)
+    public function download(Account $account, FileStorage $fileStorage, Building $building = null)
     {
+        $user = $account->user();
+
+        if ($user->hasRoleAndIsCurrentRole(['super-admin']) && $fileStorage->fileType->short === 'example-building-overview') {
+            return true;
+        }
+
         // some other logic for resident wil come in the near future.
         if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && $fileStorage->cooperation_id == HoomdossierSession::getCooperation()) {
             return true;
@@ -34,7 +41,7 @@ class FileStoragePolicy
      *
      * @return mixed
      */
-    public function view(User $user, FileStorage $fileStorage)
+    public function view(Account $account, FileStorage $fileStorage)
     {
     }
 
@@ -52,14 +59,17 @@ class FileStoragePolicy
      *
      * @return bool
      */
-    public function store(User $user, FileStorage $fileStorage, FileType $fileType)
+    public function store(Account $account, FileStorage $fileStorage, FileType $fileType)
     {
+        $user = $account->user();
         switch ($fileType->short) {
             case 'pdf-report':
                 if ($user->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin'])) {
                     return true;
                 }
                 break;
+            case 'example-building-overview':
+                return $user->hasRoleAndIsCurrentRole('super-admin');
             default:
                 // for now default, in the future more cases may be specified.
                 if ($user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
@@ -76,7 +86,7 @@ class FileStoragePolicy
      *
      * @return mixed
      */
-    public function update(User $user, FileStorage $fileStorage)
+    public function update(Account $account, FileStorage $fileStorage)
     {
     }
 
@@ -85,7 +95,7 @@ class FileStoragePolicy
      *
      * @return mixed
      */
-    public function delete(User $user, FileStorage $fileStorage)
+    public function delete(Account $account, FileStorage $fileStorage)
     {
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -32,7 +32,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Measure extends Model
 {
-    use TranslatableTrait;
+    use HasTranslations;
+
+    protected $translatable = [
+        'name',
+    ];
 
     public function serviceType()
     {

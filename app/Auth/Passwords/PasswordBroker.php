@@ -17,10 +17,6 @@ class PasswordBroker extends BasePasswordBroker
             return static::INVALID_USER;
         }
 
-        if (! $this->validateNewPassword($credentials)) {
-            return static::INVALID_PASSWORD;
-        }
-
         if (! $this->tokens->exists($user, $credentials['token'])) {
             return static::INVALID_TOKEN;
         }

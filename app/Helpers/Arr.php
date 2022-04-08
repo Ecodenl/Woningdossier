@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-class Arr
+class Arr extends \Illuminate\Support\Arr
 {
     /**
      * The inverse of array_dot.
@@ -15,7 +15,7 @@ class Arr
     {
         $array = [];
         foreach ($content as $key => $value) {
-            array_set($array, $key, $value);
+            Arr::set($array, $key, $value);
         }
 
         return $array;
@@ -26,15 +26,57 @@ class Arr
      */
     public static function isWholeArrayEmpty(array $array): bool
     {
-        // dot it so we dont need unnecessary loops and a recursive stuff.
-        $array = \Illuminate\Support\Arr::dot($array);
+        // Dot it, so we don't need unnecessary loops and a recursive stuff.
+        $array = static::dot($array);
 
         foreach ($array as $key => $value) {
-            if (! Str::isConsideredEmptyAnswer($value)) {
+            if (! Str::isConsideredEmptyAnswer($value) && ! empty($value)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Check if one or many values are all in an array.
+     * TODO: Tests
+     * @param  array  $haystack
+     * @param $needles
+     *
+     * @return bool
+     */
+    public static function inArray(array $haystack, $needles): bool
+    {
+        $needles = (array) $needles;
+
+        foreach ($needles as $needle) {
+            if (! in_array($needle, $haystack)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if one or one of many values are in an array.
+     * TODO: Tests
+     * @param  array  $haystack
+     * @param $needles
+     *
+     * @return bool
+     */
+    public static function inArrayAny(array $haystack, $needles): bool
+    {
+        $needles = (array) $needles;
+
+        foreach ($needles as $needle) {
+            if (in_array($needle, $haystack)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

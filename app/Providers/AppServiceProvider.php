@@ -4,12 +4,19 @@ namespace App\Providers;
 
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Notification;
+use App\Models\PersonalAccessToken;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 //use Laravel\Dusk\DuskServiceProvider;
 
@@ -23,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         \Validator::extend('needs_to_be_lower_or_same_as', function ($attribute, $value, $parameters, $validator) {
-            $formData = array_dot($validator->getData());
+            $formData = Arr::dot($validator->getData());
             $compareFieldValue = $formData[$parameters[0]];
 
             if ($value > $compareFieldValue) {
@@ -45,27 +52,42 @@ class AppServiceProvider extends ServiceProvider
             return $this->where($attribute, 'LIKE', "%{$searchTerm}%");
         });
 
-        \Queue::before(function (JobProcessing $event) {
+        Collection::macro('addArrayOfWheres', function ($array, $method, $boolean) {
+            $this->whereNested(function ($query) use ($array, $method, $boolean) {
+                foreach ($array as $key => $value) {
+                    if (is_numeric($key) && is_array($value)) {
+                        $query->{$method}(...array_values($value));
+                    } else {
+                        $query->$method($key, '=', $value, $boolean);
+                    }
+                }
+            }, $boolean);
+        });
+
+        Queue::before(function (JobProcessing $event) {
             $payload = $event->job->payload();
             /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);
 
             if (RecalculateStepForUser::class == get_class($command)) {
+                Log::debug("JOB RecalculateStepForUser started | b_id: {$command->user->building->id} | input_source_id: {$command->inputSource->id}");
                 Notification::setActive($command->user->building, $command->inputSource, true);
             }
         });
 
-        \Queue::after(function (JobProcessed $event) {
+        Queue::after(function (JobProcessed $event) {
             $payload = $event->job->payload();
             /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);
 
             if (RecalculateStepForUser::class == get_class($command)) {
+                Log::debug("JOB RecalculateStepForUser ended | b_id: {$command->user->building->id} | input_source_id: {$command->inputSource->id}");
                 Notification::setActive($command->user->building, $command->inputSource, false);
             }
         });
 
         Paginator::useBootstrapThree();
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 
     /**
@@ -76,6 +98,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         Schema::defaultStringLength(191);
+
+        Carbon::setLocale(config('app.locale'));
 
         if ($this->app->environment('local', 'testing')) {
             //$this->app->register(DuskServiceProvider::class);

@@ -16,7 +16,7 @@
                 @else
                 <tr class="h-20">
                     <td class="w-100">{{$inputSourceName}}</td>
-                    <td>{!!  nl2br($comment, '<br>')!!}</td>
+                    <td style="word-wrap: break-word !important;">{!!  nl2br($comment, '<br>')!!}</td>
                 </tr>
                 @endif
             </tbody>

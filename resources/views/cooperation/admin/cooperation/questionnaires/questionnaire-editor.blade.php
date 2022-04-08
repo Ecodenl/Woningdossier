@@ -5,10 +5,9 @@
 @section('content')
     <section class="section">
         <div class="container">
-            <form action="{{ route('cooperation.admin.cooperation.questionnaires.update', ['questionnaireId' => $questionnaire->id]) }}" method="post">
-                <input type="hidden" name="questionnaire[id]" value="{{$questionnaire->id}}">
-                {{method_field('PUT')}}
-                {{csrf_field()}}
+            <form action="{{ route('cooperation.admin.cooperation.questionnaires.update', compact('questionnaire')) }}" method="post">
+                @method('PUT')
+                @csrf
                 <div class="row">
                     <div class="col-sm-6">
                         <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.questionnaires.index')}}" class="btn btn-warning">
@@ -55,15 +54,29 @@
                                             <label for="name">Naam:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon">{{$locale}}</span>
-                                                <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]" value="{{$questionnaire->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionnaire->getTranslation('name', $locale)->translation : "" }}" placeholder="Nieuwe vragenlijst">
+                                                <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]"
+                                                       value="{{ old("questionnaire.name.{$locale}", $questionnaire->getTranslation('name', $locale))}}"
+                                                       placeholder="Nieuwe vragenlijst">
                                             </div>
                                         </div>
                                         @endforeach
                                         <div class="form-group">
-                                            <label for="step_id">Na stap:</label>
-                                            <select name="questionnaire[step_id]" class="form-control">
-                                                @foreach($steps as $i => $step)
-                                                    <option value="{{ $step->id }}" @if($questionnaire->step_id == $step->id) selected="selected" @endif >{{ $i+1 }}: {{ $step->name }}</option>
+                                            <label for="step-id">Na stap:</label>
+                                            <select name="questionnaire[step_id]" class="form-control" id="step-id">
+                                                @php $order = 1; @endphp
+                                                @foreach($quickScanSteps as $step)
+                                                    <option value="{{ $step->id }}"
+                                                            @if(old('questionnaire.step_id', $questionnaire->step_id) == $step->id) selected="selected" @endif>
+                                                        {{ $order }}: {{ $step->name }} (quick-scan)
+                                                    </option>
+                                                    @php ++$order; @endphp
+                                                @endforeach
+                                                @foreach($expertSteps as $step)
+                                                    <option value="{{ $step->id }}"
+                                                            @if(old('questionnaire.step_id', $questionnaire->step_id) == $step->id) selected="selected" @endif>
+                                                        {{ $order }}: {{ $step->name }} (expert)
+                                                    </option>
+                                                    @php ++$order; @endphp
                                                 @endforeach
                                             </select>
                                         </div>

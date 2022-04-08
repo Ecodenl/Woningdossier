@@ -19,23 +19,13 @@ class Translation
     }
 
     /**
-     * Well here it is.
-     *
-     * Get a translation from the translations table through the uuid translatable file
-     * If the given key exist in the uuid translatable file it wil try to locate a record in the translation table and return that.
-     * If it does not exist, we get the given key returned.
+     * Get a translation using the default function.
      *
      * @return array|mixed|string|null
      */
     public static function translate(string $translationString, array $replaceArray = [])
     {
-        if (Uuid::isValid($translationString)) {
-            // \Log::debug('Deprecate me: UUID translation is used: '.$translationString.' with replaceArray: '.json_encode($replaceArray));
-        }
-        // Get the uuid from the translation file key
-        $translation = __($translationString, $replaceArray);
-
-        return $translation;
+        return __($translationString, $replaceArray);
     }
 
     /**

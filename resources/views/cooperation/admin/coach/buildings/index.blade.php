@@ -26,12 +26,16 @@
                             <?php
                                 /** @var \App\Models\Building $building */
                                 $user = $building->user;
-                                $buildingStatus = $building->buildingStatuses->first();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
                                 $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
 
-                                $appointmentDateFormatted = optional($buildingStatus->appointment_date)->format('d-m-Y');
+                                $appointmentDateFormatted = null;
+
+                                if (!is_null($building->appointment_date)) {
+                                    $appointmentDateFormatted = \Carbon\Carbon::create($building->appointment_date)->format('Y-m-d');
+                                }
+
                                 $appointmentDateStrotime = strtotime($appointmentDateFormatted);
                             ?>
                             <tr>
@@ -39,7 +43,7 @@
                                     {{$appointmentDateFormatted ?? '-'}}
                                 </td>
                                 <td>
-                                    {{$buildingStatus->status->name}}
+                                    {{ $building->status }}
                                 </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
@@ -70,7 +74,7 @@
         $(document).ready(function () {
             $('#table').DataTable({
                 responsive: true,
-                order: [[0, "desc"]],
+                aaSorting: [],
                 columnDefs: [
                     {responsivePriority: 7, targets: 6, width: "10%"},
                     {responsivePriority: 6, targets: 5, width: "20%"},

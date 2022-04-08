@@ -11,7 +11,7 @@ $userInputValues = $userInputValues->sortBy(function ($a) {
     <?php
     // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
     if (false !== strpos($userInputColumn, '.')) {
-        $value = array_get($userInputValue, $userInputColumn);
+        $value = Arr::get($userInputValue, $userInputColumn);
     } else {
         $value = $userInputValue->$userInputColumn;
     }
@@ -19,9 +19,9 @@ $userInputValues = $userInputValues->sortBy(function ($a) {
     @if(!is_null($value))
         @if(isset($needsFormat) && $needsFormat == true)
             <?php $decimals = $decimals ?? 1; ?>
-            <li class="change-input-value"  data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{\App\Helpers\NumberFormatter::format($value, $decimals)}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($value, $decimals)}}</a></li>
+            <li class="change-input-value"  data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{\App\Helpers\NumberFormatter::format($value, $decimals)}}">{{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($value, $decimals)}}</li>
         @else
-            <li class="change-input-value"  data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$value}}</a></li>
+            <li class="change-input-value"  data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{$value}}">{{$userInputValue->getInputSourceName()}}: {{$value}}</li>
         @endif
     @endif
 @endforeach

@@ -64,7 +64,7 @@
             <div class="content">
 
                 <div class="title m-b-md">
-                    {{ config('app.name') }}
+                    <h1 class="heading-1">{{ config('app.name') }}</h1>
                 </div>
 
             </div>

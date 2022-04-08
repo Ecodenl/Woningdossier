@@ -2,93 +2,78 @@
 
 namespace App\Services;
 
+use App\Helpers\Arr;
 use App\Helpers\Calculator;
 use App\Helpers\Number;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
+use App\Models\Building;
+use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
+use App\Models\ServiceValue;
 use App\Models\Step;
+use App\Models\ToolQuestion;
+use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService
 {
+    const CATEGORY_COMPLETE = 'complete';
+    const CATEGORY_TO_DO = 'to-do';
+    const CATEGORY_LATER = 'later';
+
+    public static function getCategories(): array
+    {
+        return [
+            self::CATEGORY_COMPLETE => self::CATEGORY_COMPLETE,
+            self::CATEGORY_TO_DO => self::CATEGORY_TO_DO,
+            self::CATEGORY_LATER => self::CATEGORY_LATER,
+        ];
+    }
+
     /**
      * Method to delete the user action plan advices for a given user, input source and step.
      *
-     * @throws \Exception
+     * @param \App\Models\User $user
+     * @param \App\Models\InputSource $inputSource
+     * @param \App\Models\Step $step
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function clearForStep(User $user, InputSource $inputSource, Step $step)
+    public static function clearForStep(User $user, InputSource $inputSource, Step $step): Collection
     {
-        UserActionPlanAdvice::forMe($user)
+        // so this is kind of a weird one, we have to clear the advices for the given input source
+        // BUT also for the master.
+
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        // Get old advices
+        $oldAdvices = UserActionPlanAdvice::forUser($user)
+            ->forInputSource($masterInputSource)
+            ->forStep($step)
+            ->withInvisible()
+            ->get();
+
+        // now delete the old advices, the one for the given input source and the master source.
+        UserActionPlanAdvice::forUser($user)
+            ->forInputSource($masterInputSource)
+            ->forStep($step)
+            ->withInvisible()
+            ->delete();
+
+        UserActionPlanAdvice::forUser($user)
             ->forInputSource($inputSource)
             ->forStep($step)
+            ->withInvisible()
             ->delete();
-    }
 
-    /**
-     * Method to retrieve the advice year based on the step or when available measure interest level.
-     *
-     * @return int|null
-     */
-    public static function getAdviceYear(UserActionPlanAdvice $userActionPlanAdvice)
-    {
-        $adviceYear = null;
-        $step = $userActionPlanAdvice->step;
-        $buildingOwner = $userActionPlanAdvice->user;
-        $measureApplication = $userActionPlanAdvice->measureApplication;
-
-        // set the default user interest on the step.
-        $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id)->with('interest')->first();
-
-        // try to obtain a specific interest on the measure application
-        $userInterestOnMeasureApplication = $buildingOwner
-            ->userInterestsForSpecificType(get_class($measureApplication), $measureApplication->id)
-            ->with('interest')
-            ->first();
-
-        // when thats available use that.
-        if ($userInterestOnMeasureApplication instanceof UserInterest) {
-            $userInterest = $userInterestOnMeasureApplication;
-        }
-
-        if (! $userInterest instanceof UserInterest) {
-            return $adviceYear;
-        }
-        if (1 == $userInterest->interest->calculate_value) {
-            $adviceYear = Carbon::now()->year;
-        }
-        if (2 == $userInterest->interest->calculate_value) {
-            $adviceYear = Carbon::now()->year + 5;
-        }
-
-        return $adviceYear;
-    }
-
-    /**
-     * Method to return a year or string with no year.
-     *
-     * @note this is NOT the same as getAdviceYear.
-     * This will returned the planned_year as first option.
-     *
-     * @return array|int|string|null
-     */
-    public static function getYear(UserActionPlanAdvice $userActionPlanAdvice)
-    {
-        // always try to get the planned year, as this is what de user gave as input
-        $year = $userActionPlanAdvice->planned_year ?? $userActionPlanAdvice->year;
-
-        // when the year is empty try to get one last resort.
-        if (is_null($year)) {
-            $year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice) ?? __('woningdossier.cooperation.tool.my-plan.no-year');
-        }
-
-        return $year;
+        return $oldAdvices;
     }
 
     /**
@@ -122,7 +107,7 @@ class UserActionPlanAdviceService
                 foreach ($advicesForStep as $advice) {
                     if ($advice->planned) {
                         $savingsMoney = $advice->savings_money;
-                        $year = self::getYear($advice);
+                        $year = 0;
 
                         // if its a string, the $year contains 'geen jaartal'
                         if (is_string($year)) {
@@ -130,33 +115,36 @@ class UserActionPlanAdviceService
                         } else {
                             $costYear = $year;
                         }
-                        if (! array_key_exists($year, $sortedAdvices)) {
+                        if (!array_key_exists($year, $sortedAdvices)) {
                             $sortedAdvices[$year] = [];
                         }
 
                         if ('ntb.' !== $savingsMoney) {
-                            $savingsMoney = is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear));
+                            $savingsMoney = is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money,
+                                $costYear));
                             $savingsMoney = Number::isNegative($savingsMoney) ? 0 : $savingsMoney;
                         }
 
                         // get step from advice
                         $step = $advice->step;
 
-                        if (! array_key_exists($step->name, $sortedAdvices[$year])) {
+                        if (!array_key_exists($step->name, $sortedAdvices[$year])) {
                             $sortedAdvices[$year][$step->name] = [];
                         }
 
                         $savingsGas = is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas);
                         $savingsElectricity = is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity);
 
-                        $sortedAdvices[$year][$step->name][$advice->measureApplication->short] = [
+                        $sortedAdvices[$year][$step->name][$advice->userActionPlanAdvisable->short] = [
                             'interested' => $advice->planned,
                             'advice_id' => $advice->id,
                             'warning' => $advice->warning,
-                            'measure' => $advice->measureApplication->measure_name,
-                            'measure_short' => $advice->measureApplication->short,                    // In the table the costs are indexed based on the advice year
+                            'measure' => $advice->userActionPlanAdvisable->measure_name,
+                            'measure_short' => $advice->userActionPlanAdvisable->short,
+                            // In the table the costs are indexed based on the advice year
                             // Now re-index costs based on user planned year in the personal plan
-                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
+                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->getCost(false, false),
+                                $costYear)),
                             'savings_gas' => Number::isNegative($savingsGas) ? 0 : $savingsGas,
                             'savings_electricity' => Number::isNegative($savingsElectricity) ? 0 : $savingsElectricity,
                             'savings_money' => $savingsMoney,
@@ -173,7 +161,8 @@ class UserActionPlanAdviceService
 
     /**
      * Check if can return the savings money or have to return "ntb."
-     * We do this when the selected insulation is "Matige isolatie (tot 8 cm isolatie)" or higher also known als calculate_value >= 3.
+     * We do this when the selected insulation is "Matige isolatie (tot 8 cm isolatie)" or higher also known als
+     * calculate_value >= 3.
      *
      * @param $savingsMoney
      *
@@ -187,18 +176,21 @@ class UserActionPlanAdviceService
         if ('roof-insulation' == $step->short) {
             // the energy saving measure application shorts.
             $flatRoofMeasureApplications = ['roof-insulation-flat-replace-current', 'roof-insulation-flat-current'];
-            $pitchedRoofMeasureApplications = ['roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside'];
+            $pitchedRoofMeasureApplications = [
+                'roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside',
+            ];
 
             // check the current advice its measure application, this way we can determine which roofType we have to check
-            if (in_array($advice->measureApplication->short, $pitchedRoofMeasureApplications)) {
+            if (in_array($advice->userActionPlanAdvisable->short, $pitchedRoofMeasureApplications)) {
                 $roofType = RoofType::findByShort('pitched');
             }
-            if (in_array($advice->measureApplication->short, $flatRoofMeasureApplications)) {
+            if (in_array($advice->userActionPlanAdvisable->short, $flatRoofMeasureApplications)) {
                 $roofType = RoofType::findByShort('flat');
             }
 
             // get the right matching roof type.
-            $buildingRoofType = $user->building->roofTypes()->forInputSource($advice->inputSource)->where('roof_type_id', $roofType->id)->first();
+            $buildingRoofType = $user->building->roofTypes()->forInputSource($advice->inputSource)->where('roof_type_id',
+                $roofType->id)->first();
 
             if ($buildingRoofType->elementValue->calculate_value >= 3) {
                 $savingsMoney = 'ntb.';
@@ -206,7 +198,9 @@ class UserActionPlanAdviceService
         } elseif (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
             $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
 
-            if ($user->building->getBuildingElement($elementShort, $advice->inputSource)->elementValue->calculate_value >= 3) {
+            if (optional($user->building->getBuildingElement($elementShort,
+                    $advice->inputSource)->elementValue)->calculate_value >= 3
+            ) {
                 $savingsMoney = 'ntb.';
             }
         }
@@ -227,7 +221,8 @@ class UserActionPlanAdviceService
 
         $advices = UserActionPlanAdvice::forInputSource($inputSource)
             ->where('user_id', $user->id)
-            ->with('user.building', 'measureApplication', 'step')
+            ->with('user.building', 'userActionPlanAdvisable', 'step')
+            ->where('user_action_plan_advisable_type', MeasureApplication::class)
             ->orderBy('step_id', 'asc')
             ->orderBy('year', 'asc')
             ->get();
@@ -236,19 +231,19 @@ class UserActionPlanAdviceService
         foreach ($advices as $advice) {
             if ($advice->step instanceof Step) {
                 /** @var MeasureApplication $measureApplication */
-                $measureApplication = $advice->measureApplication;
+                $measureApplication = $advice->userActionPlanAdvisable;
 
                 if (is_null($advice->year)) {
-                    $advice->year = self::getAdviceYear($advice);
+                    $advice->year = 0;
                 }
 
                 // check if we have to set the $savingsMoney to ntb.
-                if ('energy_saving' == $advice->measureApplication->measure_type) {
+                if ('energy_saving' == $advice->userActionPlanAdvisable->measure_type) {
                     $advice->savings_money = self::checkSavingsMoney($advice, $advice->savings_money);
                 }
 
                 // if advices are not desirable and the measureApplication is not an advice it will be added to the result
-                if (! $withAdvices && ! $measureApplication->isAdvice()) {
+                if (!$withAdvices && !$measureApplication->isAdvice()) {
                     $result[$measureApplication->measure_type][$advice->step->slug][$measureApplication->short] = $advice;
                 }
 
@@ -261,101 +256,363 @@ class UserActionPlanAdviceService
 
         ksort($result);
 
-        $result = self::checkCoupledMeasuresAndMaintenance($result);
-
         return $result;
     }
 
     /**
-     * Get the right warning text.
+     * Set properties from old advices on another advice
      *
-     * @param $translationKey
-     *
-     * @return array|string|null
+     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
+     * @param \App\Models\MeasureApplication $measureApplication
+     * @param \Illuminate\Database\Eloquent\Collection $oldAdvices
      */
-    public static function getWarning($translationKey)
+    public static function checkOldAdvices(UserActionPlanAdvice $userActionPlanAdvice, MeasureApplication $measureApplication, Collection $oldAdvices)
     {
-        // for the pdf we want a different warning translations then for the my-plan page
-        // when the app is running in the console we change the group to the pdf translations
-        $translationGroup = 'my-plan.warnings';
-        if (app()->runningInConsole()) {
-            $translationGroup = 'pdf/user-report.warnings';
+        $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
+            ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
+        // This measure was set before. We ensure they stay
+        if ($oldAdvice instanceof UserActionPlanAdvice) {
+            $userActionPlanAdvice->category = $oldAdvice->category;
+            $userActionPlanAdvice->visible = $oldAdvice->visible;
+            $userActionPlanAdvice->order = $oldAdvice->order;
         }
-
-        return __("{$translationGroup}.{$translationKey}");
     }
 
     /**
-     * Method to add warning to a categorized action plan.
+     * Set the visibility of a user action plan advice
      *
-     * @return array
+     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
      */
-    public static function checkCoupledMeasuresAndMaintenance(array $categorizedActionPlan)
+    public static function setAdviceVisibility(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        $energySaving = $categorizedActionPlan['energy_saving'] ?? [];
-        $maintenance = $categorizedActionPlan['maintenance'] ?? [];
+        $building = $userActionPlanAdvice->user->building;
 
-        if (isset($maintenance['wall-insulation']) && isset($energySaving['wall-insulation'])) {
-            $maintenanceForWallInsulation = $maintenance['wall-insulation'];
-            $energySavingForWallInsulation = $energySaving['wall-insulation'];
+        // It's always going to be visible by default. Further logic follows.
+        $visible = true;
 
-            // it isn't possible to add spouwmuurisolatie on a painted / plastered wall.
-            if (isset($maintenanceForWallInsulation['paint-wall']) && isset($energySavingForWallInsulation['cavity-wall-insulation'])) {
-                $categorizedActionPlan['energy_saving']['wall-insulation']['cavity-wall-insulation']['warning'] = static::getWarning('wall-insulation.cavity-wall-with-paint');
-                $categorizedActionPlan['maintenance']['wall-insulation']['paint-wall']['warning'] = static::getWarning('wall-insulation.cavity-wall-with-paint');
-            }
-        }
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
 
-        // we will have to compare the year / interest levels of the energy saving and maintenance with each other
-        if (isset($maintenance['roof-insulation']) && isset($energySaving['roof-insulation'])) {
-            $maintenanceForRoofInsulation = $maintenance['roof-insulation'];
-            $energySavingForRoofInsulation = $energySaving['roof-insulation'];
+        if ($advisable instanceof MeasureApplication && $advisable->measure_type === MeasureApplication::MAINTENANCE) {
+            // If it's maintenance, change logic. We never show maintenance in the quickscan, only in expert
+            $visible = false;
 
-            // flat roof
-            if (isset($energySavingForRoofInsulation['roof-insulation-flat-replace-current']) && $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned']) {
-                $energySavingRoofInsulationFlatReplaceCurrentYear = $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned_year'];
-                $maintenanceReplaceRoofInsulationYear = $maintenanceForRoofInsulation['replace-roof-insulation']['planned_year'];
+            if ($building instanceof Building && $building->hasAnsweredExpertQuestion()) {
+                // Building has answered an expert question, so it's visible, with 2 exceptions...
+                $visible = true;
 
-                if (! $maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
-                    // set warning
-                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = static::getWarning('roof-insulation.check-order');
-                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = static::getWarning('roof-insulation.check-order');
-                // both were planned, so check whether the planned year is the same
-                } elseif ($energySavingRoofInsulationFlatReplaceCurrentYear !== $maintenanceReplaceRoofInsulationYear) {
-                    // set warning
-                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = static::getWarning('roof-insulation.planned-year');
-                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = static::getWarning('roof-insulation.planned-year');
-                }
-            }
+                $shorts = ['replace-tiles', 'replace-roof-insulation'];
 
-            // pitched roof
-            if (isset($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']) && $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned']) {
-                $energySavingRoofInsulationPitchedReplaceTilesYear = $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned_year'];
-                $maintenanceReplaceTilesYear = $maintenanceForRoofInsulation['replace-tiles']['planned_year'];
-                if (! $maintenanceForRoofInsulation['replace-tiles']['planned']) {
-                    // set warning
-                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
-                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
-                // both were planned, so check whether the planned year is the same
-                } elseif ($energySavingRoofInsulationPitchedReplaceTilesYear !== $maintenanceReplaceTilesYear) {
-                    // set warning
-                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
-                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
+                // Logic is simple for these 2 exceptions. If it's within 5 years, then we _do_ show it
+                if (in_array($advisable->short, $shorts) && !is_null($userActionPlanAdvice->year)) {
+                    $visible = $userActionPlanAdvice->year - now()->format('Y') <= 5;
                 }
             }
         }
 
-        if (isset($energySaving['ventilation'])) {
-            $energySavingForVentilation = $energySaving['ventilation'];
+        $userActionPlanAdvice->visible = $visible;
+    }
 
-            foreach ($energySavingForVentilation as $measureShort => $advice) {
-                if (empty($advice->costs) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
-                    // this will have to change in the near future for the pdf.
-                    $categorizedActionPlan['energy_saving']['ventilation'][$measureShort]['warning'] = static::getWarning('ventilation');
-                }
+    /**
+     * Set the category of a user action plan advice
+     *
+     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
+     */
+    public static function setAdviceCategory(UserActionPlanAdvice $userActionPlanAdvice)
+    {
+        // The logic for a category is a bit more complex than visibility. We define to-do as default
+        $category = static::CATEGORY_TO_DO;
+
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
+
+        if ($advisable instanceof MeasureApplication) {
+            $building = $userActionPlanAdvice->user->building;
+
+            // Chance of a building not being set is small, but not impossible!
+            if ($building instanceof Building) {
+                $category = static::getCategoryFromMeasure($building, $advisable);
             }
         }
 
-        return $categorizedActionPlan;
+        $userActionPlanAdvice->category = $category;
+    }
+
+    public static function getCategoryFromMeasure(Building $building, MeasureApplication $measureApplication): string
+    {
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+        // We only allow energy saving measures
+        if ($measureApplication->measure_type === MeasureApplication::ENERGY_SAVING) {
+            // Measures have their own category logic...
+            $categorization = [
+                'floor-insulation' => 'insulation',
+                'bottom-insulation' => 'insulation',
+                'floor-insulation-research' => 'insulation',
+                'cavity-wall-insulation' => 'insulation',
+                'facade-wall-insulation' => 'insulation',
+                'wall-insulation-research' => 'insulation',
+                'glass-in-lead' => 'glass',
+                'hrpp-glass-only' => 'glass',
+                'hrpp-glass-frames' => 'glass',
+                'hr3p-frames' => 'glass',
+                'crack-sealing' => 'crack-sealing',
+                'roof-insulation-pitched-inside' => 'roof-insulation',
+                'roof-insulation-pitched-replace-tiles' => 'roof-insulation',
+                'roof-insulation-flat-current' => 'roof-insulation',
+                'roof-insulation-flat-replace-current' => 'roof-insulation',
+                'high-efficiency-boiler-replace' => 'hr-boiler',
+                'heater-place-replace' => 'sun-boiler',
+                'solar-panels-place-replace' => 'solar-panels',
+                'ventilation-balanced-wtw' => 'ventilation',
+                'ventilation-decentral-wtw' => 'ventilation',
+                'ventilation-demand-driven' => 'ventilation',
+            ];
+
+            $logicShort = $categorization[$measureApplication->short];
+            switch ($logicShort) {
+                case 'insulation':
+                    // Multiple types of insulation, we check based on measure which question is relevant
+                    $floorShorts = ['floor-insulation', 'bottom-insulation', 'floor-insulation-research'];
+
+                    // Define tool question based on the measure short
+                    $toolQuestionShort = in_array($measureApplication->short, $floorShorts) ? 'current-floor-insulation'
+                        : 'current-wall-insulation';
+
+                    $relevantQuestion = ToolQuestion::findByShort($toolQuestionShort);
+                    if ($relevantQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                        $elementValue = ElementValue::find($answer);
+                        if ($elementValue instanceof ElementValue) {
+                            // If the value is 1 or 2 (onbekend, geen), we want it in to-do
+                            // If it's "niet van toepassing" it should be hidden, so we don't worry about it
+                            $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE
+                                : static::CATEGORY_TO_DO;
+                        }
+                    }
+                    break;
+
+                case 'roof-insulation':
+                    // Due to the roof types, we need custom logic
+                    $roofStep = Step::findByShort('roof-insulation');
+                    $elementValueId = null;
+
+                    if ($building->hasAnsweredExpertQuestion($roofStep)) {
+                        // The user has completed the roof insulation step, so we must check the insulation type
+                        // for the roof types
+                        $flatShorts = ['roof-insulation-flat-current', 'roof-insulation-flat-replace-current'];
+                        // Check which roof to get
+                        $roofTypeShort = in_array($measureApplication->short, $flatShorts) ? 'flat' : 'pitched';
+                        $roofType = RoofType::findByShort($roofTypeShort);
+
+                        // Get the related roof type
+                        $buildingRoofType = $building->roofTypes()
+                            ->forInputSource($masterInputSource)
+                            ->where('roof_type_id', $roofType->id)
+                            ->first();
+
+                        $elementValueId = optional($buildingRoofType)->element_value_id;
+                    } else {
+                        // Still a quick-scan newbie, we check the tool question
+                        $relevantQuestion = ToolQuestion::findByShort('current-roof-insulation');
+                        if ($relevantQuestion instanceof ToolQuestion) {
+                            $elementValueId = $building->getAnswer($masterInputSource, $relevantQuestion);
+                        }
+                    }
+
+                    // Now we have the element value of the relevant roof type, so we set the category
+                    $elementValue = ElementValue::find($elementValueId);
+                    if ($elementValue instanceof ElementValue) {
+                        // If the value is 1 or 2 (onbekend, geen), we want it in to-do
+                        // If it's "niet van toepassing" it should be hidden, so we don't worry about it
+                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE
+                            : static::CATEGORY_TO_DO;
+                    }
+                    break;
+
+                case 'glass':
+                    $relevantQuestions = ToolQuestion::findByShorts([
+                        'current-living-rooms-windows', 'current-sleeping-rooms-windows',
+                    ]);
+                    $answers = [];
+                    foreach ($relevantQuestions as $relevantQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                        $elementValue = ElementValue::find($answer);
+
+                        if ($elementValue instanceof ElementValue) {
+                            // Glass has no calculate value... we use the order
+                            $answers[$relevantQuestion->short] = $elementValue->order;
+                        }
+                    }
+
+                    if (!empty($answers)) {
+                        // Sort by order
+                        asort($answers);
+                        $lowestOrder = Arr::first($answers);
+                        // Ensure it's numeric. Never leave anything to chance
+                        $lowestOrder = is_numeric($lowestOrder) ? $lowestOrder : 0;
+
+                        // We grab the lowest order. If this is "dubbelglas" or worse, we need to add it to to-do
+                        // We don't need to check the second value. If the value is better than "dubbelglas", then
+                        // it's complete
+                        $category = $lowestOrder > 1 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                    }
+                    break;
+
+                case 'crack-sealing':
+                    $relevantQuestion = ToolQuestion::findByShort('crack-sealing-type');
+                    if ($relevantQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                        $elementValue = ElementValue::find($answer);
+
+                        if ($elementValue instanceof ElementValue) {
+                            // If available, it's complete. Calculate value 1 and 2 are "ja".
+                            $category = $elementValue->calculate_value > 2 ? static::CATEGORY_TO_DO
+                                : static::CATEGORY_COMPLETE;
+                        }
+                    }
+                    break;
+
+                case 'hr-boiler':
+                    // We first need to check if HR-boiler has been selected as option
+                    $hasBoilerQuestion = ToolQuestion::findByShort('heat-source');
+                    if ($hasBoilerQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $hasBoilerQuestion);
+                        if (is_array($answer) && in_array('hr-boiler', $answer)) {
+                            // The user has a boiler, let's see if there's an age for it
+                            $ageQuestion = ToolQuestion::findByShort('boiler-placed-date');
+                            if ($ageQuestion instanceof ToolQuestion) {
+                                $answer = $building->getAnswer($masterInputSource, $ageQuestion);
+
+                                if (is_numeric($answer)) {
+                                    $diff = now()->format('Y') - $answer;
+                                    // If it's not 10 years old, it's complete
+                                    // If it's between 10 and 13, it's later
+                                    // If it's older than 13 years, it's to-do
+                                    $category = $diff < 10 ? static::CATEGORY_COMPLETE
+                                        : ($diff >= 13 ? static::CATEGORY_TO_DO : static::CATEGORY_LATER);
+                                } else {
+                                    // No placing date available. We will assume it's fine
+                                    $category = static::CATEGORY_COMPLETE;
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case 'sun-boiler':
+                    $hasSunBoilerQuestion = ToolQuestion::findByShort('heater-type');
+                    if ($hasSunBoilerQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $hasSunBoilerQuestion);
+                        $serviceValue = ServiceValue::find($answer);
+
+                        if ($serviceValue instanceof ServiceValue) {
+                            // If the value is 1 (geen), we want it in to-do
+                            $category = $serviceValue->calculate_value > 1 ? static::CATEGORY_COMPLETE
+                                : static::CATEGORY_TO_DO;
+                        }
+                    }
+                    break;
+
+                case 'solar-panels':
+                    // We first need to check if the user has solar panels
+                    $hasPanelsQuestion = ToolQuestion::findByShort('has-solar-panels');
+                    if ($hasPanelsQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $hasPanelsQuestion);
+                        $toolQuestionCustomValue = $hasPanelsQuestion->toolQuestionCustomValues()
+                            ->where('short', $answer)
+                            ->first();
+
+                        if ($toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                            if ($toolQuestionCustomValue->short === 'no') {
+                                // No panels
+                                $category = static::CATEGORY_TO_DO;
+                            } else {
+                                // The user has solar panels, let's see if there's an age for it
+                                $ageQuestion = ToolQuestion::findByShort('solar-panels-placed-date');
+                                if ($ageQuestion instanceof ToolQuestion) {
+                                    $answer = $building->getAnswer($masterInputSource, $ageQuestion);
+
+                                    if (is_numeric($answer)) {
+                                        $diff = now()->format('Y') - $answer;
+
+                                        // If it's not 25 years old, it's complete
+                                        // Else it's to-do
+                                        $category = $diff < 25 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                                    } else {
+                                        // No placing date available. We will assume it's fine
+                                        $category = static::CATEGORY_COMPLETE;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case 'ventilation':
+                    $relevantQuestion = ToolQuestion::findByShort('ventilation-type');
+                    if ($relevantQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                        $serviceValue = ServiceValue::find($answer);
+
+                        if ($serviceValue instanceof ServiceValue) {
+                            // Logic for ventilation is based on the type.
+                            switch ($serviceValue->calculate_value) {
+                                case 1:
+                                    // Natural ventilation, always to do
+                                    $category = static::CATEGORY_TO_DO;
+                                    break;
+
+                                case 2:
+                                    // Mechanical ventilation, only has one measure (demand-driven)
+                                    // We check the current demand-driven logic. If it's true, it's complete
+                                    // (Logically then the measure won't be added, but we still want to categorize
+                                    // as properly as possible)
+                                    $demandDrivenQuestion = ToolQuestion::findByShort('ventilation-demand-driven');
+                                    if ($demandDrivenQuestion instanceof ToolQuestion) {
+                                        $answer = $building->getAnswer($masterInputSource, $demandDrivenQuestion);
+                                        // False and null and 0 are empty. We check if it's empty, because then we
+                                        // assume it's no
+                                        $category = empty($answer) ? static::CATEGORY_TO_DO : static::CATEGORY_COMPLETE;
+                                    }
+                                    break;
+
+                                case 3:
+                                case 4:
+                                    // Balanced and decentral ventilation have a measure for heat recovery
+                                    // We can apply the same logic
+                                    $heatRecoveryQuestion = ToolQuestion::findByShort('ventilation-heat-recovery');
+                                    if ($heatRecoveryQuestion instanceof ToolQuestion) {
+                                        $answer = $building->getAnswer($masterInputSource, $heatRecoveryQuestion);
+                                        // False and null and 0 are empty. We check if it's empty, because then we
+                                        // assume it's no
+                                        $category = empty($answer) ? static::CATEGORY_TO_DO : static::CATEGORY_COMPLETE;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+
+        // If the category is empty, we just add it to to-do. This is the safest bet
+        $category = empty($category) ? static::CATEGORY_TO_DO : $category;
+
+        Log::debug("Mapped category {$category} for measure application {$measureApplication->short}");
+        return $category;
+    }
+
+    /**
+     * Format cost array based on value of cost indication.
+     *
+     * @param $costIndication
+     *
+     * @return array|null[]
+     */
+    public static function formatCosts($costIndication): array
+    {
+        return [
+            'from' => $costIndication <= 0 ? $costIndication : null,
+            'to' => $costIndication > 0 ? $costIndication : null,
+        ];
     }
 }

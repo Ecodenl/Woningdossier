@@ -73,7 +73,7 @@ class NumberFormatter
         }
 
         // if the number is numeric we can format it
-        // else we return the value thats not a correct number
+        // else we return the value that's not a correct number
         if (is_numeric($number)) {
             if ($shouldRoundNumber) {
                 $number = static::round($number);
@@ -127,6 +127,60 @@ class NumberFormatter
         return str_replace(self::$reverseLocaleSeparators[$locale]['decimal'],
             '.',
             $number);
+    }
+
+    public static function range($from, $to, $decimals = 0, $separator = ' - ', $prefix = '')
+    {
+        $from = static::mathableFormat($from, $decimals);
+        $from = static::format($from, $decimals);
+
+        $to = static::mathableFormat($to, $decimals);
+        $to = static::format($to, $decimals);
+
+        if (! empty($from) && empty($to) && ! is_numeric($to)) {
+            return static::prefix($from, $prefix);
+        } elseif (empty($from) && ! is_numeric($from) && ! empty($to)) {
+            return static::prefix($to, $prefix);
+        } elseif (empty($from) && ! is_numeric($from) && empty($to) && ! is_numeric($to)) {
+            return 0;
+        } else {
+            $from = static::prefix($from, $prefix);
+            $to = static::prefix($to, $prefix);
+            return sprintf('%s%s%s', $from, $separator, $to);
+        }
+    }
+
+    public static function prefix($value, $prefix)
+    {
+        return sprintf('%s%s', $prefix, $value);
+    }
+
+    /**
+     * Format a number for user display
+     *
+     * @param $number
+     * @param  bool  $isInteger
+     *
+     * @return int|string|null
+     */
+    public static function formatNumberForUser($number, bool $isInteger = false, $alwaysNumber = true)
+    {
+        // Return null if value is not a useful number
+        if (! $alwaysNumber && empty($number) && ! is_numeric($number)) {
+            return null;
+        }
+
+        $number = static::format($number, ($isInteger ? 0 : 1));
+        if ($isInteger) {
+            $number = str_replace('.', '', $number);
+        }
+
+        // We don't want decimals on a 0
+        if (Str::isConsideredEmptyAnswer($number)) {
+            $number = 0;
+        }
+
+        return $number;
     }
 
     protected static function removeMultipleDecimals($number)

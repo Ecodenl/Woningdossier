@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * App\Models\CompletedQuestionnaire
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire query()
@@ -32,8 +32,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire whereUserId($value)
  * @mixin \Eloquent
  */
-class CompletedQuestionnaire extends Model
+class CompletedQuestionnaire extends Pivot
 {
-    use GetMyValuesTrait;
-    use GetValueTrait;
+    protected $table = 'completed_questionnaires';
+
+    use GetMyValuesTrait,
+        GetValueTrait;
 }

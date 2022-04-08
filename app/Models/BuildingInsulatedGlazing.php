@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing query()
@@ -70,6 +70,10 @@ class BuildingInsulatedGlazing extends Model
         'm2',
         'windows',
         'extra',
+    ];
+
+    protected $crucialRelations = [
+        'measure_application_id',
     ];
 
     /**

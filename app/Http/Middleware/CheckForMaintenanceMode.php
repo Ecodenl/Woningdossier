@@ -13,4 +13,36 @@ class CheckForMaintenanceMode extends Middleware
      */
     protected $except = [
     ];
+
+    /**
+     * Handle an incoming request. Remove the full handle method after go-live.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        if (!in_array(app()->environment(), ['local', 'testing'])) {
+            $host = $_SERVER['HTTP_HOST'];
+            preg_match('/(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i', $host, $match);
+            $cooperation = $match[1] ?? '';
+
+            $cooperation = Cooperation::where('slug', '=', $cooperation)->first();
+
+            // if no valid cooperation is found, return to index
+            if (!$cooperation instanceof Cooperation) {
+                return redirect()->route('index');
+            }
+
+            HoomdossierSession::setCooperation($cooperation);
+
+            // Set as default URL parameter
+            if (HoomdossierSession::hasCooperation()) {
+                URL::defaults(['cooperation' => $cooperation->slug]);
+            }
+        }
+
+        return parent::handle($request, $next);
+    }
 }

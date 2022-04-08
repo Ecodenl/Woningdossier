@@ -36,13 +36,7 @@ class ExampleBuildingService
      * @param InputSource|null $inputSource
      * @param InputSource|null $initiatingInputSource The input source starting this action.
      */
-    public static function apply(
-        ExampleBuilding $exampleBuilding,
-        $buildYear,
-        Building $building,
-        ?InputSource $inputSource = null,
-        ?InputSource $initiatingInputSource = null
-    )
+    public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building, ?InputSource $inputSource = null, ?InputSource $initiatingInputSource = null)
     {
         $inputSource = $inputSource ?? InputSource::findByShort(
                 InputSource::EXAMPLE_BUILDING
@@ -529,10 +523,7 @@ class ExampleBuildingService
         );
     }
 
-    public static function clearExampleBuilding(
-        Building $building,
-        ?InputSource $inputSource = null
-    )
+    public static function clearExampleBuilding(Building $building, ?InputSource $inputSource = null)
     {
         /** @var InputSource $inputSource */
         $inputSource = $inputSource ?? InputSource::findByShort(
@@ -551,19 +542,4 @@ class ExampleBuildingService
     {
         Log::debug(__CLASS__ . ' ' . $text);
     }
-
-    /*
-    protected static function createOptions(Collection $collection, $value = 'name', $id = 'id', $nullPlaceholder = true)
-    {
-        $options = [];
-        if ($nullPlaceholder) {
-            $options[''] = '-';
-        }
-        foreach ($collection as $item) {
-            $options[$item->$id] = $item->$value;
-        }
-
-        return $options;
-    }
-    */
 }

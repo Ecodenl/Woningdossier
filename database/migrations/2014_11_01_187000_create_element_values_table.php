@@ -20,6 +20,7 @@ class CreateElementValuesTable extends Migration
             $table->json('value');
             $table->float('calculate_value')->nullable();
             $table->integer('order');
+            $table->json('configurations')->nullable();
             $table->timestamps();
         });
     }

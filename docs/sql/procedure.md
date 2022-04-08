@@ -1,4 +1,11 @@
-### Corrections for fixing the messed up buildings ID on Wijdemeren (and NHEC)
+## Procedure in SQL
+
+During the Upgrade Do we had to correct some data. We used an
+SQL procedure to do some of it. This file is purely to keep history
+of this procedure, since it is actually very useful, but a little
+difficult to understand. Keeping this here can perhaps provide an 
+answer to a problem in the future, without having to rethink 
+the whole structure.
 
 ```sql
 -- Disable foreign key checks

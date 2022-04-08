@@ -15,6 +15,9 @@ class CreateBuildingTypesTable extends Migration
     {
         Schema::create('building_types', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedBigInteger('building_type_category_id')->nullable()->default(null);
+            $table->foreign('building_type_category_id')->references('id')->on('building_type_categories')->onDelete('cascade');
+
             $table->json('name');
             $table->integer('calculate_value');
             $table->timestamps();

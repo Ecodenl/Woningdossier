@@ -29,6 +29,7 @@ class CreateMeasureApplicationsTable extends Migration
             $table->integer('step_id')->unsigned();
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('restrict');
 
+            $table->json('configurations')->nullable();
             $table->timestamps();
         });
     }

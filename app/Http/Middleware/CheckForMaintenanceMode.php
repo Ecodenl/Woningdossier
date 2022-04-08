@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode as Middleware;
 use Illuminate\Support\Facades\URL;
+use Closure;
 
 class CheckForMaintenanceMode extends Middleware
 {

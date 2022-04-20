@@ -17,7 +17,7 @@ class DuplicateDataForUser
     {
         $user = Hoomdossier::user();
         $inputSource = HoomdossierSession::getInputSource(true);
-        $opposingInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+        $opposingInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $completedSubStepsExists = $user
             ->building
@@ -25,11 +25,10 @@ class DuplicateDataForUser
             ->forInputSource($inputSource)
             ->exists();
 
-//        Notification::setActive($user->building, $inputSource, CloneOpposingInputSource::class, true);
         // when the current user for its current input source has no completed SUB steps
         // we will try to duplicate the data from a opposing input source, in this case the master.
         if ($completedSubStepsExists === false) {
-            Log::debug("User {$user->id} has no completed sub steps");
+            Log::debug("User {$user->id} has no completed sub steps for input source {$inputSource->short}");
             // 9 out of 10 times the completed sub steps WILL exists for the inputSource
             // so ill do the other query inside here to prevent 1 extra query each request.
 
@@ -41,7 +40,7 @@ class DuplicateDataForUser
                 ->exists();
 
             if ($opposingInputSourceCompletedSubStepExists) {
-                Log::debug("User {$user->id} its opposing input source HAS completed sub steps, starting to clone..");
+                Log::debug("User {$user->id} its opposing input source HAS completed sub steps for input source {$inputSource->short}, starting to clone..");
                 // we will set the notification before its picked up by the queue
                 // otherwise the user would get weird ux
                 Notification::setActive($user->building, $inputSource, CloneOpposingInputSource::class, true);

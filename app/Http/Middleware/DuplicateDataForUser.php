@@ -6,6 +6,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Jobs\CloneOpposingInputSource;
 use App\Models\InputSource;
+use App\Models\Notification;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -24,6 +25,7 @@ class DuplicateDataForUser
             ->forInputSource($inputSource)
             ->exists();
 
+//        Notification::setActive($user->building, $inputSource, CloneOpposingInputSource::class, true);
         // when the current user for its current input source has no completed SUB steps
         // we will try to duplicate the data from a opposing input source, in this case the master.
         if ($completedSubStepsExists === false) {
@@ -40,7 +42,10 @@ class DuplicateDataForUser
 
             if ($opposingInputSourceCompletedSubStepExists) {
                 Log::debug("User {$user->id} its opposing input source HAS completed sub steps, starting to clone..");
-                CloneOpposingInputSource::dispatchNow($user, $inputSource, $opposingInputSource);
+                // we will set the notification before its picked up by the queue
+                // otherwise the user would get weird ux
+                Notification::setActive($user->building, $inputSource, CloneOpposingInputSource::class, true);
+                CloneOpposingInputSource::dispatch($user, $inputSource, $opposingInputSource);
             }
         }
 

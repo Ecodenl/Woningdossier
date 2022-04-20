@@ -2,7 +2,10 @@
 
 @section('content')
     @if($notification instanceof \App\Models\Notification)
-        @livewire('cooperation.frontend.layouts.parts.notifications', ['nextUrl' => route('cooperation.frontend.tool.quick-scan.my-plan.index')])
+        @livewire('cooperation.frontend.layouts.parts.notifications', [
+            'nextUrl' => route('cooperation.frontend.tool.quick-scan.my-plan.index'),
+            'type' => 'recalculate'
+        ])
 
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
     @else

@@ -64,14 +64,12 @@ class CloneDataService {
             // now transform whatever needs to be transformed in order to be cloned properly
             $dataToClone = $this->transformCloneableData($cloneableDatas);
 
-            if (!empty($dataToClone)) {
-//                dd($dataToClone);
-            }
             // clone ze data.
             DB::table($table)->insert($dataToClone);
             // reset the wheres for the next iteration
             $wheres = [];
         }
+        sleep(5);
     }
 
     public function transformCloneableData(array $cloneableData): array
@@ -83,5 +81,12 @@ class CloneDataService {
             $cloneableData[$index] = $data;
         }
         return $cloneableData;
+    }
+
+    public static function getOpposingInputSource($inputSource): InputSource
+    {
+        return [
+            InputSource::COACH_SHORT => InputSource::findByShort(InputSource::RESIDENT_SHORT)
+        ][$inputSource->short];
     }
 }

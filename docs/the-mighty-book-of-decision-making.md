@@ -1,6 +1,13 @@
 # Decisions
 #### This file will contain important decisions being made throughout the development of Hoomdossier. This will mainly contain decisions made by Hoom itself. 
 
+##Duplicating user data for input source
+This is a feature which "allows" the user to copy data from a opposing input source to its own.
+It will be checked in the DuplicateDataForUser middleware.
+
+When the current user has no data it will copy data from the opposing input source, this applies for a coach or resident.
+The opposing input source could be anything, but mostly the master is used. 
+
 ##ApplyExampleBuildingForChanges
 This job applies a example building with its content for the given changes, a build year or building type can be passed. When passed, these will be used to determine the building type.
 
@@ -38,3 +45,4 @@ via the `AddMasterInputSource` command.
 It was decided that numbers should always be formatted as "1,0" within the Quickscan,
 unless it is a Slider number, or a number that should logically not be formatted,
 like years.
+

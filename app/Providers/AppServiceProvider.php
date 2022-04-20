@@ -71,8 +71,9 @@ class AppServiceProvider extends ServiceProvider
             $command = unserialize($payload['data']['command']);
             $jobName = get_class($command);
             if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
-                Log::debug("JOB {$jobName} started | b_id: {$command->user->building->id} | input_source_id: {$command->inputSource->id}");
-                Notification::setActive($command->user->building, $command->inputSource, $jobName, true);
+                $building = $command->user->building ?? $command->building;
+                Log::debug("JOB {$jobName} started | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
+                Notification::setActive($building, $command->inputSource, $jobName, true);
             }
 
         });
@@ -83,8 +84,9 @@ class AppServiceProvider extends ServiceProvider
             $command = unserialize($payload['data']['command']);
             $jobName = get_class($command);
             if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
-                Log::debug("JOB {$jobName} ended | b_id: {$command->user->building->id} | input_source_id: {$command->inputSource->id}");
-                Notification::setActive($command->user->building, $command->inputSource, $jobName, false);
+                $building = $command->user->building ?? $command->building;
+                Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
+                Notification::setActive($building, $command->inputSource, $jobName, false);
             }
         });
 

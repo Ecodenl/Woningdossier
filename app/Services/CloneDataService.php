@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\User;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -12,7 +12,7 @@ class CloneDataService {
 
     use FluentCaller;
 
-    public User $user;
+    public Building $building;
     public InputSource $inputSource;
     public InputSource $cloneableInputSource;
 
@@ -41,9 +41,9 @@ class CloneDataService {
         'user_energy_habits',
     ];
 
-    public function __construct(User $user, InputSource $inputSource, InputSource $cloneableInputSource)
+    public function __construct(Building $building, InputSource $inputSource, InputSource $cloneableInputSource)
     {
-        $this->user = $user;
+        $this->building = $building;
         $this->inputSource = $inputSource;
         $this->cloneableInputSource = $cloneableInputSource;
     }
@@ -54,9 +54,9 @@ class CloneDataService {
             $wheres[] = ['input_source_id', '=', $this->cloneableInputSource->id];
 
             if (Schema::hasColumn($table, 'user_id')) {
-                $wheres[] = ['user_id', '=', $this->user->id];
+                $wheres[] = ['user_id', '=', $this->building->user_id];
             } else {
-                $wheres[] = ['building_id', '=', $this->user->building->id];
+                $wheres[] = ['building_id', '=', $this->building->id];
             }
 
             // get the data from the input source that we want to clone

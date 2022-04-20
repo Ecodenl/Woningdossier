@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\User;
 use App\Services\CloneDataService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,13 +15,13 @@ class CloneOpposingInputSource implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public User $user;
+    public Building $building;
     public InputSource $inputSource;
     public InputSource $clonableInputSource;
 
-    public function __construct(User $user, InputSource $inputSource, InputSource $clonableInputSource)
+    public function __construct(Building $building, InputSource $inputSource, InputSource $clonableInputSource)
     {
-        $this->user = $user;
+        $this->building = $building;
         $this->inputSource = $inputSource;
         $this->clonableInputSource = $clonableInputSource;
     }
@@ -33,7 +33,7 @@ class CloneOpposingInputSource implements ShouldQueue
      */
     public function handle()
     {
-        CloneDataService::init($this->user, $this->inputSource, $this->clonableInputSource)
+        CloneDataService::init($this->building, $this->inputSource, $this->clonableInputSource)
             ->clone();
     }
 }

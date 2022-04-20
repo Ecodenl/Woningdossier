@@ -79,7 +79,7 @@ class Kernel extends HttpKernel
         // Expert tool
         'ensure-quick-scan-completed' => \App\Http\Middleware\EnsureQuickScanCompleted::class,
 
-        'duplicate-data-for-user' => \App\Http\Middleware\DuplicateDataForUser::class,
+        'duplicate-data-for-user' => \App\Http\Middleware\DuplicateDataForBuilding::class,
 
         // api
         'access.cooperation' => \App\Http\Middleware\Api\AllowIfTokenCanAccessCooperation::class,

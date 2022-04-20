@@ -17,7 +17,7 @@ class CloneDataService {
     public InputSource $cloneableInputSource;
 
     public static array $tables = [
-        'building_appliances',
+
         'building_elements',
         'building_features',
         'building_heaters',
@@ -32,19 +32,13 @@ class CloneDataService {
         'completed_sub_steps',
         'considerables',
         'custom_measure_applications',
-        'devices',
-        'file_storages',
-        'notifications',
-        'private_message_views',
+
         'questions_answers',
-        'roles',
-        'step_comments',
+
         'tool_question_answers',
         'tool_settings',
-        'user_action_plan_advice_comments',
         'user_action_plan_advices',
         'user_energy_habits',
-        'user_interests',
     ];
 
     public function __construct(User $user, InputSource $inputSource, InputSource $cloneableInputSource)
@@ -70,8 +64,13 @@ class CloneDataService {
             // now transform whatever needs to be transformed in order to be cloned properly
             $dataToClone = $this->transformCloneableData($cloneableDatas);
 
+            if (!empty($dataToClone)) {
+//                dd($dataToClone);
+            }
             // clone ze data.
             DB::table($table)->insert($dataToClone);
+            // reset the wheres for the next iteration
+            $wheres = [];
         }
     }
 
@@ -79,7 +78,9 @@ class CloneDataService {
     {
         foreach ($cloneableData as $index => $data) {
             $data = (array) $data;
-            $cloneableData[$index] = $data['input_source_id'] = $this->inputSource->id;
+            $data['input_source_id'] = $this->inputSource->id;
+            unset($data['id']);
+            $cloneableData[$index] = $data;
         }
         return $cloneableData;
     }

@@ -105,7 +105,7 @@ class RecalculateForUser extends Command
 
                     Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
 
-                    Notification::setActive($user->building, $inputSource, true);
+                    Notification::setActive($user->building, $inputSource, RecalculateStepForUser::class, true);
 
                     $stepsToRecalculateChain = [];
 

@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Notification;
 use App\Services\CloneDataService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,13 +18,13 @@ class CloneOpposingInputSource implements ShouldQueue
 
     public Building $building;
     public InputSource $inputSource;
-    public InputSource $clonableInputSource;
+    public InputSource $cloneableInputSource;
 
-    public function __construct(Building $building, InputSource $inputSource, InputSource $clonableInputSource)
+    public function __construct(Building $building, InputSource $inputSource, InputSource $cloneableInputSource)
     {
         $this->building = $building;
         $this->inputSource = $inputSource;
-        $this->clonableInputSource = $clonableInputSource;
+        $this->cloneableInputSource = $cloneableInputSource;
     }
 
     /**
@@ -33,7 +34,12 @@ class CloneOpposingInputSource implements ShouldQueue
      */
     public function handle()
     {
-        CloneDataService::init($this->building, $this->inputSource, $this->clonableInputSource)
+        CloneDataService::init($this->building, $this->inputSource, $this->cloneableInputSource)
             ->clone();
+    }
+
+    public function failed(\Exception $exception)
+    {
+        Notification::setActive($this->building, $this->inputSource, CloneOpposingInputSource::class, false);
     }
 }

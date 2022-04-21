@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class CloneDataService {
@@ -17,7 +18,6 @@ class CloneDataService {
     public InputSource $cloneableInputSource;
 
     public static array $tables = [
-
         'building_elements',
         'building_features',
         'building_heaters',
@@ -50,6 +50,14 @@ class CloneDataService {
 
     public function clone()
     {
+        // the building feature is set upon registry, so we will delete it before we clone it to prevent duplicate results
+        Log::debug("Removing building features before cloning for building {$this->building->id} input source {$this->inputSource->short}");
+        DB::table('building_features')
+            ->where('building_id', $this->building->id)
+            ->where('input_source_id', $this->inputSource->id)
+            ->delete();
+
+        Log::debug("Cloning all tables... {$this->building->id}");
         foreach (self::$tables as $table) {
             $wheres[] = ['input_source_id', '=', $this->cloneableInputSource->id];
 
@@ -69,7 +77,7 @@ class CloneDataService {
             // reset the wheres for the next iteration
             $wheres = [];
         }
-        sleep(5);
+        Log::debug("Cloning done! {$this->building->id}");
     }
 
     public function transformCloneableData(array $cloneableData): array

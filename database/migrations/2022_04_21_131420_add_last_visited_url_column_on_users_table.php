@@ -15,7 +15,7 @@ class AddLastVisitedUrlColumnOnUsersTable extends Migration
     {
         if (!Schema::hasColumn('users', 'last_visited_url')) {
             Schema::table('users', function (Blueprint $table) {
-                $table->text('last_visited_url')->nullable()->default(null);
+                $table->text('last_visited_url')->nullable()->default(null)->after('phone_number');
             });
         }
     }

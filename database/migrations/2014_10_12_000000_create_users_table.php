@@ -24,11 +24,11 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->string('confirm_token', 64)->nullable();
 
+            $table->string('phone_number')->default('');
+
             if (!Schema::hasColumn('users', 'last_visited_url')) {
                 $table->text('last_visited_url')->nullable()->default(null);
             }
-
-            $table->string('phone_number')->default('');
 
             $table->boolean('active')->default(1);
             $table->boolean('is_admin')->default(false);

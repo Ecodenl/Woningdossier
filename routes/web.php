@@ -115,7 +115,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
 
             // my account
-            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount', 'middleware' => 'deny-if-filling-for-other-building'], function () {
+            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount', 'middleware' => ['track-visited-url', 'deny-if-filling-for-other-building']], function () {
                 Route::get('', 'MyAccountController@index')->name('index');
 
                 Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {

@@ -18,8 +18,10 @@ class TrackVisitedUrl
      */
     public function handle($request, Closure $next)
     {
+        $isResident = HoomdossierSession::getInputSource(true)->short === InputSource::RESIDENT_SHORT;
+
         // we only want to track the last visited url for the resident
-        if (HoomdossierSession::getInputSource(true)->short === InputSource::RESIDENT_SHORT) {
+        if ($isResident && $request->isMethod('get') && !$request->ajax()) {
             $user = Hoomdossier::user();
             $user->update(['last_visited_url' => $request->fullUrl()]);
         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Hoomdossier;
 use Closure;
 
 class TrackVisitedUrl
@@ -15,7 +16,9 @@ class TrackVisitedUrl
      */
     public function handle($request, Closure $next)
     {
-        $url = $request->fullUrl();
+        $user = Hoomdossier::user();
+        $user->update(['last_visited_url' => $request->fullUrl()]);
+
         return $next($request);
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
+use App\Models\InputSource;
 use Closure;
 
 class TrackVisitedUrl
@@ -16,8 +18,11 @@ class TrackVisitedUrl
      */
     public function handle($request, Closure $next)
     {
-        $user = Hoomdossier::user();
-        $user->update(['last_visited_url' => $request->fullUrl()]);
+        // we only want to track the last visited url for the resident
+        if (HoomdossierSession::getInputSource(true)->short === InputSource::RESIDENT_SHORT) {
+            $user = Hoomdossier::user();
+            $user->update(['last_visited_url' => $request->fullUrl()]);
+        }
 
         return $next($request);
     }

@@ -35,6 +35,7 @@ class RoleHelper
         $user = Hoomdossier::user();
 
         if (!$checkUser || ($user instanceof User && $user->roles()->where('name', $roleName)->first() instanceof Role)) {
+            // the resident may be redirect to his last visited url.
             if ($roleName === self::ROLE_RESIDENT && !empty($user->last_visited_url)) {
                 return $user->last_visited_url;
             }

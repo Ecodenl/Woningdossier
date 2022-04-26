@@ -96,6 +96,7 @@ class User extends Model implements AuthorizableContract
      */
     protected $fillable = [
         'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access',
+        'last_visited_url'
     ];
 
     protected $casts = [

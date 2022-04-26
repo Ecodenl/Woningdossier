@@ -144,6 +144,8 @@ class LoginController extends Controller
 
             1 == $user->roles->count() ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/admin';
 
+
+
             return $this->sendLoginResponse($request);
         }
 

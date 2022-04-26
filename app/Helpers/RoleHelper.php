@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 class RoleHelper
@@ -22,34 +24,29 @@ class RoleHelper
      */
     public static function getUrlByRoleName(string $roleName, $checkUser = true)
     {
-        // check if the user his role exists / is his
-        if (! $checkUser || (\Auth::check() && Hoomdossier::user()->roles()->where('name', $roleName)->first() instanceof Role)) {
-            switch ($roleName) {
-                case 'cooperation-admin':
-                    return route('cooperation.admin.cooperation.cooperation-admin.index');
-                    break;
-                case 'coordinator':
-                    return route('cooperation.admin.cooperation.coordinator.index');
-                    break;
-                case 'coach':
-                    return route('cooperation.admin.coach.index');
-                    break;
-                case 'superuser':
-                    // no route yet, only demo account has this role.
-                    break;
-                case 'super-admin':
-                    // for now: fall through
-                    return route('cooperation.admin.super-admin.index');
-                    break;
-                    //break;
-                default:
-                    return route('cooperation.home');
-                    break;
+        $redirectMap = [
+            'cooperation-admin' => 'cooperation.admin.cooperation.cooperation-admin.index',
+            'coordinator' => 'cooperation.admin.cooperation.coordinator.index',
+            'coach' => 'cooperation.admin.coach.index',
+            'super-admin' => 'cooperation.admin.super-admin.index',
+            'resident' => 'cooperation.home',
+        ];
+
+        $user = Hoomdossier::user();
+
+        if (!$checkUser || ($user instanceof User && $user->roles()->where('name', $roleName)->first() instanceof Role)) {
+            // the resident may be redirect to his last visited url.
+            if ($roleName === self::ROLE_RESIDENT && !empty($user->last_visited_url)) {
+                return $user->last_visited_url;
             }
+            return route($redirectMap[$roleName]);
         }
 
+
+        Log::debug("check user is true");
         return route('cooperation.home');
     }
+
 
     /**
      * Get the right route / url by a role.

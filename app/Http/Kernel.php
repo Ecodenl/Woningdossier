@@ -76,6 +76,7 @@ class Kernel extends HttpKernel
         // quick scan
         'checks-conditions-for-sub-steps' => \App\Http\Middleware\ChecksConditionsForSubSteps::class,
 
+        'track-visited-url' => \App\Http\Middleware\TrackVisitedUrl::class,
         // Expert tool
         'ensure-quick-scan-completed' => \App\Http\Middleware\EnsureQuickScanCompleted::class,
 

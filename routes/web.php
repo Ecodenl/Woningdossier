@@ -115,7 +115,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
 
             // my account
-            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount', 'middleware' => 'deny-if-filling-for-other-building'], function () {
+            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount', 'middleware' => ['track-visited-url', 'deny-if-filling-for-other-building']], function () {
                 Route::get('', 'MyAccountController@index')->name('index');
 
                 Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
@@ -156,7 +156,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::post('', 'ImportController@copy')->name('copy');
             });
 
-            Route::namespace('Frontend')->as('frontend.')->group(function () {
+            Route::namespace('Frontend')->as('frontend.')->middleware(['track-visited-url'])->group(function () {
                 Route::resource('help', 'HelpController')->only('index');
 
                 Route::namespace('Tool')->as('tool.')->group(function () {
@@ -175,7 +175,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             });
 
-            Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool', 'middleware' => 'ensure-quick-scan-completed'], function () {
+            Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool', 'middleware' => ['ensure-quick-scan-completed', 'track-visited-url']], function () {
                 Route::get('/', function () {
                     return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index');
                 })->name('index');

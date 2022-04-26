@@ -145,6 +145,10 @@ return [
             'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het hellende dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak hellend dak"',
         ],
 
+        'building_services.7.extra.value' => [
+            'required' => 'Het aantal zonnepanelen is verplicht',
+        ],
+
         'building_insulated_glazings.*.m2' => [
             'required' => '"Hoeveel m2 glas wilt u vervangen?" is een verplicht veld.',
             'numeric' => '"Hoeveel m2 glas wilt u vervangen?" moet een getal bevatten.',
@@ -193,12 +197,15 @@ return [
             ],
         ],
     ],
+
+
     // note, when a key needs a wildcard add it to the custom array.
     // A wildcard wont work in the attributes array but will in the custom array, needs more work but at least we dont need to hardcode the * numbers.
     'attributes' => [
         'nl' => 'Nederlands',
         'en' => 'Engels',
 
+        'building_services.7.extra.value' => 'Het aantal zonnepanelen',
         'email' => 'E-mailadres',
         'password' => 'Wachtwoord',
 

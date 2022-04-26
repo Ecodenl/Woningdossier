@@ -360,7 +360,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation-flat-current',
                 'application' => 'place',
-                'costs' => 212, // euro
+                'costs' => 65, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],

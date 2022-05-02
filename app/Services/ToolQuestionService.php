@@ -12,10 +12,10 @@ class ToolQuestionService {
 
     use FluentCaller;
 
-    public $building;
-    public $toolQuestion;
-    public $currentInputSource;
-    public $masterInputSource;
+    public ?Building $building;
+    public ToolQuestion $toolQuestion;
+    public InputSource $masterInputSource;
+    public ?InputSource $currentInputSource;
 
     public function __construct(ToolQuestion $toolQuestion)
     {

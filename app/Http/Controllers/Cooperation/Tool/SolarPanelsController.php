@@ -6,6 +6,7 @@ use App\Calculations\SolarPanel;
 use App\Helpers\Cooperation\Tool\SolarPanelHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\ToolQuestionHelper;
 use App\Http\Requests\Cooperation\Tool\SolarPanelFormRequest;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelOrientation;
@@ -13,6 +14,7 @@ use App\Models\Service;
 use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
+use App\Services\ToolQuestionService;
 use Illuminate\Http\Request;
 
 class SolarPanelsController extends ToolController
@@ -101,6 +103,13 @@ class SolarPanelsController extends ToolController
                 ->toArray();
         }
 
+        // now attempt to save the "dynamic" quesitons.
+        foreach ($request->validated()['filledInAnswers'] as $toolQuestionId => $givenAnswer) {
+            ToolQuestionService::init(ToolQuestion::find($toolQuestionId))
+                ->building($building)
+                ->currentInputSource($inputSource)
+                ->saveToolQuestionCustomValues($givenAnswer);
+        }
 
         $values = $request->only('building_pv_panels', 'user_energy_habits', 'considerables', 'building_services');
         $values['updated_measure_ids'] = $updatedMeasureIds;

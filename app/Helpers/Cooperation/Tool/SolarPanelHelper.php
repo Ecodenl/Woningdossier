@@ -37,14 +37,20 @@ class SolarPanelHelper extends ToolHelper
 
         $totalSunPanelsService = Service::findByShort('total-sun-panels');
 
-        BuildingService::allInputSources()->updateOrCreate(
-            [
-                'building_id' => $this->building->id,
-                'input_source_id' => $this->inputSource->id,
-                'service_id' => $totalSunPanelsService->id,
-            ],
-            $this->getValues("building_services.{$totalSunPanelsService->id}")
-        );
+        $buildingServiceValues = $this->getValues("building_services.{$totalSunPanelsService->id}");
+        // we could, when not passed; clear the values.
+        // however users (and people in general) tend to make mistakes
+        // so we will keep the data in case they turn the solar panels back on,
+        if (!is_null($buildingServiceValues)) {
+            BuildingService::allInputSources()->updateOrCreate(
+                [
+                    'building_id' => $this->building->id,
+                    'input_source_id' => $this->inputSource->id,
+                    'service_id' => $totalSunPanelsService->id,
+                ],
+                $buildingServiceValues
+            );
+        }
 
 
         return $this;
@@ -72,7 +78,7 @@ class SolarPanelHelper extends ToolHelper
                 $actionPlanAdvice->step()->associate($step);
 
                 // We only want to check old advices if the updated attributes are not relevant to this measure
-                if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                if (!in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
                     UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
                 }
 

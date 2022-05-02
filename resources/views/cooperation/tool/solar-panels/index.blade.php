@@ -7,7 +7,7 @@
            action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
         @csrf
 
-{{--        @include('cooperation.tool.includes.considerable', ['considerable' => $currentStep])--}}
+        @include('cooperation.tool.includes.considerable', ['considerable' => $currentStep])
 
         @php
             $toolQuestion = $hasSolarPanelsToolQuestion;

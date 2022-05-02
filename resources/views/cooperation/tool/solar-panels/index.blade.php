@@ -14,7 +14,7 @@
             $humanReadableAnswer = null;
             $disabled = false;
             $masterInputSource = \App\Models\InputSource::findByShort('master');
-            $answer = $building->getAnswer($masterInputSource, $toolQuestion);
+            $answer = old("filledInAnswers.{$toolQuestion->id}", $building->getAnswer($masterInputSource, $toolQuestion));
         @endphp
 
         <div id="solar-panels" x-data="{hasSolarPanels: '{{$answer}}' }">

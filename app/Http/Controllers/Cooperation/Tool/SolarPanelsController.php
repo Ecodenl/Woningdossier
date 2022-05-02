@@ -10,6 +10,7 @@ use App\Http\Requests\Cooperation\Tool\SolarPanelFormRequest;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelOrientation;
 use App\Models\Service;
+use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
@@ -45,10 +46,20 @@ class SolarPanelsController extends ToolController
         )->get();
 
 
+        $hasSolarPanelsToolQuestion = ToolQuestion::findByShort('has-solar-panels');
+        $hasSolarAnswersOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $hasSolarPanelsToolQuestion->toolQuestionAnswers()
+                ->allInputSources()
+                ->with('inputSource')
+                ->where('building_id', $building->id)
+        )->get();
+
+
         return view('cooperation.tool.solar-panels.index',
             compact(
                 'building', 'pvPanelOrientations', 'buildingOwner', 'typeIds', 'totalSolarPanelService',
-                'energyHabitsOrderedOnInputSourceCredibility', 'pvPanelsOrderedOnInputSourceCredibility', 'totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility'
+                'energyHabitsOrderedOnInputSourceCredibility', 'pvPanelsOrderedOnInputSourceCredibility', 'totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility',
+                'hasSolarPanelsToolQuestion', 'hasSolarAnswersOrderedOnInputSourceCredibility'
             )
         );
     }

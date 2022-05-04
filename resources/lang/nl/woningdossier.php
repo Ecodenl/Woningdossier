@@ -339,7 +339,7 @@ return [
 
                         'table' => [
                             'columns' => [
-                                'date' => 'Datum',
+                                'date' => 'Gemaakt op',
                                 'name' => 'Naam',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code' => 'Postcode',

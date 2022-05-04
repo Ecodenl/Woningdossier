@@ -42,7 +42,9 @@ class RunDeploy extends Command
     {
 
         $commands = [
-            SeedCommand::class => ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true]
+            TransformRecalculateNotificationType::class => [],
+            SeedCommand::class => ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
+            UpdateToolQuestions::class => [],
         ];
 
         foreach ($commands as $command => $arguments) {

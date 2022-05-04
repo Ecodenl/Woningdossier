@@ -60,6 +60,6 @@ class RecalculateStepForUser implements ShouldQueue
 
     public function failed(\Exception $exception)
     {
-        Notification::setActive($this->user->building, $this->inputSource, false);
+        Notification::setActive($this->user->building, $this->inputSource, self::class, false);
     }
 }

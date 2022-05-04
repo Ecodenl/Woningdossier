@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Jobs\CloneOpposingInputSource;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Notification;
 use App\Models\PersonalAccessToken;
@@ -68,21 +69,24 @@ class AppServiceProvider extends ServiceProvider
             $payload = $event->job->payload();
             /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);
-
-            if (RecalculateStepForUser::class == get_class($command)) {
-                Log::debug("JOB RecalculateStepForUser started | b_id: {$command->user->building->id} | input_source_id: {$command->inputSource->id}");
-                Notification::setActive($command->user->building, $command->inputSource, true);
+            $jobName = get_class($command);
+            if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
+                $building = $command->user->building ?? $command->building;
+                Log::debug("JOB {$jobName} started | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
+                Notification::setActive($building, $command->inputSource, $jobName, true);
             }
+
         });
 
         Queue::after(function (JobProcessed $event) {
             $payload = $event->job->payload();
             /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);
-
-            if (RecalculateStepForUser::class == get_class($command)) {
-                Log::debug("JOB RecalculateStepForUser ended | b_id: {$command->user->building->id} | input_source_id: {$command->inputSource->id}");
-                Notification::setActive($command->user->building, $command->inputSource, false);
+            $jobName = get_class($command);
+            if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
+                $building = $command->user->building ?? $command->building;
+                Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
+                Notification::setActive($building, $command->inputSource, $jobName, false);
             }
         });
 

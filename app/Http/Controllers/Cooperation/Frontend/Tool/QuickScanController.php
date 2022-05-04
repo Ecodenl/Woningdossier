@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Cooperation\Frontend\Tool;
 
-use App\Helpers\StepHelper;
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
+use App\Jobs\CloneOpposingInputSource;
 use App\Models\Cooperation;
+use App\Models\Notification;
 use App\Models\Step;
 use App\Models\SubStep;
-use Illuminate\Support\Facades\DB;
 
 class QuickScanController extends Controller
 {
@@ -22,7 +23,13 @@ class QuickScanController extends Controller
     {
         // the route will always be matched, however a sub step has to match the step.
         abort_if(!$step->subSteps()->find($subStep->id) instanceof SubStep, 404);
+        $currentInputSource = HoomdossierSession::getInputSource(true);
 
-        return view('cooperation.frontend.tool.quick-scan.index', compact('step', 'subStep'));
+        $notification = Notification::active()
+            ->forBuilding(HoomdossierSession::getBuilding())
+            ->forType(CloneOpposingInputSource::class)
+            ->forInputSource($currentInputSource)->first();
+
+        return view('cooperation.frontend.tool.quick-scan.index', compact('step', 'subStep', 'notification', 'currentInputSource'));
     }
 }

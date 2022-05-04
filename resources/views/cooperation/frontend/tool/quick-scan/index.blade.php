@@ -1,6 +1,17 @@
 @extends('cooperation.frontend.layouts.tool')
 
 @section('content')
+    @if($notification instanceof \App\Models\Notification)
+        @livewire('cooperation.frontend.layouts.parts.notifications', [
+            'type' => App\Jobs\CloneOpposingInputSource::class,
+            'nextUrl' => route('cooperation.frontend.tool.quick-scan.index', compact('step', 'subStep')),
+        ])
+
+        @include('cooperation.frontend.shared.parts.loader', [
+            'label' => __("cooperation/frontend/tool/quick-scan/index.cloning-in-progress.{$currentInputSource->short}")
+        ])
+    @else
+
     <div class="w-full">
         @livewire('cooperation.frontend.tool.quick-scan.form', compact('step', 'subStep'))
     </div>
@@ -14,4 +25,5 @@
             </p>
         </div>
     </div>
+    @endif
 @endsection

@@ -170,7 +170,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         // Define this route as last to not match above routes as step/sub step combo
                         Route::get('{step}/{subStep}', 'QuickScanController@index')
                             ->name('index')
-                            ->middleware('checks-conditions-for-sub-steps');
+                            ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
                     });
                 });
             });

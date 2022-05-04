@@ -72,11 +72,11 @@ class Notification extends Model
         return $query->where('type', $type);
     }
 
-    public static function setActive(Building $building, InputSource $inputSource, bool $active = false)
+    public static function setActive(Building $building, InputSource $inputSource, string $type, bool $active = false)
     {
         Notification::allInputSources()->updateOrCreate([
             'input_source_id' => $inputSource->id,
-            'type' => 'recalculate',
+            'type' => $type,
             // the building owner is always passed to the job.
             'building_id' => $building->id,
         ], ['is_active' => $active]);

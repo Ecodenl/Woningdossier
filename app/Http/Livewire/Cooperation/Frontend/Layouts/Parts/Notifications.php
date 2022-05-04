@@ -14,10 +14,12 @@ class Notifications extends Component
     public $masterInputSource;
     public $building;
     public $nextUrl;
+    public $type;
 
-    public function mount($nextUrl)
+    public function mount($nextUrl, string $type)
     {
         $this->nextUrl = $nextUrl;
+        $this->type = $type;
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
@@ -31,7 +33,9 @@ class Notifications extends Component
 
     public function checkNotification()
     {
-        $this->notification = \App\Models\Notification::active()->forBuilding($this->building)
+        $this->notification = \App\Models\Notification::active()
+            ->forBuilding($this->building)
+            ->forType($this->type)
             ->forInputSource($this->masterInputSource)->first();
 
         if (! $this->notification instanceof Notification) {

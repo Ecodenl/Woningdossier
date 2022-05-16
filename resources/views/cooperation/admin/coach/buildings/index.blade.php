@@ -7,7 +7,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
+                    <table id="table" class="table table-striped table-bordered compact nowrap" style="width: 100%">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.appointment-date')</th>
@@ -64,6 +64,22 @@
                     </table>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div style="display: flex; justify-content: center;">
+                        <svg style="height: 2rem" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        <svg style="height: 2rem;" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
+                        </svg>
+                        <svg style="height: 2rem;" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -73,17 +89,8 @@
     <script>
         $(document).ready(function () {
             $('#table').DataTable({
-                responsive: true,
-                aaSorting: [],
-                columnDefs: [
-                    {responsivePriority: 7, targets: 6, width: "10%"},
-                    {responsivePriority: 6, targets: 5, width: "20%"},
-                    {responsivePriority: 5, targets: 4, width: "10%"}, // zipcode
-                    {responsivePriority: 4, targets: 3, width: "20%"},
-                    {responsivePriority: 3, targets: 2, width: "20%"},
-                    {responsivePriority: 2, targets: 1, width: "10%"},
-                    {responsivePriority: 1, targets: 0, width: "10%"}
-                ],
+                scrollX: true,
+                responsive: false,
             });
         });
     </script>

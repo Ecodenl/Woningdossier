@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Cloning;
 
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Services\Cloning\Cloners\UserActionPlanAdviceTable;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class CloneDataService {
 
@@ -31,14 +33,14 @@ class CloneDataService {
         'completed_steps',
         'completed_sub_steps',
         'considerables',
+            // the CMA must run before the user_action_plan_advices, this is KEY!
         'custom_measure_applications',
-
         'questions_answers',
-
         'tool_question_answers',
         'tool_settings',
         'user_action_plan_advices',
         'user_energy_habits',
+
     ];
 
     public function __construct(Building $building, InputSource $inputSource, InputSource $cloneableInputSource)
@@ -69,8 +71,17 @@ class CloneDataService {
 
             // get the data from the input source that we want to clone
             $cloneableDatas = DB::table($table)->where($wheres)->get()->toArray();
-            // now transform whatever needs to be transformed in order to be cloned properly
-            $dataToClone = $this->transformCloneableData($cloneableDatas);
+
+            $clonerClass = "App\Services\Cloning\Cloners\\".Str::ucfirst(Str::camel(Str::singular($table))).'Table';
+            $customClonerExists = class_exists($clonerClass, true);
+
+            if ($customClonerExists) {
+                $dataToClone = $clonerClass::init($cloneableDatas, $this->inputSource)->transFormCloneableData();
+            } else {
+                // now transform whatever needs to be transformed in order to be cloned properly
+                $dataToClone = $this->transformCloneableData($cloneableDatas, $this->inputSource);
+            }
+
 
             // clone ze data.
             DB::table($table)->insert($dataToClone);
@@ -80,27 +91,14 @@ class CloneDataService {
         Log::debug("Cloning done! {$this->building->id}");
     }
 
-    public function transformCloneableData(array $cloneableData): array
+    public static function transformCloneableData(array $cloneableData, InputSource $inputSource): array
     {
         foreach ($cloneableData as $index => $data) {
             $data = (array) $data;
-            $data['input_source_id'] = $this->inputSource->id;
+            $data['input_source_id'] = $inputSource->id;
             unset($data['id']);
             $cloneableData[$index] = $data;
         }
         return $cloneableData;
-    }
-
-    public static function getOpposingInputSource(InputSource $inputSource): InputSource
-    {
-        // this method was intended to just return the opposing input source
-        // resident -> coach
-        // coach -> resident
-        // however this would cause problems on the user_action_plan_advices in combination with the custom_measure_applications (CMA) due to the way they work
-        // eg if we copy the user_action_plan_advice with a CMA from a resident the related CMA is still on a resident
-        // read docs/code-business-logic/custom-measure-applications.md on how they work.
-        return [
-            InputSource::COACH_SHORT => InputSource::findByShort(InputSource::MASTER_SHORT)
-        ][$inputSource->short];
     }
 }

@@ -96,9 +96,9 @@ class CloneDataService {
         // this method was intended to just return the oppoosing input source
         // resident -> coach
         // coach -> resident
-        // however this would cause problems on the user_action_plan_advices in combination with the custom_measure_applications due to the way they work
-        // there are multiple applications for the same application, we track them through a hash.
-        // a coach would get the same appli
+        // however this would cause problems on the user_action_plan_advices in combination with the custom_measure_applications (CMA) due to the way they work
+        // eg if we copy the user_action_plan_advice with a CMA from a resident the related CMA is still on a resident
+        // read docs/code-business-logic/custom-measure-applications.md on how they work.
         return [
             InputSource::COACH_SHORT => InputSource::findByShort(InputSource::MASTER_SHORT)
         ][$inputSource->short];

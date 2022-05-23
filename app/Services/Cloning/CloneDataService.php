@@ -75,13 +75,13 @@ class CloneDataService {
             $clonerClass = "App\Services\Cloning\Cloners\\".Str::ucfirst(Str::camel(Str::singular($table))).'Table';
             $customClonerExists = class_exists($clonerClass, true);
 
+            // sometimes there are edge cases, those will be solved by a cloner class.
             if ($customClonerExists) {
                 $dataToClone = $clonerClass::init($cloneableDatas, $this->inputSource)->transFormCloneableData();
             } else {
                 // now transform whatever needs to be transformed in order to be cloned properly
                 $dataToClone = $this->transformCloneableData($cloneableDatas, $this->inputSource);
             }
-
 
             // clone ze data.
             DB::table($table)->insert($dataToClone);

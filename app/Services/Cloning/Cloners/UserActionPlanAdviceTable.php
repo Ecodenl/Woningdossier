@@ -33,6 +33,7 @@ class UserActionPlanAdviceTable extends Cloner implements DataTransformer
         // we will do this by retrieving the sibling of cloneable one.
 
         // we have to scope on ALL input sources because the advisable_id belongs to the input source we are cloning.
+        // and we want the CMA from the current input source to be related.
         $clonableCustomMeasureApplication = CustomMeasureApplication::allInputSources()->find($data['user_action_plan_advisable_id']);
 
         $customMeasureApplication = $clonableCustomMeasureApplication->getSibling($this->inputSource);

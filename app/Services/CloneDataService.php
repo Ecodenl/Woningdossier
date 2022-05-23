@@ -93,7 +93,7 @@ class CloneDataService {
 
     public static function getOpposingInputSource(InputSource $inputSource): InputSource
     {
-        // this method was intended to just return the oppoosing input source
+        // this method was intended to just return the opposing input source
         // resident -> coach
         // coach -> resident
         // however this would cause problems on the user_action_plan_advices in combination with the custom_measure_applications (CMA) due to the way they work

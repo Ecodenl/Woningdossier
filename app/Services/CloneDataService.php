@@ -91,10 +91,16 @@ class CloneDataService {
         return $cloneableData;
     }
 
-    public static function getOpposingInputSource($inputSource): InputSource
+    public static function getOpposingInputSource(InputSource $inputSource): InputSource
     {
+        // this method was intended to just return the oppoosing input source
+        // resident -> coach
+        // coach -> resident
+        // however this would cause problems on the user_action_plan_advices in combination with the custom_measure_applications due to the way they work
+        // there are multiple applications for the same application, we track them through a hash.
+        // a coach would get the same appli
         return [
-            InputSource::COACH_SHORT => InputSource::findByShort(InputSource::RESIDENT_SHORT)
+            InputSource::COACH_SHORT => InputSource::findByShort(InputSource::MASTER_SHORT)
         ][$inputSource->short];
     }
 }

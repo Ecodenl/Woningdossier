@@ -106,7 +106,7 @@ class UserService
         $building->customMeasureApplications()->forInputSource($inputSource)->delete();
 
         // remove the action plan advices from the user
-        $user->actionPlanAdvices()->forInputSource($inputSource)->delete();
+        $user->actionPlanAdvices()->withInvisible()->forInputSource($inputSource)->delete();
         // remove the energy habits from a user
         $user->energyHabit()->forInputSource($inputSource)->delete();
         // remove the considerables for the user

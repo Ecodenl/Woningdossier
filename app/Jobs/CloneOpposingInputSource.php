@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Notification;
-use App\Services\CloneDataService;
+use App\Services\Cloning\CloneDataService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

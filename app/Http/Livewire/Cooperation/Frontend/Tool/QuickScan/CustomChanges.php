@@ -137,6 +137,9 @@ class CustomChanges extends Component
                 ->first();
 
             if ($masterCustomMeasureApplication instanceof CustomMeasureApplication) {
+                // tries to resolve the custom measure application
+                // for the current input source
+                // when it does not exist, it will update the master its advice.
                 $customMeasureApplication = $masterCustomMeasureApplication->getSibling($this->currentInputSource);
 
                 // There is a chance the measure is from the coach, so if that's the case we will just update

@@ -80,7 +80,7 @@ class CloneDataService {
                 $dataToClone = $clonerClass::init($cloneableDatas, $this->inputSource)->transFormCloneableData();
             } else {
                 // now transform whatever needs to be transformed in order to be cloned properly
-                $dataToClone = $this->transformCloneableData($cloneableDatas, $this->inputSource);
+                $dataToClone = self::transformCloneableData($cloneableDatas, $this->inputSource);
             }
 
             // clone ze data.

@@ -43,7 +43,7 @@ class RunDeploy extends Command
     {
 
         $commands = [
-            SeedCommand::class => ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
+//            SeedCommand::class => ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
             CorrectHasSolarPanelsToolQuestionAnswer::class => [],
         ];
 

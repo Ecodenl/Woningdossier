@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Fixes\CorrectHasSolarPanelsToolQuestionAnswer;
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;
 
@@ -42,9 +43,10 @@ class RunDeploy extends Command
     {
 
         $commands = [
-            TransformRecalculateNotificationType::class => [],
-            SeedCommand::class => ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
-            UpdateToolQuestions::class => [],
+//            TransformRecalculateNotificationType::class => [],
+//            SeedCommand::class => ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
+//            UpdateToolQuestions::class => [],
+            CorrectHasSolarPanelsToolQuestionAnswer::class => [],
         ];
 
         foreach ($commands as $command => $arguments) {

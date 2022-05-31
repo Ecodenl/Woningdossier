@@ -43,9 +43,7 @@ class RunDeploy extends Command
     {
 
         $commands = [
-//            TransformRecalculateNotificationType::class => [],
-//            SeedCommand::class => ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
-//            UpdateToolQuestions::class => [],
+            SeedCommand::class => ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
             CorrectHasSolarPanelsToolQuestionAnswer::class => [],
         ];
 

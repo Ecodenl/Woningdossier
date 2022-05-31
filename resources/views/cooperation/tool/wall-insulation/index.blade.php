@@ -346,7 +346,6 @@
                             'color' => 'red', 'dismissible' => false
                         ])
                             <p class="text-red">
-                                <strong>@lang('wall-insulation.alerts.description.title')</strong>
                             </p>
                         @endcomponent
                     </div>

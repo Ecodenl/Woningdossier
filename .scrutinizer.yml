@@ -130,8 +130,5 @@ build:
             - node_modules
             - vendor/
             - ~/.composer/cache/
-#filter:
-#    excluded_paths:
-#        - tests/*
 filter:
   paths: [app/*]

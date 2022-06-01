@@ -340,7 +340,7 @@
             </div>
 
             <div class="hideable w-full">
-                <div class="flex flex-row flex-wrap w-full" id="cavity-wall-alert" >
+                <div class="flex flex-row flex-wrap w-full" id="cavity-wall-alert" style="display: none;">
                     <div class="w-full md:w-2/3 md:ml-2/12">
                         @component('cooperation.frontend.layouts.parts.alert', [
                             'color' => 'red', 'dismissible' => false

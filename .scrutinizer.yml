@@ -131,7 +131,7 @@ build:
             - vendor/
             - ~/.composer/cache/
     nodes:
-        tests: true
+        tests: false
 #filter:
 #    excluded_paths:
 #        - tests/*

@@ -28,7 +28,7 @@ checks:
         properties_in_camelcaps: true
         precedence_mistakes: true
         precedence_in_conditions: true
-        phpunit_assertions: true
+        phpunit_assertions: false
         parse_doc_comments: true
         parameters_in_camelcaps: true
         parameter_non_unique: true

@@ -130,6 +130,21 @@ build:
             - node_modules
             - vendor/
             - ~/.composer/cache/
+    nodes:
+        tests: false
+        analysis:
+            tests:
+                before:
+                    - chmod -R 777 storage
+                    - chmod -R 777 bootstrap/cache
+                    - npm run production
+                override:
+                    - phpcs-run
+                    - php-scrutinizer-run
+                    - command: 'vendor/bin/phpunit --coverage-clover=woondossier-report'
+                      coverage:
+                          file: 'woondossier-report'
+                          format: 'clover'
 
 #filter:
 #    excluded_paths:

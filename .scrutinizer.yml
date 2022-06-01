@@ -112,7 +112,7 @@ build:
             pecl_extensions:
                 - zip
         mysql: '5.7'
-        node: '8.1'
+        node: '13.7'
         hosts:
             laravel.dev: '127.0.0.1'
         variables:

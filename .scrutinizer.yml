@@ -107,7 +107,7 @@ build:
             - composer dump-autoload
             - php artisan migrate:fresh --seed
     environment:
-        php: '7.2'
+        php: '7.4'
         mysql: '5.7'
         node: '8.1'
         hosts:

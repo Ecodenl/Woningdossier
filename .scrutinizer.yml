@@ -104,6 +104,7 @@ build:
     dependencies:
         before:
             - mysql -uroot -e 'CREATE DATABASE IF NOT EXISTS hoomdossier'
+            - composer dump-autoload
             - php artisan migrate:fresh --seed
     environment:
         php: '7.2'

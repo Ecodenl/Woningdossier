@@ -107,7 +107,10 @@ build:
             - composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
             - php artisan migrate:fresh --seed
     environment:
-        php: '7.4'
+        php:
+            version: '7.4'
+            pecl_extensions:
+                - zip
         mysql: '5.7'
         node: '8.1'
         hosts:

@@ -44,7 +44,7 @@ class WallInsulation
         $cavityWallAdvice = [
             1 => Temperature::WALL_INSULATION_JOINTS,
             2 => Temperature::WALL_INSULATION_FACADE,
-            3 => Temperature::WALL_INSULATION_JOINTS,
+            0 => Temperature::WALL_INSULATION_RESEARCH,
         ];
 
         $advice = $cavityWallAdvice[$cavityWall] ?? Temperature::WALL_INSULATION_JOINTS;
@@ -53,6 +53,8 @@ class WallInsulation
 
         // alert the user that its not possible to insulate a painted / plastered wall.
         // important to do this after the insulation advice is set, otherwise it wil fail.
+
+        // 1 = yes
         if ($isPlastered && $cavityWall == 1) {
             $advice = "alerts.description.title";
         }

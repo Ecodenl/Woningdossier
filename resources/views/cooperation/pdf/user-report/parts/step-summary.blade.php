@@ -88,6 +88,7 @@
             $toolQuestion = App\Models\ToolQuestion::findByShort($toolQuestionShort);
         @endphp
         @if($toolQuestion instanceof \App\Models\ToolQuestion)
+
             @include('cooperation.pdf.user-report.parts.measure-page.comments', [
                 'title' => $toolQuestion->name,
                 'comments' => $stepComment,

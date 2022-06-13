@@ -16,6 +16,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
@@ -240,7 +241,10 @@ class Form extends Component
                 $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     if (is_null($toolQuestion->save_in)) {
-                        $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
+                        ToolQuestionService::init($toolQuestion)
+                            ->building($this->building)
+                            ->currentInputSource($this->currentInputSource)
+                            ->saveToolQuestionCustomValues($givenAnswer);
                     } else {
                         // this *can't* handle a checkbox / multiselect answer.
                         $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
@@ -513,54 +517,5 @@ class Form extends Component
                 $where,
                 $answerData
             );
-    }
-
-    private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
-    {
-        $where = [
-            'building_id' => $this->building->id,
-            'tool_question_id' => $toolQuestion->id,
-        ];
-        $data = [
-            'building_id' => $this->building->id,
-            'input_source_id' => $this->currentInputSource->id,
-        ];
-
-        // we can't do a update or create, we just have to delete the old answers and create the new one.
-        if ($toolQuestion->toolQuestionType->short == 'checkbox-icon') {
-
-            $toolQuestion->toolQuestionAnswers()
-                ->allInputSources()
-                ->where($where)
-                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
-                ->delete();
-
-            foreach ($givenAnswer as $answer) {
-                $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($answer);
-                $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
-                $data['answer'] = $answer;
-                $toolQuestion->toolQuestionAnswers()->create($data);
-            }
-
-        } else {
-            if (is_array($givenAnswer)) {
-                $givenAnswer = json_encode($givenAnswer);
-            }
-
-            // Try to resolve the id is the question has custom values
-            if ($toolQuestion->toolQuestionCustomValues()->exists()) {
-                // if so, the given answer contains a short.
-                $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
-                $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
-            }
-
-            $data['answer'] = $givenAnswer;
-            $where['input_source_id'] = $this->currentInputSource->id;
-            // we have to do this twice, once for the current input source and once for the master input source
-            $toolQuestion
-                ->toolQuestionAnswers()
-                ->allInputSources()
-                ->updateOrCreate($where, $data);
-        }
     }
 }

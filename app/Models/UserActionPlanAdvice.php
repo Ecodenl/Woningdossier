@@ -78,7 +78,7 @@ class UserActionPlanAdvice extends Model implements Auditable
     use GetValueTrait,
         GetMyValuesTrait,
         ToolSettingTrait,
-        \OwenIt\Auditing\Auditable;
+        \App\Traits\Models\Auditable;
 
     protected $table = 'user_action_plan_advices';
 

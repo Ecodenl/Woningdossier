@@ -47,7 +47,7 @@ class BuildingElement extends Model implements Auditable
     use GetValueTrait,
         GetMyValuesTrait,
         ToolSettingTrait,
-        \OwenIt\Auditing\Auditable;
+        \App\Traits\Models\Auditable;
 
     /**
      * The attributes that should be cast to native types.

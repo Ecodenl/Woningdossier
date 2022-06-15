@@ -17,6 +17,10 @@ class CreateAuditsTable extends Migration
             $table->bigIncrements('id');
             $table->string('user_type')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedInteger('input_source_id')->nullable();
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('set null');
+            $table->unsignedInteger('building_id')->nullable();
+            $table->foreign('building_id')->references('id')->on('buildings')->onDelete('set null');
             $table->string('event');
             $table->morphs('auditable');
             $table->text('old_values')->nullable();

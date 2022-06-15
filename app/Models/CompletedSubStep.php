@@ -44,7 +44,7 @@ class CompletedSubStep extends Model implements Auditable
 {
     use GetMyValuesTrait,
         GetValueTrait,
-        \OwenIt\Auditing\Auditable;
+        \App\Traits\Models\Auditable;
 
     protected $fillable = ['sub_step_id', 'building_id', 'input_source_id'];
 

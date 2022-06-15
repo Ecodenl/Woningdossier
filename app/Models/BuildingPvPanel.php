@@ -50,7 +50,7 @@ class BuildingPvPanel extends Model implements Auditable
     use GetValueTrait,
         GetMyValuesTrait,
         ToolSettingTrait,
-        \OwenIt\Auditing\Auditable;
+        \App\Traits\Models\Auditable;
 
     protected $fillable = [
         'building_id',

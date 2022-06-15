@@ -46,7 +46,7 @@ class ToolQuestionAnswer extends Model implements Auditable
 {
     use GetValueTrait,
         GetMyValuesTrait,
-        \OwenIt\Auditing\Auditable;
+        \App\Traits\Models\Auditable;
 
     protected $fillable = [
         'building_id', 'input_source_id', 'tool_question_id', 'tool_question_custom_value_id', 'answer',

@@ -41,7 +41,7 @@ class CompletedStep extends Model implements Auditable
 {
     use GetMyValuesTrait,
         GetValueTrait,
-        \OwenIt\Auditing\Auditable;
+        \App\Traits\Models\Auditable;
 
     public $fillable = [
         'user_id', 'step_id', 'building_id', 'input_source_id',

@@ -43,7 +43,7 @@ class StepComment extends Model implements Auditable
 {
     use GetValueTrait,
         GetMyValuesTrait,
-        \OwenIt\Auditing\Auditable;
+        \App\Traits\Models\Auditable;
 
     protected $fillable = [
         'comment', 'input_source_id', 'building_id', 'short', 'step_id',

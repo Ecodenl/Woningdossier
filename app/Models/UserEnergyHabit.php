@@ -74,7 +74,7 @@ class UserEnergyHabit extends Model implements Auditable
     use GetValueTrait,
         GetMyValuesTrait,
         ToolSettingTrait,
-        \OwenIt\Auditing\Auditable;
+        \App\Traits\Models\Auditable;
 
     protected $fillable = [
         'user_id',

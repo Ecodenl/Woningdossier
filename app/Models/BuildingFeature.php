@@ -7,6 +7,7 @@ use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\BuildingFeature
@@ -91,11 +92,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereWindowSurface($value)
  * @mixin \Eloquent
  */
-class BuildingFeature extends Model
+class BuildingFeature extends Model implements Auditable
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
-    use ToolSettingTrait;
+    use GetValueTrait,
+        GetMyValuesTrait,
+        ToolSettingTrait,
+        \App\Traits\Models\Auditable;
 
     protected $fillable = [
         'example_building_id',

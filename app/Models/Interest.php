@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Interest
  *
  * @property int $id
- * @property string $name
+ * @property array $name
  * @property int $calculate_value
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
  * @property-read int|null $steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
@@ -21,7 +22,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Interest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Interest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Interest query()
- * @method static \Illuminate\Database\Eloquent\Builder|Interest translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|Interest whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Interest whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Interest whereId($value)

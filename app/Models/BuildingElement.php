@@ -23,9 +23,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\ElementValue|null $elementValue
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement query()

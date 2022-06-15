@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\WoodRotStatus
  *
  * @property int $id
- * @property string $name
+ * @property array $name
  * @property int|null $calculate_value
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|WoodRotStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WoodRotStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WoodRotStatus query()
- * @method static \Illuminate\Database\Eloquent\Builder|WoodRotStatus translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|WoodRotStatus whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WoodRotStatus whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WoodRotStatus whereId($value)

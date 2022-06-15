@@ -14,15 +14,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $input_source_id
  * @property string|null $short
  * @property int $step_id
- * @property string $comment
+ * @property string|null $comment
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\Step $step
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|StepComment forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|StepComment forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|StepComment forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment query()

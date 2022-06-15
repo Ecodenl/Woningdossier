@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Motivation
  *
  * @property int $id
- * @property string $name
+ * @property array $name
  * @property int|null $calculate_value
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation query()
- * @method static \Illuminate\Database\Eloquent\Builder|Motivation translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereId($value)

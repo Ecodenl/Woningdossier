@@ -17,24 +17,28 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $parent_id
  * @property string $slug
  * @property string $short
- * @property string $name
+ * @property array $name
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|Step[] $children
+ * @property-read int|null $children_count
+ * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
  * @property-read int|null $measure_applications_count
  * @property-read Step|null $parentStep
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
  * @property-read int|null $questionnaires_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Step[] $subSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
  * @property-read int|null $sub_steps_count
+ * @method static Builder|Step childrenForStep(\App\Models\Step $step)
+ * @method static Builder|Step expert()
  * @method static Builder|Step newModelQuery()
  * @method static Builder|Step newQuery()
  * @method static Builder|Step onlyChildren()
  * @method static Builder|Step ordered()
  * @method static Builder|Step query()
- * @method static Builder|Step childrenForStep(\App\Models\Step $step)
- * @method static Builder|Step translated($attribute, $name, $locale = 'nl')
+ * @method static Builder|Step quickScan()
  * @method static Builder|Step whereCreatedAt($value)
  * @method static Builder|Step whereId($value)
  * @method static Builder|Step whereName($value)
@@ -43,7 +47,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|Step whereShort($value)
  * @method static Builder|Step whereSlug($value)
  * @method static Builder|Step whereUpdatedAt($value)
- * @method static Builder|Step withoutSubSteps()
+ * @method static Builder|Step withGeneralData()
+ * @method static Builder|Step withoutChildren()
  * @mixin \Eloquent
  */
 class Step extends Model

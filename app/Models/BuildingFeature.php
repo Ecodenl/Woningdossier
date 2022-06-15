@@ -14,8 +14,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int|null $building_id
  * @property int|null $input_source_id
+ * @property int|null $example_building_id
  * @property int|null $building_heating_application_id
  * @property int|null $building_category_id
+ * @property int|null $building_type_category_id
  * @property int|null $building_type_id
  * @property int|null $roof_type_id
  * @property int|null $energy_label_id
@@ -40,19 +42,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\BuildingCategory|null $buildingCategory
- * @property-read \App\Models\BuildingHeatingApplication|null $buildingHeatingApplication
  * @property-read \App\Models\BuildingType|null $buildingType
  * @property-read \App\Models\FacadeSurface|null $contaminatedWallJoints
  * @property-read \App\Models\FacadeDamagedPaintwork|null $damagedPaintwork
  * @property-read \App\Models\EnergyLabel|null $energyLabel
+ * @property-read \App\Models\ExampleBuilding|null $exampleBuilding
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\FacadePlasteredSurface|null $plasteredSurface
  * @property-read \App\Models\RoofType|null $roofType
  * @property-read \App\Models\FacadeSurface|null $wallJoints
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature query()
@@ -62,12 +65,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereBuildingHeatingApplicationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereBuildingLayers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereBuildingTypeCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereBuildingTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereCavityWall($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereContaminatedWallJoints($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereElementValues($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereEnergyLabelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereExampleBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereFacadeDamagedPaintworkId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereFacadePlasteredPainted($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature whereFacadePlasteredSurfaceId($value)

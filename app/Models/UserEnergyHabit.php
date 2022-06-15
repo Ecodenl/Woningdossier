@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $heating_first_floor
  * @property int|null $heating_second_floor
  * @property int|null $heated_space_outside
+ * @property int $cook_gas
  * @property int|null $water_comfort_id
  * @property int|null $amount_electricity
  * @property int|null $amount_gas
@@ -36,9 +37,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit query()

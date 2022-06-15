@@ -10,17 +10,19 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $element_id
- * @property string $value
+ * @property array $value
  * @property float|null $calculate_value
  * @property int $order
+ * @property array|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Element $element
+ * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue query()
- * @method static \Illuminate\Database\Eloquent\Builder|ElementValue translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereCalculateValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereConfigurations($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereElementId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue whereId($value)

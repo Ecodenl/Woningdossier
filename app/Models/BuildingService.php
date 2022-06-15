@@ -24,9 +24,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\ServiceType $serviceType
  * @property-read \App\Models\ServiceValue|null $serviceValue
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService query()

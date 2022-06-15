@@ -10,14 +10,14 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $short
- * @property string $name
+ * @property array $name
  * @property string $percentage
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing query()
- * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PriceIndexing whereName($value)

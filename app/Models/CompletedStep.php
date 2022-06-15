@@ -20,9 +20,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
  * @property-read int|null $steps_count
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep query()

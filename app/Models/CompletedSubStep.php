@@ -10,6 +10,35 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * App\Models\CompletedSubStep
+ *
+ * @property int $id
+ * @property int $sub_step_id
+ * @property int $building_id
+ * @property int $input_source_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\InputSource $inputSource
+ * @property-read \App\Models\SubStep $subStep
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep forBuilding($building)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep forUser($user)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereSubStepId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class CompletedSubStep extends Model
 {
 

@@ -6,6 +6,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\BuildingElement
@@ -41,11 +42,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class BuildingElement extends Model
+class BuildingElement extends Model implements Auditable
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
-    use ToolSettingTrait;
+    use GetValueTrait,
+        GetMyValuesTrait,
+        ToolSettingTrait,
+        \OwenIt\Auditing\Auditable;
 
     /**
      * The attributes that should be cast to native types.

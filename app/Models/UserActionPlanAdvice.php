@@ -12,6 +12,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\UserActionPlanAdvice
@@ -72,11 +73,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static Builder|UserActionPlanAdvice withoutDeletedCooperationMeasureApplications(\App\Models\InputSource $inputSource)
  * @mixin \Eloquent
  */
-class UserActionPlanAdvice extends Model
+class UserActionPlanAdvice extends Model implements Auditable
 {
     use GetValueTrait,
         GetMyValuesTrait,
-        ToolSettingTrait;
+        ToolSettingTrait,
+        \OwenIt\Auditing\Auditable;
 
     protected $table = 'user_action_plan_advices';
 

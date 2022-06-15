@@ -9,6 +9,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\CompletedSubStep
@@ -39,11 +40,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedSubStep whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class CompletedSubStep extends Model
+class CompletedSubStep extends Model implements Auditable
 {
-
     use GetMyValuesTrait,
-        GetValueTrait;
+        GetValueTrait,
+        \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['sub_step_id', 'building_id', 'input_source_id'];
 

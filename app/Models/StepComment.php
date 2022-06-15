@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\StepComment
@@ -38,10 +39,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class StepComment extends Model
+class StepComment extends Model implements Auditable
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
+    use GetValueTrait,
+        GetMyValuesTrait,
+        \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'comment', 'input_source_id', 'building_id', 'short', 'step_id',

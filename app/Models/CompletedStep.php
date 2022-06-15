@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\CompletedStep
@@ -36,10 +37,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class CompletedStep extends Model
+class CompletedStep extends Model implements Auditable
 {
-    use GetMyValuesTrait;
-    use GetValueTrait;
+    use GetMyValuesTrait,
+        GetValueTrait,
+        \OwenIt\Auditing\Auditable;
 
     public $fillable = [
         'user_id', 'step_id', 'building_id', 'input_source_id',

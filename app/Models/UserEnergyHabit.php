@@ -6,6 +6,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\UserEnergyHabit
@@ -68,11 +69,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereWaterComfortId($value)
  * @mixin \Eloquent
  */
-class UserEnergyHabit extends Model
+class UserEnergyHabit extends Model implements Auditable
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
-    use ToolSettingTrait;
+    use GetValueTrait,
+        GetMyValuesTrait,
+        ToolSettingTrait,
+        \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'user_id',

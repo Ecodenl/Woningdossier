@@ -6,6 +6,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\ToolQuestionAnswer
@@ -41,9 +42,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestionAnswer whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class ToolQuestionAnswer extends Model
+class ToolQuestionAnswer extends Model implements Auditable
 {
-    use GetValueTrait, GetMyValuesTrait;
+    use GetValueTrait,
+        GetMyValuesTrait,
+        \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'building_id', 'input_source_id', 'tool_question_id', 'tool_question_custom_value_id', 'answer',

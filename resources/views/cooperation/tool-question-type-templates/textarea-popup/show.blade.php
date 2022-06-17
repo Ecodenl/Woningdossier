@@ -1,5 +1,5 @@
 
-<div x-data="originalContent: {{$filledInAnswers[$toolQuestion['id']]}}, modal()" class="w-full flex">
+<div x-data="modal()" class="w-full flex">
 
     <textarea wire:model="filledInAnswers.{{$toolQuestion['id']}}"
               id="{{$toolQuestion->short}}"
@@ -21,7 +21,7 @@
             @lang('cooperation/frontend/tool.my-plan.comments.resident')
         @endslot
         <div class="flex justify-end space-x-2">
-            <button class="btn btn-orange" wire:click="resetComment()" x-on:click="close()">Annuleren</button>
+            <button class="btn btn-orange" wire:click="resetToOriginalAnswer({{$toolQuestion['id']}})" x-on:click="close()">Annuleren</button>
             <button class="btn btn-purple" wire:click="save('{{\App\Models\InputSource::RESIDENT_SHORT}}')" x-on:click="close()">
                 @lang('default.buttons.save')
             </button>

@@ -53,6 +53,7 @@ class Form extends Component
     public $toolQuestions;
 
     public bool $dirty;
+    public $originalAnswers = [];
     public $filledInAnswers = [];
     public $filledInAnswersForAllInputSources = [];
 
@@ -75,8 +76,13 @@ class Form extends Component
 
         $this->toolQuestions = $subStep->toolQuestions()->orderBy('order')->get();
         $this->setFilledInAnswers();
+        $this->originalAnswers = $this->filledInAnswers;
     }
 
+    public function resetToOriginalAnswer($toolQuestionId)
+    {
+        $this->filledInAnswers[$toolQuestionId] = $this->originalAnswers[$toolQuestionId];
+    }
 
     public function render()
     {

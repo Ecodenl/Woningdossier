@@ -4,7 +4,7 @@
     <textarea wire:model="filledInAnswers.{{$toolQuestion['id']}}"
               id="{{$toolQuestion->short}}"
               class="form-input"
-              x-bind="typable" wire:ignore x-on:click="toggle()"
+              wire:ignore x-on:click="toggle()"
               placeholder="{{$toolQuestion->placeholder}}"
               @if(($disabled ?? false)) disabled @endif>
     </textarea>
@@ -22,7 +22,7 @@
         @endslot
         <div class="flex justify-end space-x-2">
             <button class="btn btn-orange" wire:click="resetToOriginalAnswer({{$toolQuestion['id']}})" x-on:click="close()">Annuleren</button>
-            <button class="btn btn-purple" wire:click="save('{{\App\Models\InputSource::RESIDENT_SHORT}}')" x-on:click="close()">
+            <button class="btn btn-purple" wire:click="saveSpecificToolQuestion({{$toolQuestion['id']}})" x-on:click="close()">
                 @lang('default.buttons.save')
             </button>
         </div>

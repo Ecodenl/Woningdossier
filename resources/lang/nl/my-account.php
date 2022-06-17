@@ -69,12 +69,12 @@ return [
             'form' => [
                 'allow_access' => 'Ik geef toestemming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
             ],
-            'header' => 'Gebruikers met toegang tot mijn woning',
+            'header' => 'Aan mijn gekoppelde energiecoaches',
             'text-allow-access'   => 'De gegevens worden uitsluitend door de coöperatie gebruikt om u in uw bewonersreis te ondersteunen. Uw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van uw data en wat we ermee doen kunt u vinden in ons privacy statement.',
             'text'   => 'Hier ziet uw de gebruikers (Coaches en Coördinatoren), die toegang hebben tot uw woning. Deze gebruikers hebben de toegang om uw Hoomdossier in te vullen.',
             'table' => [
                 'columns' => [
-                    'coach'   => 'Naam van gebruiker',
+                    'coach'   => 'Naam energiecoach',
                     'actions' => 'Actie ondernemen',
                 ],
             ],

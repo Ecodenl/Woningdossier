@@ -12,6 +12,57 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
+/**
+ * App\Models\ToolQuestion
+ *
+ * @property int $id
+ * @property string|null $short
+ * @property string|null $save_in
+ * @property int|null $for_specific_input_source_id
+ * @property array|null $conditions
+ * @property array $name
+ * @property array $help_text
+ * @property array|null $placeholder
+ * @property int $tool_question_type_id
+ * @property bool $coach
+ * @property bool $resident
+ * @property array|null $options
+ * @property array|null $validation
+ * @property string|null $unit_of_measure
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\InputSource|null $forSpecificInputSource
+ * @property-read array $translations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
+ * @property-read int|null $sub_steps_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
+ * @property-read int|null $tool_question_answers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionCustomValue[] $toolQuestionCustomValues
+ * @property-read int|null $tool_question_custom_values_count
+ * @property-read \App\Models\ToolQuestionType $toolQuestionType
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionValuable[] $toolQuestionValuables
+ * @property-read int|null $tool_question_valuables_count
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCoach($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereConditions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereForSpecificInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereHelpText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereOptions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion wherePlaceholder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereResident($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereSaveIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereToolQuestionTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereUnitOfMeasure($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereValidation($value)
+ * @mixin \Eloquent
+ */
 class ToolQuestion extends Model
 {
     use HasTranslations, HasShortTrait;

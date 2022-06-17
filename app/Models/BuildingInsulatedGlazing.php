@@ -27,9 +27,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\InsulatingGlazing|null $insulatedGlazing
  * @property-read \App\Models\MeasureApplication $measureApplication
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing query()

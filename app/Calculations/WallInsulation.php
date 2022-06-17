@@ -31,6 +31,9 @@ class WallInsulation
         $elements = $calculateData['element'] ?? [];
         $facadeSurface = $buildingFeatureData['insulation_wall_surface'] ?? 0;
 
+        // Note: these answer options are hardcoded in template
+        $isPlastered = 2 != (int) ($buildingFeatureData['facade_plastered_painted'] ?? 2);
+
         $result = [
             'savings_gas' => 0,
             'paint_wall' => [
@@ -38,22 +41,23 @@ class WallInsulation
                 'year' => 0,
             ],
         ];
+        $cavityWallAdvice = [
+            1 => Temperature::WALL_INSULATION_JOINTS,
+            2 => Temperature::WALL_INSULATION_FACADE,
+            0 => Temperature::WALL_INSULATION_RESEARCH,
+        ];
 
-        $advice = Temperature::WALL_INSULATION_JOINTS;
-        if (1 == $cavityWall) {
-            $advice = Temperature::WALL_INSULATION_JOINTS;
-        //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.cavity-wall');
-            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
-        } elseif (2 == $cavityWall) {
-            $advice = Temperature::WALL_INSULATION_FACADE;
-        //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.facade-internal');
-            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
-        } elseif (0 == $cavityWall) {
-            $advice = Temperature::WALL_INSULATION_RESEARCH;
-            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.research');
-            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
-        }
+        $advice = $cavityWallAdvice[$cavityWall] ?? Temperature::WALL_INSULATION_JOINTS;
+
         $insulationAdvice = MeasureApplication::byShort($advice);
+
+        // alert the user that its not possible to insulate a painted / plastered wall.
+        // important to do this after the insulation advice is set, otherwise it wil fail.
+
+        // 1 = yes
+        if ($isPlastered && $cavityWall == 1) {
+            $advice = "alerts.description.title";
+        }
         $result['insulation_advice'] = __('wall-insulation.'.$advice);
 
         $elementValueId = array_shift($elements);
@@ -106,9 +110,6 @@ class WallInsulation
         $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
 
         $result['impregnate_wall'] = compact('costs', 'year');
-
-        // Note: these answer options are hardcoded in template
-        $isPlastered = 2 != (int) ($buildingFeatureData['facade_plastered_painted'] ?? 2);
 
         if ($isPlastered) {
             $measureApplication = MeasureApplication::where('short', '=', 'paint-wall')->first();

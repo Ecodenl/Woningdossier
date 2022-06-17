@@ -4,6 +4,7 @@ namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Helpers\ConsiderableHelper;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
+use App\Models\ToolQuestion;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,7 +27,10 @@ class SolarPanelFormRequest extends FormRequest
      */
     public function rules()
     {
+        $hasSolarPanelsToolQuestion = ToolQuestion::findByShort('has-solar-panels');
+
         return [
+            "filledInAnswers.{$hasSolarPanelsToolQuestion['id']}" => $hasSolarPanelsToolQuestion->validation,
             'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             'building_pv_panels.peak_power' => ['required', 'numeric', Rule::in(KeyFigures::getPeakPowers())],
             'building_pv_panels.number' => 'required|numeric|min:0|max:50',

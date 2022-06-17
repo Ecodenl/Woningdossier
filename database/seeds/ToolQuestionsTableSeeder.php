@@ -585,7 +585,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'unit_of_measure' => __('general.unit.cubic-meters.title'),
                         ],
                         [
-                            'validation' => ['required', 'numeric', 'integer', 'min:-10000', 'max:10000'],
+                            'validation' => ['required', 'numeric', 'integer', 'min:-10000', 'max:25000'],
                             'save_in' => 'user_energy_habits.amount_electricity',
                             'short' => 'amount-electricity',
                             'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity',
@@ -1295,7 +1295,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'save_in' => "building_pv_panels.total_installed_power",
                             'short' => 'total-installed-power',
                             // was current-state -> Geinstalleerd vermogen (totaal)
-                            'translation' => "Totaal vermogen?",
+                            'translation' => "Wat is het totale vermogen van de geplaatste panelen?",
                             'unit_of_measure' => 'WP',
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [

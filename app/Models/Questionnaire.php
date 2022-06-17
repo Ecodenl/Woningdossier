@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Questionnaire
  *
  * @property int $id
- * @property string $name
+ * @property array $name
  * @property int|null $step_id
  * @property int $cooperation_id
  * @property int $order
@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cooperation $cooperation
+ * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
  * @property-read int|null $questions_count
  * @property-read \App\Models\Step|null $step
@@ -27,7 +28,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire query()
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereCooperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereId($value)

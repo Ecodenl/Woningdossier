@@ -22,6 +22,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $first_name
  * @property string $last_name
  * @property string $phone_number
+ * @property string|null $last_visited_url
  * @property array|null $extra
  * @property bool $allow_access
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -36,6 +37,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $building_permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
  * @property-read int|null $buildings_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
+ * @property-read int|null $completed_questionnaires_count
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \Plank\Mediable\MediableCollection|\App\Models\Cooperation[] $cooperations
  * @property-read int|null $cooperations_count
@@ -46,8 +49,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read mixed $oldemail
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
  * @property-read int|null $interests_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplicationInterest
- * @property-read int|null $measure_application_interest_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
  * @property-read int|null $motivations_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NotificationSetting[] $notificationSettings
@@ -56,29 +57,28 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  * @property-read int|null $roles_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $stepInterests
- * @property-read int|null $step_interests_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
  * @property-read int|null $user_action_plan_advice_comments_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
  * @property-read int|null $user_interests_count
- * @method static \Illuminate\Database\Eloquent\Builder|User forAllCooperations()
- * @method static \Illuminate\Database\Eloquent\Builder|User forMyCooperation($cooperationId)
- * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
- * @method static \Illuminate\Database\Eloquent\Builder|User query()
- * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereAccountId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereAllowAccess($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereExtra($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereFirstName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereLastName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePhoneNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @method static Builder|User forAllCooperations()
+ * @method static Builder|User forMyCooperation($cooperationId)
+ * @method static Builder|User newModelQuery()
+ * @method static Builder|User newQuery()
+ * @method static Builder|User permission($permissions)
+ * @method static Builder|User query()
+ * @method static Builder|User role($roles, $guard = null)
+ * @method static Builder|User whereAccountId($value)
+ * @method static Builder|User whereAllowAccess($value)
+ * @method static Builder|User whereCooperationId($value)
+ * @method static Builder|User whereCreatedAt($value)
+ * @method static Builder|User whereExtra($value)
+ * @method static Builder|User whereFirstName($value)
+ * @method static Builder|User whereId($value)
+ * @method static Builder|User whereLastName($value)
+ * @method static Builder|User whereLastVisitedUrl($value)
+ * @method static Builder|User wherePhoneNumber($value)
+ * @method static Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class User extends Model implements AuthorizableContract

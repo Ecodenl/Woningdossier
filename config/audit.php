@@ -28,7 +28,7 @@ return [
         'morph_prefix' => 'user',
         'guards'       => [
             'web',
-            'api',
+            'sanctum',
         ],
     ],
 
@@ -42,8 +42,8 @@ return [
     */
     'resolver' => [
         'user'       => OwenIt\Auditing\Resolvers\UserResolver::class,
-         'ip_address' => \App\Resolvers\IpAddressResolver::class,
-        'user_agent' =>  \App\Resolvers\UserAgentResolver::class,
+         'ip_address' => \App\Resolvers\Audit\IpAddressResolver::class,
+        'user_agent' =>  \App\Resolvers\Audit\UserAgentResolver::class,
         'url'        => OwenIt\Auditing\Resolvers\UrlResolver::class,
     ],
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Resolvers;
+namespace App\Resolvers\Audit;
 
 
 class IpAddressResolver implements \OwenIt\Auditing\Contracts\IpAddressResolver

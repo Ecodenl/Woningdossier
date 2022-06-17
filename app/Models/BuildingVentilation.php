@@ -20,9 +20,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation query()

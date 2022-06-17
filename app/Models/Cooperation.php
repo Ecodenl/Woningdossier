@@ -17,14 +17,14 @@ use Plank\Mediable\Mediable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $website_url
  * @property string|null $cooperation_email
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CooperationMeasureApplication[] $cooperationMeasureApplications
+ * @property-read int|null $cooperation_measure_applications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuilding[] $exampleBuildings
  * @property-read int|null $example_buildings_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
  * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
  * @property-read int|null $questionnaires_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
- * @property-read int|null $steps_count
  * @property-read \App\Models\CooperationStyle|null $style
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  * @property-read int|null $users_count

@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $question_id
- * @property string $name
+ * @property array $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionOption newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionOption newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionOption query()
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionOption translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionOption whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionOption whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionOption whereName($value)

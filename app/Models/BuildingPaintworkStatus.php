@@ -23,9 +23,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\PaintworkStatus|null $paintworkStatus
  * @property-read \App\Models\WoodRotStatus|null $woodRotStatus
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPaintworkStatus allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPaintworkStatus forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingPaintworkStatus forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPaintworkStatus forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPaintworkStatus forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingPaintworkStatus forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPaintworkStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPaintworkStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPaintworkStatus query()

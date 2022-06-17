@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\RoofType
  *
  * @property int $id
- * @property string $name
+ * @property array $name
  * @property string $short
  * @property int $calculate_value
  * @property int|null $order
@@ -18,10 +18,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingFeature[] $buildingFeatures
  * @property-read int|null $building_features_count
+ * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType query()
- * @method static \Illuminate\Database\Eloquent\Builder|RoofType translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RoofType whereId($value)

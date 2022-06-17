@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Measure
  *
  * @property int $id
- * @property string $name
+ * @property array $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\BuildingElement $buildingElements
@@ -17,13 +17,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $building_services_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureCategory[] $categories
  * @property-read int|null $categories_count
+ * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureProperty[] $properties
  * @property-read int|null $properties_count
  * @property-read \App\Models\ServiceType $serviceType
  * @method static \Illuminate\Database\Eloquent\Builder|Measure newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Measure newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Measure query()
- * @method static \Illuminate\Database\Eloquent\Builder|Measure translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|Measure whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Measure whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Measure whereName($value)

@@ -29,7 +29,6 @@ use Illuminate\Support\Str;
  * @property int|null $owner
  * @property int $primary
  * @property string $bag_addressid
- * @property int|null $example_building_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -50,10 +49,14 @@ use Illuminate\Support\Str;
  * @property-read int|null $building_ventilations_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $completedSteps
  * @property-read int|null $completed_steps_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedSubStep[] $completedSubSteps
+ * @property-read int|null $completed_sub_steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
  * @property-read int|null $current_insulated_glazing_count
  * @property-read \App\Models\BuildingPaintworkStatus|null $currentPaintworkStatus
- * @property-read \App\Models\ExampleBuilding|null $exampleBuilding
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomMeasureApplication[] $customMeasureApplications
+ * @property-read int|null $custom_measure_applications_count
+ * @property-read \App\Models\ExampleBuilding $exampleBuilding
  * @property-read \App\Models\BuildingHeater|null $heater
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
  * @property-read int|null $private_messages_count
@@ -64,6 +67,8 @@ use Illuminate\Support\Str;
  * @property-read int|null $roof_types_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\StepComment[] $stepComments
  * @property-read int|null $step_comments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
+ * @property-read int|null $tool_question_answers_count
  * @property-read \App\Models\User|null $user
  * @method static Builder|Building newModelQuery()
  * @method static Builder|Building newQuery()
@@ -74,7 +79,6 @@ use Illuminate\Support\Str;
  * @method static Builder|Building whereCountryCode($value)
  * @method static Builder|Building whereCreatedAt($value)
  * @method static Builder|Building whereDeletedAt($value)
- * @method static Builder|Building whereExampleBuildingId($value)
  * @method static Builder|Building whereExtension($value)
  * @method static Builder|Building whereId($value)
  * @method static Builder|Building whereNumber($value)

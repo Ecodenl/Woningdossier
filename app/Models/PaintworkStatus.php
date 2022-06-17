@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\PaintworkStatus
  *
  * @property int $id
- * @property string $name
+ * @property array $name
  * @property int|null $calculate_value
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|PaintworkStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PaintworkStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PaintworkStatus query()
- * @method static \Illuminate\Database\Eloquent\Builder|PaintworkStatus translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|PaintworkStatus whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PaintworkStatus whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PaintworkStatus whereId($value)

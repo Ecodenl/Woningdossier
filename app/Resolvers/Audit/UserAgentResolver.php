@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Resolvers;
+namespace App\Resolvers\Audit;
 
 class UserAgentResolver implements \OwenIt\Auditing\Contracts\UserAgentResolver
 {

@@ -4,6 +4,7 @@ namespace App\Console\Commands\AVG;
 
 use App\Models\BuildingFeature;
 use App\Services\DiscordNotifier;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use OwenIt\Auditing\Models\Audit;
 
@@ -40,9 +41,9 @@ class CleanupAudits extends Command
      */
     public function handle(DiscordNotifier $discordNotifier)
     {
-        $auditCount = Audit::count();
-        $discordNotifier->notify("About to truncate {$auditCount} audit records...");
-        Audit::truncate();
-        $discordNotifier->notify("Truncated {$auditCount} audits!");
+        $deleteCount = Audit::where('created_at', '<=', Carbon::now()->subMonths(4))->delete();
+        if ($deleteCount > 0) {
+            $discordNotifier->notify("Deleted {$deleteCount} 4 month old audits.");
+        }
     }
 }

@@ -101,7 +101,9 @@ checks:
         argument_type_checks: true
 
 build:
-    tests: false,
+    tests:
+        override:
+            command: "php -v"
     dependencies:
         before:
             - mysql -uroot -e 'CREATE DATABASE IF NOT EXISTS hoomdossier'

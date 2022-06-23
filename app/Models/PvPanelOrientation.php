@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\PvPanelOrientation
  *
  * @property int $id
- * @property string $name
+ * @property array $name
  * @property string $short
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation query()
- * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation whereName($value)

@@ -6,6 +6,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\BuildingService
@@ -24,9 +25,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\ServiceType $serviceType
  * @property-read \App\Models\ServiceValue|null $serviceValue
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService query()
@@ -41,11 +43,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class BuildingService extends Model
+class BuildingService extends Model implements Auditable
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
-    use ToolSettingTrait;
+    use GetValueTrait,
+        GetMyValuesTrait,
+        ToolSettingTrait,
+        \App\Traits\Models\Auditable;
 
     /**
      * The attributes that should be cast to native types.

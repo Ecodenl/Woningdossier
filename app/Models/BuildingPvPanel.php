@@ -6,6 +6,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\BuildingPvPanel
@@ -24,9 +25,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\PvPanelOrientation|null $orientation
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel query()
@@ -43,11 +45,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class BuildingPvPanel extends Model
+class BuildingPvPanel extends Model implements Auditable
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
-    use ToolSettingTrait;
+    use GetValueTrait,
+        GetMyValuesTrait,
+        ToolSettingTrait,
+        \App\Traits\Models\Auditable;
 
     protected $fillable = [
         'building_id',

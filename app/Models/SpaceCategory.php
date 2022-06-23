@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $type
- * @property string $name
+ * @property array $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory query()
- * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory whereName($value)

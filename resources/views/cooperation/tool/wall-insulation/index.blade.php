@@ -345,9 +345,7 @@
                         @component('cooperation.frontend.layouts.parts.alert', [
                             'color' => 'red', 'dismissible' => false
                         ])
-                            <p class="text-red">
-                                <strong>@lang('wall-insulation.alerts.description.title')</strong>
-                            </p>
+                        <p class="text-red"></p>
                         @endcomponent
                     </div>
                 </div>
@@ -509,25 +507,19 @@
 
                         if (data.hasOwnProperty('insulation_advice')) {
                             $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
+                            $("#cavity-wall-alert p").text(data.insulation_advice);
 
                             // If the advice is spouwmuurisolatie and the walls are painted give them a alert
-                            if ((data.insulation_advice == "Spouwmuurisolatie") && ($('.is-painted').is(':checked') == true)) {
+                            if ($('#building-features-cavity-wall-1').is(':checked') && $('.is-painted').is(':checked')) {
                                 // Show the alert
                                 $('#cavity-wall-alert').show();
-
                                 // Hide the advice
                                 $("#advice-help").hide();
-                                // Hide the indications and measures
-                                // $('#taking-into-account').hide();
-                                // $('#indication-for-costs').hide();
                             } else {
                                 // hide the alert
                                 $('#cavity-wall-alert').hide();
-
                                 // Show the advice
                                 $("#advice-help").show();
-                                // $('#taking-into-account').show();
-                                // $('#indication-for-costs').show();
                             }
 
                         } else {

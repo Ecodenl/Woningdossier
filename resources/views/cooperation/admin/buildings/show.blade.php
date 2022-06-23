@@ -17,6 +17,14 @@
 
         <input type="hidden" name="user[id]" value="{{$user->id}}">
         <div class="panel-body">
+            @if(!$user->allowedAccess())
+            <div class="row">
+                <div class="col-sm-12">
+                    <p class="text-warning" style="font-weight: bold;">@lang('cooperation/admin/buildings.show.user-disallowed-access'):</p>
+                    <p class="text-primary">(@lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name]))</p>
+                </div>
+            </div>
+            @endif
             {{-- delete a user --}}
             <div class="row">
                 <div class="col-sm-12">

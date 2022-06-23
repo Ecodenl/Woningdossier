@@ -20,11 +20,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\Interest $interest
+ * @property-read Model|\Eloquent $interestedIn
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest query()

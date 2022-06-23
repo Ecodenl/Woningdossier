@@ -9,6 +9,40 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 
+/**
+ * App\Models\CustomMeasureApplication
+ *
+ * @property int $id
+ * @property array $name
+ * @property array $info
+ * @property string $hash
+ * @property int $building_id
+ * @property int $input_source_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
+ * @property-read \App\Models\InputSource $inputSource
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read int|null $user_action_plan_advices_count
+ * @method static Builder|CustomMeasureApplication allInputSources()
+ * @method static Builder|CustomMeasureApplication forBuilding($building)
+ * @method static Builder|CustomMeasureApplication forInputSource(\App\Models\InputSource $inputSource)
+ * @method static Builder|CustomMeasureApplication forMe(?\App\Models\User $user = null)
+ * @method static Builder|CustomMeasureApplication forUser($user)
+ * @method static Builder|CustomMeasureApplication newModelQuery()
+ * @method static Builder|CustomMeasureApplication newQuery()
+ * @method static Builder|CustomMeasureApplication query()
+ * @method static Builder|CustomMeasureApplication residentInput()
+ * @method static Builder|CustomMeasureApplication whereBuildingId($value)
+ * @method static Builder|CustomMeasureApplication whereCreatedAt($value)
+ * @method static Builder|CustomMeasureApplication whereHash($value)
+ * @method static Builder|CustomMeasureApplication whereId($value)
+ * @method static Builder|CustomMeasureApplication whereInfo($value)
+ * @method static Builder|CustomMeasureApplication whereInputSourceId($value)
+ * @method static Builder|CustomMeasureApplication whereName($value)
+ * @method static Builder|CustomMeasureApplication whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class CustomMeasureApplication extends Model
 {
     use HasTranslations,

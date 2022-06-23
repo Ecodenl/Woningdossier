@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\StepComment
@@ -14,15 +15,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $input_source_id
  * @property string|null $short
  * @property int $step_id
- * @property string $comment
+ * @property string|null $comment
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\Step $step
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment allInputSources()
- * @method static \Illuminate\Database\Eloquent\Builder|StepComment forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|StepComment forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment forMe(?\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|StepComment forUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment query()
@@ -37,10 +39,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class StepComment extends Model
+class StepComment extends Model implements Auditable
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
+    use GetValueTrait,
+        GetMyValuesTrait,
+        \App\Traits\Models\Auditable;
 
     protected $fillable = [
         'comment', 'input_source_id', 'building_id', 'short', 'step_id',

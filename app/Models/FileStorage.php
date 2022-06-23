@@ -30,9 +30,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\User $user
  * @method static Builder|FileStorage allInputSources()
  * @method static Builder|FileStorage beingProcessed()
- * @method static Builder|FileStorage forBuilding(\App\Models\Building $building)
+ * @method static Builder|FileStorage forBuilding($building)
  * @method static Builder|FileStorage forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder|FileStorage forMe(?\App\Models\User $user = null)
+ * @method static Builder|FileStorage forUser($user)
  * @method static Builder|FileStorage leaveOutPersonalFiles()
  * @method static Builder|FileStorage mostRecent(?\App\Models\Questionnaire $questionnaire = null)
  * @method static Builder|FileStorage newModelQuery()

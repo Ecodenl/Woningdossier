@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Jobs\CloneOpposingInputSource;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -29,7 +30,7 @@ class DuplicateDataForBuilding
 
         // when the current user for its current input source has no completed SUB steps
         // we will try to duplicate the data from a opposing input source, in this case the master.
-        if ($completedSubStepsExists === false) {
+        if ($completedSubStepsExists === false && Hoomdossier::user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT])) {
             Log::debug("User {$building->id} has no completed sub steps for input source {$inputSource->short}");
             // 9 out of 10 times the completed sub steps WILL exists for the inputSource
             // so ill do the other query inside here to prevent 1 extra query each request.

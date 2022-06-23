@@ -14,30 +14,37 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $measure_type
- * @property string $measure_name
+ * @property array $measure_name
+ * @property array|null $measure_info
  * @property string $short
  * @property string $application
  * @property float $costs
- * @property string $cost_unit
+ * @property array $cost_unit
  * @property float $minimal_costs
  * @property int $maintenance_interval
- * @property string $maintenance_unit
+ * @property array $maintenance_unit
  * @property int $step_id
+ * @property array|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
  * @property-read int|null $interests_count
+ * @property-read \App\Models\Step $step
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read int|null $user_action_plan_advices_count
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication query()
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereApplication($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereConfigurations($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCostUnit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCosts($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMaintenanceInterval($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMaintenanceUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureInfo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMinimalCosts($value)

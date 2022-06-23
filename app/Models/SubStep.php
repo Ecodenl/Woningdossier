@@ -10,9 +10,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * App\Models\SubStep
  *
- * @method static \Illuminate\Database\Eloquent\Builder|SubStep newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SubStep newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SubStep query()
+ * @property int $id
+ * @property array $name
+ * @property array $slug
+ * @property int $order
+ * @property array|null $conditions
+ * @property int $step_id
+ * @property int $sub_step_template_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
+ * @property-read \App\Models\Step $step
+ * @property-read \App\Models\SubStepTemplate $subStepTemplate
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestion[] $toolQuestions
+ * @property-read int|null $tool_questions_count
+ * @method static Builder|SubStep newModelQuery()
+ * @method static Builder|SubStep newQuery()
+ * @method static Builder|SubStep ordered()
+ * @method static Builder|SubStep query()
+ * @method static Builder|SubStep whereConditions($value)
+ * @method static Builder|SubStep whereCreatedAt($value)
+ * @method static Builder|SubStep whereId($value)
+ * @method static Builder|SubStep whereName($value)
+ * @method static Builder|SubStep whereOrder($value)
+ * @method static Builder|SubStep whereSlug($value)
+ * @method static Builder|SubStep whereStepId($value)
+ * @method static Builder|SubStep whereSubStepTemplateId($value)
+ * @method static Builder|SubStep whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class SubStep extends Model

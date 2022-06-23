@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property int $file_type_category_id
- * @property string $name
+ * @property array $name
  * @property string $short
  * @property string $content_type
  * @property \Illuminate\Support\Carbon|null $duration
@@ -22,10 +22,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\FileTypeCategory $category
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FileStorage[] $files
  * @property-read int|null $files_count
+ * @property-read array $translations
  * @method static \Illuminate\Database\Eloquent\Builder|FileType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|FileType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|FileType query()
- * @method static \Illuminate\Database\Eloquent\Builder|FileType translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|FileType whereContentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FileType whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|FileType whereDuration($value)

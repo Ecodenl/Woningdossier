@@ -10,20 +10,20 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Element
  *
  * @property int $id
- * @property string $name
+ * @property array $name
  * @property string $short
  * @property int $service_type_id
  * @property int $order
- * @property string $info
+ * @property array $info
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
  * @property-read \App\Models\ServiceType $serviceType
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ElementValue[] $values
  * @property-read int|null $values_count
  * @method static \Illuminate\Database\Eloquent\Builder|Element newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Element newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Element query()
- * @method static \Illuminate\Database\Eloquent\Builder|Element translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|Element whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Element whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Element whereInfo($value)

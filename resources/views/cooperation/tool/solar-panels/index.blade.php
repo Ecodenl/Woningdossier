@@ -9,7 +9,15 @@
 
         @include('cooperation.tool.includes.considerable', ['considerable' => $currentStep])
 
-        <div id="solar-panels">
+        @php
+            $toolQuestion = $hasSolarPanelsToolQuestion;
+            $humanReadableAnswer = null;
+            $disabled = false;
+            $masterInputSource = \App\Models\InputSource::findByShort('master');
+            $answer = old("filledInAnswers.{$toolQuestion->id}", $building->getAnswer($masterInputSource, $toolQuestion));
+        @endphp
+
+        <div id="solar-panels" x-data="{hasSolarPanels: '{{$answer}}' }">
             <div class="flex flex-row flex-wrap w-full">
                 <div class="w-full sm:w-1/2 sm:pr-3">
                     @component('cooperation.tool.components.step-question', [
@@ -70,61 +78,128 @@
                 </div>
             </div>
 
-            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
-                <div class="w-full sm:w-1/2">
-                    @component('cooperation.tool.components.step-question', [
-                        'id' => 'building_pv_panels.total_installed_power', 'translation' => App\Models\ToolQuestion::findByShort('total-installed-power')->name,
+            <div class="w-full">
 
-                        'required' => false
+
+            @component('cooperation.frontend.layouts.components.form-group', [
+                 'class' => 'form-group-heading',
+                 // 'defaultInputSource' => 'resident',
+                 // so we give the option to replace something in the question title
+                 'label' => __($toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"), ['name' => $humanReadableAnswer]),
+                 'inputName' => "filledInAnswers.{$toolQuestion->id}",
+                 'withInputSource' => ! $disabled,
+             ])
+                @slot('sourceSlot')
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                        'values' => $building->getAnswerForAllInputSources($toolQuestion),
+                        'toolQuestion' => $toolQuestion,
                     ])
-                        @slot('sourceSlot')
-                            @include('cooperation.tool.components.source-list', [
-                                'inputType' => 'input', 'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility,
-                                'userInputColumn' => 'building_pv_panels.total_installed_power'
-                            ])
-                        @endslot
+                @endslot
 
-                        <span class="input-group-prepend">@lang('general.unit.wp.title')</span>
-                        <input type="text" class="form-input" name="building_pv_panels[total_installed_power]"
-                               value="{{ old('building_pv_panels.total_installed_power', Hoomdossier::getMostCredibleValueFromCollection($pvPanelsOrderedOnInputSourceCredibility, 'total_installed_power', 0)) }}"/>
-                    @endcomponent
-                </div>
-                <div class="w-full sm:w-1/2">
-                    @component('cooperation.tool.components.step-question', [
-                        'id' => "building_services.{$totalSolarPanelService->id}.extra.year", 'translation' => App\Models\ToolQuestion::findByShort('solar-panels-placed-date')->name,
-                        'required' => false
-                    ])
-                        @slot('sourceSlot')
-                            @include('cooperation.tool.components.source-list', [
-                                'inputType' => 'input', 'userInputValues' => $totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility,
-                                'userInputColumn' => 'extra.year'
-                            ])
-                        @endslot
+                @slot('modalBodySlot')
+                    <p>
+                        {!! $toolQuestion->help_text !!}
+                    </p>
+                @endslot
+                    <div class="w-full flex space-x-4">
+                        @php
+                            $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
+                                $toolQuestion,
+                                $building,
+                                $masterInputSource,
+                                $cooperation
+                            );
+                        @endphp
+                        @foreach($questionValues as $toolQuestionValue)
+                            @php
+                                $id = $toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value'] ?? $toolQuestionValue['value'];
+                            @endphp
+                            <div class="radio-wrapper media-wrapper">
+                                <input type="radio"
+                                       id="{{$id}}"
+                                        x-model="hasSolarPanels"
+                                       name="filledInAnswers[{{$toolQuestion['id']}}]"
+                                       @if($toolQuestionValue['value'] === $answer)
+                                               checked="checked"
+                                       @endif
+                                       value="{{$toolQuestionValue['value']}}"
+                                       @if($disabled) disabled="disabled" @endif
 
-                        <span class="input-group-prepend">@lang('general.unit.year.title')</span>
-                        <input type="text" class="form-input" name="building_services[{{$totalSolarPanelService->id}}][extra][year]"
-                               value="{{ old("building_services.{$totalSolarPanelService->id}.extra.year", Hoomdossier::getMostCredibleValueFromCollection($totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility, 'extra.year')) }}"/>
-                    @endcomponent
-                </div>
+                                >
+                                <label for="{{$id}}">
+                <span class="media-icon-wrapper">
+                    <i class="{{$toolQuestionValue['extra']['icon'] ?? ''}}"></i>
+                </span>
+                                    <span class="checkmark"></span>
+                                    <span>{{$toolQuestionValue['name']}}</span>
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+
+            @endcomponent
             </div>
-            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
-                <div class="w-full sm:w-1/2">
-                    @component('cooperation.tool.components.step-question', [
-                        'id' => "building_services.{$totalSolarPanelService->id}.extra.value", 'translation' => App\Models\ToolQuestion::findByShort('solar-panel-count')->name,
-                        'required' => false
-                    ])
-                        @slot('sourceSlot')
-                            @include('cooperation.tool.components.source-list', [
-                                'inputType' => 'input', 'userInputValues' => $totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility,
-                                'userInputColumn' => 'extra.value'
-                            ])
-                        @endslot
 
-                        <span class="input-group-prepend">@lang('general.unit.pieces.title')</span>
-                        <input type="text" class="form-input" name="building_services[{{$totalSolarPanelService->id}}][extra][value]"
-                               value="{{ old("building_services.{$totalSolarPanelService->id}.extra.value", Hoomdossier::getMostCredibleValueFromCollection($totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility, 'extra.value', 0)) }}"/>
-                    @endcomponent
+            <template x-if="hasSolarPanels == 'yes'">
+                <div class="flex flex-row flex-wrap w-full sm:pad-x-6" >
+                    <div class="w-full sm:w-1/2">
+                        @component('cooperation.tool.components.step-question', [
+                            'id' => 'building_pv_panels.total_installed_power', 'translation' => App\Models\ToolQuestion::findByShort('total-installed-power')->name,
+
+                            'required' => false
+                        ])
+                            @slot('sourceSlot')
+                                @include('cooperation.tool.components.source-list', [
+                                    'inputType' => 'input', 'userInputValues' => $pvPanelsOrderedOnInputSourceCredibility,
+                                    'userInputColumn' => 'building_pv_panels.total_installed_power'
+                                ])
+                            @endslot
+
+                            <span class="input-group-prepend">@lang('general.unit.wp.title')</span>
+                            <input type="text" class="form-input" name="building_pv_panels[total_installed_power]"
+                                   value="{{ old('building_pv_panels.total_installed_power', Hoomdossier::getMostCredibleValueFromCollection($pvPanelsOrderedOnInputSourceCredibility, 'total_installed_power', 0)) }}"/>
+                        @endcomponent
+                    </div>
+                    <div class="w-full sm:w-1/2">
+                        @component('cooperation.tool.components.step-question', [
+                            'id' => "building_services.{$totalSolarPanelService->id}.extra.year", 'translation' => App\Models\ToolQuestion::findByShort('solar-panels-placed-date')->name,
+                            'required' => false
+                        ])
+                            @slot('sourceSlot')
+                                @include('cooperation.tool.components.source-list', [
+                                    'inputType' => 'input', 'userInputValues' => $totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility,
+                                    'userInputColumn' => 'extra.year'
+                                ])
+                            @endslot
+
+                            <span class="input-group-prepend">@lang('general.unit.year.title')</span>
+                            <input type="text" class="form-input" name="building_services[{{$totalSolarPanelService->id}}][extra][year]"
+                                   value="{{ old("building_services.{$totalSolarPanelService->id}.extra.year", Hoomdossier::getMostCredibleValueFromCollection($totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility, 'extra.year')) }}"/>
+                        @endcomponent
+                    </div>
                 </div>
+            </template>
+
+            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                    <div class="w-full sm:w-1/2" >
+                <template x-if="hasSolarPanels == 'yes'">
+                        @component('cooperation.tool.components.step-question', [
+                            'id' => "building_services.{$totalSolarPanelService->id}.extra.value", 'translation' => App\Models\ToolQuestion::findByShort('solar-panel-count')->name,
+                            'required' => false
+                        ])
+                            @slot('sourceSlot')
+                                @include('cooperation.tool.components.source-list', [
+                                    'inputType' => 'input', 'userInputValues' => $totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility,
+                                    'userInputColumn' => 'extra.value'
+                                ])
+                            @endslot
+
+                            <span class="input-group-prepend">@lang('general.unit.pieces.title')</span>
+                            <input type="text" class="form-input" name="building_services[{{$totalSolarPanelService->id}}][extra][value]"
+                                   value="{{ old("building_services.{$totalSolarPanelService->id}.extra.value", Hoomdossier::getMostCredibleValueFromCollection($totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility, 'extra.value', 0)) }}"/>
+                        @endcomponent
+                </template>
+                    </div>
                 <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', [
                         'id' => 'building_pv_panels.number', 'translation' => 'solar-panels.number',

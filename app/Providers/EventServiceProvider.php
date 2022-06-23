@@ -16,6 +16,7 @@ use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Events\UserChangedHisEmailEvent;
 use App\Events\UserRevokedAccessToHisBuilding;
+use App\Listeners\AuditedListener;
 use App\Listeners\DeleteUserActionPlanAdvicesForStep;
 use App\Listeners\DossierResetListener;
 use App\Listeners\FillingToolForUserListener;
@@ -41,6 +42,8 @@ use App\Listeners\StepDataHasBeenChangedListener;
 use App\Listeners\SuccessFullLoginListener;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use OwenIt\Auditing\Events\Audited;
+use OwenIt\Auditing\Events\Auditing;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -102,6 +105,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         StepCleared::class => [
             DeleteUserActionPlanAdvicesForStep::class,
+        ],
+        Audited::class => [
+            AuditedListener::class,
         ],
     ];
 

@@ -41,6 +41,10 @@ class ToolQuestionTypesTableSeeder extends Seeder
                 'short' => 'textarea'
             ],
             [
+                'name'  => ['nl' => 'Tekstvak, opent in popup'],
+                'short' => 'textarea-popup'
+            ],
+            [
                 'name' => ['nl' => 'Prioriteiten meter'],
                 'short' => 'rating-slider'
             ],

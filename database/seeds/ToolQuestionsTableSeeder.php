@@ -73,6 +73,7 @@ class ToolQuestionsTableSeeder extends Seeder
         $textType = ToolQuestionType::findByShort('text');
         $sliderType = ToolQuestionType::findByShort('slider');
         $textareaType = ToolQuestionType::findByShort('textarea');
+        $textareaPopupType = ToolQuestionType::findByShort('textarea-popup');
         $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
 
         // Input sources
@@ -369,7 +370,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'for_specific_input_source_id' => $residentInputSource->id,
                             'short' => 'building-data-comment-resident',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $textareaPopupType->id
                         ],
                         [
                             'validation' => ['nullable', 'string'],
@@ -377,7 +378,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'for_specific_input_source_id' => $coachInputSource->id,
                             'short' => 'building-data-comment-coach',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $textareaPopupType->id
                         ],
                     ],
                 ],
@@ -604,7 +605,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'for_specific_input_source_id' => $residentInputSource->id,
                             'short' => 'usage-quick-scan-comment-resident',
                             'translation' => 'cooperation/tool/general-data/usage.index.comment',
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $textareaPopupType->id
                         ],
                         [
                             'validation' => ['nullable', 'string'],
@@ -612,7 +613,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'for_specific_input_source_id' => $coachInputSource->id,
                             'short' => 'usage-quick-scan-comment-coach',
                             'translation' => 'cooperation/tool/general-data/usage.index.comment',
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $textareaPopupType->id
                         ],
                     ],
                 ],
@@ -708,7 +709,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'for_specific_input_source_id' => $residentInputSource->id,
                             'short' => 'living-requirements-comment-resident',
                             'translation' => 'cooperation/tool/general-data/interest.index.comment',
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $textareaPopupType->id
                         ],
                         [
                             'validation' => ['nullable', 'string'],
@@ -716,7 +717,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'for_specific_input_source_id' => $coachInputSource->id,
                             'short' => 'living-requirements-comment-coach',
                             'translation' => 'cooperation/tool/general-data/interest.index.comment',
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $textareaPopupType->id
                         ],
                     ],
                 ],
@@ -1344,7 +1345,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'for_specific_input_source_id' => $residentInputSource->id,
                             'short' => 'residential-status-element-comment-resident',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $textareaPopupType->id,
                         ],
                         [
                             'validation' => ['nullable', 'string'],
@@ -1352,7 +1353,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'for_specific_input_source_id' => $coachInputSource->id,
                             'short' => 'residential-status-element-comment-coach',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $textareaPopupType->id,
                         ],
                         [
                             'validation' => ['nullable', 'string'],
@@ -1360,7 +1361,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'for_specific_input_source_id' => $residentInputSource->id,
                             'short' => 'residential-status-service-comment-resident',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $textareaPopupType->id,
                         ],
                         [
                             'validation' => ['nullable', 'string'],
@@ -1368,7 +1369,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'for_specific_input_source_id' => $coachInputSource->id,
                             'short' => 'residential-status-service-comment-coach',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $textareaPopupType->id,
                         ],
                     ],
                 ],

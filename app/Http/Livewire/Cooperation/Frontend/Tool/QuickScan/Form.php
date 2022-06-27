@@ -53,6 +53,7 @@ class Form extends Component
     public $toolQuestions;
 
     public bool $dirty;
+    public $originalAnswers = [];
     public $filledInAnswers = [];
     public $filledInAnswersForAllInputSources = [];
 
@@ -75,8 +76,13 @@ class Form extends Component
 
         $this->toolQuestions = $subStep->toolQuestions()->orderBy('order')->get();
         $this->setFilledInAnswers();
+        $this->originalAnswers = $this->filledInAnswers;
     }
 
+    public function resetToOriginalAnswer($toolQuestionId)
+    {
+        $this->filledInAnswers[$toolQuestionId] = $this->originalAnswers[$toolQuestionId];
+    }
 
     public function render()
     {
@@ -163,6 +169,80 @@ class Form extends Component
         }
     }
 
+    public function saveSpecificToolQuestion($toolQuestionId)
+    {
+        if (HoomdossierSession::isUserObserving()) {
+            return null;
+        }
+        if (!empty($this->rules)) {
+            $validator = Validator::make([
+                "filledInAnswers.{$toolQuestionId}" => $this->filledInAnswers[$toolQuestionId]
+            ], $this->rules["filledInAnswers.{$toolQuestionId}"], [], $this->attributes);
+
+            // Translate values also
+            $defaultValues = __('validation.values.defaults');
+
+            $validator->addCustomValues([
+                "filledInAnswers.{$toolQuestionId}" => $defaultValues,
+            ]);
+
+            if ($validator->fails()) {
+                $toolQuestion = $this->toolQuestions->find($toolQuestionId);
+                // Validator failed, let's put it back as the user format
+                if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                    $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
+                    $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::formatNumberForUser($this->filledInAnswers[$toolQuestion->id],
+                        $isInteger, false);
+                }
+
+                $this->setToolQuestions();
+
+                $this->dispatchBrowserEvent('validation-failed');
+            }
+
+            $validator->validate();
+        }
+
+        // Turns out, default values exist! We need to check if the tool questions have answers, else
+        // they might not save...
+        if (!$this->dirty) {
+            $toolQuestion = ToolQuestion::find($toolQuestionId);
+
+            // Define if we should check this question...
+            if ($this->building->user->account->can('answer', $toolQuestion)) {
+                $currentAnswer = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->currentInputSource, $toolQuestion);
+                $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+
+                // Master input source is important. Ensure both are set
+                if (is_null($currentAnswer) || is_null($masterAnswer)) {
+                    $this->dirty = true;
+                }
+            }
+        }
+
+        // Answers have been updated, we save them and dispatch a recalculate
+        if ($this->dirty) {
+            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+                // Define if we should answer this question...
+                /** @var ToolQuestion $toolQuestion */
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                    if (is_null($toolQuestion->save_in)) {
+                        ToolQuestionService::init($toolQuestion)
+                            ->building($this->building)
+                            ->currentInputSource($this->currentInputSource)
+                            ->saveToolQuestionCustomValues($givenAnswer);
+                    } else {
+                        // this *can't* handle a checkbox / multiselect answer.
+                        $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+                    }
+
+                }
+            }
+        }
+    }
+
+
     public function save($nextUrl)
     {
         if (HoomdossierSession::isUserObserving()) {
@@ -176,7 +256,8 @@ class Form extends Component
             }
         }
 
-        if (! empty($this->rules)) {
+
+        if (!empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules, [], $this->attributes);

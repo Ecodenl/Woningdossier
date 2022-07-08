@@ -97,7 +97,7 @@ class GenerateTotalReport implements ShouldQueue
             }, 'energyHabit' => function ($query) use ($inputSource) {
                 $query->forInputSource($inputSource);
             }])
-            ->chunkById(200, function($users) use ($headers, $cooperation, $inputSource, $anonymized, &$rows) {
+            ->chunkById(100, function($users) use ($headers, $cooperation, $inputSource, $anonymized, &$rows) {
                 foreach ($users as $user) {
                     $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
                 }
@@ -118,6 +118,7 @@ class GenerateTotalReport implements ShouldQueue
 
     public function failed(\Exception $exception)
     {
+        Log::debug("GenerateTotalReport failed: {$this->cooperation->id}");
         $this->fileStorage->delete();
     }
 }

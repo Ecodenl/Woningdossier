@@ -118,6 +118,7 @@ class GenerateTotalReport implements ShouldQueue
 
     public function failed(\Exception $exception)
     {
+        Log::debug("GenerateTotalReport failed: {$this->cooperation->id}");
         $this->fileStorage->delete();
     }
 }

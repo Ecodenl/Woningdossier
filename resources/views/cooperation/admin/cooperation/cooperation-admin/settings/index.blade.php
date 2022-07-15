@@ -44,7 +44,7 @@
                         </div>
 
                         <div class="row" style="margin-top: 1rem;">
-                            @foreach(\App\Helpers\Models\CooperationSettingHelper::getAvailableSettings() as $short)
+                            @foreach(CooperationSettingHelper::getAvailableSettings() as $short)
                                 @php 
                                     $kebabShort = Str::kebab(Str::studly($short));
                                     $setting = $cooperationSettings->where('short', $short)->first();

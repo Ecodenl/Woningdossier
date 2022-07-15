@@ -21,11 +21,11 @@ class CooperationSettingHelper
         return CooperationSetting::where('cooperation_id', $cooperationId)->get();
     }
 
-    public static function getSettingValue(int $cooperationId, string $short)
+    public static function getSettingValue(int $cooperationId, string $short, string $default = null)
     {
         return optional(CooperationSetting::where('cooperation_id', $cooperationId)
             ->forShort($short)
-            ->first())->value;
+            ->first())->value ?? $default;
     }
 
     public static function syncSettings(int $cooperationId, array $data)

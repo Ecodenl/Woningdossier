@@ -36,7 +36,7 @@
                     </a>
                     <br><br>
                     @lang('auth.login.no-account')
-                    <a href="{{ route('cooperation.register') }}">
+                    <a href="{{ CooperationSettingHelper::getSettingValue($cooperation->id, CooperationSettingHelper::SHORT_REGISTER_URL, route('cooperation.register')) }}">
                         @lang('auth.register.form.header')
                     </a>
                 @endif

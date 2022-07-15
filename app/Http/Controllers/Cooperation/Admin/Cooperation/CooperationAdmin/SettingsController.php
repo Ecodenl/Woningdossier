@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\MediaHelper;
+use App\Helpers\Models\CooperationSettingHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\SettingsFormRequest;
 use App\Models\Cooperation;
@@ -13,15 +14,21 @@ use App\Models\Media;
 
 class SettingsController extends Controller
 {
-    public function index()
+    public function index(Cooperation $cooperation)
     {
-        return view('cooperation.admin.cooperation.cooperation-admin.settings.index');
+        $cooperationSettings = CooperationSettingHelper::getCooperationSettings($cooperation->id);
+
+        return view('cooperation.admin.cooperation.cooperation-admin.settings.index', compact('cooperationSettings'));
     }
 
-    public function store(SettingsFormRequest $request, Cooperation $cooperation) {
+    public function store(SettingsFormRequest $request, Cooperation $cooperation)
+    {
+        $cooperationSettings = $request->validated()['cooperation_settings'];
+        CooperationSettingHelper::syncSettings($cooperation->id, $cooperationSettings);
+
         $tags = MediaHelper::getTags();
         foreach ($tags as $tag) {
-            $file = $request->file('medias.'.$tag);
+            $file = $request->file('medias.' . $tag);
 
             if ($file instanceof UploadedFile) {
                 $media = $cooperation->firstMedia($tag);

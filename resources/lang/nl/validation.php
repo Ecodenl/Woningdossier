@@ -299,6 +299,9 @@ return [
         'cooperation_measure_applications.costs.to' => 'Investering tot',
         'cooperation_measure_applications.savings_money' => 'Besparing',
         'cooperation_measure_applications.extra.icon' => 'Icoon',
+
+        // Cooperation settings
+        'cooperation_settings.' . \App\Helpers\Models\CooperationSettingHelper::SHORT_REGISTER_URL => 'register URL',
     ],
 
     'values' => [

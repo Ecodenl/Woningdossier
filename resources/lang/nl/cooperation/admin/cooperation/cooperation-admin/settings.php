@@ -10,4 +10,11 @@ return [
     'store' => [
         'success' => 'Instellingen bijgewerkt',
     ],
+
+    'form' => [
+        'register-url' => [
+            'label' => 'Registratie URL',
+            'placeholder' => 'https://example.com/register',
+        ],
+    ],
 ];

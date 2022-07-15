@@ -127,4 +127,10 @@ class Cooperation extends Model
                 ->get()->toArray()
         );
     }
+
+    # Relations
+    public function cooperationSettings(): HasMany
+    {
+        return $this->hasMany(CooperationSetting::class);
+    }
 }

@@ -23,7 +23,7 @@ class CooperationSettingHelper
 
     public static function getSettingValue(int $cooperationId, string $short)
     {
-        return optional(CooperationSetting::where('coopereration_id', $cooperationId)
+        return optional(CooperationSetting::where('cooperation_id', $cooperationId)
             ->forShort($short)
             ->first())->value;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Models;
 
+use App\Models\Cooperation;
 use App\Models\CooperationSetting;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -16,23 +17,20 @@ class CooperationSettingHelper
         ];
     }
 
-    public static function getCooperationSettings(int $cooperationId): Collection
+    public static function getSettingValue(Cooperation $cooperation, string $short, string $default = null)
     {
-        return CooperationSetting::where('cooperation_id', $cooperationId)->get();
+        return optional(
+                $cooperation->cooperationSettings()
+                    ->forShort($short)
+                    ->first()
+            )->value ?? $default;
     }
 
-    public static function getSettingValue(int $cooperationId, string $short, string $default = null)
-    {
-        return optional(CooperationSetting::where('cooperation_id', $cooperationId)
-            ->forShort($short)
-            ->first())->value ?? $default;
-    }
-
-    public static function syncSettings(int $cooperationId, array $data)
+    public static function syncSettings(Cooperation $cooperation, array $data)
     {
         foreach ($data as $short => $value) {
             CooperationSetting::updateOrCreate(
-                ['short' => $short, 'cooperation_id' => $cooperationId],
+                ['short' => $short, 'cooperation_id' => $cooperation->id],
                 compact('value'),
             );
         }

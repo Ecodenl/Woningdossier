@@ -58,7 +58,7 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm(Cooperation $cooperation)
     {
-        $registerUrl = CooperationSettingHelper::getSettingValue($cooperation->id, CooperationSettingHelper::SHORT_REGISTER_URL);
+        $registerUrl = CooperationSettingHelper::getSettingValue($cooperation, CooperationSettingHelper::SHORT_REGISTER_URL);
 
         if (! empty($registerUrl)) {
             return redirect()->away($registerUrl);

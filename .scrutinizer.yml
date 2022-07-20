@@ -28,7 +28,7 @@ checks:
         properties_in_camelcaps: true
         precedence_mistakes: true
         precedence_in_conditions: true
-        phpunit_assertions: true
+        phpunit_assertions: false
         parse_doc_comments: true
         parameters_in_camelcaps: true
         parameter_non_unique: true
@@ -101,14 +101,21 @@ checks:
         argument_type_checks: true
 
 build:
+    tests:
+        override:
+            command: "php -v"
     dependencies:
         before:
             - mysql -uroot -e 'CREATE DATABASE IF NOT EXISTS hoomdossier'
+            - composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
             - php artisan migrate:fresh --seed
     environment:
-        php: '7.2'
+        php:
+            version: '7.4'
+            pecl_extensions:
+                - zip
         mysql: '5.7'
-        node: '8.1'
+        node: '13.7'
         hosts:
             laravel.dev: '127.0.0.1'
         variables:
@@ -126,24 +133,5 @@ build:
             - node_modules
             - vendor/
             - ~/.composer/cache/
-    nodes:
-        tests: true
-        analysis:
-            tests:
-                before:
-                    - chmod -R 777 storage
-                    - chmod -R 777 bootstrap/cache
-                    - npm run production
-                override:
-                    - phpcs-run
-                    - php-scrutinizer-run
-                    -
-                        command: 'vendor/bin/phpunit --coverage-clover=woondossier-report'
-                        coverage:
-                            file: 'woondossier-report'
-                            format: 'clover'
-#filter:
-#    excluded_paths:
-#        - tests/*
 filter:
   paths: [app/*]

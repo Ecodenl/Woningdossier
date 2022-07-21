@@ -200,11 +200,15 @@ return [
     */
 
     'aliases' => [
+        // Custom
         'MediaHelper' => \App\Helpers\MediaHelper::class,
         'RoleHelper' => \App\Helpers\RoleHelper::class,
         'RouteLogic' => \App\Helpers\Blade\RouteLogic::class,
 //        'NumberFormatter' => \App\Helpers\NumberFormatter::class, // We cannot alias NumberFormatter due to the native PHP class (https://www.php.net/manual/en/class.numberformatter.php)
         'Hoomdossier' => \App\Helpers\Hoomdossier::class,
+        'CooperationSettingHelper' => \App\Helpers\Models\CooperationSettingHelper::class,
+
+        // Default
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,

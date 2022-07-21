@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Events\Registered;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
+use App\Helpers\Models\CooperationSettingHelper;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterFormRequest;
@@ -51,10 +52,18 @@ class RegisterController extends Controller
     /**
      * Show the application registration form.
      *
-     * @return \Illuminate\Http\Response|\Illuminate\View\View
+     * @param  \App\Models\Cooperation  $cooperation
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function showRegistrationForm()
+    public function showRegistrationForm(Cooperation $cooperation)
     {
+        $registerUrl = CooperationSettingHelper::getSettingValue($cooperation, CooperationSettingHelper::SHORT_REGISTER_URL);
+
+        if (! empty($registerUrl)) {
+            return redirect()->away($registerUrl);
+        }
+
         return view('cooperation.auth.register');
     }
 

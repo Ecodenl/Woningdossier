@@ -171,6 +171,11 @@ return [
             'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
             'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
         ],
+
+        'cooperation_settings.register_url' => [
+            'url' => 'Het formaat is ongeldig, de url moet beginnen met https:// of http://.'
+        ],
+
     ],
     'custom-rules' => [
         'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',
@@ -197,7 +202,6 @@ return [
             ],
         ],
     ],
-
 
     // note, when a key needs a wildcard add it to the custom array.
     // A wildcard wont work in the attributes array but will in the custom array, needs more work but at least we dont need to hardcode the * numbers.
@@ -299,6 +303,9 @@ return [
         'cooperation_measure_applications.costs.to' => 'Investering tot',
         'cooperation_measure_applications.savings_money' => 'Besparing',
         'cooperation_measure_applications.extra.icon' => 'Icoon',
+
+        // Cooperation settings
+        'cooperation_settings.' . \App\Helpers\Models\CooperationSettingHelper::SHORT_REGISTER_URL => 'register URL',
     ],
 
     'values' => [

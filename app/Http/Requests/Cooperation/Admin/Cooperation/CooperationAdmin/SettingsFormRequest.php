@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use App\Helpers\Models\CooperationSettingHelper;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SettingsFormRequest extends FormRequest
@@ -25,7 +26,9 @@ class SettingsFormRequest extends FormRequest
     {
         return [
             'medias.logo' => 'nullable|image',
-            'medias.background' => 'nullable|image'
+            'medias.background' => 'nullable|image',
+
+            'cooperation_settings.' . CooperationSettingHelper::SHORT_REGISTER_URL => ['nullable', 'url'],
         ];
     }
 }

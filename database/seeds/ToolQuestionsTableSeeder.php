@@ -929,6 +929,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'order' => 5,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
+                        // heat source
                         [
                             'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'heat-source',
@@ -964,6 +965,52 @@ class ToolQuestionsTableSeeder extends Seeder
                                     'name' => 'Anders...',
                                     'extra' => [
                                         'icon' => 'icon-other',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        // heat source warm tap water
+                        [
+                            'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                            'short' => 'heat-source-warm-tap-water',
+                            'translation' => "Wat word er gebruikt voor warm tapwater",
+                            'tool_question_type_id' => $checkboxIconType->id,
+                            'options' => ['value' => ['hr-boiler'],],
+                            'tool_question_custom_values' => [
+                                'hr-boiler' => [
+                                    'name' => 'Gasketel',
+                                    'extra' => [
+                                        'icon' => 'icon-central-heater-gas',
+                                    ],
+                                ],
+                                'kitchen-geyser' => [
+                                    'name' => 'Bad/keuken geiser',
+                                    'extra' => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                ],
+                                'electric-boiler' => [
+                                    'name' => 'Elektrische boiler',
+                                    'extra' => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                ],
+                                'heat-pump' => [
+                                    'name' => 'Warmtepomp',
+                                    'extra' => [
+                                        'icon' => 'icon-heat-pump',
+                                    ],
+                                ],
+                                'heat-pump-boiler' => [
+                                    'name' => 'Warmtepompboiler',
+                                    'extra' => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                ],
+                                'district-heating' => [
+                                    'name' => 'Stadsverwarming',
+                                    'extra' => [
+                                        'icon' => 'icon-district-heating',
                                     ],
                                 ],
                             ],

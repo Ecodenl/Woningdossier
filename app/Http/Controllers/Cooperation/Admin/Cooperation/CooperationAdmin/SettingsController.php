@@ -41,7 +41,7 @@ class SettingsController extends Controller
 
                 // Upload the new media, replace file if it already exists
                 $media = MediaUploader::fromSource($file)
-                    ->onDuplicateReplace()
+                    ->onDuplicateUpdate()
                     ->toDestination('uploads', $cooperation->slug)
                     ->upload();
 

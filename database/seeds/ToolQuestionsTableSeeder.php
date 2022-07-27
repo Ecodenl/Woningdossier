@@ -933,7 +933,7 @@ class ToolQuestionsTableSeeder extends Seeder
                         [
                             'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'heat-source',
-                            'translation' => "Wat gebruikt u voor de verwarming en warm water?",
+                            'translation' => "Wat gebruikt u voor de verwarming",
                             'tool_question_type_id' => $checkboxIconType->id,
                             'options' => ['value' => ['hr-boiler'],],
                             'tool_question_custom_values' => [
@@ -1159,8 +1159,38 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ]
                 ],
-                'Zonnenboiler' => [
+                '50 graden test' => [
                     'order' => 9,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'hr-boiler',
+                            ],
+                        ],
+                    ],
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                            'short' => 'fifty-degree-test',
+                            // was current-state -> hoe word de woning nu verwarmd
+                            'translation' => "Is de 50 gradentest geslaagd?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_custom_values' => [
+                                'yes' => [
+                                    'name' => 'Ja',
+                                ],
+                                'no' => [
+                                    'name' => 'Nee',
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
+                'Zonnenboiler' => [
+                    'order' => 10,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -1191,7 +1221,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Ventilatie' => [
-                    'order' => 10,
+                    'order' => 11,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -1274,7 +1304,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Kierdichting' => [
-                    'order' => 11,
+                    'order' => 12,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -1298,7 +1328,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 'Zonnepanelen' => [
-                    'order' => 12,
+                    'order' => 13,
                     'sub_step_template_id' => $template2rows3top1bottom->id,
                     'questions' => [
                         [
@@ -1383,7 +1413,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'Samenvatting woningstatus' => [
                     'slug' => 'samenvatting-woonstatus',
-                    'order' => 13,
+                    'order' => 14,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [

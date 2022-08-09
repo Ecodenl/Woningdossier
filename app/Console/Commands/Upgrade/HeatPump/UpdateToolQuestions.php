@@ -40,7 +40,19 @@ class UpdateToolQuestions extends Command
     {
         \Artisan::call('db:seed', ['--class' => \ToolQuestionsTableSeeder::class]);
 
-
         ToolQuestion::findByShort('heat-source')->update(['name' => ['nl' => 'Wat wordt er gebruikt voor verwarming']]);
+
+        $heatPumpType = ToolQuestion::findByShort('heat-pump-type');
+        $heatPumpType->update(['name' => ['nl' => 'Wat voor type warmtepomp is er?']]);
+
+        $heatPumpValues = [
+            'Hybride warmtepomp met buitenlucht',
+            'Hybride warmtepomp met ventilatielucht',
+            'Hybride warmtepomp met pvt panelen',
+            'Volledige warmtepomp met buitenlucht',
+            'Volledige warmpteomp met bodemwarmte',
+            'Volledige warmpteomp met pvt panelen',
+            'Warmtempompboiler'
+        ];
     }
 }

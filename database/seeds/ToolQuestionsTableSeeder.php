@@ -831,38 +831,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ]
                 ],
-                // TODO: Decided to do this later, or different. Might need to make changes after production release
-//                'Glasisolatie' => [
-//                    'order' => 3???,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        [
-//                            'validation' => ['required', 'exists:element_values,id'],
-//                            'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
-//                            'short' => 'least-insulating-glass-type',
-//                            'translation' => "Wat is de minst isolerende glassoort in het huis?",
-//                            'tool_question_type_id' => $radioIconType->id,
-//                            'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
-//                            'extra' => [
-//                                'column' => 'order',
-//                                'data' => [
-//                                    0 => [
-//                                        'icon' => 'icon-glass-single',
-//                                    ],
-//                                    1 => [
-//                                        'icon' => 'icon-glass-double',
-//                                    ],
-//                                    2 => [
-//                                        'icon' => 'icon-glass-hr-dp',
-//                                    ],
-//                                    3 => [
-//                                        'icon' => 'icon-glass-hr-tp',
-//                                    ],
-//                                ],
-//                            ],
-//                        ],
-//                    ]
-//                ],
                 'Glasisolatie eerste woonlaag' => [
                     'order' => 3,
                     'sub_step_template_id' => $templateDefault->id,
@@ -1017,49 +985,34 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ]
                 ],
-                'Warmtepomp' => [
+                'Zonnenboiler' => [
                     'order' => 6,
                     'sub_step_template_id' => $templateDefault->id,
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'heat-source',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'heat-pump',
-                            ],
-                        ],
-                    ],
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:element_values,id'],
-                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
-                            'short' => 'heat-pump-type',
-                            'translation' => "Heeft u een warmtepomp?",
-                            'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
+                            'save_in' => "building_services.{$heater->id}.service_value_id",
+                            'short' => 'heater-type',
+                            'translation' => "Heeft u een zonneboiler?",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => $heater->values()->orderBy('order')->get(),
                             'extra' => [
                                 'column' => 'calculate_value',
                                 'data' => [
-                                    1 => [],
-                                    2 => [],
-                                    3 => [],
-                                    4 => [],
-                                    5 => [],
+                                    1 => [
+                                        'icon' => 'icon-sun-boiler-none',
+                                    ],
+                                    2 => [
+                                        'icon' => 'icon-sun-boiler-hot-water',
+                                    ],
+                                    3 => [
+                                        'icon' => 'icon-sun-boiler-heating',
+                                    ],
+                                    4 => [
+                                        'icon' => 'icon-sun-boiler-both',
+                                    ],
                                 ],
                             ],
-                        ],
-                        [
-                            'validation' => [
-                                // required when the heat pump is available
-                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
-                                'numeric',
-                                'integer',
-                                'between:1900,' . date('Y')
-                            ],
-                            'short' => 'heat-pump-placed-date',
-                            'placeholder' => 'Voer een jaartal in',
-                            'translation' => "Wanneer is de warmtepomp geplaatst?",
-                            'tool_question_type_id' => $textType->id,
                         ],
                     ]
                 ],
@@ -1108,14 +1061,61 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ]
                 ],
-                'Hoe is de verwarming' => [
+
+                'Warmtepomp' => [
                     'order' => 8,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                        ],
+                    ],
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:element_values,id'],
+                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
+                            'short' => 'heat-pump-type',
+                            'translation' => "Heeft u een warmtepomp?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [],
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                    5 => [],
+                                ],
+                            ],
+                        ],
+                        [
+                            'validation' => [
+                                // required when the heat pump is available
+                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
+                                'numeric',
+                                'integer',
+                                'between:1900,' . date('Y')
+                            ],
+                            'short' => 'heat-pump-placed-date',
+                            'placeholder' => 'Voer een jaartal in',
+                            'translation' => "Wanneer is de warmtepomp geplaatst?",
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                    ]
+                ],
+
+                'Hoe is de verwarming' => [
+                    'order' => 9,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'building-heating-application',
-                            // was current-state -> hoe word de woning nu verwarmd
                             'translation' => "Hoe is de verwarming?",
                             'tool_question_type_id' => $checkboxIconType->id,
                             'tool_question_custom_values' => [
@@ -1160,7 +1160,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     ]
                 ],
                 '50 graden test' => [
-                    'order' => 9,
+                    'order' => 10,
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
@@ -1175,7 +1175,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         [
                             'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'fifty-degree-test',
-                            // was current-state -> hoe word de woning nu verwarmd
                             'translation' => "Is de 50 gradentest geslaagd?",
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_custom_values' => [
@@ -1189,37 +1188,7 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ]
                 ],
-                'Zonnenboiler' => [
-                    'order' => 10,
-                    'sub_step_template_id' => $templateDefault->id,
-                    'questions' => [
-                        [
-                            'validation' => ['required', 'exists:element_values,id'],
-                            'save_in' => "building_services.{$heater->id}.service_value_id",
-                            'short' => 'heater-type',
-                            'translation' => "Heeft u een zonneboiler?",
-                            'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => $heater->values()->orderBy('order')->get(),
-                            'extra' => [
-                                'column' => 'calculate_value',
-                                'data' => [
-                                    1 => [
-                                        'icon' => 'icon-sun-boiler-none',
-                                    ],
-                                    2 => [
-                                        'icon' => 'icon-sun-boiler-hot-water',
-                                    ],
-                                    3 => [
-                                        'icon' => 'icon-sun-boiler-heating',
-                                    ],
-                                    4 => [
-                                        'icon' => 'icon-sun-boiler-both',
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ]
-                ],
+
                 'Ventilatie' => [
                     'order' => 11,
                     'sub_step_template_id' => $templateDefault->id,
@@ -1327,6 +1296,7 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ]
                 ],
+
                 'Zonnepanelen' => [
                     'order' => 13,
                     'sub_step_template_id' => $template2rows3top1bottom->id,
@@ -1411,9 +1381,36 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ]
                 ],
+
+                'Warmtepomp interesse' => [
+                    'order' => 14,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                            'short' => 'interested-in-heat-pump',
+                            'translation' => "Heb je interesse in een warmtepomp",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_custom_values' => [
+                                'no' => [
+                                    'name' => 'Nee',
+                                ],
+                                'yes-hybrid-heat-pump' => [
+                                    'name' => 'Ja, hybride warmtepomp',
+                                ],
+                                'yes-full-heat-pump' => [
+                                    'name' => 'Ja, volledige warmtepomp',
+                                ],
+                                'unsure' => [
+                                    'name' => 'Weet ik nog niet'
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
                 'Samenvatting woningstatus' => [
                     'slug' => 'samenvatting-woonstatus',
-                    'order' => 14,
+                    'order' => 15,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [

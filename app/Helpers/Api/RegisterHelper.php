@@ -3,7 +3,6 @@
 namespace App\Helpers\Api;
 
 use App\Models\ToolQuestion;
-use Illuminate\Support\Facades\Log;
 
 class RegisterHelper
 {
@@ -43,8 +42,6 @@ class RegisterHelper
                 }
 
                 $validation[$short] = $questionValidation;
-            } else {
-                Log::alert("Tool Question with short {$short} not found!");
             }
         }
 

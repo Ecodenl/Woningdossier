@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
+use App\Helpers\Api\RegisterHelper;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Cooperation\RegisterFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
+use App\Models\InputSource;
+use App\Models\ToolQuestion;
+use App\Services\ToolQuestionService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Mail;
 
@@ -78,6 +82,24 @@ class RegisterController extends Controller
 
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user->building);
+
+        // Ensure we don't allow nullable values
+        $toolQuestionAnswers =  array_filter(($requestData['tool_questions'] ?? []), function ($value) {
+            return ! is_null($value);
+        });
+
+        foreach ($toolQuestionAnswers as $toolQuestionShort => $toolQuestionAnswer) {
+            if (in_array($toolQuestionShort, RegisterHelper::SUPPORTED_TOOL_QUESTIONS)) {
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+
+                if ($toolQuestion instanceof ToolQuestion) {
+                    ToolQuestionService::init($toolQuestion)
+                        ->building($user->building)
+                        ->currentInputSource(InputSource::findByShort(InputSource::RESIDENT_SHORT))
+                        ->saveToolQuestionCustomValues($toolQuestionAnswer);
+                }
+            }
+        }
 
         return response(['account_id' => $account->id, 'user_id' => $user->id], 201);
     }

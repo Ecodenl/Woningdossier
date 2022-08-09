@@ -5,20 +5,11 @@ namespace Tests\Unit\app\Helpers\Api;
 use App\Helpers\Api\RegisterHelper;
 use App\Models\ToolQuestion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 class RegisterHelperTest extends TestCase
 {
     use RefreshDatabase;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        // Ensure we clear cache (findByShort could be troublesome)
-        Artisan::call('cache:clear');
-    }
 
     public function test_get_question_validation()
     {
@@ -28,6 +19,7 @@ class RegisterHelperTest extends TestCase
                 'validation' => [
                     'required', 'string',
                 ],
+                'save_in' => null,
             ]);
         }
 

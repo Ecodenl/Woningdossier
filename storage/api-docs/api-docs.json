@@ -197,6 +197,17 @@
                                 "contact_id": "1"
                             }
                         }
+                    },
+                    "tool_questions": {
+                        "title": "tool_questions",
+                        "description": "Tool questions keyed by short with given answer",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": {
+                                "resident-count": "2"
+                            }
+                        }
                     }
                 },
                 "type": "object"

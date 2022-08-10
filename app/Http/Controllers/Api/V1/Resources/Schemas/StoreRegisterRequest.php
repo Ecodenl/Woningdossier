@@ -10,7 +10,6 @@ namespace App\Http\Controllers\Api\V1\Resources\Schemas;
  *      required={"email", "first_name", "last_name", "postal_code", "number", "street", "city", "contact_id"}
  * )
  */
-
 class StoreRegisterRequest
 {
 
@@ -124,4 +123,17 @@ class StoreRegisterRequest
      */
     public $extra;
 
+    // TODO: Figure out if it's even possible to queue "mixed" types. Using "oneOf" seems to not work, and giving a
+    // property list requires fixed values which is not possible
+
+    /**
+     * @OA\Property(
+     *      title="tool_questions",
+     *      description="Tool questions keyed by short with given answer",
+     *     @OA\Items(type="string",example={"resident-count":"2"}),
+     * )
+     *
+     * @var array
+     */
+    public $tool_questions;
 }

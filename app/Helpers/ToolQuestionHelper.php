@@ -9,7 +9,18 @@ use App\Models\ToolQuestion;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-class ToolQuestionHelper {
+class ToolQuestionHelper
+{
+    /**
+     * The tool questions (shorts) that are allowed to be filled upon register.
+     * Note: When changing this, ensure you update the Swagger Docs in the Register Controller and the related tests!
+     * @var array
+     */
+    const SUPPORTED_API_SHORTS = [
+        'amount-gas',
+        'amount-electricity',
+        'resident-count',
+    ];
 
     /**
      * These tables should query on one or more extra column(s)
@@ -104,6 +115,7 @@ class ToolQuestionHelper {
      *
      * @param ToolQuestion $toolQuestion
      * @param Building $building
+     *
      * @return array
      */
     public static function resolveSaveIn(ToolQuestion $toolQuestion, Building $building): array

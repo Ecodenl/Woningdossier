@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
-use App\Helpers\Api\RegisterHelper;
 use App\Helpers\Str;
+use App\Helpers\ToolQuestionHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Cooperation\RegisterFormRequest;
 use App\Mail\UserCreatedEmail;
@@ -89,14 +89,14 @@ class RegisterController extends Controller
         });
 
         foreach ($toolQuestionAnswers as $toolQuestionShort => $toolQuestionAnswer) {
-            if (in_array($toolQuestionShort, RegisterHelper::SUPPORTED_TOOL_QUESTIONS)) {
+            if (in_array($toolQuestionShort, ToolQuestionHelper::SUPPORTED_API_SHORTS)) {
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
                 if ($toolQuestion instanceof ToolQuestion) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($user->building)
                         ->currentInputSource(InputSource::findByShort(InputSource::RESIDENT_SHORT))
-                        ->saveToolQuestionCustomValues($toolQuestionAnswer);
+                        ->save($toolQuestionAnswer);
                 }
             }
         }

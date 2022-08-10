@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Api\V1\Cooperation;
 
-use App\Helpers\Api\RegisterHelper;
+use App\Helpers\ToolQuestionHelper;
 use App\Http\Requests\Api\ApiRequest;
 use App\Models\Account;
+use App\Models\ToolQuestion;
 use App\Rules\HouseNumber;
 use App\Rules\Api\V1\HouseNumberExtension;
 use App\Rules\PhoneNumber;
@@ -49,11 +50,14 @@ class RegisterFormRequest extends ApiRequest
             unset($rules['email']);
         }
 
-        $toolQuestionValidation = RegisterHelper::getQuestionValidation(true);
-
-        // Merge into rules with tool questions prefix
-        foreach ($toolQuestionValidation as $short => $validation) {
-            $rules["tool_questions.{$short}"] = $validation;
+        $toolQuestionAnswers = $this->input('tool_questions', []);
+        foreach ($toolQuestionAnswers as $toolQuestionShort => $toolQuestionAnswer) {
+            if (in_array($toolQuestionShort, ToolQuestionHelper::SUPPORTED_API_SHORTS)) {
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+                if ($toolQuestion instanceof ToolQuestion) {
+                    $rules["tool_questions.{$toolQuestionShort}"] = $toolQuestion->validation;
+                }
+            }
         }
 
         return $rules;

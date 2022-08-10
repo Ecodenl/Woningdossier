@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\app\Http\Controllers\Api;
 
-use App\Helpers\Api\RegisterHelper;
 use App\Helpers\Arr;
+use App\Helpers\ToolQuestionHelper;
 use App\Models\Client;
 use App\Models\Cooperation;
 use App\Models\ToolQuestion;
@@ -73,7 +73,7 @@ class RegisterControllerTest extends TestCase
 
         $answerShorts = [];
         $formData = $this->formData;
-        foreach (RegisterHelper::SUPPORTED_TOOL_QUESTIONS as $short) {
+        foreach (ToolQuestionHelper::SUPPORTED_API_SHORTS as $short) {
             $toolQuestion = factory(ToolQuestion::class)->create([
                 'short' => $short,
                 'validation' => [

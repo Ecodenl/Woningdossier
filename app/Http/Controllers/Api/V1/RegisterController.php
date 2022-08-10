@@ -12,6 +12,7 @@ use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\Role;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use App\Services\UserService;
@@ -85,9 +86,21 @@ class RegisterController extends Controller
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user->building);
 
-        $inputSourceForAnswers = in_array('coach', $roles)
-            ? InputSource::findByShort(InputSource::COACH_SHORT)
-            : InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        // Get input sources by name (unique)
+        $inputSources = [];
+        foreach ($roles as $roleName) {
+            $role = Role::byName($roleName)->first();
+            if ($role instanceof Role && ! is_null($role->input_source_id) && ! array_key_exists($role->input_source_id, $inputSources)) {
+                $inputSources[$role->input_source_id] = $role->inputSource;
+            }
+        }
+
+        // Ensure we always have an input source
+        if (empty($inputSources)) {
+            $inputSources[] = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        }
+        // Remove indexing
+        $inputSources = array_values($inputSources);
 
         // Ensure we don't allow nullable values
         $toolQuestionAnswers =  array_filter(($requestData['tool_questions'] ?? []), function ($value) {
@@ -99,10 +112,12 @@ class RegisterController extends Controller
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
                 if ($toolQuestion instanceof ToolQuestion) {
-                    ToolQuestionService::init($toolQuestion)
-                        ->building($user->building)
-                        ->currentInputSource($inputSourceForAnswers)
-                        ->save($toolQuestionAnswer);
+                    foreach ($inputSources as $inputSource) {
+                        ToolQuestionService::init($toolQuestion)
+                            ->building($user->building)
+                            ->currentInputSource($inputSource)
+                            ->save($toolQuestionAnswer);
+                    }
                 }
             }
         }

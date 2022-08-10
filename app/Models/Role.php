@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * App\Models\Role
  *
@@ -41,6 +43,19 @@ class Role extends \Spatie\Permission\Models\Role
 //        static::addGlobalScope(new );
     }
 
+    # Model methods
+    //
+
+    # Attributes
+    //
+
+    # Scopes
+    public function scopeByName(Builder $query, string $name): Builder
+    {
+        return $query->where('name', $name);
+    }
+
+    # Relations
     /**
      * Return the input source for the role.
      *

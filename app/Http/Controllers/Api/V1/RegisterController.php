@@ -15,6 +15,7 @@ use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
@@ -66,8 +67,9 @@ class RegisterController extends Controller
 
         // normally we would have a user given password, however we will reset the password right after its created.
         // this way the user can set his own password.
-        $requestData['password'] = \Hash::make(Str::randomPassword());
-        $user = UserService::register($cooperation, ['resident'], $requestData);
+        $requestData['password'] = Hash::make(Str::randomPassword());
+        $roles = $requestData['roles'] ?? ['resident'];
+        $user = UserService::register($cooperation, $roles, $requestData);
         $account = $user->account;
 
         // if the account is recently created we have to send a confirmation mail
@@ -83,6 +85,10 @@ class RegisterController extends Controller
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user->building);
 
+        $inputSourceForAnswers = in_array('coach', $roles)
+            ? InputSource::findByShort(InputSource::COACH_SHORT)
+            : InputSource::findByShort(InputSource::RESIDENT_SHORT);
+
         // Ensure we don't allow nullable values
         $toolQuestionAnswers =  array_filter(($requestData['tool_questions'] ?? []), function ($value) {
             return ! is_null($value);
@@ -95,7 +101,7 @@ class RegisterController extends Controller
                 if ($toolQuestion instanceof ToolQuestion) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($user->building)
-                        ->currentInputSource(InputSource::findByShort(InputSource::RESIDENT_SHORT))
+                        ->currentInputSource($inputSourceForAnswers)
                         ->save($toolQuestionAnswer);
                 }
             }

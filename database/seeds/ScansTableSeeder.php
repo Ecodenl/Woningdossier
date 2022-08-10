@@ -13,19 +13,21 @@ class ScansTableSeeder extends Seeder
     {
         $scans = [
             [
-                'name' => json_encode([
-                    'nl' => 'Expert modus',
-                ]),
-                'short' => 'expert-mode',
+                'name' => [
+                    'nl' => 'Expert scan',
+                ],
+                'short' => 'expert-scan',
             ],
             [
-                'name' => json_encode([
+                'name' => [
                     'nl' => 'Quick scan'
-                ]),
+                ],
                 'short' => 'quick-scan',
             ]
         ];
 
-        DB::table('scans')->insert($scans);
+        foreach ($scans as $scan) {
+            DB::table('scans')->updateOrInsert(['short' => $scan['short']], $scan);
+        }
     }
 }

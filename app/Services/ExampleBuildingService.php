@@ -21,6 +21,11 @@ use Illuminate\Support\Facades\Log;
 
 class ExampleBuildingService
 {
+    const NEVER_OVERWRITE_TOOL_QUESTION_SHORTS = [
+        'build-year',
+        'surface',
+    ];
+
     /**
      * Apply an example building on the given building.
      *
@@ -55,7 +60,7 @@ class ExampleBuildingService
         if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
             // Fetch pre-filled data
             $preFilledData = [];
-            foreach (ToolQuestionHelper::SUPPORTED_API_SHORTS as $toolQuestionShort) {
+            foreach (array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS) as $toolQuestionShort) {
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
                 if ($toolQuestion instanceof ToolQuestion) {
@@ -132,26 +137,6 @@ class ExampleBuildingService
             'Applying Example Building ' . $exampleBuilding->name . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
         );
 
-        $oldFeatures = [];
-
-        // Don't do this for the example building, otherwise it might get the old values from other input sources
-        // which is unwanted.
-        if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
-            self::log("User already started filling in the tool. We merge that data.");
-            // Save the features for later. We merge this with the example building contents.
-            // Note that $oldFeatures *might* be null in the highly unlikely case.
-            /** @var BuildingFeature|null $currentInputSourceFeatures */
-            $currentInputSourceFeatures = $building->buildingFeatures()->forInputSource($initiatingInputSource)->first();
-
-            if ($currentInputSourceFeatures instanceof BuildingFeature) {
-                // so we want to keep these since the example building can't overwrite this.
-                $oldFeatures = [
-                    'build_year' => $currentInputSourceFeatures->build_year,
-                    'surface' => $currentInputSourceFeatures->surface,
-                ];
-            }
-        }
-
         self::clearExampleBuilding($building, $inputSource);
 
         $features = [];
@@ -174,22 +159,25 @@ class ExampleBuildingService
 
                     // We don't want to overwrite the example building values
                     if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
-                        $foundData = Arr::where($preFilledData, function ($info, $short) use ($columnOrTable) {
-                            return $info['table'] == $columnOrTable;
+                        $foundData = Arr::where($preFilledData, function ($data, $short) use ($columnOrTable) {
+                            return $data['table'] == $columnOrTable;
                         });
 
                         // TODO: For now, this works. This will NOT work with tool question custom valuables
                         if (! empty($foundData)) {
-                            foreach ($foundData as $short => $info) {
+                            foreach ($foundData as $short => $data) {
                                 // We check if the column exists before replacing. However, element and service values may just have the ID as value instead of as column.
                                 // We ensure we set it correctly if that's the case.
-                                $column = $info['column'];
+                                $column = $data['column'];
                                 if (Arr::has($values, $column)) {
-                                    Arr::set($values, $column, $info['answer']);
+                                    Arr::set($values, $column, $data['answer']);
+                                    unset($preFilledData[$short]);
                                 } elseif ($columnOrTable === 'element' && Arr::has($values, ($shortColumn = str_replace('.element_value_id', '', $column)))) {
-                                    Arr::set($values, $shortColumn, $info['answer']);
+                                    Arr::set($values, $shortColumn, $data['answer']);
+                                    unset($preFilledData[$short]);
                                 } elseif ($columnOrTable === 'service' && Arr::has($values, ($shortColumn = str_replace('.service_value_id', '', $column)))) {
-                                    Arr::set($values, $shortColumn, $info['answer']);
+                                    Arr::set($values, $shortColumn, $data['answer']);
+                                    unset($preFilledData[$short]);
                                 }
                             }
                         }
@@ -558,9 +546,6 @@ class ExampleBuildingService
             }
         }
 
-        // replace particular features with the old features (build year and surface).
-        $features = array_replace_recursive($features, $oldFeatures);
-
         $buildingFeatures = new BuildingFeature($features);
         $buildingFeatures->buildingType()->associate(
             $exampleBuilding->buildingType
@@ -568,6 +553,21 @@ class ExampleBuildingService
         $buildingFeatures->inputSource()->associate($inputSource);
         $buildingFeatures->building()->associate($building);
         $buildingFeatures->save();
+
+        if (! empty($preFilledData)) {
+            // So, there have been fields that have not been properly saved (most likely because they don't exist
+            // for the example building). We must save these or they will get lost. However, since we reverse engineered
+            // these to fit the above structure, we will just go via the ToolQuestion.
+            foreach ($preFilledData as $short => $data) {
+                $toolQuestion = ToolQuestion::findByShort($short);
+                if ($toolQuestion instanceof ToolQuestion) {
+                    ToolQuestionService::init($toolQuestion)
+                        ->building($building)
+                        ->currentInputSource($inputSource)
+                        ->save($data['answer']);
+                }
+            }
+        }
 
         self::log(
             'Update or creating building features ' . json_encode(

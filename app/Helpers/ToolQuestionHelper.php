@@ -23,6 +23,15 @@ class ToolQuestionHelper
     ];
 
     /**
+     * These tables should map to the following example building content "$columnOrTable" keys.
+     * @var array
+     */
+    const TABLE_EXAMPLE_BUILDING_CONTENT = [
+        'building_elements' => 'element',
+        'building_services' => 'service',
+    ];
+
+    /**
      * These tables should query on one or more extra column(s)
      * Order for multiple columns is very important
      */

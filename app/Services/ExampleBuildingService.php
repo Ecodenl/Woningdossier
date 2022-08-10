@@ -3,24 +3,20 @@
 namespace App\Services;
 
 use App\Events\ExampleBuildingChanged;
-use App\Helpers\StepHelper;
+use App\Helpers\Arr;
+use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
-use App\Models\Considerable;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\Service;
-use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
-use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class ExampleBuildingService
@@ -28,37 +24,77 @@ class ExampleBuildingService
     /**
      * Apply an example building on the given building.
      *
-     *
-     *
      * @param ExampleBuilding $exampleBuilding
      * @param int $buildYear Build year for selecting the appropriate example building content
      * @param Building $building Target building to apply to
      * @param InputSource|null $inputSource
      * @param InputSource|null $initiatingInputSource The input source starting this action.
+     *
+     * @return void
      */
     public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building, ?InputSource $inputSource = null, ?InputSource $initiatingInputSource = null)
     {
-        $inputSource = $inputSource ?? InputSource::findByShort(
-                InputSource::EXAMPLE_BUILDING
-            );
+        $inputSource = $inputSource ?? InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
         // unless stated differently: compare to master input values
-        $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(
-                InputSource::MASTER_SHORT
-            );
+        $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(InputSource::MASTER_SHORT);
         //self::log($exampleBuilding->id . ", " . $buildYear . ", " . $building->id . ", " . $inputSource->name . ", " . $initiatingInputSource->name);
         $buildingOwner = $building->user;
 
         // Clear the current example building data
-        self::log(
-            'Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ")"
-        );
+        self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ")");
         $contents = $exampleBuilding->getContentForYear($buildYear);
 
-        if (!$contents instanceof ExampleBuildingContent) {
+        if (! $contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
             self::log('No data to apply');
 
             return;
+        }
+
+        // We don't need this if the input source is the example building
+        if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
+            // Fetch pre-filled data
+            $preFilledData = [];
+            foreach (ToolQuestionHelper::SUPPORTED_API_SHORTS as $toolQuestionShort) {
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+
+                if ($toolQuestion instanceof ToolQuestion) {
+                    $saveIn = [
+                        'table' => null,
+                        'column' => null,
+                    ];
+                    if (! is_null($toolQuestion->save_in)) {
+                        $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $building);
+
+                        $table = $saveIn['table'];
+                        // So, in some cases, the save_in holds table > id > column values. To respect this, we have to
+                        // reverse it back into the column so it makes sense in the way that the values of the example
+                        // building content is presented.
+                        if (array_key_exists($table, ToolQuestionHelper::TABLE_EXAMPLE_BUILDING_CONTENT)) {
+                            $saveIn['table'] = ToolQuestionHelper::TABLE_EXAMPLE_BUILDING_CONTENT[$table];
+                            $whereColumn = ToolQuestionHelper::TABLE_COLUMN[$table];
+
+                            // Reverse engineer the value of the where
+                            $where = Arr::first(Arr::where($saveIn['where'], function ($whereStatement) use ($whereColumn) {
+                                return $whereStatement[0] == $whereColumn;
+                            }));
+
+                            $saveIn['column'] = "{$where[2]}.{$saveIn['column']}";
+                        }
+                    }
+
+                    $preFilledData[$toolQuestionShort] = [
+                        'answer' => $building->getAnswer($initiatingInputSource, $toolQuestion),
+                        'table' => $saveIn['table'],
+                        'column' => $saveIn['column'],
+                    ];
+                }
+            }
+            // 0 is an accepted answer, so we specifically filter on null. Since the values are an array anyway, we need
+            // to explicitly check the answer.
+            $preFilledData = array_filter($preFilledData, function ($value) {
+                return ! is_null($value['answer']);
+            });
         }
 
         $boilerService = Service::where('short', 'boiler')->first();
@@ -136,6 +172,29 @@ class ExampleBuildingService
                         continue;
                     }
 
+                    // We don't want to overwrite the example building values
+                    if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
+                        $foundData = Arr::where($preFilledData, function ($info, $short) use ($columnOrTable) {
+                            return $info['table'] == $columnOrTable;
+                        });
+
+                        // TODO: For now, this works. This will NOT work with tool question custom valuables
+                        if (! empty($foundData)) {
+                            foreach ($foundData as $short => $info) {
+                                // We check if the column exists before replacing. However, element and service values may just have the ID as value instead of as column.
+                                // We ensure we set it correctly if that's the case.
+                                $column = $info['column'];
+                                if (Arr::has($values, $column)) {
+                                    Arr::set($values, $column, $info['answer']);
+                                } elseif ($columnOrTable === 'element' && Arr::has($values, ($shortColumn = str_replace('.element_value_id', '', $column)))) {
+                                    Arr::set($values, $shortColumn, $info['answer']);
+                                } elseif ($columnOrTable === 'service' && Arr::has($values, ($shortColumn = str_replace('.service_value_id', '', $column)))) {
+                                    Arr::set($values, $shortColumn, $info['answer']);
+                                }
+                            }
+                        }
+                    }
+
                     if ('user_energy_habits' == $columnOrTable) {
                         $buildingOwner->energyHabit()
                             ->forInputSource($inputSource)
@@ -151,7 +210,7 @@ class ExampleBuildingService
                                 $extra = null;
                                 $elementValues = [];
                                 if (is_array($elementValueData)) {
-                                    if (!array_key_exists('element_value_id', $elementValueData)) {
+                                    if (! array_key_exists('element_value_id', $elementValueData)) {
                                         // perhaps a nested array (e.g. wood elements)
                                         foreach ($elementValueData as $elementValueDataItem) {
                                             if (is_array($elementValueDataItem) && array_key_exists('element_value_id', $elementValueDataItem)) {
@@ -240,7 +299,7 @@ class ExampleBuildingService
                                 $extra = null;
                                 // note: in the case of solar panels the service_value_id can be null!!
                                 if (is_array($serviceValueData)) {
-                                    if (!array_key_exists(
+                                    if (! array_key_exists(
                                         'service_value_id',
                                         $serviceValueData
                                     )) {
@@ -299,7 +358,7 @@ class ExampleBuildingService
                                         $buildingService->extra = $extra;
                                     }
 
-                                    if (!is_null($serviceValueId)) {
+                                    if (! is_null($serviceValueId)) {
                                         $serviceValue = $service->values()->where('id', $serviceValueId)->first();
                                         $buildingService->serviceValue()->associate($serviceValue);
                                     }
@@ -356,7 +415,7 @@ class ExampleBuildingService
                             // the value was stored inside the insulated_glazing_id key, however this changed to insulating_glazing_id.
                             // recent updated example buildings will have the new key, old ones wont.
                             // so if the insulating_glazing_id does not exist, we will set the old one.
-                            if (!array_key_exists(
+                            if (! array_key_exists(
                                 'insulating_glazing_id',
                                 $glazingData
                             )) {
@@ -467,7 +526,7 @@ class ExampleBuildingService
 
                     if ('tool_question_answers' == $columnOrTable) {
                         foreach ($values as $questionShort => $answers) {
-                            if (!is_array($answers)) {
+                            if (! is_array($answers)) {
                                 $answers = [$answers];
                             }
                             /** @var ToolQuestion $toolQuestion */

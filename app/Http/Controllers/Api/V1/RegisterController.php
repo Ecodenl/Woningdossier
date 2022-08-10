@@ -103,7 +103,7 @@ class RegisterController extends Controller
         $inputSources = array_values($inputSources);
 
         // Ensure we don't allow nullable values
-        $toolQuestionAnswers =  array_filter(($requestData['tool_questions'] ?? []), function ($value) {
+        $toolQuestionAnswers = array_filter(($requestData['tool_questions'] ?? []), function ($value) {
             return ! is_null($value);
         });
 

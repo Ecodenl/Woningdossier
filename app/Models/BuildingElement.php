@@ -19,6 +19,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property array|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\Element $element
  * @property-read \App\Models\ElementValue|null $elementValue

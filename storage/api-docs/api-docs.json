@@ -201,14 +201,17 @@
                     "roles": {
                         "title": "roles",
                         "description": "Roles to assign to the user",
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "example": [
-                                "coach",
-                                "resident"
-                            ]
-                        }
+                        "properties": {
+                            "0": {
+                                "type": "string",
+                                "example": "resident"
+                            },
+                            "1": {
+                                "type": "string",
+                                "example": "coach"
+                            }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"

@@ -69,14 +69,20 @@ class ExampleBuildingService
                         'column' => null,
                     ];
                     if (! is_null($toolQuestion->save_in)) {
+                        // These tables should map to the following example building content "$columnOrTable" keys.
+                        $tableToEBContentMap = [
+                            'building_elements' => 'element',
+                            'building_services' => 'service',
+                        ];
+
                         $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $building);
 
                         $table = $saveIn['table'];
                         // So, in some cases, the save_in holds table > id > column values. To respect this, we have to
                         // reverse it back into the column so it makes sense in the way that the values of the example
                         // building content is presented.
-                        if (array_key_exists($table, ToolQuestionHelper::TABLE_EXAMPLE_BUILDING_CONTENT)) {
-                            $saveIn['table'] = ToolQuestionHelper::TABLE_EXAMPLE_BUILDING_CONTENT[$table];
+                        if (array_key_exists($table, $tableToEBContentMap)) {
+                            $saveIn['table'] = $tableToEBContentMap[$table];
                             $whereColumn = ToolQuestionHelper::TABLE_COLUMN[$table];
 
                             // Reverse engineer the value of the where

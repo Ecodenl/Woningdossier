@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
+use App\Helpers\RoleHelper;
 use App\Helpers\Str;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Controllers\Controller;
@@ -11,8 +12,6 @@ use App\Http\Requests\Api\V1\Cooperation\RegisterFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
-use App\Models\InputSource;
-use App\Models\Role;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use App\Services\UserService;
@@ -69,7 +68,7 @@ class RegisterController extends Controller
         // normally we would have a user given password, however we will reset the password right after its created.
         // this way the user can set his own password.
         $requestData['password'] = Hash::make(Str::randomPassword());
-        $roles = $requestData['roles'] ?? ['resident'];
+        $roles = array_unique(($requestData['roles'] ?? [RoleHelper::ROLE_RESIDENT]));
         $user = UserService::register($cooperation, $roles, $requestData);
         $account = $user->account;
 
@@ -88,17 +87,12 @@ class RegisterController extends Controller
 
         // Get input sources by name (unique)
         $inputSources = [];
-        foreach ($roles as $roleName) {
-            $role = Role::byName($roleName)->first();
-            if ($role instanceof Role && ! is_null($role->input_source_id) && ! array_key_exists($role->input_source_id, $inputSources)) {
+        foreach ($user->roles as $role) {
+            if (! is_null($role->input_source_id) && ! array_key_exists($role->input_source_id, $inputSources)) {
                 $inputSources[$role->input_source_id] = $role->inputSource;
             }
         }
 
-        // Ensure we always have an input source
-        if (empty($inputSources)) {
-            $inputSources[] = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-        }
         // Remove indexing
         $inputSources = array_values($inputSources);
 

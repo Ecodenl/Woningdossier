@@ -44,6 +44,7 @@ class BuildingFormRequest extends FormRequest
             'users.first_name' => 'required|string|max:255',
             'users.last_name' => 'required|string|max:255',
             'users.phone_number' => ['nullable', new PhoneNumber('nl')],
+            'users.extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0'],
             'buildings.postal_code' => ['required', new PostalCode('nl')],
             'buildings.number' => ['required', 'integer', new HouseNumber('nl')],
             'buildings.extension' => ['nullable', new HouseNumberExtension('nl')],

@@ -83,7 +83,7 @@
                                         @lang('users.column-translations.contact-id')
                                     </label>
                                     <input id="contact-id" type="text" class="form-control"
-                                           name="users[extra][contact_id]" required
+                                           name="users[extra][contact_id]"
                                            value="{{ old('users.extra.contact_id', $user->extra['contact_id'] ?? '') }}">
                                 @endcomponent
                             </div>

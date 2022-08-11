@@ -3,23 +3,19 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Console\Commands\Tool\RecalculateForUser;
-use App\Helpers\Arr;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolQuestionHelper;
-use App\Jobs\ApplyExampleBuildingForChanges;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
-use App\Models\ToolQuestionCustomValue;
 use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -227,21 +223,15 @@ class Form extends Component
                 /** @var ToolQuestion $toolQuestion */
                 $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
-                    if (is_null($toolQuestion->save_in)) {
-                        ToolQuestionService::init($toolQuestion)
-                            ->building($this->building)
-                            ->currentInputSource($this->currentInputSource)
-                            ->saveToolQuestionCustomValues($givenAnswer);
-                    } else {
-                        // this *can't* handle a checkbox / multiselect answer.
-                        $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
-                    }
-
+                    ToolQuestionService::init($toolQuestion)
+                        ->building($this->building)
+                        ->currentInputSource($this->currentInputSource)
+                        ->applyExampleBuilding()
+                        ->save($givenAnswer);
                 }
             }
         }
     }
-
 
     public function save($nextUrl)
     {
@@ -291,7 +281,7 @@ class Form extends Component
 
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
-        if (!$this->dirty) {
+        if (! $this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 $toolQuestion = ToolQuestion::find($toolQuestionId);
 
@@ -321,15 +311,11 @@ class Form extends Component
                 /** @var ToolQuestion $toolQuestion */
                 $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
-                    if (is_null($toolQuestion->save_in)) {
-                        ToolQuestionService::init($toolQuestion)
-                            ->building($this->building)
-                            ->currentInputSource($this->currentInputSource)
-                            ->saveToolQuestionCustomValues($givenAnswer);
-                    } else {
-                        // this *can't* handle a checkbox / multiselect answer.
-                        $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
-                    }
+                    ToolQuestionService::init($toolQuestion)
+                        ->building($this->building)
+                        ->currentInputSource($this->currentInputSource)
+                        ->applyExampleBuilding()
+                        ->save($givenAnswer);
 
                     if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion) && $masterHasCompletedQuickScan) {
                         Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
@@ -492,111 +478,5 @@ class Form extends Component
         }
 
         return $validation;
-    }
-
-    private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)
-    {
-        // TODO: We can use ToolQuestionHelper::resolveSaveIn here
-        // All we'd need to add is a return of the extra columns.
-        // And a rewrite of the indexes below (line 459 as of writing)
-
-        $savedInParts = explode('.', $toolQuestion->save_in);
-        $table = $savedInParts[0];
-        $column = $savedInParts[1];
-
-        // We will save it on the model, this way we keep the current events behind them
-        $modelName = "App\\Models\\" . Str::studly(Str::singular($table));
-
-        if (Schema::hasColumn($table, 'user_id')) {
-            $where = ['user_id' => $this->building->user_id];
-        } else {
-            $where = ['building_id' => $this->building->id];
-        }
-
-        $where['input_source_id'] = $this->currentInputSource->id;
-
-        // This means we have to add some thing to the where
-        if (count($savedInParts) > 2) {
-            // In this case the column holds extra where values
-
-            // There's 2 cases. Either it's a single value, or a set of columns
-            if (Str::contains($column, '_')) {
-                // Set of columns, we set the wheres based on the order of values
-                $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
-                $values = explode('_', $column);
-
-                // Currently only for step_comments that can have a short
-                foreach ($values as $index => $value) {
-                    $where[$columns[$index]] = $value;
-                }
-            } else {
-                // Just a value, but the short table could be an array. We grab the first
-                $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
-                $columnForWhere = is_array($columns) ? $columns[0] : $columns;
-
-                $where[$columnForWhere] = $column;
-            }
-
-            $column = $savedInParts[2];
-            // the extra column holds an array / JSON, so we have to transform the answer into an array
-            if ($savedInParts[2] == 'extra') {
-                // The column to which we actually have to save the data
-                $column = 'extra';
-                // In this case, the fourth index holds the json key.
-                $jsonKey = $savedInParts[3];
-
-                // We fetch the model, because we need to check its JSON values
-                $model = $modelName::allInputSources()->where($where)->first();
-                // If it's valid, we need to check its extra values
-
-                if ($model instanceof $modelName && !empty($model->{$column}) && is_array($model->{$column})) {
-                    // Get model values, and then set the given key to the given answer
-                    // We must do this, else all answers get overwritten
-                    $tempAnswer = $model->{$column};
-                    $tempAnswer[$jsonKey] = $givenAnswer;
-                    $givenAnswer = $tempAnswer;
-                } else {
-                    $givenAnswer = [$jsonKey => $givenAnswer];
-                }
-            }
-        }
-
-        $answerData = [$column => $givenAnswer];
-
-        // Before saving, we must do one last thing. We need to check if we need to apply some more logic.
-        $studlyShort = Str::studly($toolQuestion->short);
-        $questionAnswerClass = "App\\Helpers\\QuestionAnswers\\{$studlyShort}";
-        if (class_exists($questionAnswerClass)) {
-            $additionalData = $questionAnswerClass::apply($toolQuestion, $givenAnswer);
-            $answerData = array_merge($answerData, $additionalData);
-        }
-
-        // Detect if the example building will be changing. If so, apply it.
-        // I hear you thinking: wouldn't this be better off in an observer?
-        // The answer is: No. Unless you want to trigger an infinite loop
-        // as applying the example building will delete and recreate records,
-        // which will trigger the observer, which will start applying the
-        // example building, which will delete and recreate records, which will
-        // trigger the observer.. ah well: you get the idea.
-        if (in_array($table, ['building_features']) && Arr::inArrayAny(['build_year', 'building_type_id', 'example_building_id'], array_keys($answerData))) {
-            // set the boolean to the appropriate value. Example building will
-            // be applied AFTER saving the current form (for getting the
-            // appropriate values).
-
-            Log::debug("Changes for table '{$table}':");
-            Log::debug($answerData);
-
-            $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
-            // apply the example building for the given changes.
-            // we give him the old building features, otherwise we cant verify the changes
-            ApplyExampleBuildingForChanges::dispatchNow($oldBuildingFeature, $answerData, $this->currentInputSource);
-        }
-
-        // Now save it
-        $modelName::allInputSources()
-            ->updateOrCreate(
-                $where,
-                $answerData
-            );
     }
 }

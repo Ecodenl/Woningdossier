@@ -124,6 +124,7 @@ class ToolQuestionHelper
      *
      * @param ToolQuestion $toolQuestion
      * @param Building $building
+     *
      * @return array
      */
     public static function resolveSaveIn(ToolQuestion $toolQuestion, Building $building): array

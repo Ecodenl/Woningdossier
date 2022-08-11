@@ -10,7 +10,6 @@ namespace App\Http\Controllers\Api\V1\Resources\Schemas;
  *      required={"email", "first_name", "last_name", "postal_code", "number", "street", "city", "contact_id"}
  * )
  */
-
 class StoreRegisterRequest
 {
 
@@ -115,13 +114,24 @@ class StoreRegisterRequest
 
     /**
      * @OA\Property(
-     *      title="extra",
-     *      description="Extra data that may be picked up",
-     *     @OA\Items(type="string",example={"contact_id":"1"}),
+     *     title="extra",
+     *     description="Extra data that may be picked up",
+     *         @OA\Property(property="contact_id", example="1", type="string"),
      * )
      *
      * @var array
      */
     public $extra;
 
+    /**
+     * @OA\Property(
+     *     title="tool_questions",
+     *     description="Tool questions keyed by short with given answer",
+     *         @OA\Property(property="resident-count", example=2, type="integer"),
+     *         @OA\Property(property="amount-gas", example=2000, type="string"),
+     * )
+     *
+     * @var array
+     */
+    public $tool_questions;
 }

@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Api\V1\Cooperation;
 
+use App\Helpers\ToolQuestionHelper;
 use App\Http\Requests\Api\ApiRequest;
 use App\Models\Account;
-use App\Models\Cooperation;
+use App\Models\ToolQuestion;
 use App\Rules\HouseNumber;
 use App\Rules\Api\V1\HouseNumberExtension;
 use App\Rules\PhoneNumber;
@@ -47,6 +48,16 @@ class RegisterFormRequest extends ApiRequest
         // then we unset the email and password rule because we dont need to validate them, we handle them in the controller
         if ($account instanceof Account && ! $account->isAssociatedWith($this->route('cooperation'))) {
             unset($rules['email']);
+        }
+
+        $toolQuestionAnswers = $this->input('tool_questions', []);
+        foreach ($toolQuestionAnswers as $toolQuestionShort => $toolQuestionAnswer) {
+            if (in_array($toolQuestionShort, ToolQuestionHelper::SUPPORTED_API_SHORTS)) {
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+                if ($toolQuestion instanceof ToolQuestion) {
+                    $rules["tool_questions.{$toolQuestionShort}"] = $toolQuestion->validation;
+                }
+            }
         }
 
         return $rules;

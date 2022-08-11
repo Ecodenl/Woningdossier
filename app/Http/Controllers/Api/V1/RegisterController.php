@@ -64,7 +64,7 @@ class RegisterController extends Controller
         // normally we would have a user given password, however we will reset the password right after its created.
         // this way the user can set his own password.
         $requestData['password'] = \Hash::make(Str::randomPassword());
-        $roles = $requestData['roles'] ?? [RoleHelper::ROLE_RESIDENT];
+        $roles = array_unique(($requestData['roles'] ?? [RoleHelper::ROLE_RESIDENT]));
         $user = UserService::register($cooperation, $roles, $requestData);
         $account = $user->account;
 

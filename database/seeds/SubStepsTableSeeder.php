@@ -37,7 +37,8 @@ class SubStepsTableSeeder extends Seeder
         $templateSummary = SubStepTemplate::findByShort('template-summary');
         $templateSpecificExampleBuilding = SubStepTemplate::findByShort('specific-example-building');
 
-        $structure = [
+
+        $this->saveStructure([
             'building-data' => [
                 // sub step name
                 'Woning type' => [
@@ -45,7 +46,7 @@ class SubStepsTableSeeder extends Seeder
                     // question data
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'building-type-category',
+                        'building-type-category' => [],
                     ]
                 ],
                 'Wat voor woning' => [
@@ -61,22 +62,22 @@ class SubStepsTableSeeder extends Seeder
                     // question data
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'building-type',
+                        'building-type' => [],
                     ]
                 ],
                 'Wat voor dak' => [
                     'order' => 4,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'roof-type',
+                        'roof-type' => [],
                     ]
                 ],
                 'Bouwjaar en oppervlak' => [
                     'order' => 2,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'build-year',
-                        'building-layers',
+                        'build-year' => [],
+                        'building-layers' => [],
                     ]
                 ],
                 'Specifieke voorbeeld woning' => [
@@ -91,30 +92,30 @@ class SubStepsTableSeeder extends Seeder
                     ],
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'specific-example-building',
+                        'specific-example-building' => [],
                     ],
                 ],
                 'Monument en energielabel' => [
                     'order' => 5,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'monument',
-                        'energy-label',
+                        'monument' => [],
+                        'energy-label' => [],
                     ]
                 ],
                 'Gebruikersoppervlak en bijzonderheden' => [
                     'order' => 6,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'surface',
+                        'surface' => [],
                     ],
                 ],
                 'Samenvatting woninggegevens' => [
                     'order' => 7,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
-                        'building-data-comment-resident',
-                        'building-data-comment-coach',
+                        'building-data-comment-resident' => [],
+                        'building-data-comment-coach' => [],
                     ],
                 ],
             ],
@@ -123,42 +124,42 @@ class SubStepsTableSeeder extends Seeder
                     'order' => 0,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'resident-count',
+                        'resident-count' => [],
                     ]
                 ],
                 'Thermostaat gebruik' => [
                     'order' => 1,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'thermostat-high',
-                        'thermostat-low',
-                        'hours-high',
+                        'thermostat-high' => [],
+                        'thermostat-low' => [],
+                        'hours-high' => [],
                     ],
                 ],
                 'Gebruik warm tapwater' => [
                     'order' => 2,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'heating-first-floor',
-                        'heating-second-floor',
-                        'water-comfort',
+                        'heating-first-floor' => [],
+                        'heating-second-floor' => [],
+                        'water-comfort' => [],
                     ]
                 ],
                 'Gas en elektra gebruik' => [
                     'order' => 3,
                     'sub_step_template_id' => $template2rows1top2bottom->id,
                     'questions' => [
-                        'cook-type',
-                        'amount-gas',
-                        'amount-electricity',
+                        'cook-type' => [],
+                        'amount-gas' => [],
+                        'amount-electricity' => [],
                     ]
                 ],
                 'Samenvatting bewoners-gebruik' => [
                     'order' => 4,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
-                        'usage-quick-scan-comment-resident',
-                        'usage-quick-scan-comment-coach',
+                        'usage-quick-scan-comment-resident' => [],
+                        'usage-quick-scan-comment-coach' => [],
                     ],
                 ],
             ],
@@ -167,14 +168,14 @@ class SubStepsTableSeeder extends Seeder
                     'order' => 0,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'remaining-living-years',
+                        'remaining-living-years' => [],
                     ],
                 ],
                 'Welke zaken vindt u belangrijk?' => [
                     'order' => 1,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'comfort-priority',
+                        'comfort-priority' => [],
                     ],
                 ],
                 'Welke zaken vervangen' => [
@@ -186,8 +187,8 @@ class SubStepsTableSeeder extends Seeder
                     'order' => 3,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
-                        'living-requirements-comment-resident',
-                        'living-requirements-comment-coach',
+                        'living-requirements-comment-resident' => [],
+                        'living-requirements-comment-coach' => [],
                     ],
                 ],
             ],
@@ -196,166 +197,181 @@ class SubStepsTableSeeder extends Seeder
                     'order' => 0,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'current-wall-insulation',
+                        'current-wall-insulation' => [],
                     ]
                 ],
                 'Vloerisolatie' => [
                     'order' => 1,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'current-floor-insulation',
+                        'current-floor-insulation' => [],
                     ],
                 ],
                 'Dakisolatie' => [
                     'order' => 2,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'current-roof-insulation',
+                        'current-roof-insulation' => [],
                     ],
                 ],
                 'Glasisolatie eerste woonlaag' => [
                     'order' => 3,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'current-living-rooms-windows',
+                        'current-living-rooms-windows' => [],
                     ]
                 ],
                 'Glasisolatie tweede woonlaag' => [
                     'order' => 4,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'current-sleeping-rooms-windows',
+                        'current-sleeping-rooms-windows' => [],
                     ],
                 ],
                 'Verwarming' => [
                     'order' => 5,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'heat-source',
-                        'heat-source-warm-tap-water',
+                        'heat-source' => [],
+                        'heat-source-warm-tap-water' => [],
                     ],
-                ]
-            ],
-            'Zonnenboiler' => [
-                'order' => 6,
-                'sub_step_template_id' => $templateDefault->id,
-                'questions' => [
-                    'heater-type',
-                ]
-            ],
-            'Gasketel vragen' => [
-                'order' => 7,
-                'sub_step_template_id' => $templateDefault->id,
-                'conditions' => [
-                    [
+                ],
+                'Zonnenboiler' => [
+                    'order' => 6,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        'heater-type' => [],
+                    ]
+                ],
+                'Gasketel vragen' => [
+                    'order' => 7,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
                         [
-                            'column' => 'heat-source',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'hr-boiler',
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'hr-boiler',
+                            ],
                         ],
                     ],
+                    'questions' => [
+                        'boiler-type' => [],
+                        'boiler-placed-date' => [],
+                    ]
                 ],
-                'questions' => [
-                    'boiler-type',
-                    'boiler-placed-date',
-                ]
-            ],
 
-            'Warmtepomp' => [
-                'order' => 8,
-                'sub_step_template_id' => $templateDefault->id,
-                'conditions' => [
-                    [
+                'Warmtepomp' => [
+                    'order' => 8,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
                         [
-                            'column' => 'heat-source',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'heat-pump',
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
                         ],
                     ],
+                    'questions' => [
+                        'heat-pump-type' => [],
+                        'heat-pump-placed-date' => [],
+                    ]
                 ],
-                'questions' => [
-                    'heat-pump-type',
-                    'heat-pump-placed-date',
-                ]
-            ],
 
-            'Hoe is de verwarming' => [
-                'order' => 9,
-                'sub_step_template_id' => $templateDefault->id,
-                'questions' => [
-                    'building-heating-application',
-                ]
-            ],
-            '50 graden test' => [
-                'order' => 10,
-                'sub_step_template_id' => $templateDefault->id,
-                'conditions' => [
-                    [
+                'Hoe is de verwarming' => [
+                    'order' => 9,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        'building-heating-application' => [],
+                    ]
+                ],
+                '50 graden test' => [
+                    'order' => 10,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
                         [
-                            'column' => 'heat-source',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'hr-boiler',
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'hr-boiler',
+                            ],
                         ],
                     ],
+                    'questions' => [
+                        'fifty-degree-test' => [],
+                    ]
                 ],
-                'questions' => [
-                    'fifty-degree-test',
-                ]
-            ],
 
-            'Ventilatie' => [
-                'order' => 11,
-                'sub_step_template_id' => $templateDefault->id,
-                'questions' => [
-                    'ventilation-type',
-                    'ventilation-demand-driven',
-                    'ventilation-heat-recovery',
-                ]
-            ],
-            'Kierdichting' => [
-                'order' => 12,
-                'sub_step_template_id' => $templateDefault->id,
-                'questions' => [
-                    'crack-sealing-type',
-                ]
-            ],
+                'Ventilatie' => [
+                    'order' => 11,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        'ventilation-type' => [],
+                        'ventilation-demand-driven' => [],
+                        'ventilation-heat-recovery' => [],
+                    ]
+                ],
+                'Kierdichting' => [
+                    'order' => 12,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        'crack-sealing-type' => [],
+                    ]
+                ],
 
-            'Zonnepanelen' => [
-                'order' => 13,
-                'sub_step_template_id' => $template2rows3top1bottom->id,
-                'questions' => [
-                    'has-solar-panels',
-                    'solar-panel-count',
-                    'total-installed-power',
-                    'solar-panels-placed-date',
-                ]
-            ],
+                'Zonnepanelen' => [
+                    'order' => 13,
+                    'sub_step_template_id' => $template2rows3top1bottom->id,
+                    'questions' => [
+                        'has-solar-panels' => [],
+                        'solar-panel-count' => [],
+                        'total-installed-power' => [],
+                        'solar-panels-placed-date' => [],
+                    ]
+                ],
 
-            'Warmtepomp interesse' => [
-                'order' => 14,
-                'sub_step_template_id' => $templateDefault->id,
-                'questions' => [
-                    'interested-in-heat-pump',
+                'Warmtepomp interesse' => [
+                    'order' => 14,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        'interested-in-heat-pump' => [],
+                    ],
+                ],
+                'Samenvatting woningstatus' => [
+                    'slug' => 'samenvatting-woonstatus',
+                    'order' => 15,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'questions' => [
+
+                        'residential-status-element-comment-resident' => [],
+
+                        'residential-status-element-comment-coach' => [],
+
+                        'residential-status-service-comment-resident' => [],
+
+                        'residential-status-service-comment-coach' => [],
+
+                    ],
                 ],
             ],
-            'Samenvatting woningstatus' => [
-                'slug' => 'samenvatting-woonstatus',
-                'order' => 15,
-                'sub_step_template_id' => $templateSummary->id,
-                'questions' => [
+        ]);
 
-                    'residential-status-element-comment-resident',
-
-                    'residential-status-element-comment-coach',
-
-                    'residential-status-service-comment-resident',
-
-                    'residential-status-service-comment-coach',
-                    
-                ],
+        $this->saveStructure([
+            'heating' => [
+                'huidige situatie' => [
+                    'order' => 0,
+                    'questions' => [
+                        'resident-count' => ['size' => 'w-1/2'],
+                        'water-comfort' => ['size' => 'w-1/2'],
+                    ],
+                ]
             ],
-            ];
+        ]);
+    }
 
+    private function saveStructure($structure)
+    {
         foreach ($structure as $stepShort => $subQuestions) {
             $step = Step::findByShort($stepShort);
 
@@ -366,11 +382,11 @@ class SubStepsTableSeeder extends Seeder
                 $slugs = ['nl' => $subStepSlug];
 
                 $subStepData = [
-                    'name' => $names,
+                    'name' => json_encode($names),
                     'order' => $subQuestionData['order'],
-                    'slug' => $slugs,
+                    'slug' => json_encode($slugs),
                     'step_id' => $step->id,
-                    'sub_step_template_id' => $subQuestionData['sub_step_template_id'],
+                    'sub_step_template_id' => $subQuestionData['sub_step_template_id'] ?? null,
                 ];
 
                 if (isset($subQuestionData['conditions'])) {
@@ -380,9 +396,6 @@ class SubStepsTableSeeder extends Seeder
                 $subStep = SubStep::where('slug->nl', $slugs['nl'])
                     ->where('step_id', $subStepData['step_id'])
                     ->first();
-
-                $subStepData['name'] = json_encode($names);
-                $subStepData['slug'] = json_encode($slugs);
 
                 // Usually we do an updateOrInsert, but since we have to use a JSON column to compare, we can't use
                 // it. The query builder won't properly handle unencoded JSON, but we need unencoded JSON to
@@ -400,14 +413,17 @@ class SubStepsTableSeeder extends Seeder
 
                 if (isset($subQuestionData['questions'])) {
                     $orderForSubStepToolQuestions = 0;
-                    foreach ($subQuestionData['questions'] as $questionData) {
+                    // the $extra will be a array, it COULD hold anything. For now it will be empty or contain a size.
+                    foreach ($subQuestionData['questions'] as $toolQuestionShort => $extra) {
 
-                        $toolQuestion = ToolQuestion::where('short', $questionData['short'])
+                        $toolQuestion = ToolQuestion::where('short', $toolQuestionShort)
                             ->first();
 
                         // It might be attached, it might not. We detach to be safe.
                         $subStep->toolQuestions()->detach($toolQuestion);
-                        $subStep->toolQuestions()->attach($toolQuestion, ['order' => $orderForSubStepToolQuestions]);
+
+                        $attributes = array_merge(['order' => $orderForSubStepToolQuestions], $extra);
+                        $subStep->toolQuestions()->attach($toolQuestion, $attributes);
 
                         $orderForSubStepToolQuestions++;
                     }

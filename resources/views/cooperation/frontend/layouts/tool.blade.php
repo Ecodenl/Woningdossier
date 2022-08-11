@@ -53,7 +53,7 @@
                             @php
                                 $subStepsForStep = $currentStep->children;
                             @endphp
-                            @if($subStepsForStep->isEmpty())
+                            @if($subStepsForStep->isEmpty() && $currentStep->short !== 'heating')
                                 <li class="active @if($building->hasCompleted($currentStep, $masterInputSource)) completed @endif">
                                     <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">
                                         {{$currentStep->name}}

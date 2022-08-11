@@ -213,6 +213,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::resource('', 'WallInsulationController', ['only' => ['index', 'store']]);
                         Route::post('calculate', 'WallInsulationController@calculate')->name('calculate');
                     });
+     // Wall Insulation
 
                     // Insulated glazing
                     Route::group(['prefix' => 'insulated-glazing', 'as' => 'insulated-glazing.'], function () {
@@ -249,6 +250,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
                         Route::post('calculate', 'HeaterController@calculate')->name('calculate');
                     });
+                    Route::get('{step}', 'StepController@show');
 //                });
 
 //                Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');

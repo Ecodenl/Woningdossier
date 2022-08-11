@@ -153,6 +153,16 @@ class StepsTableSeeder extends Seeder
                 ],
                 'order' => 10,
             ],
+            [
+                'slug' => 'verwarming',
+                'short' => 'heating',
+                'scan_id' => $expertModeScan->id,
+                'name' => [
+                    'en' => 'Heating',
+                    'nl' => 'Verwarming',
+                ],
+                'order' => 11,
+            ],
             // the steps used for the "quick scan"
             [
                 'slug' => 'woninggegevens',

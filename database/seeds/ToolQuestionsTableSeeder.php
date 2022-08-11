@@ -80,21 +80,13 @@ class ToolQuestionsTableSeeder extends Seeder
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
-        // Templates
-        $templateDefault = SubStepTemplate::findByShort('template-default');
-        $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
-        $template2rows3top1bottom = SubStepTemplate::findByShort('template-2-rows-3-top-1-bottom');
-        $templateCustomChanges = SubStepTemplate::findByShort('template-custom-changes');
-        $templateSummary = SubStepTemplate::findByShort('template-summary');
-        $templateSpecificExampleBuilding = SubStepTemplate::findByShort('specific-example-building');
-
         // Quick scan steps
         $stepBuildingData = Step::findByShort('building-data');
         $stepUsageQuickScan = Step::findByShort('usage-quick-scan');
         $stepLivingRequirements = Step::findByShort('living-requirements');
         $stepResidentialStatus = Step::findByShort('residential-status');
 
-        $structure = [
+        $questions = [
             [
                 'validation' => ['required', 'exists:building_type_categories,id'],
                 'save_in' => 'building_features.building_type_category_id',
@@ -1168,151 +1160,101 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
         ];
 
-        foreach ($structure as $stepShort => $subQuestions) {
-            $step = Step::findByShort($stepShort);
 
-            foreach ($subQuestions as $subQuestionName => $subQuestionData) {
+        foreach ($questions as $questionData) {
+            // Create the question itself
 
-                $subStepSlug = $subQuestionData['slug'] ?? Str::slug($subQuestionName);
-                $names = ['nl' => $subQuestionName];
-                $slugs = ['nl' => $subStepSlug];
+            // Translation can be a key or text. We compare the results, because if it's a key, then the
+            // result will be different
+            $translation = $questionData['translation'];
+            $questionData['name'] = [
+                'nl' => \App\Helpers\Translation::hasTranslation($translation . '.title')
+                    ? __($translation . '.title') : $translation,
+            ];
+            $questionData['help_text'] = [
+                'nl' => \App\Helpers\Translation::hasTranslation($translation . '.help')
+                    ? __($translation . '.help') : $translation,
+            ];
 
-                $subStepData = [
-                    'name' => $names,
-                    'order' => $subQuestionData['order'],
-                    'slug' => $slugs,
-                    'step_id' => $step->id,
-                    'sub_step_template_id' => $subQuestionData['sub_step_template_id'],
-                ];
+            $insertData = Arr::except($questionData,
+                ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation']);
 
-                if (isset($subQuestionData['conditions'])) {
-                    $subStepData['conditions'] = json_encode($subQuestionData['conditions']);
+            // Encode data for DB insert...
+            $insertData['conditions'] = empty($insertData['conditions']) ? null : json_encode($insertData['conditions']);
+            $insertData['name'] = json_encode($insertData['name']);
+            $insertData['help_text'] = json_encode($insertData['help_text']);
+            $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode(['nl' => $insertData['placeholder']]);
+            $insertData['options'] = empty($insertData['options']) ? null : json_encode($insertData['options']);
+            $insertData['validation'] = empty($insertData['validation']) ? null : json_encode($insertData['validation']);
+
+            $toolQuestion = ToolQuestion::where('short', $questionData['short'])
+                ->first();
+
+            // We check if it exists already. Admins can change question names and help texts. We don't
+            // want to override that
+            if ($toolQuestion instanceof ToolQuestion) {
+                $insertData['name'] = json_encode($toolQuestion->getTranslations('name'));
+                $insertData['help_text'] = json_encode($toolQuestion->getTranslations('help_text'));
+            }
+
+            // We can updateOrInsert this!
+            DB::table('tool_questions')->updateOrInsert([
+                'short' => $questionData['short'],
+            ], $insertData);
+
+            $toolQuestion = ToolQuestion::where('short', $questionData['short'])
+                ->first();
+
+
+            if (isset($questionData['tool_question_custom_values'])) {
+                $toolQuestionCustomValueOrder = 0;
+                foreach ($questionData['tool_question_custom_values'] as $short => $customValueData) {
+                    $name = $customValueData['name'];
+                    $extra = $customValueData['extra'] ?? [];
+
+                    $insertData = [
+                        'tool_question_id' => $toolQuestion->id,
+                        'order' => $toolQuestionCustomValueOrder,
+                        'show' => true,
+                        // so we will compare the short to determine what is what, but we will keep value for now
+                        'short' => $short,
+                        'name' => json_encode([
+                            'nl' => $name,
+                        ]),
+                        'extra' => json_encode($extra),
+                    ];
+
+                    DB::table('tool_question_custom_values')->updateOrInsert([
+                        'short' => $short,
+                        'tool_question_id' => $toolQuestion->id,
+                    ], $insertData);
+
+                    $toolQuestionCustomValueOrder++;
                 }
+            }
 
-                $subStep = SubStep::where('slug->nl', $slugs['nl'])
-                    ->where('step_id', $subStepData['step_id'])
-                    ->first();
+            if (isset($questionData['tool_question_values'])) {
+                $extra = $questionData['extra'] ?? [];
 
-                $subStepData['name'] = json_encode($names);
-                $subStepData['slug'] = json_encode($slugs);
-
-                // Usually we do an updateOrInsert, but since we have to use a JSON column to compare, we can't use
-                // it. The query builder won't properly handle unencoded JSON, but we need unencoded JSON to
-                // compare.
-                if ($subStep instanceof SubStep) {
-                    DB::table('sub_steps')->where('id', $subStep->id)->update($subStepData);
-                } else {
-                    DB::table('sub_steps')->insert($subStepData);
-
-                    // Fetch again
-                    $subStep = SubStep::where('slug->nl', $slugs['nl'])
-                        ->where('step_id', $subStepData['step_id'])
-                        ->first();
-                }
-
-                if (isset($subQuestionData['questions'])) {
-                    $orderForSubStepToolQuestions = 0;
-                    foreach ($subQuestionData['questions'] as $questionData) {
-                        // Create the question itself
-
-                        // Translation can be a key or text. We compare the results, because if it's a key, then the
-                        // result will be different
-                        $translation = $questionData['translation'];
-                        $questionData['name'] = [
-                            'nl' => \App\Helpers\Translation::hasTranslation($translation . '.title')
-                                ? __($translation . '.title') : $translation,
-                        ];
-                        $questionData['help_text'] = [
-                            'nl' => \App\Helpers\Translation::hasTranslation($translation . '.help')
-                                ? __($translation . '.help') : $translation,
-                        ];
-
-                        $insertData = Arr::except($questionData,
-                            ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation']);
-
-                        // Encode data for DB insert...
-                        $insertData['conditions'] = empty($insertData['conditions']) ? null : json_encode($insertData['conditions']);
-                        $insertData['name'] = json_encode($insertData['name']);
-                        $insertData['help_text'] = json_encode($insertData['help_text']);
-                        $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode(['nl' => $insertData['placeholder']]);
-                        $insertData['options'] = empty($insertData['options']) ? null : json_encode($insertData['options']);
-                        $insertData['validation'] = empty($insertData['validation']) ? null : json_encode($insertData['validation']);
-
-                        $toolQuestion = ToolQuestion::where('short', $questionData['short'])
-                            ->first();
-
-                        // We check if it exists already. Admins can change question names and help texts. We don't
-                        // want to override that
-                        if ($toolQuestion instanceof ToolQuestion) {
-                            $insertData['name'] = json_encode($toolQuestion->getTranslations('name'));
-                            $insertData['help_text'] = json_encode($toolQuestion->getTranslations('help_text'));
-                        }
-
-                        // We can updateOrInsert this!
-                        DB::table('tool_questions')->updateOrInsert([
-                            'short' => $questionData['short'],
-                        ], $insertData);
-
-                        $toolQuestion = ToolQuestion::where('short', $questionData['short'])
-                            ->first();
-
-                        // It might be attached, it might not. We detach to be safe.
-                        $subStep->toolQuestions()->detach($toolQuestion);
-                        $subStep->toolQuestions()->attach($toolQuestion, ['order' => $orderForSubStepToolQuestions]);
-
-                        if (isset($questionData['tool_question_custom_values'])) {
-                            $toolQuestionCustomValueOrder = 0;
-                            foreach ($questionData['tool_question_custom_values'] as $short => $customValueData) {
-                                $name = $customValueData['name'];
-                                $extra = $customValueData['extra'] ?? [];
-
-                                $insertData = [
-                                    'tool_question_id' => $toolQuestion->id,
-                                    'order' => $toolQuestionCustomValueOrder,
-                                    'show' => true,
-                                    // so we will compare the short to determine what is what, but we will keep value for now
-                                    'short' => $short,
-                                    'name' => json_encode([
-                                        'nl' => $name,
-                                    ]),
-                                    'extra' => json_encode($extra),
-                                ];
-
-                                DB::table('tool_question_custom_values')->updateOrInsert([
-                                    'short' => $short,
-                                    'tool_question_id' => $toolQuestion->id,
-                                ], $insertData);
-
-                                $toolQuestionCustomValueOrder++;
-                            }
-                        }
-
-                        if (isset($questionData['tool_question_values'])) {
-                            $extra = $questionData['extra'] ?? [];
-
-                            foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
-                                if (isset($extra['column'])) {
-                                    $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
-                                }
-
-                                $insertData = [
-                                    'tool_question_id' => $toolQuestion->id,
-                                    'order' => $toolQuestionValueOrder,
-                                    'show' => true,
-                                    'tool_question_valuable_type' => get_class($toolQuestionValue),
-                                    'tool_question_valuable_id' => $toolQuestionValue->id,
-                                    // We grab the extra data by the set column (e.g. calculate_value)
-                                    'extra' => json_encode(($extraData ?? $extra)),
-                                ];
-
-                                DB::table('tool_question_valuables')->updateOrInsert([
-                                    'order' => $toolQuestionValueOrder,
-                                    'tool_question_id' => $toolQuestion->id,
-                                ], $insertData);
-                            }
-                        }
-                        $orderForSubStepToolQuestions++;
+                foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
+                    if (isset($extra['column'])) {
+                        $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
                     }
+
+                    $insertData = [
+                        'tool_question_id' => $toolQuestion->id,
+                        'order' => $toolQuestionValueOrder,
+                        'show' => true,
+                        'tool_question_valuable_type' => get_class($toolQuestionValue),
+                        'tool_question_valuable_id' => $toolQuestionValue->id,
+                        // We grab the extra data by the set column (e.g. calculate_value)
+                        'extra' => json_encode(($extraData ?? $extra)),
+                    ];
+
+                    DB::table('tool_question_valuables')->updateOrInsert([
+                        'order' => $toolQuestionValueOrder,
+                        'tool_question_id' => $toolQuestion->id,
+                    ], $insertData);
                 }
             }
         }

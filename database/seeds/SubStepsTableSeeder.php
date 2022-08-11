@@ -20,7 +20,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
-class QuickScanSeeder extends Seeder
+class SubStepsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

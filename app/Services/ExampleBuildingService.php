@@ -172,10 +172,16 @@ class ExampleBuildingService
                                 if (Arr::has($values, $column)) {
                                     Arr::set($values, $column, $data['answer']);
                                     unset($preFilledData[$short]);
-                                } elseif ($columnOrTable === 'element' && Arr::has($values, ($shortColumn = str_replace('.element_value_id', '', $column)))) {
+                                }
+
+                                $shortColumn = str_replace('.element_value_id', '', $column);
+                                if ($columnOrTable === 'element' && Arr::has($values, $shortColumn)) {
                                     Arr::set($values, $shortColumn, $data['answer']);
                                     unset($preFilledData[$short]);
-                                } elseif ($columnOrTable === 'service' && Arr::has($values, ($shortColumn = str_replace('.service_value_id', '', $column)))) {
+                                }
+
+                                $shortColumn = str_replace('.service_value_id', '', $column);
+                                if ($columnOrTable === 'service' && Arr::has($values, $shortColumn)) {
                                     Arr::set($values, $shortColumn, $data['answer']);
                                     unset($preFilledData[$short]);
                                 }

@@ -164,11 +164,11 @@ return [
         ],
 
         'password' => [
-            'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
+            'min' => 'Het wachtwoord moet minmaal ' . Hoomdossier::PASSWORD_LENGTH . ' karakters bevatten.',
             'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
         ],
         'account.password' => [
-            'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
+            'min' => 'Het wachtwoord moet minmaal ' . Hoomdossier::PASSWORD_LENGTH . ' karakters bevatten.',
             'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
         ],
 
@@ -176,6 +176,13 @@ return [
             'url' => 'Het formaat is ongeldig, de url moet beginnen met https:// of http://.'
         ],
 
+        'contact-id' => [
+            'not-found' => 'Opgegeven contact ID voor :attribute is niet bekend als gebruiker in het Hoomdossier.'
+        ],
+
+        'users' => [
+            'incorrect-role' => 'Gevonden gebruiker voor :attribute heeft niet de verwachte rol (:role).',
+        ],
     ],
     'custom-rules' => [
         'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',
@@ -306,6 +313,10 @@ return [
 
         // Cooperation settings
         'cooperation_settings.' . \App\Helpers\Models\CooperationSettingHelper::SHORT_REGISTER_URL => 'register URL',
+
+        // API
+        'building_coach_statuses.coach_contact_id' => 'coach contact ID',
+        'building_coach_statuses.resident_contact_id' => 'bewoner contact ID',
     ],
 
     'values' => [

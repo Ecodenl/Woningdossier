@@ -197,6 +197,18 @@
                                 "contact_id": "1"
                             }
                         }
+                    },
+                    "roles": {
+                        "title": "roles",
+                        "description": "Roles to assign to the user",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": [
+                                "coach",
+                                "resident"
+                            ]
+                        }
                     }
                 },
                 "type": "object"

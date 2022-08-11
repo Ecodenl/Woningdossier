@@ -50,10 +50,7 @@ class ToolQuestionService {
     public function save($givenAnswer)
     {
         if (is_null($this->toolQuestion->save_in)) {
-            ToolQuestionService::init($this->toolQuestion)
-                ->building($this->building)
-                ->currentInputSource($this->currentInputSource)
-                ->saveToolQuestionCustomValues($givenAnswer);
+            $this->saveToolQuestionCustomValues($givenAnswer);
         } else {
             // this *can't* handle a checkbox / multiselect answer.
             $this->saveToolQuestionValuables($givenAnswer);

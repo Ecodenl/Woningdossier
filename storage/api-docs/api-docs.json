@@ -190,24 +190,28 @@
                     "extra": {
                         "title": "extra",
                         "description": "Extra data that may be picked up",
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "example": {
-                                "contact_id": "1"
+                        "properties": {
+                            "contact_id": {
+                                "type": "string",
+                                "example": "1"
                             }
-                        }
+                        },
+                        "type": "object"
                     },
                     "tool_questions": {
                         "title": "tool_questions",
                         "description": "Tool questions keyed by short with given answer",
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "example": {
-                                "resident-count": "2"
+                        "properties": {
+                            "resident-count": {
+                                "type": "integer",
+                                "example": 2
+                            },
+                            "amount-gas": {
+                                "type": "string",
+                                "example": 2000
                             }
-                        }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"

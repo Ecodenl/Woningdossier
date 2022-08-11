@@ -114,23 +114,21 @@ class StoreRegisterRequest
 
     /**
      * @OA\Property(
-     *      title="extra",
-     *      description="Extra data that may be picked up",
-     *     @OA\Items(type="string",example={"contact_id":"1"}),
+     *     title="extra",
+     *     description="Extra data that may be picked up",
+     *         @OA\Property(property="contact_id", example="1", type="string"),
      * )
      *
      * @var array
      */
     public $extra;
 
-    // TODO: Figure out if it's even possible to queue "mixed" types. Using "oneOf" seems to not work, and giving a
-    // property list requires fixed values which is not possible
-
     /**
      * @OA\Property(
-     *      title="tool_questions",
-     *      description="Tool questions keyed by short with given answer",
-     *     @OA\Items(type="string",example={"resident-count":"2"}),
+     *     title="tool_questions",
+     *     description="Tool questions keyed by short with given answer",
+     *         @OA\Property(property="resident-count", example=2, type="integer"),
+     *         @OA\Property(property="amount-gas", example=2000, type="string"),
      * )
      *
      * @var array

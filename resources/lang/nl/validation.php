@@ -179,6 +179,7 @@ return [
     ],
     'custom-rules' => [
         'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',
+        'rule-unique' => ':Attribute bestaat al.'
     ],
 
 
@@ -223,6 +224,7 @@ return [
         'phone_number' => 'Telefoonnummer',
         'house_number' => 'Huisnummer',
         'house_number_extension' => 'Toevoeging',
+        'extra.contact_id' => 'contact ID',
 
         // New measure
         'custom_measure_application.name' => 'Onderwerp',

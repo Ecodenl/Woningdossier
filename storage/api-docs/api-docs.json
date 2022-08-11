@@ -19,6 +19,46 @@
         }
     ],
     "paths": {
+        "/v1/building-coach-status": {
+            "post": {
+                "tags": [
+                    "BuildingCoachStatus"
+                ],
+                "summary": "Link a coach to a building.",
+                "description": "Link a coach to a building.",
+                "operationId": "storeBuildingCoachStatus",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreBuildingCoachStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized for current cooperation"
+                    },
+                    "422": {
+                        "description": "Error: Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "Token": [],
+                        "X-Cooperation-Slug": []
+                    }
+                ]
+            }
+        },
         "/v1/": {
             "get": {
                 "tags": [
@@ -115,6 +155,31 @@
                         "description": "The id of the account",
                         "type": "integer",
                         "example": "4515"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreBuildingCoachStatusRequest": {
+                "title": "Store Building Coach Status request",
+                "description": "Building Coach Status request body data",
+                "required": [
+                    "building_coach_status"
+                ],
+                "properties": {
+                    "building_coach_status": {
+                        "title": "building_coach_status",
+                        "description": "Contact IDs to use for coach linking",
+                        "properties": {
+                            "coach_contact_id": {
+                                "type": "integer",
+                                "example": 10074
+                            },
+                            "resident_contact_id": {
+                                "type": "integer",
+                                "example": 2532
+                            }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"

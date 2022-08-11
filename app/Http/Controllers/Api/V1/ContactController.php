@@ -15,7 +15,7 @@ class ContactController extends Controller
     /**
      * @OA\Post(
      *      security={{"Token":{}, "X-Cooperation-Slug":{}}},
-     *      path="/v1/register",
+     *      path="/v1/building-coach-status",
      *      operationId="storeBuildingCoachStatus",
      *      tags={"BuildingCoachStatus"},
      *      summary="Link a coach to a building.",

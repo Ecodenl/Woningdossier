@@ -44,18 +44,22 @@ class BuildingCoachStatusFormRequest extends ApiRequest
             $coachContactId = $this->input('building_coach_statuses.coach_contact_id');
             $residentContactId = $this->input('building_coach_statuses.resident_contact_id');
 
+            // Because for some reason Laravel won't do this for us???
+            $coachAttr = __('validation.attributes')['building_coach_statuses.coach_contact_id'];
+            $residentAttr = __('validation.attributes')['building_coach_statuses.resident_contact_id'];
+
             // Due to above validation we can assume these values are now correct
             if (! empty($coachContactId) && ! empty($residentContactId)) {
                 $coach = User::byContact($coachContactId)->first();
                 if (! $coach instanceof User) {
-                    $validator->errors()->add('building_coach_statuses.coach_contact_id', __('validation.custom.contact-id.not-found'));
+                    $validator->errors()->add('building_coach_statuses.coach_contact_id', __('validation.custom.contact-id.not-found', ['attribute' => $coachAttr]));
                 } elseif($coach->hasNotRole(RoleHelper::ROLE_COACH)) {
-                    $validator->errors()->add('building_coach_statuses.coach_contact_id', __('validation.custom.users.incorrect-role', ['role' => RoleHelper::ROLE_COACH]));
+                    $validator->errors()->add('building_coach_statuses.coach_contact_id', __('validation.custom.users.incorrect-role', ['attribute' => $coachAttr, 'role' => RoleHelper::ROLE_COACH]));
                 }
 
                 $resident = User::byContact($residentContactId)->first();
                 if (! $resident instanceof User) {
-                    $validator->errors()->add('building_coach_statuses.resident_contact_id', __('validation.custom.contact-id.not-found'));
+                    $validator->errors()->add('building_coach_statuses.resident_contact_id', __('validation.custom.contact-id.not-found', ['attribute' => $residentAttr]));
                 }
             }
         });

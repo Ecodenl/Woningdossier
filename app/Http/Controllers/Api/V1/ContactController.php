@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\ParticipantAddedEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Cooperation\BuildingCoachStatusFormRequest;
 use App\Models\Cooperation;
+use App\Models\User;
+use App\Services\BuildingCoachStatusService;
+use App\Services\BuildingPermissionService;
 
 class ContactController extends Controller
 {
@@ -41,8 +45,20 @@ class ContactController extends Controller
      */
     public function buildingCoachStatus(BuildingCoachStatusFormRequest $request, Cooperation $cooperation)
     {
-        $contactIds = $request->validated()['building_coach_status'];
-        dd($contactIds);
+        $contactIds = $request->validated()['building_coach_statuses'];
+
+        $coach = User::byContact($contactIds['coach_contact_id'])->first();
+        $resident = User::byContact($contactIds['resident_contact_id'])->first();
+
+        if ($resident->allowedAccess()) {
+            // give the coach permission to the resident his building
+            BuildingPermissionService::givePermission($coach, $resident->building);
+        }
+
+        BuildingCoachStatusService::giveAccess($coach, $resident->building);
+
+        ParticipantAddedEvent::dispatch($coach, $resident->building);
+
         return response([], 200);
     }
 }

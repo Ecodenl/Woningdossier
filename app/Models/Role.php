@@ -36,19 +36,6 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Role extends \Spatie\Permission\Models\Role
 {
-    public static function boot()
-    {
-        parent::boot();
-
-//        static::addGlobalScope(new );
-    }
-
-    # Model methods
-    //
-
-    # Attributes
-    //
-
     # Scopes
     public function scopeByName(Builder $query, string $name): Builder
     {

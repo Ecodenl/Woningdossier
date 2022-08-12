@@ -2,13 +2,10 @@
 
 namespace App\Services;
 
-use App\Events\PrivateMessageReceiverEvent;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
-use App\Models\Cooperation;
 use App\Models\PrivateMessage;
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 

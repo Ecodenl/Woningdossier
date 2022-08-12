@@ -2,8 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Helpers\Hoomdossier;
-use App\Helpers\HoomdossierSession;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Client;
@@ -27,7 +25,7 @@ class PrivateMessageReceiverListener
     /**
      * Handle the event.
      *
-     * @param object $event
+     * @param  object  $event
      *
      * @return void
      */
@@ -65,13 +63,9 @@ class PrivateMessageReceiverListener
             // because if so, we wont be creating a "unread message" (private message view)
             // (because the current authenticated user is the sender of the message, and does not need a notification about a message he send himself)
 
-            if ($authenticatedUser instanceof Client && !$isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
-                PrivateMessageView::create([
-                    'input_source_id' => $inputSourceId,
-                    'private_message_id' => $event->privateMessage->id,
-                    'user_id' => $groupParticipant->id,
-                ]);
-            } else if ($user instanceof User && ($groupParticipant->id != $user->id) && !$isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
+            if (! $isMessagePrivateAndGroupParticipantOwnerFromBuilding && ($authenticatedUser instanceof Client
+                    || ($user instanceof User && $groupParticipant->id != $user->id))
+            ) {
                 PrivateMessageView::create([
                     'input_source_id' => $inputSourceId,
                     'private_message_id' => $event->privateMessage->id,
@@ -80,19 +74,13 @@ class PrivateMessageReceiverListener
             }
         }
 
-        if ($authenticatedUser instanceof Client) {
-            PrivateMessageView::create([
-                'private_message_id' => $event->privateMessage->id,
-                'to_cooperation_id' => $event->cooperation->id
-            ]);
-        }
         // avoid unnecessary privateMessagesViews, we dont want to create a row for the user itself
-        if ($user instanceof User && !$user->hasRoleAndIsCurrentRole(['coordinator'])) {
-            // creata a privateMessageView for the cooperation itself
+        if ($authenticatedUser instanceof Client || ($user instanceof User && ! $user->hasRoleAndIsCurrentRole(['coordinator']))) {
+            // Create a a privateMessageView for the cooperation itself
             // since a cooperation is not a 'participant' of a chat we need to create a row for the manually
             PrivateMessageView::create([
                 'private_message_id' => $event->privateMessage->id,
-                'to_cooperation_id' => $event->cooperation->id
+                'to_cooperation_id' => $event->cooperation->id,
             ]);
         }
     }

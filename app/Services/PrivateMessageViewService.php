@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Events\PrivateMessageReceiverEvent;
 use App\Models\Cooperation;
 use App\Models\InputSource;
-use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
 use App\Models\User;
 use Carbon\Carbon;

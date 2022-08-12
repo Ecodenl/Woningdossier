@@ -6,6 +6,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
 use App\Models\Building;
+use App\Models\Client;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
@@ -64,7 +65,13 @@ class PrivateMessageReceiverListener
             // because if so, we wont be creating a "unread message" (private message view)
             // (because the current authenticated user is the sender of the message, and does not need a notification about a message he send himself)
 
-            if ($groupParticipant->id != $user->id && !$isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
+            if ($authenticatedUser instanceof Client && !$isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
+                PrivateMessageView::create([
+                    'input_source_id' => $inputSourceId,
+                    'private_message_id' => $event->privateMessage->id,
+                    'user_id' => $groupParticipant->id,
+                ]);
+            } else if ($user instanceof User && ($groupParticipant->id != $user->id) && !$isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
                 PrivateMessageView::create([
                     'input_source_id' => $inputSourceId,
                     'private_message_id' => $event->privateMessage->id,
@@ -73,7 +80,12 @@ class PrivateMessageReceiverListener
             }
         }
 
-
+        if ($authenticatedUser instanceof Client) {
+            PrivateMessageView::create([
+                'private_message_id' => $event->privateMessage->id,
+                'to_cooperation_id' => $event->cooperation->id
+            ]);
+        }
         // avoid unnecessary privateMessagesViews, we dont want to create a row for the user itself
         if ($user instanceof User && !$user->hasRoleAndIsCurrentRole(['coordinator'])) {
             // creata a privateMessageView for the cooperation itself

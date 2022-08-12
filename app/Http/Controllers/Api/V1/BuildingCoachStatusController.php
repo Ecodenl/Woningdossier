@@ -10,7 +10,7 @@ use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 
-class ContactController extends Controller
+class BuildingCoachStatusController extends Controller
 {
     /**
      * @OA\Post(

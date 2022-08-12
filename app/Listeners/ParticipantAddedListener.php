@@ -41,15 +41,16 @@ class ParticipantAddedListener
             'to_cooperation_id' => HoomdossierSession::getCooperation(),
         ]);
 
-        Log::create([
-            'user_id' => Hoomdossier::user()->id,
-            'building_id' => $event->building->id,
-            'message' => __('woningdossier.log-messages.participant-added', [
-                'full_name' => \App\Helpers\Hoomdossier::user()->getFullName(),
-                'for_full_name' => $participantFullName,
-                'time' => Carbon::now(),
-            ]),
-            'about_user_id' => $event->addedParticipant->id,
-        ]);
+
+//        Log::create([
+//            'user_id' => Hoomdossier::user()->id,
+//            'building_id' => $event->building->id,
+//            'message' => __('woningdossier.log-messages.participant-added', [
+//                'full_name' => \App\Helpers\Hoomdossier::user()->getFullName(),
+//                'for_full_name' => $participantFullName,
+//                'time' => Carbon::now(),
+//            ]),
+//            'about_user_id' => $event->addedParticipant->id,
+//        ]);
     }
 }

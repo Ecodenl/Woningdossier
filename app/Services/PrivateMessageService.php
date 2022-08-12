@@ -57,12 +57,9 @@ class PrivateMessageService
                 $privateMessageData['from_user'] = $cooperation->name;
             }
 
-            $privateMessage = PrivateMessage::create(
+            PrivateMessage::create(
                 $privateMessageData
             );
-
-            PrivateMessageReceiverEvent::dispatch($privateMessage, $cooperation, Hoomdossier::account());
-
         }
 
         return true;

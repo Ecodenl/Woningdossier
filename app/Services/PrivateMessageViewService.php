@@ -14,14 +14,6 @@ use Illuminate\Support\Collection;
 class PrivateMessageViewService
 {
     /**
-     * Create a private message view for each group participant.
-     */
-    public static function create(PrivateMessage $privateMessage)
-    {
-        event(new PrivateMessageReceiverEvent($privateMessage));
-    }
-
-    /**
      * Make a collection of private messages as read by a resident or coach
      * These have a user ID - input source ID combination.
      */

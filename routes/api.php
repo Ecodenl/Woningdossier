@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\V1\ContactController;
+use App\Http\Controllers\Api\V1\BuildingCoachStatusController;
 use App\Http\Controllers\Api\V1\RegisterController;
 use App\Http\Controllers\Api\V1\Controller;
 
@@ -23,7 +23,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))
     ->group(function () {
         Route::get('', [Controller::class, 'index'])->name('index');
         Route::post('register', [RegisterController::class, 'store'])->name('register.store');
-        Route::post('building-coach-status', [ContactController::class, 'buildingCoachStatus'])->name('building-coach-status.store');
+        Route::post('building-coach-status', [BuildingCoachStatusController::class, 'buildingCoachStatus'])->name('building-coach-status.store');
     });
 
 Route::namespace('Api')->group(function () {

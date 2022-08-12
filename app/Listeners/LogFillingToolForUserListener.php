@@ -38,7 +38,6 @@ class LogFillingToolForUserListener implements ShouldQueue
                 'for_full_name' => $buildingOwner->getFullName(),
                 'time' => Carbon::now(),
             ]),
-            'for_user_id' => $buildingOwner->id,
         ]);
     }
 }

@@ -183,6 +183,11 @@ return [
         'users' => [
             'incorrect-role' => 'Gevonden gebruiker voor :attribute heeft niet de verwachte rol (:role).',
         ],
+
+        'building-coach-statuses' => [
+            'no-access' => 'Bewoner heeft geen toestemming gegeven om gegevens te delen.',
+            'already-linked' => 'De opgegeven coach is al gekoppeld aan de gegeven woning.',
+        ],
     ],
     'custom-rules' => [
         'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',

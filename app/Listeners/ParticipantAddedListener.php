@@ -49,7 +49,6 @@ class ParticipantAddedListener
                 'for_full_name' => $participantFullName,
                 'time' => Carbon::now(),
             ]),
-            'about_user_id' => $event->addedParticipant->id,
         ]);
     }
 }

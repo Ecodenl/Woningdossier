@@ -25,7 +25,11 @@ class StepController extends ToolController
 
     public function show(Cooperation $cooperation, Step $step)
     {
-        return view('cooperation.tool.step.show', compact('cooperation', 'step'));
+        $step->load('subSteps.toolQuestions');
+        $masterInputSource = $this->masterInputSource;
+        $building = HoomdossierSession::getBuilding(true);
+
+        return view('cooperation.tool.step.show', compact('cooperation', 'step', 'masterInputSource', 'building'));
     }
     /**
      * Display a listing of the resource.

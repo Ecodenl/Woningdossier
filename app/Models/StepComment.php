@@ -18,6 +18,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string|null $comment
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\Step $step
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment allInputSources()

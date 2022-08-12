@@ -12,7 +12,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
-        "barryvdh/laravel-dompdf": "^0.8.4",
+        "barryvdh/laravel-dompdf": "^2.0.0",
         "darkaonline/l5-swagger": "6.*",
         "doctrine/dbal": "^2.11",
         "ecodenl/pico-wrapper": "dev-master",

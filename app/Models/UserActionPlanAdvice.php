@@ -35,6 +35,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $step_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\Step|null $step
  * @property-read \App\Models\User $user

@@ -33,7 +33,7 @@ class PrivateMessageReceiverListener
         $groupParticipants = PrivateMessage::getGroupParticipants($event->privateMessage->building_id);
 
         $buildingFromOwner = Building::find($event->privateMessage->building_id);
-        $privateMessage = PrivateMessage::find($event->privateMessage->id);
+        $privateMessage = $event->privateMessage;
 
         $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->privateMessage->building_id);
 

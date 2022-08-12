@@ -22,14 +22,14 @@ return [
     'before'               => 'De :attribute moet een datum zijn voor :date.',
     'before_or_equal'      => 'De :attribute moet een datum zijn van :date of eerder.',
     'between'              => [
-        'numeric' => ':attribute moet tussen :min en :max liggen.',
+        'numeric' => ':Attribute moet tussen :min en :max liggen.',
         'file'    => 'De :attribute moet tussen :min en :max kilobytes groot zijn.',
         'string'  => 'De :attribute moet tussen :min en :max tekens zijn.',
         'array'   => 'De :attribute moet tussen :min en :max items bevatten.',
     ],
     'boolean'              => 'De :attribute moet waar of onwaar zijn.',
     'confirmed'            => 'De :attribute bevestiging is niet correct.',
-    'hash_check'           => ':attribute is niet correct.',
+    'hash_check'           => ':Attribute is niet correct.',
     'date'                 => 'Vul een geldige datum in',
     'date_format'          => 'De :attribute is niet volgens het formaat :format.',
     'different'            => 'De :attribute en :other mogen niet hetzelfde zijn.',
@@ -40,7 +40,7 @@ return [
     'email'                => 'De :attribute moet een geldig e-mailadres zijn.',
     'exists'               => 'De geselecteerde waarde is ongeldig.',
     'file'                 => 'De :attribute moet een bestand zijn.',
-    'filled'               => ':attribute veld moet ingevuld zijn.',
+    'filled'               => ':Attribute veld moet ingevuld zijn.',
     'gt'                   => [
         'numeric' => 'De :attribute moet groter zijn dan :value.',
         'file'    => 'De :attribute moet groter zijn dan :value kilobytes.',
@@ -55,14 +55,14 @@ return [
     ],
     'image'                => 'De :attribute moet een image zijn.',
     'in'                   => 'De geselecteerde :attribute is ongeldig.',
-    'in_array'             => ':attribute veld is geen optie in :other.',
+    'in_array'             => ':Attribute veld is geen optie in :other.',
     'integer'              => 'De :attribute moet een afgerond getal zijn.',
     'ip'                   => 'De :attribute moet een geldig IP adres zijn.',
     'ipv4'                 => 'De :attribute moet een geldig IPv4 adres zijn.',
     'ipv6'                 => 'De :attribute moet een geldig IPv6 adres zijn.',
     'json'                 => 'De :attribute moet een geldige JSON string zijn.',
     'max'                  => [
-        'numeric' => ':attribute mag niet groter dan :max zijn.',
+        'numeric' => ':Attribute mag niet groter dan :max zijn.',
         'file'    => 'De :attribute mag niet groter dan :max kilobytes zijn.',
         'string'  => 'De :attribute mag niet meer dan :max karakters bevatten.',
         'array'   => 'De :attribute mag niet meer dan :max items bevatten.',
@@ -70,8 +70,8 @@ return [
     'mimes'                => 'De :attribute moet een bestand zijn met type: :values.',
     'mimetypes'            => 'De :attribute moet een bestand zijn met type: :values.',
     'min'                  => [
-        'numeric' => ':attribute moet tenminste :min zijn.',
-        'file'    => ':attribute moet tenminste :min kilobytes groot zijn.',
+        'numeric' => ':Attribute moet tenminste :min zijn.',
+        'file'    => ':Attribute moet tenminste :min kilobytes groot zijn.',
         'string'  => 'De :attribute moet tenminste :min karakters bevatten.',
         'array'   => 'De :attribute moet tenminste :min items bevatten.',
     ],
@@ -90,20 +90,20 @@ return [
     'multiple_of'          => ':Attribute moet een veelvoud van :value zijn.',
     'not_in'               => 'Het formaat van :attribute is ongeldig.',
     'not_regex'            => 'De :attribute formaat is ongeldig.',
-    'numeric'              => ':attribute moet een getal bevatten',
+    'numeric'              => ':Attribute moet een getal bevatten',
     'present'              => 'De :attribute moet gevuld zijn.',
-    'phone_number'         => ':attribute is een ongeldig telefoonnummer.',
-    'postal_code'          => ':attribute is een ongeldige postcode.',
-    'house_number'         => ':attribute is een ongeldig huisnummer.',
-    'house_number_extension'    => ':attribute is een ongeldige huisnummer toevoeging.',
-    'regex'                => ':attribute formaat is ongeldig.',
-    'required'             => ':attribute veld is verplicht.',
-    'required_if'          => ':attribute veld is verplicht wanneer :other :value is.',
-    'required_unless'      => ':attribute veld is verplicht tenzij :other in :values zit.',
-    'required_with'        => ':attribute veld is verplicht wanneer :values aanwezig is.',
-    'required_with_all'    => ':attribute veld is verplicht wanneer :values aanwezig is.',
-    'required_without'     => ':attribute veld is verplicht wanneer :values niet aanwezig is.',
-    'required_without_all' => ':attribute veld is verplicht wanneer geen van :values aanwezig is.',
+    'phone_number'         => ':Attribute is een ongeldig telefoonnummer.',
+    'postal_code'          => ':Attribute is een ongeldige postcode.',
+    'house_number'         => ':Attribute is een ongeldig huisnummer.',
+    'house_number_extension'    => ':Attribute is een ongeldige huisnummer toevoeging.',
+    'regex'                => ':Attribute formaat is ongeldig.',
+    'required'             => ':Attribute veld is verplicht.',
+    'required_if'          => ':Attribute veld is verplicht wanneer :other :value is.',
+    'required_unless'      => ':Attribute veld is verplicht tenzij :other in :values zit.',
+    'required_with'        => ':Attribute veld is verplicht wanneer :values aanwezig is.',
+    'required_with_all'    => ':Attribute veld is verplicht wanneer :values aanwezig is.',
+    'required_without'     => ':Attribute veld is verplicht wanneer :values niet aanwezig is.',
+    'required_without_all' => ':Attribute veld is verplicht wanneer geen van :values aanwezig is.',
     'same'                 => 'De :attribute en :other moeten overeenkomen.',
     'size'                 => [
         'numeric' => 'De :attribute moet :size zijn.',
@@ -132,7 +132,7 @@ return [
 
     'custom' => [
         'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :attribute',
-        'alpha_space' => ':attribute mag alleen letters en spaties bevatten.',
+        'alpha_space' => ':Attribute mag alleen letters en spaties bevatten.',
         'surface' => 'Dit veld is verplicht als u een dak type heeft gekozen.',
         'is-user-member-of-cooperation' => 'De opgegeven gebruiker is geen lid van de huidige cooperatie',
         'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
@@ -191,6 +191,7 @@ return [
     ],
     'custom-rules' => [
         'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',
+        'rule-unique' => ':Attribute bestaat al.'
     ],
 
 
@@ -235,6 +236,7 @@ return [
         'phone_number' => 'Telefoonnummer',
         'house_number' => 'Huisnummer',
         'house_number_extension' => 'Toevoeging',
+        'extra.contact_id' => 'contact ID',
 
         // New measure
         'custom_measure_application.name' => 'Onderwerp',
@@ -318,6 +320,18 @@ return [
 
         // Cooperation settings
         'cooperation_settings.' . \App\Helpers\Models\CooperationSettingHelper::SHORT_REGISTER_URL => 'register URL',
+
+        // User data
+        'accounts.email' => 'e-mailadres',
+        'users.first_name' => 'voornaam',
+        'users.last_name' => 'achternaam',
+        'users.phone_number' => 'telefoonnummer',
+        'users.extra.contact_id' => 'contact ID',
+        'buildings.postal_code' => 'postcode',
+        'buildings.number' => 'huisnummer',
+        'buildings.extension' => 'toevoeging',
+        'buildings.street' => 'straat',
+        'buildings.city' => 'stad',
 
         // API
         'building_coach_statuses.coach_contact_id' => 'coach contact ID',

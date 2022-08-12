@@ -25,13 +25,14 @@ class PrivateMessageReceiverListener
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
      *
      * @return void
      */
     public function handle($event)
     {
         $authenticatedUser = $event->authenticatable;
+        $isClient = $authenticatedUser instanceof Client;
 
         $user = null;
         if ($authenticatedUser instanceof Account) {
@@ -62,10 +63,9 @@ class PrivateMessageReceiverListener
             // this checks if the current participant of the "group / chat", is the current authenticated user.
             // because if so, we wont be creating a "unread message" (private message view)
             // (because the current authenticated user is the sender of the message, and does not need a notification about a message he send himself)
+            $isGroupParticipantNonAuthenticatedUser = $user instanceof User && $groupParticipant->id != $user->id;
 
-            if (! $isMessagePrivateAndGroupParticipantOwnerFromBuilding && ($authenticatedUser instanceof Client
-                    || ($user instanceof User && $groupParticipant->id != $user->id))
-            ) {
+            if (!$isMessagePrivateAndGroupParticipantOwnerFromBuilding && ($isClient || $isGroupParticipantNonAuthenticatedUser)) {
                 PrivateMessageView::create([
                     'input_source_id' => $inputSourceId,
                     'private_message_id' => $event->privateMessage->id,
@@ -75,7 +75,7 @@ class PrivateMessageReceiverListener
         }
 
         // avoid unnecessary privateMessagesViews, we dont want to create a row for the user itself
-        if ($authenticatedUser instanceof Client || ($user instanceof User && ! $user->hasRoleAndIsCurrentRole(['coordinator']))) {
+        if ($isClient || ($user instanceof User && !$user->hasRoleAndIsCurrentRole(['coordinator']))) {
             // Create a a privateMessageView for the cooperation itself
             // since a cooperation is not a 'participant' of a chat we need to create a row for the manually
             PrivateMessageView::create([

@@ -12,6 +12,6 @@ class PrivateMessageObserver
      */
     public function created(PrivateMessage $privateMessage)
     {
-        PrivateMessageViewService::create($privateMessage);
+        // PrivateMessageViewService::create($privateMessage);
     }
 }

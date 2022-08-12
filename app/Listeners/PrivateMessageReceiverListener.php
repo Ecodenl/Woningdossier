@@ -4,10 +4,12 @@ namespace App\Listeners;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
+use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 
 class PrivateMessageReceiverListener
@@ -30,6 +32,13 @@ class PrivateMessageReceiverListener
      */
     public function handle($event)
     {
+        $authenticatedUser = $event->authenticatable;
+
+        $user = null;
+        if ($authenticatedUser instanceof Account) {
+            $user = $authenticatedUser->users()->where('cooperation_id', $event->cooperation->id)->first();
+        }
+
         $groupParticipants = PrivateMessage::getGroupParticipants($event->privateMessage->building_id);
 
         $buildingFromOwner = Building::find($event->privateMessage->building_id);
@@ -51,8 +60,11 @@ class PrivateMessageReceiverListener
                 $inputSourceId = InputSource::findByShort(InputSource::RESIDENT_SHORT)->id;
             }
 
-            // if the message is private and the group member is the owner, we dont notify him because the message is not intended for him
-            if ($groupParticipant->id != Hoomdossier::user()->id && ! $isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
+            // this checks if the current participant of the "group / chat", is the current authenticated user.
+            // because if so, we wont be creating a "unread message" (private message view)
+            // (because the current authenticated user is the sender of the message, and does not need a notification about a message he send himself)
+
+            if ($groupParticipant->id != $user->id && !$isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
                 PrivateMessageView::create([
                     'input_source_id' => $inputSourceId,
                     'private_message_id' => $event->privateMessage->id,
@@ -61,12 +73,14 @@ class PrivateMessageReceiverListener
             }
         }
 
+
         // avoid unnecessary privateMessagesViews, we dont want to create a row for the user itself
-        if (! Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator'])) {
+        if ($user instanceof User && !$user->hasRoleAndIsCurrentRole(['coordinator'])) {
+            // creata a privateMessageView for the cooperation itself
             // since a cooperation is not a 'participant' of a chat we need to create a row for the manually
             PrivateMessageView::create([
                 'private_message_id' => $event->privateMessage->id,
-                'to_cooperation_id' => HoomdossierSession::getCooperation(),
+                'to_cooperation_id' => $event->cooperation->id
             ]);
         }
     }

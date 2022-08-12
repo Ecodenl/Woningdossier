@@ -39,6 +39,7 @@ class ExampleBuildingService
      */
     public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building, ?InputSource $inputSource = null, ?InputSource $initiatingInputSource = null)
     {
+        $preFilledData = [];
         $inputSource = $inputSource ?? InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
         // unless stated differently: compare to master input values
         $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(InputSource::MASTER_SHORT);

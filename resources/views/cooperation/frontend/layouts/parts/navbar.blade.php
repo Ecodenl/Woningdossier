@@ -96,7 +96,7 @@
             @livewire('cooperation.frontend.layouts.parts.messages')
 
             {{-- Keep local for ease of use --}}
-            @if(!app()->isLocal())
+            @if(app()->isLocal())
                 @if(($building = \App\Helpers\HoomdossierSession::getBuilding(true)) instanceof \App\Models\Building && $building->hasCompletedQuickScan(\App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT)))
                     @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
                         {{-- Loaded in NavbarComposer --}}

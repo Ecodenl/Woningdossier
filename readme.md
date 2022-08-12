@@ -25,27 +25,24 @@ you run it is a matter of taste.
 Options:
 - [Vagrant + ansible](docs/setup/vagrant-ansible.md)
 - [Docker](docs/setup/docker.md)
-- Homestead
 
-### The application
+## The application
 
-## PHP version
-PHP 7.1 is the current targeted version as this is required by Laravel 5.5.
+### PHP version
+PHP 7.4 is the current targeted version as this is the lowest actively supported PHP version.
 
-## Translations
-We try to use as much of the translation files as possible, these will be stored in the database with the following commands.
-
-    1: php artisan translations:import
-    2: php artisan languageline:to-question-structure --groups-to-convert=cooperation/tool/general-data/building-characteristics
-    
-[Laravel translations import](https://github.com/WeDesignIt/laravel-translations-import)
-
-## Conventions
-The woningdossier is based on Laravel 5.5 LTS. Our goal is to confirm as much as 
+### Conventions
+The Hoomdossier is based on Laravel 6.0 LTS. Our goal is to confirm as much as 
 possible to the conventions by the framework (i.e. PSR-4 autoloading).
 
 ### Code conventions
 We follow the [Symfony coding standards](https://symfony.com/doc/current/contributing/code/standards.html).
 This is persuaded via PHP-CS-Fixer. [How to install PHP CS Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer#installation)
 
-## Pull requests
+### Translations
+We try to use as much of the translation files as possible, these will be stored in the database with the following commands.
+
+    1: php artisan translations:import
+    2: php artisan languageline:to-question-structure --groups-to-convert=cooperation/tool/general-data/building-characteristics
+
+[Laravel translations import](https://github.com/WeDesignIt/laravel-translations-import)

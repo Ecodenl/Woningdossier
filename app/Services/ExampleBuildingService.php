@@ -61,7 +61,9 @@ class ExampleBuildingService
         if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
             // Fetch pre-filled data
             $preFilledData = [];
-            foreach (array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS) as $toolQuestionShort) {
+            // tool questions which can never be overwritten by the example building
+            $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
+            foreach ($fixedToolQuestionShorts as $toolQuestionShort) {
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
                 if ($toolQuestion instanceof ToolQuestion) {

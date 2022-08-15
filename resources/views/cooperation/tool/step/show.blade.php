@@ -3,6 +3,7 @@
 @section('step_title', $step->name)
 
 @section('content')
+    <livewire:cooperation.tool.expert-scan.form :step="$step" />
     @foreach($step->subSteps as $subStep)
         <h4>{{$subStep->name}}</h4>
         <div class="flex justify-between">

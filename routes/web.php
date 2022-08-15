@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
+use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
 
 /** @noinspection PhpParamsInspection */
 
@@ -158,10 +159,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             Route::namespace('Frontend')->as('frontend.')->middleware(['track-visited-url'])->group(function () {
                 Route::resource('help', 'HelpController')->only('index');
-
                 Route::namespace('Tool')->as('tool.')->group(function () {
-                    Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
-                        Route::get('', [QuickScanController::class, 'start'])->name('start');
+
+                    Route::as('quick-scan.')->prefix('{scan}')->group(function () {
+                        Route::get('', [ScanController::class, 'show'])->name('scans.show');
+//                        Route::get('start', [QuickScanController::class, 'start'])->name('start');
                         Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
 
                         Route::get('{step}/vragenlijst/{questionnaire}', 'QuickScan\\QuestionnaireController@index')
@@ -172,6 +174,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             ->name('index')
                             ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
                     });
+
+
                 });
             });
 

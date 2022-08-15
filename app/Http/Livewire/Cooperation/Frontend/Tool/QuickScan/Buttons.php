@@ -7,6 +7,7 @@ use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use Illuminate\Http\Request;
@@ -23,6 +24,8 @@ class Buttons extends Component
     public $nextStep;
     public $previousStep;
 
+    public $currentScan;
+
     public $subStep;
     public $nextSubStep;
     public $previousSubStep;
@@ -36,8 +39,9 @@ class Buttons extends Component
 
     public $toolQuestions;
 
-    public function mount(Request $request, Step $step, $subStepOrQuestionnaire)
+    public function mount(Request $request, Scan $currentScan, Step $step, $subStepOrQuestionnaire)
     {
+        $this->currentScan = $currentScan;
         $this->account = $request->user();
         $this->building = HoomdossierSession::getBuilding(true);
 

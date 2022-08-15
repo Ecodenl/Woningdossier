@@ -4,21 +4,22 @@
         $nextUrl = null;
 
         if ($previousStep instanceof \App\Models\Step && $previousSubStep instanceof \App\Models\SubStep) {
-            $previousUrl = route('cooperation.frontend.tool.quick-scan.index', ['step' => $previousStep, 'subStep' => $previousSubStep]);
+            $previousUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $previousStep->scan, 'step' => $previousStep, 'subStep' => $previousSubStep]);
         } elseif ($previousStep instanceof \App\Models\Step && $previousQuestionnaire instanceof \App\Models\Questionnaire) {
-            $previousUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['step' => $previousStep, 'questionnaire' => $previousQuestionnaire]);
+            $previousUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['scan' => $previousStep->scan, 'step' => $previousStep, 'questionnaire' => $previousQuestionnaire]);
         }
         if ($nextStep instanceof \App\Models\Step && $nextSubStep instanceof \App\Models\SubStep) {
-            $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['step' => $nextStep, 'subStep' => $nextSubStep]);
+            $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $nextStep->scan, 'step' => $nextStep, 'subStep' => $nextSubStep]);
         } elseif ($nextStep instanceof \App\Models\Step && $nextQuestionnaire instanceof \App\Models\Questionnaire) {
-            $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
+            $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['scan' => $nextStep->scan, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
         } else {
             if ($firstIncompleteStep instanceof \App\Models\Step && $firstIncompleteSubStep instanceof \App\Models\SubStep) {
-                $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['step' => $firstIncompleteStep, 'subStep' => $firstIncompleteSubStep]);
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $firstIncompleteStep->scan, 'step' => $firstIncompleteStep, 'subStep' => $firstIncompleteSubStep]);
             } else {
-                $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index');
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index', ['scan' => $currentScan]);
             }
         }
+
     @endphp
 
     @if($previousStep instanceof \App\Models\Step || $previousSubStep instanceof \App\Models\SubStep)

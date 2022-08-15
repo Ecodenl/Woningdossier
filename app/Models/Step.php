@@ -188,6 +188,11 @@ class Step extends Model
         return $query->whereNotIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
     }
 
+    public function scan()
+    {
+        return $this->belongsTo(Scan::class);
+    }
+
     /**
      * Get the measure applications from a step.
      *

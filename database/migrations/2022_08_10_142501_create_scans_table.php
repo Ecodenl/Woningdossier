@@ -16,6 +16,7 @@ class CreateScansTable extends Migration
         Schema::create('scans', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->json('name');
+            $table->json('slug');
             $table->string('short');
             $table->timestamps();
         });

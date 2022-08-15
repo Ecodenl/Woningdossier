@@ -25,6 +25,9 @@ class ChangeSubStepTemplateIdToSubStepsTable extends Migration
      */
     public function down()
     {
+        // in order to revert this migration, we have to delete all the null values
+        DB::table('sub_steps')->where('sub_step_template_id', null)->delete();
+
         Schema::table('sub_steps', function (Blueprint $table) {
             $table->unsignedBigInteger('sub_step_template_id')->nullable(false)->change();
         });

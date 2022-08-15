@@ -115,7 +115,7 @@ class ToolQuestionService {
         $column = $saveIn['column'];
         $where  = $saveIn['where'];
 
-        $where[] = ['input_source_id', '=', $this->currentInputSource->id];
+        $where['input_source_id'] = $this->currentInputSource->id;
 
         // We will save it on the model, this way we keep the current events behind them
         $modelName = "App\\Models\\" . Str::studly(Str::singular($table));

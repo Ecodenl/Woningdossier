@@ -89,11 +89,11 @@ class ExampleBuildingService
                             $whereColumn = ToolQuestionHelper::TABLE_COLUMN[$table];
 
                             // Reverse engineer the value of the where
-                            $where = Arr::first(Arr::where($saveIn['where'], function ($whereStatement) use ($whereColumn) {
-                                return $whereStatement[0] == $whereColumn;
+                            $where = Arr::first(Arr::where($saveIn['where'], function ($value, $column) use ($whereColumn) {
+                                return $column == $whereColumn;
                             }));
 
-                            $saveIn['column'] = "{$where[2]}.{$saveIn['column']}";
+                            $saveIn['column'] = "{$where}.{$saveIn['column']}";
                         }
                     }
 

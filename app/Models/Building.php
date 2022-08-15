@@ -209,7 +209,7 @@ class Building extends Model
         // TODO: Should this check `for_specific_input_source`?
 
         $answer  = null;
-        $where[] = ['input_source_id', '=', $inputSource->id];
+        $where['input_source_id'] = $inputSource->id;
         // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
         if (! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);

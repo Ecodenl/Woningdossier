@@ -126,9 +126,9 @@ class ToolQuestionHelper
         $where = [];
 
         if (Schema::hasColumn($table, 'user_id')) {
-            $where[] = ['user_id', '=', $building->user_id];
+            $where['user_id'] = $building->user_id;
         } else {
-            $where[] = ['building_id', '=', $building->id];
+            $where['building_id'] = $building->id;
         }
 
         // 2 parts is the simple scenario, this just means a table + column
@@ -144,14 +144,14 @@ class ToolQuestionHelper
 
                 // Currently only for step_comments that can have a short
                 foreach ($values as $index => $value) {
-                    $where[] = [$columns[$index], '=', $value];
+                    $where[$columns[$index]] = $value;
                 }
             } else {
                 // Just a value, but the short table could be an array. We grab the first
                 $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
                 $columnForWhere = is_array($columns) ? $columns[0] : $columns;
 
-                $where[] = [$columnForWhere, '=', $column];
+                $where[$columnForWhere] = $column;
             }
 
             $columns = array_slice($savedInParts, 2);

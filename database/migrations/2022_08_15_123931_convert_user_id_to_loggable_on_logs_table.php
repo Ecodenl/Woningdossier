@@ -1,0 +1,51 @@
+<?php
+
+use App\Models\User;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class ConvertUserIdToLoggableOnLogsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        if (Schema::hasColumn('logs', 'user_id')) {
+            // Separate statements, because otherwise it won't drop the damn foreign before attempting the column change
+            Schema::table('logs', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+            });
+            Schema::table('logs', function (Blueprint $table) {
+                $table->unsignedBigInteger('user_id')->nullable()->change();
+                $table->renameColumn('user_id', 'loggable_id');
+                $table->string('loggable_type')->nullable()->after('id');
+            });
+
+            DB::table('logs')->update([
+                'loggable_type' => User::class,
+            ]);
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        if (! Schema::hasColumn('logs', 'user_id')) {
+            Schema::table('logs', function (Blueprint $table) {
+                $table->dropColumn('loggable_type');
+                $table->renameColumn('loggable_id', 'user_id');
+                $table->integer('user_id')->nullable()->default(null)->unsigned()->change();
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            });
+        }
+    }
+}

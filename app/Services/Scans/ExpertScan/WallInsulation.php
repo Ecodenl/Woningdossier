@@ -1,37 +1,32 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Tool;
+namespace App\Services\Scans\ExpertScan;
 
-use App\Calculations\WallInsulation;
 use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Http\Requests\Cooperation\Tool\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\Step;
 use App\Scopes\GetValueScope;
 use App\Services\ConsiderableService;
+use App\Services\Scans\ExpertScan\ScanableStep;
 use App\Services\StepCommentService;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
-class WallInsulationController extends ToolController
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index()
+class WallInsulation extends ScanableStep {
+
+    public function data(): array
     {
         $typeIds = [3];
 
-        /** @var Building $building */
-        $building = HoomdossierSession::getBuilding(true);
+        $building = $this->building;
 
         $facadeInsulation = $building->getBuildingElement('wall-insulation', $this->masterInputSource);
         $buildingFeature = $building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
@@ -48,25 +43,19 @@ class WallInsulationController extends ToolController
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
 
-        return view('cooperation.tool.wall-insulation.index', compact(
-             'building', 'facadeInsulation', 'buildingFeaturesOrderedOnCredibility',
+        return compact(
+            'building', 'facadeInsulation', 'buildingFeaturesOrderedOnCredibility',
             'surfaces', 'buildingFeature', 'typeIds',
             'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
             'buildingElements', 'buildingFeaturesRelationShip'
-        ));
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\Cooperation\Tool\WallInsulationRequest  $request
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function store(WallInsulationRequest $request)
+    public function save(Request $request)
     {
-        $building = HoomdossierSession::getBuilding(true);
-        $inputSource = HoomdossierSession::getInputSource(true);
+
+        $building = $this->building;
+        $inputSource = $this->inputSource;
         $user = $building->user;
 
         ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
@@ -93,18 +82,14 @@ class WallInsulationController extends ToolController
             ->setValues($values)
             ->saveValues()
             ->createAdvices();
-
-        return $this->completeStore($this->step, $building, $inputSource);
     }
 
-    public function calculate(WallInsulationRequest $request)
+    public function calculate()
     {
-        $building = HoomdossierSession::getBuilding(true);
+        $building = $this->building;
         $user = $building->user;
         $userEnergyHabit = $user->energyHabit()->forInputSource($this->masterInputSource)->first();
 
-        $result = WallInsulation::calculate($building, $this->masterInputSource, $userEnergyHabit, $request->toArray());
-
-        return response()->json($result);
+        $result = \App\Calculations\WallInsulation::calculate($building, $this->masterInputSource, $userEnergyHabit, $this->request->toArray());
     }
 }

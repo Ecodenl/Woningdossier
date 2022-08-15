@@ -160,10 +160,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::namespace('Frontend')->as('frontend.')->middleware(['track-visited-url'])->group(function () {
                 Route::resource('help', 'HelpController')->only('index');
                 Route::namespace('Tool')->as('tool.')->group(function () {
+                    Route::get('{scan}', [ScanController::class, 'show'])->name('scans.show');
 
-                    Route::as('quick-scan.')->prefix('{scan}')->group(function () {
-                        Route::get('', [ScanController::class, 'show'])->name('scans.show');
-//                        Route::get('start', [QuickScanController::class, 'start'])->name('start');
+                    Route::as('quick-scan.')->prefix('{scan}}')->group(function () {
                         Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
 
                         Route::get('{step}/vragenlijst/{questionnaire}', 'QuickScan\\QuestionnaireController@index')
@@ -173,6 +172,13 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::get('{step}/{subStep}', 'QuickScanController@index')
                             ->name('index')
                             ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
+                    });
+
+                    Route::as('expert-scan.')->prefix('{scan}')->group(function () {
+                        // Define this route as last to not match above routes as step/sub step combo
+                        Route::get('{step}', 'ExpertScanController@index')
+                        ->name('index')
+                        ->middleware(['duplicate-data-for-user']);
                     });
 
 
@@ -213,7 +219,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
                     // Wall Insulation
-                    Route::group(['prefix' => 'wall-insulation', 'as' => 'wall-insulation.'], function () {
+                    Route::group(['prefix' => '/bier/wall-insulation', 'as' => 'wall-insulation.'], function () {
                         Route::resource('', 'WallInsulationController', ['only' => ['index', 'store']]);
                         Route::post('calculate', 'WallInsulationController@calculate')->name('calculate');
                     });

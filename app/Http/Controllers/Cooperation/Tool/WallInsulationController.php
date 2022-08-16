@@ -17,6 +17,7 @@ use App\Models\MeasureApplication;
 use App\Scopes\GetValueScope;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
+use Illuminate\Support\Facades\Log;
 
 class WallInsulationController extends ToolController
 {

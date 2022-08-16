@@ -58,11 +58,16 @@ class StatusesTableSeeder extends Seeder
         ];
 
         foreach ($statuses as $order => $status) {
-            DB::table('statuses')->insert([
-                'order' => $order,
-                'name' => json_encode($status['name']),
-                'short' => $status['short'],
-            ]);
+            DB::table('statuses')->updateOrInsert(
+                [
+                    'short' => $status['short'],
+                ],
+                [
+                    'order' => $order,
+                    'name' => json_encode($status['name']),
+                    'short' => $status['short'],
+               ]
+            );
         }
     }
 }

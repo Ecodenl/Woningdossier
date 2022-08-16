@@ -46,8 +46,9 @@ class ConvertUserIdToLoggableOnLogsTable extends Migration
             });
             Schema::table('logs', function (Blueprint $table) {
                 $table->integer('user_id')->nullable()->default(null)->unsigned()->change();
-                // TODO: This foreign key won't work for some reason
-                $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+                // As it turns out, MySQL is unable to foreign key a column with null values, so we will just
+                // not set the foreign key...
+                //$table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             });
         }
     }

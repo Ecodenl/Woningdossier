@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use App\Mail\RequestAccountConfirmationEmail;
-use App\Models\Log;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

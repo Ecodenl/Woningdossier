@@ -43,7 +43,10 @@ class ConvertUserIdToLoggableOnLogsTable extends Migration
             Schema::table('logs', function (Blueprint $table) {
                 $table->dropColumn('loggable_type');
                 $table->renameColumn('loggable_id', 'user_id');
+            });
+            Schema::table('logs', function (Blueprint $table) {
                 $table->integer('user_id')->nullable()->default(null)->unsigned()->change();
+                // TODO: This foreign key won't work for some reason
                 $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             });
         }

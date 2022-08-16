@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\DiscordNotifier;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -10,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int|null $user_id
  * @property int|null $building_id
- * @property int|null $for_user_id
  * @property string $message
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\Model;
 class Log extends Model
 {
     protected $fillable = [
-        'user_id', 'building_id', 'message', 'for_user_id',
+        'user_id', 'building_id', 'message',
     ];
 
     /**
@@ -66,7 +66,8 @@ class Log extends Model
      */
     public function forUser()
     {
-        return $this->belongsTo(User::class, 'for_user_id', 'id');
+        (new DiscordNotifier())->notify(__METHOD__ . " has been used! Request Route: " . optional(request()->route())->getName());
+        return $this->building->user();
     }
 
     /**

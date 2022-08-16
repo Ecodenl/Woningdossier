@@ -3,20 +3,15 @@
 namespace App\Http\Controllers\Cooperation\Frontend\Tool;
 
 use App\Helpers\HoomdossierSession;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Cooperation\Tool\ToolController;
-use App\Jobs\CloneOpposingInputSource;
 use App\Models\Cooperation;
-use App\Models\Notification;
-use App\Models\Scan;
 use App\Models\Step;
-use App\Models\SubStep;
-use App\Services\Scans\ExpertScanService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class ExpertScanController extends ToolController
 {
-    public function index(Cooperation $cooperation, Scan $scan, Step $step)
+    public function index(Request $request, Cooperation $cooperation, Step $step)
     {
         Log::debug('ExpertScanController::index');
 
@@ -31,7 +26,7 @@ class ExpertScanController extends ToolController
             return view('cooperation.frontend.tool.expert-scan.index', compact('step', 'masterInputSource', 'building'));
         }
 
-        return (new ExpertScanService($step, $building, HoomdossierSession::getInputSource(true)))
-            ->view();
+        // at this point the step exists, however wrong url. So we will help them a bit.
+        return redirect()->route("cooperation.tool.{$step->short}.index");
     }
 }

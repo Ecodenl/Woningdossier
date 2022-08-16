@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://hoom.woondossier.vm/api/",
+            "url": "http://hoom.localhost:8888/api/",
             "description": "API v1"
         }
     ],
@@ -200,7 +200,7 @@
                     },
                     "tool_questions": {
                         "title": "tool_questions",
-                        "description": "Tool questions keyed by short with given answer",
+                        "description": "Tool questions keyed by short with given answer, these are currently the only supported tool questions.",
                         "properties": {
                             "resident-count": {
                                 "type": "integer",
@@ -209,6 +209,10 @@
                             "amount-gas": {
                                 "type": "string",
                                 "example": 2000
+                            },
+                            "amount-electricity": {
+                                "type": "string",
+                                "example": 2421
                             }
                         },
                         "type": "object"

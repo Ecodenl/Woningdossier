@@ -126,9 +126,10 @@ class StoreRegisterRequest
     /**
      * @OA\Property(
      *     title="tool_questions",
-     *     description="Tool questions keyed by short with given answer",
+     *     description="Tool questions keyed by short with given answer, these are currently the only supported tool questions.",
      *         @OA\Property(property="resident-count", example=2, type="integer"),
      *         @OA\Property(property="amount-gas", example=2000, type="string"),
+     *         @OA\Property(property="amount-electricity", example=2421, type="string"),
      * )
      *
      * @var array

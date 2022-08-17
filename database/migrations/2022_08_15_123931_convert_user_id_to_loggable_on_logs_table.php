@@ -16,10 +16,23 @@ class ConvertUserIdToLoggableOnLogsTable extends Migration
     public function up()
     {
         if (Schema::hasColumn('logs', 'user_id')) {
-            // Separate statements, because otherwise it won't drop the damn foreign before attempting the column change
-            Schema::table('logs', function (Blueprint $table) {
-                $table->dropForeign(['user_id']);
-            });
+            $tableHasForeign = false;
+            // TODO: If we need this more often, perhaps move to a helper or service
+            foreach (Schema::getConnection()->getDoctrineSchemaManager()->listTableForeignKeys('logs') as $info) {
+                if (in_array('user_id', $info->getColumns())) {
+                    $tableHasForeign = true;
+                    break;
+                }
+            }
+
+            // Ensure we don't drop the foreign if it doesn't exist
+            if ($tableHasForeign) {
+                // Separate statements, because otherwise it won't drop the damn foreign before attempting the column change
+                Schema::table('logs', function (Blueprint $table) {
+                    $table->dropForeign(['user_id']);
+                });
+            }
+
             Schema::table('logs', function (Blueprint $table) {
                 $table->unsignedBigInteger('user_id')->nullable()->change();
                 $table->renameColumn('user_id', 'loggable_id');

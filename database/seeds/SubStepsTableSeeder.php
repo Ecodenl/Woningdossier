@@ -371,7 +371,18 @@ class SubStepsTableSeeder extends Seeder
                     'questions' => [
                         'amount-electricity' => ['size' => 'w-1/2'],
                     ],
-                ]
+                ],
+                'Zonnepanelen' => [
+                    'order' => 13,
+                    'sub_step_template_id' => $template2rows3top1bottom->id,
+                    'questions' => [
+                        'has-solar-panels' => ['size' => 'w-1/2'],
+                        'solar-panel-count' => ['size' => 'w-1/2'],
+                        'total-installed-power' => ['size' => 'w-1/2'],
+                        'solar-panels-placed-date' => ['size' => 'w-1/2'],
+                    ]
+                ],
+
             ],
         ]);
     }

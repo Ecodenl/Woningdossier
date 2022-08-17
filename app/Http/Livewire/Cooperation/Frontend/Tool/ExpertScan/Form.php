@@ -119,7 +119,27 @@ class Form extends Component
     private function setValidationForToolQuestions()
     {
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-            $this->setValidationForToolQuestion($toolQuestion);
+            switch ($toolQuestion->toolQuestionType->short) {
+                case 'rating-slider':
+                    foreach ($toolQuestion->options as $option) {
+                        $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
+                    }
+                    break;
+
+                case 'checkbox-icon':
+                    // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
+                    // and then also set required for the main question
+                    $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $this->prepareValidationRule($toolQuestion->validation);
+
+                    if (in_array('required', $toolQuestion->validation)) {
+                        $this->rules["filledInAnswers.{$toolQuestion->id}"] = ['required'];
+                    }
+                    break;
+
+                default:
+                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = $this->prepareValidationRule($toolQuestion->validation);
+                    break;
+            }
         }
     }
 
@@ -446,30 +466,6 @@ class Form extends Component
         $this->dirty = false;
     }
 
-    private function setValidationForToolQuestion(ToolQuestion $toolQuestion)
-    {
-        switch ($toolQuestion->toolQuestionType->short) {
-            case 'rating-slider':
-                foreach ($toolQuestion->options as $option) {
-                    $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
-                }
-                break;
-
-            case 'checkbox-icon':
-                // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
-                // and then also set required for the main question
-                $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $this->prepareValidationRule($toolQuestion->validation);
-
-                if (in_array('required', $toolQuestion->validation)) {
-                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = ['required'];
-                }
-                break;
-
-            default:
-                $this->rules["filledInAnswers.{$toolQuestion->id}"] = $this->prepareValidationRule($toolQuestion->validation);
-                break;
-        }
-    }
 
     private function prepareValidationRule(array $validation): array
     {

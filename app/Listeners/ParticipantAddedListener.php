@@ -2,12 +2,14 @@
 
 namespace App\Listeners;
 
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
+use App\Models\Client;
 use App\Models\Log;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class ParticipantAddedListener
 {
@@ -42,15 +44,34 @@ class ParticipantAddedListener
             'to_cooperation_id' => HoomdossierSession::getCooperation(),
         ]);
 
-        Log::create([
-            'loggable_type' => User::class,
-            'loggable_id' => Hoomdossier::user()->id,
-            'building_id' => $event->building->id,
-            'message' => __('woningdossier.log-messages.participant-added', [
-                'full_name' => \App\Helpers\Hoomdossier::user()->getFullName(),
-                'for_full_name' => $participantFullName,
-                'time' => Carbon::now(),
-            ]),
-        ]);
+        // TODO: If we need to check authenticatable more often than just here, move to a LogHelper or -Service
+        if (($authenticatable = $event->authenticatable) instanceof Authenticatable) {
+            if ($authenticatable instanceof Account) {
+                // We prefer logging the user, so we attempt fetching the user and use that if available
+                $user = $authenticatable->user();
+                if ($user instanceof User) {
+                    $authenticatable = $user;
+                    $name = $user->getFullName();
+                } else {
+                    // Fallback to account email
+                    $name = $authenticatable->email;
+                }
+            } elseif ($authenticatable instanceof Client) {
+                $name = $authenticatable->name;
+            }
+
+            $name = $name ?? 'unknown';
+
+            Log::create([
+                'loggable_type' => get_class($authenticatable),
+                'loggable_id' => $authenticatable->id,
+                'building_id' => $event->building->id,
+                'message' => __('woningdossier.log-messages.participant-added', [
+                    'full_name' => $name,
+                    'for_full_name' => $participantFullName,
+                    'time' => Carbon::now(),
+                ]),
+            ]);
+        }
     }
 }

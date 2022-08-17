@@ -2,38 +2,38 @@
 
 namespace App\Models;
 
-use App\Services\DiscordNotifier;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * App\Models\Log
  *
  * @property int $id
- * @property int|null $user_id
+ * @property string|null $loggable_type
+ * @property int|null $loggable_id
  * @property int|null $building_id
  * @property string $message
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\User|null $forUser
- * @property-read \App\Models\User|null $user
+ * @property-read Model|\Eloquent|null $loggable
  * @method static \Illuminate\Database\Eloquent\Builder|Log forBuildingId($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|Log newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Log newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Log query()
  * @method static \Illuminate\Database\Eloquent\Builder|Log whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Log whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereForUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Log whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Log whereLoggableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Log whereLoggableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Log whereMessage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Log whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Log whereUserId($value)
  * @mixin \Eloquent
  */
 class Log extends Model
 {
     protected $fillable = [
-        'user_id', 'building_id', 'message',
+        'loggable_type', 'loggable_id', 'building_id', 'message',
     ];
 
     /**
@@ -50,24 +50,13 @@ class Log extends Model
     }
 
     /**
-     * Return the user that did the action.
+     * Return the model that did the action.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function user()
+    public function loggable(): MorphTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
-    }
-
-    /**
-     * Return the user whom the action was performed on.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function forUser()
-    {
-        (new DiscordNotifier())->notify(__METHOD__ . " has been used! Request Route: " . optional(request()->route())->getName());
-        return $this->building->user();
+        return $this->morphTo();
     }
 
     /**

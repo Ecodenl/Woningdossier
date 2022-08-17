@@ -124,4 +124,16 @@ class StoreRegisterRequest
      */
     public $extra;
 
+    /**
+     * @OA\Property(
+     *     title="roles",
+     *     description="Roles to assign to the user",
+     *         @OA\Property(property="0", example="resident", type="string"),
+     *         @OA\Property(property="1", example="coach", type="string"),
+     * )
+     *
+     * @var array
+     */
+    public $roles;
+
 }

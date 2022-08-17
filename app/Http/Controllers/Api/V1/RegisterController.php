@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
+use App\Helpers\RoleHelper;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Cooperation\RegisterFormRequest;
@@ -63,7 +64,8 @@ class RegisterController extends Controller
         // normally we would have a user given password, however we will reset the password right after its created.
         // this way the user can set his own password.
         $requestData['password'] = \Hash::make(Str::randomPassword());
-        $user = UserService::register($cooperation, ['resident'], $requestData);
+        $roles = array_unique(($requestData['roles'] ?? [RoleHelper::ROLE_RESIDENT]));
+        $user = UserService::register($cooperation, $roles, $requestData);
         $account = $user->account;
 
         // if the account is recently created we have to send a confirmation mail

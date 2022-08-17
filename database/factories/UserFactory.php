@@ -1,5 +1,8 @@
 <?php
 
+use App\Helpers\RoleHelper;
+use App\Models\Building;
+use App\Models\User;
 use Faker\Generator as Faker;
 
 /*
@@ -13,7 +16,7 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\Models\User::class, function (Faker $faker) {
+$factory->define(User::class, function (Faker $faker) {
     return [
         'account_id' => factory(\App\Models\Account::class),
         'cooperation_id' => factory(\App\Models\Cooperation::class),
@@ -22,4 +25,31 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
         'phone_number' => $faker->phoneNumber,
         'allow_access' => $faker->boolean,
     ];
+});
+
+$factory->afterCreating(User::class, function ($user, $faker) {
+    // Ensure we always have a building
+    $building = factory(Building::class)->create(['user_id' => $user]);
+});
+
+$factory->state(User::class, 'asCoach', function ($faker) {
+    return [
+        // We need this state for an after hook
+    ];
+});
+
+$factory->state(User::class, 'asResident', function ($faker) {
+    return [
+        // We need this state for an after hook
+    ];
+});
+
+$factory->afterCreatingState(User::class, 'asCoach', function ($user, $faker) {
+    // Find and attach the coach role
+    $user->assignRole(RoleHelper::ROLE_COACH);
+});
+
+$factory->afterCreatingState(User::class, 'asResident', function ($user, $faker) {
+    // Find and attach the resident role
+    $user->assignRole(RoleHelper::ROLE_RESIDENT);
 });

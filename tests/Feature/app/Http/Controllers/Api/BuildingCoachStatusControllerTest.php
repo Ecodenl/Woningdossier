@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\app\Http\Controllers\Api;
 
+use App\Models\BuildingCoachStatus;
+use App\Models\BuildingPermission;
 use App\Models\Client;
 use App\Models\Cooperation;
+use App\Models\PrivateMessage;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -103,5 +106,46 @@ class BuildingCoachStatusControllerTest extends TestCase
         // Coach already linked!
         $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')), $this->formData);
         $response->assertStatus(422);
+    }
+
+    public function test_building_coach_status_gets_created()
+    {
+        $cooperation = $this->cooperation;
+        // Just for this test
+        config(['queue.default' => 'sync']);
+
+        $resident = factory(User::class)->state('asResident')->create([
+            'cooperation_id' => $this->cooperation->id,
+            'extra' => [
+                'contact_id' => $this->formData['building_coach_statuses']['resident_contact_id'],
+            ],
+            'allow_access' => true,
+        ]);
+        $coach = factory(User::class)->state('asCoach')->create([
+            'cooperation_id' => $this->cooperation->id,
+            'extra' => [
+                'contact_id' => $this->formData['building_coach_statuses']['coach_contact_id'],
+            ],
+        ]);
+
+        $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')), $this->formData);
+        $response->assertStatus(200);
+
+        $bcs = BuildingCoachStatus::where('coach_id', $coach->id)
+            ->where('building_id', $resident->building->id)
+            ->first();
+        $this->assertInstanceOf(BuildingCoachStatus::class, $bcs);
+
+        $bp = BuildingPermission::where('user_id', $coach->id)
+            ->where('building_id', $resident->building->id)
+            ->first();
+        $this->assertInstanceOf(BuildingPermission::class, $bp);
+
+        $pm = PrivateMessage::where('is_public', true)
+            ->where('from_user_id', $coach->id)
+            ->where('building_id', $resident->building->id)
+            ->where('to_cooperation_id', $this->cooperation->id)
+            ->first();
+        $this->assertInstanceOf(PrivateMessage::class, $pm);
     }
 }

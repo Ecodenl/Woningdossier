@@ -112,7 +112,7 @@ class Form extends Component
 
             $answers = $dynamicAnswers;
 
-            if (!empty($toolQuestion->conditions)) {
+            if (! empty($toolQuestion->conditions)) {
                 foreach ($toolQuestion->conditions as $conditionSet) {
                     foreach ($conditionSet as $condition) {
                         // There is a possibility that the answer we're looking for is for a tool question not
@@ -170,7 +170,7 @@ class Form extends Component
         if (HoomdossierSession::isUserObserving()) {
             return null;
         }
-        if (!empty($this->rules)) {
+        if (! empty($this->rules)) {
             $validator = Validator::make([
                 "filledInAnswers.{$toolQuestionId}" => $this->filledInAnswers[$toolQuestionId]
             ], $this->rules["filledInAnswers.{$toolQuestionId}"], [], $this->attributes);
@@ -247,7 +247,7 @@ class Form extends Component
         }
 
 
-        if (!empty($this->rules)) {
+        if (! empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules, [], $this->attributes);
@@ -343,7 +343,7 @@ class Form extends Component
             ]);
 
             // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
-        } else if ($masterHasCompletedQuickScan && !empty($stepShortsToRecalculate)) {
+        } else if ($masterHasCompletedQuickScan && ! empty($stepShortsToRecalculate)) {
             // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
             $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
             // since we are just re-calculating specific parts of the tool we do it without the old advices
@@ -460,11 +460,11 @@ class Form extends Component
                 $ruleParams = explode(':', $rule);
                 // But can contain extra params
 
-                if (!empty($ruleParams[1])) {
+                if (! empty($ruleParams[1])) {
                     $short = Str::contains($ruleParams[1], ',') ? explode(',', $ruleParams[1])[0]
                         : $ruleParams[1];
 
-                    if (!empty($short)) {
+                    if (! empty($short)) {
                         $toolQuestion = ToolQuestion::findByShort($short);
                         $toolQuestion = $toolQuestion instanceof ToolQuestion ? $toolQuestion : ToolQuestion::findByShort(Str::kebab(Str::camel($short)));
 

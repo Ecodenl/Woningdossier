@@ -13,12 +13,12 @@ class AddBuildingTypeCategoryIdOnBuildingTypesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('building_types', 'building_type_category_id')) {
-            Schema::table('building_types', function (Blueprint $table) {
-                $table->unsignedBigInteger('building_type_category_id')->nullable()->default(null)->after('id');
-                $table->foreign('building_type_category_id')->references('id')->on('building_type_categories')->onDelete('cascade');
-            });
-        }
+        // Note: We cannot delete this because the original table cannot create the foreign key constraint (because
+        // the categories table doesn't exist yet at that point)
+        Schema::table('building_types', function (Blueprint $table) {
+            $table->unsignedBigInteger('building_type_category_id')->nullable()->default(null)->after('id');
+            $table->foreign('building_type_category_id')->references('id')->on('building_type_categories')->onDelete('cascade');
+        });
     }
 
     /**

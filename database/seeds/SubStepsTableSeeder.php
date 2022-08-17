@@ -365,6 +365,12 @@ class SubStepsTableSeeder extends Seeder
                         'resident-count' => ['size' => 'w-1/2'],
                         'water-comfort' => ['size' => 'w-1/2'],
                     ],
+                ],
+                'nieuwe situatie' => [
+                    'order' => 0,
+                    'questions' => [
+                        'amount-electricity' => ['size' => 'w-1/2'],
+                    ],
                 ]
             ],
         ]);

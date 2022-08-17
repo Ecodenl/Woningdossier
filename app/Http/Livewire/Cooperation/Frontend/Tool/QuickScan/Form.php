@@ -70,36 +70,32 @@ class Form extends Component
             ? $this->currentInputSource
             : InputSource::findByShort(InputSource::COACH_SHORT);
 
-        $this->toolQuestions = $subStep->toolQuestions()->orderBy('order')->get();
+        $this->hydrateToolQuestions();
         $this->setFilledInAnswers();
+
         $this->originalAnswers = $this->filledInAnswers;
     }
 
+    // specific for the popup questions
     public function resetToOriginalAnswer($toolQuestionId)
     {
         $this->filledInAnswers[$toolQuestionId] = $this->originalAnswers[$toolQuestionId];
     }
 
-    public function render()
+    public function hydrateToolQuestions()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.form');
-    }
-
-    public function updated($field, $value)
-    {
-        // TODO: Deprecate this dispatch in Livewire V2
-        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
-
-        $this->setToolQuestions();
-
-        $this->dirty = true;
-    }
-
-    private function setToolQuestions()
-    {
-        // each request, the toolQuestions will be rehydrated. But not completely (no pivot) so we have to do this each time
         $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+    }
 
+    private function setValidationForToolQuestions()
+    {
+        foreach ($this->toolQuestions as $index => $toolQuestion) {
+            $this->setValidationForToolQuestion($toolQuestion);
+        }
+    }
+
+    private function evaluateToolQuestions()
+    {
         // Filter out the questions that do not match the condition
         // now collect the given answers
         $dynamicAnswers = [];
@@ -108,7 +104,6 @@ class Form extends Component
         }
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-            $this->setValidationForToolQuestion($toolQuestion);
 
             $answers = $dynamicAnswers;
 
@@ -165,6 +160,24 @@ class Form extends Component
         }
     }
 
+    public function render()
+    {
+        return view('livewire.cooperation.frontend.tool.quick-scan.form');
+    }
+
+    public function updated($field, $value)
+    {
+        // TODO: Deprecate this dispatch in Livewire V2
+        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
+
+        $this->hydrateToolQuestions();
+        $this->setValidationForToolQuestions();
+        $this->evaluateToolQuestions();
+
+        $this->dirty = true;
+    }
+
+    // specific to the popup question
     public function saveSpecificToolQuestion($toolQuestionId)
     {
         if (HoomdossierSession::isUserObserving()) {
@@ -191,7 +204,11 @@ class Form extends Component
                         $isInteger, false);
                 }
 
-                $this->setToolQuestions();
+                $this->hydrateToolQuestions();
+
+                $this->setValidationForToolQuestions();
+
+                $this->evaluateToolQuestions();
 
                 $this->dispatchBrowserEvent('validation-failed');
             }
@@ -271,7 +288,11 @@ class Form extends Component
                     }
                 }
 
-                $this->setToolQuestions();
+                $this->hydrateToolQuestions();
+
+                $this->setValidationForToolQuestions();
+
+                $this->evaluateToolQuestions();
 
                 $this->dispatchBrowserEvent('validation-failed');
             }
@@ -420,7 +441,9 @@ class Form extends Component
         }
 
         // User's previous values could be defined, which means conditional questions should be hidden
-        $this->setToolQuestions();
+        $this->hydrateToolQuestions();
+        $this->setValidationForToolQuestions();
+        $this->evaluateToolQuestions();
 
         $this->dirty = false;
     }

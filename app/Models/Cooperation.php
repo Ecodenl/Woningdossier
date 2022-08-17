@@ -19,6 +19,8 @@ use Plank\Mediable\Mediable;
  * @property string|null $cooperation_email
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CooperationMeasureApplication[] $cooperationMeasureApplications
  * @property-read int|null $cooperation_measure_applications_count
+ * @property-read \Plank\Mediable\MediableCollection|\App\Models\CooperationSetting[] $cooperationSettings
+ * @property-read int|null $cooperation_settings_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuilding[] $exampleBuildings
  * @property-read int|null $example_buildings_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media

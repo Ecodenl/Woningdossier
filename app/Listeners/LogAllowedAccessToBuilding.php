@@ -19,7 +19,7 @@ class LogAllowedAccessToBuilding
     /**
      * Handle the event.
      *
-     * @param object $event
+     * @param  object  $event
      *
      * @return void
      */
@@ -28,9 +28,10 @@ class LogAllowedAccessToBuilding
         /** @var User $user */
         $user = $event->building->user;
         Log::create([
-            'user_id'     => $user->id,
+            'loggable_type' => User::class,
+            'loggable_id' => $user->id,
             'building_id' => $event->building->id,
-            'message'     => __('woningdossier.log-messages.user-gave-access', [
+            'message' => __('woningdossier.log-messages.user-gave-access', [
                 'full_name' => $user->getFullName(),
             ]),
         ]);

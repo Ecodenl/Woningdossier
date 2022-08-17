@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Models\Log;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -31,7 +32,8 @@ class LogFillingToolForUserListener implements ShouldQueue
         $userThatIsFillingTool = $event->userThatIsFillingTool;
 
         Log::create([
-            'user_id' => $userThatIsFillingTool->id,
+            'loggable_type' => User::class,
+            'loggable_id' => $userThatIsFillingTool->id,
             'building_id' => $building->id,
             'message' => __('woningdossier.log-messages.filling-tool-for', [
                 'full_name' => $userThatIsFillingTool->getFullName(),

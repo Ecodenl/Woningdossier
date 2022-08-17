@@ -104,7 +104,21 @@ class User extends Model implements AuthorizableContract
         'extra' => 'array'
     ];
 
+    # Model methods
+    //
 
+    # Attributes
+    //
+
+    # Scopes
+    public function scopeByContact(Builder $query, $contact): Builder
+    {
+        // We assume $contact is an ID. Maybe in the future this won't be the case but this way it can be easily
+        // expanded
+        return $query->where('extra->contact_id', $contact);
+    }
+
+    # Relations
     public function considerables($related): MorphToMany
     {
         return $this->morphedByMany($related, 'considerable', 'considerables')
@@ -120,6 +134,7 @@ class User extends Model implements AuthorizableContract
         return $this->considerables($related->getMorphClass())->wherePivot('considerable_id', $related->id);
     }
 
+    # Unsorted
     public function considers(Model $model, InputSource $inputSource): bool
     {
         $considerableModel =  $this->considerablesForModel($model)

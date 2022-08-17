@@ -22,9 +22,6 @@ class CreateLogsTable extends Migration
             $table->integer('building_id')->nullable()->default(null)->unsigned();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('set null');
 
-            $table->integer('for_user_id')->nullable()->default(null)->unsigned();
-            $table->foreign('for_user_id')->references('id')->on('users')->onDelete('cascade');
-
             $table->string('message');
 
             $table->timestamps();

@@ -5,11 +5,11 @@ namespace App\Http\Requests\Api\V1\Cooperation;
 use App\Helpers\RoleHelper;
 use App\Http\Requests\Api\ApiRequest;
 use App\Models\Account;
-use App\Models\Cooperation;
 use App\Rules\HouseNumber;
 use App\Rules\Api\V1\HouseNumberExtension;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
+use App\Rules\RuleUnique;
 use Illuminate\Validation\Rule;
 
 class RegisterFormRequest extends ApiRequest
@@ -41,6 +41,7 @@ class RegisterFormRequest extends ApiRequest
             'street' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'phone_number' => ['nullable', new PhoneNumber('nl')],
+            'extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0', (new RuleUnique('users', 'extra.contact_id'))],
 
             'roles' => ['nullable', 'array'],
             'roles.*' => ['string', Rule::in([RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH])],

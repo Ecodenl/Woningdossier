@@ -21,9 +21,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class Form extends Component
+class Form extends Scannable
 {
-    use Scannable;
     /*
      *
      * NOTE: When programmatically updating variables, ensure the updated method is called! This triggers a browser
@@ -32,9 +31,6 @@ class Form extends Component
      */
 
     protected $listeners = ['update', 'updated', 'save',];
-
-    public $rules;
-    public $attributes;
 
     /** @var Building */
     public $building;
@@ -48,12 +44,6 @@ class Form extends Component
     public $step;
     public $subStep;
 
-    public $toolQuestions;
-
-    public bool $dirty;
-    public $originalAnswers = [];
-    public $filledInAnswers = [];
-    public $filledInAnswersForAllInputSources = [];
 
     public function mount(Step $step, SubStep $subStep)
     {
@@ -72,10 +62,7 @@ class Form extends Component
             ? $this->currentInputSource
             : InputSource::findByShort(InputSource::COACH_SHORT);
 
-        $this->hydrateToolQuestions();
-        $this->setFilledInAnswers();
-
-        $this->originalAnswers = $this->filledInAnswers;
+        parent::mount();
     }
 
     public function hydrateToolQuestions()
@@ -153,7 +140,7 @@ class Form extends Component
 
                     // Master input source is important. Ensure both are set
                     if (is_null($currentAnswer) || is_null($masterAnswer)) {
-                        $this->dirty = true;
+                        $this->setDirty(true);
                         break;
                     }
                 }

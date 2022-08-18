@@ -24,16 +24,7 @@ class ExpertScanController extends ToolController
             $step->load('subSteps.toolQuestions');
             $masterInputSource = $this->masterInputSource;
 
-            $toolQuestions = [];
-            foreach ($step->subSteps as $subStep) {
-                foreach ($subStep->toolQuestions()->orderBy('order')->get() as $toolQuestion) {
-                    $toolQuestions[$toolQuestion->id] = $toolQuestion;
-                }
-            }
-
-            $toolQuestions = new EloquentCollection($toolQuestions);
-
-            return view('cooperation.frontend.tool.expert-scan.index', compact('step', 'masterInputSource', 'building', 'toolQuestions'));
+            return view('cooperation.frontend.tool.expert-scan.index', compact('step', 'masterInputSource', 'building'));
         }
 
         // at this point the step exists, however wrong url. So we will help them a bit.

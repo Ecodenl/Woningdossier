@@ -9,12 +9,47 @@ use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Livewire\Component;
 
-trait Scannable {
+abstract class Scannable extends Component {
 
+
+    public $rules;
+    public $attributes;
+
+    public $initialToolQuestions;
+    public $toolQuestions;
+    public $originalAnswers = [];
+    public $filledInAnswers = [];
+    public $filledInAnswersForAllInputSources = [];
+
+    public bool $dirty;
+
+    public function mount()
+    {
+        // first we have to hydrate the tool questions
+        $this->hydrateToolQuestions();
+        // after that we can fill up the user his given answers
+        $this->setFilledInAnswers();
+        // add the validation for the tool questions
+        $this->setValidationForToolQuestions();
+        // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
+        $this->evaluateToolQuestions();
+
+        $this->originalAnswers = $this->filledInAnswers;
+        $this->initialToolQuestions = $this->toolQuestions;
+    }
     abstract function hydrateToolQuestions();
 
     abstract function save();
+
+    public function rehydrateToolQuestions()
+    {
+        // so we could also use the hydrateToolQuestions method
+        // however this saves us a shitload of queries each request.
+        $this->toolQuestions = $this->initialToolQuestions;
+    }
+
 
     private function setValidationForToolQuestions()
     {
@@ -120,13 +155,12 @@ trait Scannable {
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
-        $this->hydrateToolQuestions();
+        $this->rehydrateToolQuestions();
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();
 
-        $this->dirty = true;
+        $this->setDirty(true);
     }
-
 
     // specific to the popup question
     public function saveSpecificToolQuestion($toolQuestionId)
@@ -155,7 +189,7 @@ trait Scannable {
                         $isInteger, false);
                 }
 
-                $this->hydrateToolQuestions();
+                $this->rehydrateToolQuestions();
 
                 $this->setValidationForToolQuestions();
 
@@ -179,7 +213,7 @@ trait Scannable {
 
                 // Master input source is important. Ensure both are set
                 if (is_null($currentAnswer) || is_null($masterAnswer)) {
-                    $this->dirty = true;
+                    $this->setDirty(true);
                 }
             }
         }
@@ -252,13 +286,6 @@ trait Scannable {
                     break;
             }
         }
-
-        // User's previous values could be defined, which means conditional questions should be hidden
-        $this->hydrateToolQuestions();
-        $this->setValidationForToolQuestions();
-        $this->evaluateToolQuestions();
-
-        $this->dirty = false;
     }
 
     private function prepareValidationRule(array $validation): array
@@ -289,6 +316,11 @@ trait Scannable {
         }
 
         return $validation;
+    }
+
+    private function setDirty(bool $dirty)
+    {
+        $this->dirty = $dirty;
     }
 
 

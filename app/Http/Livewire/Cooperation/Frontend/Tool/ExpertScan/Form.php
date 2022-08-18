@@ -7,6 +7,7 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolQuestionHelper;
+use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class Form extends Component
+class Form extends Scannable
 {
     /*
         *
@@ -31,9 +32,6 @@ class Form extends Component
         */
 
     protected $listeners = ['update', 'updated', 'save',];
-
-    public $rules;
-    public $attributes;
 
     /** @var Building */
     public $building;
@@ -47,18 +45,11 @@ class Form extends Component
     public $step;
     public $subStep;
 
-    public $toolQuestions;
     public $initialToolQuestions;
 
-    public bool $dirty;
-    public $originalAnswers = [];
-    public $filledInAnswers = [];
-    public $filledInAnswersForAllInputSources = [];
 
-    public function mount(Step $step, $toolQuestions)
+    public function mount(Step $step)
     {
-//        $subStep->load(['toolQuestions', 'subStepTemplate']);
-
         $this->step = $step;
 
         $this->building = HoomdossierSession::getBuilding(true);
@@ -72,18 +63,23 @@ class Form extends Component
             : InputSource::findByShort(InputSource::COACH_SHORT);
 
         // we will keep the initialQuestions, as the toolQuestions itself may need to be reset when the user changes data.
-        $this->initialToolQuestions = $toolQuestions;
-        // first hydrate the tool questions
-        $this->rehydrateToolQuestions();
-        // then set the currently available answers
-        $this->setFilledInAnswers();
-        $this->setValidationForToolQuestions();
-        $this->evaluateToolQuestions();
 
-        // User's previous values could be defined, which means conditional questions should be hidden
-        $this->originalAnswers = $this->filledInAnswers;
-
+        parent::mount();
     }
+
+
+    public function hydrateToolQuestions()
+    {
+        $toolQuestions = [];
+        foreach ($this->step->subSteps as $subStep) {
+            foreach ($subStep->toolQuestions()->orderBy('order')->get() as $toolQuestion) {
+                $toolQuestions[$toolQuestion->id] = $toolQuestion;
+            }
+        }
+
+        $this->toolQuestions = new EloquentCollection($toolQuestions);
+    }
+
 
     //specific to the popup
     public function resetToOriginalAnswer($toolQuestionId)

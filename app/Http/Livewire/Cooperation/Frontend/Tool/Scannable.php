@@ -5,13 +5,32 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
+use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-abstract class Scannable extends Component {
+abstract class Scannable extends Component
+{
+    /*
+     *
+     * NOTE: When programmatically updating variables, ensure the updated method is called! This triggers a browser
+     * event, which can be caught by the frontend and set visuals correct, e.g. with the sliders.
+     *
+     */
+    protected $listeners = ['update', 'updated', 'save',];
+    /** @var Building */
+    public $building;
+
+    public $masterInputSource;
+    public $currentInputSource;
+    public $residentInputSource;
+    public $coachInputSource;
+    public $cooperation;
 
 
     public $rules;
@@ -23,12 +42,21 @@ abstract class Scannable extends Component {
     public $filledInAnswers = [];
     public $filledInAnswersForAllInputSources = [];
 
-    public bool $dirty;
+    public $dirty;
 
-    public function mount()
+    public function boot()
     {
+
+        $this->building = HoomdossierSession::getBuilding(true);
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
+
         // first we have to hydrate the tool questions
         $this->hydrateToolQuestions();
+        // set them right after the hydration
+        $this->initialToolQuestions = $this->toolQuestions->values();
         // after that we can fill up the user his given answers
         $this->setFilledInAnswers();
         // add the validation for the tool questions
@@ -37,17 +65,23 @@ abstract class Scannable extends Component {
         $this->evaluateToolQuestions();
 
         $this->originalAnswers = $this->filledInAnswers;
-        $this->initialToolQuestions = $this->toolQuestions;
     }
+
     abstract function hydrateToolQuestions();
 
     abstract function save();
 
+
     public function rehydrateToolQuestions()
     {
+        //todo this wont refresh the dom, for some odd reson
+        // if you would set it with a query it would update tho
+        // but thats exactly what i was trying to work around
+        // extra queries..
+
         // so we could also use the hydrateToolQuestions method
         // however this saves us a shitload of queries each request.
-        $this->toolQuestions = $this->initialToolQuestions;
+        $this->toolQuestions = $this->initialToolQuestions->values();
     }
 
 
@@ -78,6 +112,18 @@ abstract class Scannable extends Component {
         }
     }
 
+    public function updated($field, $value)
+    {
+        // TODO: Deprecate this dispatch in Livewire V2
+        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
+
+        $this->rehydrateToolQuestions();
+        $this->setValidationForToolQuestions();
+        $this->evaluateToolQuestions();
+
+        $this->setDirty(true);
+    }
+
     private function evaluateToolQuestions()
     {
         // Filter out the questions that do not match the condition
@@ -91,7 +137,7 @@ abstract class Scannable extends Component {
 
             $answers = $dynamicAnswers;
 
-            if (! empty($toolQuestion->conditions)) {
+            if (!empty($toolQuestion->conditions)) {
                 foreach ($toolQuestion->conditions as $conditionSet) {
                     foreach ($conditionSet as $condition) {
                         // There is a possibility that the answer we're looking for is for a tool question not
@@ -150,17 +196,6 @@ abstract class Scannable extends Component {
         $this->filledInAnswers[$toolQuestionId] = $this->originalAnswers[$toolQuestionId];
     }
 
-    public function updated($field, $value)
-    {
-        // TODO: Deprecate this dispatch in Livewire V2
-        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
-
-        $this->rehydrateToolQuestions();
-        $this->setValidationForToolQuestions();
-        $this->evaluateToolQuestions();
-
-        $this->setDirty(true);
-    }
 
     // specific to the popup question
     public function saveSpecificToolQuestion($toolQuestionId)
@@ -168,7 +203,7 @@ abstract class Scannable extends Component {
         if (HoomdossierSession::isUserObserving()) {
             return null;
         }
-        if (! empty($this->rules)) {
+        if (!empty($this->rules)) {
             $validator = Validator::make([
                 "filledInAnswers.{$toolQuestionId}" => $this->filledInAnswers[$toolQuestionId]
             ], $this->rules["filledInAnswers.{$toolQuestionId}"], [], $this->attributes);
@@ -298,11 +333,11 @@ abstract class Scannable extends Component {
                 $ruleParams = explode(':', $rule);
                 // But can contain extra params
 
-                if (! empty($ruleParams[1])) {
+                if (!empty($ruleParams[1])) {
                     $short = Str::contains($ruleParams[1], ',') ? explode(',', $ruleParams[1])[0]
                         : $ruleParams[1];
 
-                    if (! empty($short)) {
+                    if (!empty($short)) {
                         $toolQuestion = ToolQuestion::findByShort($short);
                         $toolQuestion = $toolQuestion instanceof ToolQuestion ? $toolQuestion : ToolQuestion::findByShort(Str::kebab(Str::camel($short)));
 

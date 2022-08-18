@@ -23,46 +23,22 @@ use Livewire\Component;
 
 class Form extends Scannable
 {
-    /*
-     *
-     * NOTE: When programmatically updating variables, ensure the updated method is called! This triggers a browser
-     * event, which can be caught by the frontend and set visuals correct, e.g. with the sliders.
-     *
-     */
-
-    protected $listeners = ['update', 'updated', 'save',];
-
-    /** @var Building */
-    public $building;
-
-    public $masterInputSource;
-    public $currentInputSource;
-    public $residentInputSource;
-    public $coachInputSource;
-    public $cooperation;
-
     public $step;
     public $subStep;
+
+    public $nextUrl;
 
 
     public function mount(Step $step, SubStep $subStep)
     {
+        Log::debug('mounting form');
         $subStep->load(['toolQuestions', 'subStepTemplate']);
 
         $this->step = $step;
         $this->subStep = $subStep;
 
-        $this->building = HoomdossierSession::getBuilding(true);
-        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $this->currentInputSource = HoomdossierSession::getInputSource(true);
-        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT
-            ? $this->currentInputSource
-            : InputSource::findByShort(InputSource::RESIDENT_SHORT);
-        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT
-            ? $this->currentInputSource
-            : InputSource::findByShort(InputSource::COACH_SHORT);
-
-        parent::mount();
+        $this->nextUrl = '';
+        $this->boot();
     }
 
     public function hydrateToolQuestions()
@@ -77,10 +53,10 @@ class Form extends Scannable
     }
 
 
-    public function save($nextUrl)
+    public function save()
     {
         if (HoomdossierSession::isUserObserving()) {
-            return redirect()->to($nextUrl);
+            return redirect()->to($this->nextUrl);
         }
 
         // Before we can validate (and save), we must reset the formatting from text to mathable
@@ -212,7 +188,7 @@ class Form extends Scannable
             'input_source_id' => $this->currentInputSource->id
         ]);
 
-        return redirect()->to($nextUrl);
+        return redirect()->to($this->nextUrl);
     }
 
 }

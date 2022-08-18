@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Helpers\HoomdossierSession;
 use App\Models\Account;
 use App\Models\Client;
 use App\Models\Log;
@@ -13,15 +12,6 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 class ParticipantAddedListener
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
     /**
      * Handle the event.
      *
@@ -41,7 +31,7 @@ class ParticipantAddedListener
             'from_user' => $participantFullName,
             'building_id' => $event->building->id,
             'message' => $message,
-            'to_cooperation_id' => HoomdossierSession::getCooperation(),
+            'to_cooperation_id' => $event->cooperation->id,
         ]);
 
         // TODO: If we need to check authenticatable more often than just here, move to a LogHelper or -Service

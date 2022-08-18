@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
-use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
@@ -89,7 +88,7 @@ class UserController extends Controller
             BuildingCoachStatusService::giveAccess($coach, $building);
 
             // dispatch an event so the user is notified
-            ParticipantAddedEvent::dispatch($coach, $building);
+            ParticipantAddedEvent::dispatch($coach, $building, $request->user(), $cooperation);
         }
 
         // if the account is recently created we have to send a confirmation mail

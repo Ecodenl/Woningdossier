@@ -57,7 +57,7 @@ class BuildingCoachStatusController extends Controller
 
         BuildingCoachStatusService::giveAccess($coach, $resident->building);
 
-        ParticipantAddedEvent::dispatch($coach, $resident->building);
+        ParticipantAddedEvent::dispatch($coach, $resident->building, $request->user(), $cooperation);
 
         return response([], 200);
     }

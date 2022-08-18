@@ -3,13 +3,13 @@
 namespace App\Events;
 
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
 
 class ParticipantAddedEvent
 {
@@ -20,15 +20,17 @@ class ParticipantAddedEvent
     public $addedParticipant;
     public $building;
     public $authenticatable;
+    public $cooperation;
 
     /**
      * Event to be triggered when a participant gets added to a group message / building.
      */
-    public function __construct(User $addedParticipant, Building $building, ?Authenticatable $authenticatable = null)
+    public function __construct(User $addedParticipant, Building $building, Authenticatable $authenticatable, Cooperation $cooperation)
     {
         $this->addedParticipant = $addedParticipant;
         $this->building = $building;
-        $this->authenticatable = $authenticatable ?? Auth::user();
+        $this->authenticatable = $authenticatable;
+        $this->cooperation = $cooperation;
     }
 
     /**

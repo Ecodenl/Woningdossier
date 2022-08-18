@@ -48,13 +48,14 @@ class Form extends Component
     public $subStep;
 
     public $toolQuestions;
+    public $initialToolQuestions;
 
     public bool $dirty;
     public $originalAnswers = [];
     public $filledInAnswers = [];
     public $filledInAnswersForAllInputSources = [];
 
-    public function mount(Step $step)
+    public function mount(Step $step, $toolQuestions)
     {
 //        $subStep->load(['toolQuestions', 'subStepTemplate']);
 
@@ -69,17 +70,19 @@ class Form extends Component
         $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT
             ? $this->currentInputSource
             : InputSource::findByShort(InputSource::COACH_SHORT);
-        
-        // first hydrate the too lquestions
-        $this->hydrateToolQuestions();
+
+        // we will keep the initialQuestions, as the toolQuestions itself may need to be reset when the user changes data.
+        $this->initialToolQuestions = $toolQuestions;
+        // first hydrate the tool questions
+        $this->rehydrateToolQuestions();
         // then set the currently available answers
         $this->setFilledInAnswers();
-        $this->hydrateToolQuestions();
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();
 
         // User's previous values could be defined, which means conditional questions should be hidden
         $this->originalAnswers = $this->filledInAnswers;
+
     }
 
     //specific to the popup
@@ -98,22 +101,15 @@ class Form extends Component
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
-        $this->hydrateToolQuestions();
+        $this->rehydrateToolQuestions();
         $this->setValidationForToolQuestions();
 
         $this->dirty = true;
     }
 
-    public function hydrateToolQuestions()
+    public function rehydrateToolQuestions()
     {
-        $this->toolQuestions = [];
-        foreach ($this->step->subSteps as $subStep) {
-            foreach ($subStep->toolQuestions()->orderBy('order')->get() as $toolQuestion) {
-                $this->toolQuestions[$toolQuestion->id] = $toolQuestion;
-            }
-        }
-
-        $this->toolQuestions = new EloquentCollection($this->toolQuestions);
+        $this->toolQuestions = $this->initialToolQuestions;
     }
 
     private function setValidationForToolQuestions()
@@ -236,7 +232,7 @@ class Form extends Component
                         $isInteger, false);
                 }
 
-                $this->hydrateToolQuestions();
+                $this->rehydrateToolQuestions();
                 $this->setValidationForToolQuestions();
                 $this->evaluateToolQuestions();
 
@@ -313,7 +309,7 @@ class Form extends Component
                     }
                 }
 
-                $this->hydrateToolQuestions();
+                $this->rehydrateToolQuestions();
                 $this->setValidationForToolQuestions();
                 $this->evaluateToolQuestions();
 

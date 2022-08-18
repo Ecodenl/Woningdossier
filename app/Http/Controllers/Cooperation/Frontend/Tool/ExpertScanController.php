@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Cooperation\Tool\ToolController;
 use App\Models\Cooperation;
 use App\Models\Step;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -23,7 +24,16 @@ class ExpertScanController extends ToolController
             $step->load('subSteps.toolQuestions');
             $masterInputSource = $this->masterInputSource;
 
-            return view('cooperation.frontend.tool.expert-scan.index', compact('step', 'masterInputSource', 'building'));
+            $toolQuestions = [];
+            foreach ($step->subSteps as $subStep) {
+                foreach ($subStep->toolQuestions()->orderBy('order')->get() as $toolQuestion) {
+                    $toolQuestions[$toolQuestion->id] = $toolQuestion;
+                }
+            }
+
+            $toolQuestions = new EloquentCollection($toolQuestions);
+
+            return view('cooperation.frontend.tool.expert-scan.index', compact('step', 'masterInputSource', 'building', 'toolQuestions'));
         }
 
         // at this point the step exists, however wrong url. So we will help them a bit.

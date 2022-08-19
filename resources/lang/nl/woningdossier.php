@@ -608,6 +608,7 @@ return [
                         'label' => 'Coördinator menu',
                         'home' => 'Account overzicht',
                         'coaches' => 'Coaches / coördinatoren',
+                        'residents' => 'Bewoners',
                         'add-user' => 'Gebruiker toevoegen',
                         'reports' => 'Rapporten',
                     ],

@@ -9,6 +9,7 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -64,7 +65,16 @@ abstract class Scannable extends Component
         // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
         $this->evaluateToolQuestions();
 
+//        dd($this->initialToolQuestions);
+
         $this->originalAnswers = $this->filledInAnswers;
+
+
+        $this->rules['initialToolQuestions.*.pivot.order'] = [];
+        $this->rules['initialToolQuestions.pivot.order'] = [];
+        $this->rules['initialToolQuestions.relations.*'] = [];
+
+
     }
 
     abstract function hydrateToolQuestions();
@@ -79,9 +89,7 @@ abstract class Scannable extends Component
         // but thats exactly what i was trying to work around
         // extra queries..
 
-        // so we could also use the hydrateToolQuestions method
-        // however this saves us a shitload of queries each request.
-        $this->toolQuestions = $this->initialToolQuestions->values();
+        $this->toolQuestions = new Collection($this->initialToolQuestions->values());
     }
 
 
@@ -120,6 +128,10 @@ abstract class Scannable extends Component
         $this->rehydrateToolQuestions();
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();
+
+        Log::debug("initialToolQuestions {$this->toolQuestions->count()}");
+
+//        $this->rules['initialToolQuestions.pivot.']
 
         $this->setDirty(true);
     }

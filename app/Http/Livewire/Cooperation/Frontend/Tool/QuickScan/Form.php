@@ -15,6 +15,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -42,6 +43,11 @@ class Form extends Scannable
     }
 
     public function hydrateToolQuestions()
+    {
+        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+    }
+
+    public function rehydrateToolQuestions()
     {
         $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
     }

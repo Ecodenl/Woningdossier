@@ -21,7 +21,6 @@ class HomeController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
-
         $building = HoomdossierSession::getBuilding(true);
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 

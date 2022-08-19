@@ -83,7 +83,7 @@ class BuildingController extends Controller
     {
         $validatedData = $request->validated();
 
-        // cant be null in the table.
+        // Can't be null in the table.
         $validatedData['buildings']['extension'] = $validatedData['buildings']['extension'] ?? '';
         $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';
 

@@ -28,8 +28,7 @@ class Form extends Scannable
     public $subStep;
 
     public $nextUrl;
-
-
+    
     public function mount(Step $step, SubStep $subStep)
     {
         Log::debug('mounting form');
@@ -38,7 +37,6 @@ class Form extends Scannable
         $this->step = $step;
         $this->subStep = $subStep;
 
-        $this->nextUrl = '';
         $this->boot();
     }
 
@@ -58,11 +56,10 @@ class Form extends Scannable
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
-
-    public function save()
+    public function save($nextUrl = "")
     {
         if (HoomdossierSession::isUserObserving()) {
-            return redirect()->to($this->nextUrl);
+            return redirect()->to($nextUrl);
         }
 
         // Before we can validate (and save), we must reset the formatting from text to mathable
@@ -194,7 +191,7 @@ class Form extends Scannable
             'input_source_id' => $this->currentInputSource->id
         ]);
 
-        return redirect()->to($this->nextUrl);
+        return redirect()->to($nextUrl);
     }
 
 }

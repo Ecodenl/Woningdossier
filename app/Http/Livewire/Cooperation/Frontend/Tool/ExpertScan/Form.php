@@ -25,10 +25,12 @@ use Livewire\Component;
 class Form extends Scannable
 {
     public $step;
+    public $nextUrl;
 
     public function mount(Step $step)
     {
         $this->step = $step;
+        $this->nextUrl = route('cooperation.frontend.tool.expert-scan.index', compact('step'));
         $this->boot();
     }
 
@@ -49,8 +51,12 @@ class Form extends Scannable
         return view('livewire.cooperation.frontend.tool.expert-scan.form');
     }
 
-    public function save()
+    public function save($nextUrl = "")
     {
+        if (empty($nextUrl)) {
+            $nextUrl = $this->nextUrl;
+        }
+
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric') && !\App\Helpers\Str::arrContains($toolQuestion->validation, 'integer')) {
@@ -177,7 +183,7 @@ class Form extends Scannable
 //            'input_source_id' => $this->currentInputSource->id
 //        ]);
 
-        return redirect()->back();
+        return redirect()->to($nextUrl);
     }
 
 }

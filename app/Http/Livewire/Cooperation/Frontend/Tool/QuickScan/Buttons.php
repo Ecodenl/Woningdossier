@@ -39,6 +39,9 @@ class Buttons extends Component
 
     public $toolQuestions;
 
+    public $nextUrl;
+    public $previousUrl;
+
     public function mount(Request $request, Scan $currentScan, Step $step, $subStepOrQuestionnaire)
     {
         $this->currentScan = $currentScan;
@@ -75,11 +78,48 @@ class Buttons extends Component
 
         $this->setNextStep();
         $this->setPreviousStep();
+        $this->setUrl();
+
+
     }
 
     public function render()
     {
         return view('livewire.cooperation.frontend.tool.quick-scan.buttons');
+    }
+
+    public function setUrl()
+    {
+        $firstIncompleteStep = $this->firstIncompleteStep;
+        $firstIncompleteSubStep = $this->firstIncompleteSubStep;
+        $previousStep = $this->previousStep;
+        $previousSubStep = $this->previousSubStep;
+        $previousQuestionnaire = $this->previousQuestionnaire;
+        $nextQuestionnaire = $this->nextQuestionnaire;
+        $nextSubStep = $this->nextSubStep;
+        $currentScan = $this->currentScan;
+        $nextStep = $this->nextStep;
+
+        if ($previousStep instanceof \App\Models\Step && $previousSubStep instanceof \App\Models\SubStep) {
+            $previousUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $previousStep->scan, 'step' => $previousStep, 'subStep' => $previousSubStep]);
+        } elseif ($previousStep instanceof \App\Models\Step && $previousQuestionnaire instanceof \App\Models\Questionnaire) {
+            $previousUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['scan' => $previousStep->scan, 'step' => $previousStep, 'questionnaire' => $previousQuestionnaire]);
+        }
+        if ($nextStep instanceof \App\Models\Step && $nextSubStep instanceof \App\Models\SubStep) {
+            $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $nextStep->scan, 'step' => $nextStep, 'subStep' => $nextSubStep]);
+        } elseif ($nextStep instanceof \App\Models\Step && $nextQuestionnaire instanceof \App\Models\Questionnaire) {
+            $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['scan' => $nextStep->scan, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
+        } else {
+            if ($firstIncompleteStep instanceof \App\Models\Step && $firstIncompleteSubStep instanceof \App\Models\SubStep) {
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $firstIncompleteStep->scan, 'step' => $firstIncompleteStep, 'subStep' => $firstIncompleteSubStep]);
+            } else {
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index', ['scan' => $currentScan]);
+            }
+        }
+
+        $this->nextUrl = $nextUrl ?? '';
+        $this->previousUrl = $previousUrl ?? '';
+
     }
 
     private function setPreviousStep()

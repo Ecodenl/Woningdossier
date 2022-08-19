@@ -79,7 +79,7 @@ abstract class Scannable extends Component
 
     abstract function hydrateToolQuestions();
 
-    abstract function save();
+    abstract function save($nextUrl = "");
 
 
     public function rehydrateToolQuestions()

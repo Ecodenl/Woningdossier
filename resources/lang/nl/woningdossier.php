@@ -554,6 +554,7 @@ return [
                         'label' => 'Coöperatie admin menu',
                         'home' => 'Account overzicht',
                         'coaches' => 'Coaches / coördinatoren',
+                        'residents' => 'Bewoners',
                         'create-user' => 'Gebruiker toevoegen',
                         'reports' => 'Rapporten',
                         'example-buildings' => 'Voorbeeldwoningen',

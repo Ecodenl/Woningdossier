@@ -3,7 +3,7 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.users.index.header')
+            @lang('cooperation/admin/cooperation/residents.index.header')
         </div>
 
         <div class="panel-body">
@@ -12,33 +12,33 @@
                     <table id="table" class="table table-striped table-bordered compact nowrap table-responsive"
                            style="width: 100%">
                         <thead>
-                        <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.date')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.street-house-number')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.zip-code')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.city')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.status')</th>
-                        </tr>
+                            <tr>
+                                <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.date')</th>
+                                <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.name')</th>
+                                <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.street-house-number')</th>
+                                <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.zip-code')</th>
+                                <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.city')</th>
+                                <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.status')</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @php
-                            /**
-                             * @var \App\Models\User $user
-                             * @var \App\Models\Building $building
-                             */
-                        @endphp
-                        @foreach($users as $user)
                             @php
-                                $building = $user->building;
-                                $mostRecentBuildingStatus = $building->buildingStatuses->last();
-
-                                $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
-                                $userCreatedAtStrToTime = strtotime($userCreatedAtFormatted);
+                                /**
+                                 * @var \App\Models\User $user
+                                 * @var \App\Models\Building $building
+                                 */
                             @endphp
-                            <tr>
-                                <td data-sort="{{$userCreatedAtStrToTime}}">
-                                    {{$userCreatedAtFormatted ?? '-'}}
+                            @foreach($users as $user)
+                                @php
+                                    $building = $user->building;
+                                    $mostRecentBuildingStatus = $building->buildingStatuses->last();
+
+                                    $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
+                                    $userCreatedAtStrToTime = strtotime($userCreatedAtFormatted);
+                                @endphp
+                                <tr>
+                                    <td data-sort="{{$userCreatedAtStrToTime}}">
+                                        {{$userCreatedAtFormatted ?? '-'}}
                                     </td>
                                     <td>{{$user->getFullName()}}</td>
                                     <td>
@@ -56,7 +56,7 @@
                                         @endif
                                     </td>
                                 </tr>
-                        @endforeach
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -72,6 +72,7 @@
             var table = $('table');
             table.DataTable({
                 responsive: true,
+                stateSave: true,
                 order: [[0, "desc"]],
                 columns: [
                     {responsivePriority: 1},

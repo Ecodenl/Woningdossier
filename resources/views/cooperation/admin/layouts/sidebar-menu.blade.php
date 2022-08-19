@@ -26,6 +26,11 @@
                                 @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.coaches')
                             </a>
                         </li>
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.residents.index'])) active @endif">
+                            <a href="{{route('cooperation.admin.cooperation.residents.index')}}">
+                                @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.residents')
+                            </a>
+                        </li>
                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.create'])) active @endif">
                             <a href="{{route('cooperation.admin.cooperation.users.create')}}">
                                 @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.create-user')

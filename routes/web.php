@@ -82,7 +82,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
         // group can be accessed by everyone that's authorized and has a role in its session
         Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified']], function () {
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
-            Route::get('notifications', 'NotificationController@index')->name('notifications.index');
+            // TODO: Check for deprecation
+            //Route::get('notifications', 'NotificationController@index')->name('notifications.index');
 
             if ('local' == app()->environment()) {
                 // debug purpose only
@@ -197,78 +198,56 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::resource('example-building', 'ExampleBuildingController')->only('store');
                 Route::resource('building-type', 'BuildingTypeController')->only('store');
 
-//                Route::group(['as' => 'general-data.', 'prefix' => 'general-data'], function () {
-//                    Route::get('', 'GeneralDataController@index')->name('index');
-//
-//                    Route::group(['namespace' => 'GeneralData'], function () {
-//                        Route::resource('gebouw-kenmerken', 'BuildingCharacteristicsController')->only(['index', 'store'])->names('building-characteristics');
-//                        Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('building-characteristics.qualified-example-buildings');
-//
-//                        Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
-//                        Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
-//                    });
-//                });
+                // Heat pump: info for now
+                Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
 
-//                Route::group(['middleware' => 'filled-step:general-data'], function () {
-                    // Heat pump: info for now
-                    Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+                Route::group(['prefix' => 'ventilation', 'as' => 'ventilation.'], function () {
+                    Route::resource('', 'VentilationController', ['only' => ['index', 'store']]);
+                    Route::post('calculate', 'VentilationController@calculate')->name('calculate');
+                });
 
-                    Route::group(['prefix' => 'ventilation', 'as' => 'ventilation.'], function () {
-                        Route::resource('', 'VentilationController', ['only' => ['index', 'store']]);
-                        Route::post('calculate', 'VentilationController@calculate')->name('calculate');
-                    });
+                // Wall Insulation
+                Route::group(['prefix' => '/wall-insulation', 'as' => 'wall-insulation.'], function () {
+                    Route::resource('', 'WallInsulationController', ['only' => ['index', 'store']]);
+                    Route::post('calculate', 'WallInsulationController@calculate')->name('calculate');
+                });
+ // Wall Insulation
 
-                    // Wall Insulation
-                    Route::group(['prefix' => '/wall-insulation', 'as' => 'wall-insulation.'], function () {
-                        Route::resource('', 'WallInsulationController', ['only' => ['index', 'store']]);
-                        Route::post('calculate', 'WallInsulationController@calculate')->name('calculate');
-                    });
-     // Wall Insulation
+                // Insulated glazing
+                Route::group(['prefix' => 'insulated-glazing', 'as' => 'insulated-glazing.'], function () {
+                    Route::resource('', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
+                    Route::post('calculate', 'InsulatedGlazingController@calculate')->name('calculate');
+                });
 
-                    // Insulated glazing
-                    Route::group(['prefix' => 'insulated-glazing', 'as' => 'insulated-glazing.'], function () {
-                        Route::resource('', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
-                        Route::post('calculate', 'InsulatedGlazingController@calculate')->name('calculate');
-                    });
+                // Floor Insulation
+                Route::group(['prefix' => 'floor-insulation', 'as' => 'floor-insulation.'], function () {
+                    Route::resource('', 'FloorInsulationController', ['only' => ['index', 'store']]);
+                    Route::post('calculate', 'FloorInsulationController@calculate')->name('calculate');
+                });
 
-                    // Floor Insulation
-                    Route::group(['prefix' => 'floor-insulation', 'as' => 'floor-insulation.'], function () {
-                        Route::resource('', 'FloorInsulationController', ['only' => ['index', 'store']]);
-                        Route::post('calculate', 'FloorInsulationController@calculate')->name('calculate');
-                    });
+                // Roof Insulation
+                Route::group(['prefix' => 'roof-insulation', 'as' => 'roof-insulation.'], function () {
+                    Route::resource('', 'RoofInsulationController');
+                    Route::post('calculate', 'RoofInsulationController@calculate')->name('calculate');
+                });
 
-                    // Roof Insulation
-                    Route::group(['prefix' => 'roof-insulation', 'as' => 'roof-insulation.'], function () {
-                        Route::resource('', 'RoofInsulationController');
-                        Route::post('calculate', 'RoofInsulationController@calculate')->name('calculate');
-                    });
+                // HR boiler
+                Route::group(['prefix' => 'high-efficiency-boiler', 'as' => 'high-efficiency-boiler.'], function () {
+                    Route::resource('', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
+                    Route::post('calculate', 'HighEfficiencyBoilerController@calculate')->name('calculate');
+                });
 
-                    // HR boiler
-                    Route::group(['prefix' => 'high-efficiency-boiler', 'as' => 'high-efficiency-boiler.'], function () {
-                        Route::resource('', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
-                        Route::post('calculate', 'HighEfficiencyBoilerController@calculate')->name('calculate');
-                    });
+                // Solar panels
+                Route::group(['prefix' => 'solar-panels', 'as' => 'solar-panels.'], function () {
+                    Route::resource('', 'SolarPanelsController', ['only' => ['index', 'store']]);
+                    Route::post('calculate', 'SolarPanelsController@calculate')->name('calculate');
+                });
 
-                    // Solar panels
-                    Route::group(['prefix' => 'solar-panels', 'as' => 'solar-panels.'], function () {
-                        Route::resource('', 'SolarPanelsController', ['only' => ['index', 'store']]);
-                        Route::post('calculate', 'SolarPanelsController@calculate')->name('calculate');
-                    });
-
-                    // Heater (solar boiler)
-                    Route::group(['prefix' => 'heater', 'as' => 'heater.'], function () {
-                        Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
-                        Route::post('calculate', 'HeaterController@calculate')->name('calculate');
-                    });
-                    Route::get('{step}', 'StepController@show');
-//                });
-
-//                Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
-//                Route::post('my-plan/comment', 'MyPlanController@storeComment')
-//                    ->middleware('deny-if-observing-building')
-//                    ->name('my-plan.store-comment');
-//                Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
-//                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
+                // Heater (solar boiler)
+                Route::group(['prefix' => 'heater', 'as' => 'heater.'], function () {
+                    Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
+                    Route::post('calculate', 'HeaterController@calculate')->name('calculate');
+                });
             });
 
             Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin',

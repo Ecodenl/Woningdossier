@@ -55,7 +55,7 @@
                             @endphp
                             @if($subStepsForStep->isEmpty() && $currentStep->short !== 'heating')
                                 <li class="active @if($building->hasCompleted($currentStep, $masterInputSource)) completed @endif">
-                                    <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">
+                                    <a href="{{route("cooperation.frontend.tool.expert-scan.index", ['step' => $currentStep])}}">
                                         {{$currentStep->name}}
                                     </a>
                                 </li>

@@ -223,7 +223,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::resource('', 'WallInsulationController', ['only' => ['index', 'store']]);
                         Route::post('calculate', 'WallInsulationController@calculate')->name('calculate');
                     });
-     // Wall Insulation
 
                     // Insulated glazing
                     Route::group(['prefix' => 'insulated-glazing', 'as' => 'insulated-glazing.'], function () {

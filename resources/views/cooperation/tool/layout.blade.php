@@ -27,12 +27,15 @@
                         <?php $subStepsForStep = $cooperation->getchildrenForStep($currentStep); ?>
                         @if($subStepsForStep->isEmpty())
                             <li class="active @if($building->hasCompleted($currentStep)) completed @endif">
-                                <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">{{$currentStep->name}}</a>
+                                <a href="{{ route("cooperation.frontend.tool.expert-scan.index", ['step' => $currentStep]) }}">
+                                    {{$currentStep->name}}
+                                </a>
                             </li>
                         @endif
                         @foreach($subStepsForStep as $subStep)
                             <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
-                                <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">{{$subStep->name}}</a>
+                                {{--TODO: scan route?--}}
+                                <a href="{{ route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">{{$subStep->name}}</a>
                             </li>
                         @endforeach
                     @endif
@@ -99,9 +102,10 @@
                                         }
 
                                         if ($currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step) {
+                                            // TODO: scan route?
                                             $previousUrl = route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index");
                                         } elseif ($previousStep instanceof \App\Models\Step) {
-                                            $previousUrl = route("cooperation.tool.{$previousStep->short}.index");
+                                            $previousUrl = route("cooperation.frontend.tool.expert-scan.index", ['step' => $previousStep]);
                                         }
                                         ?>
                                         @if($previousStep instanceof \App\Models\Step)

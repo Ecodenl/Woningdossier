@@ -38,7 +38,9 @@ class UpdateToolQuestions extends Command
      */
     public function handle()
     {
+        \Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class]);
         \Artisan::call('db:seed', ['--class' => \ToolQuestionsTableSeeder::class]);
+        \Artisan::call('db:seed', ['--class' => \SubStepsTableSeeder::class]);
 
         ToolQuestion::findByShort('heat-source')->update(['name' => ['nl' => 'Wat wordt er gebruikt voor verwarming']]);
 

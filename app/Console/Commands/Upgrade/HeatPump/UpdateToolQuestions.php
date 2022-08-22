@@ -38,6 +38,7 @@ class UpdateToolQuestions extends Command
      */
     public function handle()
     {
+        \Artisan::call('db:seed', ['--class' => \ScansTableSeeder::class]);
         \Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class]);
         \Artisan::call('db:seed', ['--class' => \ToolQuestionsTableSeeder::class]);
         \Artisan::call('db:seed', ['--class' => \SubStepsTableSeeder::class]);

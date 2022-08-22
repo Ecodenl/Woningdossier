@@ -151,33 +151,32 @@
             @php
                 $disabled = ! $building->user->account->can('answer', $toolQuestion);
             @endphp
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'label' => $toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"),
-                    'class' => 'w-full sm:w-1/2 ' . ($loop->iteration % 2 === 0 ? 'sm:pl-3' : 'sm:pr-3'),
-                    'withInputSource' => ! $disabled,
-                    'id' => "filledInAnswers-{$toolQuestion->id}",
-                    'inputName' => "filledInAnswers.{$toolQuestion->id}",
-                ])
-                    @slot('sourceSlot')
-                        @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                            'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
-                            'toolQuestion' => $toolQuestion,
-                        ])
-                    @endslot
-
-                    @slot('modalBodySlot')
-                        <p>
-                            {!! $toolQuestion->help_text !!}
-                        </p>
-                    @endslot
-
-
-                        @include("cooperation.tool-question-type-templates.{$toolQuestion->toolQuestionType->short}.show", [
-                                  'disabled' => $disabled,
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'label' => $toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"),
+                'class' => 'w-full sm:w-1/2 ' . ($loop->iteration % 2 === 0 ? 'sm:pl-3' : 'sm:pr-3'),
+                'withInputSource' => ! $disabled,
+                'id' => "filledInAnswers-{$toolQuestion->id}",
+                'inputName' => "filledInAnswers.{$toolQuestion->id}",
+            ])
+                @slot('sourceSlot')
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                        'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
+                        'toolQuestion' => $toolQuestion,
                     ])
+                @endslot
+
+                @slot('modalBodySlot')
+                    <p>
+                        {!! $toolQuestion->help_text !!}
+                    </p>
+                @endslot
 
 
-                @endcomponent
+                @include("cooperation.tool-question-type-templates.{$toolQuestion->toolQuestionType->short}.show", [
+                    'disabled' => $disabled,
+                ])
+
+            @endcomponent
         @endforeach
     </div>
 </div>

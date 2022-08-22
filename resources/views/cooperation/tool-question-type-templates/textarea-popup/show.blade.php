@@ -16,7 +16,8 @@
         ></textarea>
 
         @slot('header')
-            @lang('cooperation/frontend/tool.my-plan.comments.resident')
+            @php $inputSource = \App\Helpers\HoomdossierSession::getInputSource(true) @endphp
+            @lang("cooperation/frontend/tool.my-plan.comments.{$inputSource->short}")
         @endslot
         <div class="flex justify-end space-x-2">
             <button class="btn btn-orange" wire:click="resetToOriginalAnswer({{$toolQuestion['id']}})"

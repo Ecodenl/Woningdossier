@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Cooperation;
-use App\Models\Role;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 
@@ -21,12 +21,10 @@ class CoachController extends Controller
         $users = $cooperation
             ->users()
             ->with('building', 'roles')
-            ->role(['coach', 'coordinator'])
+            ->role([RoleHelper::ROLE_COACH, RoleHelper::ROLE_COORDINATOR])
             ->get();
 
-        $roles = Role::all();
-
-        return view('cooperation.admin.cooperation.coaches.index', compact('roles', 'users'));
+        return view('cooperation.admin.cooperation.coaches.index', compact('users'));
     }
 
     /**

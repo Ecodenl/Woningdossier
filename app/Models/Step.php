@@ -74,6 +74,11 @@ class Step extends Model
         return 'slug';
     }
 
+    public function isDynamic(): bool
+    {
+        return in_array($this->short, ['heating']);
+    }
+
     public function scopeWithGeneralData(Builder $query): Builder
     {
         return $query->withoutGlobalScope(NoGeneralDataScope::class);
@@ -186,6 +191,11 @@ class Step extends Model
     public function scopeExpert(Builder $query)
     {
         return $query->whereNotIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
+    }
+
+    public function scan()
+    {
+        return $this->belongsTo(Scan::class);
     }
 
     /**

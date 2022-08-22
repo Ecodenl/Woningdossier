@@ -126,6 +126,7 @@
                     @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
                         {{-- Loaded in NavbarComposer --}}
                         @foreach($expertSteps as $expertStep)
+                            @if($expertStep->short !== 'heating')
                             <li>
                                 <a href="{{ route("cooperation.tool.{$expertStep->short}.index", compact('cooperation')) }}"
                                    class="in-text">
@@ -134,6 +135,7 @@
                                     {{ $expertStep->name }}
                                 </a>
                             </li>
+                            @endif
                         @endforeach
                     @endcomponent
                 @endif

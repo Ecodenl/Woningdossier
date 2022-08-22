@@ -41,6 +41,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int|null $monument
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\BuildingCategory|null $buildingCategory
  * @property-read \App\Models\BuildingType|null $buildingType

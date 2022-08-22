@@ -1,26 +1,4 @@
 <div class="w-1/2 flex flex-wrap justify-center">
-    @php
-        $previousUrl = null;
-        $nextUrl = null;
-
-        if ($previousStep instanceof \App\Models\Step && $previousSubStep instanceof \App\Models\SubStep) {
-            $previousUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $previousStep->scan, 'step' => $previousStep, 'subStep' => $previousSubStep]);
-        } elseif ($previousStep instanceof \App\Models\Step && $previousQuestionnaire instanceof \App\Models\Questionnaire) {
-            $previousUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['scan' => $previousStep->scan, 'step' => $previousStep, 'questionnaire' => $previousQuestionnaire]);
-        }
-        if ($nextStep instanceof \App\Models\Step && $nextSubStep instanceof \App\Models\SubStep) {
-            $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $nextStep->scan, 'step' => $nextStep, 'subStep' => $nextSubStep]);
-        } elseif ($nextStep instanceof \App\Models\Step && $nextQuestionnaire instanceof \App\Models\Questionnaire) {
-            $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['scan' => $nextStep->scan, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
-        } else {
-            if ($firstIncompleteStep instanceof \App\Models\Step && $firstIncompleteSubStep instanceof \App\Models\SubStep) {
-                $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $firstIncompleteStep->scan, 'step' => $firstIncompleteStep, 'subStep' => $firstIncompleteSubStep]);
-            } else {
-                $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index', ['scan' => $currentScan]);
-            }
-        }
-
-    @endphp
 
     @if($previousStep instanceof \App\Models\Step || $previousSubStep instanceof \App\Models\SubStep)
         <a href="{{$previousUrl}}" class="btn btn-outline-purple flex items-center mr-1">
@@ -28,6 +6,8 @@
             @lang('default.buttons.previous')
         </a>
     @endif
+
+
 
 
     <button type="button" x-data

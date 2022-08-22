@@ -7,6 +7,7 @@ use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
@@ -49,6 +50,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read mixed $oldemail
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
  * @property-read int|null $interests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
  * @property-read int|null $motivations_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NotificationSetting[] $notificationSettings
@@ -83,9 +86,9 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Model implements AuthorizableContract
 {
-    use HasRoles;
-    use HasCooperationTrait;
-    use Authorizable;
+    use HasRoles,
+        HasCooperationTrait,
+        Authorizable;
 
     protected $guard_name = 'web';
 
@@ -104,6 +107,11 @@ class User extends Model implements AuthorizableContract
         'extra' => 'array'
     ];
 
+    # Relations
+    public function logs(): MorphMany
+    {
+        return $this->morphMany(Log::class, 'loggable');
+    }
 
     public function considerables($related): MorphToMany
     {
@@ -120,6 +128,7 @@ class User extends Model implements AuthorizableContract
         return $this->considerables($related->getMorphClass())->wherePivot('considerable_id', $related->id);
     }
 
+    # Unsorted
     public function considers(Model $model, InputSource $inputSource): bool
     {
         $considerableModel =  $this->considerablesForModel($model)

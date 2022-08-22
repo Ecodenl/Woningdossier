@@ -45,7 +45,6 @@ class ToolComposer
             if (is_null($this->currentUser)) {
                 $this->currentUser = Hoomdossier::user();
             }
-
             if (is_null($this->currentStep)) {
                 $toolUrl = explode('/', request()->getRequestUri());
 

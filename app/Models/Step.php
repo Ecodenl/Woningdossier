@@ -35,7 +35,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|Step expert()
  * @method static Builder|Step newModelQuery()
  * @method static Builder|Step newQuery()
- * @method static Builder|Step onlyChildren()
  * @method static Builder|Step ordered()
  * @method static Builder|Step query()
  * @method static Builder|Step quickScan()
@@ -119,24 +118,9 @@ class Step extends Model
         return $this->belongsTo(Step::class, 'parent_id', 'id');
     }
 
-    /**
-     * Check whether a step has substeps.
-     *
-     * @return bool
-     */
-    public function hasChildren()
-    {
-        return $this->children()->exists();
-    }
-
     public function scopeChildrenForStep(Builder $query, Step $step)
     {
         return $query->where('parent_id', $step->id);
-    }
-
-    public function scopeOnlyChildren(Builder $query)
-    {
-        return $query->whereNotNull('parent_id');
     }
 
     /**
@@ -147,15 +131,6 @@ class Step extends Model
     public function scopeWithoutChildren(Builder $query)
     {
         return $query->where('parent_id', null);
-    }
-
-    /**
-     * Check whether a step is a sub step.
-     */
-    public function isChild(): bool
-    {
-        // when the parent id is null, its a parent else its a sub step / child.
-        return !is_null($this->parent_id);
     }
 
     public function questionnaires(): HasMany

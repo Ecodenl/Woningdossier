@@ -125,6 +125,8 @@ abstract class Scannable extends Component
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
+        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts');
+
         $this->rehydrateToolQuestions();
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();

@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Upgrade\HeatPump;
 
 use Illuminate\Console\Command;
+use Illuminate\Database\Console\Seeds\SeedCommand;
 
 class DoUpgrade extends Command
 {
@@ -39,6 +40,7 @@ class DoUpgrade extends Command
     {
         $commands = [
             UpdateToolQuestions::class => [],
+            SeedCommand::class => ['--class' => 'AlertsTableSeeder']
         ];
 
         foreach ($commands as $command => $params) {

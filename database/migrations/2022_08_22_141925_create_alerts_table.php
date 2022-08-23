@@ -15,9 +15,10 @@ class CreateAlertsTable extends Migration
     {
         Schema::create('alerts', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('type');
+            $table->string('short');
             $table->json('conditions');
             $table->json('text');
-            $table->string('type');
             $table->timestamps();
         });
     }

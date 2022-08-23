@@ -100,7 +100,7 @@
                                 @else
                                     @if(! \App\helpers\HoomdossierSession::isUserObserving())
                                         <button class="float-right btn btn-purple submit-main-form">
-                                            @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
+                                            @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
                                                 @lang('default.buttons.next-page')
                                             @else
                                                 @lang('default.buttons.save')
@@ -123,19 +123,15 @@
                                                 @lang('default.buttons.cancel')
                                             </a>
                                         </div>
-                                        @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
-                                            <div class="w-full sm:w-1/2">
-                                                <a href="" class="float-right btn btn-purple submit-main-form">
+                                        <div class="w-full sm:w-1/2">
+                                            <button class="float-right btn btn-purple submit-main-form">
+                                                @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
                                                     @lang('default.buttons.next-page')
-                                                </a>
-                                            </div>
-                                        @else
-                                            <div class="w-full sm:w-1/2">
-                                                <button class="float-right btn btn-purple submit-main-form">
+                                                @else
                                                     @lang('default.buttons.save')
-                                                </button>
-                                            </div>
-                                        @endif
+                                                @endif
+                                            </button>
+                                        </div>
                                     </div>
                                 @endif
                             </div>

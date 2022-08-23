@@ -160,7 +160,14 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::namespace('Frontend')->as('frontend.')->middleware(['track-visited-url'])->group(function () {
                 Route::resource('help', 'HelpController')->only('index');
                 Route::namespace('Tool')->as('tool.')->group(function () {
-                    Route::get('{scan}', [ScanController::class, 'show'])->name('scans.show');
+                    $scans = \App\Helpers\Cache\Scan::allShorts();
+                    // TODO: Deprecate to whereIn in L9
+                    Route::get('{scan}', [ScanController::class, 'show'])
+                        ->name('scans.show')
+                        ->where(collect(['scan'])
+                            ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $scans)])
+                            ->all()
+                        );
 
                     Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
                         Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');

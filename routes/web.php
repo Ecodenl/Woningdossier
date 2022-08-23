@@ -82,8 +82,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
         // group can be accessed by everyone that's authorized and has a role in its session
         Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified']], function () {
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
-            // TODO: Check for deprecation
-            //Route::get('notifications', 'NotificationController@index')->name('notifications.index');
 
             if ('local' == app()->environment()) {
                 // debug purpose only

@@ -49,6 +49,7 @@ class ToolQuestionValuable extends Model
     protected $casts = [
         'show' => 'boolean',
         'extra' => 'array',
+        'conditions' => 'array',
     ];
 
     /**

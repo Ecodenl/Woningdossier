@@ -58,6 +58,7 @@ class ToolQuestionCustomValue extends Model
     protected $casts = [
         'show' => 'boolean',
         'extra' => 'array',
+        'conditions' => 'array',
     ];
 
     public function scopeVisible(Builder $query): Builder

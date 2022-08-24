@@ -33,13 +33,10 @@ class HighEfficiencyBoilerCalculator
             $bestBoilerEfficiency = $bestBoiler->keyFigureBoilerEfficiency;
 
             $usage = [
-                'heating' => 0,
-                'tap_water' => 0,
-                'cooking' => 0,
+                'heating' => $current['heating']['netto'] / ($bestBoilerEfficiency['heating'] / 100),
+                'tap_water' => $current['tap_water']['netto'] / ($bestBoilerEfficiency['wtw'] / 100),
+                'cooking' => $current['cooking'],
             ];
-            $usage['heating'] = $current['heating']['netto'] / ($bestBoilerEfficiency['heating'] / 100);
-            $usage['tap_water'] = $current['tap_water']['netto'] / ($bestBoilerEfficiency['wtw'] / 100);
-            $usage['cooking'] = $current['cooking'];
 
             $usageNew = $usage['heating'] + $usage['tap_water'] + $usage['cooking'];
             // yes, array_sum is a method, but this is easier to compare to the theory
@@ -48,7 +45,7 @@ class HighEfficiencyBoilerCalculator
             self::debug('Gas usage ( '.$usageNew.' ) with best boiler: '.json_encode($usage));
             self::debug('Results in saving of '.$result.' = '.$amountGas.' - '.$usageNew);
         }
-        // we dont want to return negative values
+        // we don't want to return negative values
         if (Number::isNegative($result)) {
             $result = 0;
         }

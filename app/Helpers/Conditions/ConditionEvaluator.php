@@ -122,7 +122,7 @@ class ConditionEvaluator
 
     public function evaluate(array $conditions, ?collection $answers = null): bool
     {
-        if (is_null($answers)) {
+        if (is_null($answers) || $answers->isEmpty()) {
             $answers = $this->getToolAnswersForConditions($conditions);
         }
 

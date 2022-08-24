@@ -7,6 +7,7 @@ use App\Models\Alert;
 use App\Models\Building;
 use App\Models\InputSource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
@@ -57,7 +58,10 @@ class Alerts extends Component
 
             // the issue here is that the collection is not correctly passsed
             if ($condition->evaluate($alert->conditions, collect($answers))) {
-                $oldAlert = $oldAlerts->where('short', $alert->short)->first();
+                $oldAlert = null;
+                if ($oldAlerts instanceof Collection) {
+                    $oldAlert = $oldAlerts->where('short', $alert->short)->first();
+                }
                 // if the current alert is not found in the oldAlerts, it will be considered "new"
                 // in that case we will open the alert for the user
                 if(!$oldAlert instanceof Alert) {

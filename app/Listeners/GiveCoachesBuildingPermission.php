@@ -54,22 +54,16 @@ class GiveCoachesBuildingPermission
         } else {
             $cooperation = HoomdossierSession::getCooperation(true);
 
-            // withoutEvents is added in laravel 7, for now this will do.
-            // https://github.com/laravel/framework/blob/7.x/src/Illuminate/Database/Eloquent/Concerns/HasEvents.php#L399
-            // we do this for the App/Listeners/PrivateMessageReceiverListener.php
-            $privateMessage = PrivateMessage::class;
-            $privateMessage::unsetEventDispatcher();
-
-            // this will be triggerd upon register.
-            // create the initial message
-            $privateMessage = $privateMessage::create([
-                'is_public' => true,
-                'from_cooperation_id' => $cooperation->id,
-                'to_cooperation_id' => $cooperation->id,
-                'from_user' => $cooperation->name,
-                'message' => 'Welkom bij het Hoomdossier, hier kunt u chatten met de coöperatie.',
-                'building_id' => $building->id,
-            ]);
+            $privateMessage = PrivateMessage::withoutEvents(function () use ($cooperation, $building) {
+                return PrivateMessage::create([
+                    'is_public' => true,
+                    'from_cooperation_id' => $cooperation->id,
+                    'to_cooperation_id' => $cooperation->id,
+                    'from_user' => $cooperation->name,
+                    'message' => 'Welkom bij het Hoomdossier, hier kunt u chatten met de coöperatie.',
+                    'building_id' => $building->id,
+                ]);
+            });
 
             // give the user a unread message.
             PrivateMessageView::create([

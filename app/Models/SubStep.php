@@ -85,7 +85,7 @@ class SubStep extends Model
     {
         return $this->belongsToMany(ToolQuestion::class, 'sub_step_tool_questions')
             ->orderBy('order')
-            ->withPivot('order');
+            ->withPivot('order', 'size');
     }
 
     public function scopeOrdered(Builder $query)

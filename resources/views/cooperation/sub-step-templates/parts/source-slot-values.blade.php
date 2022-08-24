@@ -1,4 +1,4 @@
-@if(!empty($values))
+@if(! empty($values))
     @foreach($values as $inputSourceShort => $answersForInputSources)
         @foreach($answersForInputSources as $answerForInputSource)
             @php

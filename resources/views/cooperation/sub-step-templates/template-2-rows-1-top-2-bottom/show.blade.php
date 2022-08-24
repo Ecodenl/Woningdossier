@@ -1,12 +1,11 @@
 <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$toolQuestions->count() > 1 ? 10 : 5}} ">
 
-    <?php
-    // some necessary crap to display the toolQuestions in the right manor
-    $top = $toolQuestions->where('pivot.order', 0)->first();
-    $bottomLeft = $toolQuestions->where('pivot.order', 1)->first();
-    $bottomRight = $toolQuestions->where('pivot.order', 2)->first();
-
-    ?>
+    @php
+        // some necessary crap to display the toolQuestions in the right manor
+        $top = $toolQuestions->where('pivot.order', 0)->first();
+        $bottomLeft = $toolQuestions->where('pivot.order', 1)->first();
+        $bottomRight = $toolQuestions->where('pivot.order', 2)->first();
+    @endphp
     <div class="w-full">
         @component('cooperation.frontend.layouts.components.form-group', [
             'class' => 'form-group-heading',

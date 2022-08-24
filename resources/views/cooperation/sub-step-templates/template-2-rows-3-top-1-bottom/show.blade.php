@@ -1,14 +1,13 @@
 <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$toolQuestions->count() > 1 ? 10 : 5}} ">
 
-    <?php
-    // some necessary crap to display the toolQuestions in the right manor
-    $topLeft = $toolQuestions->where('pivot.order', 0)->first();
-    $topRightFirst = $toolQuestions->where('pivot.order', 1)->first();
-    $topRightSecond = $toolQuestions->where('pivot.order', 2)->first();
+    @php
+        // some necessary crap to display the toolQuestions in the right manor
+        $topLeft = $toolQuestions->where('pivot.order', 0)->first();
+        $topRightFirst = $toolQuestions->where('pivot.order', 1)->first();
+        $topRightSecond = $toolQuestions->where('pivot.order', 2)->first();
 
-    $bottomLeft = $toolQuestions->where('pivot.order', 3)->first();
-
-    ?>
+        $bottomLeft = $toolQuestions->where('pivot.order', 3)->first();
+    @endphp
     <div class="w-full flex flex-wrap">
         @if($topLeft instanceof \App\Models\ToolQuestion)
             @php

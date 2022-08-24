@@ -50,6 +50,8 @@ class Alerts extends Component
 
         $shouldOpenAlert = $this->alertOpen;
 
+        dd($answers);
+
         foreach ($alerts as $index => $alert) {
             $condition = ConditionEvaluator::init()
                 ->building($this->building)

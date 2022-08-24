@@ -75,6 +75,9 @@ class Alerts extends Component
 
         $this->alertOpen = $shouldOpenAlert;
         $this->alerts = $alerts;
+
+        // Always call updated for this field. Even if it didn't change, we want to ensure it is cast to the frontend
+        $this->updated('alertOpen', $shouldOpenAlert);
     }
 
     private function isClosed()

@@ -17,7 +17,7 @@ class Alerts extends Component
     public $alerts;
     public $building;
     public $inputSource;
-    public $shouldOpenAlert = false;
+    public $alertOpen = false;
 
     public $typeMap = [
         'info' => 'text-blue',
@@ -31,7 +31,7 @@ class Alerts extends Component
         $this->fill(compact('building', 'inputSource'));
 
         if ($request->route()->getName() === 'cooperation.frontend.tool.quick-scan.my-plan.index') {
-            $this->shouldOpenAlert = true;
+            $this->alertOpen = true;
         }
         $this->refreshAlerts();
     }
@@ -41,22 +41,49 @@ class Alerts extends Component
         return view('livewire.cooperation.frontend.layouts.parts.alerts');
     }
 
-    public function refreshAlerts()
+    public function refreshAlerts($answers = null)
     {
-        Log::debug('refreshee');
         $alerts = Alert::all();
-        foreach ($alerts as $alert) {
+
+        $oldAlerts = $this->alerts;
+
+        $shouldOpenAlert = $this->alertOpen;
+
+        foreach ($alerts as $index => $alert) {
             $condition = ConditionEvaluator::init()
                 ->building($this->building)
-                ->inputSource($this->inputSource);
+                ->inputSource($this->inputSource)
+                ->explain();
 
-            // when the condition is NOT met, we will remove the alert from the collection
-            // this way we have a collection of alerts that are are relevant for the current user
-            if (!$condition->evaluate($alert->conditions ?? [])) {
-                Log::debug($alert->id);
-                $alerts->forget($alert->id);
+            // the issue here is that the collection is not correctly passsed
+            if ($condition->evaluate($alert->conditions, collect($answers))) {
+                $oldAlert = $oldAlerts->where('short', $alert->short)->first();
+                // if the current alert is not found in the oldAlerts, it will be considered "new"
+                // in that case we will open the alert for the user
+                if(!$oldAlert instanceof Alert) {
+                    $shouldOpenAlert = true;
+                }
+            } else  {
+                Log::debug("Evaluation is false, forgetting {$alert->text}");
+                $alerts->forget($index);
             }
         }
+
+        if ($alerts->isEmpty()) {
+            $shouldOpenAlert = false;
+        }
+
+        $this->alertOpen = $shouldOpenAlert;
         $this->alerts = $alerts;
+    }
+
+    private function isClosed()
+    {
+        return !$this->alertOpen;
+    }
+
+    public function updated($field, $value)
+    {
+        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
     }
 }

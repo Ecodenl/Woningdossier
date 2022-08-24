@@ -80,7 +80,7 @@
                 @component('cooperation.frontend.layouts.components.dropdown', [
                     'label' => __('cooperation/frontend/layouts.navbar.current-role') . \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name,
                     'class' => 'in-text',
-                ])
+                    ])
                     @foreach(Hoomdossier::user()->roles()->orderBy('level', 'DESC')->get() as $role)
                         <li>
                             <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}"
@@ -92,8 +92,9 @@
                 @endcomponent
             @endif
 
+
             @livewire('cooperation.frontend.layouts.parts.alerts', ['building' => $building, 'inputSource' => $masterInputSource])
-            @livewire('cooperation.frontend.layouts.parts.messages')
+{{--            @livewire('cooperation.frontend.layouts.parts.messages')--}}
 
             {{-- Keep local for ease of use --}}
             @if(app()->isLocal())

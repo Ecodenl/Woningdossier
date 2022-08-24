@@ -120,20 +120,27 @@ abstract class Scannable extends Component
         }
     }
 
+    private function refreshAlerts()
+    {
+        $answers = [];
+        foreach ($this->toolQuestions as $toolQuestion) {
+            $answers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->id];
+        }
+
+        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts', $answers);
+    }
+
     public function updated($field, $value)
     {
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
-        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts');
-
         $this->rehydrateToolQuestions();
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();
+        $this->refreshAlerts();
 
         Log::debug("initialToolQuestions {$this->toolQuestions->count()}");
-
-//        $this->rules['initialToolQuestions.pivot.']
 
         $this->setDirty(true);
     }

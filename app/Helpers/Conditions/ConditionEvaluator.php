@@ -120,9 +120,11 @@ class ConditionEvaluator
         return collect($answers);
     }
 
-    public function evaluate(array $conditions): bool
+    public function evaluate(array $conditions, ?collection $answers = null): bool
     {
-        $answers = $this->getToolAnswersForConditions($conditions);
+        if (is_null($answers)) {
+            $answers = $this->getToolAnswersForConditions($conditions);
+        }
 
         return $this->evaluateCollection($conditions, $answers);
     }

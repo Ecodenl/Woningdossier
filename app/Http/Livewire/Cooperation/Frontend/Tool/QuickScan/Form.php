@@ -3,24 +3,18 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Console\Commands\Tool\RecalculateForUser;
-use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
-use App\Models\Building;
 use App\Models\CompletedSubStep;
-use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 class Form extends Scannable
 {
@@ -28,7 +22,7 @@ class Form extends Scannable
     public $subStep;
 
     public $nextUrl;
-    
+
     public function mount(Step $step, SubStep $subStep)
     {
         Log::debug('mounting form');
@@ -42,14 +36,19 @@ class Form extends Scannable
 
     public function hydrateToolQuestions()
     {
-        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+        $this->toolQuestions = $this->subStep->toolQuestions()
+            ->withToolQuestionType($this->subStep)
+            ->orderBy('order')
+            ->get();
     }
 
     public function rehydrateToolQuestions()
     {
-        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+        $this->toolQuestions = $this->subStep->toolQuestions()
+            ->withToolQuestionType($this->subStep)
+            ->orderBy('order')
+            ->get();
     }
-
 
     public function render()
     {
@@ -68,7 +67,6 @@ class Form extends Scannable
                 $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]), 2);
             }
         }
-
 
         if (! empty($this->rules)) {
             $validator = Validator::make([
@@ -126,7 +124,6 @@ class Form extends Scannable
             }
         }
 
-
         $stepShortsToRecalculate = [];
         $shouldDoFullRecalculate = false;
 
@@ -155,7 +152,6 @@ class Form extends Scannable
                 }
             }
         }
-
 
         // the INITIAL calculation will be handled by the CompletedSubStepObserver
         if ($shouldDoFullRecalculate) {
@@ -193,5 +189,4 @@ class Form extends Scannable
 
         return redirect()->to($nextUrl);
     }
-
 }

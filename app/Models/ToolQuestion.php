@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\DiscordNotifier;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -97,14 +98,81 @@ class ToolQuestion extends Model
         'resident' => 'boolean',
     ];
 
-    public function hasOptions(): bool
+    # Model Methods
+    /**
+     * Find a tool question and immediately set its question type.
+     *
+     * @param  int  $id
+     * @param  \App\Models\SubStep  $subStep
+     *
+     * @return \App\Models\ToolQuestion|null
+     */
+    public static function findWithType(int $id, SubStep $subStep): ?ToolQuestion
     {
-        return  !empty($this->options);
+        $toolQuestion = static::find($id);
+        if ($toolQuestion instanceof ToolQuestion) {
+            $toolQuestion->setToolQuestionType($subStep);
+        }
+        return $toolQuestion;
     }
 
-    public function toolQuestionType(): BelongsTo
+    /**
+     * Set the tool question type for the tool question.
+     *
+     * @param  \App\Models\SubStep  $subStep
+     *
+     * @return void
+     */
+    public function setToolQuestionType(SubStep $subStep)
     {
-        return $this->belongsTo(ToolQuestionType::class);
+        $this->toolQuestionType = $this->getToolQuestionTypeForSubStep($subStep);
+    }
+
+    public function hasOptions(): bool
+    {
+        return ! empty($this->options);
+    }
+
+    /**
+     * Each sub step only has a single tool question type per tool question. This retrieves that specific type.
+     *
+     * @param  \App\Models\SubStep  $subStep
+     *
+     * @return \App\Models\ToolQuestionType|null
+     */
+    public function getToolQuestionTypeForSubStep(SubStep $subStep): ?ToolQuestionType
+    {
+        return $this->toolQuestionTypes()->wherePivot('sub_step_id', $subStep->id)->first();
+    }
+
+    # Attributes
+    public function getToolQuestionTypeAttribute($value)
+    {
+        // We hope the developer has properly eager loaded the value and so we can use magic to get it
+        if (is_null($value) && $this->toolQuestionTypes->count() === 1) {
+            $value = $this->toolQuestionTypes->first();
+        }
+
+        return $value;
+    }
+
+    # Scopes
+    public function scopeWithToolQuestionType(Builder $query, SubStep $subStep): Builder
+    {
+        if (is_null($subStep->id)) {
+            throw new \Exception('Can\'t eager load a tool question type without sub step!');
+        }
+
+        return $query->with(['toolQuestionTypes' => function ($query) use ($subStep) {
+            $query->wherePivot('sub_step_id', $subStep->id);
+        }]);
+    }
+
+    # Relations
+    public function toolQuestionTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(ToolQuestionType::class, 'sub_step_tool_questions')
+            ->withPivot('sub_step_id');
     }
 
     public function toolQuestionAnswers(): HasMany
@@ -114,7 +182,8 @@ class ToolQuestion extends Model
 
     public function subSteps(): BelongsToMany
     {
-        return $this->belongsToMany(SubStep::class, 'sub_step_tool_questions');
+        return $this->belongsToMany(SubStep::class, 'sub_step_tool_questions')
+            ->withPivot('tool_question_type_id');
     }
     /**
      * Method to return the intermediary morph table
@@ -126,7 +195,7 @@ class ToolQuestion extends Model
         return $this->hasMany(ToolQuestionValuable::class);
     }
 
-    public function toolQuestionCustomValues()
+    public function toolQuestionCustomValues(): HasMany
     {
         return $this->hasMany(ToolQuestionCustomValue::class);
     }
@@ -136,6 +205,7 @@ class ToolQuestion extends Model
         return $this->belongsTo(InputSource::class);
     }
 
+    # Unsorted
     /**
      * Method to return the question values  (morphed models / the options for the question)
      *

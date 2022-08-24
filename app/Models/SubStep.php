@@ -83,9 +83,12 @@ class SubStep extends Model
 
     public function toolQuestions()
     {
+        //TODO: By using `$this` as argument, we cannot eager load this using a `with` query. That's currently
+        // not the case, however we might want to in the future.
         return $this->belongsToMany(ToolQuestion::class, 'sub_step_tool_questions')
             ->orderBy('order')
-            ->withPivot('order', 'size');
+            ->withPivot('order', 'tool_question_type_id', 'size')
+            ->withToolQuestionType($this);
     }
 
     public function scopeOrdered(Builder $query)

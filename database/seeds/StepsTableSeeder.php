@@ -14,6 +14,9 @@ class StepsTableSeeder extends Seeder
     public function run()
     {
 
+        $expertScan = DB::table('scans')->where('short', 'expert-scan')->first();
+        $quickScan = DB::table('scans')->where('short', 'quick-scan')->first();
+
         $steps = [
             [
                 'slug' => 'general-data',
@@ -63,6 +66,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'ventilation',
                 'short' => 'ventilation',
+                'scan_id' => $expertScan->id,
                 'name' => [
                     'en' => 'Ventilation',
                     'nl' => 'Ventilatie',
@@ -72,6 +76,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'wall-insulation',
                 'short' => 'wall-insulation',
+                'scan_id' => $expertScan->id,
                 'name' => [
                     'en' => 'Wall Insulation',
                     'nl' => 'Gevelisolatie',
@@ -81,6 +86,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'insulated-glazing',
                 'short' => 'insulated-glazing',
+                'scan_id' => $expertScan->id,
                 'name' => [
                     'en' => 'Insulated Glazing',
                     'nl' => 'Isolerende beglazing',
@@ -90,6 +96,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'floor-insulation',
                 'short' => 'floor-insulation',
+                'scan_id' => $expertScan->id,
                 'name' => [
                     'en' => 'Floor Insulation',
                     'nl' => 'Vloerisolatie',
@@ -99,6 +106,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'roof-insulation',
                 'short' => 'roof-insulation',
+                'scan_id' => $expertScan->id,
                 'name' => [
                     'en' => 'Roof Insulation',
                     'nl' => 'Dakisolatie',
@@ -108,6 +116,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'high-efficiency-boiler',
                 'short' => 'high-efficiency-boiler',
+                'scan_id' => $expertScan->id,
                 'name' => [
                     'en' => 'High Efficiency Boiler',
                     'nl' => 'HR CV-ketel',
@@ -117,6 +126,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'heat-pump',
                 'short' => 'heat-pump',
+                'scan_id' => $expertScan->id,
                 'name' => [
                     'en' => 'Heat Pump',
                     'nl' => 'Warmtepomp',
@@ -126,6 +136,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'solar-panels',
                 'short' => 'solar-panels',
+                'scan_id' => $expertScan->id,
                 'name' => [
                     'en' => 'Solar Panels',
                     'nl' => 'Zonnepanelen',
@@ -135,16 +146,28 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'heater',
                 'short' => 'heater',
+                'scan_id' => $expertScan->id,
                 'name' => [
                     'en' => 'Heater',
                     'nl' => 'Zonneboiler',
                 ],
                 'order' => 10,
             ],
+            [
+                'slug' => 'verwarming',
+                'short' => 'heating',
+                'scan_id' => $expertScan->id,
+                'name' => [
+                    'en' => 'Heating',
+                    'nl' => 'Verwarming',
+                ],
+                'order' => 11,
+            ],
             // the steps used for the "quick scan"
             [
                 'slug' => 'woninggegevens',
                 'short' => 'building-data',
+                'scan_id' => $quickScan->id,
                 'name' => [
                     'en' => 'Building data',
                     'nl' => 'Woninggegevens',
@@ -154,6 +177,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'bewoners-gebruik',
                 'short' => 'usage-quick-scan',
+                'scan_id' => $quickScan->id,
                 'name' => [
                     'en' => 'Usage',
                     'nl' => 'Gebruik',
@@ -163,6 +187,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'woonwensen',
                 'short' => 'living-requirements',
+                'scan_id' => $quickScan->id,
                 'name' => [
                     'en' => 'Living requirements',
                     'nl' => 'Woonwensen',
@@ -172,6 +197,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'woonstatus',
                 'short' => 'residential-status',
+                'scan_id' => $quickScan->id,
                 'name' => [
                     'en' => 'Residential status',
                     'nl' => 'Woningstatus',
@@ -185,6 +211,7 @@ class StepsTableSeeder extends Seeder
             $insertStepData = [
                 'slug' => $step['slug'],
                 'short' => $step['short'],
+                'scan_id' => $step['scan_id'] ?? null,
                 'name' => json_encode($step['name']),
                 'order' => $step['order'],
             ];

@@ -20,6 +20,7 @@ app.js.LICENSE.txt
 resources/lang/*/uuid.php
 
 storage/app/downloads
+storage/api-docs/
 
 # IntelliJ project files
 *.iml

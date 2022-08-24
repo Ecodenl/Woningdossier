@@ -49,11 +49,11 @@
 {{--                        </h2>--}}
 {{--                    @endif--}}
                     <ul class="nav-tabs mt-5 hidden" x-ref="nav-tabs">
-                        @if(isset($currentStep))
+                        @if(isset($step))
                             @php
                                 $subStepsForStep = $currentStep->children;
                             @endphp
-                            @if($subStepsForStep->isEmpty())
+                            @if($subStepsForStep->isEmpty() && $currentStep->short !== 'heating')
                                 <li class="active @if($building->hasCompleted($currentStep, $masterInputSource)) completed @endif">
                                     <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">
                                         {{$currentStep->name}}
@@ -98,11 +98,13 @@
 
                         <div class="w-full divide-y divide-blue-500 divide-opacity-50" id="main-tab" x-ref="main-tab"
                              x-show="currentTab === $el">
-                            <div class="px-4 py-8">
+                            <div class="px-4 py-8 flex justify-between">
                                 <h3 class="heading-3 inline-block">
                                     @yield('step_title', $currentSubStep->name ?? $currentStep->name ?? '')
                                 </h3>
-
+                                @if($currentStep->isDynamic())
+                                    @livewire('cooperation.frontend.tool.expert-scan.buttons')
+                                @else
                                 @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']) && !\App\helpers\HoomdossierSession::isUserObserving())
                                     <button class="float-right btn btn-purple submit-main-form">
                                         @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
@@ -120,6 +122,7 @@
                                             {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
                                         </button>
                                     </form>
+                                @endif
                                 @endif
                             </div>
 

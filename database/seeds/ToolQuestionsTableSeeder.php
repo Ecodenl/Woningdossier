@@ -11,13 +11,9 @@ use App\Models\InputSource;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
-use App\Models\SubStep;
-use App\Models\SubStepTemplate;
 use App\Models\ToolQuestion;
-use App\Models\ToolQuestionType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 class ToolQuestionsTableSeeder extends Seeder
@@ -65,17 +61,6 @@ class ToolQuestionsTableSeeder extends Seeder
         $roofTypes = RoofType::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
 
-        // Tool question types
-        $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
-        $radioIconType = ToolQuestionType::findByShort('radio-icon');
-        $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
-        $radioType = ToolQuestionType::findByShort('radio');
-        $textType = ToolQuestionType::findByShort('text');
-        $sliderType = ToolQuestionType::findByShort('slider');
-        $textareaType = ToolQuestionType::findByShort('textarea');
-        $textareaPopupType = ToolQuestionType::findByShort('textarea-popup');
-        $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
-
         // Input sources
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
@@ -92,7 +77,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.building_type_category_id',
                 'short' => 'building-type-category',
                 'translation' => 'Wat voor soort woning heeft u?',
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_values' => BuildingTypeCategory::all(),
                 'extra' => [
                     'column' => 'short',
@@ -120,7 +104,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.building_type_id',
                 'short' => 'building-type',
                 'translation' => "Wat voor soort :name heeft u",
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_values' => $buildingTypes,
                 'extra' => [
                     'column' => 'calculate_value',
@@ -163,7 +146,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.roof_type_id',
                 'short' => 'roof-type',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.roof-type',
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_values' => $roofTypes,
                 'extra' => [
                     'column' => 'short',
@@ -200,7 +182,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.build_year',
                 'short' => 'build-year',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year',
-                'tool_question_type_id' => $textType->id,
                 'options' => ['min' => 1000, 'max' => date('Y'), 'value' => 1930, 'step' => 1],
             ],
             [
@@ -208,7 +189,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.building_layers',
                 'short' => 'building-layers',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-layers',
-                'tool_question_type_id' => $sliderType->id,
                 'options' => ['min' => 1, 'max' => 6, 'value' => 3, 'step' => 1],
             ],
             [
@@ -216,14 +196,12 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'specific-example-building',
                 'save_in' => 'building_features.example_building_id',
                 'translation' => 'Welke woning lijkt het meest op jouw woning?',
-                'tool_question_type_id' => $radioType->id,
             ],
             [
                 'validation' => ['numeric', 'in:1,2,0'],
                 'save_in' => 'building_features.monument',
                 'short' => 'monument',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument',
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_custom_values' => [
                     1 => [
                         'name' => __('woningdossier.cooperation.radiobutton.yes'),
@@ -244,7 +222,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.energy_label_id',
                 'short' => 'energy-label',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.energy-label',
-                'tool_question_type_id' => $radioIconSmallType->id,
                 'tool_question_values' => $energyLabels,
                 'extra' => [
                     'column' => 'name',
@@ -281,7 +258,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.surface',
                 'short' => 'surface',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
-                'tool_question_type_id' => $textType->id,
             ],
             [
                 'validation' => ['nullable', 'string'],
@@ -289,7 +265,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'building-data-comment-resident',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
-                'tool_question_type_id' => $textareaPopupType->id
             ],
             [
                 'validation' => ['nullable', 'string'],
@@ -297,14 +272,12 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'building-data-comment-coach',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
-                'tool_question_type_id' => $textareaPopupType->id
             ],
             [
                 'validation' => ['required'],
                 'save_in' => 'user_energy_habits.resident_count',
                 'short' => 'resident-count',
                 'translation' => 'Hoeveel mensen wonen er in de woning?',
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_custom_values' => [
                     1 => [
                         'name' => 'Alleen',
@@ -361,7 +334,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'user_energy_habits.thermostat_high',
                 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
                 'short' => 'thermostat-high',
-                'tool_question_type_id' => $sliderType->id,
                 'options' => ['min' => 10, 'max' => 30, 'value' => 20, 'step' => 1],
                 'unit_of_measure' => '°',
             ],
@@ -370,7 +342,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'user_energy_habits.thermostat_low',
                 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
                 'short' => 'thermostat-low',
-                'tool_question_type_id' => $sliderType->id,
                 'options' => ['min' => 10, 'max' => 30, 'value' => 16, 'step' => 1],
                 'unit_of_measure' => '°',
             ],
@@ -380,7 +351,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'user_energy_habits.hours_high',
                 'short' => 'hours-high',
                 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.hours-high',
-                'tool_question_type_id' => $sliderType->id,
                 'options' => ['min' => 0, 'max' => 24, 'value' => 12, 'step' => 1],
             ],
             [
@@ -389,7 +359,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'heating-first-floor',
                 // was cooperation/tool/general-data/usage.index.heating-habits.heating-first-floor
                 'translation' => 'Wat is de situatie op de eerste verdieping?',
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_values' => $heatings,
                 'extra' => [
                     'column' => 'calculate_value',
@@ -407,7 +376,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'heating-second-floor',
                 // was cooperation/tool/general-data/usage.index.heating-habits.heating-second-floor
                 'translation' => 'Wat is de situatie op de tweede verdieping?',
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_values' => $heatings,
                 'extra' => [
                     'column' => 'calculate_value',
@@ -425,14 +393,12 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'water-comfort',
                 // was __('cooperation/tool/general-data/usage.index.water-gas.water-comfort.title'),
                 'translation' => 'Wat is het comfortniveau voor het gebruik van warm tapwater?',
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_values' => $comfortLevelsTapWater,
             ],
             [
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'cook-type',
                 'translation' => "Hoe wordt er gekookt?",
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_custom_values' => [
                     'gas' => [
                         'name' => 'Gas',
@@ -459,7 +425,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'user_energy_habits.amount_gas',
                 'short' => 'amount-gas',
                 'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.gas-usage',
-                'tool_question_type_id' => $textType->id,
                 'unit_of_measure' => __('general.unit.cubic-meters.title'),
             ],
             [
@@ -467,7 +432,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'user_energy_habits.amount_electricity',
                 'short' => 'amount-electricity',
                 'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity',
-                'tool_question_type_id' => $textType->id,
                 'unit_of_measure' => 'kWh'
             ],
             [
@@ -476,7 +440,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'usage-quick-scan-comment-resident',
                 'translation' => 'cooperation/tool/general-data/usage.index.comment',
-                'tool_question_type_id' => $textareaPopupType->id
             ],
             [
                 'validation' => ['nullable', 'string'],
@@ -484,14 +447,12 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'usage-quick-scan-comment-coach',
                 'translation' => 'cooperation/tool/general-data/usage.index.comment',
-                'tool_question_type_id' => $textareaPopupType->id
             ],
             [
                 // note: new question
                 'short' => 'remaining-living-years',
                 'validation' => ['required', 'numeric', 'min:1', 'max:10'],
                 'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen?',
-                'tool_question_type_id' => $sliderType->id,
                 'options' => [
                     'min' => 1, 'max' => 10,
                     'max_label' => 'cooperation/frontend/tool.form.questions.values.more-than',
@@ -502,7 +463,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'in:1,2,3,4,5'],
                 'short' => 'comfort-priority',
                 'translation' => "Welke zaken vindt u belangrijk?",
-                'tool_question_type_id' => $measurePriorityType->id,
                 'options' => [
                     [
                         'name' => 'Comfort',
@@ -554,7 +514,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'living-requirements-comment-resident',
                 'translation' => 'cooperation/tool/general-data/interest.index.comment',
-                'tool_question_type_id' => $textareaPopupType->id
             ],
             [
                 'validation' => ['nullable', 'string'],
@@ -562,14 +521,12 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'living-requirements-comment-coach',
                 'translation' => 'cooperation/tool/general-data/interest.index.comment',
-                'tool_question_type_id' => $textareaPopupType->id
             ],
             [
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_elements.{$wallInsulation->id}.element_value_id",
                 'short' => 'current-wall-insulation',
                 'translation' => "Wat is de staat van de muurisolatie?",
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_values' => $wallInsulation->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'calculate_value',
@@ -597,7 +554,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_elements.{$floorInsulation->id}.element_value_id",
                 'short' => 'current-floor-insulation',
                 'translation' => "Wat is de staat van de vloerisolatie?",
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_values' => $floorInsulation->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'calculate_value',
@@ -628,7 +584,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_elements.{$roofInsulation->id}.element_value_id",
                 'short' => 'current-roof-insulation',
                 'translation' => "Wat is de staat van de dakisolatie?",
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_values' => $roofInsulation->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'calculate_value',
@@ -659,7 +614,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
                 'short' => 'current-living-rooms-windows',
                 'translation' => "Welke glassoort heeft u in de leefruimtes?",
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'order',
@@ -684,7 +638,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
                 'short' => 'current-sleeping-rooms-windows',
                 'translation' => "Welke glassoort heeft u in de slaapruimtes?",
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'order',
@@ -708,7 +661,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source',
                 'translation' => "Wat gebruikt u voor de verwarming",
-                'tool_question_type_id' => $checkboxIconType->id,
                 'options' => ['value' => ['hr-boiler'],],
                 'tool_question_custom_values' => [
                     'hr-boiler' => [
@@ -748,7 +700,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source-warm-tap-water',
                 'translation' => "Wat word er gebruikt voor warm tapwater",
-                'tool_question_type_id' => $checkboxIconType->id,
                 'options' => ['value' => ['hr-boiler'],],
                 'tool_question_custom_values' => [
                     'hr-boiler' => [
@@ -794,7 +745,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_services.{$heater->id}.service_value_id",
                 'short' => 'heater-type',
                 'translation' => "Heeft u een zonneboiler?",
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_values' => $heater->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'calculate_value',
@@ -819,7 +769,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_services.{$boiler->id}.service_value_id",
                 'short' => 'boiler-type',
                 'translation' => "Wat voor gasketel heeft u?",
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_values' => $boiler->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'calculate_value',
@@ -842,14 +791,12 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_services.{$boiler->id}.extra.date",
                 'short' => 'boiler-placed-date',
                 'translation' => "Wanneer is de gasketel geplaatst?",
-                'tool_question_type_id' => $textType->id,
             ],
             [
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'heat-pump-type',
                 'translation' => "Heeft u een warmtepomp?",
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'calculate_value',
@@ -873,13 +820,11 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'heat-pump-placed-date',
                 'placeholder' => 'Voer een jaartal in',
                 'translation' => "Wanneer is de warmtepomp geplaatst?",
-                'tool_question_type_id' => $textType->id,
             ],
             [
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'building-heating-application',
                 'translation' => "Hoe is de verwarming?",
-                'tool_question_type_id' => $checkboxIconType->id,
                 'tool_question_custom_values' => [
                     'radiators' => [
                         'name' => 'Radiator',
@@ -923,7 +868,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'fifty-degree-test',
                 'translation' => "Is de 50 gradentest geslaagd?",
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_custom_values' => [
                     'yes' => [
                         'name' => 'Ja',
@@ -939,7 +883,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'ventilation-type',
                 // was current-state -> hoe word het huis geventileerd
                 'translation' => "Hoe wordt uw woning nu geventileerd?",
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_values' => $ventilation->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'calculate_value',
@@ -957,7 +900,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'ventilation-demand-driven',
                 // was current-state -> Vraaggestuurde regeling
                 'translation' => "Heeft u vraaggestuurde regeling?",
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_custom_values' => [
                     true => [
                         'name' => __('woningdossier.cooperation.radiobutton.yes'),
@@ -984,7 +926,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'ventilation-heat-recovery',
                 // was current-state -> Met warmte terugwinning
                 'translation' => "Heeft u warmte terugwinning?",
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_custom_values' => [
                     true => [
                         'name' => __('woningdossier.cooperation.radiobutton.yes'),
@@ -1016,7 +957,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'crack-sealing-type',
                 // was current-state -> zijn de ramen en deuren voorzien van kierdichting
                 'translation' => "Heeft u kierdichting?",
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_values' => $crackSealing->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'calculate_value',
@@ -1032,7 +972,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'has-solar-panels',
                 'translation' => "Heeft u zonnepanelen?",
-                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_custom_values' => [
                     'yes' => [
                         'name' => 'Ja',
@@ -1054,7 +993,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'solar-panel-count',
                 // was current-state -> hoeveel zonnepanelen zijn er aanwezig
                 'translation' => "Hoeveel zonnepanelen zijn er aanwezig?",
-                'tool_question_type_id' => $textType->id,
                 'conditions' => [
                     [
                         [
@@ -1072,7 +1010,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 // was current-state -> Geinstalleerd vermogen (totaal)
                 'translation' => "Wat is het totale vermogen van de geplaatste panelen?",
                 'unit_of_measure' => 'WP',
-                'tool_question_type_id' => $textType->id,
                 'conditions' => [
                     [
                         [
@@ -1095,7 +1032,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 // was current-state -> Geinstalleerd vermogen (totaal)
                 'translation' => "Wanneer zijn de zonnepanelen geplaatst?",
                 'placeholder' => 'Voer een jaartal in',
-                'tool_question_type_id' => $textType->id,
                 'conditions' => [
                     [
                         [
@@ -1110,7 +1046,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'interested-in-heat-pump',
                 'translation' => "Heb je interesse in een warmtepomp",
-                'tool_question_type_id' => $radioType->id,
                 'tool_question_custom_values' => [
                     'no' => [
                         'name' => 'Nee',
@@ -1132,7 +1067,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'residential-status-element-comment-resident',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
-                'tool_question_type_id' => $textareaPopupType->id,
             ],
             [
                 'validation' => ['nullable', 'string'],
@@ -1140,7 +1074,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-element-comment-coach',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
-                'tool_question_type_id' => $textareaPopupType->id,
             ],
             [
                 'validation' => ['nullable', 'string'],
@@ -1148,7 +1081,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'residential-status-service-comment-resident',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
-                'tool_question_type_id' => $textareaPopupType->id,
             ],
             [
                 'validation' => ['nullable', 'string'],
@@ -1156,7 +1088,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-service-comment-coach',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
-                'tool_question_type_id' => $textareaPopupType->id,
             ],
         ];
 

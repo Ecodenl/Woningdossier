@@ -13,9 +13,11 @@ class AddSizeColumnToSubStepToolQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('sub_step_tool_questions', function (Blueprint $table) {
-            $table->string('size')->nullable()->default(null);
-        });
+        if (! Schema::hasColumn('sub_step_tool_questions', 'size')) {
+            Schema::table('sub_step_tool_questions', function (Blueprint $table) {
+                $table->string('size')->nullable()->default(null)->after('tool_question_type_id');
+            });
+        }
     }
 
     /**
@@ -25,8 +27,10 @@ class AddSizeColumnToSubStepToolQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('sub_step_tool_questions', function (Blueprint $table) {
-            $table->dropColumn('size');
-        });
+        if (Schema::hasColumn('sub_step_tool_questions', 'size')) {
+            Schema::table('sub_step_tool_questions', function (Blueprint $table) {
+                $table->dropColumn('size');
+            });
+        }
     }
 }

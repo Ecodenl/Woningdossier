@@ -1,22 +1,12 @@
 <?php
 
 use App\Helpers\Conditions\Clause;
-use App\Models\BuildingHeating;
-use App\Models\BuildingType;
-use App\Models\BuildingTypeCategory;
-use App\Models\ComfortLevelTapWater;
-use App\Models\Element;
-use App\Models\EnergyLabel;
-use App\Models\InputSource;
-use App\Models\RoofType;
-use App\Models\Service;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubStepTemplate;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionType;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
@@ -37,6 +27,16 @@ class SubStepsTableSeeder extends Seeder
         $templateSummary = SubStepTemplate::findByShort('template-summary');
         $templateSpecificExampleBuilding = SubStepTemplate::findByShort('specific-example-building');
 
+        // Tool question types
+        $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
+        $radioIconType = ToolQuestionType::findByShort('radio-icon');
+        $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
+        $radioType = ToolQuestionType::findByShort('radio');
+        $textType = ToolQuestionType::findByShort('text');
+        $sliderType = ToolQuestionType::findByShort('slider');
+        $textareaType = ToolQuestionType::findByShort('textarea');
+        $textareaPopupType = ToolQuestionType::findByShort('textarea-popup');
+        $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
 
         $this->saveStructure([
             'building-data' => [
@@ -46,7 +46,9 @@ class SubStepsTableSeeder extends Seeder
                     // question data
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'building-type-category' => [],
+                        'building-type-category' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
                     ]
                 ],
                 'Wat voor woning' => [
@@ -62,22 +64,30 @@ class SubStepsTableSeeder extends Seeder
                     // question data
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'building-type' => [],
+                        'building-type' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
                     ]
                 ],
                 'Wat voor dak' => [
                     'order' => 4,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'roof-type' => [],
+                        'roof-type' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
                     ]
                 ],
                 'Bouwjaar en oppervlak' => [
                     'order' => 2,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'build-year' => [],
-                        'building-layers' => [],
+                        'build-year' => [
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        'building-layers' => [
+                            'tool_question_type_id' => $sliderType->id,
+                        ],
                     ]
                 ],
                 'Specifieke voorbeeld woning' => [
@@ -92,30 +102,42 @@ class SubStepsTableSeeder extends Seeder
                     ],
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'specific-example-building' => [],
+                        'specific-example-building' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
                     ],
                 ],
                 'Monument en energielabel' => [
                     'order' => 5,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'monument' => [],
-                        'energy-label' => [],
+                        'monument' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
+                        'energy-label' => [
+                            'tool_question_type_id' => $radioIconSmallType->id,
+                        ],
                     ]
                 ],
                 'Gebruikersoppervlak en bijzonderheden' => [
                     'order' => 6,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'surface' => [],
+                        'surface' => [
+                            'tool_question_type_id' => $textType->id,
+                        ],
                     ],
                 ],
                 'Samenvatting woninggegevens' => [
                     'order' => 7,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
-                        'building-data-comment-resident' => [],
-                        'building-data-comment-coach' => [],
+                        'building-data-comment-resident' => [
+                            'tool_question_type_id' => $textareaPopupType->id
+                        ],
+                        'building-data-comment-coach' => [
+                            'tool_question_type_id' => $textareaPopupType->id
+                        ],
                     ],
                 ],
             ],
@@ -124,42 +146,66 @@ class SubStepsTableSeeder extends Seeder
                     'order' => 0,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'resident-count' => [],
+                        'resident-count' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
                     ]
                 ],
                 'Thermostaat gebruik' => [
                     'order' => 1,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'thermostat-high' => [],
-                        'thermostat-low' => [],
-                        'hours-high' => [],
+                        'thermostat-high' => [
+                            'tool_question_type_id' => $sliderType->id,
+                        ],
+                        'thermostat-low' => [
+                            'tool_question_type_id' => $sliderType->id,
+                        ],
+                        'hours-high' => [
+                            'tool_question_type_id' => $sliderType->id,
+                        ],
                     ],
                 ],
                 'Gebruik warm tapwater' => [
                     'order' => 2,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'heating-first-floor' => [],
-                        'heating-second-floor' => [],
-                        'water-comfort' => [],
+                        'heating-first-floor' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
+                        'heating-second-floor' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
+                        'water-comfort' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
                     ]
                 ],
                 'Gas en elektra gebruik' => [
                     'order' => 3,
                     'sub_step_template_id' => $template2rows1top2bottom->id,
                     'questions' => [
-                        'cook-type' => [],
-                        'amount-gas' => [],
-                        'amount-electricity' => [],
+                        'cook-type' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
+                        'amount-gas' => [
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        'amount-electricity' => [
+                            'tool_question_type_id' => $textType->id,
+                        ],
                     ]
                 ],
                 'Samenvatting bewoners-gebruik' => [
                     'order' => 4,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
-                        'usage-quick-scan-comment-resident' => [],
-                        'usage-quick-scan-comment-coach' => [],
+                        'usage-quick-scan-comment-resident' => [
+                            'tool_question_type_id' => $textareaPopupType->id
+                        ],
+                        'usage-quick-scan-comment-coach' => [
+                            'tool_question_type_id' => $textareaPopupType->id
+                        ],
                     ],
                 ],
             ],
@@ -168,14 +214,18 @@ class SubStepsTableSeeder extends Seeder
                     'order' => 0,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'remaining-living-years' => [],
+                        'remaining-living-years' => [
+                            'tool_question_type_id' => $sliderType->id,
+                        ],
                     ],
                 ],
                 'Welke zaken vindt u belangrijk?' => [
                     'order' => 1,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'comfort-priority' => [],
+                        'comfort-priority' => [
+                            'tool_question_type_id' => $measurePriorityType->id,
+                        ],
                     ],
                 ],
                 'Welke zaken vervangen' => [
@@ -187,8 +237,12 @@ class SubStepsTableSeeder extends Seeder
                     'order' => 3,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
-                        'living-requirements-comment-resident' => [],
-                        'living-requirements-comment-coach' => [],
+                        'living-requirements-comment-resident' => [
+                            'tool_question_type_id' => $textareaPopupType->id
+                        ],
+                        'living-requirements-comment-coach' => [
+                            'tool_question_type_id' => $textareaPopupType->id
+                        ],
                     ],
                 ],
             ],
@@ -197,50 +251,66 @@ class SubStepsTableSeeder extends Seeder
                     'order' => 0,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'current-wall-insulation' => [],
+                        'current-wall-insulation' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
                     ]
                 ],
                 'Vloerisolatie' => [
                     'order' => 1,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'current-floor-insulation' => [],
+                        'current-floor-insulation' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
                     ],
                 ],
                 'Dakisolatie' => [
                     'order' => 2,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'current-roof-insulation' => [],
+                        'current-roof-insulation' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
                     ],
                 ],
                 'Glasisolatie eerste woonlaag' => [
                     'order' => 3,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'current-living-rooms-windows' => [],
+                        'current-living-rooms-windows' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
                     ]
                 ],
                 'Glasisolatie tweede woonlaag' => [
                     'order' => 4,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'current-sleeping-rooms-windows' => [],
+                        'current-sleeping-rooms-windows' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
                     ],
                 ],
                 'Verwarming' => [
                     'order' => 5,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'heat-source' => [],
-                        'heat-source-warm-tap-water' => [],
+                        'heat-source' => [
+                            'tool_question_type_id' => $checkboxIconType->id,
+                        ],
+                        'heat-source-warm-tap-water' => [
+                            'tool_question_type_id' => $checkboxIconType->id,
+                        ],
                     ],
                 ],
                 'Zonnenboiler' => [
                     'order' => 6,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'heater-type' => [],
+                        'heater-type' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
                     ]
                 ],
                 'Gasketel vragen' => [
@@ -256,11 +326,14 @@ class SubStepsTableSeeder extends Seeder
                         ],
                     ],
                     'questions' => [
-                        'boiler-type' => [],
-                        'boiler-placed-date' => [],
+                        'boiler-type' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
+                        'boiler-placed-date' => [
+                            'tool_question_type_id' => $textType->id,
+                        ],
                     ]
                 ],
-
                 'Warmtepomp' => [
                     'order' => 8,
                     'sub_step_template_id' => $templateDefault->id,
@@ -274,16 +347,21 @@ class SubStepsTableSeeder extends Seeder
                         ],
                     ],
                     'questions' => [
-                        'heat-pump-type' => [],
-                        'heat-pump-placed-date' => [],
+                        'heat-pump-type' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
+                        'heat-pump-placed-date' => [
+                            'tool_question_type_id' => $textType->id,
+                        ],
                     ]
                 ],
-
                 'Hoe is de verwarming' => [
                     'order' => 9,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'building-heating-application' => [],
+                        'building-heating-application' => [
+                            'tool_question_type_id' => $checkboxIconType->id,
+                        ],
                     ]
                 ],
                 '50 graden test' => [
@@ -299,43 +377,60 @@ class SubStepsTableSeeder extends Seeder
                         ],
                     ],
                     'questions' => [
-                        'fifty-degree-test' => [],
+                        'fifty-degree-test' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
                     ]
                 ],
-
                 'Ventilatie' => [
                     'order' => 11,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'ventilation-type' => [],
-                        'ventilation-demand-driven' => [],
-                        'ventilation-heat-recovery' => [],
+                        'ventilation-type' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
+                        'ventilation-demand-driven' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
+                        'ventilation-heat-recovery' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
                     ]
                 ],
                 'Kierdichting' => [
                     'order' => 12,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'crack-sealing-type' => [],
+                        'crack-sealing-type' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
                     ]
                 ],
-
                 'Zonnepanelen' => [
                     'order' => 13,
                     'sub_step_template_id' => $template2rows3top1bottom->id,
                     'questions' => [
-                        'has-solar-panels' => [],
-                        'solar-panel-count' => [],
-                        'total-installed-power' => [],
-                        'solar-panels-placed-date' => [],
+                        'has-solar-panels' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                        ],
+                        'solar-panel-count' => [
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        'total-installed-power' => [
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        'solar-panels-placed-date' => [
+                            'tool_question_type_id' => $textType->id,
+                        ],
                     ]
                 ],
-
                 'Warmtepomp interesse' => [
                     'order' => 14,
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
-                        'interested-in-heat-pump' => [],
+                        'interested-in-heat-pump' => [
+                            'tool_question_type_id' => $radioType->id,
+                        ],
                     ],
                 ],
                 'Samenvatting woningstatus' => [
@@ -343,43 +438,68 @@ class SubStepsTableSeeder extends Seeder
                     'order' => 15,
                     'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
-
-                        'residential-status-element-comment-resident' => [],
-
-                        'residential-status-element-comment-coach' => [],
-
-                        'residential-status-service-comment-resident' => [],
-
-                        'residential-status-service-comment-coach' => [],
-
+                        'residential-status-element-comment-resident' => [
+                            'tool_question_type_id' => $textareaPopupType->id,
+                        ],
+                        'residential-status-element-comment-coach' => [
+                            'tool_question_type_id' => $textareaPopupType->id,
+                        ],
+                        'residential-status-service-comment-resident' => [
+                            'tool_question_type_id' => $textareaPopupType->id,
+                        ],
+                        'residential-status-service-comment-coach' => [
+                            'tool_question_type_id' => $textareaPopupType->id,
+                        ],
                     ],
                 ],
             ],
         ]);
 
+        // TODO: Remove when testing finished
         $this->saveStructure([
             'heating' => [
                 'huidige situatie' => [
                     'order' => 0,
                     'questions' => [
-                        'resident-count' => ['size' => 'w-1/2'],
-                        'water-comfort' => ['size' => 'w-1/2'],
+                        'resident-count' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-1/2'
+                        ],
+                        'water-comfort' => [
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-1/2'
+                        ],
                     ],
                 ],
                 'nieuwe situatie' => [
                     'order' => 0,
                     'questions' => [
-                        'amount-electricity' => ['size' => 'w-1/2'],
+                        'amount-electricity' => [
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2'
+                        ],
                     ],
                 ],
                 'Zonnepanelen' => [
                     'order' => 13,
                     'sub_step_template_id' => $template2rows3top1bottom->id,
                     'questions' => [
-                        'has-solar-panels' => ['size' => 'w-1/2'],
-                        'solar-panel-count' => ['size' => 'w-1/2'],
-                        'total-installed-power' => ['size' => 'w-1/2'],
-                        'solar-panels-placed-date' => ['size' => 'w-1/2'],
+                        'has-solar-panels' => [
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-1/2'
+                        ],
+                        'solar-panel-count' => [
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2'
+                        ],
+                        'total-installed-power' => [
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2'
+                        ],
+                        'solar-panels-placed-date' => [
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2'
+                        ],
                     ]
                 ],
 

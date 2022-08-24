@@ -1,7 +1,7 @@
 # Decisions
 #### This file will contain important decisions being made throughout the development of Hoomdossier. This will mainly contain decisions made by Hoom itself. 
 
-##Duplicating user data for input source
+## Duplicating user data for input source
 This is a feature which "allows" the user to copy data from a opposing input source to its own.
 It will be checked in the DuplicateDataForUser middleware.
 
@@ -34,12 +34,6 @@ a 'from' if a 'to' isn't set. Therefore, if the value is higher than 0, it will 
 It will only be saved to the 'from' option if the value is less than or equal to 0.
 The only exception is, of course, if both 'from' and 'to' are set. Then, it's a valid
 range and 'from' should contain the smallest value.
-
-#### Master input source 
-The mapping for `user_action_plan_advices` also includes mapping to the master input source.
-The logic is simple: We check if there are coach rows. If so, we take those. Else we take
-the resident. This is because the `user_action_plan_advices` are too complex to map
-via the `AddMasterInputSource` command.
 
 #### Number formatting
 It was decided that numbers should always be formatted as "1,0" within the Quickscan,

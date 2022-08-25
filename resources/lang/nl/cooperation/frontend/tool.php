@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\InputSource;
+
 return [
     'step-count' => 'Stap :current van :total',
     'no-answer-given' => 'Geen antwoord ingevuld',
@@ -62,8 +64,8 @@ return [
             'savings' => 'Besparing per jaar',
         ],
         'comments' => [
-            'resident' => 'Opmerkingen bewoner',
-            'coach' => 'Opmerkingen coach',
+            InputSource::RESIDENT_SHORT => 'Opmerkingen bewoner',
+            InputSource::COACH_SHORT => 'Opmerkingen coach',
         ],
         'file-is-processing' => 'Rapportage wordt gemaakt..',
         'download-report' => 'Download bestaande rapportage',

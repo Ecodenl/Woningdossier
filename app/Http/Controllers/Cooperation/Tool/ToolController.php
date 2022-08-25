@@ -42,12 +42,7 @@ class ToolController extends Controller
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
-        $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
-        $url = $nextStep['url'];
-
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#' . $nextStep['tab_id'];
-        }
+        $url = StepHelper::getNextExpertStep($this->step);
 
         return redirect($url);
     }

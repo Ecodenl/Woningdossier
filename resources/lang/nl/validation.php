@@ -243,56 +243,57 @@ return [
         'measure_applications.configurations.icon' => 'Icoon',
 
         // general data
-        'building_features.building_layers' => __('cooperation/tool/general-data/building-characteristics.index.building-layers.title'),
-        'building_features.surface' => __('cooperation/tool/general-data/building-characteristics.index.surface.title'),
-        'building_features.build_year' => __('cooperation/tool/general-data/building-characteristics.index.build-year.title'),
-        'build_year' => __('cooperation/tool/general-data/building-characteristics.index.build-year.title'),
-        'user_energy_habits.resident_count' => __('cooperation/tool/general-data/usage.index.water-gas.resident-count.title'),
-        'user_energy_habits.thermostat_high' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-high.title'),
-        'user_energy_habits.thermostat_low' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-low.title'),
-        'user_energy_habits.amount_electricity' => __('cooperation/tool/general-data/usage.index.energy-usage.amount-electricity.title'),
-        'user_energy_habits.amount_gas' => __('cooperation/tool/general-data/usage.index.energy-usage.gas-usage.title'),
+        // TODO: Check if these are still relevant
+        'building_features.building_layers' => 'hoeveel bouwlagen heeft het huis?',
+        'building_features.surface' => 'wat is de gebruiksoppervlakte van de woning?',
+        'building_features.build_year' => 'wat is het bouwjaar?',
+        'build_year' => 'wat is het bouwjaar?',
+        'user_energy_habits.resident_count' => 'Wat is het aantal bewoners?',
+        'user_energy_habits.thermostat_high' => 'op welke temperatuur staat de thermostaat op de hoge stand?',
+        'user_energy_habits.thermostat_low' => 'op welke temperatuur staat de thermostaat op lage stand?',
+        'user_energy_habits.amount_electricity' => 'wat is het elektragebruik van het afgelopen jaar?',
+        'user_energy_habits.amount_gas' => 'wat is het gasgebruik van afgelopen jaar?',
 
-        'building_services.boiler.extra' => __('high-efficiency-boiler.boiler-placed-date.title'),
+        'building_services.boiler.extra' => 'wanneer is de huidige CV ketel geplaatst?',
         'service.6.extra.year' => 'jaartal',
 
-        'services.total-sun-panels.extra.year' => __('cooperation/tool/general-data/current-state.index.service.total-sun-panels.year.title'),
-        'services.total-sun-panels.extra.value' => __('cooperation/tool/general-data/current-state.index.service.total-sun-panels.title'),
-        'building_pv_panels.total_installed_power' => __('cooperation/tool/general-data/current-state.index.installed-power.title'),
+        'services.total-sun-panels.extra.year' => 'indien aanwezig, wanneer geplaatst',
+        'services.total-sun-panels.extra.value' => 'hoeveel zonnepanelen zijn er aanwezig?',
+        'building_pv_panels.total_installed_power' => 'geinstalleerd vermogen (totaal)',
 
         'building_features.window_surface' => 'totale raamopperlake van de woning',
 
         // ventilation
-        'building_ventilations.how' => __('cooperation/tool/ventilation.index.how.title'),
+        'building_ventilations.how' => 'hoe wordt de woning nu geventileerd?',
 
         // roof insulation
-        'building_roof_types.pitched.roof_surface' => __('roof-insulation.current-situation.pitched-roof-surface.title'),
-        'building_roof_types.pitched.insulation_roof_surface' => __('roof-insulation.current-situation.insulation-pitched-roof-surface.title'),
+        'building_roof_types.pitched.roof_surface' => 'dakoppervlak hellend dak',
+        'building_roof_types.pitched.insulation_roof_surface' => 'te isoleren oppervlakte van het hellende dak',
 
-        'building_roof_types.flat.roof_surface' => __('roof-insulation.current-situation.flat-roof-surface.title'),
-        'building_roof_types.flat.insulation_roof_surface' => __('roof-insulation.current-situation.insulation-flat-roof-surface.title'),
+        'building_roof_types.flat.roof_surface' => 'dakoppervlak van platte dak',
+        'building_roof_types.flat.insulation_roof_surface' => 'te isoleren oppervlakte van het platte dak',
 
-        'building_roof_types.pitched.extra.zinc_replaced_date' =>  __('roof-insulation.current-situation.zinc-replaced.title'),
+        'building_roof_types.pitched.extra.zinc_replaced_date' => 'wanneer is het zinkwerk voor het laatst vernieuwd?',
 
-        'building_roof_types.flat.extra.zinc_replaced_date' =>  __('roof-insulation.current-situation.zinc-replaced.title'),
-        'building_roof_types.flat.extra.bitumen_replaced_date' =>  __('roof-insulation.current-situation.bitumen-insulated.title'),
+        'building_roof_types.flat.extra.zinc_replaced_date' => 'wanneer is het zinkwerk voor het laatst vernieuwd?',
+        'building_roof_types.flat.extra.bitumen_replaced_date' => 'wanneer is het bitumen dak voor het laatst vernieuwd?',
 
         // wall insulation
-        'building_features.cavity_wall' => __('wall-insulation.intro.has-cavity-wall.title'),
-        'building_features.facade_plastered_painted' => __('wall-insulation.intro.is-facade-plastered-painted.title'),
-        'building_features.wall_surface' => __('wall-insulation.optional.facade-surface.title'),
-        'building_features.insulation_wall_surface' => __('wall-insulation.optional.insulated-surface.title'),
+        'building_features.cavity_wall' => 'heeft deze woning een spouwmuur?',
+        'building_features.facade_plastered_painted' => 'is de gevel gestuct of geverfd ?',
+        'building_features.wall_surface' => 'geveloppervlakte van de woning',
+        'building_features.insulation_wall_surface' => 'te isoleren oppervlakte',
 
         // glass insulation
-        'building_paintwork_statuses.last_painted_year' => __('insulated-glazing.paint-work.last-paintjob.title'),
+        'building_paintwork_statuses.last_painted_year' => 'wanneer is het schilderwerk voor het laatst gedaan? (jaargetal)',
 
         // floor insulation
-        'building_features.floor_surface' => __('floor-insulation.surface.title'),
-        'building_features.insulation_surface' => __('floor-insulation.insulation-surface.title'),
+        'building_features.floor_surface' => 'vloeroppervlak van de woning',
+        'building_features.insulation_surface' => 'te isoleren oppervlakte',
 
         // solar panels
-        'building_pv_panels.number' => __('solar-panels.number.title'),
-        'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
+        'building_pv_panels.number' => 'hoeveel zonnepanelen moeten er komen?',
+        'building_pv_panels.peak_power' => 'piekvermogen per paneel',
 
         // Cooperation measure applications
         'cooperation_measure_applications.name' => 'Naam',

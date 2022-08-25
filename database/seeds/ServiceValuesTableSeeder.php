@@ -29,52 +29,72 @@ class ServiceValuesTableSeeder extends Seeder
                 'service_values' => [
                     [
                         'value' => [
-                            'nl' => 'Geen',
+                            'nl' => 'Hybride warmtepomp met buitenlucht',
                         ],
                         'order' => 1,
                         'calculate_value' => 1,
                         'configurations' => [
-                            'comfort' => 0,
+                            'comfort' => 2,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Hybride warmtepomp met ventilatielucht',
+                        ],
+                        'order' => 2,
+                        'calculate_value' => 2,
+                        'configurations' => [
+                            'comfort' => 2,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Hybride warmtepomp met pvt panelen',
+                        ],
+                        'order' => 3,
+                        'calculate_value' => 3,
+                        'configurations' => [
+                            'comfort' => 2,
                         ],
                     ],
                     [
                         'value' => [
                             'nl' => 'Volledige warmtepomp buitenlucht',
                         ],
-                        'order' => 2,
-                        'calculate_value' => 2,
-                        'configurations' => [
-                            'comfort' => 3,
-                        ],
-                    ],
-                    [
-                        'value' => [
-                            'nl' => 'Volledige warmtepomp bodem',
-                        ],
-                        'order' => 3,
-                        'calculate_value' => 3,
-                        'configurations' => [
-                            'comfort' => 3,
-                        ],
-                    ],
-                    [
-                        'value' => [
-                            'nl' => 'Hybride warmtepomp',
-                        ],
                         'order' => 4,
                         'calculate_value' => 4,
                         'configurations' => [
-                            'comfort' => 2,
+                            'comfort' => 3,
                         ],
                     ],
                     [
                         'value' => [
-                            'nl' => 'Collectieve warmtepomp',
+                            'nl' => 'Volledige warmtepomp bodemwarmte',
                         ],
                         'order' => 5,
                         'calculate_value' => 5,
                         'configurations' => [
-                            'comfort' => 2,
+                            'comfort' => 3,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Volledige warmtepomp met pvt panelen',
+                        ],
+                        'order' => 6,
+                        'calculate_value' => 6,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
+                    ],
+                    [
+                        'value' => [
+                            'nl' => 'Anders',
+                        ],
+                        'order' => 7,
+                        'calculate_value' => 7,
+                        'configurations' => [
+                            'comfort' => 0,
                         ],
                     ],
                 ],

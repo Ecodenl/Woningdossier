@@ -11,14 +11,12 @@ use App\Models\InputSource;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
-use App\Models\SubStep;
-use App\Models\SubStepTemplate;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 
 class ToolQuestionsTableSeeder extends Seeder
 {
@@ -29,7 +27,8 @@ class ToolQuestionsTableSeeder extends Seeder
      */
     public function run()
     {
-        // NOTE: This also seeds sub steps, tool question custom values and tool question valuables!
+        // Ensure we clear the cache so we don't run into potentially `null` cached shorts.
+        Artisan::call('cache:clear');
 
         // First, we need to fetch all relevant models for the tool questions
 
@@ -707,7 +706,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source',
-                'translation' => "Wat gebruikt u voor de verwarming",
+                'translation' => "Wat wordt er gebruikt voor verwarming",
                 'tool_question_type_id' => $checkboxIconType->id,
                 'options' => ['value' => ['hr-boiler'],],
                 'tool_question_custom_values' => [
@@ -735,6 +734,12 @@ class ToolQuestionsTableSeeder extends Seeder
                             'icon' => 'icon-district-heating',
                         ],
                     ],
+                    'sun-boiler' => [
+                        'name' => 'Zonneboiler',
+                        'extra' => [
+                            'icon' => 'icon-sun-boiler-heating',
+                        ],
+                    ],
                     'none' => [
                         'name' => 'Anders...',
                         'extra' => [
@@ -758,15 +763,21 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ],
                     'kitchen-geyser' => [
-                        'name' => 'Bad/keuken geiser',
+                        'name' => 'Bad/keukengeiser',
                         'extra' => [
-                            'icon' => 'icon-other',
+                            'icon' => 'icon-placeholder',
                         ],
                     ],
                     'electric-boiler' => [
                         'name' => 'Elektrische boiler',
                         'extra' => [
-                            'icon' => 'icon-other',
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'heat-pump-boiler' => [
+                        'name' => 'Warmtepomp boiler',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
                         ],
                     ],
                     'heat-pump' => [
@@ -775,16 +786,22 @@ class ToolQuestionsTableSeeder extends Seeder
                             'icon' => 'icon-heat-pump',
                         ],
                     ],
-                    'heat-pump-boiler' => [
-                        'name' => 'Warmtepompboiler',
+                    'sun-boiler' => [
+                        'name' => 'Zonneboiler',
                         'extra' => [
-                            'icon' => 'icon-other',
+                            'icon' => 'icon-sun-boiler-heating',
                         ],
                     ],
                     'district-heating' => [
                         'name' => 'Stadsverwarming',
                         'extra' => [
                             'icon' => 'icon-district-heating',
+                        ],
+                    ],
+                    'none' => [
+                        'name' => 'Anders...',
+                        'extra' => [
+                            'icon' => 'icon-other',
                         ],
                     ],
                 ],
@@ -833,12 +850,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
-                'validation' => [
-                    'nullable',
-                    'numeric',
-                    'integer',
-                    'between:1970,' . date('Y'),
-                ],
+                'validation' => ['nullable', 'numeric', 'integer', 'between:1970,' . date('Y')],
                 'save_in' => "building_services.{$boiler->id}.extra.date",
                 'short' => 'boiler-placed-date',
                 'translation' => "Wanneer is de gasketel geplaatst?",
@@ -848,7 +860,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'heat-pump-type',
-                'translation' => "Heeft u een warmtepomp?",
+                'translation' => "Wat voor type warmtepomp is er nu?",
                 'tool_question_type_id' => $radioType->id,
                 'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
                 'extra' => [
@@ -863,16 +875,24 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
-                'validation' => [
-                    // required when the heat pump is available
-                    "required_if:building_services.{$heatPump->id}.service_value_id,!=," . $heater->values()->where('calculate_value', 1)->first()->id,
-                    'numeric',
-                    'integer',
-                    'between:1900,' . date('Y')
+                'validation' => ['required', 'string'],
+                'short' => 'heat-pump-other',
+                'translation' => 'Wat voor andere warmtepomp is er nu?',
+                'tool_question_type_id' => $textType->id,
+                'conditions' => [
+                    [
+                        [
+                            'column' => 'heat-pump-type',
+                            'operator' => Clause::EQ,
+                            'value' => $heatPump->values()->where('calculate_value', 7)->first()->id, // Anders
+                        ],
+                    ],
                 ],
+            ],
+            [
+                'validation' => ['nullable', 'numeric', 'integer', 'between:1970,' . date('Y')],
                 'short' => 'heat-pump-placed-date',
-                'placeholder' => 'Voer een jaartal in',
-                'translation' => "Wanneer is de warmtepomp geplaatst?",
+                'translation' => 'Wanneer is de warmtepomp geplaatst?',
                 'tool_question_type_id' => $textType->id,
             ],
             [
@@ -922,7 +942,8 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'fifty-degree-test',
-                'translation' => "Is de 50 gradentest geslaagd?",
+                'translation' => "Heb je de 50 graden test gedaan?",
+                'options' => ['value' => 'no'],
                 'tool_question_type_id' => $radioType->id,
                 'tool_question_custom_values' => [
                     'yes' => [
@@ -930,6 +951,39 @@ class ToolQuestionsTableSeeder extends Seeder
                     ],
                     'no' => [
                         'name' => 'Nee',
+                    ],
+                ],
+            ],
+            [
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'boiler-setting-comfort-heat',
+                'translation' => "Hoe moet de CV ketel ingesteld zijn om het huis comfortabel te kunnen verwarmen?",
+                'options' => ['value' => 'temp-high'],
+                'tool_question_type_id' => $radioIconType->id,
+                'tool_question_custom_values' => [
+                    'temp-high' => [
+                        'name' => 'Op hoge temperatuur',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'temp-50' => [
+                        'name' => 'Op 50 graden',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'temp-low' => [
+                        'name' => 'Op lage temperatuur',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'unsure' => [
+                        'name' => 'Weet ik niet',
+                        'extra' => [
+                            'icon' => 'icon-other',
+                        ],
                     ],
                 ],
             ],
@@ -1109,20 +1163,56 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'interested-in-heat-pump',
-                'translation' => "Heb je interesse in een warmtepomp",
-                'tool_question_type_id' => $radioType->id,
+                'translation' => "Overweeg je om een warmtepomp te nemen?",
+                'options' => ['value' => 'no'],
+                'tool_question_type_id' => $radioIconType->id,
                 'tool_question_custom_values' => [
+                    'yes' => [
+                        'name' => 'yes',
+                        'extra' => [
+                            'icon' => 'icon-heat-pump',
+                        ],
+                    ],
                     'no' => [
                         'name' => 'Nee',
+                        'extra' => [
+                            'icon' => 'icon-heat-pump-none',
+                        ],
                     ],
-                    'yes-hybrid-heat-pump' => [
-                        'name' => 'Ja, hybride warmtepomp',
-                    ],
-                    'yes-full-heat-pump' => [
-                        'name' => 'Ja, volledige warmtepomp',
-                    ],
+                ],
+            ],
+            [
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'interested-in-heat-pump-variant',
+                'translation' => "Weet je al welk soort warmtepomp je zou willen?",
+                'tool_question_type_id' => $radioIconType->id,
+                'tool_question_custom_values' => [
                     'unsure' => [
-                        'name' => 'Weet ik nog niet'
+                        'name' => 'Geef mij advies',
+                        'extra' => [
+                            'icon' => 'icon-other',
+                        ],
+                    ],
+                    'hybrid-heat-pump' => [
+                        'name' => 'Ja, een hybride warmtepomp',
+                        'extra' => [
+                            'icon' => 'icon-heat-pump-hybrid',
+                        ],
+                    ],
+                    'full-heat-pump' => [
+                        'name' => 'Ja, een volledige warmtepomp',
+                        'extra' => [
+                            'icon' => 'icon-heat-pump',
+                        ],
+                    ],
+                ],
+                'conditions' => [
+                    [
+                        [
+                            'column' => 'interested-in-heat-pump',
+                            'operator' => Clause::EQ,
+                            'value' => 'yes',
+                        ],
                     ],
                 ],
             ],

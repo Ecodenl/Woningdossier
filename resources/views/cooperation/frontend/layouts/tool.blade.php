@@ -33,13 +33,6 @@
             @php
                 $masterInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT);
             @endphp
-            {{-- Expert tool has a card-wrapper around the content --}}
-{{--            @if(Auth::check() && ! Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_RESIDENT))--}}
-{{--                <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">--}}
-{{--                    @include('cooperation.tool.includes.top-alerts')--}}
-{{--                    @include('cooperation.tool.parts.progress')--}}
-{{--                </div>--}}
-{{--            @endif--}}
 
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
                 <div class="flex flex-row flex-wrap w-full" x-data="tabs()">
@@ -49,7 +42,7 @@
 {{--                        </h2>--}}
 {{--                    @endif--}}
                     <ul class="nav-tabs mt-5 hidden" x-ref="nav-tabs">
-                        @if(isset($currentStep))
+                        @if(isset($step))
                             @php
                                 $subStepsForStep = $currentStep->children;
                             @endphp
@@ -98,28 +91,22 @@
 
                         <div class="w-full divide-y divide-blue-500 divide-opacity-50" id="main-tab" x-ref="main-tab"
                              x-show="currentTab === $el">
-                            <div class="px-4 py-8">
+                            <div class="px-4 py-8 flex justify-between">
                                 <h3 class="heading-3 inline-block">
                                     @yield('step_title', $currentSubStep->name ?? $currentStep->name ?? '')
                                 </h3>
-
-                                @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']) && !\App\helpers\HoomdossierSession::isUserObserving())
-                                    <button class="float-right btn btn-purple submit-main-form">
-                                        @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
-                                            @lang('default.buttons.next-page')
-                                        @else
-                                            @lang('default.buttons.save')
-                                        @endif
-                                    </button>
-                                @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
-                                    <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}"
-                                          method="post">
-                                        @csrf
-                                        <button style="margin-top: -35px" type="submit"
-                                                class="float-right btn btn-purple pdf-report">
-                                            {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                                @if($currentStep->isDynamic())
+                                    @livewire('cooperation.frontend.tool.expert-scan.buttons')
+                                @else
+                                    @if(! \App\helpers\HoomdossierSession::isUserObserving())
+                                        <button class="float-right btn btn-purple submit-main-form">
+                                            @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
+                                                @lang('default.buttons.next-page')
+                                            @else
+                                                @lang('default.buttons.save')
+                                            @endif
                                         </button>
-                                    </form>
+                                    @endif
                                 @endif
                             </div>
 
@@ -128,7 +115,7 @@
                             </div>
 
                             <div class="px-4 py-8">
-                                @if(!\App\helpers\HoomdossierSession::isUserObserving() && !Request::routeIs('cooperation.tool.my-plan.index'))
+                                @if(! \App\helpers\HoomdossierSession::isUserObserving())
                                     <div class="flex flex-row flex-wrap w-full">
                                         <div class="w-full sm:w-1/2">
                                             <a class="btn btn-green float-left"
@@ -136,19 +123,15 @@
                                                 @lang('default.buttons.cancel')
                                             </a>
                                         </div>
-                                        @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
-                                            <div class="w-full sm:w-1/2">
-                                                <a href="" class="float-right btn btn-purple submit-main-form">
+                                        <div class="w-full sm:w-1/2">
+                                            <button class="float-right btn btn-purple submit-main-form">
+                                                @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
                                                     @lang('default.buttons.next-page')
-                                                </a>
-                                            </div>
-                                        @else
-                                            <div class="w-full sm:w-1/2">
-                                                <button class="float-right btn btn-purple submit-main-form">
+                                                @else
                                                     @lang('default.buttons.save')
-                                                </button>
-                                            </div>
-                                        @endif
+                                                @endif
+                                            </button>
+                                        </div>
                                     </div>
                                 @endif
                             </div>
@@ -283,11 +266,8 @@
         </script>
         <script src="{{ asset('js/are-you-sure.js') }}"></script>
 
-        @if(!in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
-            <script>
-                $("form.form-horizontal").areYouSure();
-            </script>
-        @endif
-
+        <script>
+            $("form.form-horizontal").areYouSure();
+        </script>
     @endpush
 @endif

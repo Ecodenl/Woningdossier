@@ -80,8 +80,9 @@ class SuccessFullLoginListener
         HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
 
         Log::create([
+            'loggable_type' => User::class,
+            'loggable_id' => $user->id,
             'building_id' => $building->id,
-            'user_id' => $user->id,
             'message' => __('woningdossier.log-messages.logged-in', [
                 'full_name' => $user->getFullName(),
             ]),

@@ -60,12 +60,7 @@ class QuestionnaireController extends Controller
             return redirect($request->input('nextUrl'));
         }
 
-        $nextStep = StepHelper::getNextStep($building, $currentInputSource, $questionnaire->step, $questionnaire);
-        $url = $nextStep['url'];
-
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
+        $url = StepHelper::getNextExpertStep($questionnaire->step, $questionnaire);
 
         return redirect($url);
     }

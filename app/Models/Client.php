@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -15,6 +16,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Log[] $logs
+ * @property-read int|null $logs_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PersonalAccessToken[] $tokens
  * @property-read int|null $tokens_count
  * @method static \Illuminate\Database\Eloquent\Builder|Client newModelQuery()
@@ -29,13 +32,20 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class Client extends Authenticatable
 {
-    use HasApiTokens, HasShortTrait;
-
+    use HasApiTokens,
+        HasShortTrait;
 
     protected $fillable = ['name', 'short'];
 
+    # Model methods
     public function tokenCannot(string $ability): bool
     {
-        return !$this->tokenCan($ability);
+        return ! $this->tokenCan($ability);
+    }
+
+    # Relations
+    public function logs(): MorphMany
+    {
+        return $this->morphMany(Log::class, 'loggable');
     }
 }

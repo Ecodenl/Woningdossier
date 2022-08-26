@@ -63,14 +63,14 @@
                 @endcomponent
             @endif
             @if($topRightSecond instanceof \App\Models\ToolQuestion)
-                    @php
-                        $disabled = ! $building->user->account->can('answer', $topRightSecond);
-                    @endphp
-                    @component('cooperation.frontend.layouts.components.form-group', [
-                        'class' => 'form-group-heading w-full',
-                        'label' => $topRightSecond->name,
-                        'inputName' => "filledInAnswers.{$topRightSecond->id}",
-                    ])
+                @php
+                    $disabled = ! $building->user->account->can('answer', $topRightSecond);
+                @endphp
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'class' => 'form-group-heading w-full',
+                    'label' => $topRightSecond->name,
+                    'inputName' => "filledInAnswers.{$topRightSecond->id}",
+                ])
                     @slot('sourceSlot')
                         @include('cooperation.sub-step-templates.parts.source-slot-values', [
                             'values' => $filledInAnswersForAllInputSources[$topRightSecond->id],
@@ -90,9 +90,9 @@
         </div>
     </div>
     @if($bottomLeft instanceof \App\Models\ToolQuestion)
-            @php
-                $disabled = ! $building->user->account->can('answer', $bottomLeft);
-            @endphp
+        @php
+            $disabled = ! $building->user->account->can('answer', $bottomLeft);
+        @endphp
         <div class="w-full pt-5">
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full',

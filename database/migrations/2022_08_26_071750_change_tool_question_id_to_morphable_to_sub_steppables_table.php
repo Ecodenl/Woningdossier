@@ -14,7 +14,7 @@ class ChangeToolQuestionIdToMorphableToSubSteppablesTable extends Migration
     public function up()
     {
         Schema::table('sub_steppables', function (Blueprint $table) {
-            $table->dropForeign(['tool_question_id']);
+            $table->dropForeign('sub_step_tool_questions_tool_question_id_foreign');
             $table->renameColumn('tool_question_id', 'sub_steppable_id');
         });
         // these have to be done separate, otherwise it will index before the renaming. Why you ask ? Because fuck youuu thats why.

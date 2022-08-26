@@ -356,10 +356,8 @@ abstract class Scannable extends Component
         return $validation;
     }
 
-    private function setDirty(bool $dirty)
+    protected function setDirty(bool $dirty)
     {
         $this->dirty = $dirty;
     }
-
-
 }

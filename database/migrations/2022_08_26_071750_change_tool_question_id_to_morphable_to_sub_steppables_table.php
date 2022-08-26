@@ -15,9 +15,12 @@ class ChangeToolQuestionIdToMorphableToSubSteppablesTable extends Migration
     {
         Schema::table('sub_steppables', function (Blueprint $table) {
 
-            $sm = Schema::getConnection()->getDoctrineSchemaManager();
-            $indexesFound = $sm->listTableIndexes('sub_steppables');
-            if (array_key_exists("sub_step_tool_questions_tool_question_id_foreign", $indexesFound)) {
+            $conn = Schema::getConnection()->getDoctrineSchemaManager();
+            $keys = array_map(function ($key) {
+                return $key->getName();
+            }, $conn->listTableForeignKeys('sub_steppables'));
+
+            if (in_array("sub_step_tool_questions_tool_question_id_foreign", $keys)) {
                 $table->dropForeign('sub_step_tool_questions_tool_question_id_foreign');
             }
 

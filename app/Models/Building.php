@@ -245,7 +245,6 @@ class Building extends Model
             } else {
                 $toolQuestionAnswer = $toolQuestionAnswers->first();
                 if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
-                    // TODO: Should we cast the type?
                     $answer = $toolQuestionAnswer->answer;
                     if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
                         $answer = $toolQuestionAnswer->toolQuestionCustomValue->short;

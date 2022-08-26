@@ -55,6 +55,7 @@
                             @endif
                             @foreach($subStepsForStep as $subStep)
                                 <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep, $masterInputSource)) completed @endif">
+                                    {{-- TODO: This is no longer relevant, but can we assume general data will never be loaded? --}}
                                     <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">
                                         {{$subStep->name}}
                                     </a>

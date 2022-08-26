@@ -76,7 +76,7 @@ class StepHelper
      */
     public static function getNextExpertStep(Step $currentStep, Questionnaire $currentQuestionnaire = null): string
     {
-        $url = route("cooperation.tool.{$currentStep->short}.index");
+        $url = route('cooperation.frontend.tool.expert-scan.index', ['step' => $currentStep]);
 
         // try to redirect them to a questionnaire that may exist on the step.
         if ($currentStep->hasActiveQuestionnaires()) {

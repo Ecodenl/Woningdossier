@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
+use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Notification;
@@ -37,8 +38,9 @@ class MyPlanController extends Controller
         }
 
 
-        $notification = Notification::activeNotifications($building,
-            InputSource::findByShort(InputSource::MASTER_SHORT))->first();
+        $notification = Notification::activeNotifications(
+            $building, InputSource::findByShort(InputSource::MASTER_SHORT)
+        )->forType(RecalculateStepForUser::class)->first();
 
         return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'notification'));
     }

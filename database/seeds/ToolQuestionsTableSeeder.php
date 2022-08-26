@@ -65,6 +65,7 @@ class ToolQuestionsTableSeeder extends Seeder
         $buildingTypes = BuildingType::all();
 
         // Tool question types
+        // TODO: Subject to change
         $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
         $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
@@ -74,6 +75,9 @@ class ToolQuestionsTableSeeder extends Seeder
         $textareaType = ToolQuestionType::findByShort('textarea');
         $textareaPopupType = ToolQuestionType::findByShort('textarea-popup');
         $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
+        // TODO: These don't exist yet, but for future reference it's easier to already have them "linked" in the questions
+        $dropdownType = ToolQuestionType::findByShort('radio');
+        $dropdownMultiType = ToolQuestionType::findByShort('checkbox-icon');
 
         // Input sources
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
@@ -86,6 +90,9 @@ class ToolQuestionsTableSeeder extends Seeder
         $stepResidentialStatus = Step::findByShort('residential-status');
 
         $questions = [
+            #-------------------------
+            # Quick-scan only / shared with expert-scan questions
+            #-------------------------
             [
                 'validation' => ['required', 'exists:building_type_categories,id'],
                 'save_in' => 'building_features.building_type_category_id',
@@ -1247,6 +1254,197 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'residential-status-service-comment-coach',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
                 'tool_question_type_id' => $textareaPopupType->id,
+            ],
+            #-------------------------
+            # Dynamic expert scan questions only
+            #-------------------------
+            [
+                // TODO: Check if this is a considerable and how this should be handled
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'heat-type-considerable',
+                'translation' => 'Welke maatregelen wil je meenemen in de berekening?',
+                'tool_question_type_id' => $checkboxIconType->id,
+                'tool_question_custom_values' => [
+                    'hr-boiler' => [
+                        'name' => 'Gasketel',
+                        'extra' => [
+                            'icon' => 'icon-central-heater-gas',
+                        ],
+                    ],
+                    'heat-pump' => [
+                        'name' => 'Warmtepomp',
+                        'extra' => [
+                            'icon' => 'icon-heat-pump',
+                        ],
+                    ],
+                    'sun-boiler' => [
+                        'name' => 'Zonneboiler',
+                        'extra' => [
+                            'icon' => 'icon-sun-boiler-hot-water',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'validation' => ['required', 'exists:element_values,id'],
+                //'save_in' => "building_services.{$boiler->id}.service_value_id",
+                'short' => 'new-boiler-type',
+                'translation' => "Wat is het type van de nieuwe ketel?",
+                'tool_question_type_id' => $dropdownType->id,
+                'tool_question_values' => $boiler->values()->orderBy('order')->get(),
+                'extra' => [
+                    'column' => 'calculate_value',
+                    'data' => [
+                        1 => [],
+                        2 => [],
+                        3 => [],
+                        4 => [],
+                        5 => [],
+                    ],
+                ],
+            ],
+            [
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'new-building-heating-application',
+                'translation' => "Hoe is de verwarming in de nieuwe situatie?",
+                'tool_question_type_id' => $checkboxIconType->id,
+                'tool_question_custom_values' => [
+                    'radiators' => [
+                        'name' => 'Radiator',
+                        'extra' => [
+                            'icon' => 'icon-radiator',
+                        ],
+                    ],
+                    'floor-heating' => [
+                        'name' => 'Vloerverwarming',
+                        'extra' => [
+                            'icon' => 'icon-floor-heating',
+                        ],
+                    ],
+                    'wall-heating' => [
+                        'name' => 'Wandverwarming',
+                        'extra' => [
+                            'icon' => 'icon-wall-heating',
+                        ],
+                    ],
+                    'air-heating' => [
+                        'name' => 'Hete lucht ',
+                        'extra' => [
+                            'icon' => 'icon-air-conditioning-hot',
+                        ],
+                    ],
+                    'low-temperature-heater' => [
+                        'name' => 'Lage temp. radiatoren',
+                        'extra' => [
+                            'icon' => 'icon-radiator-low-temp',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'new-boiler-setting-comfort-heat',
+                'translation' => "Wat wordt de stooktemperatuur in de nieuwe situatie?",
+                'tool_question_type_id' => $radioIconType->id,
+                'tool_question_custom_values' => [
+                    'temp-high' => [
+                        'name' => 'Op hoge temperatuur',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'temp-50' => [
+                        'name' => 'Op 50 graden',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'temp-low' => [
+                        'name' => 'Op lage temperatuur',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'new-cook-type',
+                'translation' => "Hoe wordt er gekookt in de nieuwe situatie?",
+                'tool_question_type_id' => $radioIconType->id,
+                'tool_question_custom_values' => [
+                    'gas' => [
+                        'name' => 'Gas',
+                        'extra' => [
+                            'icon' => 'icon-gas',
+                        ],
+                    ],
+                    'electric' => [
+                        'name' => 'Elektrisch',
+                        'extra' => [
+                            'icon' => 'icon-electric',
+                        ],
+                    ],
+                    'induction' => [
+                        'name' => 'Inductie',
+                        'extra' => [
+                            'icon' => 'icon-induction',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'validation' => ['required', 'exists:element_values,id'],
+                //'save_in' => "building_services.{$heatPump->id}.service_value_id",
+                'short' => 'new-heat-pump-type',
+                'translation' => "Welke soort warmtepomp moet er komen?",
+                'tool_question_type_id' => $radioType->id,
+                'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
+                'extra' => [
+                    'column' => 'calculate_value',
+                    'data' => [
+                        1 => [],
+                        2 => [],
+                        3 => [],
+                        4 => [],
+                        5 => [],
+                    ],
+                ],
+            ],
+            [
+                'validation' => ["required", 'numeric', 'min:1'],
+                'short' => 'heat-pump-preferred-power',
+                'translation' => "Gewenst vermogen van de warmtepomp",
+                'unit_of_measure' => 'KW',
+                'tool_question_type_id' => $textType->id,
+            ],
+            [
+                'validation' => ["required", 'exists:tool_question_custom_values,short'],
+                'short' => 'outside-unit-space',
+                'translation' => "Is er voldoende ruimte voor een buitenunit?",
+                'tool_question_type_id' => $dropdownType->id,
+                'tool_question_custom_values' => [
+                    'yes' => [
+                        'name' => 'Ja',
+                    ],
+                    'no' => [
+                        'name' => 'Nee',
+                    ],
+                ],
+            ],
+            [
+                'validation' => ["required", 'exists:tool_question_custom_values,short'],
+                'short' => 'inside-unit-space',
+                'translation' => "Is er voldoende ruimte voor een binnenunit?",
+                'tool_question_type_id' => $dropdownType->id,
+                'tool_question_custom_values' => [
+                    'yes' => [
+                        'name' => 'Ja',
+                    ],
+                    'no' => [
+                        'name' => 'Nee',
+                    ],
+                ],
             ],
         ];
 

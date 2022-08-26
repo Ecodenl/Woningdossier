@@ -1,26 +1,17 @@
 <?php
 
 use App\Helpers\Conditions\Clause;
-use App\Models\BuildingHeating;
-use App\Models\BuildingType;
-use App\Models\BuildingTypeCategory;
-use App\Models\ComfortLevelTapWater;
-use App\Models\Element;
-use App\Models\EnergyLabel;
-use App\Models\InputSource;
-use App\Models\RoofType;
-use App\Models\Service;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubStepTemplate;
+use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
-use App\Models\ToolQuestionType;
+use App\Models\SubSteppable;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
-class SubStepsTableSeeder extends Seeder
+class SubSteppablesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -361,28 +352,31 @@ class SubStepsTableSeeder extends Seeder
             'heating' => [
                 'huidige situatie' => [
                     'order' => 0,
-                    'questions' => [
-                        'resident-count' => ['size' => 'w-1/2'],
-                        'water-comfort' => ['size' => 'w-1/2'],
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('resident-count'),
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolLabel::findByShort('heat-pump'),
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('resident-count'),
+                            'size' => 'w-1/2'
+                        ]
                     ],
                 ],
                 'nieuwe situatie' => [
                     'order' => 0,
-                    'questions' => [
-                        'amount-electricity' => ['size' => 'w-1/2'],
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('amount-electricity'),
+                            'size' => 'w-1/2'
+                        ],
+
                     ],
                 ],
-                'Zonnepanelen' => [
-                    'order' => 13,
-                    'sub_step_template_id' => $template2rows3top1bottom->id,
-                    'questions' => [
-                        'has-solar-panels' => ['size' => 'w-1/2'],
-                        'solar-panel-count' => ['size' => 'w-1/2'],
-                        'total-installed-power' => ['size' => 'w-1/2'],
-                        'solar-panels-placed-date' => ['size' => 'w-1/2'],
-                    ]
-                ],
-
             ],
         ]);
     }
@@ -428,19 +422,29 @@ class SubStepsTableSeeder extends Seeder
                         ->first();
                 }
 
-                if (isset($subQuestionData['questions'])) {
+                if (isset($subQuestionData['morphs'])) {
                     $orderForSubStepToolQuestions = 0;
                     // the $extra will be a array, it COULD hold anything. For now it will be empty or contain a size.
-                    foreach ($subQuestionData['questions'] as $toolQuestionShort => $extra) {
-
-                        $toolQuestion = ToolQuestion::where('short', $toolQuestionShort)
-                            ->first();
+                    foreach ($subQuestionData['morphs'] as $morph) {
 
                         // It might be attached, it might not. We detach to be safe.
-                        $subStep->toolQuestions()->detach($toolQuestion);
+//                        $subStep->toolQuestions()->detach($toolQuestion);
 
-                        $attributes = array_merge(['order' => $orderForSubStepToolQuestions], $extra);
-                        $subStep->toolQuestions()->attach($toolQuestion, $attributes);
+//                        $attributes = array_merge(['order' => $orderForSubStepToolQuestions], $extra);
+
+//                        $subStep->toolQuestions()->attach($toolQuestion, $attributes);
+
+                        DB::table('sub_steppables')->updateOrInsert(
+                            [
+                                'sub_step_id' => $subStep->id,
+                                'sub_steppable_id' => $subStep->id,
+                                'sub_steppable_type' => $subStep->getMorphClass(),
+                            ],
+                            [
+                                'order' => $orderForSubStepToolQuestions,
+                                'size' => $morph['order'],
+                            ],
+                        );
 
                         $orderForSubStepToolQuestions++;
                     }

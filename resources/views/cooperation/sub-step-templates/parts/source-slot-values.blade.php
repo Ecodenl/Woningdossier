@@ -8,8 +8,8 @@
 
                 if (! \App\Helpers\Str::isValidJson($answer)) {
                     if ($toolQuestion->data_type === \App\Helpers\DataTypes\Caster::INT) {
-                        $value = \App\Helpers\NumberFormatter::format($value, 0);
-                        $humanReadableAnswer = \App\Helpers\NumberFormatter::format($answer, 0);
+                        $value = str_replace('.', '', \App\Helpers\NumberFormatter::format($value, 0));
+                        $humanReadableAnswer = str_replace('.', '', \App\Helpers\NumberFormatter::format($answer, 0));
                     } elseif ($toolQuestion->data_type === \App\Helpers\DataTypes\Caster::FLOAT) {
                         $value = \App\Helpers\NumberFormatter::format($value, 1);
                         $humanReadableAnswer = \App\Helpers\NumberFormatter::format($answer, 1);

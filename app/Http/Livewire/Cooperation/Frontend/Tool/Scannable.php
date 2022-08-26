@@ -313,7 +313,7 @@ abstract class Scannable extends Component
                     break;
                 default:
                     if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
-                        // Before we would set sliders and text answers differently. Now, because they are mapped the
+                        // Before we would set sliders and text answers differently. Now, because they are mapped by the
                         // same (by data type) it could be that value is not set.
                         $answer = $answerForInputSource ?? $toolQuestion->options['value'] ?? 0;
                         $answerForInputSource = Caster::init($toolQuestion->data_type, $answer)->getFormatForUser();

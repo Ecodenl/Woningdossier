@@ -185,7 +185,7 @@ class Building extends Model
                 $answer = optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer;
                 $answers[$toolQuestionAnswer->inputSource->short][$index] = [
                     'answer' => $answer,
-                    'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? null,
+                    'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? $answer,
                 ];
             }
         }

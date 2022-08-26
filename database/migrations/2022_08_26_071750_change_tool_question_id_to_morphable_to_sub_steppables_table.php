@@ -19,7 +19,7 @@ class ChangeToolQuestionIdToMorphableToSubSteppablesTable extends Migration
         });
         // these have to be done separate, otherwise it will index before the renaming. Why you ask ? Because fuck youuu thats why.
         Schema::table('sub_steppables', function (Blueprint $table) {
-            $table->string("sub_steppable_type")->nullable()->after('sub_steppable_id');
+            $table->string("sub_steppable_type")->nullable()->after('sub_steppable  _id');
             $table->index(["sub_steppable_type", "sub_steppable_id"]);
         });
 

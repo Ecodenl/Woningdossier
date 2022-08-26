@@ -6,12 +6,13 @@ necessary, as the database is mostly strict typed anyway, however in the case yo
 using the Caster is your best option.
 
 ## Supported types
-- `string`
-- `int`
-- `float`
-- `bool`
-- `array`* 
+- `string`: A default `string`
+- `int`: A default `int`
+- `float`: A default `float` (or `double`)
+- `bool`: A default `bool`
+- `array`: A default `array`* 
 - `json`: Converts JSON to an associative `array`
-- `identifier`: Won't cast to anything. The answer is based on a relational value.
+- `identifier`: Won't cast to anything. The answer is based on a relational value.**
 
-*In the case of a multi-answer, simply casting an answer as `array` won't properly give you all the available answers.
+*In the case of a multi-answer, simply casting an answer as `array` won't properly give you all the available answers.  
+**In the case of a multi-answer, use `array` instead. 

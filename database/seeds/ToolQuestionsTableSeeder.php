@@ -736,7 +736,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source',
                 'translation' => "Wat gebruikt u voor de verwarming",
@@ -777,7 +777,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             // heat source warm tap water
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source-warm-tap-water',
                 'translation' => "Wat word er gebruikt voor warm tapwater",
@@ -914,7 +914,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textType->id,
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'building-heating-application',
                 'translation' => "Hoe is de verwarming?",

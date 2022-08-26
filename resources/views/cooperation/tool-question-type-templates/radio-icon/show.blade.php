@@ -9,17 +9,17 @@
     @endphp
     @foreach($questionValues as $toolQuestionValue)
         @php
-            $id = $toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value'] ?? $toolQuestionValue['value'];
+            $uuid = Str::uuid();
         @endphp
         <div class="radio-wrapper media-wrapper">
             <input type="radio"
-                   id="{{$id}}"
+                   id="{{$uuid}}"
                    wire:model="filledInAnswers.{{$toolQuestion['id']}}"
                    value="{{$toolQuestionValue['value']}}"
                    @if($disabled) disabled="disabled" @endif
 
             >
-            <label for="{{$id}}">
+            <label for="{{$uuid}}">
                 <span class="media-icon-wrapper">
                     <i class="{{$toolQuestionValue['extra']['icon'] ?? ''}}"></i>
                 </span>

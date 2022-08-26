@@ -171,6 +171,30 @@ class UpdateToolQuestions extends Command
 
     private function handlePostQuestionMap()
     {
+        $heatPump = Service::findByShort('heat-pump');
+        $otherValue = ServiceValue::where('service_id', $heatPump->id)->byValue('Anders')->first();
+
+        $buildingServices = DB::table('building_services')->where('service_id', $heatPump->id)
+            ->where('service_value_id', $otherValue->id)
+            ->get();
+
+        $newQuestion = ToolQuestion::findByShort('heat-pump-other');
+
+        // Map all "other" answers to "Collectieve warmtepomp" (as that was their old answer)
+        foreach ($buildingServices as $buildingService) {
+            DB::table('tool_question_answers')
+                ->updateOrInsert(
+                    [
+                        'building_id' => $buildingService->building_id,
+                        'input_source_id' => $buildingService->input_source_id,
+                        'tool_question_id' => $newQuestion->id,
+                    ],
+                    [
+                        'answer' => "Collectieve warmtepomp",
+                    ]
+                );
+        }
+
         $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
         $heatSourceQuestionTapWater = ToolQuestion::findByShort('heat-source-warm-tap-water');
 
@@ -194,7 +218,7 @@ class UpdateToolQuestions extends Command
             }
         }
 
-        // Map interest
+        // Map interest into now 2 separate questions
         $heatPumpInterest = ToolQuestion::findByShort('interested-in-heat-pump');
         $heatPumpInterestVariant = ToolQuestion::findByShort('interested-in-heat-pump-variant');
 

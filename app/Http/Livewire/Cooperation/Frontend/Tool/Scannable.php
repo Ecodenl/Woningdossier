@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
@@ -96,14 +97,14 @@ abstract class Scannable extends Component
     private function setValidationForToolQuestions()
     {
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-            switch ($toolQuestion->toolQuestionType->short) {
-                case 'rating-slider':
+            switch ($toolQuestion->data_type) {
+                case Caster::JSON:
                     foreach ($toolQuestion->options as $option) {
                         $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
                     }
                     break;
 
-                case 'checkbox-icon':
+                case Caster::ARRAY:
                     // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
                     // and then also set required for the main question
                     $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $this->prepareValidationRule($toolQuestion->validation);
@@ -181,14 +182,14 @@ abstract class Scannable extends Component
                     $this->filledInAnswers[$toolQuestion->id] = null;
 
                     // and unset the validation for the question based on type.
-                    switch ($toolQuestion->toolQuestionType->short) {
-                        case 'rating-slider':
+                    switch ($toolQuestion->data_type) {
+                        case Caster::JSON:
                             foreach ($toolQuestion->options as $option) {
                                 unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
                             }
                             break;
 
-                        case 'checkbox-icon':
+                        case Caster::ARRAY:
                             unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
                             unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
                             break;
@@ -230,10 +231,8 @@ abstract class Scannable extends Component
             if ($validator->fails()) {
                 $toolQuestion = $this->toolQuestions->find($toolQuestionId);
                 // Validator failed, let's put it back as the user format
-                if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
-                    $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                    $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::formatNumberForUser($this->filledInAnswers[$toolQuestion->id],
-                        $isInteger, false);
+                if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                    $this->filledInAnswers[$toolQuestion->id] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->id])->getFormatForUser();
                 }
 
                 $this->rehydrateToolQuestions();
@@ -294,24 +293,15 @@ abstract class Scannable extends Component
 
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
-            switch ($toolQuestion->toolQuestionType->short) {
-                case 'rating-slider':
+            switch ($toolQuestion->data_type) {
+                case Caster::JSON:
                     $filledInAnswerOptions = json_decode($answerForInputSource, true);
                     foreach ($toolQuestion->options as $option) {
                         $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? $option['value'] ?? 0;
                         $this->attributes["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $option['name'];
                     }
                     break;
-                case 'slider':
-                    // Default is required here when no answer is set, otherwise if the user leaves it default
-                    // and submits, the validation will fail because nothing is set.
-
-                    // Format answer to remove leading decimals
-                    $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::formatNumberForUser(($answerForInputSource ?? $toolQuestion->options['value']),
-                        true, false);
-                    $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
-                    break;
-                case 'checkbox-icon':
+                case Caster::ARRAY:
                     /** @var array $answerForInputSource */
                     $answerForInputSource = $answerForInputSource ?? $toolQuestion->options['value'] ?? [];
                     $this->filledInAnswers[$toolQuestion->id] = [];
@@ -322,10 +312,11 @@ abstract class Scannable extends Component
                     $this->attributes["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->name;
                     break;
                 default:
-                    // Check if question type is text, so we can format it if it's numeric
-                    if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
-                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                        $answerForInputSource = NumberFormatter::formatNumberForUser($answerForInputSource, $isInteger, false);
+                    if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                        // Before we would set sliders and text answers differently. Now, because they are mapped the
+                        // same (by data type) it could be that value is not set.
+                        $answer = $answerForInputSource ?? $toolQuestion->options['value'] ?? 0;
+                        $answerForInputSource = Caster::init($toolQuestion->data_type, $answer)->getFormatForUser();
                     }
 
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;

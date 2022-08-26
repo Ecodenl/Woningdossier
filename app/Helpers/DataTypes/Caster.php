@@ -2,6 +2,7 @@
 
 namespace App\Helpers\DataTypes;
 
+use App\Helpers\NumberFormatter;
 use App\Traits\FluentCaller;
 
 class Caster
@@ -25,6 +26,11 @@ class Caster
         $this->value = $value;
     }
 
+    /**
+     * Cast a value to given type.
+     *
+     * @return array|bool|float|int|mixed|string|null
+     */
     public function getCast()
     {
         if (is_null($this->value)) {
@@ -36,7 +42,6 @@ class Caster
                 $this->value = (string) $this->value;
                 break;
 
-            case static::IDENTIFIER:
             case static::INT:
                 $this->value = (int) $this->value;
                 break;
@@ -59,5 +64,30 @@ class Caster
         }
 
         return $this->value;
+    }
+
+    /**
+     * Format a value to a human format.
+     *
+     * @return array|bool|float|int|mixed|string|null
+     */
+    public function getFormatForUser()
+    {
+        $value = $this->getCast();
+        if (is_null($value)) {
+            return null;
+        }
+
+        switch ($this->dataType) {
+            case static::INT:
+                $value = NumberFormatter::formatNumberForUser($value, true, false);
+                break;
+
+            case static::FLOAT:
+                $value = NumberFormatter::formatNumberForUser($value, false, false);
+                break;
+        }
+
+        return $value;
     }
 }

@@ -1,4 +1,4 @@
-@if(!empty($values))
+@if(! empty($values))
     @foreach($values as $inputSourceShort => $answersForInputSources)
         @foreach($answersForInputSources as $answerForInputSource)
             @php
@@ -7,17 +7,12 @@
                 $humanReadableAnswer = null;
 
                 if (! \App\Helpers\Str::isValidJson($answer)) {
-                    if ($toolQuestion->toolQuestionType->short === 'slider') {
+                    if ($toolQuestion->data_type === \App\Helpers\DataTypes\Caster::INT) {
                         $value = \App\Helpers\NumberFormatter::format($value, 0);
                         $humanReadableAnswer = \App\Helpers\NumberFormatter::format($answer, 0);
-                    } elseif (\App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric') && $toolQuestion->toolQuestionType->short === 'text') {
-                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                        $value = \App\Helpers\NumberFormatter::format($value, $isInteger ? 0 : 1);
-                        $humanReadableAnswer = \App\Helpers\NumberFormatter::format($answer, $isInteger ? 0 : 1);
-                        if ($isInteger) {
-                            $value = str_replace('.', '', $value);
-                            $humanReadableAnswer = str_replace('.', '', $humanReadableAnswer);
-                        }
+                    } elseif ($toolQuestion->data_type === \App\Helpers\DataTypes\Caster::FLOAT) {
+                        $value = \App\Helpers\NumberFormatter::format($value, 1);
+                        $humanReadableAnswer = \App\Helpers\NumberFormatter::format($answer, 1);
                     } else {
                         $humanReadableAnswer = $answer;
                     }
@@ -34,7 +29,7 @@
                     // we will use the shorts provided
                     // TODO: Check how often a check is done for rating-slider, perhaps change this to a function to
                     // check if a tool question has "sub questions"
-                    if ($toolQuestion->toolQuestionType->short === 'rating-slider') {
+                    if ($toolQuestion->data_type === \App\Helpers\DataTypes\Caster::JSON) {
                         foreach ($toolQuestion->options as $option) {
                             $formatted[$option['short']] = "{$option['name']}: {$json[$option['short']]}";
                         }

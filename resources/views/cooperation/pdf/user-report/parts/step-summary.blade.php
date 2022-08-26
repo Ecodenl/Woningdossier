@@ -44,12 +44,9 @@
                                 ($answers[$toolQuestionToSummarize->short] ?? null)
                             );
 
-                            if ($toolQuestionToSummarize->toolQuestionType->short === 'text'
-                                && \App\Helpers\Str::arrContains($toolQuestionToSummarize->validation, 'numeric')) {
+                            if ($toolQuestionToSummarize->data_type === \App\Helpers\DataTypes\Caster::FLOAT && isset($answers[$toolQuestionToSummarize->short])) {
                                 // Apparently feedback said, no formatting for this, so we revert...
-                                if (isset($answers[$toolQuestionToSummarize->short])) {
-                                    $humanReadableAnswer = $answers[$toolQuestionToSummarize->short];
-                                }
+                                $humanReadableAnswer = $answers[$toolQuestionToSummarize->short];
                             }
 
                             // Handle replaceables

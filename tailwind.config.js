@@ -180,7 +180,19 @@ module.exports = {
             transparent: 'transparent',
             black: '#000000',
             white: '#FFFFFF',
-            gray: '#CDD2D7',
+            'gray': {
+                DEFAULT: '#CDD2D7',
+                '50': '#FFFFFF',
+                '100': '#FFFFFF',
+                '200': '#FFFFFF',
+                '300': '#FAFBFB',
+                '400': '#E4E6E9',
+                '500': '#CDD2D7',
+                '600': '#AEB6BE',
+                '700': '#8F9AA5',
+                '800': '#707E8C',
+                '900': '#57626D'
+            },
             green: '#2CA982',
             purple: {
                 DEFAULT: '#622191',

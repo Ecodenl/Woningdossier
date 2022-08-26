@@ -2,8 +2,11 @@
 
 namespace App\Console\Commands\Upgrade\HeatPump;
 
+use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;
+use App\Models\Step;
+use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use Illuminate\Console\Command;
@@ -50,12 +53,12 @@ class UpdateToolQuestions extends Command
         Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class]);
 
         // Before we can update the ToolQuestions, we must update the values
-        //$this->handlePreQuestionMap(); // TODO test before enabling
+        $this->handlePreQuestionMap();
 
         Artisan::call('db:seed', ['--class' => \ToolQuestionsTableSeeder::class]);
 
         // Now the new questions are seeded, we need to map these as well
-        //$this->handlePostQuestionMap(); // TODO test before enabling
+        $this->handlePostQuestionMap();
 
         Artisan::call('db:seed', ['--class' => \SubStepsTableSeeder::class]);
 
@@ -85,6 +88,9 @@ class UpdateToolQuestions extends Command
                 ->whereShort('heat-pump')
                 ->first();
 
+            $step = Step::findByShort('residential-status');
+            $subStep = SubStep::bySlug('verwarming')->first();
+
             // Set "none" to `null` and "uncheck" heat-pump by the heat source question
             foreach ($buildingsWithNoHeatPump as $buildingService) {
                 DB::table('tool_question_answers')->where('tool_question_id', $heatSourceQuestion->id)
@@ -101,6 +107,20 @@ class UpdateToolQuestions extends Command
                     ->update([
                         'service_value_id' => null,
                     ]);
+
+                // Now we also need to reset the sub step and step so the user is forced to recheck it (since they did
+                // select a heat pump in the past)
+                DB::table('completed_sub_steps')
+                    ->where('sub_step_id', $subStep->id)
+                    ->where('building_id', $buildingService->building_id)
+                    ->where('input_source_id', $buildingService->input_source_id)
+                    ->delete();
+
+                DB::table('completed_steps')
+                    ->where('step_id', $step->id)
+                    ->where('building_id', $buildingService->building_id)
+                    ->where('input_source_id', $buildingService->input_source_id)
+                    ->delete();
             }
 
             $none->delete();
@@ -250,6 +270,46 @@ class UpdateToolQuestions extends Command
 
                 $oldValue->delete();
             }
+        }
+
+        // Map considerables to new question
+        $considerableQuestion = ToolQuestion::findByShort('heat-source-considerable');
+        $hrBoilerCustomValue = ToolQuestionCustomValue::where('tool_question_id', $considerableQuestion->id)
+            ->whereShort('hr-boiler')
+            ->first();
+        $sunBoilerCustomValue = ToolQuestionCustomValue::where('tool_question_id', $considerableQuestion->id)
+            ->whereShort('sun-boiler')
+            ->first();
+        $steps = [
+            Step::findByShort('high-efficiency-boiler'),
+            Step::findByShort('heater'),
+        ];
+
+        foreach ($steps as $considerableStep) {
+            $customValueForStep = $considerableStep->short === 'heater' ? $sunBoilerCustomValue : $hrBoilerCustomValue;
+
+            $usersThatConsiderStep = DB::table('considerables')
+                ->where('considerable_type', Step::class)
+                ->where('considerable_id', $considerableStep->id)
+                ->where('is_considering', 1)
+                ->get();
+
+            foreach ($usersThatConsiderStep as $user) {
+                $building = DB::table('buildings')->where('user_id', $user->user_id)->first();
+
+                DB::table('tool_question_answers')
+                    ->updateOrInsert([
+                        'building_id' => $building->id,
+                        'input_source_id' => $user->input_source_id,
+                        'tool_question_id' => $considerableQuestion->id,
+                        'tool_question_custom_value_id' => $customValueForStep->id,
+                    ], ['answer' => $customValueForStep->short]);
+            }
+
+            DB::table('considerables')
+                ->where('considerable_type', Step::class)
+                ->where('considerable_id', $considerableStep->id)
+                ->delete();
         }
     }
 }

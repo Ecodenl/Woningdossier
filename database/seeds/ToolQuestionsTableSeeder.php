@@ -1259,9 +1259,8 @@ class ToolQuestionsTableSeeder extends Seeder
             # Dynamic expert scan questions only
             #-------------------------
             [
-                // TODO: Check if this is a considerable and how this should be handled
                 'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
-                'short' => 'heat-type-considerable',
+                'short' => 'heat-source-considerable',
                 'translation' => 'Welke maatregelen wil je meenemen in de berekening?',
                 'tool_question_type_id' => $checkboxIconType->id,
                 'tool_question_custom_values' => [

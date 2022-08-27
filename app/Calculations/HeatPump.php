@@ -10,27 +10,42 @@ use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\InputSource;
+use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
 
 class HeatPump
 {
 
+    /**
+     * @var Building
+     */
     protected $building;
+    /**
+     * @var ServiceValue
+     */
+    protected $heatPump;
+    /**
+     * @var int
+     */
     protected $desiredPower = 0;
+    /**
+     * @var int
+     */
     protected $requiredPower = 0;
 
     protected $advices = [];
 
-    public function __construct(Building $building, int $desiredPower)
+    public function __construct(Building $building, ServiceValue $heatPump, int $desiredPower)
     {
         $this->building     = $building;
+        $this->heatPump = $heatPump;
         $this->desiredPower = $desiredPower;
     }
 
-    public static function calculate(Building $building, int $desiredPower)
+    public static function calculate(Building $building, ServiceValue $heatPump, int $desiredPower)
     {
-        $calculator = new static($building, $desiredPower);
+        $calculator = new static($building, $heatPump, $desiredPower);
 
         return $calculator->performCalculations();
     }
@@ -40,7 +55,7 @@ class HeatPump
         // First calculate the power of the heat pump (advised system)
         $this->requiredPower = $this->calculateAdvisedSystemRequiredPower();
         // lookup the characteristics of the chosen heat pump (tool question answer).
-        $characteristics     = $this->lookupHeatpumpCharacteristics($chosenHeatPump);
+        $characteristics     = $this->lookupHeatpumpCharacteristics($this->heatPump);
 
         // $characteristics->type = 'hybrid' / 'full'
 

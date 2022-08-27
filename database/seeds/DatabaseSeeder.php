@@ -68,6 +68,7 @@ class DatabaseSeeder extends Seeder
         $this->call(FacadePlasteredSurfacesTableSeeder::class);
         $this->call(PriceIndexingsTableSeeder::class);
         $this->call(KeyFigureTemperaturesTableSeeder::class);
+        $this->call(KeyFigureInsulationFactorsTableSeeder::class);
         $this->call(PaintworkStatusesTableSeeder::class);
         $this->call(WoodRotStatusesTableSeeder::class);
         $this->call(CrawlspaceAccessesTableSeeder::class);
@@ -105,6 +106,8 @@ class DatabaseSeeder extends Seeder
         $this->call(NotificationIntervalsTableSeeder::class);
 
         $this->call(StatusesTableSeeder::class);
+        $this->call(KeyFigureHeatPumpCoveragesTableSeeder::class);
+        $this->call(HeatPumpCharacteristicsTableSeeder::class);
 
         if ('testing' !== app()->environment()) {
             $this->call(SqlDumpSeeder::class);

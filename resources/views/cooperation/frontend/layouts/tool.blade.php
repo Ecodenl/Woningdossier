@@ -89,7 +89,7 @@
                                     @yield('step_title', $currentSubStep->name ?? $currentStep->name ?? '')
                                 </h3>
                                 @if($currentStep->isDynamic())
-                                    @livewire('cooperation.frontend.tool.expert-scan.buttons')
+{{--                                    @livewire('cooperation.frontend.tool.expert-scan.buttons')--}}
                                 @else
                                     @if(! \App\helpers\HoomdossierSession::isUserObserving())
                                         <button class="float-right btn btn-purple submit-main-form">

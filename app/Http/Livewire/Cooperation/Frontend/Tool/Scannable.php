@@ -23,7 +23,7 @@ abstract class Scannable extends Component
      * event, which can be caught by the frontend and set visuals correct, e.g. with the sliders.
      *
      */
-    protected $listeners = ['update', 'updated', 'save',];
+    protected $listeners = ['update', 'updated', 'save'];
     /** @var Building */
     public $building;
 
@@ -93,7 +93,7 @@ abstract class Scannable extends Component
     }
 
 
-    private function setValidationForToolQuestions()
+    public function setValidationForToolQuestions()
     {
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             switch ($toolQuestion->toolQuestionType->short) {
@@ -136,7 +136,7 @@ abstract class Scannable extends Component
         $this->setDirty(true);
     }
 
-    private function evaluateToolQuestions()
+    public function evaluateToolQuestions()
     {
         // Filter out the questions that do not match the condition
         // now collect the given answers

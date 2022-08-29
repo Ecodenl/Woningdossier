@@ -78,9 +78,9 @@
                         @php
                             $showQuestion = true;
 
-                            if (! empty($toolQuestionToSummarize->conditions)) {
+                            if (! empty($toolQuestionToSummarize->pivot->conditions)) {
                                 $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
-                                ->evaluateCollection($toolQuestionToSummarize->conditions, collect($answers));
+                                ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
                             }
 
                             // Comments come at the end, and have exceptional logic...

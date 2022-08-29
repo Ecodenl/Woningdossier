@@ -50,6 +50,7 @@ class UpdateToolQuestions extends Command
         Artisan::call('cache:clear');
 
         Artisan::call('db:seed', ['--class' => \ScansTableSeeder::class]);
+        Artisan::call('db:seed', ['--class' => \ToolLabelsTableSeeder::class]);
         Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class]);
 
         // Before we can update the ToolQuestions, we must update the values
@@ -60,7 +61,8 @@ class UpdateToolQuestions extends Command
         // Now the new questions are seeded, we need to map these as well
         $this->handlePostQuestionMap();
 
-        Artisan::call('db:seed', ['--class' => \SubStepsTableSeeder::class]);
+        Artisan::call('db:seed', ['--class' => \SubSteppablesTableSeeder::class]);
+
 
 
 

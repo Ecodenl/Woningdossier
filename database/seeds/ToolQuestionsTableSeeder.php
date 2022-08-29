@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Conditions\Clause;
+use App\Helpers\DataTypes\Caster;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\BuildingTypeCategory;
@@ -94,6 +95,7 @@ class ToolQuestionsTableSeeder extends Seeder
             # Quick-scan only / shared with expert-scan questions
             #-------------------------
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:building_type_categories,id'],
                 'save_in' => 'building_features.building_type_category_id',
                 'short' => 'building-type-category',
@@ -122,6 +124,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:building_types,id'],
                 'save_in' => 'building_features.building_type_id',
                 'short' => 'building-type',
@@ -165,6 +168,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:roof_types,id'],
                 'save_in' => 'building_features.roof_type_id',
                 'short' => 'roof-type',
@@ -201,6 +205,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::INT,
                 // TODO: Date is static, should be dynamic... (counts for other questions too)
                 'validation' => ['required', 'numeric', 'integer', 'between:1000,' . date('Y')],
                 'save_in' => 'building_features.build_year',
@@ -210,6 +215,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'options' => ['min' => 1000, 'max' => date('Y'), 'value' => 1930, 'step' => 1],
             ],
             [
+                'data_type' => Caster::INT,
                 'validation' => ['numeric', 'integer', 'between:1,5'],
                 'save_in' => 'building_features.building_layers',
                 'short' => 'building-layers',
@@ -218,6 +224,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'options' => ['min' => 1, 'max' => 6, 'value' => 3, 'step' => 1],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:example_buildings,id'],
                 'short' => 'specific-example-building',
                 'save_in' => 'building_features.example_building_id',
@@ -225,7 +232,8 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $radioType->id,
             ],
             [
-                'validation' => ['numeric', 'in:1,2,0'],
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['numeric', 'in:1,2,0', 'exists:tool_question_custom_values,short'],
                 'save_in' => 'building_features.monument',
                 'short' => 'monument',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument',
@@ -246,6 +254,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['numeric', 'exists:energy_labels,id'],
                 'save_in' => 'building_features.energy_label_id',
                 'short' => 'energy-label',
@@ -283,6 +292,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::FLOAT,
                 'validation' => ['required', 'numeric', 'min:20', 'max:999999'],
                 'save_in' => 'building_features.surface',
                 'short' => 'surface',
@@ -290,6 +300,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textType->id,
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepBuildingData->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -298,6 +309,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textareaPopupType->id
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepBuildingData->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -306,7 +318,8 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textareaPopupType->id
             ],
             [
-                'validation' => ['required'],
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'save_in' => 'user_energy_habits.resident_count',
                 'short' => 'resident-count',
                 'translation' => 'Hoeveel mensen wonen er in de woning?',
@@ -363,6 +376,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::INT,
                 'validation' => ['required', 'numeric', 'min:10', 'max:30', 'gte:thermostat_low'],
                 'save_in' => 'user_energy_habits.thermostat_high',
                 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
@@ -372,6 +386,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => '°',
             ],
             [
+                'data_type' => Caster::INT,
                 'validation' => ['required', 'numeric', 'min:10', 'max:30'],
                 'save_in' => 'user_energy_habits.thermostat_low',
                 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
@@ -381,7 +396,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => '°',
             ],
             [
-
+                'data_type' => Caster::INT,
                 'validation' => ['required', 'numeric', 'between:1,24'],
                 'save_in' => 'user_energy_habits.hours_high',
                 'short' => 'hours-high',
@@ -390,6 +405,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'options' => ['min' => 0, 'max' => 24, 'value' => 12, 'step' => 1],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:building_heatings,id'],
                 'save_in' => 'user_energy_habits.heating_first_floor',
                 'short' => 'heating-first-floor',
@@ -408,6 +424,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:building_heatings,id'],
                 'save_in' => 'user_energy_habits.heating_second_floor',
                 'short' => 'heating-second-floor',
@@ -426,6 +443,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:comfort_level_tap_waters,id'],
                 'save_in' => 'user_energy_habits.water_comfort_id',
                 'short' => 'water-comfort',
@@ -435,6 +453,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_values' => $comfortLevelsTapWater,
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'cook-type',
                 'translation' => "Hoe wordt er gekookt?",
@@ -461,6 +480,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::INT,
                 'validation' => ['required', 'numeric', 'integer', 'min:0', 'max:10000'],
                 'save_in' => 'user_energy_habits.amount_gas',
                 'short' => 'amount-gas',
@@ -469,6 +489,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => __('general.unit.cubic-meters.title'),
             ],
             [
+                'data_type' => Caster::INT,
                 'validation' => ['required', 'numeric', 'integer', 'min:-10000', 'max:25000'],
                 'save_in' => 'user_energy_habits.amount_electricity',
                 'short' => 'amount-electricity',
@@ -477,6 +498,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => 'kWh'
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -485,6 +507,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textareaPopupType->id
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -493,7 +516,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textareaPopupType->id
             ],
             [
-                // note: new question
+                'data_type' => Caster::INT,
                 'short' => 'remaining-living-years',
                 'validation' => ['required', 'numeric', 'min:1', 'max:10'],
                 'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen?',
@@ -505,6 +528,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::JSON,
                 'validation' => ['required', 'in:1,2,3,4,5'],
                 'short' => 'comfort-priority',
                 'translation' => "Welke zaken vindt u belangrijk?",
@@ -555,6 +579,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -563,6 +588,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textareaPopupType->id
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -571,6 +597,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textareaPopupType->id
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_elements.{$wallInsulation->id}.element_value_id",
                 'short' => 'current-wall-insulation',
@@ -599,6 +626,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_elements.{$floorInsulation->id}.element_value_id",
                 'short' => 'current-floor-insulation',
@@ -630,6 +658,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_elements.{$roofInsulation->id}.element_value_id",
                 'short' => 'current-roof-insulation',
@@ -661,6 +690,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
                 'short' => 'current-living-rooms-windows',
@@ -686,6 +716,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
                 'short' => 'current-sleeping-rooms-windows',
@@ -711,6 +742,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source',
                 'translation' => "Wat wordt er gebruikt voor verwarming",
@@ -757,6 +789,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             // heat source warm tap water
             [
+                'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source-warm-tap-water',
                 'translation' => "Wat word er gebruikt voor warm tapwater",
@@ -814,6 +847,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_services.{$heater->id}.service_value_id",
                 'short' => 'heater-type',
@@ -839,6 +873,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_services.{$boiler->id}.service_value_id",
                 'short' => 'boiler-type',
@@ -857,6 +892,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::INT,
                 'validation' => ['nullable', 'numeric', 'integer', 'between:1970,' . date('Y')],
                 'save_in' => "building_services.{$boiler->id}.extra.date",
                 'short' => 'boiler-placed-date',
@@ -864,6 +900,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textType->id,
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'heat-pump-type',
@@ -897,12 +934,14 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::INT,
                 'validation' => ['nullable', 'numeric', 'integer', 'between:1970,' . date('Y')],
                 'short' => 'heat-pump-placed-date',
                 'translation' => 'Wanneer is de warmtepomp geplaatst?',
                 'tool_question_type_id' => $textType->id,
             ],
             [
+                'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'building-heating-application',
                 'translation' => "Hoe is de verwarming?",
@@ -947,6 +986,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'fifty-degree-test',
                 'translation' => "Heb je de 50 graden test gedaan?",
@@ -995,6 +1035,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_services.{$ventilation->id}.service_value_id",
                 'short' => 'ventilation-type',
@@ -1013,6 +1054,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::BOOL,
                 'validation' => ['required', 'boolean'],
                 'save_in' => "building_services.{$ventilation->id}.extra.demand_driven",
                 'short' => 'ventilation-demand-driven',
@@ -1040,6 +1082,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::BOOL,
                 'save_in' => "building_services.{$ventilation->id}.extra.heat_recovery",
                 'validation' => ['required', 'boolean'],
                 'short' => 'ventilation-heat-recovery',
@@ -1072,8 +1115,9 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
-                'save_in' => "building_elements.{$crackSealing->id}.element_value_id",
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', "exists:element_values,id",],
+                'save_in' => "building_elements.{$crackSealing->id}.element_value_id",
                 'short' => 'crack-sealing-type',
                 // was current-state -> zijn de ramen en deuren voorzien van kierdichting
                 'translation' => "Heeft u kierdichting?",
@@ -1090,6 +1134,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'has-solar-panels',
                 'translation' => "Heeft u zonnepanelen?",
@@ -1110,6 +1155,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::INT,
                 'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'integer', 'min:1', 'max:50'],
                 'save_in' => "building_services.{$solarPanels->id}.extra.value",
                 'short' => 'solar-panel-count',
@@ -1127,7 +1173,8 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
-                'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1'],
+                'data_type' => Caster::INT,
+                'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'integer', 'min:1'],
                 'save_in' => "building_pv_panels.total_installed_power",
                 'short' => 'total-installed-power',
                 // was current-state -> Geinstalleerd vermogen (totaal)
@@ -1145,12 +1192,8 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
-                'validation' => [
-                    'nullable',
-                    'numeric',
-                    'integer',
-                    'between:1900,' . date('Y')
-                ],
+                'data_type' => Caster::INT,
+                'validation' => ['nullable', 'numeric', 'integer', 'between:1900,' . date('Y')],
                 'save_in' => "building_services.{$solarPanels->id}.extra.year",
                 'short' => 'solar-panels-placed-date',
                 // was current-state -> Geinstalleerd vermogen (totaal)
@@ -1168,6 +1211,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'interested-in-heat-pump',
                 'translation' => "Overweeg je om een warmtepomp te nemen?",
@@ -1224,6 +1268,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -1232,6 +1277,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textareaPopupType->id,
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -1240,6 +1286,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textareaPopupType->id,
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -1248,6 +1295,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textareaPopupType->id,
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,

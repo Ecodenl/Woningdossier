@@ -325,7 +325,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
+                            'morph' => ToolQuestion::findByShort('heat-source'),
                             'size' => 'w-full',
                         ],
                     ],

@@ -64,6 +64,9 @@ class UpdateToolQuestions extends Command
         // Now the new questions are seeded, we need to map these as well
         $this->handlePostQuestionMap();
 
+        $this->infoLog('Deleting sub steppable for heat-source-warm-tap-water because it was added too soon');
+        ToolQuestion::findByShort('heat-source-warm-tap-water')->subSteppables()->delete();
+
         $this->infoLog('Seeding sub steppables');
         Artisan::call('db:seed', ['--class' => \SubSteppablesTableSeeder::class, '--force' => true]);
     }

@@ -85,10 +85,9 @@ abstract class Scannable extends Component
 
     public function rehydrateToolQuestions()
     {
-        //todo this wont refresh the dom, for some odd reson
-        // if you would set it with a query it would update tho
-        // but thats exactly what i was trying to work around
-        // extra queries..
+        //TODO: When the request refreshes, the pivot is lost. So for now, we override
+        // the rehydrate cycle to freshly fetch them. However, in the future we should find a way that makes this
+        // possible without a fresh DB call each time.
 
         $this->toolQuestions = new Collection($this->initialToolQuestions->values());
     }
@@ -147,11 +146,12 @@ abstract class Scannable extends Component
         }
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-
             $answers = $dynamicAnswers;
 
-            if (!empty($toolQuestion->conditions)) {
-                foreach ($toolQuestion->conditions as $conditionSet) {
+            if (! empty(optional($toolQuestion->pivot)->conditions)) {
+                $conditions = $toolQuestion->pivot->conditions;
+
+                foreach ($conditions as $conditionSet) {
                     foreach ($conditionSet as $condition) {
                         // There is a possibility that the answer we're looking for is for a tool question not
                         // on this page. We find it, and add the answer to our list
@@ -169,7 +169,7 @@ abstract class Scannable extends Component
 
                 $evaluatableAnswers = collect($answers);
 
-                $evaluation = ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers);
+                $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
 
                 if (!$evaluation) {
                     $this->toolQuestions = $this->toolQuestions->forget($index);

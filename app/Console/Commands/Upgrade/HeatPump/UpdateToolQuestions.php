@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Upgrade\HeatPump;
 
-use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\Step;
@@ -12,6 +11,7 @@ use App\Models\ToolQuestionCustomValue;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateToolQuestions extends Command
 {
@@ -46,30 +46,32 @@ class UpdateToolQuestions extends Command
      */
     public function handle()
     {
+        $this->infoLog('Starting ' . __CLASS__);
         // Ensure we clear the cache so we don't run into potentially `null` cached shorts.
         Artisan::call('cache:clear');
 
-        Artisan::call('db:seed', ['--class' => \ScansTableSeeder::class]);
-        Artisan::call('db:seed', ['--class' => \ToolLabelsTableSeeder::class]);
-        Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class]);
+        $this->infoLog('Seeding scans, tool labels and steps');
+        Artisan::call('db:seed', ['--class' => \ScansTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => \ToolLabelsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class, '--force' => true]);
 
         // Before we can update the ToolQuestions, we must update the values
         $this->handlePreQuestionMap();
 
-        Artisan::call('db:seed', ['--class' => \ToolQuestionsTableSeeder::class]);
+        $this->infoLog('Seeding tool questions');
+        Artisan::call('db:seed', ['--class' => \ToolQuestionsTableSeeder::class, '--force' => true]);
 
         // Now the new questions are seeded, we need to map these as well
         $this->handlePostQuestionMap();
 
-        Artisan::call('db:seed', ['--class' => \SubSteppablesTableSeeder::class]);
-
-
-
-
+        $this->infoLog('Seeding sub steppables');
+        Artisan::call('db:seed', ['--class' => \SubSteppablesTableSeeder::class, '--force' => true]);
     }
 
     private function handlePreQuestionMap()
     {
+        $this->infoLog('Starting pre-question map');
+
         // Update question names
         $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
         $heatSourceQuestion->update(['name' => ['nl' => 'Wat wordt er gebruikt voor verwarming']]);
@@ -86,6 +88,10 @@ class UpdateToolQuestions extends Command
                 ->where('service_id', $heatPump->id)
                 ->where('service_value_id', $none->id)
                 ->get();
+
+            $total = $buildingsWithNoHeatPump->count();
+            $this->infoLog("Starting 'none' service value map for a total of {$total} building_services");
+
             $heatPumpCustomValue = ToolQuestionCustomValue::where('tool_question_id', $heatSourceQuestion->id)
                 ->whereShort('heat-pump')
                 ->first();
@@ -93,6 +99,7 @@ class UpdateToolQuestions extends Command
             $step = Step::findByShort('residential-status');
             $subStep = SubStep::bySlug('verwarming')->first();
 
+            $i = 0;
             // Set "none" to `null` and "uncheck" heat-pump by the heat source question
             foreach ($buildingsWithNoHeatPump as $buildingService) {
                 DB::table('tool_question_answers')->where('tool_question_id', $heatSourceQuestion->id)
@@ -123,6 +130,12 @@ class UpdateToolQuestions extends Command
                     ->where('building_id', $buildingService->building_id)
                     ->where('input_source_id', $buildingService->input_source_id)
                     ->delete();
+
+                ++$i;
+
+                if ($i % 100 === 0) {
+                    $this->infoLog("{$i} / {$total}");
+                }
             }
 
             $none->delete();
@@ -157,19 +170,23 @@ class UpdateToolQuestions extends Command
             ],
         ];
 
+        $this->infoLog('Starting heat pump service value map');
+
         $order = 1;
         foreach ($heatPumpValueMap as $newName => $info) {
             if (isset($info['old'])) {
                 $oldServiceValue = ServiceValue::where('service_id', $heatPump->id)->byValue($info['old'])->first();
                 if ($oldServiceValue instanceof ServiceValue) {
-                    $oldServiceValue->update([
-                        'value' => json_encode(['nl' => $newName]),
-                        'calculate_value' => $order,
-                        'order' => $order,
-                        'configurations' => json_encode([
-                            'comfort' => $info['comfort'],
-                        ]),
-                    ]);
+                    DB::table('service_values')
+                        ->where('id', $oldServiceValue->id)
+                        ->update([
+                            'value' => json_encode(['nl' => $newName]),
+                            'calculate_value' => $order,
+                            'order' => $order,
+                            'configurations' => json_encode([
+                                'comfort' => $info['comfort'],
+                            ]),
+                        ]);
                 }
             } else {
                 $newValue = ServiceValue::where('service_id', $heatPump->id)->byValue($newName)->first();
@@ -182,7 +199,7 @@ class UpdateToolQuestions extends Command
                         'order' => $order,
                         'configurations' => json_encode([
                             'comfort' => $info['comfort'],
-                        ])
+                        ]),
                     ]);
                 }
             }
@@ -193,6 +210,8 @@ class UpdateToolQuestions extends Command
 
     private function handlePostQuestionMap()
     {
+        $this->infoLog('Starting post-question map');
+
         $heatPump = Service::findByShort('heat-pump');
         $otherValue = ServiceValue::where('service_id', $heatPump->id)->byValue('Anders')->first();
 
@@ -200,8 +219,12 @@ class UpdateToolQuestions extends Command
             ->where('service_value_id', $otherValue->id)
             ->get();
 
+        $total = $buildingServices->count();
+        $this->infoLog("Starting 'other' to 'collectieve warmtepomp' service value map for a total of {$total} building_services");
+
         $newQuestion = ToolQuestion::findByShort('heat-pump-other');
 
+        $i = 0;
         // Map all "other" answers to "Collectieve warmtepomp" (as that was their old answer)
         foreach ($buildingServices as $buildingService) {
             DB::table('tool_question_answers')
@@ -215,6 +238,12 @@ class UpdateToolQuestions extends Command
                         'answer' => "Collectieve warmtepomp",
                     ]
                 );
+
+            ++$i;
+
+            if ($i % 100 === 0) {
+                $this->infoLog("{$i} / {$total}");
+            }
         }
 
         $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
@@ -224,6 +253,10 @@ class UpdateToolQuestions extends Command
             ->where('tool_question_id', $heatSourceQuestion->id)
             ->get();
 
+        $total = $answers->count();
+        $this->infoLog("Starting heat-source to heat-source-warm-tap-water map for a total of {$total} answers");
+
+        $i = 0;
         // Map relevant answers from heat-source to heat-source-warm-tap-water
         foreach ($answers as $answer) {
             if ($answer->answer !== 'infrared') {
@@ -238,6 +271,11 @@ class UpdateToolQuestions extends Command
                         'tool_question_custom_value_id' => $customValueId,
                     ], ['answer' => $answer->answer]);
             }
+            ++$i;
+
+            if ($i % 100 === 0) {
+                $this->infoLog("{$i} / {$total}");
+            }
         }
 
         // Map interest into now 2 separate questions
@@ -250,6 +288,8 @@ class UpdateToolQuestions extends Command
             'unsure' => 'unsure',
         ];
 
+        $this->infoLog("Starting interested-in-heat-pump to interested-in-heat-pump-variant map");
+
         foreach ($oldToNew as $old => $new) {
             $oldValue = ToolQuestionCustomValue::where('tool_question_id', $heatPumpInterest->id)
                 ->whereShort($old)
@@ -257,7 +297,7 @@ class UpdateToolQuestions extends Command
 
             // Keep atomic!
             if ($oldValue instanceof ToolQuestionCustomValue) {
-                $newValue =  ToolQuestionCustomValue::where('tool_question_id', $heatPumpInterestVariant->id)
+                $newValue = ToolQuestionCustomValue::where('tool_question_id', $heatPumpInterestVariant->id)
                     ->whereShort($new)
                     ->first();
 
@@ -273,6 +313,8 @@ class UpdateToolQuestions extends Command
                 $oldValue->delete();
             }
         }
+
+        $this->infoLog("Starting considerable to 'new situation' considerable question map");
 
         // Map considerables to new question
         $considerableQuestion = ToolQuestion::findByShort('heat-source-considerable');
@@ -296,6 +338,10 @@ class UpdateToolQuestions extends Command
                 ->where('is_considering', 1)
                 ->get();
 
+            $total = $usersThatConsiderStep->count();
+            $this->infoLog("{$total} consider {$considerableStep->short}");
+
+            $i = 0;
             foreach ($usersThatConsiderStep as $user) {
                 $building = DB::table('buildings')->where('user_id', $user->user_id)->first();
 
@@ -306,6 +352,12 @@ class UpdateToolQuestions extends Command
                         'tool_question_id' => $considerableQuestion->id,
                         'tool_question_custom_value_id' => $customValueForStep->id,
                     ], ['answer' => $customValueForStep->short]);
+
+                ++$i;
+
+                if ($i % 100 === 0) {
+                    $this->infoLog("{$i} / {$total}");
+                }
             }
 
             DB::table('considerables')
@@ -313,6 +365,8 @@ class UpdateToolQuestions extends Command
                 ->where('considerable_id', $considerableStep->id)
                 ->delete();
         }
+
+        $this->infoLog('Deleting language lines');
 
         // Language lines to delete
         $languageLines = [
@@ -330,5 +384,11 @@ class UpdateToolQuestions extends Command
                 ->whereIn('key', $keys)
                 ->delete();
         }
+    }
+
+    private function infoLog($info)
+    {
+        $this->info($info);
+        Log::debug($info);
     }
 }

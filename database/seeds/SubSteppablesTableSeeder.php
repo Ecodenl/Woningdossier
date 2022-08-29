@@ -970,6 +970,7 @@ class SubSteppablesTableSeeder extends Seeder
                 if (isset($subQuestionData['morphs'])) {
                     $orderForSubStepToolQuestions = 0;
                     foreach ($subQuestionData['morphs'] as $morph) {
+                        $conditions = $morph['conditions'] ?? null;
 
                         DB::table('sub_steppables')->updateOrInsert(
                             [
@@ -980,7 +981,7 @@ class SubSteppablesTableSeeder extends Seeder
                             [
                                 'order' => $orderForSubStepToolQuestions,
                                 'size' => $morph['size'] ?? null,
-                                'conditions' => $morph['conditions'] ?? null,
+                                'conditions' => is_null($conditions) ? null : json_encode($conditions)
                             ],
                         );
 

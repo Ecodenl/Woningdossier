@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class SubSteppable extends Pivot
 {
     protected $table = 'sub_steppables';
+
+    protected $casts = [
+        'conditions' => 'array',
+    ];
+
     public function subSteppables()
     {
         return $this->morphTo();

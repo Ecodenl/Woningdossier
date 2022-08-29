@@ -1,6 +1,5 @@
 <?php
 
-use App\Helpers\Conditions\Clause;
 use App\Helpers\DataTypes\Caster;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
@@ -9,6 +8,7 @@ use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
 use App\Models\EnergyLabel;
 use App\Models\InputSource;
+use App\Models\PvPanelOrientation;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
@@ -17,7 +17,6 @@ use App\Models\ToolQuestionType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Artisan;
 
 class ToolQuestionsTableSeeder extends Seeder
 {
@@ -28,9 +27,6 @@ class ToolQuestionsTableSeeder extends Seeder
      */
     public function run()
     {
-        // Ensure we clear the cache so we don't run into potentially `null` cached shorts.
-        Artisan::call('cache:clear');
-
         // First, we need to fetch all relevant models for the tool questions
 
         // General data - Elements (that are not queried later on step basis)
@@ -64,6 +60,9 @@ class ToolQuestionsTableSeeder extends Seeder
         $roofInsulation = Element::findByShort('roof-insulation');
         $roofTypes = RoofType::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
+
+        // Sun boiler
+        $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
 
         // Tool question types
         // TODO: Subject to change
@@ -298,6 +297,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'surface',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
                 'tool_question_type_id' => $textType->id,
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::STRING,
@@ -919,19 +919,11 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::STRING,
                 'validation' => ['required', 'string'],
                 'short' => 'heat-pump-other',
                 'translation' => 'Wat voor andere warmtepomp is er nu?',
                 'tool_question_type_id' => $textType->id,
-                'conditions' => [
-                    [
-                        [
-                            'column' => 'heat-pump-type',
-                            'operator' => Clause::EQ,
-                            'value' => $heatPump->values()->where('calculate_value', 7)->first()->id, // Anders
-                        ],
-                    ],
-                ],
             ],
             [
                 'data_type' => Caster::INT,
@@ -986,6 +978,13 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::STRING,
+                'validation' => ['required', 'string'],
+                'short' => 'building-heating-application-other',
+                'translation' => 'Wat voor andere verwarming is er nu?',
+                'tool_question_type_id' => $textType->id,
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'fifty-degree-test',
@@ -1002,6 +1001,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'boiler-setting-comfort-heat',
                 'translation' => "Hoe moet de CV ketel ingesteld zijn om het huis comfortabel te kunnen verwarmen?",
@@ -1071,15 +1071,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [],
                     ],
                 ],
-                'conditions' => [
-                    [
-                        [
-                            'column' => 'ventilation-type',
-                            'operator' => Clause::NEQ,
-                            'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
-                        ],
-                    ],
-                ],
             ],
             [
                 'data_type' => Caster::BOOL,
@@ -1097,20 +1088,6 @@ class ToolQuestionsTableSeeder extends Seeder
                     false => [
                         'name' => __('woningdossier.cooperation.radiobutton.no'),
                         'extra' => [],
-                    ],
-                ],
-                'conditions' => [
-                    [
-                        [
-                            'column' => 'ventilation-type',
-                            'operator' => Clause::NEQ,
-                            'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
-                        ],
-                        [
-                            'column' => 'ventilation-type',
-                            'operator' => Clause::NEQ,
-                            'value' => $ventilation->values()->where('calculate_value', 2)->first()->id, // Mechanische ventilatie
-                        ],
                     ],
                 ],
             ],
@@ -1162,15 +1139,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 // was current-state -> hoeveel zonnepanelen zijn er aanwezig
                 'translation' => "Hoeveel zonnepanelen zijn er aanwezig?",
                 'tool_question_type_id' => $textType->id,
-                'conditions' => [
-                    [
-                        [
-                            'column' => 'has-solar-panels',
-                            'operator' => Clause::EQ,
-                            'value' => 'yes',
-                        ]
-                    ],
-                ],
             ],
             [
                 'data_type' => Caster::INT,
@@ -1181,15 +1149,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => "Wat is het totale vermogen van de geplaatste panelen?",
                 'unit_of_measure' => 'WP',
                 'tool_question_type_id' => $textType->id,
-                'conditions' => [
-                    [
-                        [
-                            'column' => 'has-solar-panels',
-                            'operator' => Clause::EQ,
-                            'value' => 'yes',
-                        ],
-                    ],
-                ],
             ],
             [
                 'data_type' => Caster::INT,
@@ -1200,15 +1159,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => "Wanneer zijn de zonnepanelen geplaatst?",
                 'placeholder' => 'Voer een jaartal in',
                 'tool_question_type_id' => $textType->id,
-                'conditions' => [
-                    [
-                        [
-                            'column' => 'has-solar-panels',
-                            'operator' => Clause::EQ,
-                            'value' => 'yes',
-                        ],
-                    ],
-                ],
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1233,6 +1183,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'interested-in-heat-pump-variant',
                 'translation' => "Weet je al welk soort warmtepomp je zou willen?",
@@ -1254,15 +1205,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         'name' => 'Ja, een volledige warmtepomp',
                         'extra' => [
                             'icon' => 'icon-heat-pump',
-                        ],
-                    ],
-                ],
-                'conditions' => [
-                    [
-                        [
-                            'column' => 'interested-in-heat-pump',
-                            'operator' => Clause::EQ,
-                            'value' => 'yes',
                         ],
                     ],
                 ],
@@ -1304,9 +1246,10 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textareaPopupType->id,
             ],
             #-------------------------
-            # Dynamic expert scan questions only
+            # Expert scan questions only
             #-------------------------
             [
+                'data_type' => Caster::ARRAY,
                 'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source-considerable',
                 'translation' => 'Welke maatregelen wil je meenemen in de berekening?',
@@ -1333,6 +1276,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 //'save_in' => "building_services.{$boiler->id}.service_value_id",
                 'short' => 'new-boiler-type',
@@ -1351,6 +1295,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'new-building-heating-application',
                 'translation' => "Hoe is de verwarming in de nieuwe situatie?",
@@ -1389,6 +1334,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'new-boiler-setting-comfort-heat',
                 'translation' => "Wat wordt de stooktemperatuur in de nieuwe situatie?",
@@ -1415,6 +1361,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'new-cook-type',
                 'translation' => "Hoe wordt er gekookt in de nieuwe situatie?",
@@ -1441,6 +1388,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 //'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'new-heat-pump-type',
@@ -1459,6 +1407,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::INT,
                 'validation' => ["required", 'numeric', 'min:1'],
                 'short' => 'heat-pump-preferred-power',
                 'translation' => "Gewenst vermogen van de warmtepomp",
@@ -1466,6 +1415,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_type_id' => $textType->id,
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ["required", 'exists:tool_question_custom_values,short'],
                 'short' => 'outside-unit-space',
                 'translation' => "Is er voldoende ruimte voor een buitenunit?",
@@ -1480,6 +1430,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => ["required", 'exists:tool_question_custom_values,short'],
                 'short' => 'inside-unit-space',
                 'translation' => "Is er voldoende ruimte voor een binnenunit?",
@@ -1492,6 +1443,28 @@ class ToolQuestionsTableSeeder extends Seeder
                         'name' => 'Nee',
                     ],
                 ],
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ["required", 'exists:pv_panel_orientations,id'],
+                'save_in' => 'building_heaters.pv_panel_orientation_id',
+                'short' => 'heater-pv-panel-orientation',
+                'translation' => "Oriëntatie van de collector",
+                'help_text' => "Geef hier aan in welke oriëntatie de zonnecollector geplaatst wordt.",
+                'tool_question_type_id' => $dropdownType->id,
+                'tool_question_values' => $collectorOrientations->values()->orderBy('order')->get(),
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ["required", 'exists:tool_question_custom_values,short'],
+                'save_in' => 'building_heaters.angle',
+                'short' => 'heater-pv-panel-angle',
+                'unit_of_measure' => '°',
+                'translation' => "Hellingshoek van de collector",
+                'help_text' => "Geef hier aan onder welke hellingshoek de zonnecollector geplaatst wordt. Op een hellend dak is de hellingshoek van de collector meestal gelijk aan de dakhelling.",
+                'tool_question_type_id' => $dropdownType->id,
+                'tool_question_custom_values' => collect(\App\Helpers\KeyFigures\Heater\KeyFigures::getAngles())
+                    ->map(fn ($angle) => ['name' => $angle]),
             ],
         ];
 
@@ -1506,16 +1479,16 @@ class ToolQuestionsTableSeeder extends Seeder
                 'nl' => \App\Helpers\Translation::hasTranslation($translation . '.title')
                     ? __($translation . '.title') : $translation,
             ];
+            $helpTextTranslation = $questionData['help_text'] ?? $translation;
             $questionData['help_text'] = [
-                'nl' => \App\Helpers\Translation::hasTranslation($translation . '.help')
-                    ? __($translation . '.help') : $translation,
+                'nl' => \App\Helpers\Translation::hasTranslation($helpTextTranslation . '.help')
+                    ? __($helpTextTranslation . '.help') : $helpTextTranslation,
             ];
 
             $insertData = Arr::except($questionData,
                 ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation']);
 
             // Encode data for DB insert...
-            $insertData['conditions'] = empty($insertData['conditions']) ? null : json_encode($insertData['conditions']);
             $insertData['name'] = json_encode($insertData['name']);
             $insertData['help_text'] = json_encode($insertData['help_text']);
             $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode(['nl' => $insertData['placeholder']]);

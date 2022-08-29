@@ -313,5 +313,22 @@ class UpdateToolQuestions extends Command
                 ->where('considerable_id', $considerableStep->id)
                 ->delete();
         }
+
+        // Language lines to delete
+        $languageLines = [
+            'heater' => [
+                'pv-panel-orientation-id.title',
+                'pv-panel-orientation-id.help',
+                'angle.title',
+                'angle.help',
+            ],
+        ];
+
+        foreach ($languageLines as $group => $keys) {
+            DB::table('language_lines')
+                ->where('group', $group)
+                ->whereIn('key', $keys)
+                ->delete();
+        }
     }
 }

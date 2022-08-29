@@ -171,7 +171,7 @@ abstract class Scannable extends Component
 
                 $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
 
-                if (!$evaluation) {
+                if (! $evaluation) {
                     $this->toolQuestions = $this->toolQuestions->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they
@@ -216,7 +216,7 @@ abstract class Scannable extends Component
         if (HoomdossierSession::isUserObserving()) {
             return null;
         }
-        if (!empty($this->rules)) {
+        if (! empty($this->rules)) {
             $validator = Validator::make([
                 "filledInAnswers.{$toolQuestionId}" => $this->filledInAnswers[$toolQuestionId]
             ], $this->rules["filledInAnswers.{$toolQuestionId}"], [], $this->attributes);

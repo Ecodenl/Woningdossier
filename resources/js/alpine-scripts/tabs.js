@@ -4,21 +4,16 @@ export default (defaultTab = null) => ({
 
     init() {
         document.addEventListener('DOMContentLoaded', () => {
-            // get the current url
-            let url = document.location.href;
+            // Ensure defaultTab starts with '#'
+            let hash = document.location.hash || defaultTab;
 
             // check if the current url matches a hashtag
-            if (url.match('#')) {
-                try {
-                    let hash = new URL(url).hash;
-                    this.switchTab(document.querySelector(`a[href="${hash}"]`));
-                }
-                catch (e) {
-                    // Not valid URL
-                }
-            } else if (defaultTab && defaultTab.nodeType === Node.ELEMENT_NODE) {
-                this.switchTab(defaultTab);
-            } else {
+            if (hash) {
+                this.switchTab(document.querySelector(`a[href="${hash}"]`));
+            }
+
+            // In case no tab is set we grab the main.
+            if (this.currentTab === null) {
                  let mainTab = this.$refs['main-tab'];
                 // Set main tab by default
                 if (mainTab) {
@@ -33,22 +28,24 @@ export default (defaultTab = null) => ({
         }
     },
     switchTab(element) {
-        let href = element.getAttribute('href');
-        if (href[0] === '#') {
-            let tab = document.querySelector(href);
-            if (tab && tab !== this.currentTab) {
-                // Set last tab
-                this.lastTab = this.currentTab;
-                // Set current tab
-                this.currentTab = tab;
-                // Set hash
-                window.location.hash = element.hash;
+        if (element) {
+            let href = element.getAttribute('href');
+            if (href[0] === '#') {
+                let tab = document.querySelector(href);
+                if (tab && tab !== this.currentTab) {
+                    // Set last tab
+                    this.lastTab = this.currentTab;
+                    // Set current tab
+                    this.currentTab = tab;
+                    // Set hash
+                    window.location.hash = element.hash;
 
-                // Update buttons if needed
-                let navTabs = this.$refs['nav-tabs'];
-                if (navTabs) {
-                    navTabs.querySelector('li.active').classList.remove('active');
-                    element.parentElement.classList.add('active');
+                    // Update buttons if needed
+                    let navTabs = this.$refs['nav-tabs'];
+                    if (navTabs) {
+                        navTabs.querySelector('li.active').classList.remove('active');
+                        element.parentElement.classList.add('active');
+                    }
                 }
             }
         }

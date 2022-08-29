@@ -34006,13 +34006,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.setHeight(this.$el);
     }), _typable),
     setHeight: function setHeight(element) {
-      // Compute the height difference which is caused by border and outline
-      var outerHeight = parseInt(window.getComputedStyle(element).height, 10);
-      var diff = outerHeight - element.clientHeight; // Reset height to handle shrinking
+      if (element) {
+        // Compute the height difference which is caused by border and outline
+        var outerHeight = parseInt(window.getComputedStyle(element).height, 10);
+        var diff = outerHeight - element.clientHeight; // Reset height to handle shrinking
 
-      element.style.height = 0; // Set new height
+        element.style.height = 0; // Set new height
 
-      element.style.height = Math.max(this.defaultHeight, element.scrollHeight + diff) + 'px';
+        element.style.height = Math.max(this.defaultHeight, element.scrollHeight + diff) + 'px';
+      }
     }
   };
 });

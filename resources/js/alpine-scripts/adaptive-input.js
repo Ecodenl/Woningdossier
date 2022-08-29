@@ -18,14 +18,16 @@ export default (defaultHeight = 0) => ({
         },
     },
     setHeight(element) {
-        // Compute the height difference which is caused by border and outline
-        let outerHeight = parseInt(window.getComputedStyle(element).height, 10);
-        let diff = outerHeight - element.clientHeight;
+        if (element) {
+            // Compute the height difference which is caused by border and outline
+            let outerHeight = parseInt(window.getComputedStyle(element).height, 10);
+            let diff = outerHeight - element.clientHeight;
 
-        // Reset height to handle shrinking
-        element.style.height = 0;
+            // Reset height to handle shrinking
+            element.style.height = 0;
 
-        // Set new height
-        element.style.height = Math.max(this.defaultHeight, element.scrollHeight + diff) + 'px';
+            // Set new height
+            element.style.height = Math.max(this.defaultHeight, element.scrollHeight + diff) + 'px';
+        }
     }
 });

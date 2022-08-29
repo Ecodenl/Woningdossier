@@ -94,44 +94,13 @@ class ToolQuestion extends Model
         'resident' => 'boolean',
     ];
 
+    # Model methods
     public function hasOptions(): bool
     {
-        return  !empty($this->options);
+        return ! empty($this->options);
     }
 
-    public function toolQuestionType(): BelongsTo
-    {
-        return $this->belongsTo(ToolQuestionType::class);
-    }
 
-    public function toolQuestionAnswers(): HasMany
-    {
-        return $this->hasMany(ToolQuestionAnswer::class);
-    }
-
-    public function subSteps(): BelongsToMany
-    {
-        return $this->belongsToMany(SubStep::class, 'sub_step_tool_questions');
-    }
-    /**
-     * Method to return the intermediary morph table
-     *
-     * @return HasMany
-     */
-    public function toolQuestionValuables(): HasMany
-    {
-        return $this->hasMany(ToolQuestionValuable::class);
-    }
-
-    public function toolQuestionCustomValues()
-    {
-        return $this->hasMany(ToolQuestionCustomValue::class);
-    }
-
-    public function forSpecificInputSource(): BelongsTo
-    {
-        return $this->belongsTo(InputSource::class);
-    }
 
     /**
      * Method to return the question values  (morphed models / the options for the question)
@@ -181,5 +150,46 @@ class ToolQuestion extends Model
 
                 return $questionValue;
             });
+    }
+
+    # Relations
+    public function toolQuestionType(): BelongsTo
+    {
+        return $this->belongsTo(ToolQuestionType::class);
+    }
+
+    public function toolQuestionAnswers(): HasMany
+    {
+        return $this->hasMany(ToolQuestionAnswer::class);
+    }
+
+    public function subSteppables()
+    {
+        return $this->morphMany(SubSteppable::class, 'sub_steppable');
+    }
+
+    public function subSteps(): BelongsToMany
+    {
+        return $this->morphToMany(SubStep::class, 'sub_steppable')
+            ->using(SubSteppable::class);
+    }
+    /**
+     * Method to return the intermediary morph table
+     *
+     * @return HasMany
+     */
+    public function toolQuestionValuables(): HasMany
+    {
+        return $this->hasMany(ToolQuestionValuable::class);
+    }
+
+    public function toolQuestionCustomValues()
+    {
+        return $this->hasMany(ToolQuestionCustomValue::class);
+    }
+
+    public function forSpecificInputSource(): BelongsTo
+    {
+        return $this->belongsTo(InputSource::class);
     }
 }

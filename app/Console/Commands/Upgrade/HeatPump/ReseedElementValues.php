@@ -3,22 +3,23 @@
 namespace App\Console\Commands\Upgrade\HeatPump;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
-class DoUpgrade extends Command
+class ReseedElementValues extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'upgrade:heat-pump:do';
+    protected $signature = 'upgrade:heat-pump:reseed-element-values';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Upgrade the application with all changes for the heat-pump';
+    protected $description = 'Re-run the ElementValuesTableSeeder';
 
     /**
      * Create a new command instance.
@@ -37,14 +38,6 @@ class DoUpgrade extends Command
      */
     public function handle()
     {
-        $commands = [
-            UpdateToolQuestions::class => [],
-            ReseedElementValues::class => [],
-        ];
-
-        foreach ($commands as $command => $params) {
-            $this->info("Running command: {$command}");
-            $this->call($command, $params);
-        }
+        Artisan::call('db:seed', ['--class' => 'ElementValuesTableSeeder', '--force' => true]);
     }
 }

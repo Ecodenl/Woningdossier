@@ -172,8 +172,8 @@
                     @endslot
 
 
-                        @include("cooperation.tool-question-type-templates.{$toolQuestion->toolQuestionType->short}.show", [
-                                  'disabled' => $disabled,
+                    @include("cooperation.tool-question-type-templates.{$toolQuestion->toolQuestionType->short}.show", [
+                        'disabled' => $disabled,
                     ])
 
 

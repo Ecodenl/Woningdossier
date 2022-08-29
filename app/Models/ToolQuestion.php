@@ -19,7 +19,6 @@ use Illuminate\Support\Collection;
  * @property string|null $short
  * @property string|null $save_in
  * @property int|null $for_specific_input_source_id
- * @property array|null $conditions
  * @property array $name
  * @property array $help_text
  * @property array|null $placeholder
@@ -46,7 +45,6 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion query()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCoach($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereConditions($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereForSpecificInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereHelpText($value)
@@ -75,7 +73,6 @@ class ToolQuestion extends Model
 
     protected $fillable = [
         'short',
-        'conditions',
         'placeholder',
         'data_type',
         'name',
@@ -91,7 +88,6 @@ class ToolQuestion extends Model
     ];
 
     protected $casts = [
-        'conditions' => 'array',
         'options' => 'array',
         'validation' => 'array',
         'coach' => 'boolean',

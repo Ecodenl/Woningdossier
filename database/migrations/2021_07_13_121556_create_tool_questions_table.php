@@ -20,7 +20,6 @@ class CreateToolQuestionsTable extends Migration
             $table->string('save_in')->nullable()->default(null);
             $table->unsignedInteger('for_specific_input_source_id')->nullable();
             $table->foreign('for_specific_input_source_id')->references('id')->on('input_sources')->onDelete('set null');
-            $table->json('conditions')->nullable()->default(null);
             $table->json('name');
             $table->json('help_text');
             $table->json('placeholder')->nullable()->default(null);

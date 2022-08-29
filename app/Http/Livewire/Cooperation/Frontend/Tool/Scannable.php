@@ -148,7 +148,7 @@ abstract class Scannable extends Component
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             $answers = $dynamicAnswers;
 
-            if (! empty(optional($toolQuestion->pivot)->conditions)) {
+            if (! empty($toolQuestion->pivot->conditions)) {
                 $conditions = $toolQuestion->pivot->conditions;
 
                 foreach ($conditions as $conditionSet) {

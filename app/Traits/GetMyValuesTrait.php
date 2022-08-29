@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingInsulatedGlazing;
@@ -116,7 +117,7 @@ trait GetMyValuesTrait
                         // Conditional logic, tool_question_custom_value_id should only be evaluated if the
                         // question is a checkbox
                         if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
-                            $shouldAdd = $toolQuestion->toolQuestionType->short === 'checkbox-icon';
+                            $shouldAdd = $toolQuestion->data_type = Caster::ARRAY;
                         }
                     }
 

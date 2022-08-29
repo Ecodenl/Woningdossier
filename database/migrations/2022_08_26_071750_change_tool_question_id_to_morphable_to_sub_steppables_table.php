@@ -14,7 +14,16 @@ class ChangeToolQuestionIdToMorphableToSubSteppablesTable extends Migration
     public function up()
     {
         Schema::table('sub_steppables', function (Blueprint $table) {
-            $table->dropForeign('sub_step_tool_questions_tool_question_id_foreign');
+
+            $conn = Schema::getConnection()->getDoctrineSchemaManager();
+            $keys = array_map(function ($key) {
+                return $key->getName();
+            }, $conn->listTableForeignKeys('sub_steppables'));
+
+            if (in_array("sub_step_tool_questions_tool_question_id_foreign", $keys)) {
+                $table->dropForeign('sub_step_tool_questions_tool_question_id_foreign');
+            }
+
             if (Schema::hasColumn('sub_steppables', 'tool_question_id')) {
                 $table->renameColumn('tool_question_id', 'sub_steppable_id');
             }
@@ -30,7 +39,7 @@ class ChangeToolQuestionIdToMorphableToSubSteppablesTable extends Migration
 
     protected function createIndexName($type, array $columns)
     {
-        $index = strtolower('sub_steppables'.'_'.implode('_', $columns).'_'.$type);
+        $index = strtolower('sub_steppables' . '_' . implode('_', $columns) . '_' . $type);
         return str_replace(['-', '.'], '_', $index);
     }
 

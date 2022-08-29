@@ -77,6 +77,7 @@ class ToolQuestion extends Model
         'short',
         'conditions',
         'placeholder',
+        'data_type',
         'name',
         'help_text',
         'tool_question_type_id',

@@ -738,7 +738,13 @@ class ToolQuestionsTableSeeder extends Seeder
                     ],
                 ],
             ],
-            // heat source warm tap water
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['required', 'string'],
+                'short' => 'heat-source-other',
+                'translation' => 'Wat wordt er dan gebruikt voor verwarming?',
+                'tool_question_type_id' => $textType->id,
+            ],
             [
                 'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
@@ -797,6 +803,13 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::STRING,
+                'validation' => ['required', 'string'],
+                'short' => 'heat-source-warm-tap-water-other',
+                'translation' => 'Wat wordt er dan gebruikt voor warm tapwater?',
+                'tool_question_type_id' => $textType->id,
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_services.{$heater->id}.service_value_id",
@@ -851,7 +864,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'heat-pump-type',
-                'translation' => "Wat voor type warmtepomp is er nu?",
+                'translation' => "Wat voor type warmtepomp is er?",
                 'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
                 'extra' => [
                     'column' => 'calculate_value',
@@ -862,15 +875,8 @@ class ToolQuestionsTableSeeder extends Seeder
                         4 => [],
                         5 => [],
                         6 => [],
-                        7 => [],
                     ],
                 ],
-            ],
-            [
-                'data_type' => Caster::STRING,
-                'validation' => ['required', 'string'],
-                'short' => 'heat-pump-other',
-                'translation' => 'Wat voor andere warmtepomp is er nu?',
             ],
             [
                 'data_type' => Caster::INT,
@@ -1326,7 +1332,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         4 => [],
                         5 => [],
                         6 => [],
-                        7 => [],
                     ],
                 ],
             ],

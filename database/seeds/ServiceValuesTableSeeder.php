@@ -87,16 +87,6 @@ class ServiceValuesTableSeeder extends Seeder
                             'comfort' => 3,
                         ],
                     ],
-                    [
-                        'value' => [
-                            'nl' => 'Anders',
-                        ],
-                        'order' => 7,
-                        'calculate_value' => 7,
-                        'configurations' => [
-                            'comfort' => 0,
-                        ],
-                    ],
                 ],
             ],
             [

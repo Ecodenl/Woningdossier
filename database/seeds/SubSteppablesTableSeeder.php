@@ -376,6 +376,19 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $checkboxIconType->id,
                             'size' => 'w-full',
                         ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-other'),
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
+                        ],
                     ],
                 ],
                 'Verwarming warm water' => [
@@ -386,6 +399,19 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
                             'tool_question_type_id' => $checkboxIconType->id,
                             'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water-other'),
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
                         ],
                     ],
                 ],
@@ -456,20 +482,6 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('heat-pump-type'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('heat-pump-other'),
-                            'tool_question_type_id' => $textType->id,
-                            'size' => 'w-full',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-pump-type',
-                                        'operator' => Clause::EQ,
-                                        'value' => $heatPump->values()->where('calculate_value', 7)->first()->id, // Anders
-                                    ],
-                                ],
-                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-placed-date'),
@@ -651,20 +663,34 @@ class SubSteppablesTableSeeder extends Seeder
                     // the database could still hold "full heat pump" as answer.
                     'conditions' => [
                         [
+                            // No heat pump selected
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::NOT_CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                            [
+                                'column' => 'heat-source-warm-tap-water',
+                                'operator' => Clause::NOT_CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                        ],
+                        [
+                            // Full heat pumps
                             [
                                 'column' => 'heat-pump-type',
                                 'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 4)->first()->id, // Anders
+                                'value' => $heatPump->values()->where('calculate_value', 4)->first()->id,
                             ],
                             [
                                 'column' => 'heat-pump-type',
                                 'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 5)->first()->id, // Anders
+                                'value' => $heatPump->values()->where('calculate_value', 5)->first()->id,
                             ],
                             [
                                 'column' => 'heat-pump-type',
                                 'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 6)->first()->id, // Anders
+                                'value' => $heatPump->values()->where('calculate_value', 6)->first()->id,
                             ],
                         ],
                     ],
@@ -898,7 +924,7 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
                         ],
-                        [   // TODO: Double questions? (See sun-boiler)
+                        [
                             'morph' => ToolQuestion::findByShort('water-comfort'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
@@ -979,19 +1005,14 @@ class SubSteppablesTableSeeder extends Seeder
                             'size' => 'w-full',
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('water-comfort'),
-                            'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/3',
-                        ],
-                        [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-orientation'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/3',
+                            'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-angle'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/3',
+                            'size' => 'w-1/2',
                         ],
                     ],
                 ],

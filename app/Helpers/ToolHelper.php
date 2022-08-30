@@ -8,7 +8,6 @@ use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingHeatingApplication;
-use App\Models\BuildingType;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
 use App\Models\EnergyLabel;
@@ -16,7 +15,6 @@ use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
 use App\Models\InsulatingGlazing;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\PvPanelOrientation;
@@ -24,13 +22,9 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
-use App\Models\SubStepTemplate;
 use App\Models\ToolQuestion;
-use App\Models\ToolQuestionType;
-use App\Models\Ventilation;
 use App\Models\WoodRotStatus;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\Rule;
 
 class ToolHelper
 {

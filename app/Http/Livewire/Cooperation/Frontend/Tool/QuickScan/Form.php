@@ -3,25 +3,19 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Console\Commands\Tool\RecalculateForUser;
-use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
-use App\Models\Building;
 use App\Models\CompletedSubStep;
-use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 class Form extends Scannable
 {
@@ -29,7 +23,7 @@ class Form extends Scannable
     public $subStep;
 
     public $nextUrl;
-    
+
     public function mount(Step $step, SubStep $subStep)
     {
         Log::debug('mounting form');

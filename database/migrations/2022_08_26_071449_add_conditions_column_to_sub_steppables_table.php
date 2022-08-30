@@ -13,9 +13,11 @@ class AddConditionsColumnToSubSteppablesTable extends Migration
      */
     public function up()
     {
-        Schema::table('sub_steppables', function (Blueprint $table) {
-            $table->json('conditions')->after('tool_question_id')->nullable()->default(null);
-        });
+        if (! Schema::hasColumn('sub_steppables', 'conditions')) {
+            Schema::table('sub_steppables', function (Blueprint $table) {
+                $table->json('conditions')->after('tool_question_type_id')->nullable()->default(null);
+            });
+        }
     }
 
     /**
@@ -25,8 +27,10 @@ class AddConditionsColumnToSubSteppablesTable extends Migration
      */
     public function down()
     {
-        Schema::table('sub_steppables', function (Blueprint $table) {
-            $table->dropColumn('conditions');
-        });
+        if (Schema::hasColumn('sub_steppables', 'conditions')) {
+            Schema::table('sub_steppables', function (Blueprint $table) {
+                $table->dropColumn('conditions');
+            });
+        }
     }
 }

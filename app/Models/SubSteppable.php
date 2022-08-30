@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphPivot;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class SubSteppable extends MorphPivot
 {
@@ -12,8 +14,14 @@ class SubSteppable extends MorphPivot
         'conditions' => 'array',
     ];
 
-    public function subSteppables()
+    # Relations
+    public function subSteppables(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function toolQuestionType(): BelongsTo
+    {
+        return $this->belongsTo(ToolQuestionType::class);
     }
 }

@@ -100,7 +100,7 @@ class SubStep extends Model
         return $this->morphedByMany(ToolQuestion::class, 'sub_steppable')
             ->using(SubSteppable::class)
             ->orderBy('order')
-            ->withPivot('order', 'size', 'conditions');
+            ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
 
     public function subSteppables()

@@ -45,7 +45,6 @@ class Form extends Scannable
         $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
     }
 
-
     public function render()
     {
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
@@ -129,7 +128,7 @@ class Form extends Scannable
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->first();
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)

@@ -48,7 +48,6 @@ abstract class Scannable extends Component
 
     public function boot()
     {
-
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
@@ -70,18 +69,14 @@ abstract class Scannable extends Component
 
         $this->originalAnswers = $this->filledInAnswers;
 
-
         $this->rules['initialToolQuestions.*.pivot.order'] = [];
         $this->rules['initialToolQuestions.pivot.order'] = [];
         $this->rules['initialToolQuestions.relations.*'] = [];
-
-
     }
 
     abstract function hydrateToolQuestions();
 
     abstract function save($nextUrl = "");
-
 
     public function rehydrateToolQuestions()
     {
@@ -91,7 +86,6 @@ abstract class Scannable extends Component
 
         $this->toolQuestions = new Collection($this->initialToolQuestions->values());
     }
-
 
     private function setValidationForToolQuestions()
     {
@@ -209,7 +203,6 @@ abstract class Scannable extends Component
         $this->filledInAnswers[$toolQuestionId] = $this->originalAnswers[$toolQuestionId];
     }
 
-
     // specific to the popup question
     public function saveSpecificToolQuestion($toolQuestionId)
     {
@@ -269,7 +262,7 @@ abstract class Scannable extends Component
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->first();
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)

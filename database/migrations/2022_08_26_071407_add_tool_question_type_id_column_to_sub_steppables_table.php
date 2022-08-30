@@ -17,8 +17,8 @@ class AddToolQuestionTypeIdColumnToSubSteppablesTable extends Migration
             Schema::disableForeignKeyConstraints();
 
             Schema::table('sub_steppables', function (Blueprint $table) {
-                $table->unsignedBigInteger('tool_question_type_id')->after('tool_question_id');
-                $table->foreign('tool_question_type_id')->references('id')->on('tool_question_types')->onDelete('cascade');
+                $table->unsignedBigInteger('tool_question_type_id')->nullable()->after('tool_question_id');
+                $table->foreign('tool_question_type_id')->references('id')->on('tool_question_types')->onDelete('set null');
             });
 
             Schema::table('tool_questions', function (Blueprint $table) {

@@ -917,7 +917,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'heat-pump-type',
-                'translation' => "Wat voor type warmtepomp is er nu?",
+                'translation' => "Wat voor type warmtepomp is er?",
                 'tool_question_type_id' => $radioType->id,
                 'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
                 'extra' => [

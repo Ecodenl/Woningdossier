@@ -80,7 +80,6 @@ class UpdateToolQuestions extends Command
         $heatSourceQuestion->update(['name' => ['nl' => 'Wat wordt er gebruikt voor verwarming']]);
 
         ToolQuestion::findByShort('heat-pump-type')->update(['name' => ['nl' => 'Wat voor type warmtepomp is er?']]);
-        ToolQuestion::findByShort('interested-in-heat-pump')->update(['name' => ['nl' => 'Overweeg je om een warmtepomp te nemen?']]);
 
         $heatPump = Service::findByShort('heat-pump');
         $none = ServiceValue::where('service_id', $heatPump->id)->byValue('Geen')->first();
@@ -260,10 +259,10 @@ class UpdateToolQuestions extends Command
 
             $heatSourceOtherQuestion = ToolQuestion::findByShort('heat-source-other');
             $heatSourceWaterOtherQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water-other');
-            $heatSourceOtherCustomValue = ToolQuestionCustomValue::where('tool_question_id', $heatSourceOtherQuestion->id)
+            $heatSourceOtherCustomValue = ToolQuestionCustomValue::where('tool_question_id', $heatSourceQuestion->id)
                 ->whereShort('none')
                 ->first();
-            $heatSourceWaterOtherCustomValue = ToolQuestionCustomValue::where('tool_question_id', $heatSourceWaterOtherQuestion->id)
+            $heatSourceWaterOtherCustomValue = ToolQuestionCustomValue::where('tool_question_id', $heatSourceWaterQuestion->id)
                 ->whereShort('none')
                 ->first();
 
@@ -278,7 +277,7 @@ class UpdateToolQuestions extends Command
                                 'building_id' => $buildingService->building_id,
                                 'input_source_id' => $buildingService->input_source_id,
                                 'tool_question_id' => $heatSourceQuestion->id,
-                                'tool_question_custom_value' => $heatSourceOtherCustomValue->id,
+                                'tool_question_custom_value_id' => $heatSourceOtherCustomValue->id,
                             ],
                             [
                                 'answer' => $heatSourceOtherCustomValue->short,
@@ -303,7 +302,7 @@ class UpdateToolQuestions extends Command
                                 'building_id' => $buildingService->building_id,
                                 'input_source_id' => $buildingService->input_source_id,
                                 'tool_question_id' => $heatSourceWaterQuestion->id,
-                                'tool_question_custom_value' => $heatSourceWaterOtherCustomValue->id,
+                                'tool_question_custom_value_id' => $heatSourceWaterOtherCustomValue->id,
                             ],
                             [
                                 'answer' => $heatSourceWaterOtherCustomValue->short,
@@ -340,42 +339,6 @@ class UpdateToolQuestions extends Command
             });
 
             $collectiveValue->delete();
-        }
-
-        // Map interest into now 2 separate questions
-        $heatPumpInterest = ToolQuestion::findByShort('interested-in-heat-pump');
-        $heatPumpInterestVariant = ToolQuestion::findByShort('interested-in-heat-pump-variant');
-
-        $oldToNew = [
-            'yes-hybrid-heat-pump' => 'hybrid-heat-pump',
-            'yes-full-heat-pump' => 'full-heat-pump',
-            'unsure' => 'unsure',
-        ];
-
-        $this->infoLog("Starting interested-in-heat-pump to interested-in-heat-pump-variant map");
-
-        foreach ($oldToNew as $old => $new) {
-            $oldValue = ToolQuestionCustomValue::where('tool_question_id', $heatPumpInterest->id)
-                ->whereShort($old)
-                ->first();
-
-            // Keep atomic!
-            if ($oldValue instanceof ToolQuestionCustomValue) {
-                $newValue = ToolQuestionCustomValue::where('tool_question_id', $heatPumpInterestVariant->id)
-                    ->whereShort($new)
-                    ->first();
-
-                DB::table('tool_question_answers')
-                    ->where('tool_question_id', $heatPumpInterest)
-                    ->where('tool_question_custom_value_id', $oldValue)
-                    ->update([
-                        'tool_question_id' => $heatPumpInterestVariant->id,
-                        'tool_question_custom_value_id' => $newValue->id,
-                        'answer' => $newValue->short,
-                    ]);
-
-                $oldValue->delete();
-            }
         }
 
         $this->infoLog("Starting considerable to 'new situation' considerable question map");

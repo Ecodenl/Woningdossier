@@ -378,6 +378,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-other'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -402,6 +403,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water-other'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [

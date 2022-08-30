@@ -743,7 +743,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'string'],
                 'short' => 'heat-source-other',
                 'translation' => 'Wat wordt er dan gebruikt voor verwarming?',
-                'tool_question_type_id' => $textType->id,
             ],
             [
                 'data_type' => Caster::ARRAY,
@@ -807,7 +806,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'string'],
                 'short' => 'heat-source-warm-tap-water-other',
                 'translation' => 'Wat wordt er dan gebruikt voor warm tapwater?',
-                'tool_question_type_id' => $textType->id,
             ],
             [
                 'data_type' => Caster::IDENTIFIER,

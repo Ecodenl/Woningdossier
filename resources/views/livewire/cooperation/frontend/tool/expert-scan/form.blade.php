@@ -17,7 +17,7 @@
 
         @foreach($step->subSteps as $subStep)
              <div x-show="active == '{{$subStep->slug}}'">
-                @livewire('cooperation.frontend.tool.expert-scan.sub-steppable', ['step' => $step, 'subStep' => $subStep]))
+                @livewire('cooperation.frontend.tool.expert-scan.sub-steppable', ['step' => $step, 'subStep' => $subStep])
              </div>
          @endforeach
     </div>

@@ -787,7 +787,13 @@ class ToolQuestionsTableSeeder extends Seeder
                     ],
                 ],
             ],
-            // heat source warm tap water
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['required', 'string'],
+                'short' => 'heat-source-other',
+                'translation' => 'Wat wordt er dan gebruikt voor verwarming?',
+                'tool_question_type_id' => $textType->id,
+            ],
             [
                 'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
@@ -845,6 +851,13 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ],
                 ],
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['required', 'string'],
+                'short' => 'heat-source-warm-tap-water-other',
+                'translation' => 'Wat wordt er dan gebruikt voor warm tapwater?',
+                'tool_question_type_id' => $textType->id,
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -916,16 +929,8 @@ class ToolQuestionsTableSeeder extends Seeder
                         4 => [],
                         5 => [],
                         6 => [],
-                        7 => [],
                     ],
                 ],
-            ],
-            [
-                'data_type' => Caster::STRING,
-                'validation' => ['required', 'string'],
-                'short' => 'heat-pump-other',
-                'translation' => 'Wat voor andere warmtepomp is er nu?',
-                'tool_question_type_id' => $textType->id,
             ],
             [
                 'data_type' => Caster::INT,
@@ -1406,7 +1411,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         4 => [],
                         5 => [],
                         6 => [],
-                        7 => [],
                     ],
                 ],
             ],

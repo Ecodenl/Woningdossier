@@ -169,10 +169,6 @@ class UpdateToolQuestions extends Command
             'Volledige warmtepomp met pvt panelen' => [
                 'comfort' => 3,
             ],
-            'Anders' => [
-                'old' => 'Collectieve warmtepomp',
-                'comfort' => 0,
-            ],
         ];
 
         $this->infoLog('Starting heat pump service value map');
@@ -217,44 +213,8 @@ class UpdateToolQuestions extends Command
     {
         $this->infoLog('Starting post-question map');
 
-        $heatPump = Service::findByShort('heat-pump');
-        $otherValue = ServiceValue::where('service_id', $heatPump->id)->byValue('Anders')->first();
-
-        $buildingServicesQuery = DB::table('building_services')->where('service_id', $heatPump->id)
-            ->where('service_value_id', $otherValue->id);
-
-        $total = $buildingServicesQuery->count();
-        $this->infoLog("Starting 'other' to 'collectieve warmtepomp' service value map for a total of {$total} building_services");
-
-        $newQuestion = ToolQuestion::findByShort('heat-pump-other');
-
-        $i = 0;
-
-        $buildingServicesQuery->orderBy('id')->chunkById(100, function ($buildingServices) use (&$i, $newQuestion, $total) {
-            // Map all "other" answers to "Collectieve warmtepomp" (as that was their old answer)
-            foreach ($buildingServices as $buildingService) {
-                DB::table('tool_question_answers')
-                    ->updateOrInsert(
-                        [
-                            'building_id' => $buildingService->building_id,
-                            'input_source_id' => $buildingService->input_source_id,
-                            'tool_question_id' => $newQuestion->id,
-                        ],
-                        [
-                            'answer' => "Collectieve warmtepomp",
-                        ]
-                    );
-
-                ++$i;
-
-                if ($i % 1000 === 0) {
-                    $this->infoLog("{$i} / {$total}");
-                }
-            }
-        });
-
         $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
-        $heatSourceQuestionTapWater = ToolQuestion::findByShort('heat-source-warm-tap-water');
+        $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
 
         $answersQuery = DB::table('tool_question_answers')
             ->where('tool_question_id', $heatSourceQuestion->id);
@@ -264,18 +224,18 @@ class UpdateToolQuestions extends Command
 
         $i = 0;
 
-        $answersQuery->orderBy('id')->chunkById(100, function ($answers) use (&$i, $total, $heatSourceQuestion, $heatSourceQuestionTapWater) {
+        $answersQuery->orderBy('id')->chunkById(100, function ($answers) use (&$i, $total, $heatSourceQuestion, $heatSourceWaterQuestion) {
             // Map relevant answers from heat-source to heat-source-warm-tap-water
             foreach ($answers as $answer) {
                 if ($answer->answer !== 'infrared') {
-                    $customValueId = ToolQuestionCustomValue::where('tool_question_id', $heatSourceQuestionTapWater->id)
+                    $customValueId = ToolQuestionCustomValue::where('tool_question_id', $heatSourceWaterQuestion->id)
                         ->whereShort($answer->answer)
                         ->first()->id;
                     DB::table('tool_question_answers')
                         ->updateOrInsert([
                             'building_id' => $answer->building_id,
                             'input_source_id' => $answer->input_source_id,
-                            'tool_question_id' => $heatSourceQuestionTapWater->id,
+                            'tool_question_id' => $heatSourceWaterQuestion->id,
                             'tool_question_custom_value_id' => $customValueId,
                         ], ['answer' => $answer->answer]);
                 }
@@ -286,6 +246,101 @@ class UpdateToolQuestions extends Command
                 }
             }
         });
+
+        $heatPump = Service::findByShort('heat-pump');
+        $collectiveValue = ServiceValue::where('service_id', $heatPump->id)->byValue('Collectieve warmtepomp')->first();
+
+        // Keep atomic!
+        if ($collectiveValue instanceof ServiceValue) {
+            $buildingServicesQuery = DB::table('building_services')->where('service_id', $heatPump->id)
+                ->where('service_value_id', $collectiveValue->id);
+
+            $total = $buildingServicesQuery->count();
+            $this->infoLog("Starting 'Collectieve warmtepomp' to 'other' map for a total of {$total} building_services");
+
+            $heatSourceOtherQuestion = ToolQuestion::findByShort('heat-source-other');
+            $heatSourceWaterOtherQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water-other');
+            $heatSourceOtherCustomValue = ToolQuestionCustomValue::where('tool_question_id', $heatSourceOtherQuestion->id)
+                ->whereShort('none')
+                ->first();
+            $heatSourceWaterOtherCustomValue = ToolQuestionCustomValue::where('tool_question_id', $heatSourceWaterOtherQuestion->id)
+                ->whereShort('none')
+                ->first();
+
+            $i = 0;
+
+            $buildingServicesQuery->orderBy('id')->chunkById(100, function ($buildingServices) use (&$i, $total, $heatSourceQuestion, $heatSourceOtherQuestion, $heatSourceWaterQuestion, $heatSourceWaterOtherQuestion, $heatSourceOtherCustomValue, $heatSourceWaterOtherCustomValue, $heatPump, $collectiveValue) {
+                // Map all "Collectieve warmtepomp" to 'Other' (as that was their old answer)
+                foreach ($buildingServices as $buildingService) {
+                    DB::table('tool_question_answers')
+                        ->updateOrInsert(
+                            [
+                                'building_id' => $buildingService->building_id,
+                                'input_source_id' => $buildingService->input_source_id,
+                                'tool_question_id' => $heatSourceQuestion->id,
+                                'tool_question_custom_value' => $heatSourceOtherCustomValue->id,
+                            ],
+                            [
+                                'answer' => $heatSourceOtherCustomValue->short,
+                            ]
+                        );
+
+                    DB::table('tool_question_answers')
+                        ->updateOrInsert(
+                            [
+                                'building_id' => $buildingService->building_id,
+                                'input_source_id' => $buildingService->input_source_id,
+                                'tool_question_id' => $heatSourceOtherQuestion->id,
+                            ],
+                            [
+                                'answer' => "Collectieve warmtepomp",
+                            ]
+                        );
+
+                    DB::table('tool_question_answers')
+                        ->updateOrInsert(
+                            [
+                                'building_id' => $buildingService->building_id,
+                                'input_source_id' => $buildingService->input_source_id,
+                                'tool_question_id' => $heatSourceWaterQuestion->id,
+                                'tool_question_custom_value' => $heatSourceWaterOtherCustomValue->id,
+                            ],
+                            [
+                                'answer' => $heatSourceWaterOtherCustomValue->short,
+                            ]
+                        );
+
+                    DB::table('tool_question_answers')
+                        ->updateOrInsert(
+                            [
+                                'building_id' => $buildingService->building_id,
+                                'input_source_id' => $buildingService->input_source_id,
+                                'tool_question_id' => $heatSourceWaterOtherQuestion->id,
+                            ],
+                            [
+                                'answer' => "Collectieve warmtepomp",
+                            ]
+                        );
+
+                    DB::table('building_services')
+                        ->where('building_id', $buildingService->building_id)
+                        ->where('input_source_id', $buildingService->input_source_id)
+                        ->where('service_id', $heatPump->id)
+                        ->where('service_value_id', $collectiveValue->id)
+                        ->update([
+                            'service_value_id' => null,
+                        ]);
+
+                    ++$i;
+
+                    if ($i % 1000 === 0) {
+                        $this->infoLog("{$i} / {$total}");
+                    }
+                }
+            });
+
+            $collectiveValue->delete();
+        }
 
         // Map interest into now 2 separate questions
         $heatPumpInterest = ToolQuestion::findByShort('interested-in-heat-pump');

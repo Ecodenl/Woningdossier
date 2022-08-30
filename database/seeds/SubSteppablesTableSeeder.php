@@ -328,6 +328,19 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('heat-source'),
                             'size' => 'w-full',
                         ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-other'),
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
+                        ],
                     ],
                 ],
                 'Verwarming warm water' => [
@@ -337,6 +350,19 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
                             'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water-other'),
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
                         ],
                     ],
                 ],
@@ -403,19 +429,6 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-type'),
                             'size' => 'w-full',
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('heat-pump-other'),
-                            'size' => 'w-full',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-pump-type',
-                                        'operator' => Clause::EQ,
-                                        'value' => $heatPump->values()->where('calculate_value', 7)->first()->id, // Anders
-                                    ],
-                                ],
-                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-placed-date'),
@@ -584,20 +597,34 @@ class SubSteppablesTableSeeder extends Seeder
                     // the database could still hold "full heat pump" as answer.
                     'conditions' => [
                         [
+                            // No heat pump selected
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::NOT_CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                            [
+                                'column' => 'heat-source-warm-tap-water',
+                                'operator' => Clause::NOT_CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                        ],
+                        [
+                            // Full heat pumps
                             [
                                 'column' => 'heat-pump-type',
                                 'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 4)->first()->id, // Anders
+                                'value' => $heatPump->values()->where('calculate_value', 4)->first()->id,
                             ],
                             [
                                 'column' => 'heat-pump-type',
                                 'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 5)->first()->id, // Anders
+                                'value' => $heatPump->values()->where('calculate_value', 5)->first()->id,
                             ],
                             [
                                 'column' => 'heat-pump-type',
                                 'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 6)->first()->id, // Anders
+                                'value' => $heatPump->values()->where('calculate_value', 6)->first()->id,
                             ],
                         ],
                     ],

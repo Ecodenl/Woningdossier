@@ -6,6 +6,7 @@ use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\CompletedSubStep;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\ToolQuestion;
@@ -27,6 +28,8 @@ class Form extends Component
     public $succeededSubSteps = [];
     public $failedValidationForSubSteps = [];
 
+    public $cooperation;
+
 
     public $listeners = ['subStepValidationSucceeded' => 'subStepSucceeded', 'failedValidationForSubSteps', 'setFilledInAnswers'];
 
@@ -40,10 +43,11 @@ class Form extends Component
         Log::debug(json_encode($this->failedValidationForSubSteps));
     }
 
-    public function mount(Step $step)
+    public function mount(Step $step, Cooperation $cooperation)
     {
         $this->step = $step;
         $this->subSteps = $step->subSteps;
+        $this->cooperation = $cooperation;
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
@@ -150,7 +154,7 @@ class Form extends Component
                 ]);
             }
 
-            return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => HoomdossierSession::getCooperation(true)]);
+            return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $this->cooperation]);
 
         }
     }

@@ -7,15 +7,17 @@
             <nav class="flex space-x-4" aria-label="Tabs">
                 <!-- Current: "bg-indigo-100 text-indigo-700", Default: "text-green-500 hover:text-green-700" -->
                 @foreach($step->subSteps as $subStep)
-                    <a x-on:click="active = '{{$subStep->slug}}'" href="#" class="no-underline rounded-md p-2 bg-green text-white hover:bg-gray ">{{$subStep->name}}</a>
+                    <a x-on:click="active = '{{$subStep->slug}}'" href="#" class="no-underline rounded-md p-2 bg-green text-white hover:bg-gray ">
+                        {{$subStep->name}}
+                    </a>
                 @endforeach
             </nav>
         </div>
 
         @foreach($step->subSteps as $subStep)
-            <div x-show="active == '{{$subStep->slug}}'" wire:ignore>
+            <div x-show="active == '{{$subStep->slug}}'">
                 <h1>{{$subStep->name}}</h1>
-                @livewire('cooperation.frontend.tool.expert-scan.sub-steppable', ['step' => $step, 'subStep' => $subStep], key($subStep->id))
+                @livewire('cooperation.frontend.tool.expert-scan.sub-steppable', ['step' => $step, 'subStep' => $subStep], key(Str::random()))
             </div>
         @endforeach
     </div>

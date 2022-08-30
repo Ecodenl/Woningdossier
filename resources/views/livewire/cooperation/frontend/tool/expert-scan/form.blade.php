@@ -1,55 +1,26 @@
 <div>
-    <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-5">
-{{--        <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 ">--}}
-            @foreach($toolQuestions as $toolQuestion)
-                @php
-                    $disabled = ! $building->user->account->can('answer', $toolQuestion);
-                    $humanReadableAnswer = null;
+    @foreach($failedValidationForSubSteps as $failedValidationForSubStep)
+        <h1>Failed {{$failedValidationForSubStep}}</h1>
+    @endforeach
+    <div x-data="{ active: '{{$step->subSteps->first()->slug}}'}">
+        <div class="hidden sm:block">
+            <nav class="flex space-x-4" aria-label="Tabs">
+                <!-- Current: "bg-indigo-100 text-indigo-700", Default: "text-green-500 hover:text-green-700" -->
+                @foreach($step->subSteps as $subStep)
+                    <a x-on:click="active = '{{$subStep->slug}}'" href="#" class="no-underline rounded-md p-2 bg-green text-white hover:bg-gray ">{{$subStep->name}}</a>
+                @endforeach
+            </nav>
+        </div>
 
-                switch($toolQuestion->short) {
-                    case 'building-type':
-                        $rawAnswer = $building->getAnswer($masterInputSource, \App\Models\ToolQuestion::findByShort('building-type-category'));
-                        // if there is an answer we can find the row and get the answer.
-                        $model = \App\Models\BuildingTypeCategory::find($rawAnswer);
-                        if ($model instanceof \App\Models\BuildingTypeCategory) {
-                            $humanReadableAnswer = Str::lower(
-                             $model->name
-                            );
-                        }
-                        break;
-                    default:
-                        $humanReadableAnswer = null;
-                }
-                @endphp
-
-                <div class="w-full @if($loop->iteration > 1) pt-10 @endif">
-                    @component('cooperation.frontend.layouts.components.form-group', [
-                        'class' => 'form-group-heading',
-                        // 'defaultInputSource' => 'resident',
-                        // so we give the option to replace something in the question title
-                        'label' => __($toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"), ['name' => $humanReadableAnswer]),
-                        'inputName' => "filledInAnswers.{$toolQuestion->id}",
-                        'withInputSource' => ! $disabled,
-                    ])
-                        @slot('sourceSlot')
-                            @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                                'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
-                                'toolQuestion' => $toolQuestion,
-                            ])
-                        @endslot
-
-                        @slot('modalBodySlot')
-                            <p>
-                                {!! $toolQuestion->help_text !!}
-                            </p>
-                        @endslot
-
-                        @include("cooperation.tool-question-type-templates.{$toolQuestion->toolQuestionType->short}.show", [
-                            'disabled' => $disabled,
-                        ])
-                    @endcomponent
-                </div>
-            @endforeach
-{{--        </div>--}}
+        @foreach($step->subSteps as $subStep)
+            <div x-show="active == '{{$subStep->slug}}'" wire:ignore>
+                <h1>{{$subStep->name}}</h1>
+                @livewire('cooperation.frontend.tool.expert-scan.sub-steppable', ['step' => $step, 'subStep' => $subStep], key($subStep->id))
+            </div>
+        @endforeach
     </div>
+
+    <button wire:click="$emitTo('cooperation.frontend.tool.expert-scan.sub-steppable', 'save')" class="float-right btn btn-purple">
+        @lang('default.buttons.save')
+    </button>
 </div>

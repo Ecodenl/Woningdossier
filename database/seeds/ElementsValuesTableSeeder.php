@@ -273,8 +273,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 6,
                         'configurations' => [
                             'comfort' => 0,
-                            // todo check if correct assumption.
-                            'insulation_factor' => 3,
+                            'insulation_factor' => 4,
                         ],
                     ],
                 ],
@@ -356,8 +355,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 6,
                         'configurations' => [
                             'comfort' => 0,
-                            // todo check if correct assumption
-                            'insulation_factor' => 3,
+                            'insulation_factor' => 4,
                         ],
                     ],
                 ],

@@ -26,25 +26,26 @@ use Livewire\Component;
 class SubSteppable extends Scannable
 {
     public $step;
+    public $subStep;
     public $nextUrl;
 
-    public function mount(Step $step)
+    public function mount(Step $step, SubStep $subStep)
     {
         $this->step = $step;
+        $this->subStep = $subStep;
         $this->nextUrl = route('cooperation.frontend.tool.expert-scan.index', compact('step'));
         $this->boot();
     }
 
+
     public function hydrateToolQuestions()
     {
-        $toolQuestions = [];
-        foreach ($this->step->subSteps as $subStep) {
-            foreach ($subStep->toolQuestions()->orderBy('order')->get() as $toolQuestion) {
-                $toolQuestions[$toolQuestion->id] = $toolQuestion;
-            }
-        }
+        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+    }
 
-        $this->toolQuestions = new EloquentCollection($toolQuestions);
+    public function rehydrateToolQuestions()
+    {
+        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
     }
 
     public function render()
@@ -87,11 +88,17 @@ class SubSteppable extends Scannable
                     }
                 }
 
+                // notify the main form that validation failed for this particular sub step.
+                $this->emitUp('failedValidationForSubSteps', $this->subStep->name);
+
                 $this->rehydrateToolQuestions();
                 $this->setValidationForToolQuestions();
                 $this->evaluateToolQuestions();
 
                 $this->dispatchBrowserEvent('validation-failed');
+            } else {
+                // the validator did not fail, so we will notify the main form that its saved.
+                $this->emitUp('subStepValidationSucceeded', $this->subStep);
             }
 
             $validator->validate();
@@ -99,7 +106,7 @@ class SubSteppable extends Scannable
 
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
-        if (! $this->dirty) {
+        if (!$this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 $toolQuestion = ToolQuestion::find($toolQuestionId);
 
@@ -117,72 +124,10 @@ class SubSteppable extends Scannable
             }
         }
 
-
-        $stepShortsToRecalculate = [];
-        $shouldDoFullRecalculate = false;
-
-        $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
-        // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
-            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
-                // Define if we should answer this question...
-                /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
-                if ($this->building->user->account->can('answer', $toolQuestion)) {
-                    ToolQuestionService::init($toolQuestion)
-                        ->building($this->building)
-                        ->currentInputSource($this->currentInputSource)
-                        ->applyExampleBuilding()
-                        ->save($givenAnswer);
-
-                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion) && $masterHasCompletedQuickScan) {
-                        Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
-                        $shouldDoFullRecalculate = true;
-                    }
-
-                    // get the expert step equivalent
-                    // we will filter out duplicates later on.
-                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion));
-                }
-            }
+            Log::debug('dirty, setting filledInAnswers');
+            $this->emitUp('setFilledInAnswers', $this->filledInAnswers);
         }
-
-
-        // the INITIAL calculation will be handled by the CompletedSubStepObserver
-        if ($shouldDoFullRecalculate) {
-            // We should do a full recalculate because some base value that has impact on every calculation is changed.
-            Log::debug("Dispatching full recalculate..");
-
-            Artisan::call(RecalculateForUser::class, [
-                '--user' => [$this->building->user->id],
-                '--input-source' => [$this->currentInputSource->short],
-                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
-                '--with-old-advices' => true,
-            ]);
-
-            // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
-        } else if ($masterHasCompletedQuickScan && ! empty($stepShortsToRecalculate)) {
-            // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
-            $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
-            // since we are just re-calculating specific parts of the tool we do it without the old advices
-            // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
-            // but it moves the re-calculated advices to the proper column.
-            Artisan::call(RecalculateForUser::class, [
-                '--user' => [$this->building->user->id],
-                '--input-source' => [$this->currentInputSource->short],
-                '--step-short' => $stepShortsToRecalculate,
-                '--with-old-advices' => false,
-            ]);
-        }
-
-        // Now mark the sub step as complete
-//        CompletedSubStep::firstOrCreate([
-//            'sub_step_id' => $this->subStep->id,
-//            'building_id' => $this->building->id,
-//            'input_source_id' => $this->currentInputSource->id
-//        ]);
-
-        return redirect()->to($nextUrl);
     }
 
 }

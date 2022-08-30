@@ -85,9 +85,7 @@ class SubSteppable extends Scannable
                 }
 
                 // notify the main form that validation failed for this particular sub step.
-//                $this->emitUp('failedValidationForSubSteps', $this->subStep->name);
-
-
+                $this->emitUp('failedValidationForSubSteps', $this->subStep->name);
 
                 $this->rehydrateToolQuestions();
                 $this->setValidationForToolQuestions();
@@ -96,7 +94,7 @@ class SubSteppable extends Scannable
                 $this->dispatchBrowserEvent('validation-failed');
             } else {
                 // the validator did not fail, so we will notify the main form that its saved.
-//                $this->emitUp('subStepValidationSucceeded', $this->subStep);
+                $this->emitUp('subStepValidationSucceeded', $this->subStep);
             }
 
             $validator->validate();
@@ -124,7 +122,7 @@ class SubSteppable extends Scannable
 
         if ($this->dirty && !$validator->fails()) {
             Log::debug('dirty, setting filledInAnswers');
-//            $this->emitUp('setFilledInAnswers', $this->filledInAnswers);
+            $this->emitUp('setFilledInAnswers', $this->filledInAnswers);
         }
     }
 

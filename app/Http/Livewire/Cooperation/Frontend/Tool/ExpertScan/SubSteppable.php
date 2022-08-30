@@ -33,7 +33,6 @@ class SubSteppable extends Scannable
     {
         $this->step = $step;
         $this->subStep = $subStep;
-        $this->nextUrl = route('cooperation.frontend.tool.expert-scan.index', compact('step'));
         $this->boot();
     }
 
@@ -50,15 +49,12 @@ class SubSteppable extends Scannable
 
     public function render()
     {
+        Log::debug($this->step->name. ' '. $this->subStep->name);
         return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
     }
 
     public function save($nextUrl = "")
     {
-        if (empty($nextUrl)) {
-            $nextUrl = $this->nextUrl;
-        }
-
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->data_type === Caster::FLOAT) {
@@ -89,7 +85,9 @@ class SubSteppable extends Scannable
                 }
 
                 // notify the main form that validation failed for this particular sub step.
-                $this->emitUp('failedValidationForSubSteps', $this->subStep->name);
+//                $this->emitUp('failedValidationForSubSteps', $this->subStep->name);
+
+
 
                 $this->rehydrateToolQuestions();
                 $this->setValidationForToolQuestions();
@@ -98,7 +96,7 @@ class SubSteppable extends Scannable
                 $this->dispatchBrowserEvent('validation-failed');
             } else {
                 // the validator did not fail, so we will notify the main form that its saved.
-                $this->emitUp('subStepValidationSucceeded', $this->subStep);
+//                $this->emitUp('subStepValidationSucceeded', $this->subStep);
             }
 
             $validator->validate();
@@ -124,9 +122,9 @@ class SubSteppable extends Scannable
             }
         }
 
-        if ($this->dirty) {
+        if ($this->dirty && !$validator->fails()) {
             Log::debug('dirty, setting filledInAnswers');
-            $this->emitUp('setFilledInAnswers', $this->filledInAnswers);
+//            $this->emitUp('setFilledInAnswers', $this->filledInAnswers);
         }
     }
 

@@ -30,8 +30,30 @@ class Form extends Component
 
     public $cooperation;
 
+    public $activeSubStep;
 
-    public $listeners = ['subStepValidationSucceeded' => 'subStepSucceeded', 'failedValidationForSubSteps', 'setFilledInAnswers'];
+    public $listeners = [
+        'subStepValidationSucceeded' => 'subStepSucceeded',
+        'failedValidationForSubSteps',
+        'setFilledInAnswers',
+        'testing'
+    ];
+
+    public function mount(Step $step, Cooperation $cooperation)
+    {
+        $this->step = $step;
+        $this->subSteps = $step->subSteps;
+        $this->activeSubStep = $step->subSteps->first()->slug;
+        $this->cooperation = $cooperation;
+        $this->building = HoomdossierSession::getBuilding(true);
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
+    }
+
+    public function activeSubStep($subStepSlug)
+    {
+        $this->activeSubStep = $subStepSlug;
+    }
 
 
     public function failedValidationForSubSteps($subStepName)
@@ -41,16 +63,6 @@ class Form extends Component
         $this->failedValidationForSubSteps[] = $subStepName;
 
         Log::debug(json_encode($this->failedValidationForSubSteps));
-    }
-
-    public function mount(Step $step, Cooperation $cooperation)
-    {
-        $this->step = $step;
-        $this->subSteps = $step->subSteps;
-        $this->cooperation = $cooperation;
-        $this->building = HoomdossierSession::getBuilding(true);
-        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $this->currentInputSource = HoomdossierSession::getInputSource(true);
     }
 
     // we will mark it as saved, eventhough it isnt yet

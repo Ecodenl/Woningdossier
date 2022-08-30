@@ -70,7 +70,7 @@
                     </ul>
 
                     <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-t-lg tab-content"
-                        x-ref="tab-content">
+                         x-ref="tab-content">
                         @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                             @foreach($currentStep->questionnaires as $questionnaire)
                                 @if($questionnaire->isActive())

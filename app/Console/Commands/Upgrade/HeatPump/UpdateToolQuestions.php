@@ -103,7 +103,7 @@ class UpdateToolQuestions extends Command
 
             $i = 0;
 
-            $buildingsWithNoHeatPumpQuery->chunk(100, function ($buildingsWithNoHeatPump) use (&$i, $total, $heatPump, $step, $subStep, $heatSourceQuestion, $heatPumpCustomValue, $none) {
+            $buildingsWithNoHeatPumpQuery->orderBy('id')->chunk(100, function ($buildingsWithNoHeatPump) use (&$i, $total, $heatPump, $step, $subStep, $heatSourceQuestion, $heatPumpCustomValue, $none) {
                 // Set "none" to `null` and "uncheck" heat-pump by the heat source question
                 foreach ($buildingsWithNoHeatPump as $buildingService) {
                     DB::table('tool_question_answers')->where('tool_question_id', $heatSourceQuestion->id)
@@ -230,7 +230,7 @@ class UpdateToolQuestions extends Command
 
         $i = 0;
 
-        $buildingServicesQuery->chunk(100, function ($buildingServices) use (&$i, $newQuestion, $total) {
+        $buildingServicesQuery->orderBy('id')->chunk(100, function ($buildingServices) use (&$i, $newQuestion, $total) {
             // Map all "other" answers to "Collectieve warmtepomp" (as that was their old answer)
             foreach ($buildingServices as $buildingService) {
                 DB::table('tool_question_answers')
@@ -264,7 +264,7 @@ class UpdateToolQuestions extends Command
 
         $i = 0;
 
-        $answersQuery->chunk(100, function ($answers) use (&$i, $total, $heatSourceQuestion, $heatSourceQuestionTapWater) {
+        $answersQuery->orderBy('id')->chunk(100, function ($answers) use (&$i, $total, $heatSourceQuestion, $heatSourceQuestionTapWater) {
             // Map relevant answers from heat-source to heat-source-warm-tap-water
             foreach ($answers as $answer) {
                 if ($answer->answer !== 'infrared') {
@@ -351,7 +351,7 @@ class UpdateToolQuestions extends Command
 
             $i = 0;
 
-            $usersThatConsiderStepQuery->chunk(100, function ($usersThatConsiderStep) use (&$i, $total, $considerableQuestion, $customValueForStep) {
+            $usersThatConsiderStepQuery->orderBy('id')->chunk(100, function ($usersThatConsiderStep) use (&$i, $total, $considerableQuestion, $customValueForStep) {
                 foreach ($usersThatConsiderStep as $user) {
                     $building = DB::table('buildings')->where('user_id', $user->user_id)->first();
 

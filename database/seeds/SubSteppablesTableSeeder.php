@@ -852,7 +852,7 @@ class SubSteppablesTableSeeder extends Seeder
                             'size' => 'w-1/2',
                             // TODO: Dropdown
                         ],
-                        [   // TODO: Double questions? (See sun-boiler)
+                        [
                             'morph' => ToolQuestion::findByShort('water-comfort'),
                             'size' => 'w-1/2',
                             // TODO: Dropdown
@@ -933,18 +933,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'size' => 'w-full',
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('water-comfort'),
-                            'size' => 'w-1/3',
-                            // TODO: Dropdown
-                        ],
-                        [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-orientation'),
-                            'size' => 'w-1/3',
+                            'size' => 'w-1/2',
                             // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-angle'),
-                            'size' => 'w-1/3',
+                            'size' => 'w-1/2',
                             // TODO: Dropdown
                         ],
                     ],

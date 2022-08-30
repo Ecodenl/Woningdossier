@@ -277,9 +277,6 @@ class HeatPump
         );
     }
 
-    // todo refactor this into something different.
-    // NOTE there's a discrepancy at the moment for cook type 'gas':
-    // on HighEfficiencyBoilerCalculator, this is 65 instead of 37 here..
     protected function energyUsageForCooking()
     {
         $cookType = $this->building->getAnswer(
@@ -289,14 +286,14 @@ class HeatPump
 
         switch ($cookType) {
             case 'gas':
-                return 37; // m3
+                return Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS;
             case 'electric':
-                return 225; // kWh
+                return Kengetallen::ENERGY_USAGE_COOK_TYPE_ELECTRIC;
             case 'induction':
-                return 175; // kWh
+                return Kengetallen::ENERGY_USAGE_COOK_TYPE_INDUCTION;
         }
 
-        return 37;
+        return Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS;
     }
 
     public function insulationScore()

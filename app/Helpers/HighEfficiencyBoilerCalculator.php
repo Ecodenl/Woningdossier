@@ -90,7 +90,7 @@ class HighEfficiencyBoilerCalculator
             $cookType = $building->getAnswer($habit->inputSource, ToolQuestion::findByShort('cook-type'));
 
             if ($cookType == "gas") {
-                $result['cooking'] = 65; // m3
+                $result['cooking'] = Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS; // m3
             }
 
             // From solar boiler / heater

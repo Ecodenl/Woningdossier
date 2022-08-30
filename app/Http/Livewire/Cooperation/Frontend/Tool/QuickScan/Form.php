@@ -27,8 +27,10 @@ class Form extends Scannable
     public function mount(Step $step, SubStep $subStep)
     {
         Log::debug('mounting form');
-        $subStep->load(['toolQuestions', 'subStepTemplate']);
-
+        $subStep->load([
+            'toolQuestions' => function ($query) { $query->orderBy('order'); },
+            'subStepTemplate',
+        ]);
         $this->step = $step;
         $this->subStep = $subStep;
 
@@ -37,16 +39,17 @@ class Form extends Scannable
 
     public function hydrateToolQuestions()
     {
-        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+        $this->rehydrateToolQuestions();
     }
 
     public function rehydrateToolQuestions()
     {
-        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+        $this->toolQuestions = $this->subStep->toolQuestions;
     }
 
     public function render()
     {
+        $this->rehydrateToolQuestions();
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
@@ -185,5 +188,4 @@ class Form extends Scannable
 
         return redirect()->to($nextUrl);
     }
-
 }

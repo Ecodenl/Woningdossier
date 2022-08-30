@@ -38,7 +38,6 @@ abstract class Scannable extends Component
     public $rules;
     public $attributes;
 
-    public $initialToolQuestions;
     public $toolQuestions;
     public $originalAnswers = [];
     public $filledInAnswers = [];
@@ -56,8 +55,6 @@ abstract class Scannable extends Component
 
         // first we have to hydrate the tool questions
         $this->hydrateToolQuestions();
-        // set them right after the hydration
-        $this->initialToolQuestions = $this->toolQuestions->values();
         // after that we can fill up the user his given answers
         $this->setFilledInAnswers();
         // add the validation for the tool questions
@@ -65,29 +62,16 @@ abstract class Scannable extends Component
         // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
         $this->evaluateToolQuestions();
 
-//        dd($this->initialToolQuestions);
-
         $this->originalAnswers = $this->filledInAnswers;
-
-        $this->rules['initialToolQuestions.*.pivot.order'] = [];
-        $this->rules['initialToolQuestions.pivot.order'] = [];
-        $this->rules['initialToolQuestions.relations.*'] = [];
     }
 
     abstract function hydrateToolQuestions();
 
     abstract function save($nextUrl = "");
 
-    public function rehydrateToolQuestions()
-    {
-        //TODO: When the request refreshes, the pivot is lost. So for now, we override
-        // the rehydrate cycle to freshly fetch them. However, in the future we should find a way that makes this
-        // possible without a fresh DB call each time.
+    abstract function rehydrateToolQuestions();
 
-        $this->toolQuestions = new Collection($this->initialToolQuestions->values());
-    }
-
-    private function setValidationForToolQuestions()
+    protected function setValidationForToolQuestions()
     {
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             switch ($toolQuestion->data_type) {
@@ -123,14 +107,10 @@ abstract class Scannable extends Component
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();
 
-        Log::debug("initialToolQuestions {$this->toolQuestions->count()}");
-
-//        $this->rules['initialToolQuestions.pivot.']
-
         $this->setDirty(true);
     }
 
-    private function evaluateToolQuestions()
+    protected function evaluateToolQuestions()
     {
         // Filter out the questions that do not match the condition
         // now collect the given answers

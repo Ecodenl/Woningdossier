@@ -29,7 +29,7 @@ class CreateToolQuestionAnswersTable extends Migration
             $table->unsignedBigInteger('tool_question_custom_value_id')->nullable()->default(null);
             $table->foreign('tool_question_custom_value_id')->references('id')->on('tool_question_custom_values')->onDelete('cascade');
 
-            $table->text('answer')->nullable();
+            $table->text('answer');
 
             $table->timestamps();
         });

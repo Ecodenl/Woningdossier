@@ -7,7 +7,7 @@ use App\Models\SubStep;
 use App\Models\SubStepTemplate;
 use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
-use App\Models\SubSteppable;
+use App\Models\ToolQuestionType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -33,6 +33,21 @@ class SubSteppablesTableSeeder extends Seeder
         $heatPump = Service::findByShort('heat-pump');
         $ventilation = Service::findByShort('house-ventilation');
 
+        // Tool question types
+        // TODO: Subject to change
+        $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
+        $radioIconType = ToolQuestionType::findByShort('radio-icon');
+        $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
+        $radioType = ToolQuestionType::findByShort('radio');
+        $textType = ToolQuestionType::findByShort('text');
+        $sliderType = ToolQuestionType::findByShort('slider');
+        $textareaType = ToolQuestionType::findByShort('textarea');
+        $textareaPopupType = ToolQuestionType::findByShort('textarea-popup');
+        $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
+        // TODO: These don't exist yet, but for future reference it's easier to already have them "linked" in the questions
+        $dropdownType = ToolQuestionType::findByShort('radio');
+        $dropdownMultiType = ToolQuestionType::findByShort('checkbox-icon');
+
         #-------------------------
         # Quick Scan sub steppables
         #-------------------------
@@ -45,6 +60,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('building-type-category'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ],
@@ -63,6 +79,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('building-type'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -73,6 +90,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('roof-type'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -83,10 +101,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('build-year'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('building-layers'),
+                            'tool_question_type_id' => $sliderType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -105,6 +125,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('specific-example-building'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
                     ],
@@ -115,10 +136,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('monument'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('energy-label'),
+                            'tool_question_type_id' => $radioIconSmallType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -129,6 +152,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('surface'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                         ],
                     ],
@@ -139,10 +163,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('building-data-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('building-data-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -155,6 +181,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('resident-count'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -165,14 +192,17 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('thermostat-high'),
+                            'tool_question_type_id' => $sliderType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('thermostat-low'),
+                            'tool_question_type_id' => $sliderType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hours-high'),
+                            'tool_question_type_id' => $sliderType->id,
                             'size' => 'w-full',
                         ],
                     ],
@@ -183,14 +213,17 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('heating-first-floor'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heating-second-floor'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('water-comfort'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -201,14 +234,17 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('cook-type'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('amount-gas'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('amount-electricity'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -219,10 +255,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('usage-quick-scan-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('usage-quick-scan-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -235,6 +273,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('remaining-living-years'),
+                            'tool_question_type_id' => $sliderType->id,
                             'size' => 'w-full',
                         ],
                     ],
@@ -245,6 +284,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('comfort-priority'),
+                            'tool_question_type_id' => $measurePriorityType->id,
                             'size' => 'w-full',
                         ],
                     ],
@@ -260,10 +300,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('living-requirements-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('living-requirements-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -276,6 +318,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('current-wall-insulation'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -286,6 +329,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('current-floor-insulation'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ],
@@ -296,6 +340,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('current-roof-insulation'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ],
@@ -306,6 +351,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('current-living-rooms-windows'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -316,6 +362,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('current-sleeping-rooms-windows'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ],
@@ -326,10 +373,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('heat-source'),
+                            'tool_question_type_id' => $checkboxIconType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-other'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -349,10 +398,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
+                            'tool_question_type_id' => $checkboxIconType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water-other'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -372,6 +423,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('heater-type'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -398,10 +450,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('boiler-type'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-placed-date'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -428,10 +482,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-type'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-placed-date'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -442,10 +498,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('building-heating-application'),
+                            'tool_question_type_id' => $checkboxIconType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('building-heating-application-other'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -465,6 +523,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('fifty-degree-test'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -485,6 +544,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-setting-comfort-heat'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -495,10 +555,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('ventilation-type'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('ventilation-demand-driven'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -512,6 +574,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('ventilation-heat-recovery'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -536,6 +599,7 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('crack-sealing-type'),
+                            'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
                     ]
@@ -546,10 +610,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('has-solar-panels'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('solar-panel-count'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-1/2',
                             'conditions' => [
                                 [
@@ -563,6 +629,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('total-installed-power'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-1/2',
                             'conditions' => [
                                 [
@@ -576,6 +643,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('solar-panels-placed-date'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-1/2',
                             'conditions' => [
                                 [
@@ -631,10 +699,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('interested-in-heat-pump'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('interested-in-heat-pump-variant'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -655,18 +725,22 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-element-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-element-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-service-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-service-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -684,8 +758,8 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-considerable'),
+                            'tool_question_type_id' => $checkboxIconType->id,
                             'size' => 'w-full',
-                            // TODO: CheckboxIconType
                         ],
                         [
                             'morph' => ToolLabel::findByShort('hr-boiler'),
@@ -702,6 +776,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-boiler-type'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -712,7 +787,6 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-                            // TODO: Dropdown
                         ],
                         // TODO: Calculate fields
                         [
@@ -731,6 +805,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-building-heating-application'),
+                            'tool_question_type_id' => $checkboxIconType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -741,10 +816,10 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-                            // TODO: CheckboxIconType
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-boiler-setting-comfort-heat'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -755,10 +830,10 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-                            // TODO: RadioIconType
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-cook-type'),
+                            'tool_question_type_id' => $radioIconType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -769,10 +844,10 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-                            // TODO: RadioIconType
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-heat-pump-type'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-full',
                             'conditions' => [
                                 [
@@ -783,11 +858,11 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-                            // TODO: Dropdown
                         ],
                         // TODO: Indication required power?
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-preferred-power'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-1/2',
                             'conditions' => [
                                 [
@@ -798,10 +873,10 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-                            // TODO: Text Input
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('outside-unit-space'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
                             'conditions' => [
                                 [
@@ -812,10 +887,10 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('inside-unit-space'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
                             'conditions' => [
                                 [
@@ -826,7 +901,6 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-                            // TODO: Dropdown
                         ],
                     ],
                 ],
@@ -839,94 +913,94 @@ class SubSteppablesTableSeeder extends Seeder
                         //],
                         [
                             'morph' => ToolQuestion::findByShort('surface'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-1/2',
-                            // TODO: Text input
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('resident-count'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('cook-type'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('water-comfort'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source'),
+                            'tool_question_type_id' => $dropdownMultiType->id,
                             'size' => 'w-full',
-                            // TODO: DropdownMultiType
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
+                            'tool_question_type_id' => $dropdownMultiType->id,
                             'size' => 'w-full',
-                            // TODO: DropdownMultiType
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-type'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-placed-date'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-1/2',
-                            // TODO: Text Input
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-type'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         // TODO: Not in mockup, missing field for "other" option of heat-pump-type????
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-placed-date'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'w-1/2',
-                            // TODO: Text Input
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('building-heating-application'),
+                            'tool_question_type_id' => $dropdownMultiType->id,
                             'size' => 'w-full',
-                            // TODO: DropdownMultiType
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('fifty-degree-test'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-setting-comfort-heat'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-wall-insulation'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-floor-insulation'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-roof-insulation'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-living-rooms-windows'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-sleeping-rooms-windows'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolLabel::findByShort('sun-boiler'),
@@ -934,13 +1008,13 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-orientation'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-angle'),
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
-                            // TODO: Dropdown
                         ],
                     ],
                 ],
@@ -1002,8 +1076,9 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                             [
                                 'order' => $orderForSubStepToolQuestions,
+                                'tool_question_type_id' => $morph['tool_question_type_id'] ?? null,
+                                'conditions' => is_null($conditions) ? null : json_encode($conditions),
                                 'size' => $morph['size'] ?? null,
-                                'conditions' => is_null($conditions) ? null : json_encode($conditions)
                             ],
                         );
 

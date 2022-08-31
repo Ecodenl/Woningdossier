@@ -153,11 +153,6 @@ class ToolQuestion extends Model
     }
 
     # Relations
-    public function toolQuestionType(): BelongsTo
-    {
-        return $this->belongsTo(ToolQuestionType::class);
-    }
-
     public function toolQuestionAnswers(): HasMany
     {
         return $this->hasMany(ToolQuestionAnswer::class);
@@ -171,7 +166,8 @@ class ToolQuestion extends Model
     public function subSteps(): BelongsToMany
     {
         return $this->morphToMany(SubStep::class, 'sub_steppable')
-            ->using(SubSteppable::class);
+            ->using(SubSteppable::class)
+            ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
     /**
      * Method to return the intermediary morph table
@@ -183,7 +179,7 @@ class ToolQuestion extends Model
         return $this->hasMany(ToolQuestionValuable::class);
     }
 
-    public function toolQuestionCustomValues()
+    public function toolQuestionCustomValues(): HasMany
     {
         return $this->hasMany(ToolQuestionCustomValue::class);
     }

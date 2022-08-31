@@ -16,8 +16,12 @@ class AddToolQuestionTypeIdColumnToSubSteppablesTable extends Migration
         if (! Schema::hasColumn('sub_steppables', 'tool_question_type_id')) {
             Schema::disableForeignKeyConstraints();
 
-            Schema::table('sub_steppables', function (Blueprint $table) {
-                $table->unsignedBigInteger('tool_question_type_id')->nullable()->after('tool_question_id');
+            // So this migration is technically _before_ the morphs, however as it was added later code wise,
+            // it might conflict with a current database state
+            $column = Schema::hasColumn('sub_steppables', 'sub_steppable_type') ? 'sub_steppable_type' : 'tool_question_id';
+
+            Schema::table('sub_steppables', function (Blueprint $table) use ($column) {
+                $table->unsignedBigInteger('tool_question_type_id')->nullable()->after($column);
                 $table->foreign('tool_question_type_id')->references('id')->on('tool_question_types')->onDelete('set null');
             });
 

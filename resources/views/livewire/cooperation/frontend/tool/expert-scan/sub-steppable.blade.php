@@ -43,7 +43,7 @@
                         </p>
                     @endslot
 
-                    @include("cooperation.tool-question-type-templates.{$toolQuestion->toolQuestionType->short}.show", [
+                    @include("cooperation.tool-question-type-templates.{$toolQuestion->pivot->toolQuestionType->short}.show", [
                         'disabled' => $disabled,
                     ])
                 @endcomponent

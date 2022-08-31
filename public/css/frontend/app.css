@@ -13275,6 +13275,70 @@ video {
   cursor: not-allowed;
 }
 
+#app-body .hover\:cursor-auto:hover{
+  cursor: auto;
+}
+
+#app-body .hover\:cursor-default:hover{
+  cursor: default;
+}
+
+#app-body .hover\:cursor-pointer:hover{
+  cursor: pointer;
+}
+
+#app-body .hover\:cursor-wait:hover{
+  cursor: wait;
+}
+
+#app-body .hover\:cursor-text:hover{
+  cursor: text;
+}
+
+#app-body .hover\:cursor-move:hover{
+  cursor: move;
+}
+
+#app-body .hover\:cursor-help:hover{
+  cursor: help;
+}
+
+#app-body .hover\:cursor-not-allowed:hover{
+  cursor: not-allowed;
+}
+
+#app-body .focus\:cursor-auto:focus{
+  cursor: auto;
+}
+
+#app-body .focus\:cursor-default:focus{
+  cursor: default;
+}
+
+#app-body .focus\:cursor-pointer:focus{
+  cursor: pointer;
+}
+
+#app-body .focus\:cursor-wait:focus{
+  cursor: wait;
+}
+
+#app-body .focus\:cursor-text:focus{
+  cursor: text;
+}
+
+#app-body .focus\:cursor-move:focus{
+  cursor: move;
+}
+
+#app-body .focus\:cursor-help:focus{
+  cursor: help;
+}
+
+#app-body .focus\:cursor-not-allowed:focus{
+  cursor: not-allowed;
+}
+
 #app-body .select-none{
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -39566,6 +39630,70 @@ Small example
     cursor: not-allowed;
   }
 
+  #app-body .sm\:hover\:cursor-auto:hover{
+    cursor: auto;
+  }
+
+  #app-body .sm\:hover\:cursor-default:hover{
+    cursor: default;
+  }
+
+  #app-body .sm\:hover\:cursor-pointer:hover{
+    cursor: pointer;
+  }
+
+  #app-body .sm\:hover\:cursor-wait:hover{
+    cursor: wait;
+  }
+
+  #app-body .sm\:hover\:cursor-text:hover{
+    cursor: text;
+  }
+
+  #app-body .sm\:hover\:cursor-move:hover{
+    cursor: move;
+  }
+
+  #app-body .sm\:hover\:cursor-help:hover{
+    cursor: help;
+  }
+
+  #app-body .sm\:hover\:cursor-not-allowed:hover{
+    cursor: not-allowed;
+  }
+
+  #app-body .sm\:focus\:cursor-auto:focus{
+    cursor: auto;
+  }
+
+  #app-body .sm\:focus\:cursor-default:focus{
+    cursor: default;
+  }
+
+  #app-body .sm\:focus\:cursor-pointer:focus{
+    cursor: pointer;
+  }
+
+  #app-body .sm\:focus\:cursor-wait:focus{
+    cursor: wait;
+  }
+
+  #app-body .sm\:focus\:cursor-text:focus{
+    cursor: text;
+  }
+
+  #app-body .sm\:focus\:cursor-move:focus{
+    cursor: move;
+  }
+
+  #app-body .sm\:focus\:cursor-help:focus{
+    cursor: help;
+  }
+
+  #app-body .sm\:focus\:cursor-not-allowed:focus{
+    cursor: not-allowed;
+  }
+
   #app-body .sm\:select-none{
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -65763,6 +65891,70 @@ Small example
   }
 
   #app-body .md\:cursor-not-allowed{
+    cursor: not-allowed;
+  }
+
+  #app-body .md\:hover\:cursor-auto:hover{
+    cursor: auto;
+  }
+
+  #app-body .md\:hover\:cursor-default:hover{
+    cursor: default;
+  }
+
+  #app-body .md\:hover\:cursor-pointer:hover{
+    cursor: pointer;
+  }
+
+  #app-body .md\:hover\:cursor-wait:hover{
+    cursor: wait;
+  }
+
+  #app-body .md\:hover\:cursor-text:hover{
+    cursor: text;
+  }
+
+  #app-body .md\:hover\:cursor-move:hover{
+    cursor: move;
+  }
+
+  #app-body .md\:hover\:cursor-help:hover{
+    cursor: help;
+  }
+
+  #app-body .md\:hover\:cursor-not-allowed:hover{
+    cursor: not-allowed;
+  }
+
+  #app-body .md\:focus\:cursor-auto:focus{
+    cursor: auto;
+  }
+
+  #app-body .md\:focus\:cursor-default:focus{
+    cursor: default;
+  }
+
+  #app-body .md\:focus\:cursor-pointer:focus{
+    cursor: pointer;
+  }
+
+  #app-body .md\:focus\:cursor-wait:focus{
+    cursor: wait;
+  }
+
+  #app-body .md\:focus\:cursor-text:focus{
+    cursor: text;
+  }
+
+  #app-body .md\:focus\:cursor-move:focus{
+    cursor: move;
+  }
+
+  #app-body .md\:focus\:cursor-help:focus{
+    cursor: help;
+  }
+
+  #app-body .md\:focus\:cursor-not-allowed:focus{
     cursor: not-allowed;
   }
 
@@ -91966,6 +92158,70 @@ Small example
     cursor: not-allowed;
   }
 
+  #app-body .lg\:hover\:cursor-auto:hover{
+    cursor: auto;
+  }
+
+  #app-body .lg\:hover\:cursor-default:hover{
+    cursor: default;
+  }
+
+  #app-body .lg\:hover\:cursor-pointer:hover{
+    cursor: pointer;
+  }
+
+  #app-body .lg\:hover\:cursor-wait:hover{
+    cursor: wait;
+  }
+
+  #app-body .lg\:hover\:cursor-text:hover{
+    cursor: text;
+  }
+
+  #app-body .lg\:hover\:cursor-move:hover{
+    cursor: move;
+  }
+
+  #app-body .lg\:hover\:cursor-help:hover{
+    cursor: help;
+  }
+
+  #app-body .lg\:hover\:cursor-not-allowed:hover{
+    cursor: not-allowed;
+  }
+
+  #app-body .lg\:focus\:cursor-auto:focus{
+    cursor: auto;
+  }
+
+  #app-body .lg\:focus\:cursor-default:focus{
+    cursor: default;
+  }
+
+  #app-body .lg\:focus\:cursor-pointer:focus{
+    cursor: pointer;
+  }
+
+  #app-body .lg\:focus\:cursor-wait:focus{
+    cursor: wait;
+  }
+
+  #app-body .lg\:focus\:cursor-text:focus{
+    cursor: text;
+  }
+
+  #app-body .lg\:focus\:cursor-move:focus{
+    cursor: move;
+  }
+
+  #app-body .lg\:focus\:cursor-help:focus{
+    cursor: help;
+  }
+
+  #app-body .lg\:focus\:cursor-not-allowed:focus{
+    cursor: not-allowed;
+  }
+
   #app-body .lg\:select-none{
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -118163,6 +118419,70 @@ Small example
   }
 
   #app-body .xl\:cursor-not-allowed{
+    cursor: not-allowed;
+  }
+
+  #app-body .xl\:hover\:cursor-auto:hover{
+    cursor: auto;
+  }
+
+  #app-body .xl\:hover\:cursor-default:hover{
+    cursor: default;
+  }
+
+  #app-body .xl\:hover\:cursor-pointer:hover{
+    cursor: pointer;
+  }
+
+  #app-body .xl\:hover\:cursor-wait:hover{
+    cursor: wait;
+  }
+
+  #app-body .xl\:hover\:cursor-text:hover{
+    cursor: text;
+  }
+
+  #app-body .xl\:hover\:cursor-move:hover{
+    cursor: move;
+  }
+
+  #app-body .xl\:hover\:cursor-help:hover{
+    cursor: help;
+  }
+
+  #app-body .xl\:hover\:cursor-not-allowed:hover{
+    cursor: not-allowed;
+  }
+
+  #app-body .xl\:focus\:cursor-auto:focus{
+    cursor: auto;
+  }
+
+  #app-body .xl\:focus\:cursor-default:focus{
+    cursor: default;
+  }
+
+  #app-body .xl\:focus\:cursor-pointer:focus{
+    cursor: pointer;
+  }
+
+  #app-body .xl\:focus\:cursor-wait:focus{
+    cursor: wait;
+  }
+
+  #app-body .xl\:focus\:cursor-text:focus{
+    cursor: text;
+  }
+
+  #app-body .xl\:focus\:cursor-move:focus{
+    cursor: move;
+  }
+
+  #app-body .xl\:focus\:cursor-help:focus{
+    cursor: help;
+  }
+
+  #app-body .xl\:focus\:cursor-not-allowed:focus{
     cursor: not-allowed;
   }
 
@@ -144366,6 +144686,70 @@ Small example
     cursor: not-allowed;
   }
 
+  #app-body .\32xl\:hover\:cursor-auto:hover{
+    cursor: auto;
+  }
+
+  #app-body .\32xl\:hover\:cursor-default:hover{
+    cursor: default;
+  }
+
+  #app-body .\32xl\:hover\:cursor-pointer:hover{
+    cursor: pointer;
+  }
+
+  #app-body .\32xl\:hover\:cursor-wait:hover{
+    cursor: wait;
+  }
+
+  #app-body .\32xl\:hover\:cursor-text:hover{
+    cursor: text;
+  }
+
+  #app-body .\32xl\:hover\:cursor-move:hover{
+    cursor: move;
+  }
+
+  #app-body .\32xl\:hover\:cursor-help:hover{
+    cursor: help;
+  }
+
+  #app-body .\32xl\:hover\:cursor-not-allowed:hover{
+    cursor: not-allowed;
+  }
+
+  #app-body .\32xl\:focus\:cursor-auto:focus{
+    cursor: auto;
+  }
+
+  #app-body .\32xl\:focus\:cursor-default:focus{
+    cursor: default;
+  }
+
+  #app-body .\32xl\:focus\:cursor-pointer:focus{
+    cursor: pointer;
+  }
+
+  #app-body .\32xl\:focus\:cursor-wait:focus{
+    cursor: wait;
+  }
+
+  #app-body .\32xl\:focus\:cursor-text:focus{
+    cursor: text;
+  }
+
+  #app-body .\32xl\:focus\:cursor-move:focus{
+    cursor: move;
+  }
+
+  #app-body .\32xl\:focus\:cursor-help:focus{
+    cursor: help;
+  }
+
+  #app-body .\32xl\:focus\:cursor-not-allowed:focus{
+    cursor: not-allowed;
+  }
+
   #app-body .\32xl\:select-none{
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -158707,6 +159091,38 @@ p a, a.in-text {
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
   --tw-text-opacity: 0.5;
+}
+
+.form-input-option {
+  position: absolute;
+  top: 0.125rem;
+  margin-left: 0.25rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 14px;
+  line-height: 24px;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+}
+
+.form-input-option:hover {
+  cursor: pointer;
+  --tw-border-opacity: 1;
+  border-color: rgba(228, 20, 64, var(--tw-border-opacity));
+}
+
+.form-input-option:focus {
+  cursor: pointer;
+  --tw-border-opacity: 1;
+  border-color: rgba(228, 20, 64, var(--tw-border-opacity));
 }
 
 .input-group .form-input:hover ~ .input-group-append, .input-group .form-input:focus ~ .input-group-append {

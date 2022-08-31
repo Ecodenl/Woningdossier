@@ -216,6 +216,7 @@ module.exports = {
             borderColor: ['active'],
             textColor: ['active'],
             boxShadow: ['active'],
+            cursor: ['hover', 'focus'],
         },
     },
     plugins: [

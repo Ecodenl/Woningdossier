@@ -54,7 +54,6 @@ class SubSteppable extends Scannable
 
     public function render()
     {
-        Log::debug($this->step->name. ' '. $this->subStep->name);
         $this->rehydrateToolQuestions();
         return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Models\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -47,6 +48,13 @@ class ServiceValue extends Model
         'configurations' => 'array',
     ];
 
+    # Scopes
+    public function scopeByValue(Builder $query, string $name, string $locale = 'nl'): Builder
+    {
+        return $query->where("value->{$locale}", $name);
+    }
+
+    # Relations
     public function keyFigureBoilerEfficiency()
     {
         return $this->hasOne(KeyFigureBoilerEfficiency::class);

@@ -38,7 +38,6 @@ abstract class Scannable extends Component
     public $rules;
     public $attributes;
 
-    public $initialToolQuestions;
     public $toolQuestions;
     public $originalAnswers = [];
     public $filledInAnswers = [];
@@ -48,7 +47,6 @@ abstract class Scannable extends Component
 
     public function boot()
     {
-
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
@@ -57,8 +55,6 @@ abstract class Scannable extends Component
 
         // first we have to hydrate the tool questions
         $this->hydrateToolQuestions();
-        // set them right after the hydration
-        $this->initialToolQuestions = $this->toolQuestions->values();
         // after that we can fill up the user his given answers
         $this->setFilledInAnswers();
         // add the validation for the tool questions
@@ -66,35 +62,16 @@ abstract class Scannable extends Component
         // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
         $this->evaluateToolQuestions();
 
-//        dd($this->initialToolQuestions);
-
         $this->originalAnswers = $this->filledInAnswers;
-
-
-        $this->rules['initialToolQuestions.*.pivot.order'] = [];
-        $this->rules['initialToolQuestions.pivot.order'] = [];
-        $this->rules['initialToolQuestions.relations.*'] = [];
-
-
     }
 
     abstract function hydrateToolQuestions();
 
     abstract function save($nextUrl = "");
 
+    abstract function rehydrateToolQuestions();
 
-    public function rehydrateToolQuestions()
-    {
-        //todo this wont refresh the dom, for some odd reson
-        // if you would set it with a query it would update tho
-        // but thats exactly what i was trying to work around
-        // extra queries..
-
-        $this->toolQuestions = new Collection($this->initialToolQuestions->values());
-    }
-
-
-    private function setValidationForToolQuestions()
+    protected function setValidationForToolQuestions()
     {
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             switch ($toolQuestion->data_type) {
@@ -130,14 +107,10 @@ abstract class Scannable extends Component
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();
 
-        Log::debug("initialToolQuestions {$this->toolQuestions->count()}");
-
-//        $this->rules['initialToolQuestions.pivot.']
-
         $this->setDirty(true);
     }
 
-    private function evaluateToolQuestions()
+    protected function evaluateToolQuestions()
     {
         // Filter out the questions that do not match the condition
         // now collect the given answers
@@ -147,11 +120,12 @@ abstract class Scannable extends Component
         }
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-
             $answers = $dynamicAnswers;
 
-            if (!empty($toolQuestion->conditions)) {
-                foreach ($toolQuestion->conditions as $conditionSet) {
+            if (! empty($toolQuestion->pivot->conditions)) {
+                $conditions = $toolQuestion->pivot->conditions;
+
+                foreach ($conditions as $conditionSet) {
                     foreach ($conditionSet as $condition) {
                         // There is a possibility that the answer we're looking for is for a tool question not
                         // on this page. We find it, and add the answer to our list
@@ -169,9 +143,9 @@ abstract class Scannable extends Component
 
                 $evaluatableAnswers = collect($answers);
 
-                $evaluation = ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers);
+                $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
 
-                if (!$evaluation) {
+                if (! $evaluation) {
                     $this->toolQuestions = $this->toolQuestions->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they
@@ -209,14 +183,13 @@ abstract class Scannable extends Component
         $this->filledInAnswers[$toolQuestionId] = $this->originalAnswers[$toolQuestionId];
     }
 
-
     // specific to the popup question
     public function saveSpecificToolQuestion($toolQuestionId)
     {
         if (HoomdossierSession::isUserObserving()) {
             return null;
         }
-        if (!empty($this->rules)) {
+        if (! empty($this->rules)) {
             $validator = Validator::make([
                 "filledInAnswers.{$toolQuestionId}" => $this->filledInAnswers[$toolQuestionId]
             ], $this->rules["filledInAnswers.{$toolQuestionId}"], [], $this->attributes);
@@ -269,7 +242,7 @@ abstract class Scannable extends Component
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->first();
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)

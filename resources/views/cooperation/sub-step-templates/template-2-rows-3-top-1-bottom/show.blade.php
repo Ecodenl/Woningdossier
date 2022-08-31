@@ -1,14 +1,13 @@
 <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$toolQuestions->count() > 1 ? 10 : 5}} ">
 
-    <?php
-    // some necessary crap to display the toolQuestions in the right manor
-    $topLeft = $toolQuestions->where('pivot.order', 0)->first();
-    $topRightFirst = $toolQuestions->where('pivot.order', 1)->first();
-    $topRightSecond = $toolQuestions->where('pivot.order', 2)->first();
+    @php
+        // some necessary crap to display the toolQuestions in the right manor
+        $topLeft = $toolQuestions->where('pivot.order', 0)->first();
+        $topRightFirst = $toolQuestions->where('pivot.order', 1)->first();
+        $topRightSecond = $toolQuestions->where('pivot.order', 2)->first();
 
-    $bottomLeft = $toolQuestions->where('pivot.order', 3)->first();
-
-    ?>
+        $bottomLeft = $toolQuestions->where('pivot.order', 3)->first();
+    @endphp
     <div class="w-full flex flex-wrap">
         @if($topLeft instanceof \App\Models\ToolQuestion)
             @php
@@ -32,7 +31,7 @@
                     </p>
                 @endslot
 
-                @include("cooperation.tool-question-type-templates.{$topLeft->toolQuestionType->short}.show", ['toolQuestion' => $topLeft])
+                @include("cooperation.tool-question-type-templates.{$topLeft->pivot->toolQuestionType->short}.show", ['toolQuestion' => $topLeft])
             @endcomponent
         @endif
 
@@ -59,7 +58,7 @@
                         </p>
                     @endslot
 
-                    @include("cooperation.tool-question-type-templates.{$topRightFirst->toolQuestionType->short}.show", ['toolQuestion' => $topRightFirst])
+                    @include("cooperation.tool-question-type-templates.{$topRightFirst->pivot->toolQuestionType->short}.show", ['toolQuestion' => $topRightFirst])
                 @endcomponent
             @endif
             @if($topRightSecond instanceof \App\Models\ToolQuestion)
@@ -84,7 +83,7 @@
                         </p>
                     @endslot
 
-                    @include("cooperation.tool-question-type-templates.{$topRightSecond->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
+                    @include("cooperation.tool-question-type-templates.{$topRightSecond->pivot->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
                 @endcomponent
             @endif
         </div>
@@ -113,7 +112,7 @@
                     </p>
                 @endslot
 
-                @include("cooperation.tool-question-type-templates.{$bottomLeft->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
+                @include("cooperation.tool-question-type-templates.{$bottomLeft->pivot->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
             @endcomponent
         </div>
     @endif

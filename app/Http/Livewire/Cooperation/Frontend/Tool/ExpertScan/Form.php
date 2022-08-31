@@ -3,25 +3,17 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
 
 use App\Console\Commands\Tool\RecalculateForUser;
-use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
-use App\Models\Building;
-use App\Models\CompletedSubStep;
-use App\Models\InputSource;
 use App\Models\Step;
-use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 class Form extends Scannable
 {
@@ -30,12 +22,21 @@ class Form extends Scannable
 
     public function mount(Step $step)
     {
+        $step->load([
+            'subSteps', 'subSteps.toolQuestions' => function ($query) { $query->orderBy('order'); },
+        ]);
+
         $this->step = $step;
         $this->nextUrl = route('cooperation.frontend.tool.expert-scan.index', compact('step'));
         $this->boot();
     }
 
     public function hydrateToolQuestions()
+    {
+        $this->rehydrateToolQuestions();
+    }
+
+    public function rehydrateToolQuestions()
     {
         $toolQuestions = [];
         foreach ($this->step->subSteps as $subStep) {
@@ -127,7 +128,7 @@ class Form extends Scannable
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->first();
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)

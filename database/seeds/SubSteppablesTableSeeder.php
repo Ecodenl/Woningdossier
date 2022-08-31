@@ -471,13 +471,6 @@ class SubSteppablesTableSeeder extends Seeder
                                 'value' => 'heat-pump',
                             ],
                         ],
-                        [
-                            [
-                                'column' => 'heat-source-warm-tap-water',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'heat-pump',
-                            ],
-                        ],
                     ],
                     'morphs' => [
                         [

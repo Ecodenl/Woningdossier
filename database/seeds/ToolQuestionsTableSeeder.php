@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Conditions\Clause;
 use App\Helpers\DataTypes\Caster;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
@@ -774,6 +775,15 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-placeholder',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'heat-source',
+                                    'operator' => Clause::CONTAINS,
+                                    'value' => 'heat-pump',
+                                ],
+                            ],
+                        ],
                     ],
                     'heat-pump' => [
                         'name' => 'Warmtepomp',
@@ -1441,6 +1451,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 foreach ($questionData['tool_question_custom_values'] as $short => $customValueData) {
                     $name = $customValueData['name'];
                     $extra = $customValueData['extra'] ?? [];
+                    $conditions = $customValueData['conditions'] ?? [];
 
                     $insertData = [
                         'tool_question_id' => $toolQuestion->id,
@@ -1452,6 +1463,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'nl' => $name,
                         ]),
                         'extra' => json_encode($extra),
+                        'conditions' => json_encode($conditions),
                     ];
 
                     DB::table('tool_question_custom_values')->updateOrInsert([
@@ -1468,6 +1480,7 @@ class ToolQuestionsTableSeeder extends Seeder
 
                 foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
                     if (isset($extra['column'])) {
+                        // TODO: Not relevant for now but when needed we could put the conditions inside the $extraData
                         $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
                     }
 

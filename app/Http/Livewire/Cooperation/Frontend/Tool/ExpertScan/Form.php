@@ -9,6 +9,7 @@ use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Step;
+use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use Artisan;
@@ -19,6 +20,7 @@ class Form extends Component
 {
     public $step;
     public $subSteps;
+    public $locale;
 
     public $filledInAnswers = [];
     public $building;
@@ -36,15 +38,16 @@ class Form extends Component
         'subStepValidationSucceeded' => 'subStepSucceeded',
         'failedValidationForSubSteps',
         'setFilledInAnswers',
-        'testing'
     ];
 
     public function mount(Step $step, Cooperation $cooperation)
     {
         $this->step = $step;
         $this->subSteps = $step->subSteps;
+
         $this->activeSubStep = $step->subSteps->first()->slug;
         $this->cooperation = $cooperation;
+        $this->locale = app()->getLocale();
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
@@ -56,22 +59,18 @@ class Form extends Component
     }
 
 
-    public function failedValidationForSubSteps($subStepName)
+    public function failedValidationForSubSteps(array $subStep)
     {
-        // we ask for the name because we cant pass the object
-        // a array would give us a non translated attribute.
-        $this->failedValidationForSubSteps[] = $subStepName;
-
-        Log::debug(json_encode($this->failedValidationForSubSteps));
+        $this->failedValidationForSubSteps[$subStep['slug'][$this->locale]] = $subStep['name'][$this->locale];
+        $this->dispatchBrowserEvent('scroll-to-top');
     }
 
     // we will mark it as saved, eventhough it isnt yet
-    public function subStepSucceeded($subStep)
+    public function subStepSucceeded(array $subStep)
     {
-        $this->succeededSubSteps[] = $subStep['slug']['nl'];
+        $this->succeededSubSteps[] = $subStep['slug'][$this->locale];
 
         if ($this->allSubStepsSucceeded()) {
-            Log::debug("Sub step {$subStep['slug']['nl']} succeeded");
             $this->saveFilledInAnswers();
         }
     }
@@ -110,7 +109,7 @@ class Form extends Component
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->first();
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)

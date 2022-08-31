@@ -31,11 +31,12 @@ class SubSteppable extends Scannable
 
     public function mount(Step $step, SubStep $subStep)
     {
+        $this->step = $step;
+
         $subStep->load([
             'toolQuestions' => function ($query) { $query->orderBy('order'); },
             'subStepTemplate',
         ]);
-        $this->step = $step;
         $this->subStep = $subStep;
         $this->nextUrl = route('cooperation.frontend.tool.expert-scan.index', compact('step'));
         $this->boot();
@@ -54,6 +55,7 @@ class SubSteppable extends Scannable
     public function render()
     {
         Log::debug($this->step->name. ' '. $this->subStep->name);
+        $this->rehydrateToolQuestions();
         return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
     }
 
@@ -89,7 +91,7 @@ class SubSteppable extends Scannable
                 }
 
                 // notify the main form that validation failed for this particular sub step.
-                $this->emitUp('failedValidationForSubSteps', $this->subStep->name);
+                $this->emitUp('failedValidationForSubSteps', $this->subStep);
 
                 $this->rehydrateToolQuestions();
                 $this->setValidationForToolQuestions();

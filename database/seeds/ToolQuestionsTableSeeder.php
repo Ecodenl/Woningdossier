@@ -775,6 +775,12 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-placeholder',
                         ],
+                    ],
+                    'heat-pump' => [
+                        'name' => 'Warmtepomp',
+                        'extra' => [
+                            'icon' => 'icon-heat-pump',
+                        ],
                         'conditions' => [
                             [
                                 [
@@ -783,12 +789,6 @@ class ToolQuestionsTableSeeder extends Seeder
                                     'value' => 'heat-pump',
                                 ],
                             ],
-                        ],
-                    ],
-                    'heat-pump' => [
-                        'name' => 'Warmtepomp',
-                        'extra' => [
-                            'icon' => 'icon-heat-pump',
                         ],
                     ],
                     'sun-boiler' => [

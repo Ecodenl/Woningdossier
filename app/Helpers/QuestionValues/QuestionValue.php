@@ -2,16 +2,20 @@
 
 namespace App\Helpers\QuestionValues;
 
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class QuestionValue {
-
+class QuestionValue
+{
     public static function getQuestionValues(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource): Collection
     {
+        //TODO: In the future we might need to evaluate dynamic answer options also (like what we do for the
+        // ToolQuestions currently, within the Form)
+
         $questionValues = $toolQuestion->getQuestionValues();
 
         $className = Str::studly($toolQuestion->short);
@@ -23,6 +27,19 @@ class QuestionValue {
                 $building,
                 $inputSource
             );
+        }
+
+        foreach ($questionValues as $index => $questionValue) {
+            if (! empty($questionValue['conditions'])) {
+                $passed = ConditionEvaluator::init()
+                    ->inputSource($inputSource)
+                    ->building($building)
+                    ->evaluate($questionValue['conditions']);
+
+                if (! $passed) {
+                    $questionValues->forget($index);
+                }
+            }
         }
 
         return $questionValues;

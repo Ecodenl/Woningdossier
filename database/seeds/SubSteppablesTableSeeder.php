@@ -1,12 +1,13 @@
 <?php
 
 use App\Helpers\Conditions\Clause;
+use App\Models\Service;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubStepTemplate;
 use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
-use App\Models\SubSteppable;
+use App\Models\ToolQuestionType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -28,352 +29,992 @@ class SubSteppablesTableSeeder extends Seeder
         $templateSummary = SubStepTemplate::findByShort('template-summary');
         $templateSpecificExampleBuilding = SubStepTemplate::findByShort('specific-example-building');
 
+        // Some services for conditions
+        $heatPump = Service::findByShort('heat-pump');
+        $ventilation = Service::findByShort('house-ventilation');
 
-        // todo; refactor this to structrue below!
-//        $this->saveStructure([
-//            'building-data' => [
-//                // sub step name
-//                'Woning type' => [
-//                    'order' => 0,
-//                    // question data
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'building-type-category' => [],
-//                    ]
-//                ],
-//                'Wat voor woning' => [
-//                    'order' => 1,
-//                    'conditions' => [
-//                        [
-//                            [
-//                                'column' => 'fn',
-//                                'value' => 'BuildingType',
-//                            ],
-//                        ],
-//                    ],
-//                    // question data
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'building-type' => [],
-//                    ]
-//                ],
-//                'Wat voor dak' => [
-//                    'order' => 4,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'roof-type' => [],
-//                    ]
-//                ],
-//                'Bouwjaar en oppervlak' => [
-//                    'order' => 2,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'build-year' => [],
-//                        'building-layers' => [],
-//                    ]
-//                ],
-//                'Specifieke voorbeeld woning' => [
-//                    'order' => 3,
-//                    'conditions' => [
-//                        [
-//                            [
-//                                'column' => 'fn',
-//                                'value' => 'SpecificExampleBuilding',
-//                            ],
-//                        ],
-//                    ],
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'specific-example-building' => [],
-//                    ],
-//                ],
-//                'Monument en energielabel' => [
-//                    'order' => 5,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'monument' => [],
-//                        'energy-label' => [],
-//                    ]
-//                ],
-//                'Gebruikersoppervlak en bijzonderheden' => [
-//                    'order' => 6,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'surface' => [],
-//                    ],
-//                ],
-//                'Samenvatting woninggegevens' => [
-//                    'order' => 7,
-//                    'sub_step_template_id' => $templateSummary->id,
-//                    'questions' => [
-//                        'building-data-comment-resident' => [],
-//                        'building-data-comment-coach' => [],
-//                    ],
-//                ],
-//            ],
-//            'usage-quick-scan' => [
-//                'Hoeveel bewoners' => [
-//                    'order' => 0,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'resident-count' => [],
-//                    ]
-//                ],
-//                'Thermostaat gebruik' => [
-//                    'order' => 1,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'thermostat-high' => [],
-//                        'thermostat-low' => [],
-//                        'hours-high' => [],
-//                    ],
-//                ],
-//                'Gebruik warm tapwater' => [
-//                    'order' => 2,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'heating-first-floor' => [],
-//                        'heating-second-floor' => [],
-//                        'water-comfort' => [],
-//                    ]
-//                ],
-//                'Gas en elektra gebruik' => [
-//                    'order' => 3,
-//                    'sub_step_template_id' => $template2rows1top2bottom->id,
-//                    'questions' => [
-//                        'cook-type' => [],
-//                        'amount-gas' => [],
-//                        'amount-electricity' => [],
-//                    ]
-//                ],
-//                'Samenvatting bewoners-gebruik' => [
-//                    'order' => 4,
-//                    'sub_step_template_id' => $templateSummary->id,
-//                    'questions' => [
-//                        'usage-quick-scan-comment-resident' => [],
-//                        'usage-quick-scan-comment-coach' => [],
-//                    ],
-//                ],
-//            ],
-//            'living-requirements' => [
-//                'Hoelang blijven wonen' => [
-//                    'order' => 0,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'remaining-living-years' => [],
-//                    ],
-//                ],
-//                'Welke zaken vindt u belangrijk?' => [
-//                    'order' => 1,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'comfort-priority' => [],
-//                    ],
-//                ],
-//                'Welke zaken vervangen' => [
-//                    'order' => 2,
-//                    // note: dit is een custom vraag, zie slide 18
-//                    'sub_step_template_id' => $templateCustomChanges->id,
-//                ],
-//                'Samenvatting woonwensen' => [
-//                    'order' => 3,
-//                    'sub_step_template_id' => $templateSummary->id,
-//                    'questions' => [
-//                        'living-requirements-comment-resident' => [],
-//                        'living-requirements-comment-coach' => [],
-//                    ],
-//                ],
-//            ],
-//            'residential-status' => [
-//                'Muurisolatie' => [
-//                    'order' => 0,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'current-wall-insulation' => [],
-//                    ]
-//                ],
-//                'Vloerisolatie' => [
-//                    'order' => 1,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'current-floor-insulation' => [],
-//                    ],
-//                ],
-//                'Dakisolatie' => [
-//                    'order' => 2,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'current-roof-insulation' => [],
-//                    ],
-//                ],
-//                'Glasisolatie eerste woonlaag' => [
-//                    'order' => 3,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'current-living-rooms-windows' => [],
-//                    ]
-//                ],
-//                'Glasisolatie tweede woonlaag' => [
-//                    'order' => 4,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'current-sleeping-rooms-windows' => [],
-//                    ],
-//                ],
-//                'Verwarming' => [
-//                    'order' => 5,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'heat-source' => [],
-//                        'heat-source-warm-tap-water' => [],
-//                    ],
-//                ],
-//                'Zonnenboiler' => [
-//                    'order' => 6,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'heater-type' => [],
-//                    ]
-//                ],
-//                'Gasketel vragen' => [
-//                    'order' => 7,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'conditions' => [
-//                        [
-//                            [
-//                                'column' => 'heat-source',
-//                                'operator' => Clause::CONTAINS,
-//                                'value' => 'hr-boiler',
-//                            ],
-//                        ],
-//                    ],
-//                    'questions' => [
-//                        'boiler-type' => [],
-//                        'boiler-placed-date' => [],
-//                    ]
-//                ],
-//
-//                'Warmtepomp' => [
-//                    'order' => 8,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'conditions' => [
-//                        [
-//                            [
-//                                'column' => 'heat-source',
-//                                'operator' => Clause::CONTAINS,
-//                                'value' => 'heat-pump',
-//                            ],
-//                        ],
-//                    ],
-//                    'questions' => [
-//                        'heat-pump-type' => [],
-//                        'heat-pump-placed-date' => [],
-//                    ]
-//                ],
-//
-//                'Hoe is de verwarming' => [
-//                    'order' => 9,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'building-heating-application' => [],
-//                    ]
-//                ],
-//                '50 graden test' => [
-//                    'order' => 10,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'conditions' => [
-//                        [
-//                            [
-//                                'column' => 'heat-source',
-//                                'operator' => Clause::CONTAINS,
-//                                'value' => 'hr-boiler',
-//                            ],
-//                        ],
-//                    ],
-//                    'questions' => [
-//                        'fifty-degree-test' => [],
-//                    ]
-//                ],
-//
-//                'Ventilatie' => [
-//                    'order' => 11,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'ventilation-type' => [],
-//                        'ventilation-demand-driven' => [],
-//                        'ventilation-heat-recovery' => [],
-//                    ]
-//                ],
-//                'Kierdichting' => [
-//                    'order' => 12,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'crack-sealing-type' => [],
-//                    ]
-//                ],
-//
-//                'Zonnepanelen' => [
-//                    'order' => 13,
-//                    'sub_step_template_id' => $template2rows3top1bottom->id,
-//                    'questions' => [
-//                        'has-solar-panels' => [],
-//                        'solar-panel-count' => [],
-//                        'total-installed-power' => [],
-//                        'solar-panels-placed-date' => [],
-//                    ]
-//                ],
-//
-//                'Warmtepomp interesse' => [
-//                    'order' => 14,
-//                    'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        'interested-in-heat-pump' => [],
-//                    ],
-//                ],
-//                'Samenvatting woningstatus' => [
-//                    'slug' => 'samenvatting-woonstatus',
-//                    'order' => 15,
-//                    'sub_step_template_id' => $templateSummary->id,
-//                    'questions' => [
-//
-//                        'residential-status-element-comment-resident' => [],
-//
-//                        'residential-status-element-comment-coach' => [],
-//
-//                        'residential-status-service-comment-resident' => [],
-//
-//                        'residential-status-service-comment-coach' => [],
-//
-//                    ],
-//                ],
-//            ],
-//        ]);
+        // Tool question types
+        // TODO: Subject to change
+        $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
+        $radioIconType = ToolQuestionType::findByShort('radio-icon');
+        $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
+        $radioType = ToolQuestionType::findByShort('radio');
+        $textType = ToolQuestionType::findByShort('text');
+        $sliderType = ToolQuestionType::findByShort('slider');
+        $textareaType = ToolQuestionType::findByShort('textarea');
+        $textareaPopupType = ToolQuestionType::findByShort('textarea-popup');
+        $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
+        // TODO: These don't exist yet, but for future reference it's easier to already have them "linked" in the questions
+        $dropdownType = ToolQuestionType::findByShort('radio');
+        $dropdownMultiType = ToolQuestionType::findByShort('checkbox-icon');
 
+        #-------------------------
+        # Quick Scan sub steppables
+        #-------------------------
         $this->saveStructure([
-            'heating' => [
-                'huidige situatie' => [
+            'building-data' => [
+                // sub step name
+                'Woning type' => [
                     'order' => 0,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('building-type-category'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Wat voor woning' => [
+                    'order' => 1,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'fn',
+                                'value' => 'BuildingType',
+                            ],
+                        ],
+                    ],
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('building-type'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Wat voor dak' => [
+                    'order' => 4,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('roof-type'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Bouwjaar en oppervlak' => [
+                    'order' => 2,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('build-year'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('building-layers'),
+                            'tool_question_type_id' => $sliderType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Specifieke voorbeeld woning' => [
+                    'order' => 3,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'fn',
+                                'value' => 'SpecificExampleBuilding',
+                            ],
+                        ],
+                    ],
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('specific-example-building'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Monument en energielabel' => [
+                    'order' => 5,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('monument'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('energy-label'),
+                            'tool_question_type_id' => $radioIconSmallType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Gebruikersoppervlak en bijzonderheden' => [
+                    'order' => 6,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('surface'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Samenvatting woninggegevens' => [
+                    'order' => 7,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('building-data-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('building-data-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                    ],
+                ],
+            ],
+            'usage-quick-scan' => [
+                'Hoeveel bewoners' => [
+                    'order' => 0,
+                    'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('resident-count'),
-                            'size' => 'w-1/2',
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Thermostaat gebruik' => [
+                    'order' => 1,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('thermostat-high'),
+                            'tool_question_type_id' => $sliderType->id,
+                            'size' => 'w-full',
                         ],
                         [
-                            'morph' => ToolLabel::findByShort('heat-pump'),
-                            'size' => 'w-1/2',
+                            'morph' => ToolQuestion::findByShort('thermostat-low'),
+                            'tool_question_type_id' => $sliderType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hours-high'),
+                            'tool_question_type_id' => $sliderType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Gebruik warm tapwater' => [
+                    'order' => 2,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('heating-first-floor'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heating-second-floor'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('water-comfort'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Gas en elektra gebruik' => [
+                    'order' => 3,
+                    'sub_step_template_id' => $template2rows1top2bottom->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('cook-type'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('amount-gas'),
-                            'size' => 'w-1/2'
-                        ]
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('amount-electricity'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Samenvatting bewoners-gebruik' => [
+                    'order' => 4,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('usage-quick-scan-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('usage-quick-scan-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
                     ],
                 ],
+            ],
+            'living-requirements' => [
+                'Hoelang blijven wonen' => [
+                    'order' => 0,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('remaining-living-years'),
+                            'tool_question_type_id' => $sliderType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Welke zaken vindt u belangrijk?' => [
+                    'order' => 1,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('comfort-priority'),
+                            'tool_question_type_id' => $measurePriorityType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Welke zaken vervangen' => [
+                    'order' => 2,
+                    // note: dit is een custom vraag, zie slide 18
+                    'sub_step_template_id' => $templateCustomChanges->id,
+                ],
+                'Samenvatting woonwensen' => [
+                    'order' => 3,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('living-requirements-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('living-requirements-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                    ],
+                ],
+            ],
+            'residential-status' => [
+                'Muurisolatie' => [
+                    'order' => 0,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('current-wall-insulation'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Vloerisolatie' => [
+                    'order' => 1,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('current-floor-insulation'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Dakisolatie' => [
+                    'order' => 2,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('current-roof-insulation'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Glasisolatie eerste woonlaag' => [
+                    'order' => 3,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('current-living-rooms-windows'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Glasisolatie tweede woonlaag' => [
+                    'order' => 4,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('current-sleeping-rooms-windows'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Verwarming' => [
+                    'order' => 5,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source'),
+                            'tool_question_type_id' => $checkboxIconType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'Verwarming warm water' => [
+                    'order' => 6,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
+                            'tool_question_type_id' => $checkboxIconType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'Zonnenboiler' => [
+                    'order' => 7,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('heater-type'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Gasketel vragen' => [
+                    'order' => 8,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'hr-boiler',
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'heat-source-warm-tap-water',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'hr-boiler',
+                            ],
+                        ],
+                    ],
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('boiler-type'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('boiler-placed-date'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Warmtepomp' => [
+                    'order' => 9,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'heat-source-warm-tap-water',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                        ],
+                    ],
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-pump-type'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-pump-placed-date'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Hoe is de verwarming' => [
+                    'order' => 10,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('building-heating-application'),
+                            'tool_question_type_id' => $checkboxIconType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('building-heating-application-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'building-heating-application',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
+                '50 graden test' => [
+                    'order' => 11,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('fifty-degree-test'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'building-heating-application',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'radiators',
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'building-heating-application',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'air-heating',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('boiler-setting-comfort-heat'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Ventilatie' => [
+                    'order' => 12,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-type'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-demand-driven'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-heat-recovery'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
+                                    ],
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 2)->first()->id, // Mechanische ventilatie
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
+                'Kierdichting' => [
+                    'order' => 13,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-sealing-type'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Zonnepanelen' => [
+                    'order' => 14,
+                    'sub_step_template_id' => $template2rows3top1bottom->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('has-solar-panels'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('solar-panel-count'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => Clause::EQ,
+                                        'value' => 'yes',
+                                    ]
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('total-installed-power'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => Clause::EQ,
+                                        'value' => 'yes',
+                                    ]
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('solar-panels-placed-date'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => Clause::EQ,
+                                        'value' => 'yes',
+                                    ]
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
+                'Warmtepomp interesse' => [
+                    'order' => 15,
+                    'sub_step_template_id' => $templateDefault->id,
+                    // When a user has a full heat pump, we don't ask interest. However, if they don't have a heat
+                    // pump at all, we also want to show it. In the case a user changes his heat pump state,
+                    // the database could still hold "full heat pump" as answer.
+                    'conditions' => [
+                        [
+                            // No heat pump selected
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::NOT_CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                            [
+                                'column' => 'heat-source-warm-tap-water',
+                                'operator' => Clause::NOT_CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                        ],
+                        [
+                            // Full heat pumps
+                            [
+                                'column' => 'heat-pump-type',
+                                'operator' => Clause::NEQ,
+                                'value' => $heatPump->values()->where('calculate_value', 4)->first()->id,
+                            ],
+                            [
+                                'column' => 'heat-pump-type',
+                                'operator' => Clause::NEQ,
+                                'value' => $heatPump->values()->where('calculate_value', 5)->first()->id,
+                            ],
+                            [
+                                'column' => 'heat-pump-type',
+                                'operator' => Clause::NEQ,
+                                'value' => $heatPump->values()->where('calculate_value', 6)->first()->id,
+                            ],
+                        ],
+                    ],
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('interested-in-heat-pump'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('interested-in-heat-pump-variant'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'interested-in-heat-pump',
+                                        'operator' => Clause::EQ,
+                                        'value' => 'yes',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'Samenvatting woningstatus' => [
+                    'slug' => 'samenvatting-woonstatus',
+                    'order' => 16,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('residential-status-element-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('residential-status-element-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('residential-status-service-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('residential-status-service-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        #-------------------------
+        # Expert sub steppables
+        #-------------------------
+        $this->saveStructure([
+            'heating' => [
                 'nieuwe situatie' => [
                     'order' => 0,
                     'morphs' => [
                         [
-                            'morph' => ToolQuestion::findByShort('amount-electricity'),
-                            'size' => 'w-1/2'
+                            'morph' => ToolQuestion::findByShort('heat-source-considerable'),
+                            'tool_question_type_id' => $checkboxIconType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolLabel::findByShort('hr-boiler'),
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('new-boiler-type'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        // TODO: Calculate fields
+                        [
+                            'morph' => ToolLabel::findByShort('heat-pump'),
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
+
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('new-building-heating-application'),
+                            'tool_question_type_id' => $checkboxIconType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('new-boiler-setting-comfort-heat'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('new-cook-type'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('new-heat-pump-type'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        // TODO: Indication required power?
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-pump-preferred-power'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('outside-unit-space'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('inside-unit-space'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'huidige situatie' => [
+                    'order' => 1,
+                    'morphs' => [
+                        //[
+                        //    'morph' => ToolLabel::findByShort('hr-boiler'),
+                        //    'size' => 'w-full',
+                        //],
+                        [
+                            'morph' => ToolQuestion::findByShort('surface'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('resident-count'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('cook-type'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('water-comfort'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source'),
+                            'tool_question_type_id' => $dropdownMultiType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
+                            'tool_question_type_id' => $dropdownMultiType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('boiler-type'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('boiler-placed-date'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-pump-type'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        // TODO: Not in mockup, missing field for "other" option of heat-pump-type????
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-pump-placed-date'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('building-heating-application'),
+                            'tool_question_type_id' => $dropdownMultiType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('fifty-degree-test'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('boiler-setting-comfort-heat'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('current-wall-insulation'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('current-floor-insulation'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('current-roof-insulation'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('current-living-rooms-windows'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('current-sleeping-rooms-windows'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolLabel::findByShort('sun-boiler'),
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heater-pv-panel-orientation'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heater-pv-panel-angle'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'w-1/2',
                         ],
                     ],
                 ],
@@ -425,6 +1066,7 @@ class SubSteppablesTableSeeder extends Seeder
                 if (isset($subQuestionData['morphs'])) {
                     $orderForSubStepToolQuestions = 0;
                     foreach ($subQuestionData['morphs'] as $morph) {
+                        $conditions = $morph['conditions'] ?? null;
 
                         DB::table('sub_steppables')->updateOrInsert(
                             [
@@ -434,7 +1076,9 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                             [
                                 'order' => $orderForSubStepToolQuestions,
-                                'size' => $morph['size'],
+                                'tool_question_type_id' => $morph['tool_question_type_id'] ?? null,
+                                'conditions' => is_null($conditions) ? null : json_encode($conditions),
+                                'size' => $morph['size'] ?? null,
                             ],
                         );
 

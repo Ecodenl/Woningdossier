@@ -23,6 +23,12 @@ class CreateSubStepToolQuestionsTable extends Migration
             $table->unsignedBigInteger('tool_question_id');
             $table->foreign('tool_question_id')->references('id')->on('tool_questions')->onDelete('cascade');
 
+            $table->unsignedBigInteger('tool_question_type_id')->nullable();
+            $table->foreign('tool_question_type_id')->references('id')->on('tool_question_types')->onDelete('cascade');
+
+            $table->json('conditions')->nullable()->default(null);
+            $table->string('size')->nullable()->default(null);
+
             $table->timestamps();
         });
     }

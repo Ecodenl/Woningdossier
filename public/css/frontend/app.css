@@ -171407,6 +171407,10 @@ textarea.form-input {
   width: 9rem;
 }
 
+.icon-placeholder {
+  content: url('/icons/placeholder.svg');
+}
+
 .icon-account-circle {
   content: url('/icons/account-circle.svg');
 }
@@ -171657,6 +171661,14 @@ textarea.form-input {
 
 .icon-heat-pump {
   content: url('/icons/heat-pump.svg');
+}
+
+.icon-heat-pump-hybrid {
+  content: url('/icons/heat-pump-hybrid.svg');
+}
+
+.icon-heat-pump-none {
+  content: url('/icons/heat-pump-none.svg');
 }
 
 .icon-hide {

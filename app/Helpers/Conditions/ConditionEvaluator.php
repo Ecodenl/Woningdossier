@@ -101,7 +101,7 @@ class ConditionEvaluator
             } else {
                 // tool question short
                 $toolQuestion = ToolQuestion::findByShort($questionKey);
-                if (!$toolQuestion instanceof ToolQuestion) {
+                if (! $toolQuestion instanceof ToolQuestion) {
                     continue; // just skip this.
                 }
                 // in case of checkbox $answer is array
@@ -174,16 +174,19 @@ class ConditionEvaluator
             if (is_array($v)) {
                 $v = json_encode($v);
             }
-            Log::debug(
-                "evaluateClause EXPLAIN: " . sprintf(
-                    '%s %s %s',
-                    $column,
-                    $operator,
-                    $v
-                )
-            );
-            Log::debug("evaluateClause EXPLAIN against");
-            Log::debug($collection);
+
+            if ($this->explain) {
+                Log::debug(
+                    "evaluateClause EXPLAIN: " . sprintf(
+                        '%s %s %s',
+                        $column,
+                        $operator,
+                        $v
+                    )
+                );
+                Log::debug("evaluateClause EXPLAIN against");
+                Log::debug($collection);
+            }
         }
 
         // first check if its a custom evaluator
@@ -192,11 +195,16 @@ class ConditionEvaluator
             return $customEvaluatorClass::evaluate($this->building, $this->inputSource);
         }
 
-        if (!$collection->has($column)) {
+        if (! $collection->has($column)) {
             return false;
         }
         $values = $collection->get($column);
-        if (empty($operator) || $operator == Clause::CONTAINS) {
+
+        if (empty($operator)) {
+            $operator = Clause::CONTAINS;
+        }
+
+        if ($operator == Clause::CONTAINS || $operator == Clause::NOT_CONTAINS) {
             if ($values instanceof Collection) {
                 // as this is just a list with integer indexes, we have to do
                 // array comparison. Therefore:
@@ -204,11 +212,13 @@ class ConditionEvaluator
                 // and fallthrough
             }
             if (is_array($values)) {
-                return in_array($value, $values);
+                $result = in_array($value, $values);
+                return $operator == Clause::CONTAINS ? $result : ! $result;
             }
 
             // values is plain value
-            return $values == $value;
+            $result = $values == $value;
+            return $operator == Clause::CONTAINS ? $result : ! $result;
         }
 
         // values will *probably* (should..) be containing a single value

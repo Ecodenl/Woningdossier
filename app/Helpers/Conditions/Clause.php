@@ -12,6 +12,7 @@ class Clause
     public const LT = '<';
     public const LTE = '<=';
     public const CONTAINS = 'contains';
+    public const NOT_CONTAINS = 'not-contains';
 
     protected string $column;
     protected string $operator;

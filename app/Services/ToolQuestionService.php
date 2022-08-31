@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\Arr;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
 use App\Models\Building;
@@ -69,8 +70,7 @@ class ToolQuestionService {
         ];
 
         // we can't do a update or create, we just have to delete the old answers and create the new one.
-        if ($this->toolQuestion->toolQuestionType->short == 'checkbox-icon') {
-
+        if ($this->toolQuestion->data_type === Caster::ARRAY) {
             $this->toolQuestion->toolQuestionAnswers()
                 ->allInputSources()
                 ->where($where)
@@ -83,7 +83,6 @@ class ToolQuestionService {
                 $data['answer'] = $answer;
                 $this->toolQuestion->toolQuestionAnswers()->create($data);
             }
-
         } else {
             if (is_array($givenAnswer)) {
                 $givenAnswer = json_encode($givenAnswer);

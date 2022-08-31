@@ -83,9 +83,22 @@ class SubStep extends Model
 
     public function toolQuestions()
     {
-        return $this->belongsToMany(ToolQuestion::class, 'sub_step_tool_questions')
+        return $this->morphedByMany(ToolQuestion::class, 'sub_steppable')
             ->orderBy('order')
             ->withPivot('order', 'size');
+    }
+
+    public function subSteppables()
+    {
+        return $this->hasMany(SubSteppable::class);
+    }
+
+    /**
+     * Get the parent commentable model (post or video).
+     */
+    public function commentable()
+    {
+        return $this->morphTo();
     }
 
     public function scopeOrdered(Builder $query)

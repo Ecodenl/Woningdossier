@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Arr;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\QuestionValues\QuestionValue;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
@@ -184,7 +185,7 @@ class Building extends Model
                 $answer = optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer;
                 $answers[$toolQuestionAnswer->inputSource->short][$index] = [
                     'answer' => $answer,
-                    'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? null,
+                    'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? $answer,
                 ];
             }
         }
@@ -223,14 +224,15 @@ class Building extends Model
             $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
         } else {
             $where['building_id'] = $this->id;
-            $toolQuestionAnswers  = $toolQuestion
+            $toolQuestionAnswers = $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->where($where)
                 ->get();
 
             // todo: refactor this to something sensible
-            if ($toolQuestion->toolQuestionType->short == 'checkbox-icon') {
+            // TODO: Should we still refactor?
+            if ($toolQuestion->data_type === Caster::ARRAY) {
                 foreach ($toolQuestionAnswers as $toolQuestionAnswer) {
                     if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
                         if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {

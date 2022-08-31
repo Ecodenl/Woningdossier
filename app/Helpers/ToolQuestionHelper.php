@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -211,13 +212,10 @@ class ToolQuestionHelper
             }
 
             // Format answers
-            if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
-                $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                $humanReadableAnswer = NumberFormatter::formatNumberForUser($humanReadableAnswer, $isInteger);
-            } elseif ($toolQuestion->toolQuestionType->short === 'slider') {
-                $humanReadableAnswer = str_replace('.', '', NumberFormatter::format($humanReadableAnswer, 0));
-            } elseif ($toolQuestion->toolQuestionType->short === 'rating-slider') {
-                $humanReadableAnswerArray = json_decode($humanReadableAnswer, true);
+            if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                $humanReadableAnswer = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getFormatForUser();
+            } elseif ($toolQuestion->data_type === Caster::JSON) {
+                $humanReadableAnswerArray = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getCast();
                 $humanReadableAnswer = [];
                 foreach ($toolQuestion->options as $option) {
                     $humanReadableAnswer[$option['name']] = $humanReadableAnswerArray[$option['short']];

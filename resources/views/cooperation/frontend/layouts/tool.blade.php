@@ -33,13 +33,6 @@
             @php
                 $masterInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT);
             @endphp
-            {{-- Expert tool has a card-wrapper around the content --}}
-{{--            @if(Auth::check() && ! Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_RESIDENT))--}}
-{{--                <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">--}}
-{{--                    @include('cooperation.tool.includes.top-alerts')--}}
-{{--                    @include('cooperation.tool.parts.progress')--}}
-{{--                </div>--}}
-{{--            @endif--}}
 
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
                 <div class="flex flex-row flex-wrap w-full" x-data="tabs()">
@@ -49,24 +42,15 @@
 {{--                        </h2>--}}
 {{--                    @endif--}}
                     <ul class="nav-tabs mt-5 hidden" x-ref="nav-tabs">
-                        @if(isset($step))
-                            @php
-                                $subStepsForStep = $currentStep->children;
-                            @endphp
-                            @if($subStepsForStep->isEmpty() && $currentStep->short !== 'heating')
+                        @if(isset($currentStep))
+                            {{-- TODO: Check why @Bodhi is hiding the tab for this step --}}
+                            @if($currentStep->short !== 'heating')
                                 <li class="active @if($building->hasCompleted($currentStep, $masterInputSource)) completed @endif">
-                                    <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">
+                                    <a href="{{route("cooperation.frontend.tool.expert-scan.index", ['step' => $currentStep])}}">
                                         {{$currentStep->name}}
                                     </a>
                                 </li>
                             @endif
-                            @foreach($subStepsForStep as $subStep)
-                                <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep, $masterInputSource)) completed @endif">
-                                    <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">
-                                        {{$subStep->name}}
-                                    </a>
-                                </li>
-                            @endforeach
                         @endif
 
                         @if(isset($currentStep) && $currentStep->hasQuestionnaires())
@@ -84,7 +68,7 @@
                     </ul>
 
                     <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-t-lg tab-content"
-                        x-ref="tab-content">
+                         x-ref="tab-content">
                         @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                             @foreach($currentStep->questionnaires as $questionnaire)
                                 @if($questionnaire->isActive())
@@ -105,24 +89,15 @@
                                 @if($currentStep->isDynamic())
                                     @livewire('cooperation.frontend.tool.expert-scan.buttons')
                                 @else
-                                @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']) && !\App\helpers\HoomdossierSession::isUserObserving())
-                                    <button class="float-right btn btn-purple submit-main-form">
-                                        @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
-                                            @lang('default.buttons.next-page')
-                                        @else
-                                            @lang('default.buttons.save')
-                                        @endif
-                                    </button>
-                                @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
-                                    <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}"
-                                          method="post">
-                                        @csrf
-                                        <button style="margin-top: -35px" type="submit"
-                                                class="float-right btn btn-purple pdf-report">
-                                            {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                                    @if(! \App\helpers\HoomdossierSession::isUserObserving())
+                                        <button class="float-right btn btn-purple submit-main-form">
+                                            @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
+                                                @lang('default.buttons.next-page')
+                                            @else
+                                                @lang('default.buttons.save')
+                                            @endif
                                         </button>
-                                    </form>
-                                @endif
+                                    @endif
                                 @endif
                             </div>
 
@@ -131,7 +106,7 @@
                             </div>
 
                             <div class="px-4 py-8">
-                                @if(!\App\helpers\HoomdossierSession::isUserObserving() && !Request::routeIs('cooperation.tool.my-plan.index'))
+                                @if(! \App\helpers\HoomdossierSession::isUserObserving())
                                     <div class="flex flex-row flex-wrap w-full">
                                         <div class="w-full sm:w-1/2">
                                             <a class="btn btn-green float-left"
@@ -139,19 +114,15 @@
                                                 @lang('default.buttons.cancel')
                                             </a>
                                         </div>
-                                        @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
-                                            <div class="w-full sm:w-1/2">
-                                                <a href="" class="float-right btn btn-purple submit-main-form">
+                                        <div class="w-full sm:w-1/2">
+                                            <button class="float-right btn btn-purple submit-main-form">
+                                                @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
                                                     @lang('default.buttons.next-page')
-                                                </a>
-                                            </div>
-                                        @else
-                                            <div class="w-full sm:w-1/2">
-                                                <button class="float-right btn btn-purple submit-main-form">
+                                                @else
                                                     @lang('default.buttons.save')
-                                                </button>
-                                            </div>
-                                        @endif
+                                                @endif
+                                            </button>
+                                        </div>
                                     </div>
                                 @endif
                             </div>
@@ -286,11 +257,8 @@
         </script>
         <script src="{{ asset('js/are-you-sure.js') }}"></script>
 
-        @if(!in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
-            <script>
-                $("form.form-horizontal").areYouSure();
-            </script>
-        @endif
-
+        <script>
+            $("form.form-horizontal").areYouSure();
+        </script>
     @endpush
 @endif

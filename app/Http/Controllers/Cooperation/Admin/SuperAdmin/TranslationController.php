@@ -45,9 +45,9 @@ class TranslationController extends Controller
 
         $group = str_replace('_', '/', $group);
         // it is what it is, for the time being this will do. TODO: should be refactored
-        $step = Step::findByShort($group);
+        $step = Step::withGeneralData()->whereShort($group)->first();
 
-        if ($step instanceof Step && $step->isChild()) {
+        if ($step instanceof Step && ! is_null($step->parent_id)) {
             $group = "cooperation/tool/general-data/{$group}";
         }
         if ('ventilation' == $group) {

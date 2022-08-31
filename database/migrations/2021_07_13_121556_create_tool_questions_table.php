@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\DataTypes\Caster;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,6 +24,7 @@ class CreateToolQuestionsTable extends Migration
             $table->json('name');
             $table->json('help_text');
             $table->json('placeholder')->nullable()->default(null);
+            $table->string('data_type')->default(Caster::STRING);
             $table->unsignedBigInteger('tool_question_type_id');
             $table->foreign('tool_question_type_id')->references('id')->on('tool_question_types')->onDelete('cascade');
             $table->boolean('coach')->default(true);

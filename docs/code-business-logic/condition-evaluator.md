@@ -8,7 +8,7 @@ The evaluator works by providing conditions, and using a building and input sour
 
 #### Models that support conditions:
 - [SubStep](./../../app/Models/SubStep.php)
-- [ToolQuestion](./../../app/Models/ToolQuestion.php)
+- [SubSteppable](./../../app/Models/SubSteppable.php)
 - [ToolQuestionCustomValue](./../../app/Models/ToolQuestionCustomValue.php)
 - [ToolQuestionValuable](./../../app/Models/ToolQuestionValuable.php)
 

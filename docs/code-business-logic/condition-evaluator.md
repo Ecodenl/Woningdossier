@@ -58,6 +58,7 @@ In the normal case, we expect the following values inside the clause:
   - `<`: Value must be smaller than answer
   - `<=`: Value must be equal or smaller than answer
   - `contains`: If answer is multi, one of the answers must be value. Otherwise, value must be equal to answer.
+  - `not-contains`: If answer is multi, none of the answers must be value. Otherwise, value must not be equal to answer.
 
 #### Special use case
 Sometimes evaluation is a little different, where the default evaluation doesn't cut it. Special use cases exist, and 

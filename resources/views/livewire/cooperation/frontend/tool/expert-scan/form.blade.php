@@ -1,55 +1,51 @@
 <div>
-    <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-5">
-{{--        <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 ">--}}
-            @foreach($toolQuestions as $toolQuestion)
-                @php
-                    $disabled = ! $building->user->account->can('answer', $toolQuestion);
-                    $humanReadableAnswer = null;
 
-                switch($toolQuestion->short) {
-                    case 'building-type':
-                        $rawAnswer = $building->getAnswer($masterInputSource, \App\Models\ToolQuestion::findByShort('building-type-category'));
-                        // if there is an answer we can find the row and get the answer.
-                        $model = \App\Models\BuildingTypeCategory::find($rawAnswer);
-                        if ($model instanceof \App\Models\BuildingTypeCategory) {
-                            $humanReadableAnswer = Str::lower(
-                             $model->name
-                            );
-                        }
-                        break;
-                    default:
-                        $humanReadableAnswer = null;
-                }
-                @endphp
-
-                <div class="w-full @if($loop->iteration > 1) pt-10 @endif">
-                    @component('cooperation.frontend.layouts.components.form-group', [
-                        'class' => 'form-group-heading',
-                        // 'defaultInputSource' => 'resident',
-                        // so we give the option to replace something in the question title
-                        'label' => __($toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"), ['name' => $humanReadableAnswer]),
-                        'inputName' => "filledInAnswers.{$toolQuestion->id}",
-                        'withInputSource' => ! $disabled,
-                    ])
-                        @slot('sourceSlot')
-                            @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                                'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
-                                'toolQuestion' => $toolQuestion,
-                            ])
-                        @endslot
-
-                        @slot('modalBodySlot')
-                            <p>
-                                {!! $toolQuestion->help_text !!}
-                            </p>
-                        @endslot
-
-                        @include("cooperation.tool-question-type-templates.{$toolQuestion->pivot->toolQuestionType->short}.show", [
-                            'disabled' => $disabled,
-                        ])
-                    @endcomponent
+        <div class="rounded-md bg-red-50 p-4 mb-4 {{count($failedValidationForSubSteps) == 0 ? 'hidden' : 'flex'}}">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <!-- Heroicon name: mini/x-circle -->
+                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                    </svg>
                 </div>
-            @endforeach
-{{--        </div>--}}
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">Er missen wat gegevens bij de volgende onderwerpen</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        <ul role="list" class="list-disc space-y-1 pl-5">
+                            @foreach($failedValidationForSubSteps as $failedValidationForSubStep)
+                                <li>{{$failedValidationForSubStep}}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <div x-data="{ active: '{{$step->subSteps->first()->slug}}'}"
+         x-on:scroll-to-top.window="window.scrollTo({ top: 0, behavior: 'smooth' })"
+         wire:ignore.self>
+
+        <div class="hidden sm:block">
+            <nav class="flex space-x-4" aria-label="Tabs">
+                <!-- Current: "bg-indigo-100 text-indigo-700", Default: "text-green-500 hover:text-green-700" -->
+                @foreach($step->subSteps as $subStep)
+                    <a x-on:click="active = '{{$subStep->slug}}'" href="#" class="no-underline rounded-md p-2 bg-green text-white hover:bg-gray ">
+                        {{$subStep->name}}
+                    </a>
+                @endforeach
+            </nav>
+        </div>
+
+        @foreach($step->subSteps as $subStep)
+             <div x-show="active == '{{$subStep->slug}}'" wire:ignore.self>
+                @livewire('cooperation.frontend.tool.expert-scan.sub-steppable', ['step' => $step, 'subStep' => $subStep], key($subStep->id))
+             </div>
+         @endforeach
+
     </div>
+
+    <button wire:click="$emitTo('cooperation.frontend.tool.expert-scan.sub-steppable', 'save')" class="float-right btn btn-purple">
+        @lang('default.buttons.save')
+    </button>
 </div>

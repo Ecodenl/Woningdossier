@@ -24,7 +24,7 @@ abstract class Scannable extends Component
      * event, which can be caught by the frontend and set visuals correct, e.g. with the sliders.
      *
      */
-    protected $listeners = ['update', 'updated', 'save',];
+    protected $listeners = ['update', 'updated', 'save'];
     /** @var Building */
     public $building;
 

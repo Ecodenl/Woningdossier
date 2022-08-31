@@ -29,15 +29,27 @@ class SubSteppable extends Scannable
     public $subStep;
     public $nextUrl;
 
+    public $subSteppables;
+
     public function mount(Step $step, SubStep $subStep)
     {
         $this->step = $step;
 
         $subStep->load([
-            'toolQuestions' => function ($query) { $query->orderBy('order'); },
+            'subSteppables' => function ($query) {
+                $query
+                    ->orderBy('order')
+                    ->with(['subSteppable', 'toolQuestionType']);
+            },
+            'toolQuestions' => function ($query) {
+                $query->orderBy('order');
+            },
             'subStepTemplate',
         ]);
+
+//         dd($subStep->toolQuestions->first());
         $this->subStep = $subStep;
+        $this->subSteppables = $subStep->subSteppables;
         $this->nextUrl = route('cooperation.frontend.tool.expert-scan.index', compact('step'));
         $this->boot();
     }

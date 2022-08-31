@@ -1,0 +1,1 @@
+<h4 class="text-blue text-md font-bold max-w-15/20 {{$subSteppable->size}}">{{$subSteppable->subSteppable->name}}</h4>

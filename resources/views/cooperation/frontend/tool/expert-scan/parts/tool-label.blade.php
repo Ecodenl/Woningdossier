@@ -1,1 +1,1 @@
-<h4 class="text-blue text-md font-bold max-w-15/20 {{$subSteppable->size}}">{{$subSteppable->subSteppable->name}}</h4>
+<h4 class="text-blue text-md font-bold pb-4 border-b border-blue border-opacity-50 {{$subSteppable->size}}">{{$subSteppable->subSteppable->name}}</h4>

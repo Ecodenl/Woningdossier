@@ -60,6 +60,87 @@ class SubSteppable extends Scannable
         $this->toolQuestions = $this->subStep->toolQuestions;
     }
 
+    protected function evaluateToolQuestions()
+    {
+        // Filter out the questions that do not match the condition
+        // now collect the given answers
+        $dynamicAnswers = [];
+        foreach ($this->subStep->subSteppables as $subSteppablePivot) {
+            if ($subSteppablePivot->isToolQuestion()) {
+                $dynamicAnswers[$subSteppablePivot->subSteppable->short] = $this->filledInAnswers[$subSteppablePivot->subSteppable->id];
+            }
+        }
+
+        foreach ($this->subStep->subSteppables as $index => $subSteppablePivot) {
+            if ($subSteppablePivot->isToolQuestion()) {
+                $toolQuestion = $subSteppablePivot->subSteppable;
+
+                $answers = $dynamicAnswers;
+
+                if (!empty($subSteppablePivot->conditions)) {
+                    $conditions = $subSteppablePivot->conditions;
+
+                    foreach ($conditions as $conditionSet) {
+                        foreach ($conditionSet as $condition) {
+                            // There is a possibility that the answer we're looking for is for a tool question not
+                            // on this page. We find it, and add the answer to our list
+
+                            if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
+                                $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
+                                if ($otherSubStepToolQuestion instanceof ToolQuestion) {
+
+                                    $otherSubStepAnswer = $this
+                                        ->building
+                                        ->getAnswer(
+                                            $this->masterInputSource, $otherSubStepToolQuestion
+                                        );
+
+                                    $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
+                                }
+                            }
+                        }
+                    }
+
+                    $evaluatableAnswers = collect($answers);
+
+                    $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
+
+                    if (!$evaluation) {
+                        $this->subStep->subSteppables = $this->subStep->subSteppables->forget($index);
+
+                        // We will unset the answers the user has given. If the user then changes their mind, they
+                        // will have to fill in the data again. We don't want to save values to the database
+                        // that are unvalidated (or not relevant).
+
+                        // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
+                        if ($subSteppablePivot->isToolQuestion()) {
+
+                            $this->filledInAnswers[$toolQuestion->id] = null;
+
+                            // and unset the validation for the question based on type.
+                            switch ($toolQuestion->data_type) {
+                                case Caster::JSON:
+                                    foreach ($toolQuestion->options as $option) {
+                                        unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
+                                    }
+                                    break;
+
+                                case Caster::ARRAY:
+                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
+                                    break;
+
+                                default:
+                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public function render()
     {
         $this->rehydrateToolQuestions();

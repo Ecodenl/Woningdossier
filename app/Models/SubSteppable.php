@@ -24,4 +24,9 @@ class SubSteppable extends MorphPivot
     {
         return $this->belongsTo(ToolQuestionType::class);
     }
+
+    public function isToolQuestion(): bool
+    {
+        return $this->sub_steppable_type == ToolQuestion::class;
+    }
 }

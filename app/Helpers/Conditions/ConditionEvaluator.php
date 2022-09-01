@@ -35,7 +35,7 @@ class ConditionEvaluator
     }
 
     /**
-     * @param Building $building
+     * @param  Building  $building
      *
      * @return $this
      */
@@ -47,7 +47,7 @@ class ConditionEvaluator
     }
 
     /**
-     * @param InputSource $inputSource
+     * @param  InputSource  $inputSource
      *
      * @return $this
      */
@@ -120,11 +120,9 @@ class ConditionEvaluator
         return collect($answers);
     }
 
-    public function evaluate(array $conditions, ?collection $answers = null): bool
+    public function evaluate(array $conditions): bool
     {
-        if (is_null($answers) || $answers->isEmpty()) {
-            $answers = $this->getToolAnswersForConditions($conditions);
-        }
+        $answers = $this->getToolAnswersForConditions($conditions);
 
         return $this->evaluateCollection($conditions, $answers);
     }

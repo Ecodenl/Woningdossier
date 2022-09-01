@@ -50,23 +50,23 @@ class Alerts extends Component
 
         $shouldOpenAlert = $this->alertOpen;
 
-        dd($answers);
+        $evaluator = ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->inputSource);
 
         foreach ($alerts as $index => $alert) {
-            $condition = ConditionEvaluator::init()
-                ->building($this->building)
-                ->inputSource($this->inputSource)
-                ->explain();
+            // Get answers and merge any potential new answers
+            $answersForAlert = $evaluator->getToolAnswersForConditions($alert->conditions)->merge(collect($answers));
 
-            // the issue here is that the collection is not correctly passsed
-            if ($condition->evaluate($alert->conditions, collect($answers))) {
+            // Check if we should show this alert
+            if ($evaluator->evaluateCollection($alert->conditions, $answersForAlert)) {
                 $oldAlert = null;
                 if ($oldAlerts instanceof Collection) {
                     $oldAlert = $oldAlerts->where('short', $alert->short)->first();
                 }
                 // if the current alert is not found in the oldAlerts, it will be considered "new"
                 // in that case we will open the alert for the user
-                if(!$oldAlert instanceof Alert) {
+                if(! $oldAlert instanceof Alert) {
                     $shouldOpenAlert = true;
                 }
             } else  {

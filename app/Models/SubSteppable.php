@@ -15,7 +15,7 @@ class SubSteppable extends MorphPivot
     ];
 
     # Relations
-    public function subSteppables(): MorphTo
+    public function subSteppable(): MorphTo
     {
         return $this->morphTo();
     }
@@ -23,5 +23,10 @@ class SubSteppable extends MorphPivot
     public function toolQuestionType(): BelongsTo
     {
         return $this->belongsTo(ToolQuestionType::class);
+    }
+
+    public function isToolQuestion(): bool
+    {
+        return $this->sub_steppable_type == ToolQuestion::class;
     }
 }

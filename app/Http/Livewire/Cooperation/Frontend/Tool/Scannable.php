@@ -65,6 +65,7 @@ abstract class Scannable extends Component
         $this->originalAnswers = $this->filledInAnswers;
     }
 
+
     abstract function hydrateToolQuestions();
 
     abstract function save($nextUrl = "");
@@ -80,6 +81,7 @@ abstract class Scannable extends Component
                         $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
                     }
                     break;
+
 
                 case Caster::ARRAY:
                     // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
@@ -97,6 +99,7 @@ abstract class Scannable extends Component
             }
         }
     }
+
 
     public function updated($field, $value)
     {
@@ -262,6 +265,7 @@ abstract class Scannable extends Component
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
             /** @var array|string $answerForInputSource */
+            Log::debug("set filled in answers ".get_class($toolQuestion));
             $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);
 
 

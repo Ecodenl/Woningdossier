@@ -12,14 +12,14 @@ class ReseedElementValues extends Command
      *
      * @var string
      */
-    protected $signature = 'upgrade:heat-pump:reseed-element-values';
+    protected $signature = 'upgrade:heat-pump:reseed-elements-values';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Re-run the ElementValuesTableSeeder';
+    protected $description = 'Re-run the ElementsValuesTableSeeder';
 
     /**
      * Create a new command instance.
@@ -38,6 +38,6 @@ class ReseedElementValues extends Command
      */
     public function handle()
     {
-        Artisan::call('db:seed', ['--class' => 'ElementValuesTableSeeder', '--force' => true]);
+        Artisan::call('db:seed', ['--class' => 'ElementsValuesTableSeeder', '--force' => true]);
     }
 }

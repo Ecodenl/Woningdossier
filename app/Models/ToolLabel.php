@@ -10,7 +10,8 @@ class ToolLabel extends Model
 {
     use HasShortTrait, HasTranslations;
 
-    public $translatables = [
-        'name'
+    protected $translatable = [
+        'name',
+        'slug',
     ];
 }

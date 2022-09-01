@@ -60,6 +60,7 @@ class SubStep extends Model
         'conditions' => 'array',
     ];
 
+    # Model methods
     public function getRouteKeyName(): string
     {
         $locale = app()->getLocale();
@@ -71,6 +72,19 @@ class SubStep extends Model
         return $this->slug;
     }
 
+    # Scopes
+    public function scopeOrdered(Builder $query)
+    {
+        return $query->orderBy('order');
+    }
+
+    // TODO: Slug trait?
+    public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
+    {
+        return $query->where("slug->{$locale}", $slug);
+    }
+
+    # Relations
     public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
@@ -84,8 +98,9 @@ class SubStep extends Model
     public function toolQuestions()
     {
         return $this->morphedByMany(ToolQuestion::class, 'sub_steppable')
+            ->using(SubSteppable::class)
             ->orderBy('order')
-            ->withPivot('order', 'size');
+            ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
 
     public function subSteppables()
@@ -99,10 +114,5 @@ class SubStep extends Model
     public function commentable()
     {
         return $this->morphTo();
-    }
-
-    public function scopeOrdered(Builder $query)
-    {
-        return $query->orderBy('order');
     }
 }

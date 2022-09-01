@@ -3,13 +3,17 @@
 namespace App\Services;
 
 use App\Helpers\Arr;
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
 use App\Models\Building;
+use App\Models\CompletedStep;
+use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Models\ToolQuestionValuable;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -69,7 +73,13 @@ class ToolQuestionService {
             'input_source_id' => $this->currentInputSource->id,
         ];
 
-        // we can't do a update or create, we just have to delete the old answers and create the new one.
+        if (is_null($givenAnswer)) {
+            // Answer is null. This means the answer should be removed
+            $this->clearAnswer($this->toolQuestion, $where);
+            return;
+        }
+
+        // We can't do a update or create, we just have to delete the old answers and create the new one.
         if ($this->toolQuestion->data_type === Caster::ARRAY) {
             $this->toolQuestion->toolQuestionAnswers()
                 ->allInputSources()
@@ -78,7 +88,8 @@ class ToolQuestionService {
                 ->delete();
 
             foreach ($givenAnswer as $answer) {
-                $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($answer);
+                $toolQuestionCustomValue = ToolQuestionCustomValue::where('tool_question_id', $this->toolQuestion->id)
+                    ->whereShort($answer)->first();
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                 $data['answer'] = $answer;
                 $this->toolQuestion->toolQuestionAnswers()->create($data);
@@ -88,21 +99,23 @@ class ToolQuestionService {
                 $givenAnswer = json_encode($givenAnswer);
             }
 
-            // Try to resolve the id is the question has custom values
+            // Try to resolve the ID is the question has custom values
             if ($this->toolQuestion->toolQuestionCustomValues()->exists()) {
                 // if so, the given answer contains a short.
-                $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
+                $toolQuestionCustomValue = ToolQuestionCustomValue::where('tool_question_id', $this->toolQuestion->id)
+                    ->whereShort($givenAnswer)->first();
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
             }
 
             $data['answer'] = $givenAnswer;
             $where['input_source_id'] = $this->currentInputSource->id;
-            // we have to do this twice, once for the current input source and once for the master input source
             $this->toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->updateOrCreate($where, $data);
         }
+
+       $this->checkConditionalAnswers($givenAnswer);
     }
 
     public function saveToolQuestionValuables($givenAnswer)
@@ -180,5 +193,97 @@ class ToolQuestionService {
                 $where,
                 $answerData
             );
+
+        // TODO: Make this functional when there's actually conditioned valuables
+        //$this->checkConditionalAnswers($givenAnswer);
+    }
+
+    /**
+     * If any conditionally shown answer tied to this tool question is selected, unselect
+     * it and incomplete related (sub) steps.
+     *
+     * @param $givenAnswer
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function checkConditionalAnswers($givenAnswer)
+    {
+        $columnFormat = '%"column": "' . $this->toolQuestion->short . '"%';
+        // TODO: Check the format for rating-slider questions (also in the evaluator itself)
+        // We build the answers ourselves to make a few less queries
+        $answers = collect([
+            $this->toolQuestion->short => is_array($givenAnswer) ? collect($givenAnswer) : $givenAnswer,
+        ]);
+
+        // Now we need to find any conditional answers that might be related to this question
+        $conditionalCustomValues = ToolQuestionCustomValue::whereRaw('conditions LIKE ?', [$columnFormat])
+            ->get();
+        //$toolQuestionValuables = ToolQuestionValuable::whereRaw('conditions LIKE ?', [$columnFormat])
+        //    ->get();
+
+        $evaluator = ConditionEvaluator::init()
+            ->inputSource($this->currentInputSource)
+            ->building($this->building);
+
+        $toolQuestionsToUnset = [];
+        foreach ($conditionalCustomValues as $conditionalCustomValue) {
+            if (! $evaluator->evaluateCollection($conditionalCustomValue->conditions, $answers)) {
+                $answer = $this->building->getAnswer($this->currentInputSource, $conditionalCustomValue->toolQuestion);
+
+                // TODO: Expand this if there are single condition answers
+                if (is_array($answer) && in_array($conditionalCustomValue->short, $answer)) {
+                    // Add tool question to array to use later for resetting sub steps
+                    $toolQuestionsToUnset[] = $conditionalCustomValue->toolQuestion;
+
+                    // Reset answer
+                    $where = [
+                        'building_id' => $this->building->id,
+                        'tool_question_id' => $conditionalCustomValue->toolQuestion->id,
+                        'tool_question_custom_value_id' => $conditionalCustomValue->id,
+                    ];
+                    $this->clearAnswer($conditionalCustomValue->toolQuestion, $where);
+                }
+            }
+        }
+        // TODO: Make this functional when there's actually conditioned valuables
+        //foreach ($toolQuestionValuables as $conditionalCustomValue) {
+        //    if (! $evaluator->evaluateCollection($conditionalCustomValue->conditions, $answers)) {
+        //        //
+        //    }
+        //}
+
+        if (! empty($toolQuestionsToUnset)) {
+            $processedIds = [];
+
+            // Clear (sub) steps
+            foreach ($toolQuestionsToUnset as $toolQuestion) {
+                if (! in_array($toolQuestion->id, $processedIds)) {
+                    foreach ($toolQuestion->subSteps as $subStep) {
+                        CompletedSubStep::allInputSources()
+                            ->where('building_id', $this->building->id)
+                            ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
+                            ->where('sub_step_id', $subStep->id)
+                            ->delete();
+
+                        CompletedStep::allInputSources()
+                            ->where('building_id', $this->building->id)
+                            ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
+                            ->where('step_id', $subStep->step_id)
+                            ->delete();
+                    }
+
+                    $processedIds[] = $toolQuestion->id;
+                }
+            }
+        }
+    }
+
+    private function clearAnswer(ToolQuestion $toolQuestion, array $where)
+    {
+        $toolQuestion->toolQuestionAnswers()
+            ->allInputSources()
+            ->where($where)
+            ->delete();
     }
 }

@@ -6,6 +6,7 @@
                     @include('cooperation.frontend.tool.expert-scan.parts.tool-question')
                     @break
                 @case(\App\Models\ToolLabel::class)
+
                     @include('cooperation.frontend.tool.expert-scan.parts.tool-label')
                     @break
             @endswitch

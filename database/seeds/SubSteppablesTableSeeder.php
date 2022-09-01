@@ -902,6 +902,22 @@ class SubSteppablesTableSeeder extends Seeder
                                 ],
                             ],
                         ],
+
+                        // sun boiler
+                        [
+                            'morph' => ToolLabel::findByShort('sun-boiler'),
+                            'size' => 'col-span-6',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heater-pv-panel-orientation'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'col-span-3',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heater-pv-panel-angle'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'col-span-3',
+                        ],
                     ],
                 ],
                 'Huidige situatie' => [
@@ -999,20 +1015,6 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-sleeping-rooms-windows'),
-                            'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'col-span-3',
-                        ],
-                        [
-                            'morph' => ToolLabel::findByShort('sun-boiler'),
-                            'size' => 'col-span-6',
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('heater-pv-panel-orientation'),
-                            'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'col-span-3',
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('heater-pv-panel-angle'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
                         ],

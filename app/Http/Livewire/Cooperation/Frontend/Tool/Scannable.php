@@ -115,6 +115,7 @@ abstract class Scannable extends Component
 
     protected function evaluateToolQuestions()
     {
+        dd('kanker hoertje');
         // Filter out the questions that do not match the condition
         // now collect the given answers
         $dynamicAnswers = [];
@@ -230,6 +231,7 @@ abstract class Scannable extends Component
 
             // Define if we should check this question...
             if ($this->building->user->account->can('answer', $toolQuestion)) {
+                Log::debug("cancer");
                 $currentAnswer = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->currentInputSource, $toolQuestion);
                 $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
 
@@ -265,6 +267,7 @@ abstract class Scannable extends Component
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
             /** @var array|string $answerForInputSource */
+            Log::debug("set filled in answers ".get_class($toolQuestion));
             $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);
 
 

@@ -72,68 +72,68 @@ class SubSteppable extends Scannable
         }
 
         foreach ($this->subStep->subSteppables as $index => $subSteppablePivot) {
-            if ($subSteppablePivot->isToolQuestion()) {
-                $toolQuestion = $subSteppablePivot->subSteppable;
+            $toolQuestion = $subSteppablePivot->subSteppable;
 
-                $answers = $dynamicAnswers;
+            $answers = $dynamicAnswers;
 
-                if (!empty($subSteppablePivot->conditions)) {
-                    $conditions = $subSteppablePivot->conditions;
+            if (!empty($subSteppablePivot->conditions)) {
+                $conditions = $subSteppablePivot->conditions;
 
-                    foreach ($conditions as $conditionSet) {
-                        foreach ($conditionSet as $condition) {
-                            // There is a possibility that the answer we're looking for is for a tool question not
-                            // on this page. We find it, and add the answer to our list
+                foreach ($conditions as $conditionSet) {
+                    foreach ($conditionSet as $condition) {
+                        // There is a possibility that the answer we're looking for is for a tool question not
+                        // on this page. We find it, and add the answer to our list
 
-                            if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
-                                $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
-                                if ($otherSubStepToolQuestion instanceof ToolQuestion) {
+                        if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
+                            $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
+                            if ($otherSubStepToolQuestion instanceof ToolQuestion) {
 
-                                    $otherSubStepAnswer = $this
-                                        ->building
-                                        ->getAnswer(
-                                            $this->masterInputSource, $otherSubStepToolQuestion
-                                        );
+                                $otherSubStepAnswer = $this
+                                    ->building
+                                    ->getAnswer(
+                                        $this->masterInputSource, $otherSubStepToolQuestion
+                                    );
 
-                                    $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
-                                }
+                                $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
                             }
                         }
                     }
+                }
 
-                    $evaluatableAnswers = collect($answers);
+                $evaluatableAnswers = collect($answers);
 
-                    $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
+                $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
 
-                    if (!$evaluation) {
-                        $this->subStep->subSteppables = $this->subStep->subSteppables->forget($index);
+                if (!$evaluation) {
+                    $this->subStep->subSteppables = $this->subStep->subSteppables->forget($index);
 
-                        // We will unset the answers the user has given. If the user then changes their mind, they
-                        // will have to fill in the data again. We don't want to save values to the database
-                        // that are unvalidated (or not relevant).
+                    // We will unset the answers the user has given. If the user then changes their mind, they
+                    // will have to fill in the data again. We don't want to save values to the database
+                    // that are unvalidated (or not relevant).
 
-                        // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
-                        if ($subSteppablePivot->isToolQuestion()) {
+                    // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
 
-                            $this->filledInAnswers[$toolQuestion->id] = null;
+                    // we will only unset the rules if its a tool question, not relevant for other sub steppables.
+                    if ($subSteppablePivot->isToolQuestion()) {
 
-                            // and unset the validation for the question based on type.
-                            switch ($toolQuestion->data_type) {
-                                case Caster::JSON:
-                                    foreach ($toolQuestion->options as $option) {
-                                        unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
-                                    }
-                                    break;
+                        $this->filledInAnswers[$toolQuestion->id] = null;
 
-                                case Caster::ARRAY:
-                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
-                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
-                                    break;
+                        // and unset the validation for the question based on type.
+                        switch ($toolQuestion->data_type) {
+                            case Caster::JSON:
+                                foreach ($toolQuestion->options as $option) {
+                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
+                                }
+                                break;
 
-                                default:
-                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
-                                    break;
-                            }
+                            case Caster::ARRAY:
+                                unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                                unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
+                                break;
+
+                            default:
+                                unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                                break;
                         }
                     }
                 }
@@ -156,7 +156,7 @@ class SubSteppable extends Scannable
             }
         }
 
-        if (! empty($this->rules)) {
+        if (!empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules, [], $this->attributes);

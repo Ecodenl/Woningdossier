@@ -1,9 +1,7 @@
-
 @php
     $toolQuestion = $subSteppable->subSteppable;
     $disabled = ! $building->user->account->can('answer', $toolQuestion);
     $humanReadableAnswer = null;
-
 @endphp
 
 <div class="{{$subSteppable->size}} @if($loop->iteration > 1) @endif">

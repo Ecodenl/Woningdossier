@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\Arr;
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
@@ -10,6 +11,7 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Models\ToolQuestionValuable;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -79,7 +81,7 @@ class ToolQuestionService {
             return;
         }
 
-        // we can't do a update or create, we just have to delete the old answers and create the new one.
+        // We can't do a update or create, we just have to delete the old answers and create the new one.
         if ($this->toolQuestion->data_type === Caster::ARRAY) {
             $this->toolQuestion->toolQuestionAnswers()
                 ->allInputSources()
@@ -99,7 +101,7 @@ class ToolQuestionService {
                 $givenAnswer = json_encode($givenAnswer);
             }
 
-            // Try to resolve the id is the question has custom values
+            // Try to resolve the ID is the question has custom values
             if ($this->toolQuestion->toolQuestionCustomValues()->exists()) {
                 // if so, the given answer contains a short.
                 $toolQuestionCustomValue = ToolQuestionCustomValue::where('tool_question_id', $this->toolQuestion->id)
@@ -109,11 +111,44 @@ class ToolQuestionService {
 
             $data['answer'] = $givenAnswer;
             $where['input_source_id'] = $this->currentInputSource->id;
-            // we have to do this twice, once for the current input source and once for the master input source
             $this->toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->updateOrCreate($where, $data);
+        }
+
+        $columnFormat = '%"column": "' . $this->toolQuestion->short . '"%';
+        // TODO: Check the format for rating-slider questions (also in the evaluator itself)
+        $answers = collect([
+            $this->toolQuestion->short => is_array($givenAnswer) ? collect($givenAnswer) : $givenAnswer,
+        ]);
+
+        // Now we need to find any conditional answers that might be related to this question
+        $conditionalCustomValues = ToolQuestionCustomValue::whereRaw('conditions LIKE ?', [$columnFormat])
+            ->get();
+        $toolQuestionValuables = ToolQuestionValuable::whereRaw('conditions LIKE ?', [$columnFormat])
+            ->get();
+
+        $evaluator = ConditionEvaluator::init()
+            ->inputSource($this->currentInputSource)
+            ->building($this->building);
+
+        $toolQuestionsToUnset = [];
+        foreach ($conditionalCustomValues as $conditionalCustomValue) {
+            if (! $evaluator->evaluateCollection($conditionalCustomValue->conditions, $answers)) {
+                // TODO: Check if answer is selected before proceeding
+                $toolQuestionsToUnset[] = $conditionalCustomValue->tool_question_id;
+            }
+        }
+        foreach ($toolQuestionValuables as $conditionalCustomValue) {
+            if (! $evaluator->evaluateCollection($conditionalCustomValue->conditions, $answers)) {
+                $toolQuestionsToUnset[] = $conditionalCustomValue->tool_question_id;
+            }
+        }
+
+        if (! empty($toolQuestionsToUnset)) {
+            $toolQuestionsToUnset = array_unique($toolQuestionsToUnset);
+
         }
     }
 

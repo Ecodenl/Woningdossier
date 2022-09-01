@@ -29,12 +29,13 @@ class QuestionValue
             );
         }
 
+        $evaluator = ConditionEvaluator::init()
+            ->inputSource($inputSource)
+            ->building($building);
+
         foreach ($questionValues as $index => $questionValue) {
             if (! empty($questionValue['conditions'])) {
-                $passed = ConditionEvaluator::init()
-                    ->inputSource($inputSource)
-                    ->building($building)
-                    ->evaluate($questionValue['conditions']);
+                $passed = $evaluator->evaluate($questionValue['conditions']);
 
                 if (! $passed) {
                     $questionValues->forget($index);

@@ -48,7 +48,7 @@ class Alerts extends Component
 
         $oldAlerts = $this->alerts;
 
-        $shouldOpenAlert = $this->alertOpen;
+        $shouldOpenAlert = false;
 
         $evaluator = ConditionEvaluator::init()
             ->building($this->building)

@@ -34495,8 +34495,9 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     toggle: function toggle() {
+      var open = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       this.$event.preventDefault();
-      this.open = !this.open;
+      this.open = open === null ? !this.open : open;
 
       if (this.open) {
         this.updatePosition();

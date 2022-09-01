@@ -34,7 +34,6 @@ class SubSteppablesTableSeeder extends Seeder
         $ventilation = Service::findByShort('house-ventilation');
 
         // Tool question types
-        // TODO: Subject to change
         $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
         $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
@@ -44,9 +43,8 @@ class SubSteppablesTableSeeder extends Seeder
         $textareaType = ToolQuestionType::findByShort('textarea');
         $textareaPopupType = ToolQuestionType::findByShort('textarea-popup');
         $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
-        // TODO: These don't exist yet, but for future reference it's easier to already have them "linked" in the questions
-        $dropdownType = ToolQuestionType::findByShort('radio');
-        $dropdownMultiType = ToolQuestionType::findByShort('checkbox-icon');
+        $dropdownType = ToolQuestionType::findByShort('dropdown');
+        $multiDropdownType = ToolQuestionType::findByShort('multi-dropdown');
 
         #-------------------------
         # Quick Scan sub steppables
@@ -467,13 +465,6 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             [
                                 'column' => 'heat-source',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'heat-pump',
-                            ],
-                        ],
-                        [
-                            [
-                                'column' => 'heat-source-warm-tap-water',
                                 'operator' => Clause::CONTAINS,
                                 'value' => 'heat-pump',
                             ],
@@ -949,13 +940,41 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source'),
-                            'tool_question_type_id' => $dropdownMultiType->id,
+                            'tool_question_type_id' => $multiDropdownType->id,
                             'size' => 'col-span-6',
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
-                            'tool_question_type_id' => $dropdownMultiType->id,
+                            'morph' => ToolQuestion::findByShort('heat-source-other'),
+                            'tool_question_type_id' => $textType->id,
                             'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
+                            'tool_question_type_id' => $multiDropdownType->id,
+                            'size' => 'col-span-6',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-type'),
@@ -972,7 +991,6 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
                         ],
-                        // TODO: Not in mockup, missing field for "other" option of heat-pump-type????
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-placed-date'),
                             'tool_question_type_id' => $textType->id,
@@ -980,8 +998,22 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('building-heating-application'),
-                            'tool_question_type_id' => $dropdownMultiType->id,
+                            'tool_question_type_id' => $multiDropdownType->id,
                             'size' => 'col-span-6',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('building-heating-application-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'building-heating-application',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ],
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('fifty-degree-test'),

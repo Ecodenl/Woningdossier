@@ -67,6 +67,13 @@
     @apply text-blue-500 text-opacity-50;
 }
 
+.form-input-option {
+    @apply absolute flex items-center h-10 px-3 rounded-lg border border-blue-500 text-blue-500 text-sm bg-white leading-10 top-0.5;
+
+    @apply hover:cursor-pointer hover:border-red;
+    @apply focus:cursor-pointer focus:border-red;
+}
+
 .input-group .form-input:hover ~ .input-group-append,
 .input-group .form-input:focus ~ .input-group-append {
     @apply border-green border-opacity-100;

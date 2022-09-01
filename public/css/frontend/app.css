@@ -159096,7 +159096,9 @@ p a, a.in-text {
 .form-input-option {
   position: absolute;
   top: 0.125rem;
+  display: flex;
   height: 2.5rem;
+  align-items: center;
   border-radius: 0.5rem;
   border-width: 1px;
   --tw-border-opacity: 1;

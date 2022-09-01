@@ -135,8 +135,17 @@ export default (initiallyOpen = false) => ({
             let rows = 1;
 
             for (let key of Object.keys(this.values)) {
+                let option = this.$refs['select-options'].querySelector(`span[data-value="${key}"]`);
+
                 let text = this.values[key];
                 let newInputOption = document.createElement('span');
+
+                if (option && option.hasAttribute("data-icon")) {
+                    let icon = document.createElement('i');
+                    icon.classList.add('icon-sm', option.getAttribute("data-icon"), 'mr-2', 'static');
+                    newInputOption.appendChild(icon);
+                }
+
                 newInputOption.appendChild(document.createTextNode(text));
                 newInputOption.classList.add('form-input-option');
                 newInputOption.setAttribute("data-value", key);
@@ -176,6 +185,11 @@ export default (initiallyOpen = false) => ({
         let newOption = document.createElement('span');
         newOption.appendChild(document.createTextNode(text));
         newOption.setAttribute("data-value", value);
+
+        if (option.hasAttribute("data-icon")) {
+            newOption.setAttribute("data-icon", option.getAttribute("data-icon"));
+        }
+
         // Add alpine functions
         newOption.setAttribute("x-bind:class", "Object.keys(values).includes('" + value + "') ? 'selected' : ''");
         newOption.setAttribute("x-on:click", "changeOption($el)");

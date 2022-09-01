@@ -34201,8 +34201,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           var _loop = function _loop() {
             var key = _Object$keys[_i];
+
+            var option = _this2.$refs['select-options'].querySelector("span[data-value=\"".concat(key, "\"]"));
+
             var text = _this2.values[key];
             var newInputOption = document.createElement('span');
+
+            if (option && option.hasAttribute("data-icon")) {
+              var icon = document.createElement('i');
+              icon.classList.add('icon-sm', option.getAttribute("data-icon"), 'mr-2', 'static');
+              newInputOption.appendChild(icon);
+            }
+
             newInputOption.appendChild(document.createTextNode(text));
             newInputOption.classList.add('form-input-option');
             newInputOption.setAttribute("data-value", key);
@@ -34240,7 +34250,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       var newOption = document.createElement('span');
       newOption.appendChild(document.createTextNode(text));
-      newOption.setAttribute("data-value", value); // Add alpine functions
+      newOption.setAttribute("data-value", value);
+
+      if (option.hasAttribute("data-icon")) {
+        newOption.setAttribute("data-icon", option.getAttribute("data-icon"));
+      } // Add alpine functions
+
 
       newOption.setAttribute("x-bind:class", "Object.keys(values).includes('" + value + "') ? 'selected' : ''");
       newOption.setAttribute("x-on:click", "changeOption($el)");

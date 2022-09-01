@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\Arr;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
 use App\Models\Building;
@@ -68,9 +69,18 @@ class ToolQuestionService {
             'input_source_id' => $this->currentInputSource->id,
         ];
 
-        // we can't do a update or create, we just have to delete the old answers and create the new one.
-        if ($this->toolQuestion->toolQuestionType->short == 'checkbox-icon') {
+        if (is_null($givenAnswer)) {
+            // Answer is null. This means the answer should be removed
+            $this->toolQuestion
+                ->toolQuestionAnswers()
+                ->allInputSources()
+                ->where($where)
+                ->delete();
+            return;
+        }
 
+        // we can't do a update or create, we just have to delete the old answers and create the new one.
+        if ($this->toolQuestion->data_type === Caster::ARRAY) {
             $this->toolQuestion->toolQuestionAnswers()
                 ->allInputSources()
                 ->where($where)
@@ -78,12 +88,12 @@ class ToolQuestionService {
                 ->delete();
 
             foreach ($givenAnswer as $answer) {
-                $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($answer);
+                $toolQuestionCustomValue = ToolQuestionCustomValue::where('tool_question_id', $this->toolQuestion->id)
+                    ->whereShort($answer)->first();
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                 $data['answer'] = $answer;
                 $this->toolQuestion->toolQuestionAnswers()->create($data);
             }
-
         } else {
             if (is_array($givenAnswer)) {
                 $givenAnswer = json_encode($givenAnswer);
@@ -92,7 +102,8 @@ class ToolQuestionService {
             // Try to resolve the id is the question has custom values
             if ($this->toolQuestion->toolQuestionCustomValues()->exists()) {
                 // if so, the given answer contains a short.
-                $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
+                $toolQuestionCustomValue = ToolQuestionCustomValue::where('tool_question_id', $this->toolQuestion->id)
+                    ->whereShort($givenAnswer)->first();
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
             }
 

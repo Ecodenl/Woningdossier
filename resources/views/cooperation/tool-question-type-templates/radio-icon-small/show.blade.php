@@ -9,7 +9,7 @@
     @endphp
     @foreach($questionValues as $toolQuestionValue)
         @php
-        $uuid = Str::uuid();
+            $uuid = Str::uuid();
         @endphp
         <div class="radio-wrapper media-wrapper media-wrapper-small">
             <input type="radio"

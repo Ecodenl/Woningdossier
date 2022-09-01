@@ -104,7 +104,7 @@
                         @foreach($expertSteps as $expertStep)
                             @if($expertStep->short !== 'heating')
                             <li>
-                                <a href="{{ route("cooperation.tool.{$expertStep->short}.index", compact('cooperation')) }}"
+                                <a href="{{ route("cooperation.frontend.tool.expert-scan.index", ['cooperation' => $cooperation, 'step' => $expertStep]) }}"
                                    class="in-text">
                                     <img src="{{ asset("images/icons/{$expertStep->slug}.png") }}"
                                          alt="{{ $expertStep->name }}" class="rounded-1/2 inline-block h-8 w-8">

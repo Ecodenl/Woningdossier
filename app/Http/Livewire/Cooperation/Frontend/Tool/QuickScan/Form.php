@@ -3,24 +3,19 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Console\Commands\Tool\RecalculateForUser;
-use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
-use App\Models\Building;
 use App\Models\CompletedSubStep;
-use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 class Form extends Scannable
 {
@@ -28,12 +23,14 @@ class Form extends Scannable
     public $subStep;
 
     public $nextUrl;
-    
+
     public function mount(Step $step, SubStep $subStep)
     {
         Log::debug('mounting form');
-        $subStep->load(['toolQuestions', 'subStepTemplate']);
-
+        $subStep->load([
+            'toolQuestions' => function ($query) { $query->orderBy('order'); },
+            'subStepTemplate',
+        ]);
         $this->step = $step;
         $this->subStep = $subStep;
 
@@ -42,17 +39,17 @@ class Form extends Scannable
 
     public function hydrateToolQuestions()
     {
-        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+        $this->rehydrateToolQuestions();
     }
 
     public function rehydrateToolQuestions()
     {
-        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+        $this->toolQuestions = $this->subStep->toolQuestions;
     }
-
 
     public function render()
     {
+        $this->rehydrateToolQuestions();
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
@@ -64,7 +61,7 @@ class Form extends Scannable
 
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
-            if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric') && !\App\Helpers\Str::arrContains($toolQuestion->validation, 'integer')) {
+            if ($toolQuestion->data_type === Caster::FLOAT) {
                 $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]), 2);
             }
         }
@@ -87,10 +84,8 @@ class Form extends Scannable
             if ($validator->fails()) {
                 // Validator failed, let's put it back as the user format
                 foreach ($this->toolQuestions as $toolQuestion) {
-                    if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
-                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                        $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::formatNumberForUser($this->filledInAnswers[$toolQuestion->id],
-                            $isInteger, false);
+                    if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                        $this->filledInAnswers[$toolQuestion->id] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->id])->getFormatForUser();
                     }
                 }
 
@@ -136,7 +131,7 @@ class Form extends Scannable
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->first();
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)
@@ -193,5 +188,4 @@ class Form extends Scannable
 
         return redirect()->to($nextUrl);
     }
-
 }

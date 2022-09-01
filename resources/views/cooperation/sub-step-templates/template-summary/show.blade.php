@@ -78,9 +78,9 @@
                         @php
                             $showQuestion = true;
 
-                            if (! empty($toolQuestionToSummarize->conditions)) {
+                            if (! empty($toolQuestionToSummarize->pivot->conditions)) {
                                 $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
-                                ->evaluateCollection($toolQuestionToSummarize->conditions, collect($answers));
+                                ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
                             }
 
                             // Comments come at the end, and have exceptional logic...
@@ -108,7 +108,7 @@
                             @endphp
 
                             <div class="flex flex-row flex-wrap w-full">
-                                <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
+                                <div class="@if($toolQuestionToSummarize->pivot->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
                                     <a href="{{ $subStepRoute }}" class="no-underline">
                                         <h6 class="as-text font-bold">
                                             {{ $toolQuestionToSummarize->name }}
@@ -172,8 +172,8 @@
                     @endslot
 
 
-                        @include("cooperation.tool-question-type-templates.{$toolQuestion->toolQuestionType->short}.show", [
-                                  'disabled' => $disabled,
+                    @include("cooperation.tool-question-type-templates.{$toolQuestion->pivot->toolQuestionType->short}.show", [
+                        'disabled' => $disabled,
                     ])
 
 

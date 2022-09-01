@@ -655,7 +655,7 @@ class Form extends Component
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_AVAILABLE,
                     'info' => nl2br($advisable->measure_info),
-                    'route' => StepHelper::buildStepUrl($advisable->step),
+                    'route' => route('cooperation.frontend.tool.expert-scan.index', ['step' => $advisable->step]),
                     'comfort' => $advisable->configurations['comfort'] ?? 0,
                 ];
             } else {

@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
@@ -23,7 +24,7 @@ abstract class Scannable extends Component
      * event, which can be caught by the frontend and set visuals correct, e.g. with the sliders.
      *
      */
-    protected $listeners = ['update', 'updated', 'save',];
+    protected $listeners = ['update', 'updated', 'save'];
     /** @var Building */
     public $building;
 
@@ -37,7 +38,6 @@ abstract class Scannable extends Component
     public $rules;
     public $attributes;
 
-    public $initialToolQuestions;
     public $toolQuestions;
     public $originalAnswers = [];
     public $filledInAnswers = [];
@@ -47,7 +47,6 @@ abstract class Scannable extends Component
 
     public function boot()
     {
-
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
@@ -56,8 +55,6 @@ abstract class Scannable extends Component
 
         // first we have to hydrate the tool questions
         $this->hydrateToolQuestions();
-        // set them right after the hydration
-        $this->initialToolQuestions = $this->toolQuestions->values();
         // after that we can fill up the user his given answers
         $this->setFilledInAnswers();
         // add the validation for the tool questions
@@ -65,45 +62,26 @@ abstract class Scannable extends Component
         // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
         $this->evaluateToolQuestions();
 
-//        dd($this->initialToolQuestions);
-
         $this->originalAnswers = $this->filledInAnswers;
-
-
-        $this->rules['initialToolQuestions.*.pivot.order'] = [];
-        $this->rules['initialToolQuestions.pivot.order'] = [];
-        $this->rules['initialToolQuestions.relations.*'] = [];
-
-
     }
 
     abstract function hydrateToolQuestions();
 
     abstract function save($nextUrl = "");
 
+    abstract function rehydrateToolQuestions();
 
-    public function rehydrateToolQuestions()
-    {
-        //todo this wont refresh the dom, for some odd reson
-        // if you would set it with a query it would update tho
-        // but thats exactly what i was trying to work around
-        // extra queries..
-
-        $this->toolQuestions = new Collection($this->initialToolQuestions->values());
-    }
-
-
-    private function setValidationForToolQuestions()
+    protected function setValidationForToolQuestions()
     {
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-            switch ($toolQuestion->toolQuestionType->short) {
-                case 'rating-slider':
+            switch ($toolQuestion->data_type) {
+                case Caster::JSON:
                     foreach ($toolQuestion->options as $option) {
                         $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
                     }
                     break;
 
-                case 'checkbox-icon':
+                case Caster::ARRAY:
                     // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
                     // and then also set required for the main question
                     $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $this->prepareValidationRule($toolQuestion->validation);
@@ -140,12 +118,10 @@ abstract class Scannable extends Component
         $this->evaluateToolQuestions();
         $this->refreshAlerts();
 
-        Log::debug("initialToolQuestions {$this->toolQuestions->count()}");
-
         $this->setDirty(true);
     }
 
-    private function evaluateToolQuestions()
+    protected function evaluateToolQuestions()
     {
         // Filter out the questions that do not match the condition
         // now collect the given answers
@@ -155,11 +131,12 @@ abstract class Scannable extends Component
         }
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-
             $answers = $dynamicAnswers;
 
-            if (!empty($toolQuestion->conditions)) {
-                foreach ($toolQuestion->conditions as $conditionSet) {
+            if (! empty($toolQuestion->pivot->conditions)) {
+                $conditions = $toolQuestion->pivot->conditions;
+
+                foreach ($conditions as $conditionSet) {
                     foreach ($conditionSet as $condition) {
                         // There is a possibility that the answer we're looking for is for a tool question not
                         // on this page. We find it, and add the answer to our list
@@ -177,9 +154,9 @@ abstract class Scannable extends Component
 
                 $evaluatableAnswers = collect($answers);
 
-                $evaluation = ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers);
+                $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
 
-                if (!$evaluation) {
+                if (! $evaluation) {
                     $this->toolQuestions = $this->toolQuestions->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they
@@ -190,14 +167,14 @@ abstract class Scannable extends Component
                     $this->filledInAnswers[$toolQuestion->id] = null;
 
                     // and unset the validation for the question based on type.
-                    switch ($toolQuestion->toolQuestionType->short) {
-                        case 'rating-slider':
+                    switch ($toolQuestion->data_type) {
+                        case Caster::JSON:
                             foreach ($toolQuestion->options as $option) {
                                 unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
                             }
                             break;
 
-                        case 'checkbox-icon':
+                        case Caster::ARRAY:
                             unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
                             unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
                             break;
@@ -217,14 +194,13 @@ abstract class Scannable extends Component
         $this->filledInAnswers[$toolQuestionId] = $this->originalAnswers[$toolQuestionId];
     }
 
-
     // specific to the popup question
     public function saveSpecificToolQuestion($toolQuestionId)
     {
         if (HoomdossierSession::isUserObserving()) {
             return null;
         }
-        if (!empty($this->rules)) {
+        if (! empty($this->rules)) {
             $validator = Validator::make([
                 "filledInAnswers.{$toolQuestionId}" => $this->filledInAnswers[$toolQuestionId]
             ], $this->rules["filledInAnswers.{$toolQuestionId}"], [], $this->attributes);
@@ -239,10 +215,8 @@ abstract class Scannable extends Component
             if ($validator->fails()) {
                 $toolQuestion = $this->toolQuestions->find($toolQuestionId);
                 // Validator failed, let's put it back as the user format
-                if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
-                    $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                    $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::formatNumberForUser($this->filledInAnswers[$toolQuestion->id],
-                        $isInteger, false);
+                if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                    $this->filledInAnswers[$toolQuestion->id] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->id])->getFormatForUser();
                 }
 
                 $this->rehydrateToolQuestions();
@@ -279,7 +253,7 @@ abstract class Scannable extends Component
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->first();
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)
@@ -303,24 +277,15 @@ abstract class Scannable extends Component
 
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
-            switch ($toolQuestion->toolQuestionType->short) {
-                case 'rating-slider':
+            switch ($toolQuestion->data_type) {
+                case Caster::JSON:
                     $filledInAnswerOptions = json_decode($answerForInputSource, true);
                     foreach ($toolQuestion->options as $option) {
                         $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? $option['value'] ?? 0;
                         $this->attributes["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $option['name'];
                     }
                     break;
-                case 'slider':
-                    // Default is required here when no answer is set, otherwise if the user leaves it default
-                    // and submits, the validation will fail because nothing is set.
-
-                    // Format answer to remove leading decimals
-                    $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::formatNumberForUser(($answerForInputSource ?? $toolQuestion->options['value']),
-                        true, false);
-                    $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
-                    break;
-                case 'checkbox-icon':
+                case Caster::ARRAY:
                     /** @var array $answerForInputSource */
                     $answerForInputSource = $answerForInputSource ?? $toolQuestion->options['value'] ?? [];
                     $this->filledInAnswers[$toolQuestion->id] = [];
@@ -331,10 +296,11 @@ abstract class Scannable extends Component
                     $this->attributes["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->name;
                     break;
                 default:
-                    // Check if question type is text, so we can format it if it's numeric
-                    if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
-                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                        $answerForInputSource = NumberFormatter::formatNumberForUser($answerForInputSource, $isInteger, false);
+                    if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                        // Before we would set sliders and text answers differently. Now, because they are mapped by the
+                        // same (by data type) it could be that value is not set.
+                        $answer = $answerForInputSource ?? $toolQuestion->options['value'] ?? 0;
+                        $answerForInputSource = Caster::init($toolQuestion->data_type, $answer)->getFormatForUser();
                     }
 
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
@@ -374,10 +340,8 @@ abstract class Scannable extends Component
         return $validation;
     }
 
-    private function setDirty(bool $dirty)
+    protected function setDirty(bool $dirty)
     {
         $this->dirty = $dirty;
     }
-
-
 }

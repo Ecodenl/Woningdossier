@@ -35,6 +35,10 @@
   width: 9rem;
 }
 
+.icon-placeholder {
+  content: url('/icons/placeholder.svg');
+}
+
 .icon-account-circle {
   content: url('/icons/account-circle.svg');
 }
@@ -285,6 +289,14 @@
 
 .icon-heat-pump {
   content: url('/icons/heat-pump.svg');
+}
+
+.icon-heat-pump-hybrid {
+  content: url('/icons/heat-pump-hybrid.svg');
+}
+
+.icon-heat-pump-none {
+  content: url('/icons/heat-pump-none.svg');
 }
 
 .icon-hide {
@@ -15265,25 +15277,6 @@ body .d-none {
 .page-measures .container ul li img {
   width: 50px;
   height: 50px;
-}
-
-#energy-saving-measures label.user-interest-label {
-  display: inline-block !important;
-  line-height: 22px;
-}
-
-.page-my-plan h3 {
-  display: inline;
-}
-.page-my-plan ul#years {
-  list-style: none;
-  padding-left: 0;
-}
-.page-my-plan table tbody tr.collapse td {
-  border-top: 1px solid transparent !important;
-}
-.page-my-plan table tbody tr.collapsing td {
-  border-top: 1px solid transparent !important;
 }
 
 ul.progress-list li {

@@ -746,7 +746,7 @@ class SubSteppablesTableSeeder extends Seeder
         #-------------------------
         $this->saveStructure([
             'heating' => [
-                'nieuwe situatie' => [
+                'Nieuwe situatie' => [
                     'order' => 0,
                     'morphs' => [
                         [
@@ -897,7 +897,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                     ],
                 ],
-                'huidige situatie' => [
+                'Huidige situatie' => [
                     'order' => 1,
                     'morphs' => [
                         //[

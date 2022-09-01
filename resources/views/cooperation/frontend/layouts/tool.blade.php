@@ -42,9 +42,11 @@
 {{--                        </h2>--}}
 {{--                    @endif--}}
                     <ul class="nav-tabs mt-5 hidden" x-ref="nav-tabs">
-                        @if(isset($currentStep))
-                            {{-- TODO: Check why @Bodhi is hiding the tab for this step --}}
-                            @if($currentStep->short !== 'heating')
+                        @if(isset($step))
+                            @php
+                                $subStepsForStep = $currentStep->children;
+                            @endphp
+                            @if($subStepsForStep->isEmpty())
                                 <li class="active @if($building->hasCompleted($currentStep, $masterInputSource)) completed @endif">
                                     <a href="{{route("cooperation.frontend.tool.expert-scan.index", ['step' => $currentStep])}}">
                                         {{$currentStep->name}}
@@ -87,7 +89,7 @@
                                     @yield('step_title', $currentSubStep->name ?? $currentStep->name ?? '')
                                 </h3>
                                 @if($currentStep->isDynamic())
-                                    @livewire('cooperation.frontend.tool.expert-scan.buttons')
+{{--                                    @livewire('cooperation.frontend.tool.expert-scan.buttons')--}}
                                 @else
                                     @if(! \App\helpers\HoomdossierSession::isUserObserving())
                                         <button class="float-right btn btn-purple submit-main-form">

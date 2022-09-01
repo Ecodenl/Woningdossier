@@ -928,9 +928,37 @@ class SubSteppablesTableSeeder extends Seeder
                             'size' => 'w-full',
                         ],
                         [
+                            'morph' => ToolQuestion::findByShort('heat-source-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
+                        ],
+                        [
                             'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
                             'tool_question_type_id' => $multiDropdownType->id,
                             'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-type'),
@@ -947,7 +975,6 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'w-1/2',
                         ],
-                        // TODO: Not in mockup, missing field for "other" option of heat-pump-type????
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-placed-date'),
                             'tool_question_type_id' => $textType->id,
@@ -957,6 +984,20 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('building-heating-application'),
                             'tool_question_type_id' => $multiDropdownType->id,
                             'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('building-heating-application-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'building-heating-application',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ],
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('fifty-degree-test'),

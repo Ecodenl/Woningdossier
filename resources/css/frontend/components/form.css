@@ -114,7 +114,7 @@ textarea.form-input {
 .slider {
     @apply w-full h-1 outline-none appearance-none;
     --slider-before: theme('colors.green');
-    --slider-after: theme('colors.gray');
+    --slider-after: theme('colors.gray.500');
 }
 
 /* Slider hands*/

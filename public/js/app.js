@@ -34006,13 +34006,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.setHeight(this.$el);
     }), _typable),
     setHeight: function setHeight(element) {
-      // Compute the height difference which is caused by border and outline
-      var outerHeight = parseInt(window.getComputedStyle(element).height, 10);
-      var diff = outerHeight - element.clientHeight; // Reset height to handle shrinking
+      if (element) {
+        // Compute the height difference which is caused by border and outline
+        var outerHeight = parseInt(window.getComputedStyle(element).height, 10);
+        var diff = outerHeight - element.clientHeight; // Reset height to handle shrinking
 
-      element.style.height = 0; // Set new height
+        element.style.height = 0; // Set new height
 
-      element.style.height = Math.max(this.defaultHeight, element.scrollHeight + diff) + 'px';
+        element.style.height = Math.max(this.defaultHeight, element.scrollHeight + diff) + 'px';
+      }
     }
   };
 });
@@ -35354,19 +35356,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       document.addEventListener('DOMContentLoaded', function () {
-        // get the current url
-        var url = document.location.href; // check if the current url matches a hashtag
+        // Ensure defaultTab starts with '#'
+        var hash = document.location.hash || defaultTab; // check if the current url matches a hashtag
 
-        if (url.match('#')) {
-          try {
-            var hash = new URL(url).hash;
+        if (hash) {
+          _this.switchTab(document.querySelector("a[href=\"".concat(hash, "\"]")));
+        } // In case no tab is set we grab the main.
 
-            _this.switchTab(document.querySelector("a[href=\"".concat(hash, "\"]")));
-          } catch (e) {// Not valid URL
-          }
-        } else if (defaultTab && defaultTab.nodeType === Node.ELEMENT_NODE) {
-          _this.switchTab(defaultTab);
-        } else {
+
+        if (_this.currentTab === null) {
           var mainTab = _this.$refs['main-tab']; // Set main tab by default
 
           if (mainTab) {
@@ -35379,24 +35377,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.switchTab(this.$el);
     }),
     switchTab: function switchTab(element) {
-      var href = element.getAttribute('href');
+      if (element) {
+        var href = element.getAttribute('href');
 
-      if (href[0] === '#') {
-        var tab = document.querySelector(href);
+        if (href[0] === '#') {
+          var tab = document.querySelector(href);
 
-        if (tab && tab !== this.currentTab) {
-          // Set last tab
-          this.lastTab = this.currentTab; // Set current tab
+          if (tab && tab !== this.currentTab) {
+            // Set last tab
+            this.lastTab = this.currentTab; // Set current tab
 
-          this.currentTab = tab; // Set hash
+            this.currentTab = tab; // Set hash
 
-          window.location.hash = element.hash; // Update buttons if needed
+            window.location.hash = element.hash; // Update buttons if needed
 
-          var navTabs = this.$refs['nav-tabs'];
+            var navTabs = this.$refs['nav-tabs'];
 
-          if (navTabs) {
-            navTabs.querySelector('li.active').classList.remove('active');
-            element.parentElement.classList.add('active');
+            if (navTabs) {
+              navTabs.querySelector('li.active').classList.remove('active');
+              element.parentElement.classList.add('active');
+            }
           }
         }
       }

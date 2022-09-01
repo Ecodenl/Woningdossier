@@ -37,6 +37,7 @@ class Form extends Scannable
         $this->boot();
     }
 
+
     public function hydrateToolQuestions()
     {
         $this->rehydrateToolQuestions();

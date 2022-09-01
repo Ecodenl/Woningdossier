@@ -6,6 +6,7 @@ use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\ToolQuestionCustomValue
@@ -61,6 +62,7 @@ class ToolQuestionCustomValue extends Model
         'conditions' => 'array',
     ];
 
+    # Scopes
     public function scopeVisible(Builder $query): Builder
     {
         return $query->where('show', true);
@@ -69,5 +71,11 @@ class ToolQuestionCustomValue extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('order');
+    }
+
+    # Relations
+    public function toolQuestion(): BelongsTo
+    {
+        return $this->belongsTo(ToolQuestion::class);
     }
 }

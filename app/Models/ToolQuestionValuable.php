@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -52,16 +53,7 @@ class ToolQuestionValuable extends Model
         'conditions' => 'array',
     ];
 
-    /**
-     * Method retrieves the morphed models.
-     *
-     * @return MorphTo
-     */
-    public function toolQuestionValuables(): MorphTo
-    {
-        return $this->morphTo('tool_question_valuable');
-    }
-
+    # Scopes
     public function scopeVisible(Builder $query): Builder
     {
         return $query->where('show', true);
@@ -72,4 +64,19 @@ class ToolQuestionValuable extends Model
         return $query->orderBy('order');
     }
 
+    # Relations
+    public function toolQuestion(): BelongsTo
+    {
+        return $this->belongsTo(ToolQuestion::class);
+    }
+
+    /**
+     * Method retrieves the morphed models.
+     *
+     * @return MorphTo
+     */
+    public function toolQuestionValuables(): MorphTo
+    {
+        return $this->morphTo('tool_question_valuable');
+    }
 }

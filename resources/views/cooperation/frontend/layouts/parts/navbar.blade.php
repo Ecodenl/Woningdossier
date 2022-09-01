@@ -94,7 +94,7 @@
 
 
             @livewire('cooperation.frontend.layouts.parts.alerts', ['building' => $building, 'inputSource' => $masterInputSource])
-{{--            @livewire('cooperation.frontend.layouts.parts.messages')--}}
+            @livewire('cooperation.frontend.layouts.parts.messages')
 
             {{-- Keep local for ease of use --}}
             @if(app()->isLocal())

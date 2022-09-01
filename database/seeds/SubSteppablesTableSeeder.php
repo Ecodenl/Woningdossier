@@ -759,11 +759,11 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-considerable'),
                             'tool_question_type_id' => $checkboxIconType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                         ],
                         [
                             'morph' => ToolLabel::findByShort('hr-boiler'),
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
@@ -777,7 +777,7 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('new-boiler-type'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
@@ -791,7 +791,7 @@ class SubSteppablesTableSeeder extends Seeder
                         // TODO: Calculate fields
                         [
                             'morph' => ToolLabel::findByShort('heat-pump'),
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
@@ -806,7 +806,7 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('new-building-heating-application'),
                             'tool_question_type_id' => $checkboxIconType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
@@ -820,7 +820,7 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('new-boiler-setting-comfort-heat'),
                             'tool_question_type_id' => $radioIconType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
@@ -834,7 +834,7 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('new-cook-type'),
                             'tool_question_type_id' => $radioIconType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
@@ -848,7 +848,7 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('new-heat-pump-type'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
@@ -863,7 +863,7 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-preferred-power'),
                             'tool_question_type_id' => $textType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                             'conditions' => [
                                 [
                                     [
@@ -877,7 +877,7 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('outside-unit-space'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                             'conditions' => [
                                 [
                                     [
@@ -891,7 +891,7 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('inside-unit-space'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                             'conditions' => [
                                 [
                                     [
@@ -909,112 +909,112 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         //[
                         //    'morph' => ToolLabel::findByShort('hr-boiler'),
-                        //    'size' => 'w-full',
+                        //    'size' => 'col-span-6',
                         //],
                         [
                             'morph' => ToolQuestion::findByShort('surface'),
                             'tool_question_type_id' => $textType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('resident-count'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('cook-type'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('water-comfort'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source'),
                             'tool_question_type_id' => $dropdownMultiType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
                             'tool_question_type_id' => $dropdownMultiType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-type'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-placed-date'),
                             'tool_question_type_id' => $textType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-type'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         // TODO: Not in mockup, missing field for "other" option of heat-pump-type????
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-placed-date'),
                             'tool_question_type_id' => $textType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('building-heating-application'),
                             'tool_question_type_id' => $dropdownMultiType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('fifty-degree-test'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-setting-comfort-heat'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-wall-insulation'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-floor-insulation'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-roof-insulation'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-living-rooms-windows'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-sleeping-rooms-windows'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolLabel::findByShort('sun-boiler'),
-                            'size' => 'w-full',
+                            'size' => 'col-span-6',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-orientation'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-angle'),
                             'tool_question_type_id' => $dropdownType->id,
-                            'size' => 'w-1/2',
+                            'size' => 'col-span-3',
                         ],
                     ],
                 ],

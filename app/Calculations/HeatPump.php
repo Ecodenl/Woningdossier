@@ -61,6 +61,10 @@ class HeatPump
 
     /**
      * @param  Building  $building
+     * @param InputSource $inputSource
+     * @param UserEnergyHabit $energyHabit
+     * @param mixed $boiler
+     * @param ToolQuestionCustomValue $heatingTemperature
      * @param  ServiceValue|ToolQuestionCustomValue  $heatPumpConfigurable
      * @param  int  $desiredPower
      */

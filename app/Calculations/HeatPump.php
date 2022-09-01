@@ -16,6 +16,7 @@ use App\Models\KeyFigureInsulationFactor;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Models\UserEnergyHabit;
 
 class HeatPump
 {
@@ -54,26 +55,31 @@ class HeatPump
     protected $inputSource;
 
     /**
+     * @var UserEnergyHabit
+     */
+    protected $energyHabit;
+
+    /**
      * @param  Building  $building
      * @param  ServiceValue|ToolQuestionCustomValue  $heatPumpConfigurable
      * @param  int  $desiredPower
      */
     public function __construct(
         Building $building,
+        InputSource $inputSource,
+        UserEnergyHabit $energyHabit,
         $boiler,
         ToolQuestionCustomValue $heatingTemperature,
         $heatPumpConfigurable,
         int $desiredPower
     ) {
         $this->building             = $building;
+        $this->inputSource          = $inputSource;
+        $this->energyHabit          = $energyHabit;
         $this->boiler               = $boiler;
         $this->heatingTemperature   = $heatingTemperature;
         $this->heatPumpConfigurable = $heatPumpConfigurable;
         $this->desiredPower         = $desiredPower;
-
-        $this->inputSource = InputSource::findByShort(
-            InputSource::MASTER_SHORT
-        );
     }
 
     /**
@@ -85,6 +91,8 @@ class HeatPump
      */
     public static function calculate(
         Building $building,
+        InputSource $inputSource,
+        UserEnergyHabit $energyHabit,
         $boiler,
         ToolQuestionCustomValue $heatingTemperature,
         $heatPumpConfigurable,
@@ -92,6 +100,8 @@ class HeatPump
     ) {
         $calculator = new static(
             $building,
+            $inputSource,
+            $energyHabit,
             $boiler,
             $heatingTemperature,
             $heatPumpConfigurable,
@@ -113,18 +123,12 @@ class HeatPump
         // return value affects other calculations.
 
         $advisedSystem = [
-            'required_power'  => $this->requiredPower,
-            // C60
-            'desired_power'   => $this->desiredPower,
-            // todo filled by user. C61
-            'share_heating'   => $shareHeating,
-            // C62
-            'share_tap_water' => $characteristics->share_wtw,
-            // C63
-            'scop_heating'    => $characteristics->scop_heating,
-            // C64
-            'scop_tap_water'  => $characteristics->scop_wtw,
-            // C65
+            'required_power'  => $this->requiredPower, // C60
+            'desired_power'   => $this->desiredPower, // C61
+            'share_heating'   => $shareHeating, // C62
+            'share_tap_water' => $characteristics->share_wtw, // C63
+            'scop_heating'    => $characteristics->scop_heating, // C64
+            'scop_tap_water'  => $characteristics->scop_wtw, // C65
         ];
 
         // D2
@@ -135,7 +139,7 @@ class HeatPump
 
         $gasUsage = HighEfficiencyBoilerCalculator::calculateGasUsage(
             $this->boiler,
-            $this->building->user->energyHabit,
+            $this->energyHabit,
             $amountGas
         );
 
@@ -182,7 +186,6 @@ class HeatPump
         // D13
         $currentElectricityUsageTapWater = 0;
         // D14 = from mapping Maatregelopties en kengetallen B58:D60 icm current situation
-        // todo opzoeken: in codebase of database?
         $currentElectricityUsageCooking = $this->energyUsageForCooking();
 
         // these values aren't part of the outcome.
@@ -298,9 +301,6 @@ class HeatPump
 
     public function insulationScore()
     {
-        // todo: advices if one or more factors are <= 1
-        // set advices here
-        //
         $toolQuestions = [
             'current-living-rooms-windows'   => 1.5,
             'current-sleeping-rooms-windows' => 0.5,
@@ -320,6 +320,7 @@ class HeatPump
             $factor       = (int)$elementValue->insulation_factor;
             if ($factor <= 1) {
                 // todo check how to pass this when errors / notifications implementation is in place.
+                // short? full text? translation? for now just the short..
                 $this->advices[$toolQuestion] = $toolQuestion;
             }
             $score += ($factor * $weight);

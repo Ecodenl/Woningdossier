@@ -34066,8 +34066,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             context.updateSelectedValues();
           });
 
-          _this.updateSelectedValues();
-
           _this.disabled = _this.select.hasAttribute('disabled'); // Add class if disabled, so CSS can do magic
 
           if (_this.disabled) {
@@ -34089,6 +34087,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this.select.style.display = 'none'; // Show the new alpine select
 
           _this.$refs['select-input-group'].style.display = '';
+          setTimeout(function () {
+            _this.updateSelectedValues();
+          });
         }
       });
     },
@@ -34176,47 +34177,58 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.setInputValue();
     },
     setInputValue: function setInputValue() {
+      var _this2 = this;
+
       if (this.multiple) {
-        // Reset first
-        var input = this.$refs['select-input'];
-        input.value = '';
-        var inputGroup = this.$refs['select-input-group'];
-        inputGroup.querySelectorAll('.form-input-option').remove(); // Space to keep from the right at all times to accommodate the icons
+        (function () {
+          // Reset first
+          var input = _this2.$refs['select-input'];
+          input.value = '';
+          var inputGroup = _this2.$refs['select-input-group'];
+          inputGroup.querySelectorAll('.form-input-option').remove(); // Space to keep from the right at all times to accommodate the icons
 
-        var inputHeight = '44'; // px, same as 2.75rem
+          var inputHeight = 44; // px, same as 2.75rem
 
-        var right = '88'; // px, same as 5.5rem
+          var right = 88; // px, same as 5.5rem
 
-        var margin = '4'; // px, same as 0.25rem
+          var topMargin = 2; // px, same as 0.125rem
 
-        var maxWidth = parseInt(getComputedStyle(input)['width']) - right;
-        var currentWidth = 0;
-        var rows = 1;
+          var leftMargin = 4; // px, same as 0.25rem
 
-        for (var key in Object.keys(this.values)) {
-          var text = this.values[key];
-          var newInputOption = document.createElement('span');
-          newInputOption.appendChild(document.createTextNode(text));
-          newInputOption.classList.add('form-input-option');
-          newInputOption.setAttribute("data-value", key);
-          newInputOption.setAttribute("x-on:click", "changeOption($el)");
-          inputGroup.appendChild(newInputOption);
+          var maxWidth = parseInt(getComputedStyle(input).width) - right;
+          var currentWidth = 0;
+          var rows = 1;
 
-          if (currentWidth !== 0) {
-            var newWidth = currentWidth + margin + parseInt(getComputedStyle(newInputOption)['width']);
+          var _loop = function _loop() {
+            var key = _Object$keys[_i];
+            var text = _this2.values[key];
+            var newInputOption = document.createElement('span');
+            newInputOption.appendChild(document.createTextNode(text));
+            newInputOption.classList.add('form-input-option');
+            newInputOption.setAttribute("data-value", key);
+            newInputOption.setAttribute("x-on:click", "changeOption($el)");
+            inputGroup.appendChild(newInputOption); // Use timeout, so it processes after the current thread. Else, computedStyle will be 'auto'
 
-            if (newWidth > maxWidth) {
-              rows++;
+            setTimeout(function () {
+              var newWidth = currentWidth + leftMargin + parseInt(getComputedStyle(newInputOption).width);
+
+              if (newWidth > maxWidth) {
+                rows++;
+                currentWidth = 0;
+              }
+
+              newInputOption.style.left = currentWidth + leftMargin + "px";
+              newInputOption.style.top = topMargin + (rows - 1) * inputHeight + 'px'; // Always set height
+
               input.style.height = rows * inputHeight + 'px';
-              currentWidth = 0;
-            } else {
-              newInputOption.style.left = currentWidth + margin + "px";
-            }
-          }
+              currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
+            });
+          };
 
-          newInputOption.style.top = margin + (rows - 1) * inputHeight + 'px';
-          currentWidth += margin + parseInt(getComputedStyle(newInputOption)['width']);
-        }
+          for (var _i = 0, _Object$keys = Object.keys(_this2.values); _i < _Object$keys.length; _i++) {
+            _loop();
+          }
+        })();
       } else {
         this.$refs['select-input'].value = Object.values(this.values)[0];
       }
@@ -34230,7 +34242,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       newOption.appendChild(document.createTextNode(text));
       newOption.setAttribute("data-value", value); // Add alpine functions
 
-      newOption.setAttribute("x-bind:class", "value == '" + value + "' ? 'selected' : ''");
+      newOption.setAttribute("x-bind:class", "Object.keys(values).includes('" + value + "') ? 'selected' : ''");
       newOption.setAttribute("x-on:click", "changeOption($el)");
       newOption.classList.add('select-option');
 

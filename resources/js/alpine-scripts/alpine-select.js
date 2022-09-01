@@ -25,8 +25,6 @@ export default (initiallyOpen = false) => ({
                     context.updateSelectedValues();
                 });
 
-                this.updateSelectedValues();
-
                 this.disabled = this.select.hasAttribute('disabled');
 
                 // Add class if disabled, so CSS can do magic
@@ -48,6 +46,10 @@ export default (initiallyOpen = false) => ({
                 this.select.style.display = 'none';
                 // Show the new alpine select
                 this.$refs['select-input-group'].style.display = '';
+
+                setTimeout(() => {
+                    this.updateSelectedValues();
+                });
             }
         });
     },
@@ -124,14 +126,15 @@ export default (initiallyOpen = false) => ({
             inputGroup.querySelectorAll('.form-input-option').remove();
 
             // Space to keep from the right at all times to accommodate the icons
-            const inputHeight = '44'; // px, same as 2.75rem
-            const right = '88'; // px, same as 5.5rem
-            const margin = '4' // px, same as 0.25rem
-            const maxWidth = parseInt(getComputedStyle(input)['width']) - right;
+            const inputHeight = 44; // px, same as 2.75rem
+            const right = 88; // px, same as 5.5rem
+            const topMargin = 2 // px, same as 0.125rem
+            const leftMargin = 4 // px, same as 0.25rem
+            const maxWidth = parseInt(getComputedStyle(input).width) - right;
             let currentWidth = 0;
             let rows = 1;
 
-            for (let key in Object.keys(this.values)) {
+            for (let key of Object.keys(this.values)) {
                 let text = this.values[key];
                 let newInputOption = document.createElement('span');
                 newInputOption.appendChild(document.createTextNode(text));
@@ -140,19 +143,24 @@ export default (initiallyOpen = false) => ({
                 newInputOption.setAttribute("x-on:click", "changeOption($el)");
                 inputGroup.appendChild(newInputOption);
 
-                if (currentWidth !== 0) {
-                    let newWidth = currentWidth + margin + parseInt(getComputedStyle(newInputOption)['width']);
+                // Use timeout, so it processes after the current thread. Else, computedStyle will be 'auto'
+                setTimeout(() => {
+                    let newWidth = currentWidth + leftMargin + parseInt(getComputedStyle(newInputOption).width);
+
                     if (newWidth > maxWidth) {
                         rows++;
-                        input.style.height = rows * inputHeight + 'px';
                         currentWidth = 0;
-                    } else {
-                        newInputOption.style.left = (currentWidth + margin) + "px";
                     }
-                }
 
-                newInputOption.style.top = margin + ((rows - 1) * inputHeight) + 'px';
-                currentWidth += margin + parseInt(getComputedStyle(newInputOption)['width']);
+                    newInputOption.style.left = currentWidth + leftMargin + "px";
+                    newInputOption.style.top = topMargin + (rows - 1) * inputHeight + 'px';
+
+                    // Always set height
+                    input.style.height = rows * inputHeight + 'px';
+
+                    currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
+                });
+
             }
         } else {
             this.$refs['select-input'].value = Object.values(this.values)[0];
@@ -169,7 +177,7 @@ export default (initiallyOpen = false) => ({
         newOption.appendChild(document.createTextNode(text));
         newOption.setAttribute("data-value", value);
         // Add alpine functions
-        newOption.setAttribute("x-bind:class", "value == '" + value + "' ? 'selected' : ''");
+        newOption.setAttribute("x-bind:class", "Object.keys(values).includes('" + value + "') ? 'selected' : ''");
         newOption.setAttribute("x-on:click", "changeOption($el)");
         newOption.classList.add('select-option');
 

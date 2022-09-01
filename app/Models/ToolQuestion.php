@@ -127,6 +127,7 @@ class ToolQuestion extends Model
                         // the humane readable name is either set in the name or value column.
                         $questionValue['name'] = $valuable->name ?? $valuable->value;
                         $questionValue['value'] = $valuable->id;
+                        $questionValue['conditions'] = $toolQuestionValuable->conditions;
 
                         return $questionValue;
                     } else {
@@ -147,6 +148,7 @@ class ToolQuestion extends Model
                 $questionValue = $toolQuestionCustomValue->toArray();
                 $questionValue['name'] = $toolQuestionCustomValue->name;
                 $questionValue['value'] = $toolQuestionCustomValue->short;
+                $questionValue['conditions'] = $toolQuestionCustomValue->conditions;
 
                 return $questionValue;
             });

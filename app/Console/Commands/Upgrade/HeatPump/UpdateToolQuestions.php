@@ -50,9 +50,10 @@ class UpdateToolQuestions extends Command
         // Ensure we clear the cache so we don't run into potentially `null` cached shorts.
         Artisan::call('cache:clear');
 
-        $this->infoLog('Seeding scans, tool labels and steps');
+        $this->infoLog('Seeding scans, tool labels, tool question types and steps');
         Artisan::call('db:seed', ['--class' => \ScansTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \ToolLabelsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => \ToolQuestionTypesTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class, '--force' => true]);
 
         // Before we can update the ToolQuestions, we must update the values

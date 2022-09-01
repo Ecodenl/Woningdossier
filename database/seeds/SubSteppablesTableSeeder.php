@@ -34,7 +34,6 @@ class SubSteppablesTableSeeder extends Seeder
         $ventilation = Service::findByShort('house-ventilation');
 
         // Tool question types
-        // TODO: Subject to change
         $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
         $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
@@ -44,9 +43,8 @@ class SubSteppablesTableSeeder extends Seeder
         $textareaType = ToolQuestionType::findByShort('textarea');
         $textareaPopupType = ToolQuestionType::findByShort('textarea-popup');
         $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
-        // TODO: These don't exist yet, but for future reference it's easier to already have them "linked" in the questions
-        $dropdownType = ToolQuestionType::findByShort('radio');
-        $dropdownMultiType = ToolQuestionType::findByShort('checkbox-icon');
+        $dropdownType = ToolQuestionType::findByShort('dropdown');
+        $multiDropdownType = ToolQuestionType::findByShort('multi-dropdown');
 
         #-------------------------
         # Quick Scan sub steppables
@@ -933,12 +931,12 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source'),
-                            'tool_question_type_id' => $dropdownMultiType->id,
+                            'tool_question_type_id' => $multiDropdownType->id,
                             'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
-                            'tool_question_type_id' => $dropdownMultiType->id,
+                            'tool_question_type_id' => $multiDropdownType->id,
                             'size' => 'w-full',
                         ],
                         [
@@ -964,7 +962,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('building-heating-application'),
-                            'tool_question_type_id' => $dropdownMultiType->id,
+                            'tool_question_type_id' => $multiDropdownType->id,
                             'size' => 'w-full',
                         ],
                         [

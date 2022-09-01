@@ -13,40 +13,48 @@ class ToolQuestionTypesTableSeeder extends Seeder
     {
         $datas = [
             [
-                'name'  => ['nl' => 'Meerkeuze met icon'],
-                'short' => 'checkbox-icon'
+                'name' => ['nl' => 'Meerkeuze met icon'],
+                'short' => 'checkbox-icon',
             ],
             [
-                'name'  => ['nl' => 'Keuze met icon'],
-                'short' => 'radio-icon'
+                'name' => ['nl' => 'Keuze met icon'],
+                'short' => 'radio-icon',
             ],
             [
-                'name'  => ['nl' => 'Keuze met icon, klein en zonder tekst'],
-                'short' => 'radio-icon-small'
+                'name' => ['nl' => 'Keuze met icon, klein en zonder tekst'],
+                'short' => 'radio-icon-small',
             ],
             [
-                'name'  => ['nl' => 'Keuze veld'],
-                'short' => 'radio'
+                'name' => ['nl' => 'Keuze veld'],
+                'short' => 'radio',
             ],
             [
-                'name'  => ['nl' => 'Slider'],
-                'short' => 'slider'
+                'name' => ['nl' => 'Slider'],
+                'short' => 'slider',
             ],
             [
-                'name'  => ['nl' => 'Invulveld'],
-                'short' => 'text'
+                'name' => ['nl' => 'Invulveld'],
+                'short' => 'text',
             ],
             [
-                'name'  => ['nl' => 'Tekstvak'],
-                'short' => 'textarea'
+                'name' => ['nl' => 'Tekstvak'],
+                'short' => 'textarea',
             ],
             [
-                'name'  => ['nl' => 'Tekstvak, opent in popup'],
-                'short' => 'textarea-popup'
+                'name' => ['nl' => 'Tekstvak, opent in popup'],
+                'short' => 'textarea-popup',
             ],
             [
                 'name' => ['nl' => 'Prioriteiten meter'],
-                'short' => 'rating-slider'
+                'short' => 'rating-slider',
+            ],
+            [
+                'name' => ['nl' => 'Dropdown'],
+                'short' => 'dropdown',
+            ],
+            [
+                'name' => ['nl' => 'Multi dropdown'],
+                'short' => 'multi-dropdown',
             ],
         ];
 

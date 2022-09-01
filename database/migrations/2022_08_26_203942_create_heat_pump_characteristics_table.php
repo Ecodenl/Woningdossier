@@ -17,7 +17,7 @@ class CreateHeatPumpCharacteristicsTable extends Migration
             'heat_pump_characteristics',
             function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->morphs('heat_pump_configurable');
+                $table->morphs('heat_pump_configurable', 'hpchar_hpconf');
                 $table->unsignedBigInteger('tool_question_custom_value_id')->nullable();
                 $table->foreign('tool_question_custom_value_id')->references('id')->on('tool_question_custom_values')->onDelete('cascade');
                 $table->decimal('scop', 4, 2);

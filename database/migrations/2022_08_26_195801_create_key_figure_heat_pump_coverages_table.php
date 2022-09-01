@@ -17,7 +17,7 @@ class CreateKeyFigureHeatPumpCoveragesTable extends Migration
             $table->bigIncrements('id');
             $table->decimal('betafactor', 4,2);
             $table->unsignedBigInteger('tool_question_custom_value_id');
-            $table->foreign('tool_question_custom_value_id')->references('id')->on('tool_question_custom_values')->onDelete('cascade');
+            $table->foreign('tool_question_custom_value_id', 'kfhp_coverages_tqcv_id')->references('id')->on('tool_question_custom_values')->onDelete('cascade');
             $table->unsignedInteger('percentage');
             $table->timestamps();
         });

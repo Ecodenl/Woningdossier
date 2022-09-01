@@ -796,7 +796,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-building-heating-application'),
-                            'tool_question_type_id' => $checkboxIconType->id,
+                            'tool_question_type_id' => $multiDropdownType->id,
                             'size' => 'col-span-6',
                             'conditions' => [
                                 [
@@ -810,7 +810,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-boiler-setting-comfort-heat'),
-                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-6',
                             'conditions' => [
                                 [
@@ -824,7 +824,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-cook-type'),
-                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-6',
                             'conditions' => [
                                 [
@@ -898,16 +898,43 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolLabel::findByShort('sun-boiler'),
                             'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'sun-boiler',
+                                    ],
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-orientation'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'sun-boiler',
+                                    ],
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-angle'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'sun-boiler',
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                 ],

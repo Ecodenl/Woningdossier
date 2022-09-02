@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Alert;
 use Illuminate\Database\Seeder;
 
 class AlertsTableSeeder extends Seeder
@@ -13,58 +14,49 @@ class AlertsTableSeeder extends Seeder
     {
         $alerts = [
             [
-                'short' => 'heat-source',
-
+                'short' => 'suboptimal-isolation-for-heat-pump',
+                'text' => [
+                    'nl' => 'Jouw huis is niet optimaal geïsoleerd. Het is aan te raden om  eerst de isolatie te verbeteren. Het is namelijk mogelijk dat de warmtepomp in de huidige situatie niet optimaal werkt.',
+                ],
+                'type' => Alert::TYPE_WARNING,
                 'conditions' => [
                     [
                         [
-                            'column' => 'heat-source',
-                            'operator' => \App\Helpers\Conditions\Clause::CONTAINS,
-                            'value' => 'hr-boiler',
+                            'column' => 'fn',
+                            'value' => '', // TODO: Calculate class
                         ],
                     ],
                 ],
-                'text' => [
-                    'nl' => 'Wartmebron is een HR-boiler',
-                ],
-                'type' => 'warning',
             ],
             [
-                'short' => '50-degree-heat-source',
-                'conditions' =>[
-                    [
-                        [
-                            'column' => 'heat-source',
-                            'operator' => \App\Helpers\Conditions\Clause::EQ,
-                            'value' => 'heat-pump',
-                        ],
-                        [
-                            'column' => 'fifty-degree-test',
-                            'operator' => \App\Helpers\Conditions\Clause::EQ,
-                            'value' => 'no',
-                        ],
-                    ],
-                ],
+                'short' => 'research-heat-pump',
                 'text' => [
-                    'nl' => '50 graden test is niet geslaagd, in combinatie met een warmtepomp is dit een koud huis.',
+                    'nl' => 'Er is aanvullend onderzoek nodig of het mogelijk is om een (hybride) warmtepomp te installeren.',
                 ],
-                'type' => 'danger',
-            ],
-            [
-                'short' => 'resident-count',
+                'type' => Alert::TYPE_INFO,
                 'conditions' => [
                     [
                         [
-                            'column' => 'resident-count',
-                            'operator' => \App\Helpers\Conditions\Clause::GT,
-                            'value' => '2',
+                            'column' => 'fn',
+                            'value' => '', // TODO: Calculate class
                         ],
                     ],
                 ],
+            ],
+            [
+                'short' => 'too-high-temp-for-heat-pump',
                 'text' => [
-                    'nl' => 'U heeft meer dan 2 personen in uw huis',
+                    'nl' => 'Je stookt met hoge cv-temperatuur. Hierdoor kan een (hybride) warmtepomp niet optimaal werken. Zorg eerst voor lage temperatuurverwarming.',
                 ],
-                'type' => 'danger',
+                'type' => Alert::TYPE_WARNING,
+                'conditions' => [
+                    [
+                        [
+                            'column' => 'fn',
+                            'value' => '', // TODO: Calculate class
+                        ],
+                    ],
+                ],
             ],
         ];
 

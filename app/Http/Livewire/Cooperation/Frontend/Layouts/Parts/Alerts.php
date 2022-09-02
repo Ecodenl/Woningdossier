@@ -21,10 +21,10 @@ class Alerts extends Component
     public $alertOpen = false;
 
     public $typeMap = [
-        'info' => 'text-blue',
-        'success' => 'text-green',
-        'warning' => 'text-orange',
-        'danger' => 'text-red',
+        Alert::TYPE_INFO => 'text-blue',
+        Alert::TYPE_SUCCESS => 'text-green',
+        Alert::TYPE_WARNING => 'text-orange',
+        Alert::TYPE_DANGER => 'text-red',
     ];
 
     public function mount(Request $request, Building $building, InputSource $inputSource)

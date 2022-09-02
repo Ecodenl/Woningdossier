@@ -16,4 +16,9 @@ class Alert extends Model
     protected $casts = [
         'conditions' => 'json'
     ];
+
+    const TYPE_INFO = 'info';
+    const TYPE_SUCCESS = 'success';
+    const TYPE_WARNING = 'warning';
+    const TYPE_DANGER = 'danger';
 }

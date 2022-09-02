@@ -19,7 +19,7 @@ class ToolQuestionPolicy
         if (HoomdossierSession::isUserObserving()) {
             return false;
         }
-        Log::debug('tool question policy');
+
         return is_null($toolQuestion->forSpecificInputSource) || $currentInputSource->short === $toolQuestion->forSpecificInputSource->short;
     }
 }

@@ -11,47 +11,51 @@ export default (initiallyOpen = false) => ({
     multiple: false,
 
     init() {
-        document.addEventListener('DOMContentLoaded', () => {
-            let wrapper = this.$refs['select-wrapper'];
-            // Get the select element
-            this.select = wrapper.querySelector('select');
-            // Select is defined!
-            if (null !== this.select) {
-                this.multiple = this.select.hasAttribute('multiple');
-
-                // Bind event listener for change
-                let context = this;
-                this.select.addEventListener('change', function (event) {
-                    context.updateSelectedValues();
-                });
-
-                this.disabled = this.select.hasAttribute('disabled');
-
-                // Add class if disabled, so CSS can do magic
-                if (this.disabled) {
-                    this.$refs['select-input'].classList.add('disabled');
-                    this.open = false;
-                }
-
-                // Build the alpine select
-                let optionDropdown = this.$refs['select-options'];
-                let options = this.select.options;
-                // Loop options to build
-                // Note: we cannot use forEach, as options is a HTML collection, which is not an array
-                for (let i = 0; i < options.length; i++) {
-                    this.buildOption(optionDropdown, options[i]);
-                }
-
-                // Hide the original select
-                this.select.style.display = 'none';
-                // Show the new alpine select
-                this.$refs['select-input-group'].style.display = '';
-
-                setTimeout(() => {
-                    this.updateSelectedValues();
-                });
-            }
+        let context = this;
+        setTimeout(() => {
+            context.constructSelect();
         });
+    },
+    constructSelect() {
+        let wrapper = this.$refs['select-wrapper'];
+        // Get the select element
+        this.select = wrapper.querySelector('select');
+        // Select is defined!
+        if (null !== this.select) {
+            this.multiple = this.select.hasAttribute('multiple');
+
+            // Bind event listener for change
+            let context = this;
+            this.select.addEventListener('change', function (event) {
+                context.updateSelectedValues();
+            });
+
+            this.disabled = this.select.hasAttribute('disabled');
+
+            // Add class if disabled, so CSS can do magic
+            if (this.disabled) {
+                this.$refs['select-input'].classList.add('disabled');
+                this.open = false;
+            }
+
+            // Build the alpine select
+            let optionDropdown = this.$refs['select-options'];
+            let options = this.select.options;
+            // Loop options to build
+            // Note: we cannot use forEach, as options is a HTML collection, which is not an array
+            for (let i = 0; i < options.length; i++) {
+                this.buildOption(optionDropdown, options[i]);
+            }
+
+            // Hide the original select
+            this.select.style.display = 'none';
+            // Show the new alpine select
+            this.$refs['select-input-group'].style.display = '';
+
+            setTimeout(() => {
+                this.updateSelectedValues();
+            });
+        }
     },
     toggle() {
         // If not disabled, we will handle the click

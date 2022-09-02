@@ -2,26 +2,16 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
 
-use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
-use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
-use App\Models\Building;
-use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
-use App\Services\ToolQuestionService;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 class SubSteppable extends Scannable
 {
@@ -50,6 +40,22 @@ class SubSteppable extends Scannable
         $this->boot();
     }
 
+    public function boot()
+    {
+        $this->building = HoomdossierSession::getBuilding(true);
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
+
+        // first we have to hydrate the tool questions
+        $this->hydrateToolQuestions();
+        // after that we can fill up the user his given answers
+        $this->setFilledInAnswers();
+
+        $this->originalAnswers = $this->filledInAnswers;
+    }
+
     public function hydrateToolQuestions()
     {
         $this->toolQuestions = $this->subStep->toolQuestions;
@@ -61,7 +67,6 @@ class SubSteppable extends Scannable
 
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();
-        dd($this->rules);
     }
 
     public function updated($field, $value)
@@ -123,7 +128,6 @@ class SubSteppable extends Scannable
 
                     // we will only unset the rules if its a tool question, not relevant for other sub steppables.
                     if ($subSteppablePivot->isToolQuestion()) {
-
                         $this->filledInAnswers[$toolQuestion->id] = null;
 
                         // and unset the validation for the question based on type.
@@ -190,9 +194,6 @@ class SubSteppable extends Scannable
                 $this->emitUp('failedValidationForSubSteps', $this->subStep);
 
                 $this->dispatchBrowserEvent('validation-failed');
-            } else {
-                // the validator did not fail, so we will notify the main form that its saved.
-                $this->emitUp('subStepValidationSucceeded', $this->subStep);
             }
 
             $validator->validate();
@@ -218,9 +219,13 @@ class SubSteppable extends Scannable
             }
         }
 
-        if ($this->dirty && ! $validator->fails()) {
-            Log::debug('dirty, setting filledInAnswers');
-            $this->emitUp('setFilledInAnswers', $this->filledInAnswers);
+        $answers = [];
+
+        // if it's not dirty, we don't want to pass the answers, as we don't need to update them.
+        if ($this->dirty) {
+            $answers = $this->filledInAnswers;
         }
+
+        $this->emitUp('subStepValidationSucceeded', $this->subStep, $answers);
     }
 }

@@ -14,7 +14,7 @@ export default (initiallyOpen = false) => ({
         let context = this;
         setTimeout(() => {
             context.constructSelect();
-        })
+        });
     },
     constructSelect() {
         let wrapper = this.$refs['select-wrapper'];

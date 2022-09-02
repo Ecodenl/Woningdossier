@@ -4,7 +4,7 @@
     $humanReadableAnswer = null;
 @endphp
 
-<div class="{{$subSteppable->size}}">
+<div class="{{$subSteppable->size}}" wire:key="question-{{$toolQuestion->id}}">
     @component('cooperation.frontend.layouts.components.form-group', [
         'class' => 'form-group-heading',
         'labelClass' => 'text-sm',

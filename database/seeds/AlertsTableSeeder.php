@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Alert;
+use App\Helpers\Conditions\Clause;
 use Illuminate\Database\Seeder;
 
 class AlertsTableSeeder extends Seeder
@@ -23,7 +24,7 @@ class AlertsTableSeeder extends Seeder
                     [
                         [
                             'column' => 'fn',
-                            'value' => '', // TODO: Calculate class
+                            'value' => 'InsulationCalculation',
                         ],
                     ],
                 ],
@@ -37,8 +38,14 @@ class AlertsTableSeeder extends Seeder
                 'conditions' => [
                     [
                         [
-                            'column' => 'fn',
-                            'value' => '', // TODO: Calculate class
+                            'column' => 'outside-unit-space',
+                            'operator' => Clause::EQ,
+                            'value' => 'no',
+                        ],
+                        [
+                            'column' => 'inside-unit-space',
+                            'operator' => Clause::EQ,
+                            'value' => 'no',
                         ],
                     ],
                 ],
@@ -52,8 +59,9 @@ class AlertsTableSeeder extends Seeder
                 'conditions' => [
                     [
                         [
-                            'column' => 'fn',
-                            'value' => '', // TODO: Calculate class
+                            'column' => 'boiler-setting-comfort-heat',
+                            'operator' => Clause::EQ,
+                            'value' => 'temp-high',
                         ],
                     ],
                 ],

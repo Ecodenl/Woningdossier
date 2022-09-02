@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -9,7 +10,18 @@ use App\Models\ToolQuestion;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-class ToolQuestionHelper {
+class ToolQuestionHelper
+{
+    /**
+     * The tool questions (shorts) that are allowed to be filled upon register.
+     * Note: When changing this, ensure you update the Swagger Docs in the Register Controller and the related tests!
+     * @var array
+     */
+    const SUPPORTED_API_SHORTS = [
+        'amount-gas',
+        'amount-electricity',
+        'resident-count',
+    ];
 
     /**
      * These tables should query on one or more extra column(s)
@@ -104,6 +116,7 @@ class ToolQuestionHelper {
      *
      * @param ToolQuestion $toolQuestion
      * @param Building $building
+     *
      * @return array
      */
     public static function resolveSaveIn(ToolQuestion $toolQuestion, Building $building): array
@@ -114,9 +127,9 @@ class ToolQuestionHelper {
         $where = [];
 
         if (Schema::hasColumn($table, 'user_id')) {
-            $where[] = ['user_id', '=', $building->user_id];
+            $where['user_id'] = $building->user_id;
         } else {
-            $where[] = ['building_id', '=', $building->id];
+            $where['building_id'] = $building->id;
         }
 
         // 2 parts is the simple scenario, this just means a table + column
@@ -132,14 +145,14 @@ class ToolQuestionHelper {
 
                 // Currently only for step_comments that can have a short
                 foreach ($values as $index => $value) {
-                    $where[] = [$columns[$index], '=', $value];
+                    $where[$columns[$index]] = $value;
                 }
             } else {
                 // Just a value, but the short table could be an array. We grab the first
                 $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
                 $columnForWhere = is_array($columns) ? $columns[0] : $columns;
 
-                $where[] = [$columnForWhere, '=', $column];
+                $where[$columnForWhere] = $column;
             }
 
             $columns = array_slice($savedInParts, 2);
@@ -199,13 +212,10 @@ class ToolQuestionHelper {
             }
 
             // Format answers
-            if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
-                $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
-                $humanReadableAnswer = NumberFormatter::formatNumberForUser($humanReadableAnswer, $isInteger);
-            } elseif ($toolQuestion->toolQuestionType->short === 'slider') {
-                $humanReadableAnswer = str_replace('.', '', NumberFormatter::format($humanReadableAnswer, 0));
-            } elseif ($toolQuestion->toolQuestionType->short === 'rating-slider') {
-                $humanReadableAnswerArray = json_decode($humanReadableAnswer, true);
+            if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                $humanReadableAnswer = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getFormatForUser();
+            } elseif ($toolQuestion->data_type === Caster::JSON) {
+                $humanReadableAnswerArray = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getCast();
                 $humanReadableAnswer = [];
                 foreach ($toolQuestion->options as $option) {
                     $humanReadableAnswer[$option['name']] = $humanReadableAnswerArray[$option['short']];

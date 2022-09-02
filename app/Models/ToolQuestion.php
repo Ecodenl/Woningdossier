@@ -19,7 +19,6 @@ use Illuminate\Support\Collection;
  * @property string|null $short
  * @property string|null $save_in
  * @property int|null $for_specific_input_source_id
- * @property array|null $conditions
  * @property array $name
  * @property array $help_text
  * @property array|null $placeholder
@@ -46,7 +45,6 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion query()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCoach($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereConditions($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereForSpecificInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereHelpText($value)
@@ -75,8 +73,8 @@ class ToolQuestion extends Model
 
     protected $fillable = [
         'short',
-        'conditions',
         'placeholder',
+        'data_type',
         'name',
         'help_text',
         'tool_question_type_id',
@@ -90,51 +88,19 @@ class ToolQuestion extends Model
     ];
 
     protected $casts = [
-        'conditions' => 'array',
         'options' => 'array',
         'validation' => 'array',
         'coach' => 'boolean',
         'resident' => 'boolean',
     ];
 
+    # Model methods
     public function hasOptions(): bool
     {
-        return  !empty($this->options);
+        return ! empty($this->options);
     }
 
-    public function toolQuestionType(): BelongsTo
-    {
-        return $this->belongsTo(ToolQuestionType::class);
-    }
 
-    public function toolQuestionAnswers(): HasMany
-    {
-        return $this->hasMany(ToolQuestionAnswer::class);
-    }
-
-    public function subSteps(): BelongsToMany
-    {
-        return $this->belongsToMany(SubStep::class, 'sub_step_tool_questions');
-    }
-    /**
-     * Method to return the intermediary morph table
-     *
-     * @return HasMany
-     */
-    public function toolQuestionValuables(): HasMany
-    {
-        return $this->hasMany(ToolQuestionValuable::class);
-    }
-
-    public function toolQuestionCustomValues()
-    {
-        return $this->hasMany(ToolQuestionCustomValue::class);
-    }
-
-    public function forSpecificInputSource(): BelongsTo
-    {
-        return $this->belongsTo(InputSource::class);
-    }
 
     /**
      * Method to return the question values  (morphed models / the options for the question)
@@ -161,6 +127,7 @@ class ToolQuestion extends Model
                         // the humane readable name is either set in the name or value column.
                         $questionValue['name'] = $valuable->name ?? $valuable->value;
                         $questionValue['value'] = $valuable->id;
+                        $questionValue['conditions'] = $toolQuestionValuable->conditions;
 
                         return $questionValue;
                     } else {
@@ -181,8 +148,46 @@ class ToolQuestion extends Model
                 $questionValue = $toolQuestionCustomValue->toArray();
                 $questionValue['name'] = $toolQuestionCustomValue->name;
                 $questionValue['value'] = $toolQuestionCustomValue->short;
+                $questionValue['conditions'] = $toolQuestionCustomValue->conditions;
 
                 return $questionValue;
             });
+    }
+
+    # Relations
+    public function toolQuestionAnswers(): HasMany
+    {
+        return $this->hasMany(ToolQuestionAnswer::class);
+    }
+
+    public function subSteppables()
+    {
+        return $this->morphMany(SubSteppable::class, 'sub_steppable');
+    }
+
+    public function subSteps(): BelongsToMany
+    {
+        return $this->morphToMany(SubStep::class, 'sub_steppable')
+            ->using(SubSteppable::class)
+            ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
+    }
+    /**
+     * Method to return the intermediary morph table
+     *
+     * @return HasMany
+     */
+    public function toolQuestionValuables(): HasMany
+    {
+        return $this->hasMany(ToolQuestionValuable::class);
+    }
+
+    public function toolQuestionCustomValues(): HasMany
+    {
+        return $this->hasMany(ToolQuestionCustomValue::class);
+    }
+
+    public function forSpecificInputSource(): BelongsTo
+    {
+        return $this->belongsTo(InputSource::class);
     }
 }

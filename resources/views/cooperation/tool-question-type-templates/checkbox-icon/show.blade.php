@@ -9,12 +9,12 @@
     @endphp
     @foreach($questionValues as $toolQuestionValue)
         @php
-            $id = $toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value'] ?? $toolQuestionValue['value'];
+            $uuid = Str::uuid();
         @endphp
         <div class="checkbox-wrapper media-wrapper">
-            <input id="{{$id}}" type="checkbox" wire:model="filledInAnswers.{{$toolQuestion['id']}}" name="{{$id}}"
+            <input id="{{$uuid}}" type="checkbox" wire:model="filledInAnswers.{{$toolQuestion['id']}}"
                    value="{{$toolQuestionValue['value']}}" @if($disabled) disabled="disabled" @endif>
-            <label for="{{$id}}">
+            <label for="{{$uuid}}">
                 <span class="media-icon-wrapper">
                     <i class="{{$toolQuestionValue['extra']['icon'] ?? ''}}"></i>
                 </span>

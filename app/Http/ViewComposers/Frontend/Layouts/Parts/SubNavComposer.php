@@ -24,6 +24,8 @@ class SubNavComposer
             Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)->get()
         );
 
+        $view->with('scan', $this->request->route('scan'));
+
         $view->with('currentStep', $this->request->route('step'));
         $view->with('building', HoomdossierSession::getBuilding(true));
 

@@ -7,7 +7,6 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
-use App\Models\BuildingType as BuildingTypeModel;
 use App\Models\ToolQuestionCustomValue;
 use Illuminate\Support\Collection;
 

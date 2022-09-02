@@ -45,8 +45,8 @@ class SubSteppable extends Scannable
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
-        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
-        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
+        $this->residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         // first we have to hydrate the tool questions
         $this->hydrateToolQuestions();

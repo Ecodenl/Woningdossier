@@ -5,13 +5,10 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -267,7 +264,7 @@ abstract class Scannable extends Component
         }
     }
 
-    private function setFilledInAnswers()
+    protected function setFilledInAnswers()
     {
         // base key where every answer is stored
         foreach ($this->toolQuestions as $index => $toolQuestion) {
@@ -275,9 +272,7 @@ abstract class Scannable extends Component
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
             /** @var array|string $answerForInputSource */
-            Log::debug("set filled in answers ".get_class($toolQuestion));
             $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);
-
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
             switch ($toolQuestion->data_type) {

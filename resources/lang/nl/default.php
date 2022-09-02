@@ -19,6 +19,9 @@ return [
             'comment' => 'Toelichting op de specifieke situatie',
             'comment-placeholder' => 'Type hier uw opmerkingen...',
         ],
+        'dropdown' => [
+            'choose' => 'Kies een optie',
+        ],
     ],
 
     'yes' => 'Ja',

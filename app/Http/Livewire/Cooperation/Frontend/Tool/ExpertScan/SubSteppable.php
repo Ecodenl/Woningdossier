@@ -2,26 +2,16 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
 
-use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
-use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
-use App\Models\Building;
-use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
-use App\Services\ToolQuestionService;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Livewire\Component;
 
 class SubSteppable extends Scannable
 {
@@ -50,14 +40,40 @@ class SubSteppable extends Scannable
         $this->boot();
     }
 
+    public function boot()
+    {
+        $this->building = HoomdossierSession::getBuilding(true);
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+
+        // first we have to hydrate the tool questions
+        $this->hydrateToolQuestions();
+        // after that we can fill up the user his given answers
+        $this->setFilledInAnswers();
+
+        $this->originalAnswers = $this->filledInAnswers;
+    }
+
     public function hydrateToolQuestions()
     {
-        $this->rehydrateToolQuestions();
+        $this->toolQuestions = $this->subStep->toolQuestions;
     }
 
     public function rehydrateToolQuestions()
     {
         $this->toolQuestions = $this->subStep->toolQuestions;
+
+        $this->setValidationForToolQuestions();
+        $this->evaluateToolQuestions();
+    }
+
+    public function updated($field, $value)
+    {
+        // TODO: Deprecate this dispatch in Livewire V2
+        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
+        $this->setDirty(true);
     }
 
     protected function evaluateToolQuestions()
@@ -76,7 +92,7 @@ class SubSteppable extends Scannable
 
             $answers = $dynamicAnswers;
 
-            if (!empty($subSteppablePivot->conditions)) {
+            if (! empty($subSteppablePivot->conditions)) {
                 $conditions = $subSteppablePivot->conditions;
 
                 foreach ($conditions as $conditionSet) {
@@ -88,11 +104,8 @@ class SubSteppable extends Scannable
                             $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
                             if ($otherSubStepToolQuestion instanceof ToolQuestion) {
 
-                                $otherSubStepAnswer = $this
-                                    ->building
-                                    ->getAnswer(
-                                        $this->masterInputSource, $otherSubStepToolQuestion
-                                    );
+                                $otherSubStepAnswer = $this->building
+                                    ->getAnswer($this->masterInputSource, $otherSubStepToolQuestion);
 
                                 $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
                             }
@@ -104,7 +117,7 @@ class SubSteppable extends Scannable
 
                 $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
 
-                if (!$evaluation) {
+                if (! $evaluation) {
                     $this->subStep->subSteppables = $this->subStep->subSteppables->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they
@@ -115,7 +128,6 @@ class SubSteppable extends Scannable
 
                     // we will only unset the rules if its a tool question, not relevant for other sub steppables.
                     if ($subSteppablePivot->isToolQuestion()) {
-
                         $this->filledInAnswers[$toolQuestion->id] = null;
 
                         // and unset the validation for the question based on type.
@@ -156,7 +168,7 @@ class SubSteppable extends Scannable
             }
         }
 
-        if (!empty($this->rules)) {
+        if (! empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules, [], $this->attributes);
@@ -181,14 +193,7 @@ class SubSteppable extends Scannable
                 // notify the main form that validation failed for this particular sub step.
                 $this->emitUp('failedValidationForSubSteps', $this->subStep);
 
-                $this->rehydrateToolQuestions();
-                $this->setValidationForToolQuestions();
-                $this->evaluateToolQuestions();
-
                 $this->dispatchBrowserEvent('validation-failed');
-            } else {
-                // the validator did not fail, so we will notify the main form that its saved.
-                $this->emitUp('subStepValidationSucceeded', $this->subStep);
             }
 
             $validator->validate();
@@ -196,7 +201,7 @@ class SubSteppable extends Scannable
 
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
-        if (!$this->dirty) {
+        if (! $this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 $toolQuestion = ToolQuestion::find($toolQuestionId);
 
@@ -214,10 +219,13 @@ class SubSteppable extends Scannable
             }
         }
 
-        if ($this->dirty && !$validator->fails()) {
-            Log::debug('dirty, setting filledInAnswers');
-            $this->emitUp('setFilledInAnswers', $this->filledInAnswers);
-        }
-    }
+        $answers = [];
 
+        // if it's not dirty, we don't want to pass the answers, as we don't need to update them.
+        if ($this->dirty) {
+            $answers = $this->filledInAnswers;
+        }
+
+        $this->emitUp('subStepValidationSucceeded', $this->subStep, $answers);
+    }
 }

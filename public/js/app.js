@@ -34052,48 +34052,49 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     // Is the dropdown multiple supported?
     multiple: false,
     init: function init() {
+      var context = this;
+      setTimeout(function () {
+        context.constructSelect();
+      });
+    },
+    constructSelect: function constructSelect() {
       var _this = this;
 
-      document.addEventListener('DOMContentLoaded', function () {
-        var wrapper = _this.$refs['select-wrapper']; // Get the select element
+      var wrapper = this.$refs['select-wrapper']; // Get the select element
 
-        _this.select = wrapper.querySelector('select'); // Select is defined!
+      this.select = wrapper.querySelector('select'); // Select is defined!
 
-        if (null !== _this.select) {
-          _this.multiple = _this.select.hasAttribute('multiple'); // Bind event listener for change
+      if (null !== this.select) {
+        this.multiple = this.select.hasAttribute('multiple'); // Bind event listener for change
 
-          var context = _this;
+        var context = this;
+        this.select.addEventListener('change', function (event) {
+          context.updateSelectedValues();
+        });
+        this.disabled = this.select.hasAttribute('disabled'); // Add class if disabled, so CSS can do magic
 
-          _this.select.addEventListener('change', function (event) {
-            context.updateSelectedValues();
-          });
-
-          _this.disabled = _this.select.hasAttribute('disabled'); // Add class if disabled, so CSS can do magic
-
-          if (_this.disabled) {
-            _this.$refs['select-input'].classList.add('disabled');
-
-            _this.open = false;
-          } // Build the alpine select
+        if (this.disabled) {
+          this.$refs['select-input'].classList.add('disabled');
+          this.open = false;
+        } // Build the alpine select
 
 
-          var optionDropdown = _this.$refs['select-options'];
-          var options = _this.select.options; // Loop options to build
-          // Note: we cannot use forEach, as options is a HTML collection, which is not an array
+        var optionDropdown = this.$refs['select-options'];
+        var options = this.select.options; // Loop options to build
+        // Note: we cannot use forEach, as options is a HTML collection, which is not an array
 
-          for (var i = 0; i < options.length; i++) {
-            _this.buildOption(optionDropdown, options[i]);
-          } // Hide the original select
+        for (var i = 0; i < options.length; i++) {
+          this.buildOption(optionDropdown, options[i]);
+        } // Hide the original select
 
 
-          _this.select.style.display = 'none'; // Show the new alpine select
+        this.select.style.display = 'none'; // Show the new alpine select
 
-          _this.$refs['select-input-group'].style.display = '';
-          setTimeout(function () {
-            _this.updateSelectedValues();
-          });
-        }
-      });
+        this.$refs['select-input-group'].style.display = '';
+        setTimeout(function () {
+          _this.updateSelectedValues();
+        });
+      }
     },
     toggle: function toggle() {
       // If not disabled, we will handle the click

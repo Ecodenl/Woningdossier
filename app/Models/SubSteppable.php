@@ -14,6 +14,12 @@ class SubSteppable extends MorphPivot
         'conditions' => 'array',
     ];
 
+    # Model methods
+    public function isToolQuestion(): bool
+    {
+        return $this->sub_steppable_type == ToolQuestion::class;
+    }
+
     # Relations
     public function subSteppable(): MorphTo
     {
@@ -23,10 +29,5 @@ class SubSteppable extends MorphPivot
     public function toolQuestionType(): BelongsTo
     {
         return $this->belongsTo(ToolQuestionType::class);
-    }
-
-    public function isToolQuestion(): bool
-    {
-        return $this->sub_steppable_type == ToolQuestion::class;
     }
 }

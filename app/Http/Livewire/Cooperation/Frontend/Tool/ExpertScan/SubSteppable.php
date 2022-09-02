@@ -52,12 +52,23 @@ class SubSteppable extends Scannable
 
     public function hydrateToolQuestions()
     {
-        $this->rehydrateToolQuestions();
+        $this->toolQuestions = $this->subStep->toolQuestions;
     }
 
     public function rehydrateToolQuestions()
     {
         $this->toolQuestions = $this->subStep->toolQuestions;
+
+        $this->setValidationForToolQuestions();
+        $this->evaluateToolQuestions();
+        dd($this->rules);
+    }
+
+    public function updated($field, $value)
+    {
+        // TODO: Deprecate this dispatch in Livewire V2
+        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
+        $this->setDirty(true);
     }
 
     protected function evaluateToolQuestions()
@@ -76,7 +87,7 @@ class SubSteppable extends Scannable
 
             $answers = $dynamicAnswers;
 
-            if (!empty($subSteppablePivot->conditions)) {
+            if (! empty($subSteppablePivot->conditions)) {
                 $conditions = $subSteppablePivot->conditions;
 
                 foreach ($conditions as $conditionSet) {
@@ -88,11 +99,8 @@ class SubSteppable extends Scannable
                             $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
                             if ($otherSubStepToolQuestion instanceof ToolQuestion) {
 
-                                $otherSubStepAnswer = $this
-                                    ->building
-                                    ->getAnswer(
-                                        $this->masterInputSource, $otherSubStepToolQuestion
-                                    );
+                                $otherSubStepAnswer = $this->building
+                                    ->getAnswer($this->masterInputSource, $otherSubStepToolQuestion);
 
                                 $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
                             }
@@ -104,7 +112,7 @@ class SubSteppable extends Scannable
 
                 $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
 
-                if (!$evaluation) {
+                if (! $evaluation) {
                     $this->subStep->subSteppables = $this->subStep->subSteppables->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they
@@ -156,7 +164,7 @@ class SubSteppable extends Scannable
             }
         }
 
-        if (!empty($this->rules)) {
+        if (! empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules, [], $this->attributes);
@@ -181,10 +189,6 @@ class SubSteppable extends Scannable
                 // notify the main form that validation failed for this particular sub step.
                 $this->emitUp('failedValidationForSubSteps', $this->subStep);
 
-                $this->rehydrateToolQuestions();
-                $this->setValidationForToolQuestions();
-                $this->evaluateToolQuestions();
-
                 $this->dispatchBrowserEvent('validation-failed');
             } else {
                 // the validator did not fail, so we will notify the main form that its saved.
@@ -196,7 +200,7 @@ class SubSteppable extends Scannable
 
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
-        if (!$this->dirty) {
+        if (! $this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 $toolQuestion = ToolQuestion::find($toolQuestionId);
 
@@ -214,10 +218,9 @@ class SubSteppable extends Scannable
             }
         }
 
-        if ($this->dirty && !$validator->fails()) {
+        if ($this->dirty && ! $validator->fails()) {
             Log::debug('dirty, setting filledInAnswers');
             $this->emitUp('setFilledInAnswers', $this->filledInAnswers);
         }
     }
-
 }

@@ -209,7 +209,6 @@ class ToolQuestionService {
      */
     private function checkConditionalAnswers($givenAnswer)
     {
-        $columnFormat = '%"column": "' . $this->toolQuestion->short . '"%';
         // TODO: Check the format for rating-slider questions (also in the evaluator itself)
         // We build the answers ourselves to make a few less queries
         $answers = collect([
@@ -217,9 +216,10 @@ class ToolQuestionService {
         ]);
 
         // Now we need to find any conditional answers that might be related to this question
-        $conditionalCustomValues = ToolQuestionCustomValue::whereRaw('conditions LIKE ?', [$columnFormat])
+        // Quotes around the short are important. If we don't, then MySQL throws a hissy fit.
+        $conditionalCustomValues = ToolQuestionCustomValue::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$this->toolQuestion->short}\""])
             ->get();
-        //$toolQuestionValuables = ToolQuestionValuable::whereRaw('conditions LIKE ?', [$columnFormat])
+        //$toolQuestionValuables = ToolQuestionValuable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$this->toolQuestion->short}\""])
         //    ->get();
 
         $evaluator = ConditionEvaluator::init()

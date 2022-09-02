@@ -65,7 +65,7 @@ class Form extends Component
         $this->dispatchBrowserEvent('scroll-to-top');
     }
 
-    // we will mark it as saved, eventhough it isnt yet
+    // We will mark the given substep as succeeded
     public function subStepSucceeded(array $subStep)
     {
         $this->succeededSubSteps[] = $subStep['slug'][$this->locale];
@@ -85,6 +85,7 @@ class Form extends Component
 
     public function allSubStepsSucceeded()
     {
+        //
         $allFinished = count($this->succeededSubSteps) == $this->subSteps->count();
         $noDiff = count(array_diff($this->succeededSubSteps, $this->subSteps->pluck('slug')->toArray())) === 0;
 

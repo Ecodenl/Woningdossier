@@ -5,6 +5,7 @@ namespace App\Helpers\Conditions;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,7 @@ use Illuminate\Support\Str;
 
 class ConditionEvaluator
 {
+    use FluentCaller;
 
     /**
      * @var Building
@@ -24,15 +26,6 @@ class ConditionEvaluator
     protected $inputSource;
 
     protected bool $explain = false;
-
-    /**
-     * For fluent setter
-     * @return static
-     */
-    public static function init(): self
-    {
-        return new self;
-    }
 
     /**
      * @param  Building  $building

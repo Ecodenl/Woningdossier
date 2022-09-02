@@ -57,7 +57,7 @@ class NumberFormatter
     }
 
     /**
-     * Used to format the given number in a human readable format, mainly used for frontend display.
+     * Used to format the given number in a human-readable format, mainly used for frontend display.
      *
      * @param $number
      * @param int   $decimals

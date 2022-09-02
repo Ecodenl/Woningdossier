@@ -15,7 +15,7 @@ class AddSizeColumnToSubStepToolQuestionsTable extends Migration
     {
         if (! Schema::hasColumn('sub_step_tool_questions', 'size')) {
             Schema::table('sub_step_tool_questions', function (Blueprint $table) {
-                $table->string('size')->nullable()->default(null)->after('conditions');
+                $table->string('size')->nullable()->default(null)->after('tool_question_id');
             });
         }
     }

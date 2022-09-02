@@ -22,7 +22,6 @@ use Illuminate\Support\Collection;
  * @property array $name
  * @property array $help_text
  * @property array|null $placeholder
- * @property int $tool_question_type_id
  * @property bool $coach
  * @property bool $resident
  * @property array|null $options
@@ -38,7 +37,6 @@ use Illuminate\Support\Collection;
  * @property-read int|null $tool_question_answers_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionCustomValue[] $toolQuestionCustomValues
  * @property-read int|null $tool_question_custom_values_count
- * @property-read \App\Models\ToolQuestionType $toolQuestionType
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionValuable[] $toolQuestionValuables
  * @property-read int|null $tool_question_valuables_count
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newModelQuery()
@@ -55,7 +53,6 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereResident($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereSaveIn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereToolQuestionTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereUnitOfMeasure($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereValidation($value)
@@ -77,7 +74,6 @@ class ToolQuestion extends Model
         'data_type',
         'name',
         'help_text',
-        'tool_question_type_id',
         'save_in',
         'for_specific_input_source_id',
         'unit_of_measure',
@@ -127,6 +123,7 @@ class ToolQuestion extends Model
                         // the humane readable name is either set in the name or value column.
                         $questionValue['name'] = $valuable->name ?? $valuable->value;
                         $questionValue['value'] = $valuable->id;
+                        $questionValue['conditions'] = $toolQuestionValuable->conditions;
 
                         return $questionValue;
                     } else {
@@ -147,6 +144,7 @@ class ToolQuestion extends Model
                 $questionValue = $toolQuestionCustomValue->toArray();
                 $questionValue['name'] = $toolQuestionCustomValue->name;
                 $questionValue['value'] = $toolQuestionCustomValue->short;
+                $questionValue['conditions'] = $toolQuestionCustomValue->conditions;
 
                 return $questionValue;
             });

@@ -34030,60 +34030,70 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var initiallyOpen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   return {
     // Select element
     select: null,
-    // HTML options
-    options: null,
-    // Text display
-    text: null,
-    // Current value of the select
-    value: null,
+    // Current value(s) of the select
+    values: {},
     // If the select is disabled
     disabled: false,
     // Is the dropdown open?
     open: initiallyOpen,
+    // Is the dropdown multiple supported?
+    multiple: false,
     init: function init() {
-      var wrapper = this.$refs['select-wrapper']; // Get the select element
+      var _this = this;
 
-      this.select = wrapper.querySelector('select'); // Select is defined!
+      document.addEventListener('DOMContentLoaded', function () {
+        var wrapper = _this.$refs['select-wrapper']; // Get the select element
 
-      if (!(null === this.select)) {
-        // Bind event listener for change
-        var context = this;
-        this.select.addEventListener('change', function (event) {
-          context.setValue(event.target.value);
-        }); // Get options
+        _this.select = wrapper.querySelector('select'); // Select is defined!
 
-        this.options = this.select.getElementsByTagName('option'); // There are options!
+        if (null !== _this.select) {
+          _this.multiple = _this.select.hasAttribute('multiple'); // Bind event listener for change
 
-        if (this.options.length > 0) {
-          // Get attributes
-          this.value = this.select.value;
-          this.text = this.select.options[this.select.selectedIndex].textContent.trim();
-          this.disabled = this.select.hasAttribute('disabled'); // Add class if disabled, so css can do magic
+          var context = _this;
 
-          if (this.disabled) {
-            this.$refs['select-input'].classList.add('disabled');
-            this.open = false;
+          _this.select.addEventListener('change', function (event) {
+            context.updateSelectedValues();
+          });
+
+          _this.disabled = _this.select.hasAttribute('disabled'); // Add class if disabled, so CSS can do magic
+
+          if (_this.disabled) {
+            _this.$refs['select-input'].classList.add('disabled');
+
+            _this.open = false;
           } // Build the alpine select
 
 
-          var optionDropdown = this.$refs['select-options']; // Loop options to build
+          var optionDropdown = _this.$refs['select-options'];
+          var options = _this.select.options; // Loop options to build
           // Note: we cannot use forEach, as options is a HTML collection, which is not an array
 
-          for (var i = 0; i < this.options.length; i++) {
-            this.buildOption(optionDropdown, this.options[i]);
+          for (var i = 0; i < options.length; i++) {
+            _this.buildOption(optionDropdown, options[i]);
           } // Hide the original select
 
 
-          this.select.style.display = 'none'; // Show the new alpine select
+          _this.select.style.display = 'none'; // Show the new alpine select
 
-          this.$refs['select-input-group'].style.display = '';
+          _this.$refs['select-input-group'].style.display = '';
+          setTimeout(function () {
+            _this.updateSelectedValues();
+          });
         }
-      }
+      });
     },
     toggle: function toggle() {
       // If not disabled, we will handle the click
@@ -34096,18 +34106,144 @@ __webpack_require__.r(__webpack_exports__);
     },
     changeOption: function changeOption(element) {
       if (!element.classList.contains('disabled')) {
-        this.setValue(element.getAttribute('data-value'), element.textContent);
-        this.close();
+        this.updateValue(element.getAttribute('data-value'), element.textContent);
+
+        if (!this.multiple) {
+          this.close();
+        }
+
         window.triggerEvent(this.select, 'change');
       }
     },
-    setValue: function setValue(value) {
+    updateValue: function updateValue(value) {
       var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      this.value = value;
-      this.select.value = value;
       var option = this.$refs['select-options'].querySelector("span[data-value=\"".concat(value, "\"]"));
-      this.text = null === text ? option ? option.textContent : value : text;
-      this.text = this.text.trim();
+      text = null === text ? option ? option.textContent : value : text;
+      text = text.trim();
+
+      if (this.multiple) {
+        // If it's multiple, we want to remove the value if the clicked value is already selected.
+        // Otherwise we append the value to the values.
+        if (this.values[value]) {
+          delete this.values[value];
+        } else {
+          this.values[value] = text;
+        }
+
+        this.setSelectedOptions();
+      } else {
+        // If it's not multiple, we simply set the value.
+        this.values = _defineProperty({}, value, text);
+        this.select.value = value;
+      }
+    },
+    setSelectedOptions: function setSelectedOptions() {
+      var options = this.select.options;
+      var values = Object.keys(this.values);
+
+      var _iterator = _createForOfIteratorHelper(options),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var option = _step.value;
+          option.selected = values.indexOf(option.value) >= 0;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+    },
+    updateSelectedValues: function updateSelectedValues() {
+      this.values = {};
+      var options = this.select.options;
+
+      var _iterator2 = _createForOfIteratorHelper(options),
+          _step2;
+
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var option = _step2.value;
+
+          if (option.selected) {
+            this.values[option.value] = option.textContent.trim();
+          }
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+
+      this.setInputValue();
+    },
+    setInputValue: function setInputValue() {
+      var _this2 = this;
+
+      if (this.multiple) {
+        (function () {
+          // Reset first
+          var input = _this2.$refs['select-input'];
+          input.value = '';
+          var inputGroup = _this2.$refs['select-input-group'];
+          inputGroup.querySelectorAll('.form-input-option').remove(); // Space to keep from the right at all times to accommodate the icons
+
+          var inputHeight = 44; // px, same as 2.75rem
+
+          var right = 88; // px, same as 5.5rem
+
+          var topMargin = 2; // px, same as 0.125rem
+
+          var leftMargin = 4; // px, same as 0.25rem
+
+          var maxWidth = parseInt(getComputedStyle(input).width) - right;
+          var currentWidth = 0;
+          var rows = 1;
+
+          var _loop = function _loop() {
+            var key = _Object$keys[_i];
+
+            var option = _this2.$refs['select-options'].querySelector("span[data-value=\"".concat(key, "\"]"));
+
+            var text = _this2.values[key];
+            var newInputOption = document.createElement('span');
+
+            if (option && option.hasAttribute("data-icon")) {
+              var icon = document.createElement('i');
+              icon.classList.add('icon-sm', option.getAttribute("data-icon"), 'mr-2', 'static');
+              newInputOption.appendChild(icon);
+            }
+
+            newInputOption.appendChild(document.createTextNode(text));
+            newInputOption.classList.add('form-input-option');
+            newInputOption.setAttribute("data-value", key);
+            newInputOption.setAttribute("x-on:click", "changeOption($el)");
+            inputGroup.appendChild(newInputOption); // Use timeout, so it processes after the current thread. Else, computedStyle will be 'auto'
+
+            setTimeout(function () {
+              var newWidth = currentWidth + leftMargin + parseInt(getComputedStyle(newInputOption).width);
+
+              if (newWidth > maxWidth) {
+                rows++;
+                currentWidth = 0;
+              }
+
+              newInputOption.style.left = currentWidth + leftMargin + "px";
+              newInputOption.style.top = topMargin + (rows - 1) * inputHeight + 'px'; // Always set height
+
+              input.style.height = rows * inputHeight + 'px';
+              currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
+            });
+          };
+
+          for (var _i = 0, _Object$keys = Object.keys(_this2.values); _i < _Object$keys.length; _i++) {
+            _loop();
+          }
+        })();
+      } else {
+        this.$refs['select-input'].value = Object.values(this.values)[0];
+      }
     },
     buildOption: function buildOption(parent, option) {
       // Trim to ensure it's not filled with unnecessary white space (will look ugly in the input)
@@ -34116,9 +34252,14 @@ __webpack_require__.r(__webpack_exports__);
 
       var newOption = document.createElement('span');
       newOption.appendChild(document.createTextNode(text));
-      newOption.setAttribute("data-value", value); // Add alpine functions
+      newOption.setAttribute("data-value", value);
 
-      newOption.setAttribute("x-bind:class", "value == '" + value + "' ? 'selected' : ''");
+      if (option.hasAttribute("data-icon")) {
+        newOption.setAttribute("data-icon", option.getAttribute("data-icon"));
+      } // Add alpine functions
+
+
+      newOption.setAttribute("x-bind:class", "Object.keys(values).includes('" + value + "') ? 'selected' : ''");
       newOption.setAttribute("x-on:click", "changeOption($el)");
       newOption.classList.add('select-option');
 
@@ -35546,10 +35687,42 @@ window.triggerCustomEvent = function (element, eventName) {
   }
 };
 /**
+ * Expand HTML object functionality
+ */
+//--- HTMLCollection
+
+/**
+ * Remove all elements in the HTML collection
+ */
+
+
+Object.defineProperty(HTMLCollection.prototype, 'remove', {
+  value: function value() {
+    Array.from(this).forEach(function (nodeElement) {
+      nodeElement.remove();
+    });
+  },
+  enumerable: false,
+  configurable: false
+}); //--- NodeList
+
+/**
+ * Remove all elements in the node list
+ */
+
+Object.defineProperty(NodeList.prototype, 'remove', {
+  value: function value() {
+    Array.from(this).forEach(function (nodeElement) {
+      nodeElement.remove();
+    });
+  },
+  enumerable: false,
+  configurable: false
+});
+/**
  * Set up Alpine JS with extra data functions that can be used throughout
  * the whole application.
  */
-
 
 
 

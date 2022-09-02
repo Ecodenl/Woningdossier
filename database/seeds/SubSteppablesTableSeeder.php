@@ -1007,21 +1007,71 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('boiler-type'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-placed-date'),
                             'tool_question_type_id' => $textType->id,
                             'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-type'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-placed-date'),
                             'tool_question_type_id' => $textType->id,
                             'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('building-heating-application'),
@@ -1046,6 +1096,22 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('fifty-degree-test'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'building-heating-application',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'radiators',
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'building-heating-application',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'air-heating',
+                                    ],
+                                ],
+                            ],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('boiler-setting-comfort-heat'),

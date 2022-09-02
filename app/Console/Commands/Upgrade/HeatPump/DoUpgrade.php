@@ -43,7 +43,9 @@ class DoUpgrade extends Command
             UpdateToolQuestions::class => [],
             SeedCommand::class => [
                 ['--class' => 'ElementsValuesTableSeeder', '--force' => true],
-                ['--class' => 'AlertsTableSeeder', '--force' => true]
+                ['--class' => 'AlertsTableSeeder', '--force' => true],
+                ['--class' => 'KeyFigureHeatPumpCoveragesTableSeeder', '--force' => true],
+                ['--class' => 'HeatPumpCharacteristicsTableSeeder', '--force' => true],
             ],
         ];
 

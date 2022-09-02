@@ -13,21 +13,22 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
      */
     public function run()
     {
-        $high  = DB::table('tool_question_custom_values')->where(
-            'short',
-            '=',
-            'temp-high'
-        )->first()->id;
-        $fifty = DB::table('tool_question_custom_values')->where(
-            'short',
-            '=',
-            'temp-50'
-        )->first()->id;
-        $low   = DB::table('tool_question_custom_values')->where(
-            'short',
-            '=',
-            'temp-low'
-        )->first()->id;
+        $temperatureQuestion = DB::table('tool_questions')
+            ->where('short', 'new-boiler-setting-comfort-heat')
+            ->first();
+
+        $high = DB::table('tool_question_custom_values')
+            ->where('short', 'temp-high')
+            ->where('tool_question_id', $temperatureQuestion->id)
+            ->first()->id;
+        $fifty = DB::table('tool_question_custom_values')
+            ->where('short', 'temp-50')
+            ->where('tool_question_id', $temperatureQuestion->id)
+            ->first()->id;
+        $low   = DB::table('tool_question_custom_values')
+            ->where('short', 'temp-low')
+            ->where('tool_question_id', $temperatureQuestion->id)
+            ->first()->id;
 
         $characteristics = [
             // 'Hybride warmtepomp met buitenlucht',
@@ -274,7 +275,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
             [
                 'heat_pump_configurable_type'   => \App\Models\ToolQuestionCustomValue::class,
                 'heat_pump_configurable_id'     => $this->getToolQuestionCustomValueByShort(
-                    'heat-pump-boiler'
+                    'heat-pump-boiler', 'heat-source-warm-tap-water' // TODO: Check
                 ),
                 'tool_question_custom_value_id' => null,
                 'scop'                          => 0.0,
@@ -303,25 +304,24 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
 
     protected function getServiceValueIdByNLValue(string $value, $locale = 'nl')
     {
-        $serviceValue = DB::table('service_values')->where(
-            "value->{$locale}",
-            $value
-        )->first();
+        $serviceValue = DB::table('service_values')
+            ->where("value->{$locale}", $value)
+            ->first();
 
-        return $serviceValue->id ?? null;
+        return $serviceValue->id;
     }
 
-    protected function getToolQuestionCustomValueByShort(string $value)
+    protected function getToolQuestionCustomValueByShort(string $value, string $toolQuestionShort)
     {
-        $toolQuestionCustomValue = DB::table(
-            'tool_question_custom_values'
-        )->where(
-            "short",
-            $value
-        )->first();
+        $toolQuestion = DB::table('tool_questions')
+            ->where('short', $toolQuestionShort)
+            ->first();
 
-        return $toolQuestionCustomValue->id ?? null;
+        $toolQuestionCustomValue = DB::table('tool_question_custom_values')
+            ->where('short', $value)
+            ->where('tool_question_id', $toolQuestion->id)
+            ->first();
+
+        return $toolQuestionCustomValue->id;
     }
-
-
 }

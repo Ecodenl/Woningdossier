@@ -20,76 +20,82 @@ use App\Models\UserEnergyHabit;
 
 class HeatPump
 {
+    protected Building $building;
 
     /**
-     * @var Building
+     * Answer for tool question 'new-boiler-type'
+     *
+     * @var \App\Models\ServiceValue|null
      */
-    protected $building;
+    protected ?ServiceValue $boiler;
+
     /**
-     * @var
+     * Answer for tool question 'new-boiler-setting-comfort-heat'
+     * ("Hoge temperatuur", "50 graden", "Lage temperatuur")
+     *
+     * @var \App\Models\ToolQuestionCustomValue|mixed
      */
-    protected $boiler;
+    protected ToolQuestionCustomValue $heatingTemperature;
+
     /**
-     * "Hoge temperatuur", "50 graden", "Lage temperatuur"
-     * @var ToolQuestionCustomValue
-     */
-    protected $heatingTemperature;
-    /**
+     * Answer for tool question 'new-heat-pump-type' OR 'new-building-heating-application'  // TODO: Check this one
+     *
      * @var ServiceValue|ToolQuestionCustomValue
      */
     protected $heatPumpConfigurable;
+
     /**
+     * Answer for tool question 'heat-pump-preferred-power'
+     *
      * @var int
      */
-    protected $desiredPower = 0;
-    /**
-     * @var int
-     */
-    protected $requiredPower = 0;
+    protected int $desiredPower = 0;
 
-    protected $advices = [];
+    protected int $requiredPower = 0;
 
-    /**
-     * @var InputSource
-     */
-    protected $inputSource;
+    protected array $advices = [];
+
+    protected InputSource $inputSource;
+
+    protected UserEnergyHabit $energyHabit;
 
     /**
-     * @var UserEnergyHabit
-     */
-    protected $energyHabit;
-
-    /**
-     * @param  Building  $building
-     * @param InputSource $inputSource
-     * @param UserEnergyHabit $energyHabit
-     * @param mixed $boiler
-     * @param ToolQuestionCustomValue $heatingTemperature
-     * @param  ServiceValue|ToolQuestionCustomValue  $heatPumpConfigurable
-     * @param  int  $desiredPower
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     * @param  \App\Models\UserEnergyHabit  $energyHabit
+     * @param  array  $calculateData
      */
     public function __construct(
         Building $building,
         InputSource $inputSource,
         UserEnergyHabit $energyHabit,
-        $boiler,
-        ToolQuestionCustomValue $heatingTemperature,
-        $heatPumpConfigurable,
-        int $desiredPower
-    ) {
-        $this->building             = $building;
-        $this->inputSource          = $inputSource;
-        $this->energyHabit          = $energyHabit;
-        $this->boiler               = $boiler;
-        $this->heatingTemperature   = $heatingTemperature;
-        $this->heatPumpConfigurable = $heatPumpConfigurable;
-        $this->desiredPower         = $desiredPower;
+        array $calculateData
+    )
+    {
+        $this->building = $building;
+        $this->inputSource = $inputSource;
+        $this->energyHabit = $energyHabit;
+
+        $this->boiler = $calculateData['boiler'] ?? null;
+        $this->heatingTemperature = $calculateData['heatingTemperature'];
+        $this->heatPumpConfigurable = $calculateData['heatPumpConfigurable'];
+        $this->desiredPower = $calculateData['desiredPower'] ?? 0;
+
+        if (! $this->heatingTemperature->exists) {
+            throw new \Exception("Can't calculate with non-existing heating temperature!");
+        }
+        if (! ($this->heatPumpConfigurable instanceof ServiceValue || $this->heatPumpConfigurable instanceof ToolQuestionCustomValue)) {
+            throw new \Exception("Can't calculate with non-existing heat pump configurable!");
+        }
     }
 
     /**
-     * @param  Building  $building
-     * @param  ServiceValue|ToolQuestionCustomValue  $heatPumpConfigurable
-     * @param  int  $desiredPower
+     * Short hand syntax to quickly calculate.
+     *
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     * @param  \App\Models\UserEnergyHabit  $energyHabit
+     * @param  array  $calculateData
      *
      * @return array
      */
@@ -97,25 +103,20 @@ class HeatPump
         Building $building,
         InputSource $inputSource,
         UserEnergyHabit $energyHabit,
-        $boiler,
-        ToolQuestionCustomValue $heatingTemperature,
-        $heatPumpConfigurable,
-        int $desiredPower
-    ) {
+        array $calculateData
+    ): array
+    {
         $calculator = new static(
             $building,
             $inputSource,
             $energyHabit,
-            $boiler,
-            $heatingTemperature,
-            $heatPumpConfigurable,
-            $desiredPower
+            $calculateData,
         );
 
         return $calculator->performCalculations();
     }
 
-    public function performCalculations()
+    public function performCalculations(): array
     {
         // First calculate the power of the heat pump (advised system)
         $this->requiredPower = $this->calculateAdvisedSystemRequiredPower();
@@ -253,24 +254,18 @@ class HeatPump
 
     public function calculateShareHeating(): int
     {
-        $coverage = KeyFigureHeatPumpCoverage::forBetaFactor(
-            $this->betafactor()
-        )->
-        forHeatingTemperature($this->heatingTemperature)
-                                             ->first();
+        $coverage = KeyFigureHeatPumpCoverage::forBetaFactor($this->betafactor())
+            ->forHeatingTemperature($this->heatingTemperature)
+            ->first();
 
         return $coverage->percentage ?? 0;
     }
 
     public function lookupHeatPumpCharacteristics(): ?HeatPumpCharacteristic
     {
-        return HeatPumpCharacteristic::forHeatPumpConfigurable(
-            $this->heatPumpConfigurable
-        )
-                                     ->forHeatingTemperature(
-                                         $this->heatingTemperature
-                                     )
-                                     ->first();
+        return HeatPumpCharacteristic::forHeatPumpConfigurable($this->heatPumpConfigurable)
+            ->forHeatingTemperature($this->heatingTemperature)
+            ->first();
     }
 
     // = C61
@@ -317,11 +312,14 @@ class HeatPump
 
         foreach ($toolQuestions as $toolQuestion => $weight) {
             /** @var ElementValue $elementValue */
-            $elementValue = $this->building->getAnswer(
-                $this->inputSource,
-                ToolQuestion::findByShort($toolQuestion)
+            $elementValue = ElementValue::find(
+                $this->building->getAnswer(
+                    $this->inputSource,
+                    ToolQuestion::findByShort($toolQuestion)
+                )
             );
-            $factor       = (int)$elementValue->insulation_factor;
+
+            $factor = (int) $elementValue->insulation_factor;
             if ($factor <= 1) {
                 // todo check how to pass this when errors / notifications implementation is in place.
                 // short? full text? translation? for now just the short..

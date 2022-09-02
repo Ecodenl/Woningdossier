@@ -77,6 +77,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
             'updated_measure_ids' => [],
         ]);
 
+        dd($this->getValues());
         return $this;
     }
 

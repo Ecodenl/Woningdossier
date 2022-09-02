@@ -46,6 +46,7 @@ class SeedAll extends Command
         Artisan::call('db:seed', ['--class' => \ToolQuestionTypesTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \ToolQuestionsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => \ToolCalculationResultsTableSeeder::class, '--force' => true]);
         DB::table('sub_steppables')->truncate();
         Artisan::call('db:seed', ['--class' => \SubSteppablesTableSeeder::class, '--force' => true]);
 

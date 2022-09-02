@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
 
+use App\Calculations\HighEfficiencyBoiler;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
@@ -11,6 +12,8 @@ use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class SubSteppable extends Scannable
@@ -18,6 +21,8 @@ class SubSteppable extends Scannable
     public $step;
     public $subStep;
     public $nextUrl;
+
+    public $calculationResults = [];
 
     public function mount(Step $step, SubStep $subStep)
     {
@@ -74,6 +79,8 @@ class SubSteppable extends Scannable
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
         $this->setDirty(true);
+
+        $this->doCalculations();
     }
 
     protected function evaluateToolQuestions()
@@ -151,6 +158,49 @@ class SubSteppable extends Scannable
                 }
             }
         }
+    }
+
+    public function doCalculations()
+    {
+
+        // key = tool question short
+        // value  = custom key for the calculate data, sometimes we can use the save in
+        // for ex; new-boiler-type is a "new" question, previously we just had this as building_services for the current situation
+        // the HR boiler calculate class is not adjusted to the old / new situation. It only knows that building_services.service_value_id is a boiler.
+        // idealy this gets refactored when the time is ripe
+        $saveInToolQuestionShorts = [
+            'amount-gas' => null,
+            'resident-count' => null,
+            'new-boiler-type' => 'building_services.service_value_id',
+            // this question is not asked on this page, which means we should retrieve it.
+            'boiler-placed-date' => 'building_services.extra.date'
+        ];
+
+        $calculateData = [];
+        foreach($saveInToolQuestionShorts as $toolQuestionShort => $key) {
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+
+            // it may be possible that the tool question is not present in the filled in answers.
+            // that simply means the tool question is not available for the user on the ucrrent page
+            // however it may be filled elsewhere, so we will get it through the getAnswer
+            if (isset($this->filledInAnswers[$toolQuestion->id])) {
+                $answer = $this->filledInAnswers[$toolQuestion->id];
+            } else {
+                $answer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+            }
+
+            Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);
+        }
+        $energyHabit = $this->building->user->energyHabit()->forInputSource($this->masterInputSource)->first();
+
+        // the HR boiler and solar boiler are not built with the tool questions in mind, we have to work with it for the time being
+        $calculation = HighEfficiencyBoiler::calculate($energyHabit, $calculateData);
+
+        Log::debug($calculation);
+        $this->calculationResults = [
+            'hr-boiler' => $calculation,
+        ];
+        // only the heat pumpe will be built with the tool questions in mind.
     }
 
     public function render()

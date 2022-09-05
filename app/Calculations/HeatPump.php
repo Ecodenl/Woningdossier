@@ -319,7 +319,7 @@ class HeatPump
                 )
             );
 
-            $factor = (int) $elementValue->insulation_factor;
+            $factor = $elementValue->insulation_factor;
             if ($factor <= 1) {
                 // todo check how to pass this when errors / notifications implementation is in place.
                 // short? full text? translation? for now just the short..

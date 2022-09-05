@@ -26,10 +26,11 @@
          wire:ignore.self>
 
         <div class="hidden sm:block">
-            <nav class="flex space-x-4" aria-label="Tabs">
-                <!-- Current: "bg-indigo-100 text-indigo-700", Default: "text-green-500 hover:text-green-700" -->
+            <nav class="flex border-b border-blue border-opacity-50" aria-label="Tabs">
                 @foreach($step->subSteps as $subStep)
-                    <a x-on:click="active = '{{$subStep->slug}}'" href="#" class="no-underline rounded-md p-2 bg-green text-white hover:bg-gray ">
+                    <a x-on:click="active = '{{$subStep->slug}}'" href="#"
+                       x-bind:class="{ 'bg-green': active === '{{$subStep->slug}}', 'bg-blue-500': active !== '{{$subStep->slug}}' }"
+                       class="no-underline rounded-t-md p-2 text-white">
                         {{$subStep->name}}
                     </a>
                 @endforeach

@@ -222,7 +222,7 @@ abstract class Scannable extends Component
 
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
-        if (!$this->dirty) {
+        if (! $this->dirty) {
             $toolQuestion = ToolQuestion::find($toolQuestionId);
 
             // Define if we should check this question...
@@ -242,7 +242,7 @@ abstract class Scannable extends Component
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->first();
+                $toolQuestion = ToolQuestion::find($toolQuestionId);
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)

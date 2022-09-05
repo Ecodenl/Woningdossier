@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
 use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
@@ -204,7 +205,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::resource('building-type', 'BuildingTypeController')->only('store');
 
                 // Heat pump: info for now
-                Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+                //Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+                Route::get('heat-pump', function () {
+                    Log::debug('HeatPumpController::index redirecting to heating');
+
+                    return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
+                })->name('heat-pump.index');
 
                 Route::group(['prefix' => 'ventilation', 'as' => 'ventilation.'], function () {
                     Route::resource('', 'VentilationController', ['only' => ['index', 'store']]);
@@ -255,8 +261,13 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 // Heater (solar boiler)
                 Route::group(['prefix' => 'heater', 'as' => 'heater.'], function () {
-                    Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
-                    Route::post('calculate', 'HeaterController@calculate')->name('calculate');
+                    Route::get('', function () {
+                        Log::debug('HeaterController::index redirecting to heating');
+
+                        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
+                    })->name('index');
+                    //Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
+                    //Route::post('calculate', 'HeaterController@calculate')->name('calculate');
                 });
             });
 

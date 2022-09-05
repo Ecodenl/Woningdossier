@@ -97,7 +97,7 @@ abstract class Scannable extends Component
         }
     }
 
-    private function refreshAlerts()
+    protected function refreshAlerts()
     {
         $answers = [];
         foreach ($this->toolQuestions as $toolQuestion) {
@@ -318,11 +318,11 @@ abstract class Scannable extends Component
                 $ruleParams = explode(':', $rule);
                 // But can contain extra params
 
-                if (!empty($ruleParams[1])) {
+                if (! empty($ruleParams[1])) {
                     $short = Str::contains($ruleParams[1], ',') ? explode(',', $ruleParams[1])[0]
                         : $ruleParams[1];
 
-                    if (!empty($short)) {
+                    if (! empty($short)) {
                         $toolQuestion = ToolQuestion::findByShort($short);
                         $toolQuestion = $toolQuestion instanceof ToolQuestion ? $toolQuestion : ToolQuestion::findByShort(Str::kebab(Str::camel($short)));
 

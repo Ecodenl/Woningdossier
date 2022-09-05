@@ -11,27 +11,276 @@ class ToolCalculationResultsTableSeeder extends Seeder
      */
     public function run()
     {
-        $datas = [
+        $calculationResults = [
             [
                 'name' => [
-                    'nl' => 'Besparing gas HR ketel'
+                    'nl' => 'Huidig gasverbruik',
                 ],
-                'short' => 'hr-boiler.savings_gas',
-                'unit_of_measure' => 'GASS',
+                'short' => 'hr-boiler.current-gas',
+                'unit_of_measure' => 'm<sup>3</sup>/jaar',
             ],
             [
                 'name' => [
-                    'nl' => 'Besparing gas HEAT PUMPe '
+                    'nl' => 'Huidig elektragebruik',
                 ],
-                'short' => 'heat-pump.savings_gas',
-                'unit_of_measure' => 'GAz',
+                'short' => 'hr-boiler.current-electricity',
+                'unit_of_measure' => 'kWh/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Gasbesparing',
+                ],
+                'short' => 'hr-boiler.savings-gas',
+                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'CO2 Besparing',
+                ],
+                'short' => 'hr-boiler.savings-co2',
+                'unit_of_measure' => 'kg/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparing in €',
+                ],
+                'short' => 'hr-boiler.savings-money',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatie vervangingsmoment CV ketel',
+                ],
+                'short' => 'hr-boiler.indication-replacing',
+                'unit_of_measure' => '<i class="icon-sm icon-timer"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten',
+                ],
+                'short' => 'hr-boiler.cost-indication',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Vergelijkbare rente',
+                ],
+                'short' => 'hr-boiler.comparable-interest',
+                'unit_of_measure' => '%/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Benodigd indicatief vermogen van de warmtepomp',
+                ],
+                'short' => 'heat-pump.required-power',
+                'unit_of_measure' => 'kW',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Aandeel van de warmtepomp aan de verwarming',
+                ],
+                'short' => 'heat-pump.heat-source-share',
+                'unit_of_measure' => '%',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Aandeel van de warmtepomp aan warm tapwater',
+                ],
+                'short' => 'heat-pump.warm-tap-water-share',
+                'unit_of_measure' => '%',
+            ],
+            [
+                'name' => [
+                    'nl' => 'SCOP van de warmtepomp voor verwarming',
+                ],
+                'help_text' => [
+                    'nl' => 'SCOP staat voor "Seasonal Coefficient of Performance". De SCOP is een gemiddelde COP over een jaar, waarbij de seizoenen in een bepaalde regio zijn meegewogen.',
+                ],
+                'short' => 'heat-pump.heat-source-scop',
+                'unit_of_measure' => null,
+            ],
+            [
+                'name' => [
+                    'nl' => 'SCOP van de warmtepomp voor warm tapwater',
+                ],
+                'help_text' => [
+                    'nl' => 'SCOP staat voor "Seasonal Coefficient of Performance". De SCOP is een gemiddelde COP over een jaar, waarbij de seizoenen in een bepaalde regio zijn meegewogen.',
+                ],
+                'short' => 'heat-pump.warm-tap-water-scop',
+                'unit_of_measure' => null,
+            ],
+            [
+                'name' => [
+                    'nl' => 'Huidig gasverbruik',
+                ],
+                'short' => 'heat-pump.current-gas',
+                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Huidig elektragebruik',
+                ],
+                'short' => 'heat-pump.current-electricity',
+                'unit_of_measure' => 'kWh/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Gasbesparing',
+                ],
+                'short' => 'heat-pump.savings-gas',
+                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'CO2 Besparing',
+                ],
+                'short' => 'heat-pump.savings-co2',
+                'unit_of_measure' => 'kg/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparing in €',
+                ],
+                'short' => 'heat-pump.savings-money',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatie vervangingsmoment CV ketel',
+                ],
+                'short' => 'heat-pump.indication-replacing',
+                'unit_of_measure' => '<i class="icon-sm icon-timer"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten',
+                ],
+                'short' => 'heat-pump.cost-indication',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Vergelijkbare rente',
+                ],
+                'short' => 'heat-pump.comparable-interest',
+                'unit_of_measure' => '%/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Gebruik warm tapwater',
+                ],
+                'help_text' => [
+                    'nl' => 'Het gebruik voor warm tapwater is afhankelijk van het aantal gebruikers en het comfortniveau.',
+                ],
+                'short' => 'sun-boiler.usage-warm-tap-water',
+                'unit_of_measure' => 'liter/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Bijbehorend gasverbruik',
+                ],
+                'help_text' => [
+                    'nl' => 'Hier wordt een inschatting gegeven van het jaarlijkse gasverbruik voor warm tapwater.',
+                ],
+                'short' => 'sun-boiler.usage-gas',
+                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Grootte zonneboiler',
+                ],
+                'help_text' => [
+                    'nl' => 'Op basis van de verbruikscijfers wordt hier een inschatting gegeven hoe groot het buffervat zou moeten zijn.',
+                ],
+                'short' => 'sun-boiler.size',
+                'unit_of_measure' => 'liter',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Grootte collector',
+                ],
+                'help_text' => [
+                    'nl' => 'Op basis van de verbruikscijfers wordt hier een inschatting gegeven hoe groot de collector zou moeten zijn.',
+                ],
+                'short' => 'sun-boiler.collector-size',
+                'unit_of_measure' => 'm<sup>2</sup>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Warmteproductie per jaar',
+                ],
+                'help_text' => [
+                    'nl' => ' Hier kunt u zien hoeveel warmte de zonneboiler per jaar op kan wekken.',
+                ],
+                'short' => 'sun-boiler.heat-production',
+                'unit_of_measure' => 'kWh/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Aandeel van de zonneboiler aan het totaalverbruik voor warm water',
+                ],
+                'help_text' => [
+                    'nl' => ' Hier kunt u zien hoeveel % van uw huidig energie voor warm tapwater u met dit zonneboiler systeem kunt opwekken.',
+                ],
+                'short' => 'sun-boiler.warm-tap-water-share',
+                'unit_of_measure' => '%',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Gasbesparing',
+                ],
+                'help_text' => [
+                    'nl' => 'De besparing wordt berekend op basis van de door u ingevoerde woningkenmerken (hoeveelheden, isolatiewaarde, gebruikersgedrag).',
+                ],
+                'short' => 'sun-boiler.savings-gas',
+                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'CO2 Besparing',
+                ],
+                'help_text' => [
+                    'nl' => 'Gerekend wordt met 1,88 kg/m<sup>3</sup> gas (bron: Milieucentraal)',
+                ],
+                'short' => 'sun-boiler.savings-co2',
+                'unit_of_measure' => 'kg/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparing in €',
+                ],
+                'help_text' => [
+                    'nl' => 'Indicatieve besparing in € per jaar. De gebruikte energietarieven voor gas en elektra worden jaarlijks aan de marktomstandigheden aangepast.',
+                ],
+                'short' => 'sun-boiler.savings-money',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten',
+                ],
+                'help_text' => [
+                    'nl' => ' Hier kunt u zien wat de indicatieve kosten voor deze maatregel zijn.',
+                ],
+                'short' => 'sun-boiler.cost-indication',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Vergelijkbare rente',
+                ],
+                'help_text' => [
+                    'nl' => 'Meer informatie over de vergelijkbare rente kunt u vinden bij Milieucentraal: <a title="Link Milieucentraal" href="https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/" target="_blank" rel="noopener">https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/</a>',
+                ],
+                'short' => 'sun-boiler.comparable-interest',
+                'unit_of_measure' => '%/jaar',
             ],
         ];
 
-        foreach($datas as $data) {
+        foreach ($calculationResults as $data) {
             DB::table('tool_calculation_results')->updateOrInsert(
                 [
-                    'short' => $data['short']
+                    'short' => $data['short'],
                 ],
                 [
                     'name' => json_encode($data['name']),

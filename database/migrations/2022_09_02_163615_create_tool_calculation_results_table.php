@@ -16,9 +16,9 @@ class CreateToolCalculationResultsTable extends Migration
         Schema::create('tool_calculation_results', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->json('name');
-            $table->json('help_text')->nullable()->default(null);
+            $table->json('help_text')->nullable();
             $table->string('short');
-            $table->string('unit_of_measure');
+            $table->string('unit_of_measure')->nullable();
             $table->timestamps();
         });
     }

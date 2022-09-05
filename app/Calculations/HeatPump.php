@@ -298,7 +298,7 @@ class HeatPump
         return Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS;
     }
 
-    public function insulationScore()
+    public function insulationScore(): float
     {
         $toolQuestions = [
             'current-living-rooms-windows'   => 1.5,

@@ -14,31 +14,44 @@ class InsulationCalculation implements ShouldEvaluate
 {
     public static function evaluate(Building $building, InputSource $inputSource, ?Collection $answers = null): bool
     {
+        // Makes it easier to query
+        $answers = is_null($answers) ? collect() : $answers;
+
         $newBoilerQuestion = ToolQuestion::findByShort('new-boiler-type');
-        $newBoilerServiceValue = ServiceValue::find($building->getAnswer($inputSource, $newBoilerQuestion));
+        $newBoilerAnswer = $answers->has('new-boiler-type')
+            ? $answers->get('new-boiler-type')
+            : $building->getAnswer($inputSource, $newBoilerQuestion);
+        $newBoilerServiceValue = ServiceValue::find($newBoilerAnswer);
 
         $newTempQuestion = ToolQuestion::findByShort('new-boiler-setting-comfort-heat');
-        $newTempAnswer = $building->getAnswer($inputSource, $newTempQuestion);
+        $newTempAnswer = $answers->has('new-boiler-setting-comfort-heat')
+            ? $answers->get('new-boiler-setting-comfort-heat')
+            : $building->getAnswer($inputSource, $newTempQuestion);
         $newTempCustomValue = $newTempQuestion->toolQuestionCustomValues()->whereShort($newTempAnswer)->first();
 
         if ($newTempCustomValue instanceof ToolQuestionCustomValue) {
             $newHeatPumpQuestion = ToolQuestion::findByShort('new-heat-pump-type');
-            $newHeatPumpAnswer = $building->getAnswer($inputSource, $newHeatPumpQuestion);
-            $newHeatPumpCustomValue = $newHeatPumpQuestion->toolQuestionCustomValues()->whereShort($newHeatPumpAnswer)->first();
+            $newHeatPumpAnswer = $answers->has('new-heat-pump-type')
+                ? $answers->get('new-heat-pump-type')
+                : $building->getAnswer($inputSource, $newHeatPumpQuestion);
+            $newHeatPumpServiceValue = ServiceValue::find($newHeatPumpAnswer);
 
             // TODO: Heat pump boiler
 
-            if ($newHeatPumpCustomValue instanceof ToolQuestionCustomValue) {
+            if ($newHeatPumpServiceValue instanceof ServiceValue) {
                 $desiredPowerQuestion = ToolQuestion::findByShort('heat-pump-preferred-power');
-                $desiredPowerAnswer = $building->getAnswer($inputSource, $desiredPowerQuestion);
+                $desiredPowerAnswer = $answers->has('heat-pump-preferred-power')
+                    ? $answers->get('heat-pump-preferred-power')
+                    : $building->getAnswer($inputSource, $desiredPowerQuestion);
+
 
                 $calculator = new HeatPump(
                     $building, $inputSource,
                     $building->user->energyHabit()->forInputSource($inputSource)->first(),
                     [
-                        'oiler' => $newBoilerServiceValue,
+                        'boiler' => $newBoilerServiceValue,
                         'heatingTemperature' => $newTempCustomValue,
-                        'heatPumpConfigurable' => $newHeatPumpCustomValue,
+                        'heatPumpConfigurable' => $newHeatPumpServiceValue,
                         'desiredPower' => $desiredPowerAnswer,
                     ]
                 );

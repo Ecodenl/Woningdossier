@@ -185,7 +185,7 @@ class ConditionEvaluator
         // first check if its a custom evaluator
         if ($column == "fn") {
             $customEvaluatorClass = "App\Helpers\Conditions\Evaluators\\{$value}";
-            return $customEvaluatorClass::evaluate($this->building, $this->inputSource);
+            return $customEvaluatorClass::evaluate($this->building, $this->inputSource, $collection);
         }
 
         if (! $collection->has($column)) {

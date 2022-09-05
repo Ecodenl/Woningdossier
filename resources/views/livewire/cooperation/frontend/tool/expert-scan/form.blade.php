@@ -30,7 +30,7 @@
                 @foreach($step->subSteps as $subStep)
                     <a x-on:click="active = '{{$subStep->slug}}'" href="#"
                        x-bind:class="{ 'bg-green': active === '{{$subStep->slug}}', 'bg-blue-500': active !== '{{$subStep->slug}}' }"
-                       class="no-underline rounded-t-md p-2 text-white">
+                       class="no-underline rounded-t-md p-2 text-white" wire:ignore>
                         {{$subStep->name}}
                     </a>
                 @endforeach
@@ -42,10 +42,5 @@
                 @livewire('cooperation.frontend.tool.expert-scan.sub-steppable', ['step' => $step, 'subStep' => $subStep], key($subStep->id))
              </div>
          @endforeach
-
     </div>
-
-    <button wire:click="$emitTo('cooperation.frontend.tool.expert-scan.sub-steppable', 'save')" class="float-right btn btn-purple">
-        @lang('default.buttons.save')
-    </button>
 </div>

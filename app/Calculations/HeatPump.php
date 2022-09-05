@@ -319,7 +319,7 @@ class HeatPump
                 )
             );
 
-            $factor = $elementValue->insulation_factor;
+            $factor = optional($elementValue)->insulation_factor ?? 0;
             if ($factor <= 1) {
                 // todo check how to pass this when errors / notifications implementation is in place.
                 // short? full text? translation? for now just the short..
@@ -328,7 +328,7 @@ class HeatPump
             $score += ($factor * $weight);
         }
 
-        return $score;
+        return $score / count($toolQuestions);
     }
 
     public function getAdvices(): array

@@ -53,6 +53,7 @@ class InsulationCalculation implements ShouldEvaluate
                         'heatingTemperature' => $newTempCustomValue,
                         'heatPumpConfigurable' => $newHeatPumpServiceValue,
                         'desiredPower' => $desiredPowerAnswer,
+                        'answers' => $answers,
                     ]
                 );
 

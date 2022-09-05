@@ -17,6 +17,7 @@ use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\UserEnergyHabit;
+use Illuminate\Support\Collection;
 
 class HeatPump
 {
@@ -53,6 +54,8 @@ class HeatPump
 
     protected int $requiredPower = 0;
 
+    protected ?Collection $answers = null;
+
     protected array $advices = [];
 
     protected InputSource $inputSource;
@@ -80,6 +83,7 @@ class HeatPump
         $this->heatingTemperature = $calculateData['heatingTemperature'];
         $this->heatPumpConfigurable = $calculateData['heatPumpConfigurable'];
         $this->desiredPower = $calculateData['desiredPower'] ?? 0;
+        $this->answers = $calculateData['answers'] ?? null;
 
         if (! $this->heatingTemperature->exists) {
             throw new \Exception("Can't calculate with non-existing heating temperature!");
@@ -309,10 +313,12 @@ class HeatPump
         ];
 
         $score = 0;
+        $answers = is_null($this->answers) ? collect() : $this->answers;
 
         foreach ($toolQuestions as $toolQuestion => $weight) {
             /** @var ElementValue $elementValue */
             $elementValue = ElementValue::find(
+                $answers->has($toolQuestion) ? $answers->get($toolQuestion) :
                 $this->building->getAnswer(
                     $this->inputSource,
                     ToolQuestion::findByShort($toolQuestion)

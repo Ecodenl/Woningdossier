@@ -215,6 +215,9 @@ class HeatPump
         $savingsMoney = Calculator::calculateMoneySavings($savingsGas) -
                         ($extraConsumptionElectricity * Kengetallen::EURO_SAVINGS_ELECTRICITY);
 
+        // TODO:
+        //'amount_gas' => 0,
+        //'amount_electricity' => 0,
         $result = [
             'savings_gas'                   => $savingsGas,
             'extra_consumption_electricity' => $extraConsumptionElectricity,

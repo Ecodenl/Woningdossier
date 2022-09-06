@@ -35,6 +35,8 @@ class Heater
             'year' => null,
             'production_heat' => 0,
             'percentage_consumption' => 0,
+            'amount_gas' => 0,
+            'amount_electricity' => 0,
             'savings_gas' => 0,
             'savings_co2' => 0,
             'savings_money' => 0,

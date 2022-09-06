@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
 
+use App\Calculations\Heater;
+use App\Calculations\HeatPump;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\HoomdossierSession;
@@ -209,30 +211,28 @@ class Form extends Component
                 'boiler-placed-date' => 'building_services.extra.date',
             ];
 
-            $calculateData = [];
-            foreach($saveInToolQuestionShorts as $toolQuestionShort => $key) {
-                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-
-                // it may be possible that the tool question is not present in the filled in answers.
-                // that simply means the tool question is not available for the user on the current page
-                // however it may be filled elsewhere, so we will get it through the getAnswer
-                $answer = $this->filledInAnswers[$toolQuestion->id] ?? $this->building->getAnswer($this->masterInputSource,
-                        $toolQuestion);
-
-                Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);
-            }
-
             // the HR boiler and solar boiler are not built with the tool questions in mind, we have to work with it for the time being
-            $hrBoilerCalculations = HighEfficiencyBoiler::calculate($energyHabit, $calculateData);
+            $hrBoilerCalculations = HighEfficiencyBoiler::calculate($energyHabit, $this->getCalculateData($saveInToolQuestionShorts));
         }
 
         if (in_array('sun-boiler', $considerables)) {
+            $saveInToolQuestionShorts = [
+                'new-water-comfort' => 'user_energy_habits.water_comfort_id',
+                'heater-pv-panel-orientation' => null,
+                'heater-pv-panel-angle' => null,
+            ];
 
+            $sunBoilerCalculations = Heater::calculate($this->building, $energyHabit, $this->getCalculateData($saveInToolQuestionShorts));
         }
 
         if (in_array('heat-pump', $considerables)) {
             // Only the heat pump will be built with the tool questions in mind.
+            $saveInToolQuestionShorts = [
+                //'new-heat-pump-type' => null,
+            ];
 
+            // TODO: WIP, requires fixes
+            //$heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, $energyHabit, );
         }
 
         $this->emit('calculationsPerformed', [
@@ -240,5 +240,23 @@ class Form extends Component
             'sun-boiler' => $sunBoilerCalculations,
             'heat-pump' => $heatPumpCalculations,
         ]);
+    }
+
+    private function getCalculateData($saveInToolQuestionShorts)
+    {
+        $calculateData = [];
+        foreach($saveInToolQuestionShorts as $toolQuestionShort => $key) {
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+
+            // it may be possible that the tool question is not present in the filled in answers.
+            // that simply means the tool question is not available for the user on the current page
+            // however it may be filled elsewhere, so we will get it through the getAnswer
+            $answer = $this->filledInAnswers[$toolQuestion->id] ?? $this->building->getAnswer($this->masterInputSource,
+                    $toolQuestion);
+
+            Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);
+        }
+
+        return $calculateData;
     }
 }

@@ -51,7 +51,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'name' => [
                     'nl' => 'Indicatie vervangingsmoment CV ketel',
                 ],
-                'short' => 'hr-boiler.indication-replacing',
+                'short' => 'hr-boiler.replace_year',
                 'unit_of_measure' => '<i class="icon-sm icon-timer"></i>',
             ],
             [
@@ -148,7 +148,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'name' => [
                     'nl' => 'Indicatie vervangingsmoment CV ketel',
                 ],
-                'short' => 'heat-pump.indication-replacing',
+                'short' => 'heat-pump.replace_year',
                 'unit_of_measure' => '<i class="icon-sm icon-timer"></i>',
             ],
             [

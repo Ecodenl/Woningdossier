@@ -162,12 +162,14 @@ class SubSteppable extends Scannable
 
     public function doCalculations()
     {
+        //TODO: See if we need to check the considerables before we start our calculations, perhaps we could save
+        // resources. However, it might require some sort of state knowledge which could prove difficult.
 
         // key = tool question short
         // value  = custom key for the calculate data, sometimes we can use the save in
         // for ex; new-boiler-type is a "new" question, previously we just had this as building_services for the current situation
         // the HR boiler calculate class is not adjusted to the old / new situation. It only knows that building_services.service_value_id is a boiler.
-        // idealy this gets refactored when the time is ripe
+        // ideally this gets refactored when the time is ripe
         $saveInToolQuestionShorts = [
             'amount-gas' => null,
             'resident-count' => null,
@@ -181,13 +183,10 @@ class SubSteppable extends Scannable
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
             // it may be possible that the tool question is not present in the filled in answers.
-            // that simply means the tool question is not available for the user on the ucrrent page
+            // that simply means the tool question is not available for the user on the current page
             // however it may be filled elsewhere, so we will get it through the getAnswer
-            if (isset($this->filledInAnswers[$toolQuestion->id])) {
-                $answer = $this->filledInAnswers[$toolQuestion->id];
-            } else {
-                $answer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-            }
+            $answer = $this->filledInAnswers[$toolQuestion->id] ?? $this->building->getAnswer($this->masterInputSource,
+                    $toolQuestion);
 
             Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);
         }
@@ -196,11 +195,14 @@ class SubSteppable extends Scannable
         // the HR boiler and solar boiler are not built with the tool questions in mind, we have to work with it for the time being
         $calculation = HighEfficiencyBoiler::calculate($energyHabit, $calculateData);
 
-        Log::debug($calculation);
+        // TODO: Heater + Heat pump, gotta check logic on the sub steps
+
+        // Only the heat pump will be built with the tool questions in mind.
+
         $this->calculationResults = [
             'hr-boiler' => $calculation,
         ];
-        // only the heat pumpe will be built with the tool questions in mind.
+        Log::debug($this->calculationResults);
     }
 
     public function render()

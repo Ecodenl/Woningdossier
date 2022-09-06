@@ -861,7 +861,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('hr-boiler.indication-replacing'),
+                            'morph' => ToolCalculationResult::findByShort('hr-boiler.replace_year'),
                             'size' => 'col-span-2',
                             'conditions' => [
                                 [
@@ -1169,7 +1169,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('heat-pump.indication-replacing'),
+                            'morph' => ToolCalculationResult::findByShort('heat-pump.replace_year'),
                             'size' => 'col-span-2',
                             'conditions' => [
                                 [

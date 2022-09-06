@@ -48,6 +48,9 @@ class Heater
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
 
         if ($energyHabit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
+            $result['amount_gas'] = $energyHabit->amount_gas;
+            $result['amount_electricity'] = $energyHabit->amount_electricity;
+
             $consumption = KeyFigures::getCurrentConsumption($energyHabit, $comfortLevel);
             if ($consumption instanceof KeyFigureConsumptionTapWater) {
                 $result['consumption'] = [

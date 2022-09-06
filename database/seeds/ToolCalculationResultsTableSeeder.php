@@ -227,6 +227,20 @@ class ToolCalculationResultsTableSeeder extends Seeder
             ],
             [
                 'name' => [
+                    'nl' => 'Huidig gasverbruik',
+                ],
+                'short' => 'sun-boiler.current-gas',
+                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Huidig elektragebruik',
+                ],
+                'short' => 'sun-boiler.current-electricity',
+                'unit_of_measure' => 'kWh/jaar',
+            ],
+            [
+                'name' => [
                     'nl' => 'Gasbesparing',
                 ],
                 'help_text' => [

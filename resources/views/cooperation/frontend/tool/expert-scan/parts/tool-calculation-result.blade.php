@@ -1,25 +1,30 @@
-<div class="{{$subSteppablePivot->size}}" wire:key="question-{{$subSteppablePivot->subSteppable->id}}">
+@php
+    $calculationResult = $subSteppablePivot->subSteppable;
+@endphp
+<div class="{{$subSteppablePivot->size}}" wire:key="calculation-result-{{$calculationResult->id}}">
     @component('cooperation.frontend.layouts.components.form-group', [
         'class' => 'form-group-heading',
         'labelClass' => 'text-sm',
-        // 'defaultInputSource' => 'resident',
         // so we give the option to replace something in the question title
-        'label' => $subSteppablePivot->subSteppable->name,
-        'inputName' => "calculationResults.{$subSteppablePivot->subSteppable->short}",
+        'label' => $calculationResult->name,
+        'inputName' => "calculationResults.{$calculationResult->short}",
         'withInputSource' => false,
     ])
-
         @slot('modalBodySlot')
             <p>
-                {!! $subSteppablePivot->subSteppable->help_text !!}
+                {!! $calculationResult->help_text !!}
             </p>
         @endslot
-
-        <input class="form-input @if(!empty($subSteppablePivot->subSteppable->unit_of_measure)) with-append @endif"
-               id="{{$subSteppablePivot->subSteppable->short}}"
-               wire:model="filledInAnswers.{{$subSteppablePivot->subSteppable['id']}}"
-               placeholder="{{$subSteppablePivot->subSteppable->placeholder}}" type="text"
+    
+        @if(! empty($calculationResult->unit_of_measure))
+            <div class="input-group-prepend">
+                {!! $calculationResult->unit_of_measure !!}
+            </div>
+        @endif        
+        <input class="form-input"
+               id="{{$calculationResult->short}}"
+               wire:model="filledInAnswers.{{$calculationResult['id']}}"
+               placeholder="{{$calculationResult->placeholder}}" type="text"
                disabled>
-
     @endcomponent
 </div>

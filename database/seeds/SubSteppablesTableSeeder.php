@@ -874,7 +874,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('hr-boiler.cost_indicatio'),
+                            'morph' => ToolCalculationResult::findByShort('hr-boiler.cost_indication'),
                             'size' => 'col-span-2',
                             'conditions' => [
                                 [
@@ -1182,7 +1182,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('heat-pump.cost_indicatio'),
+                            'morph' => ToolCalculationResult::findByShort('heat-pump.cost_indication'),
                             'size' => 'col-span-2',
                             'conditions' => [
                                 [
@@ -1432,7 +1432,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.cost_indicatio'),
+                            'morph' => ToolCalculationResult::findByShort('sun-boiler.cost_indication'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [

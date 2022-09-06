@@ -17,35 +17,35 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Huidig gasverbruik',
                 ],
                 'short' => 'hr-boiler.current-gas',
-                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'Huidig elektragebruik',
                 ],
                 'short' => 'hr-boiler.current-electricity',
-                'unit_of_measure' => 'kWh/jaar',
+                'unit_of_measure' => 'kWh / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'Gasbesparing',
                 ],
                 'short' => 'hr-boiler.savings_gas',
-                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'CO2 Besparing',
                 ],
                 'short' => 'hr-boiler.savings_co2',
-                'unit_of_measure' => 'kg/jaar',
+                'unit_of_measure' => 'kg / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'Besparing in €',
                 ],
                 'short' => 'hr-boiler.savings_money',
-                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>/jaar',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i> / jaar',
             ],
             [
                 'name' => [
@@ -66,7 +66,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Vergelijkbare rente',
                 ],
                 'short' => 'hr-boiler.interest_comparable',
-                'unit_of_measure' => '%/jaar',
+                'unit_of_measure' => '% / jaar',
             ],
             [
                 'name' => [
@@ -114,35 +114,35 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Huidig gasverbruik',
                 ],
                 'short' => 'heat-pump.current-gas',
-                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'Huidig elektragebruik',
                 ],
                 'short' => 'heat-pump.current-electricity',
-                'unit_of_measure' => 'kWh/jaar',
+                'unit_of_measure' => 'kWh / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'Gasbesparing',
                 ],
                 'short' => 'heat-pump.savings_gas',
-                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'CO2 Besparing',
                 ],
                 'short' => 'heat-pump.savings_co2',
-                'unit_of_measure' => 'kg/jaar',
+                'unit_of_measure' => 'kg / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'Besparing in €',
                 ],
                 'short' => 'heat-pump.savings_money',
-                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>/jaar',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i> / jaar',
             ],
             [
                 'name' => [
@@ -163,7 +163,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Vergelijkbare rente',
                 ],
                 'short' => 'heat-pump.interest_comparable',
-                'unit_of_measure' => '%/jaar',
+                'unit_of_measure' => '% / jaar',
             ],
             [
                 'name' => [
@@ -173,7 +173,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Het gebruik voor warm tapwater is afhankelijk van het aantal gebruikers en het comfortniveau.',
                 ],
                 'short' => 'sun-boiler.usage-warm-tap-water',
-                'unit_of_measure' => 'liter/jaar',
+                'unit_of_measure' => 'liter / jaar',
             ],
             [
                 'name' => [
@@ -183,7 +183,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Hier wordt een inschatting gegeven van het jaarlijkse gasverbruik voor warm tapwater.',
                 ],
                 'short' => 'sun-boiler.usage-gas',
-                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
                 'name' => [
@@ -213,7 +213,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => ' Hier kunt u zien hoeveel warmte de zonneboiler per jaar op kan wekken.',
                 ],
                 'short' => 'sun-boiler.heat-production',
-                'unit_of_measure' => 'kWh/jaar',
+                'unit_of_measure' => 'kWh / jaar',
             ],
             [
                 'name' => [
@@ -230,14 +230,14 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Huidig gasverbruik',
                 ],
                 'short' => 'sun-boiler.current-gas',
-                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'Huidig elektragebruik',
                 ],
                 'short' => 'sun-boiler.current-electricity',
-                'unit_of_measure' => 'kWh/jaar',
+                'unit_of_measure' => 'kWh / jaar',
             ],
             [
                 'name' => [
@@ -247,7 +247,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'De besparing wordt berekend op basis van de door u ingevoerde woningkenmerken (hoeveelheden, isolatiewaarde, gebruikersgedrag).',
                 ],
                 'short' => 'sun-boiler.savings_gas',
-                'unit_of_measure' => 'm<sup>3</sup>/jaar',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
                 'name' => [
@@ -257,7 +257,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Gerekend wordt met 1,88 kg/m<sup>3</sup> gas (bron: Milieucentraal)',
                 ],
                 'short' => 'sun-boiler.savings_co2',
-                'unit_of_measure' => 'kg/jaar',
+                'unit_of_measure' => 'kg / jaar',
             ],
             [
                 'name' => [
@@ -267,7 +267,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Indicatieve besparing in € per jaar. De gebruikte energietarieven voor gas en elektra worden jaarlijks aan de marktomstandigheden aangepast.',
                 ],
                 'short' => 'sun-boiler.savings_money',
-                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>/jaar',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i> / jaar',
             ],
             [
                 'name' => [
@@ -287,7 +287,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Meer informatie over de vergelijkbare rente kunt u vinden bij Milieucentraal: <a title="Link Milieucentraal" href="https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/" target="_blank" rel="noopener">https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/</a>',
                 ],
                 'short' => 'sun-boiler.interest_comparable',
-                'unit_of_measure' => '%/jaar',
+                'unit_of_measure' => '% / jaar',
             ],
         ];
 
@@ -298,6 +298,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 [
                     'name' => json_encode($data['name']),
+                    'help_text' => json_encode($data['help_text'] ?? []),
                     'unit_of_measure' => $data['unit_of_measure'],
                 ],
             );

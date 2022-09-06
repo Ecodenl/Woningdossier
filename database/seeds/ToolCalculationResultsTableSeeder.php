@@ -16,14 +16,14 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'name' => [
                     'nl' => 'Huidig gasverbruik',
                 ],
-                'short' => 'hr-boiler.current-gas',
+                'short' => 'hr-boiler.amount_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'Huidig elektragebruik',
                 ],
-                'short' => 'hr-boiler.current-electricity',
+                'short' => 'hr-boiler.amount_electricity',
                 'unit_of_measure' => 'kWh / jaar',
             ],
             [
@@ -45,7 +45,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Besparing in €',
                 ],
                 'short' => 'hr-boiler.savings_money',
-                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i> / jaar',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
             ],
             [
                 'name' => [
@@ -113,14 +113,14 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'name' => [
                     'nl' => 'Huidig gasverbruik',
                 ],
-                'short' => 'heat-pump.current-gas',
+                'short' => 'heat-pump.amount_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'Huidig elektragebruik',
                 ],
-                'short' => 'heat-pump.current-electricity',
+                'short' => 'heat-pump.amount_electricity',
                 'unit_of_measure' => 'kWh / jaar',
             ],
             [
@@ -142,7 +142,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Besparing in €',
                 ],
                 'short' => 'heat-pump.savings_money',
-                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i> / jaar',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
             ],
             [
                 'name' => [
@@ -229,14 +229,14 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'name' => [
                     'nl' => 'Huidig gasverbruik',
                 ],
-                'short' => 'sun-boiler.current-gas',
+                'short' => 'sun-boiler.amount_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
                 'name' => [
                     'nl' => 'Huidig elektragebruik',
                 ],
-                'short' => 'sun-boiler.current-electricity',
+                'short' => 'sun-boiler.amount_electricity',
                 'unit_of_measure' => 'kWh / jaar',
             ],
             [
@@ -267,7 +267,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Indicatieve besparing in € per jaar. De gebruikte energietarieven voor gas en elektra worden jaarlijks aan de marktomstandigheden aangepast.',
                 ],
                 'short' => 'sun-boiler.savings_money',
-                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i> / jaar',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
             ],
             [
                 'name' => [

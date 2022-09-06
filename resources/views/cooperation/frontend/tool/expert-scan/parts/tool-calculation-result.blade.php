@@ -21,7 +21,7 @@
                 {!! $calculationResultField->unit_of_measure !!}
             </div>
         @endif        
-        <input class="form-input"
+        <input class="form-input" autocomplete="off"
                id="{{$calculationResultField->short}}"
                wire:model="calculationResults.{{$calculationResultField->short}}"
                placeholder="{{$calculationResultField->placeholder}}" type="text"

@@ -50,6 +50,8 @@ class HighEfficiencyBoiler
 
                 if ($energyHabit instanceof UserEnergyHabit) {
                     $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $energyHabit, $amountGas);
+                    $result['amount_gas'] = $amountGas ?? $energyHabit->amount_gas;
+                    $result['amount_electricity'] = $energyHabit->amount_electricity;
                 }
                 $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
                 $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));

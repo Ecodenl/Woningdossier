@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
 
-use App\Calculations\HighEfficiencyBoiler;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
@@ -12,8 +11,6 @@ use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class SubSteppable extends Scannable
@@ -23,6 +20,10 @@ class SubSteppable extends Scannable
     public $nextUrl;
 
     public $calculationResults = [];
+
+    protected $listeners = [
+        'calculationsPerformed',
+    ];
 
     public function mount(Step $step, SubStep $subStep)
     {
@@ -61,6 +62,20 @@ class SubSteppable extends Scannable
         $this->originalAnswers = $this->filledInAnswers;
     }
 
+    public function render()
+    {
+        $this->rehydrateToolQuestions();
+        return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
+    }
+
+    public function init()
+    {
+        // Emits don't work before the first render of a component is processed. Therefore, we only emit after the first
+        // load (also known as the init or initialization). We need to pass the answers to the main component so it
+        // can perform calculations
+        $this->emit('updateFilledInAnswers', $this->filledInAnswers);
+    }
+
     public function hydrateToolQuestions()
     {
         $this->toolQuestions = $this->subStep->toolQuestions;
@@ -80,7 +95,12 @@ class SubSteppable extends Scannable
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
         $this->setDirty(true);
 
-        $this->doCalculations();
+        $this->emitUp('updateFilledInAnswers', $this->filledInAnswers);
+    }
+
+    public function calculationsPerformed($calculationResults)
+    {
+        $this->calculationResults = $calculationResults;
     }
 
     protected function evaluateToolQuestions()
@@ -158,57 +178,6 @@ class SubSteppable extends Scannable
                 }
             }
         }
-    }
-
-    public function doCalculations()
-    {
-        //TODO: See if we need to check the considerables before we start our calculations, perhaps we could save
-        // resources. However, it might require some sort of state knowledge which could prove difficult.
-
-        // key = tool question short
-        // value  = custom key for the calculate data, sometimes we can use the save in
-        // for ex; new-boiler-type is a "new" question, previously we just had this as building_services for the current situation
-        // the HR boiler calculate class is not adjusted to the old / new situation. It only knows that building_services.service_value_id is a boiler.
-        // ideally this gets refactored when the time is ripe
-        $saveInToolQuestionShorts = [
-            'amount-gas' => null,
-            'resident-count' => null,
-            'new-boiler-type' => 'building_services.service_value_id',
-            // this question is not asked on this page, which means we should retrieve it.
-            'boiler-placed-date' => 'building_services.extra.date'
-        ];
-
-        $calculateData = [];
-        foreach($saveInToolQuestionShorts as $toolQuestionShort => $key) {
-            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-
-            // it may be possible that the tool question is not present in the filled in answers.
-            // that simply means the tool question is not available for the user on the current page
-            // however it may be filled elsewhere, so we will get it through the getAnswer
-            $answer = $this->filledInAnswers[$toolQuestion->id] ?? $this->building->getAnswer($this->masterInputSource,
-                    $toolQuestion);
-
-            Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);
-        }
-        $energyHabit = $this->building->user->energyHabit()->forInputSource($this->masterInputSource)->first();
-
-        // the HR boiler and solar boiler are not built with the tool questions in mind, we have to work with it for the time being
-        $calculation = HighEfficiencyBoiler::calculate($energyHabit, $calculateData);
-
-        // TODO: Heater + Heat pump, gotta check logic on the sub steps
-
-        // Only the heat pump will be built with the tool questions in mind.
-
-        $this->calculationResults = [
-            'hr-boiler' => $calculation,
-        ];
-        Log::debug($this->calculationResults);
-    }
-
-    public function render()
-    {
-        $this->rehydrateToolQuestions();
-        return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
     }
 
     public function save($nextUrl = "")

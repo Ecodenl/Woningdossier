@@ -1,4 +1,4 @@
-<div>
+<div wire:init="init()">
     <div class="grid grid-cols-6 gap-6">
         @foreach($subStep->subSteppables as $subSteppablePivot)
             @switch($subSteppablePivot->sub_steppable_type)

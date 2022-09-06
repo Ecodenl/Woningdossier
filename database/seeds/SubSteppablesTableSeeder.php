@@ -796,7 +796,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('hr-boiler.current-gas'),
+                            'morph' => ToolCalculationResult::findByShort('hr-boiler.amount_gas'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -809,7 +809,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('hr-boiler.current-electricity'),
+                            'morph' => ToolCalculationResult::findByShort('hr-boiler.amount_electricity'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -912,7 +912,6 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-building-heating-application'),
@@ -1104,7 +1103,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('heat-pump.current-gas'),
+                            'morph' => ToolCalculationResult::findByShort('heat-pump.amount_gas'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -1117,7 +1116,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('heat-pump.current-electricity'),
+                            'morph' => ToolCalculationResult::findByShort('heat-pump.amount_electricity'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -1367,7 +1366,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.current-gas'),
+                            'morph' => ToolCalculationResult::findByShort('sun-boiler.amount_gas'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -1380,7 +1379,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.current-electricity'),
+                            'morph' => ToolCalculationResult::findByShort('sun-boiler.amount_electricity'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [

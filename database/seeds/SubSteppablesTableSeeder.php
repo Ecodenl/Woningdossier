@@ -754,6 +754,27 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $checkboxIconType->id,
                             'size' => 'col-span-6',
                         ],
+                        // Unconditional questions
+                        [
+                            'morph' => ToolQuestion::findByShort('new-water-comfort'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'col-span-6',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('new-heat-source'),
+                            'tool_question_type_id' => $multiDropdownType->id,
+                            'size' => 'col-span-6',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('new-heat-source-warm-tap-water'),
+                            'tool_question_type_id' => $multiDropdownType->id,
+                            'size' => 'col-span-6',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('new-building-heating-application'),
+                            'tool_question_type_id' => $multiDropdownType->id,
+                            'size' => 'col-span-6',
+                        ],
                         // HR boiler
                         [
                             'morph' => ToolLabel::findByShort('hr-boiler'),
@@ -902,20 +923,6 @@ class SubSteppablesTableSeeder extends Seeder
                         // Heat pump
                         [
                             'morph' => ToolLabel::findByShort('heat-pump'),
-                            'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('new-building-heating-application'),
-                            'tool_question_type_id' => $multiDropdownType->id,
                             'size' => 'col-span-6',
                             'conditions' => [
                                 [

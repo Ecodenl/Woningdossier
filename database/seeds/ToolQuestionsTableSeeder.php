@@ -1218,19 +1218,107 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
-                //'save_in' => "building_services.{$boiler->id}.service_value_id",
-                'short' => 'new-boiler-type',
-                'translation' => "Wat is het type van de nieuwe ketel?",
-                'tool_question_values' => $boiler->values()->orderBy('order')->get(),
-                'extra' => [
-                    'column' => 'calculate_value',
-                    'data' => [
-                        1 => [],
-                        2 => [],
-                        3 => [],
-                        4 => [],
-                        5 => [],
+                'validation' => ['required', 'exists:comfort_level_tap_waters,id'],
+                'short' => 'new-water-comfort',
+                'translation' => 'Wat wordt het comfortniveau voor het gebruik van warm tapwater?',
+                'tool_question_values' => $comfortLevelsTapWater,
+            ],
+            [
+                'data_type' => Caster::ARRAY,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'new-heat-source',
+                'translation' => "Wat er komen voor verwarming?",
+                'options' => ['value' => ['hr-boiler'],],
+                'tool_question_custom_values' => [
+                    'hr-boiler' => [
+                        'name' => 'Gasketel',
+                        'extra' => [
+                            'icon' => 'icon-central-heater-gas',
+                        ],
+                    ],
+                    'heat-pump' => [
+                        'name' => 'Warmtepomp',
+                        'extra' => [
+                            'icon' => 'icon-heat-pump',
+                        ],
+                    ],
+                    'infrared' => [
+                        'name' => 'Warmtepanelen / Infrarood',
+                        'extra' => [
+                            'icon' => 'icon-infrared-heater',
+                        ],
+                    ],
+                    'district-heating' => [
+                        'name' => 'Stadsverwarming',
+                        'extra' => [
+                            'icon' => 'icon-district-heating',
+                        ],
+                    ],
+                    'sun-boiler' => [
+                        'name' => 'Zonneboiler',
+                        'extra' => [
+                            'icon' => 'icon-sun-boiler-heating',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'data_type' => Caster::ARRAY,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'new-heat-source-warm-tap-water',
+                'translation' => "Wat moet er komen voor warm tapwater?",
+                'options' => ['value' => ['hr-boiler'],],
+                'tool_question_custom_values' => [
+                    'hr-boiler' => [
+                        'name' => 'Gasketel',
+                        'extra' => [
+                            'icon' => 'icon-central-heater-gas',
+                        ],
+                    ],
+                    'kitchen-geyser' => [
+                        'name' => 'Bad/keukengeiser',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'electric-boiler' => [
+                        'name' => 'Elektrische boiler',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'heat-pump-boiler' => [
+                        'name' => 'Warmtepomp boiler',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'heat-pump' => [
+                        'name' => 'Warmtepomp',
+                        'extra' => [
+                            'icon' => 'icon-heat-pump',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'new-heat-source',
+                                    'operator' => Clause::CONTAINS,
+                                    'value' => 'heat-pump',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'sun-boiler' => [
+                        'name' => 'Zonneboiler',
+                        'extra' => [
+                            'icon' => 'icon-sun-boiler-heating',
+                        ],
+                    ],
+                    'district-heating' => [
+                        'name' => 'Stadsverwarming',
+                        'extra' => [
+                            'icon' => 'icon-district-heating',
+                        ],
                     ],
                 ],
             ],
@@ -1269,6 +1357,24 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-radiator-low-temp',
                         ],
+                    ],
+                ],
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:element_values,id'],
+                //'save_in' => "building_services.{$boiler->id}.service_value_id",
+                'short' => 'new-boiler-type',
+                'translation' => "Wat is het type van de nieuwe ketel?",
+                'tool_question_values' => $boiler->values()->orderBy('order')->get(),
+                'extra' => [
+                    'column' => 'calculate_value',
+                    'data' => [
+                        1 => [],
+                        2 => [],
+                        3 => [],
+                        4 => [],
+                        5 => [],
                     ],
                 ],
             ],

@@ -172,7 +172,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'help_text' => [
                     'nl' => 'Het gebruik voor warm tapwater is afhankelijk van het aantal gebruikers en het comfortniveau.',
                 ],
-                'short' => 'sun-boiler.usage-warm-tap-water',
+                'short' => 'sun-boiler.consumption.water',
                 'unit_of_measure' => 'liter / jaar',
             ],
             [
@@ -182,7 +182,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'help_text' => [
                     'nl' => 'Hier wordt een inschatting gegeven van het jaarlijkse gasverbruik voor warm tapwater.',
                 ],
-                'short' => 'sun-boiler.usage-gas',
+                'short' => 'sun-boiler.consumption.gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
             ],
             [
@@ -192,7 +192,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'help_text' => [
                     'nl' => 'Op basis van de verbruikscijfers wordt hier een inschatting gegeven hoe groot het buffervat zou moeten zijn.',
                 ],
-                'short' => 'sun-boiler.size',
+                'short' => 'sun-boiler.specs.size_boiler',
                 'unit_of_measure' => 'liter',
             ],
             [
@@ -202,7 +202,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'help_text' => [
                     'nl' => 'Op basis van de verbruikscijfers wordt hier een inschatting gegeven hoe groot de collector zou moeten zijn.',
                 ],
-                'short' => 'sun-boiler.collector-size',
+                'short' => 'sun-boiler.specs.size_collector',
                 'unit_of_measure' => 'm<sup>2</sup>',
             ],
             [
@@ -212,7 +212,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'help_text' => [
                     'nl' => ' Hier kunt u zien hoeveel warmte de zonneboiler per jaar op kan wekken.',
                 ],
-                'short' => 'sun-boiler.heat-production',
+                'short' => 'sun-boiler.production_heat',
                 'unit_of_measure' => 'kWh / jaar',
             ],
             [
@@ -222,7 +222,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'help_text' => [
                     'nl' => ' Hier kunt u zien hoeveel % van uw huidig energie voor warm tapwater u met dit zonneboiler systeem kunt opwekken.',
                 ],
-                'short' => 'sun-boiler.warm-tap-water-share',
+                'short' => 'sun-boiler.percentage_consumption',
                 'unit_of_measure' => '%',
             ],
             [

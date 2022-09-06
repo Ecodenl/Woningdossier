@@ -1269,7 +1269,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.usage-warm-tap-water'),
+                            'morph' => ToolCalculationResult::findByShort('sun-boiler.consumption.water'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -1282,7 +1282,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.usage-gas'),
+                            'morph' => ToolCalculationResult::findByShort('sun-boiler.consumption.gas'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -1308,7 +1308,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.size'),
+                            'morph' => ToolCalculationResult::findByShort('sun-boiler.specs.size_boiler'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -1321,7 +1321,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.collector-size'),
+                            'morph' => ToolCalculationResult::findByShort('sun-boiler.specs.size_collector'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -1347,7 +1347,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.heat-production'),
+                            'morph' => ToolCalculationResult::findByShort('sun-boiler.production_heat'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -1360,7 +1360,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.warm-tap-water-share'),
+                            'morph' => ToolCalculationResult::findByShort('sun-boiler.percentage_consumption'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [

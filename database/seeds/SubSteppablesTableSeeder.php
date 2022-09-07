@@ -1532,12 +1532,12 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('amount-gas'),
                             'tool_question_type_id' => $textType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('amount-electricity'),
                             'tool_question_type_id' => $textType->id,
-                            'size' => 'w-full',
+                            'size' => 'col-span-3',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('water-comfort'),

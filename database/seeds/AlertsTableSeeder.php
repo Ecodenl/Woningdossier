@@ -28,54 +28,52 @@ class AlertsTableSeeder extends Seeder
                 'type' => Alert::TYPE_WARNING,
                 'conditions' => [
                     [
+                        // No heat pump selected
                         [
-                            // No heat pump selected
-                            [
-                                'column' => 'heat-source',
-                                'operator' => Clause::NOT_CONTAINS,
-                                'value' => 'heat-pump',
-                            ],
-                            [
-                                'column' => 'heat-source-warm-tap-water',
-                                'operator' => Clause::NOT_CONTAINS,
-                                'value' => 'heat-pump',
-                            ],
-                            [
-                                'column' => 'interested-in-heat-pump',
-                                'operator' => Clause::EQ,
-                                'value' => 'yes',
-                            ],
-                            [
-                                'column' => 'fn',
-                                'value' => 'InsulationCalculation',
-                            ],
+                            'column' => 'heat-source',
+                            'operator' => Clause::NOT_CONTAINS,
+                            'value' => 'heat-pump',
                         ],
                         [
-                            // Full heat pumps
-                            [
-                                'column' => 'heat-pump-type',
-                                'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 4)->first()->id,
-                            ],
-                            [
-                                'column' => 'heat-pump-type',
-                                'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 5)->first()->id,
-                            ],
-                            [
-                                'column' => 'heat-pump-type',
-                                'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 6)->first()->id,
-                            ],
-                            [
-                                'column' => 'interested-in-heat-pump',
-                                'operator' => Clause::EQ,
-                                'value' => 'yes',
-                            ],
-                            [
-                                'column' => 'fn',
-                                'value' => 'InsulationCalculation',
-                            ],
+                            'column' => 'heat-source-warm-tap-water',
+                            'operator' => Clause::NOT_CONTAINS,
+                            'value' => 'heat-pump',
+                        ],
+                        [
+                            'column' => 'interested-in-heat-pump',
+                            'operator' => Clause::EQ,
+                            'value' => 'yes',
+                        ],
+                        [
+                            'column' => 'fn',
+                            'value' => 'InsulationCalculation',
+                        ],
+                    ],
+                    [
+                        // Full heat pumps
+                        [
+                            'column' => 'heat-pump-type',
+                            'operator' => Clause::NEQ,
+                            'value' => $heatPump->values()->where('calculate_value', 4)->first()->id,
+                        ],
+                        [
+                            'column' => 'heat-pump-type',
+                            'operator' => Clause::NEQ,
+                            'value' => $heatPump->values()->where('calculate_value', 5)->first()->id,
+                        ],
+                        [
+                            'column' => 'heat-pump-type',
+                            'operator' => Clause::NEQ,
+                            'value' => $heatPump->values()->where('calculate_value', 6)->first()->id,
+                        ],
+                        [
+                            'column' => 'interested-in-heat-pump',
+                            'operator' => Clause::EQ,
+                            'value' => 'yes',
+                        ],
+                        [
+                            'column' => 'fn',
+                            'value' => 'InsulationCalculation',
                         ],
                     ],
                 ],
@@ -114,56 +112,54 @@ class AlertsTableSeeder extends Seeder
                 'type' => Alert::TYPE_WARNING,
                 'conditions' => [
                     [
+                        // No heat pump selected
                         [
-                            // No heat pump selected
-                            [
-                                'column' => 'heat-source',
-                                'operator' => Clause::NOT_CONTAINS,
-                                'value' => 'heat-pump',
-                            ],
-                            [
-                                'column' => 'heat-source-warm-tap-water',
-                                'operator' => Clause::NOT_CONTAINS,
-                                'value' => 'heat-pump',
-                            ],
-                            [
-                                'column' => 'interested-in-heat-pump',
-                                'operator' => Clause::EQ,
-                                'value' => 'yes',
-                            ],
-                            [
-                                'column' => 'boiler-setting-comfort-heat',
-                                'operator' => Clause::EQ,
-                                'value' => 'temp-high',
-                            ],
+                            'column' => 'heat-source',
+                            'operator' => Clause::NOT_CONTAINS,
+                            'value' => 'heat-pump',
                         ],
                         [
-                            // Full heat pumps
-                            [
-                                'column' => 'heat-pump-type',
-                                'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 4)->first()->id,
-                            ],
-                            [
-                                'column' => 'heat-pump-type',
-                                'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 5)->first()->id,
-                            ],
-                            [
-                                'column' => 'heat-pump-type',
-                                'operator' => Clause::NEQ,
-                                'value' => $heatPump->values()->where('calculate_value', 6)->first()->id,
-                            ],
-                            [
-                                'column' => 'interested-in-heat-pump',
-                                'operator' => Clause::EQ,
-                                'value' => 'yes',
-                            ],
-                            [
-                                'column' => 'boiler-setting-comfort-heat',
-                                'operator' => Clause::EQ,
-                                'value' => 'temp-high',
-                            ],
+                            'column' => 'heat-source-warm-tap-water',
+                            'operator' => Clause::NOT_CONTAINS,
+                            'value' => 'heat-pump',
+                        ],
+                        [
+                            'column' => 'interested-in-heat-pump',
+                            'operator' => Clause::EQ,
+                            'value' => 'yes',
+                        ],
+                        [
+                            'column' => 'boiler-setting-comfort-heat',
+                            'operator' => Clause::EQ,
+                            'value' => 'temp-high',
+                        ],
+                    ],
+                    [
+                        // Full heat pumps
+                        [
+                            'column' => 'heat-pump-type',
+                            'operator' => Clause::NEQ,
+                            'value' => $heatPump->values()->where('calculate_value', 4)->first()->id,
+                        ],
+                        [
+                            'column' => 'heat-pump-type',
+                            'operator' => Clause::NEQ,
+                            'value' => $heatPump->values()->where('calculate_value', 5)->first()->id,
+                        ],
+                        [
+                            'column' => 'heat-pump-type',
+                            'operator' => Clause::NEQ,
+                            'value' => $heatPump->values()->where('calculate_value', 6)->first()->id,
+                        ],
+                        [
+                            'column' => 'interested-in-heat-pump',
+                            'operator' => Clause::EQ,
+                            'value' => 'yes',
+                        ],
+                        [
+                            'column' => 'boiler-setting-comfort-heat',
+                            'operator' => Clause::EQ,
+                            'value' => 'temp-high',
                         ],
                     ],
                 ],

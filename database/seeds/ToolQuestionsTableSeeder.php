@@ -74,6 +74,11 @@ class ToolQuestionsTableSeeder extends Seeder
         $stepLivingRequirements = Step::findByShort('living-requirements');
         $stepResidentialStatus = Step::findByShort('residential-status');
 
+        // Expert scan steps
+        $hrBoilerStep = Step::findByShort('high-efficiency-boiler');
+        $sunBoilerStep = Step::findByShort('heater');
+        $heatPumpStep = Step::findByShort('heat-pump');
+
         $questions = [
             #-------------------------
             # Quick-scan only / shared with expert-scan questions
@@ -1503,6 +1508,27 @@ class ToolQuestionsTableSeeder extends Seeder
                 'help_text' => "Geef hier aan onder welke hellingshoek de zonnecollector geplaatst wordt. Op een hellend dak is de hellingshoek van de collector meestal gelijk aan de dakhelling.",
                 'tool_question_custom_values' => collect(\App\Helpers\KeyFigures\Heater\KeyFigures::getAngles())
                     ->map(fn ($angle) => ['name' => $angle]),
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$hrBoilerStep->id}.comment",
+                'short' => 'hr-boiler-comment',
+                'translation' => 'Toelichting op de CV ketel',
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$heatPumpStep->id}.comment",
+                'short' => 'heat-pump-comment',
+                'translation' => 'Toelichting op de warmtepomp',
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$sunBoilerStep->id}.comment",
+                'short' => 'sun-boiler-comment',
+                'translation' => 'Toelichting op de zonneboiler',
             ],
         ];
 

@@ -804,6 +804,20 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
+                            'morph' => ToolQuestion::findByShort('hr-boiler-comment'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
                             'morph' => ToolLabel::findByShort('hr-boiler-cost-indication'),
                             'size' => 'col-span-6',
                             'conditions' => [
@@ -1032,6 +1046,20 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
+                            'morph' => ToolQuestion::findByShort('heat-pump-comment'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
                             'morph' => ToolLabel::findByShort('heat-pump-efficiency-indication'),
                             'size' => 'col-span-6',
                             'conditions' => [
@@ -1245,6 +1273,20 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-angle'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'sun-boiler',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('sun-boiler-comment'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
@@ -1486,6 +1528,16 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('cook-type'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('amount-gas'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('amount-electricity'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('water-comfort'),

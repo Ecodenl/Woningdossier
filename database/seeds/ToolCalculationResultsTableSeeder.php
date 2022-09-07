@@ -146,7 +146,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Indicatie vervangingsmoment CV ketel',
+                    'nl' => 'Indicatie vervangingsmoment warmtepomp',
                 ],
                 'short' => 'heat-pump.replace_year',
                 'unit_of_measure' => '<i class="icon-sm icon-timer"></i>',

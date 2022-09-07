@@ -17,12 +17,10 @@ use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\UserEnergyHabit;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class HeatPump
+class HeatPump extends \App\Calculations\Calculator
 {
-    protected Building $building;
-
     /**
      * Answer for tool question 'new-boiler-type'
      *
@@ -34,14 +32,14 @@ class HeatPump
      * Answer for tool question 'new-boiler-setting-comfort-heat'
      * ("Hoge temperatuur", "50 graden", "Lage temperatuur")
      *
-     * @var \App\Models\ToolQuestionCustomValue|mixed
+     * @var \App\Models\ToolQuestionCustomValue|null
      */
-    protected ToolQuestionCustomValue $heatingTemperature;
+    protected ?ToolQuestionCustomValue $heatingTemperature;
 
     /**
      * Answer for tool question 'new-heat-pump-type' OR 'new-building-heating-application'  // TODO: Check this one
      *
-     * @var ServiceValue|ToolQuestionCustomValue
+     * @var ServiceValue|ToolQuestionCustomValue|null
      */
     protected $heatPumpConfigurable;
 
@@ -54,11 +52,7 @@ class HeatPump
 
     protected int $requiredPower = 0;
 
-    protected ?Collection $answers = null;
-
     protected array $advices = [];
-
-    protected InputSource $inputSource;
 
     protected UserEnergyHabit $energyHabit;
 
@@ -72,7 +66,7 @@ class HeatPump
         Building $building,
         InputSource $inputSource,
         UserEnergyHabit $energyHabit,
-        array $calculateData
+        array $calculateData = []
     )
     {
         $this->building = $building;
@@ -80,17 +74,12 @@ class HeatPump
         $this->energyHabit = $energyHabit;
 
         $this->boiler = $calculateData['boiler'] ?? null;
-        $this->heatingTemperature = $calculateData['heatingTemperature'];
-        $this->heatPumpConfigurable = $calculateData['heatPumpConfigurable'];
+        $this->heatingTemperature = $calculateData['heatingTemperature'] ?? null;
+        $this->heatPumpConfigurable = $calculateData['heatPumpConfigurable'] ?? null;
         $this->desiredPower = $calculateData['desiredPower'] ?? 0;
         $this->answers = $calculateData['answers'] ?? null;
 
-        if (! $this->heatingTemperature->exists) {
-            throw new \Exception("Can't calculate with non-existing heating temperature!");
-        }
-        if (! ($this->heatPumpConfigurable instanceof ServiceValue || $this->heatPumpConfigurable instanceof ToolQuestionCustomValue)) {
-            throw new \Exception("Can't calculate with non-existing heat pump configurable!");
-        }
+        $this->calculateData = $calculateData;
     }
 
     /**
@@ -107,7 +96,7 @@ class HeatPump
         Building $building,
         InputSource $inputSource,
         UserEnergyHabit $energyHabit,
-        array $calculateData
+        array $calculateData = []
     ): array
     {
         $calculator = new static(
@@ -132,19 +121,16 @@ class HeatPump
         // return value affects other calculations.
 
         $advisedSystem = [
-            'required_power'  => $this->requiredPower, // C60
-            'desired_power'   => $this->desiredPower, // C61
-            'share_heating'   => $shareHeating, // C62
-            'share_tap_water' => $characteristics->share_wtw, // C63
-            'scop_heating'    => $characteristics->scop_heating, // C64
-            'scop_tap_water'  => $characteristics->scop_wtw, // C65
+            'required_power' => $this->requiredPower, // C60
+            'desired_power' => $this->desiredPower, // C61
+            'share_heating' => $shareHeating, // C62
+            'share_tap_water' => $characteristics->share_percentage_tap_water ?? 0, // C63
+            'scop_heating' => $characteristics->scop ?? 0, // C64
+            'scop_tap_water' => $characteristics->scop_tap_water ?? 0, // C65
         ];
 
         // D2
-        $amountGas = $this->building->getAnswer(
-            $this->inputSource,
-            ToolQuestion::findByShort('amount-gas')
-        );
+        $amountGas = $this->getAnswer('amount-gas') ?? $this->energyHabit->amount_gas;
 
         $gasUsage = HighEfficiencyBoilerCalculator::calculateGasUsage(
             $this->boiler,
@@ -169,7 +155,7 @@ class HeatPump
         // if volledige warmtepomp: C68 * KeyFigures::M3_GAS_TO_KWH
         // else: 0
         $electricalReheating = 0;
-        if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL) {
+        if (optional($characteristics)->type === HeatPumpCharacteristic::TYPE_FULL) {
             $electricalReheating = $gasUsageHeating * KeyFigures::M3_GAS_TO_KWH;
         }
 
@@ -186,10 +172,7 @@ class HeatPump
         // C73 = from mapping Maatregelopties en kengetallen: B58:D60 icm future situation
         $electricityUsageCooking = 0;
         // D11
-        $currentElectricityUsage = $this->building->getAnswer(
-            $this->inputSource,
-            ToolQuestion::findByShort('amount-electricity')
-        );
+        $currentElectricityUsage = $this->getAnswer('amount-electricity') ?? $this->energyHabit->amount_electricity;
         // D12
         $currentElectricityUsageHeating = 0;
         // D13
@@ -202,38 +185,37 @@ class HeatPump
         // if volledige warmtepomp: D2
         // else: D2 - (C68+C69+C70)
         $savingsGas = $amountGas;
-        if ($characteristics->type !== HeatPumpCharacteristic::TYPE_FULL) {
+        if (optional($characteristics)->type !== HeatPumpCharacteristic::TYPE_FULL) {
             $savingsGas = $amountGas - ($gasUsageHeating + $gasUsageTapWater + $gasUsageCooking);
         }
 
         // (C71+C72+C73) - (D12-D13-D14)
         $extraConsumptionElectricity = ($electricityUsageHeating +
-                                        $electricityUsageTapWater +
-                                        $electricityUsageCooking) -
-                                       $currentElectricityUsageHeating -
-                                       $currentElectricityUsageTapWater -
-                                       $currentElectricityUsageCooking;
+                $electricityUsageTapWater +
+                $electricityUsageCooking) -
+            $currentElectricityUsageHeating -
+            $currentElectricityUsageTapWater -
+            $currentElectricityUsageCooking;
 
         $savingsCo2 = Calculator::calculateCo2Savings($savingsGas) -
-                      ($extraConsumptionElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
+            ($extraConsumptionElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
 
         $savingsMoney = Calculator::calculateMoneySavings($savingsGas) -
-                        ($extraConsumptionElectricity * Kengetallen::EURO_SAVINGS_ELECTRICITY);
+            ($extraConsumptionElectricity * Kengetallen::EURO_SAVINGS_ELECTRICITY);
 
-        // TODO:
-        //'amount_gas' => 0,
-        //'amount_electricity' => 0,
         $result = [
-            'savings_gas'                   => $savingsGas,
+            'amount_gas' => $amountGas,
+            'amount_electricity' => $currentElectricityUsage,
+            'savings_gas' => $savingsGas,
             'extra_consumption_electricity' => $extraConsumptionElectricity,
-            'savings_co2'                   => $savingsCo2,
-            'savings_money'                 => $savingsMoney,
-            'cost_indication'               => $characteristics->costs,
-            'advised_system'                => $advisedSystem,
-            'advices'                       => $this->advices,
+            'savings_co2' => $savingsCo2,
+            'savings_money' => $savingsMoney,
+            'cost_indication' => $characteristics->costs ?? 0,
+            'advised_system' => $advisedSystem,
+            'advices' => $this->advices,
         ];
 
-        $result['interest_comparable'] = number_format(
+        $result['interest_comparable'] = $this->format(
             BankInterestCalculator::getComparableInterest(
                 $result['cost_indication'],
                 $result['savings_money']
@@ -246,52 +228,49 @@ class HeatPump
 
     public function calculateAdvisedSystemRequiredPower()
     {
-        $kfInsulationFactor = KeyFigureInsulationFactor::forInsulationFactor(
-            $this->insulationScore()
-        )->first();
+        $kfInsulationFactor = KeyFigureInsulationFactor::forInsulationFactor($this->insulationScore())->first();
         $wattPerSquareMeter = $kfInsulationFactor->energy_consumption_per_m2 ?? 140;
 
-        $surface = $this->building->getAnswer(
-            $this->inputSource,
-            ToolQuestion::findByShort('surface')
-        );
+        $surface = $this->getAnswer('surface');
 
-        return ($wattPerSquareMeter * $surface) / 1000;
+        return $this->format(($wattPerSquareMeter * $surface) / 1000);
     }
 
     public function calculateShareHeating(): int
     {
-        $coverage = KeyFigureHeatPumpCoverage::forBetaFactor($this->betafactor())
-            ->forHeatingTemperature($this->heatingTemperature)
-            ->first();
+        if ($this->heatingTemperature instanceof ToolQuestionCustomValue) {
+            \Log::debug($this->betafactor());
+            \Log::debug($this->heatingTemperature->id);
+            $coverage = KeyFigureHeatPumpCoverage::forBetaFactor($this->betafactor())
+                ->forHeatingTemperature($this->heatingTemperature)
+                ->first();
 
-        return $coverage->percentage ?? 0;
+            return $coverage->percentage ?? 0;
+        }
+
+        return 0;
     }
 
     public function lookupHeatPumpCharacteristics(): ?HeatPumpCharacteristic
     {
-        return HeatPumpCharacteristic::forHeatPumpConfigurable($this->heatPumpConfigurable)
-            ->forHeatingTemperature($this->heatingTemperature)
-            ->first();
+        if ($this->heatPumpConfigurable instanceof Model && $this->heatingTemperature instanceof ToolQuestionCustomValue) {
+            return HeatPumpCharacteristic::forHeatPumpConfigurable($this->heatPumpConfigurable)
+                ->forHeatingTemperature($this->heatingTemperature)
+                ->first();
+        }
+
+        return null;
     }
 
     // = C61
     public function betafactor()
     {
-        return number_format(
-            $this->desiredPower / max($this->requiredPower, 1),
-            1,
-            '.',
-            ''
-        );
+        return $this->format($this->desiredPower / max($this->requiredPower, 1), 1);
     }
 
     protected function energyUsageForCooking()
     {
-        $cookType = $this->building->getAnswer(
-            $this->inputSource,
-            ToolQuestion::findByShort('cook-type')
-        );
+        $cookType = $this->getAnswer('cook-type');
 
         switch ($cookType) {
             case 'gas':
@@ -308,40 +287,46 @@ class HeatPump
     public function insulationScore(): float
     {
         $toolQuestions = [
-            'current-living-rooms-windows'   => 1.5,
+            'current-living-rooms-windows' => 1.5,
             'current-sleeping-rooms-windows' => 0.5,
-            'current-wall-insulation'        => 1,
-            'current-floor-insulation'       => 1,
-            'current-roof-insulation'        => 1,
+            'current-wall-insulation' => 1,
+            'current-floor-insulation' => 1,
+            'current-roof-insulation' => 1,
         ];
 
         $score = 0;
-        $answers = is_null($this->answers) ? collect() : $this->answers;
 
         foreach ($toolQuestions as $toolQuestion => $weight) {
             /** @var ElementValue $elementValue */
-            $elementValue = ElementValue::find(
-                $answers->has($toolQuestion) ? $answers->get($toolQuestion) :
-                $this->building->getAnswer(
-                    $this->inputSource,
-                    ToolQuestion::findByShort($toolQuestion)
-                )
-            );
+            $elementValue = ElementValue::find($this->getAnswer($toolQuestion));
 
             $factor = optional($elementValue)->insulation_factor ?? 1;
             if ($factor <= 1) {
-                // todo check how to pass this when errors / notifications implementation is in place.
-                // short? full text? translation? for now just the short..
+                // If the state of this element is bad we want to advise the user to fix this first
                 $this->advices[$toolQuestion] = $toolQuestion;
             }
             $score += ($factor * $weight);
         }
 
-        return (float) number_format($score / count($toolQuestions), '2', '.', '');
+        return $this->format($score / count($toolQuestions));
     }
 
     public function getAdvices(): array
     {
         return $this->advices;
+    }
+
+    /**
+     * Format consistent float. We don't need to cast, PHP is smart enough to convert it to a float if it's used in
+     * math.
+     *
+     * @param $number
+     * @param  int  $decimals
+     *
+     * @return string
+     */
+    private function format($number, int $decimals = 2)
+    {
+        return number_format($number, $decimals, '.', '');
     }
 }

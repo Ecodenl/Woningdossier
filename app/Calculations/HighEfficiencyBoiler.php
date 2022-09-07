@@ -6,14 +6,37 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\NumberFormatter;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\UserEnergyHabit;
 
-class HighEfficiencyBoiler
+class HighEfficiencyBoiler extends \App\Calculations\Calculator
 {
-    public static function calculate($energyHabit, $calculateData)
+    public $energyHabit;
+
+    public function __construct($energyHabit, array $calculateData)
+    {
+        $this->energyHabit = $energyHabit;
+        //$this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+        $this->answers = $calculateData['answers'] ?? [];
+
+        $this->calculateData = $calculateData;
+    }
+
+    public static function calculate($energyHabit, array $calculateData)
+    {
+        $calculator = new static (
+            $energyHabit,
+            $calculateData
+        );
+
+        return $calculator->performCalculation();
+    }
+
+    public function performCalculation()
     {
         $result = [
             'amount_gas' => 0,
@@ -25,7 +48,7 @@ class HighEfficiencyBoiler
             'interest_comparable' => 0,
         ];
 
-        $buildingServiceData = $calculateData['building_services'] ?? [];
+        $buildingServiceData = $this->calculateData['building_services'] ?? [];
 
         $boilerService = Service::where('short', 'boiler')->first();
 
@@ -48,12 +71,12 @@ class HighEfficiencyBoiler
 
                 $measure = MeasureApplication::byShort('high-efficiency-boiler-replace');
 
-                $amountGas = $calculateData['user_energy_habits']['amount_gas'] ?? null;
+                $amountGas = $this->calculateData['user_energy_habits']['amount_gas'] ?? null;
 
-                if ($energyHabit instanceof UserEnergyHabit) {
-                    $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $energyHabit, $amountGas);
-                    $result['amount_gas'] = $amountGas ?? $energyHabit->amount_gas;
-                    $result['amount_electricity'] = $energyHabit->amount_electricity;
+                if ($this->energyHabit instanceof UserEnergyHabit) {
+                    $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $this->energyHabit, $amountGas);
+                    $result['amount_gas'] = $amountGas ?? $this->energyHabit->amount_gas;
+                    $result['amount_electricity'] = $this->energyHabit->amount_electricity;
                 }
                 $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
                 $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));

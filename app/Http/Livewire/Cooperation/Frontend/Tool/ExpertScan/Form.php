@@ -11,6 +11,7 @@ use App\Helpers\ToolQuestionHelper;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
@@ -212,7 +213,8 @@ class Form extends Component
             ];
 
             // the HR boiler and solar boiler are not built with the tool questions in mind, we have to work with it for the time being
-            $hrBoilerCalculations = HighEfficiencyBoiler::calculate($energyHabit, $this->getCalculateData($saveInToolQuestionShorts));
+            $hrBoilerCalculations = HighEfficiencyBoiler::calculate($energyHabit,
+                $this->getCalculateData($saveInToolQuestionShorts));
         }
 
         if (in_array('sun-boiler', $considerables)) {
@@ -222,17 +224,28 @@ class Form extends Component
                 'heater-pv-panel-angle' => null,
             ];
 
-            $sunBoilerCalculations = Heater::calculate($this->building, $energyHabit, $this->getCalculateData($saveInToolQuestionShorts));
+            $sunBoilerCalculations = Heater::calculate($this->building, $energyHabit,
+                $this->getCalculateData($saveInToolQuestionShorts));
         }
 
         if (in_array('heat-pump', $considerables)) {
-            // Only the heat pump will be built with the tool questions in mind.
             $saveInToolQuestionShorts = [
-                //'new-heat-pump-type' => null,
+                'new-heat-pump-type' => 'heatPumpConfigurable',
+                'new-boiler-type' => 'boiler',
+                'new-boiler-setting-comfort-heat' => 'heatingTemperature',
+                'heat-pump-preferred-power' => 'desiredPower',
             ];
 
-            // TODO: WIP, requires fixes
-            //$heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, $energyHabit, );
+            $calculateData = $this->getCalculateData($saveInToolQuestionShorts);
+
+            // So the heat pump expects "full", resolved answers (models). So, we will set them
+            $calculateData['heatPumpConfigurable'] = ServiceValue::find($calculateData['heatPumpConfigurable']);
+            $calculateData['boiler'] = ServiceValue::find($calculateData['boiler']);
+            $calculateData['heatingTemperature'] = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
+                ->toolQuestionCustomValues()->whereShort($calculateData['heatingTemperature'])->first();
+
+            $heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, $energyHabit,
+                $calculateData);
         }
 
         $this->emit('calculationsPerformed', [
@@ -256,6 +269,8 @@ class Form extends Component
 
             Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);
         }
+
+        $calculateData['answers'] = collect($this->filledInAnswers);
 
         return $calculateData;
     }

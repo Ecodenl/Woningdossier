@@ -25,7 +25,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
             ->where('short', 'temp-50')
             ->where('tool_question_id', $temperatureQuestion->id)
             ->first()->id;
-        $low   = DB::table('tool_question_custom_values')
+        $low = DB::table('tool_question_custom_values')
             ->where('short', 'temp-low')
             ->where('tool_question_id', $temperatureQuestion->id)
             ->first()->id;

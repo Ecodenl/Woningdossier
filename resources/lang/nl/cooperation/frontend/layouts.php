@@ -7,5 +7,9 @@ return [
         'back-to-cooperation' => 'Terug naar coöperatie omgeving',
         'input-source' => 'Invul bron',
         'current-role' => 'Uw huidige rol: ',
+
+        'alerts' => [
+            'empty' => 'Er zijn momenteel geen notificaties',
+        ],
     ],
 ];

@@ -7,6 +7,7 @@ The evaluator works by providing conditions, and using a building and input sour
 `true` if the conditions pass. These conditions can be built on the fly, but can also be predefined from a model.
 
 #### Models that support conditions:
+- [Alert](./../../app/Models/Alert.php)
 - [SubStep](./../../app/Models/SubStep.php)
 - [SubSteppable](./../../app/Models/SubSteppable.php)
 - [ToolQuestionCustomValue](./../../app/Models/ToolQuestionCustomValue.php)

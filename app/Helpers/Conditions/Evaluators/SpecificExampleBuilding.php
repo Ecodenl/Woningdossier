@@ -6,10 +6,11 @@ use App\Models\Building;
 use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use Illuminate\Support\Collection;
 
 class SpecificExampleBuilding implements ShouldEvaluate
 {
-    public static function evaluate(Building $building, InputSource $inputSource): bool
+    public static function evaluate(Building $building, InputSource $inputSource, ?Collection $answers = null): bool
     {
         $buildingTypeId = $building->getAnswer(
             $inputSource,

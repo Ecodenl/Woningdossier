@@ -1509,6 +1509,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_custom_values' => collect(\App\Helpers\KeyFigures\Heater\KeyFigures::getAngles())
                     ->map(fn ($angle) => ['name' => $angle]),
             ],
+            // TODO: How to handle if we delete these steps?
             [
                 'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],

@@ -334,7 +334,7 @@ class HeatPump
             $score += ($factor * $weight);
         }
 
-        return $score / count($toolQuestions);
+        return (float) number_format($score / count($toolQuestions), '2', '.', '');
     }
 
     public function getAdvices(): array

@@ -1,6 +1,7 @@
 @extends('cooperation.frontend.layouts.tool')
 
 @section('content')
+
     @if($notification instanceof \App\Models\Notification)
         @livewire('cooperation.frontend.layouts.parts.notifications', [
             'type' => App\Jobs\CloneOpposingInputSource::class,

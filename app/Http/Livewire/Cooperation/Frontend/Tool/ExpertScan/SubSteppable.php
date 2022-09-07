@@ -73,6 +73,8 @@ class SubSteppable extends Scannable
     {
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
+        $this->refreshAlerts();
+
         $this->setDirty(true);
     }
 

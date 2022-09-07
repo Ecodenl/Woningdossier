@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands\Upgrade\HeatPump;
 
+use App\Helpers\Arr;
 use Illuminate\Console\Command;
+use Illuminate\Database\Console\Seeds\SeedCommand;
 
 class DoUpgrade extends Command
 {
@@ -39,12 +41,23 @@ class DoUpgrade extends Command
     {
         $commands = [
             UpdateToolQuestions::class => [],
-            ReseedElementValues::class => [],
+            SeedCommand::class => [
+                ['--class' => 'ElementsValuesTableSeeder', '--force' => true],
+                ['--class' => 'AlertsTableSeeder', '--force' => true],
+                ['--class' => 'KeyFigureHeatPumpCoveragesTableSeeder', '--force' => true],
+                ['--class' => 'HeatPumpCharacteristicsTableSeeder', '--force' => true],
+            ],
         ];
 
-        foreach ($commands as $command => $params) {
-            $this->info("Running command: {$command}");
-            $this->call($command, $params);
+        foreach ($commands as $command => $variants) {
+            if (! is_array(Arr::first($variants))) {
+                $variants = [$variants];
+            }
+
+            foreach ($variants as $params) {
+                $this->info("Running command: {$command}");
+                $this->call($command, $params);
+            }
         }
     }
 }

@@ -15,6 +15,89 @@ class AlertsTableSeeder extends Seeder
     {
         $alerts = [
             [
+                'short' => 'sun-boiler-performance-ideal',
+                'text' => [
+                    'nl' => 'Functioneren zonneboiler: ideaal',
+                ],
+                'type' => Alert::TYPE_SUCCESS,
+                'conditions' => [
+                    [
+                        [
+                            'column' => 'heat-source-considerable',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'sun-boiler',
+                        ],
+                        [
+                            'column' => 'fn',
+                            'operator' => 'SunBoilerPerformance',
+                            'value' => 'green',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'short' => 'sun-boiler-performance-possible',
+                'text' => [
+                    'nl' => 'Functioneren zonneboiler: mogelijk',
+                ],
+                'type' => Alert::TYPE_WARNING,
+                'conditions' => [
+                    [
+                        [
+                            'column' => 'heat-source-considerable',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'sun-boiler',
+                        ],
+                        [
+                            'column' => 'fn',
+                            'operator' => 'SunBoilerPerformance',
+                            'value' => 'yellow',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'short' => 'sun-boiler-performance-no-go',
+                'text' => [
+                    'nl' => 'Functioneren zonneboiler: onrendabel',
+                ],
+                'type' => Alert::TYPE_DANGER,
+                'conditions' => [
+                    [
+                        [
+                            'column' => 'heat-source-considerable',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'sun-boiler',
+                        ],
+                        [
+                            'column' => 'fn',
+                            'operator' => 'SunBoilerPerformance',
+                            'value' => 'red',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'short' => 'hr-boiler-replacement-inefficiency',
+                'text' => [
+                    'nl' => 'Het vervangen van de huidige ketel zal alleen een beperkte energiebesparing opleveren omdat u al een HR ketel hebt.',
+                ],
+                'type' => Alert::TYPE_INFO,
+                'conditions' => [
+                    [
+                        [
+                            'column' => 'heat-source-considerable',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'hr-boiler',
+                        ],
+                        [
+                            'column' => 'fn',
+                            'operator' => 'HrBoilerPerformance',
+                        ],
+                    ],
+                ],
+            ],
+            [
                 'short' => 'suboptimal-isolation-for-heat-pump',
                 'text' => [
                     'nl' => 'Jouw huis is niet optimaal geïsoleerd. Het is aan te raden om  eerst de isolatie te verbeteren. Het is namelijk mogelijk dat de warmtepomp in de huidige situatie niet optimaal werkt.',

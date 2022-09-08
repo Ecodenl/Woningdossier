@@ -230,4 +230,28 @@ class SubSteppable extends Scannable
 
         $this->emitUp('subStepValidationSucceeded', $this->subStep, $answers);
     }
+
+    protected function dehydrateProperty($property, $value)
+    {
+        // Wow, dehydration custom logic? Why, you ask? Well, Livewire uses Laravel serialization under the hood
+        // to make PHP properties available for JS, since it gets serialized to JSON, which works for JS as well.
+        // However, any eager loaded relation will be handled accordingly when serialized and unserialized. When a
+        // collection comes along, it always grabs the _first_ relation. In the case that this collection alters, we
+        // might see that something that has worked all along suddenly is causing issues. In our current case, a
+        // tool label might be removed, and instead a tool question is shown. Then, it will try and eager load
+        // forSpecificInputSource on all subSteppable morphs related to the subStep. This causes an issue because
+        // tool labels don't have this relation. Therefore, we unset the relation so this issue can never be caused
+        // ever again. Note for the future: ALWAYS unset relations that don't exist on all models that are eager loaded.
+        if ($property == 'subStep') {
+            if ($value->relationLoaded('subSteppables')) {
+                foreach ($value->subSteppables as $subSteppablePivot) {
+                    if ($subSteppablePivot->relationLoaded('subSteppable')) {
+                        $subSteppablePivot->subSteppable->unsetRelation('forSpecificInputSource');
+                    }
+                }
+            }
+        }
+
+        return $value;
+    }
 }

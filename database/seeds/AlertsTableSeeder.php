@@ -93,7 +93,7 @@ class AlertsTableSeeder extends Seeder
                         ],
                         [
                             'column' => 'fn',
-                            'operator' => 'HrBoilerPerformance',
+                            'operator' => 'HrBoilerAdvice',
                         ],
                     ],
                 ],

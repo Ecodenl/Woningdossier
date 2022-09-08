@@ -18,13 +18,14 @@ class SunBoilerPerformance implements ShouldEvaluate
             $building,
             $building->user->energyHabit()->forInputSource($inputSource)->first(),
             [
-                'user_energy_habit' => [
+                'user_energy_habits' => [
                     'water_comfort_id' => static::getQuickAnswer('new-water-comfort', $building, $inputSource, $answers),
                 ],
                 'building_heaters' => [
                     'pv_panel_orientation_id' => static::getQuickAnswer('heater-pv-panel-orientation', $building, $inputSource, $answers),
                     'angle' => static::getQuickAnswer('heater-pv-panel-angle', $building, $inputSource, $answers),
                 ],
+                'answers' => $answers,
             ],
         );
 

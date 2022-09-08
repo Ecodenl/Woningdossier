@@ -35,7 +35,7 @@ class HighEfficiencyBoiler extends \App\Calculations\Calculator
         return $calculator->performCalculations();
     }
 
-    public function performCalculations()
+    public function performCalculations(): array
     {
         $result = [
             'amount_gas' => 0,

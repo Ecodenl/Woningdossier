@@ -23,9 +23,9 @@ class Alerts extends Component
 
     // Used in the blade view
     public array $typeMap = [
-        Alert::TYPE_INFO => 'text-blue',
+        Alert::TYPE_INFO => 'text-blue-900',
         Alert::TYPE_SUCCESS => 'text-green',
-        Alert::TYPE_WARNING => 'text-orange',
+        Alert::TYPE_WARNING => 'text-yellow',
         Alert::TYPE_DANGER => 'text-red',
     ];
 

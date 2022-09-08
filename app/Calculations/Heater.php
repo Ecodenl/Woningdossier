@@ -44,7 +44,7 @@ class Heater extends \App\Calculations\Calculator
         return $calculator->performCalculations();
     }
 
-    public function performCalculations()
+    public function performCalculations(): array
     {
         $result = [
             'consumption' => [

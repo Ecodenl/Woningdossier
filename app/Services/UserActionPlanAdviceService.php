@@ -295,15 +295,13 @@ class UserActionPlanAdviceService
                         : 'current-wall-insulation';
 
                     $relevantQuestion = ToolQuestion::findByShort($toolQuestionShort);
-                    if ($relevantQuestion instanceof ToolQuestion) {
-                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
-                        $elementValue = ElementValue::find($answer);
-                        if ($elementValue instanceof ElementValue) {
-                            // If the value is 1 or 2 (onbekend, geen), we want it in to-do
-                            // If it's "niet van toepassing" it should be hidden, so we don't worry about it
-                            $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE
-                                : static::CATEGORY_TO_DO;
-                        }
+                    $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                    $elementValue = ElementValue::find($answer);
+                    if ($elementValue instanceof ElementValue) {
+                        // If the value is 1 or 2 (onbekend, geen), we want it in to-do
+                        // If it's "niet van toepassing" it should be hidden, so we don't worry about it
+                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE
+                            : static::CATEGORY_TO_DO;
                     }
                     break;
 
@@ -330,9 +328,7 @@ class UserActionPlanAdviceService
                     } else {
                         // Still a quick-scan newbie, we check the tool question
                         $relevantQuestion = ToolQuestion::findByShort('current-roof-insulation');
-                        if ($relevantQuestion instanceof ToolQuestion) {
-                            $elementValueId = $building->getAnswer($masterInputSource, $relevantQuestion);
-                        }
+                        $elementValueId = $building->getAnswer($masterInputSource, $relevantQuestion);
                     }
 
                     // Now we have the element value of the relevant roof type, so we set the category
@@ -360,7 +356,7 @@ class UserActionPlanAdviceService
                         }
                     }
 
-                    if (!empty($answers)) {
+                    if (! empty($answers)) {
                         // Sort by order
                         asort($answers);
                         $lowestOrder = Arr::first($answers);
@@ -376,89 +372,79 @@ class UserActionPlanAdviceService
 
                 case 'crack-sealing':
                     $relevantQuestion = ToolQuestion::findByShort('crack-sealing-type');
-                    if ($relevantQuestion instanceof ToolQuestion) {
-                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
-                        $elementValue = ElementValue::find($answer);
+                    $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                    $elementValue = ElementValue::find($answer);
 
-                        if ($elementValue instanceof ElementValue) {
-                            // If available, it's complete. Calculate value 1 and 2 are "ja".
-                            $category = $elementValue->calculate_value > 2 ? static::CATEGORY_TO_DO
-                                : static::CATEGORY_COMPLETE;
-                        }
+                    if ($elementValue instanceof ElementValue) {
+                        // If available, it's complete. Calculate value 1 and 2 are "ja".
+                        $category = $elementValue->calculate_value > 2 ? static::CATEGORY_TO_DO
+                            : static::CATEGORY_COMPLETE;
                     }
                     break;
 
                 case 'hr-boiler':
                     // We first need to check if HR-boiler has been selected as option
-                    $hasBoilerQuestion = ToolQuestion::findByShort('heat-source');
-                    if ($hasBoilerQuestion instanceof ToolQuestion) {
-                        $answer = $building->getAnswer($masterInputSource, $hasBoilerQuestion);
-                        if (is_array($answer) && in_array('hr-boiler', $answer)) {
-                            // The user has a boiler, let's see if there's an age for it
-                            $ageQuestion = ToolQuestion::findByShort('boiler-placed-date');
-                            if ($ageQuestion instanceof ToolQuestion) {
-                                $answer = $building->getAnswer($masterInputSource, $ageQuestion);
+                    $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
+                    $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
+                    $heatSourceAnswer = $building->getAnswer($masterInputSource, $heatSourceQuestion);
+                    $heatSourceWaterAnswer = $building->getAnswer($masterInputSource, $heatSourceWaterQuestion);
+                    if (in_array('hr-boiler', $heatSourceAnswer) || in_array('hr-boiler', $heatSourceWaterAnswer)) {
+                        // The user has a boiler, let's see if there's an age for it
+                        $ageQuestion = ToolQuestion::findByShort('boiler-placed-date');
+                        $answer = $building->getAnswer($masterInputSource, $ageQuestion);
 
-                                if (is_numeric($answer)) {
-                                    $diff = now()->format('Y') - $answer;
-                                    // If it's not 10 years old, it's complete
-                                    // If it's between 10 and 13, it's later
-                                    // If it's older than 13 years, it's to-do
-                                    $category = $diff < 10 ? static::CATEGORY_COMPLETE
-                                        : ($diff >= 13 ? static::CATEGORY_TO_DO : static::CATEGORY_LATER);
-                                } else {
-                                    // No placing date available. We will assume it's fine
-                                    $category = static::CATEGORY_COMPLETE;
-                                }
-                            }
+                        if (is_numeric($answer)) {
+                            $diff = now()->format('Y') - $answer;
+                            // If it's not 10 years old, it's complete
+                            // If it's between 10 and 13, it's later
+                            // If it's older than 13 years, it's to-do
+                            $category = $diff < 10 ? static::CATEGORY_COMPLETE
+                                : ($diff >= 13 ? static::CATEGORY_TO_DO : static::CATEGORY_LATER);
+                        } else {
+                            // No placing date available. We will assume it's fine
+                            $category = static::CATEGORY_COMPLETE;
                         }
                     }
                     break;
 
                 case 'sun-boiler':
                     $hasSunBoilerQuestion = ToolQuestion::findByShort('heater-type');
-                    if ($hasSunBoilerQuestion instanceof ToolQuestion) {
-                        $answer = $building->getAnswer($masterInputSource, $hasSunBoilerQuestion);
-                        $serviceValue = ServiceValue::find($answer);
+                    $answer = $building->getAnswer($masterInputSource, $hasSunBoilerQuestion);
+                    $serviceValue = ServiceValue::find($answer);
 
-                        if ($serviceValue instanceof ServiceValue) {
-                            // If the value is 1 (geen), we want it in to-do
-                            $category = $serviceValue->calculate_value > 1 ? static::CATEGORY_COMPLETE
-                                : static::CATEGORY_TO_DO;
-                        }
+                    if ($serviceValue instanceof ServiceValue) {
+                        // If the value is 1 (geen), we want it in to-do
+                        $category = $serviceValue->calculate_value > 1 ? static::CATEGORY_COMPLETE
+                            : static::CATEGORY_TO_DO;
                     }
                     break;
 
                 case 'solar-panels':
                     // We first need to check if the user has solar panels
                     $hasPanelsQuestion = ToolQuestion::findByShort('has-solar-panels');
-                    if ($hasPanelsQuestion instanceof ToolQuestion) {
-                        $answer = $building->getAnswer($masterInputSource, $hasPanelsQuestion);
-                        $toolQuestionCustomValue = $hasPanelsQuestion->toolQuestionCustomValues()
-                            ->where('short', $answer)
-                            ->first();
+                    $answer = $building->getAnswer($masterInputSource, $hasPanelsQuestion);
+                    $toolQuestionCustomValue = $hasPanelsQuestion->toolQuestionCustomValues()
+                        ->where('short', $answer)
+                        ->first();
 
-                        if ($toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
-                            if ($toolQuestionCustomValue->short === 'no') {
-                                // No panels
-                                $category = static::CATEGORY_TO_DO;
+                    if ($toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                        if ($toolQuestionCustomValue->short === 'no') {
+                            // No panels
+                            $category = static::CATEGORY_TO_DO;
+                        } else {
+                            // The user has solar panels, let's see if there's an age for it
+                            $ageQuestion = ToolQuestion::findByShort('solar-panels-placed-date');
+                            $answer = $building->getAnswer($masterInputSource, $ageQuestion);
+
+                            if (is_numeric($answer)) {
+                                $diff = now()->format('Y') - $answer;
+
+                                // If it's not 25 years old, it's complete
+                                // Else it's to-do
+                                $category = $diff < 25 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                             } else {
-                                // The user has solar panels, let's see if there's an age for it
-                                $ageQuestion = ToolQuestion::findByShort('solar-panels-placed-date');
-                                if ($ageQuestion instanceof ToolQuestion) {
-                                    $answer = $building->getAnswer($masterInputSource, $ageQuestion);
-
-                                    if (is_numeric($answer)) {
-                                        $diff = now()->format('Y') - $answer;
-
-                                        // If it's not 25 years old, it's complete
-                                        // Else it's to-do
-                                        $category = $diff < 25 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
-                                    } else {
-                                        // No placing date available. We will assume it's fine
-                                        $category = static::CATEGORY_COMPLETE;
-                                    }
-                                }
+                                // No placing date available. We will assume it's fine
+                                $category = static::CATEGORY_COMPLETE;
                             }
                         }
                     }
@@ -466,45 +452,39 @@ class UserActionPlanAdviceService
 
                 case 'ventilation':
                     $relevantQuestion = ToolQuestion::findByShort('ventilation-type');
-                    if ($relevantQuestion instanceof ToolQuestion) {
-                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
-                        $serviceValue = ServiceValue::find($answer);
+                    $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                    $serviceValue = ServiceValue::find($answer);
 
-                        if ($serviceValue instanceof ServiceValue) {
-                            // Logic for ventilation is based on the type.
-                            switch ($serviceValue->calculate_value) {
-                                case 1:
-                                    // Natural ventilation, always to do
-                                    $category = static::CATEGORY_TO_DO;
-                                    break;
+                    if ($serviceValue instanceof ServiceValue) {
+                        // Logic for ventilation is based on the type.
+                        switch ($serviceValue->calculate_value) {
+                            case 1:
+                                // Natural ventilation, always to do
+                                $category = static::CATEGORY_TO_DO;
+                                break;
 
-                                case 2:
-                                    // Mechanical ventilation, only has one measure (demand-driven)
-                                    // We check the current demand-driven logic. If it's true, it's complete
-                                    // (Logically then the measure won't be added, but we still want to categorize
-                                    // as properly as possible)
-                                    $demandDrivenQuestion = ToolQuestion::findByShort('ventilation-demand-driven');
-                                    if ($demandDrivenQuestion instanceof ToolQuestion) {
-                                        $answer = $building->getAnswer($masterInputSource, $demandDrivenQuestion);
-                                        // False and null and 0 are empty. We check if it's empty, because then we
-                                        // assume it's no
-                                        $category = empty($answer) ? static::CATEGORY_TO_DO : static::CATEGORY_COMPLETE;
-                                    }
-                                    break;
+                            case 2:
+                                // Mechanical ventilation, only has one measure (demand-driven)
+                                // We check the current demand-driven logic. If it's true, it's complete
+                                // (Logically then the measure won't be added, but we still want to categorize
+                                // as properly as possible)
+                                $demandDrivenQuestion = ToolQuestion::findByShort('ventilation-demand-driven');
+                                $answer = $building->getAnswer($masterInputSource, $demandDrivenQuestion);
+                                // False and null and 0 are empty. We check if it's empty, because then we
+                                // assume it's no
+                                $category = empty($answer) ? static::CATEGORY_TO_DO : static::CATEGORY_COMPLETE;
+                                break;
 
-                                case 3:
-                                case 4:
-                                    // Balanced and decentral ventilation have a measure for heat recovery
-                                    // We can apply the same logic
-                                    $heatRecoveryQuestion = ToolQuestion::findByShort('ventilation-heat-recovery');
-                                    if ($heatRecoveryQuestion instanceof ToolQuestion) {
-                                        $answer = $building->getAnswer($masterInputSource, $heatRecoveryQuestion);
-                                        // False and null and 0 are empty. We check if it's empty, because then we
-                                        // assume it's no
-                                        $category = empty($answer) ? static::CATEGORY_TO_DO : static::CATEGORY_COMPLETE;
-                                    }
-                                    break;
-                            }
+                            case 3:
+                            case 4:
+                                // Balanced and decentral ventilation have a measure for heat recovery
+                                // We can apply the same logic
+                                $heatRecoveryQuestion = ToolQuestion::findByShort('ventilation-heat-recovery');
+                                $answer = $building->getAnswer($masterInputSource, $heatRecoveryQuestion);
+                                // False and null and 0 are empty. We check if it's empty, because then we
+                                // assume it's no
+                                $category = empty($answer) ? static::CATEGORY_TO_DO : static::CATEGORY_COMPLETE;
+                                break;
                         }
                     }
                     break;

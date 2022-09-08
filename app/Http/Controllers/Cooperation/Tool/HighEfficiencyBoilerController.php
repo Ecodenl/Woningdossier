@@ -21,8 +21,10 @@ class HighEfficiencyBoilerController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
+        throw new \Exception("HR Boiler index used! Referer: " . $request->header('referer'));
+
         $typeIds = [4];
 
         $building = HoomdossierSession::getBuilding(true);
@@ -51,6 +53,8 @@ class HighEfficiencyBoilerController extends ToolController
 
     public function calculate(Request $request)
     {
+        throw new \Exception("HR Boiler calculate used! Referer: " . $request->header('referer'));
+
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
@@ -69,6 +73,8 @@ class HighEfficiencyBoilerController extends ToolController
      */
     public function store(HighEfficiencyBoilerFormRequest $request)
     {
+        throw new \Exception("HR Boiler store used! Referer: " . $request->header('referer'));
+
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;

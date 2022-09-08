@@ -15,8 +15,10 @@ class HeatPumpController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
+        throw new \Exception("Heat Pump index used! Referer: " . $request->header('referer'));
+
         $heatpumpTypes = PresentHeatPump::all();
         $buildingCurrentHeatings = BuildingCurrentHeating::all();
         $heatSources = HeatSource::all();
@@ -33,6 +35,8 @@ class HeatPumpController extends ToolController
      */
     public function store(Request $request)
     {
+        throw new \Exception("Heat Pump store used! Referer: " . $request->header('referer'));
+
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
 

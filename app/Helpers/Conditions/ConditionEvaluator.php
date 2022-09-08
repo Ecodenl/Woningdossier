@@ -60,8 +60,12 @@ class ConditionEvaluator
 
     public function getToolAnswersForConditions(array $conditions): Collection
     {
-        // get answers for condition columns:
+        // Get answers for condition columns, but ensure we don't fetch PASS clause columns (as they don't have
+        // any answers so they don't need checking, and they could be arrays which would cause issues), and also
+        // don't fetch special evaluators, as they don't have answers either.
         $questionKeys = collect(Arr::flatten($conditions, 1))
+            ->whereNotIn('operator', [Clause::PASSES, Clause::NOT_PASSES])
+            ->where('column', '!=', 'fn')
             ->pluck('column')
             ->unique()
             ->values();
@@ -184,10 +188,25 @@ class ConditionEvaluator
 
         // first check if its a custom evaluator
         if ($column == "fn") {
-            $customEvaluatorClass = "App\Helpers\Conditions\Evaluators\\{$value}";
-            return $customEvaluatorClass::evaluate($this->building, $this->inputSource, $collection);
+            $customEvaluatorClass = "App\Helpers\Conditions\Evaluators\\{$operator}";
+            return $customEvaluatorClass::evaluate($this->building, $this->inputSource, $value ?? null, $collection);
         }
 
+        // Else check if we should do sub-evaluation
+        if ($operator === Clause::PASSES || $operator === Clause::NOT_PASSES) {
+            $column = is_array($column) ? $column : ['short' => $column];
+            $model = (new $value)->newQuery()->where($column)->first();
+
+            // Ensure we pass potential dynamic answers through
+            $conditions = $model->conditions ?? [];
+            $answersForNewConditions = $this->getToolAnswersForConditions($conditions)->merge($collection);
+
+            // Return result based on whether it should or should not pass
+            $result = $this->evaluateCollection($conditions, $answersForNewConditions);
+            return $operator === Clause::PASSES ? $result : ! $result;
+        }
+
+        // Else fall through to other clauses
         if (! $collection->has($column)) {
             return false;
         }
@@ -214,7 +233,7 @@ class ConditionEvaluator
             return $operator == Clause::CONTAINS ? $result : ! $result;
         }
 
-        // values will *probably* (should..) be containing a single value
+        // values will *probably* (should...) be containing a single value
         switch ($operator) {
             case Clause::GT:
                 return $values > $value;

@@ -23,6 +23,7 @@ class SubSteppable extends Scannable
 
     protected $listeners = [
         'calculationsPerformed',
+        'save',
     ];
 
     public function mount(Step $step, SubStep $subStep)

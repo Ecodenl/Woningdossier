@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\Alert;
+use App\Models\SubStep;
 use App\Helpers\Conditions\Clause;
-use App\Models\Service;
 use Illuminate\Database\Seeder;
 
 class AlertsTableSeeder extends Seeder
@@ -14,11 +14,6 @@ class AlertsTableSeeder extends Seeder
      */
     public function run()
     {
-        //TODO: See if we can compact certain conditions. Perhaps evaluation stacking so we don't need to expand
-        // conditions each time a new condition is built on top of another
-
-        $heatPump = Service::findByShort('heat-pump');
-
         $alerts = [
             [
                 'short' => 'suboptimal-isolation-for-heat-pump',
@@ -28,16 +23,12 @@ class AlertsTableSeeder extends Seeder
                 'type' => Alert::TYPE_WARNING,
                 'conditions' => [
                     [
-                        // No heat pump selected
                         [
-                            'column' => 'heat-source',
-                            'operator' => Clause::NOT_CONTAINS,
-                            'value' => 'heat-pump',
-                        ],
-                        [
-                            'column' => 'heat-source-warm-tap-water',
-                            'operator' => Clause::NOT_CONTAINS,
-                            'value' => 'heat-pump',
+                            'column' => [
+                                'slug->nl' => 'warmtepomp-interesse',
+                            ],
+                            'operator' => Clause::PASSES,
+                            'value' => SubStep::class,
                         ],
                         [
                             'column' => 'interested-in-heat-pump',
@@ -46,36 +37,9 @@ class AlertsTableSeeder extends Seeder
                         ],
                         [
                             'column' => 'fn',
-                            'value' => 'InsulationCalculation',
+                            'operator' => 'InsulationScore',
                         ],
-                    ],
-                    [
-                        // Full heat pumps
-                        [
-                            'column' => 'heat-pump-type',
-                            'operator' => Clause::NEQ,
-                            'value' => $heatPump->values()->where('calculate_value', 4)->first()->id,
-                        ],
-                        [
-                            'column' => 'heat-pump-type',
-                            'operator' => Clause::NEQ,
-                            'value' => $heatPump->values()->where('calculate_value', 5)->first()->id,
-                        ],
-                        [
-                            'column' => 'heat-pump-type',
-                            'operator' => Clause::NEQ,
-                            'value' => $heatPump->values()->where('calculate_value', 6)->first()->id,
-                        ],
-                        [
-                            'column' => 'interested-in-heat-pump',
-                            'operator' => Clause::EQ,
-                            'value' => 'yes',
-                        ],
-                        [
-                            'column' => 'fn',
-                            'value' => 'InsulationCalculation',
-                        ],
-                    ],
+                    ]
                 ],
             ],
             [
@@ -112,16 +76,12 @@ class AlertsTableSeeder extends Seeder
                 'type' => Alert::TYPE_WARNING,
                 'conditions' => [
                     [
-                        // No heat pump selected
                         [
-                            'column' => 'heat-source',
-                            'operator' => Clause::NOT_CONTAINS,
-                            'value' => 'heat-pump',
-                        ],
-                        [
-                            'column' => 'heat-source-warm-tap-water',
-                            'operator' => Clause::NOT_CONTAINS,
-                            'value' => 'heat-pump',
+                            'column' => [
+                                'slug->nl' => 'warmtepomp-interesse',
+                            ],
+                            'operator' => Clause::PASSES,
+                            'value' => SubStep::class,
                         ],
                         [
                             'column' => 'interested-in-heat-pump',
@@ -134,22 +94,22 @@ class AlertsTableSeeder extends Seeder
                             'value' => 'temp-high',
                         ],
                     ],
+                ],
+            ],
+            [
+                'short' => 'insulation-advice-current-living-rooms-windows',
+                'text' => [
+                    'nl' => 'Jouw huis is niet optimaal geïsoleerd. Er wordt geadviseerd eerst de ramen van de leefruimtes te verbeteren.',
+                ],
+                'type' => Alert::TYPE_WARNING,
+                'conditions' => [
                     [
-                        // Full heat pumps
                         [
-                            'column' => 'heat-pump-type',
-                            'operator' => Clause::NEQ,
-                            'value' => $heatPump->values()->where('calculate_value', 4)->first()->id,
-                        ],
-                        [
-                            'column' => 'heat-pump-type',
-                            'operator' => Clause::NEQ,
-                            'value' => $heatPump->values()->where('calculate_value', 5)->first()->id,
-                        ],
-                        [
-                            'column' => 'heat-pump-type',
-                            'operator' => Clause::NEQ,
-                            'value' => $heatPump->values()->where('calculate_value', 6)->first()->id,
+                            'column' => [
+                                'slug->nl' => 'warmtepomp-interesse',
+                            ],
+                            'operator' => Clause::PASSES,
+                            'value' => SubStep::class,
                         ],
                         [
                             'column' => 'interested-in-heat-pump',
@@ -157,11 +117,123 @@ class AlertsTableSeeder extends Seeder
                             'value' => 'yes',
                         ],
                         [
-                            'column' => 'boiler-setting-comfort-heat',
-                            'operator' => Clause::EQ,
-                            'value' => 'temp-high',
+                            'column' => 'fn',
+                            'operator' => 'InsulationAdvice',
+                            'value' => 'current-living-rooms-windows',
                         ],
-                    ],
+                    ]
+                ],
+            ],
+            [
+                'short' => 'insulation-advice-current-sleeping-rooms-windows',
+                'text' => [
+                    'nl' => 'Jouw huis is niet optimaal geïsoleerd. Het wordt geadviseerd eerst de ramen van de slaapruimtes te verbeteren.',
+                ],
+                'type' => Alert::TYPE_WARNING,
+                'conditions' => [
+                    [
+                        [
+                            'column' => [
+                                'slug->nl' => 'warmtepomp-interesse',
+                            ],
+                            'operator' => Clause::PASSES,
+                            'value' => SubStep::class,
+                        ],
+                        [
+                            'column' => 'interested-in-heat-pump',
+                            'operator' => Clause::EQ,
+                            'value' => 'yes',
+                        ],
+                        [
+                            'column' => 'fn',
+                            'operator' => 'InsulationAdvice',
+                            'value' => 'current-sleeping-rooms-windows',
+                        ],
+                    ]
+                ],
+            ],
+            [
+                'short' => 'insulation-advice-current-wall-insulation',
+                'text' => [
+                    'nl' => 'Jouw huis is niet optimaal geïsoleerd. Er wordt geadviseerd eerst de wallisolatie te verbeteren.',
+                ],
+                'type' => Alert::TYPE_WARNING,
+                'conditions' => [
+                    [
+                        [
+                            'column' => [
+                                'slug->nl' => 'warmtepomp-interesse',
+                            ],
+                            'operator' => Clause::PASSES,
+                            'value' => SubStep::class,
+                        ],
+                        [
+                            'column' => 'interested-in-heat-pump',
+                            'operator' => Clause::EQ,
+                            'value' => 'yes',
+                        ],
+                        [
+                            'column' => 'fn',
+                            'operator' => 'InsulationAdvice',
+                            'value' => 'current-wall-insulation',
+                        ],
+                    ]
+                ],
+            ],
+            [
+                'short' => 'insulation-advice-current-floor-insulation',
+                'text' => [
+                    'nl' => 'Jouw huis is niet optimaal geïsoleerd. Er wordt geadviseerd om eerst de vloerisolatie te verbeteren.',
+                ],
+                'type' => Alert::TYPE_WARNING,
+                'conditions' => [
+                    [
+                        [
+                            'column' => [
+                                'slug->nl' => 'warmtepomp-interesse',
+                            ],
+                            'operator' => Clause::PASSES,
+                            'value' => SubStep::class,
+                        ],
+                        [
+                            'column' => 'interested-in-heat-pump',
+                            'operator' => Clause::EQ,
+                            'value' => 'yes',
+                        ],
+                        [
+                            'column' => 'fn',
+                            'operator' => 'InsulationAdvice',
+                            'value' => 'current-floor-insulation',
+                        ],
+                    ]
+                ],
+            ],
+            [
+                'short' => 'insulation-advice-current-roof-insulation',
+                'text' => [
+                    'nl' => 'Jouw huis is niet optimaal geïsoleerd. Er wordt geadviseerd om eerst de dakisolatie te verbeteren.',
+                ],
+                'type' => Alert::TYPE_WARNING,
+                'conditions' => [
+                    [
+                        [
+                            'column' => [
+                                'slug->nl' => 'warmtepomp-interesse',
+                            ],
+                            'operator' => Clause::PASSES,
+                            'value' => SubStep::class,
+                        ],
+                        [
+                            'column' => 'interested-in-heat-pump',
+                            'operator' => Clause::EQ,
+                            'value' => 'yes',
+                        ],
+                        [
+                            'column' => 'fn',
+                            'operator' => 'InsulationAdvice',
+                            'value' => 'current-roof-insulation',
+                        ],
+                    ]
                 ],
             ],
         ];

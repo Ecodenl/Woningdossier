@@ -60,13 +60,21 @@ In the normal case, we expect the following values inside the clause:
   - `<=`: Value must be equal or smaller than answer
   - `contains`: If answer is multi, one of the answers must be value. Otherwise, value must be equal to answer.
   - `not-contains`: If answer is multi, none of the answers must be value. Otherwise, value must not be equal to answer.
+  - `passes`: This clause is _slightly_ different. The value should hold the `class` of the model to check. The 
+    evaluator will then evaluate the conditions for the model. If column is an `array`, you can define a 
+    `column => value` structure for querying. Otherwise, the `column` will default to `short`. This is supported because 
+    for example `ToolQuestionCustomValues` are linked to a `ToolQuestion` so finding by short might give wrong 
+    results, and models such as `SubSteps` don't have a short column. 
+  - `not-passes`: Negative of `passes`. 
 
 #### Special use case
 Sometimes evaluation is a little different, where the default evaluation doesn't cut it. Special use cases exist, and 
 that's why there's custom evaluators. They can be found [here](./../../app/Helpers/Conditions/Evaluators/). In this
 case, the columns are as follows:
 
-- `value`: The name of the custom evaluator.
+- `value`: A potential value to use in the custom evaluator
 - `column`: `fn`. `fn` indicates the evaluator to use a custom evaluator.
+- `operator`: The name of the custom evaluator.
 
-Just like the main evaluator, a building and input source are passed to these evaluators.
+Just like the main evaluator, a building and input source are passed to these evaluators. However, these evaluators 
+also accept a nullable value, as well as a `Collection` of answers, to allow for dynamic and complex logic.

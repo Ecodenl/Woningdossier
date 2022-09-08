@@ -184,10 +184,20 @@ class ConditionEvaluator
 
         // first check if its a custom evaluator
         if ($column == "fn") {
-            $customEvaluatorClass = "App\Helpers\Conditions\Evaluators\\{$value}";
-            return $customEvaluatorClass::evaluate($this->building, $this->inputSource, $collection);
+            $customEvaluatorClass = "App\Helpers\Conditions\Evaluators\\{$operator}";
+            return $customEvaluatorClass::evaluate($this->building, $this->inputSource, $value ?? null, $collection);
         }
 
+        // Else check if we should do sub-evaluation
+        if ($operator === Clause::PASSES || $operator === Clause::NOT_PASSES) {
+            $column = is_array($column) ? $column : ['short' => $column];
+            $model = (new $value)->newQuery()->where($column)->first();
+
+            $result = $this->evaluate($model->conditions ?? []);;
+            return $operator === Clause::PASSES ? $result : ! $result;
+        }
+
+        // Else fall through to other clauses
         if (! $collection->has($column)) {
             return false;
         }
@@ -214,7 +224,7 @@ class ConditionEvaluator
             return $operator == Clause::CONTAINS ? $result : ! $result;
         }
 
-        // values will *probably* (should..) be containing a single value
+        // values will *probably* (should...) be containing a single value
         switch ($operator) {
             case Clause::GT:
                 return $values > $value;

@@ -15,12 +15,13 @@ class Alerts extends Component
 {
     protected $listeners = ['refreshAlerts'];
 
-    public $alerts;
-    public $building;
-    public $inputSource;
-    public $alertOpen = false;
+    public ?Collection $alerts = null;
+    public Building $building;
+    public InputSource $inputSource;
+    public bool $alertOpen = false;
 
-    public $typeMap = [
+    // Used in the blade view
+    public array $typeMap = [
         Alert::TYPE_INFO => 'text-blue',
         Alert::TYPE_SUCCESS => 'text-green',
         Alert::TYPE_WARNING => 'text-orange',
@@ -70,7 +71,6 @@ class Alerts extends Component
                     $shouldOpenAlert = true;
                 }
             } else  {
-                Log::debug("Evaluation is false, forgetting {$alert->text}");
                 $alerts->forget($index);
             }
         }

@@ -70,7 +70,7 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             [
                                 'column' => 'fn',
-                                'value' => 'BuildingType',
+                                'operator' => 'BuildingType',
                             ],
                         ],
                     ],
@@ -116,7 +116,7 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             [
                                 'column' => 'fn',
-                                'value' => 'SpecificExampleBuilding',
+                                'operator' => 'SpecificExampleBuilding',
                             ],
                         ],
                     ],
@@ -657,16 +657,12 @@ class SubSteppablesTableSeeder extends Seeder
                     // the database could still hold "full heat pump" as answer.
                     'conditions' => [
                         [
-                            // No heat pump selected
                             [
-                                'column' => 'heat-source',
-                                'operator' => Clause::NOT_CONTAINS,
-                                'value' => 'heat-pump',
-                            ],
-                            [
-                                'column' => 'heat-source-warm-tap-water',
-                                'operator' => Clause::NOT_CONTAINS,
-                                'value' => 'heat-pump',
+                                'column' => [
+                                    'slug->nl' => 'warmtepomp',
+                                ],
+                                'operator' => Clause::NOT_PASSES,
+                                'value' => SubStep::class,
                             ],
                         ],
                         [

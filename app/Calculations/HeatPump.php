@@ -14,7 +14,6 @@ use App\Models\InputSource;
 use App\Models\KeyFigureHeatPumpCoverage;
 use App\Models\KeyFigureInsulationFactor;
 use App\Models\ServiceValue;
-use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\UserEnergyHabit;
 use Illuminate\Database\Eloquent\Model;
@@ -239,9 +238,7 @@ class HeatPump extends \App\Calculations\Calculator
     public function calculateShareHeating(): int
     {
         if ($this->heatingTemperature instanceof ToolQuestionCustomValue) {
-            \Log::debug($this->betafactor());
-            \Log::debug($this->heatingTemperature->id);
-            $coverage = KeyFigureHeatPumpCoverage::forBetaFactor($this->betafactor())
+            $coverage = KeyFigureHeatPumpCoverage::forBetaFactor($this->betaFactor())
                 ->forHeatingTemperature($this->heatingTemperature)
                 ->first();
 
@@ -263,7 +260,7 @@ class HeatPump extends \App\Calculations\Calculator
     }
 
     // = C61
-    public function betafactor()
+    public function betaFactor()
     {
         return $this->format($this->desiredPower / max($this->requiredPower, 1), 1);
     }

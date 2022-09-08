@@ -8,16 +8,17 @@ use App\Models\Building;
 use App\Models\InputSource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class Alerts extends Component
 {
     protected $listeners = ['refreshAlerts'];
 
-    public ?Collection $alerts = null;
-    public Building $building;
-    public InputSource $inputSource;
+    // As of Livewire 1, we can't use strict type properties for non-native types for JS, as Livewire 1 will cast them
+    // as arrays before properly rehydrating them, which will throw exceptions due to mismatch of type.
+    public $alerts;
+    public $building;
+    public $inputSource;
     public bool $alertOpen = false;
 
     // Used in the blade view

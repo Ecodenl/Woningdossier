@@ -60,8 +60,12 @@ class ConditionEvaluator
 
     public function getToolAnswersForConditions(array $conditions): Collection
     {
-        // get answers for condition columns:
+        // Get answers for condition columns, but ensure we don't fetch PASS clause columns (as they don't have
+        // any answers so they don't need checking, and they could be arrays which would cause issues), and also
+        // don't fetch special evaluators, as they don't have answers either.
         $questionKeys = collect(Arr::flatten($conditions, 1))
+            ->whereNotIn('operator', [Clause::PASSES, Clause::NOT_PASSES])
+            ->where('column', '!=', 'fn')
             ->pluck('column')
             ->unique()
             ->values();
@@ -193,7 +197,12 @@ class ConditionEvaluator
             $column = is_array($column) ? $column : ['short' => $column];
             $model = (new $value)->newQuery()->where($column)->first();
 
-            $result = $this->evaluate($model->conditions ?? []);;
+            // Ensure we pass potential dynamic answers through
+            $conditions = $model->conditions ?? [];
+            $answersForNewConditions = $this->getToolAnswersForConditions($conditions)->merge($collection);
+
+            // Return result based on whether it should or should not pass
+            $result = $this->evaluateCollection($conditions, $answersForNewConditions);
             return $operator === Clause::PASSES ? $result : ! $result;
         }
 

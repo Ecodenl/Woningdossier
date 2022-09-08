@@ -110,7 +110,7 @@ class Form extends Component
         foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
             // Define if we should answer this question...
             /** @var ToolQuestion $toolQuestion */
-            $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->first();
+            $toolQuestion = ToolQuestion::find($toolQuestionId);
             if ($this->building->user->account->can('answer', $toolQuestion)) {
                 ToolQuestionService::init($toolQuestion)
                     ->building($this->building)

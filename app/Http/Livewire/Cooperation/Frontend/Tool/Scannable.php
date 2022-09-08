@@ -97,6 +97,15 @@ abstract class Scannable extends Component
         }
     }
 
+    protected function refreshAlerts()
+    {
+        $answers = [];
+        foreach ($this->toolQuestions as $toolQuestion) {
+            $answers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->id];
+        }
+
+        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts', $answers);
+    }
 
     public function updated($field, $value)
     {
@@ -106,6 +115,7 @@ abstract class Scannable extends Component
         $this->rehydrateToolQuestions();
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();
+        $this->refreshAlerts();
 
         $this->setDirty(true);
     }
@@ -222,7 +232,7 @@ abstract class Scannable extends Component
 
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
-        if (!$this->dirty) {
+        if (! $this->dirty) {
             $toolQuestion = ToolQuestion::find($toolQuestionId);
 
             // Define if we should check this question...
@@ -242,7 +252,7 @@ abstract class Scannable extends Component
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->first();
+                $toolQuestion = ToolQuestion::find($toolQuestionId);
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)
@@ -308,11 +318,11 @@ abstract class Scannable extends Component
                 $ruleParams = explode(':', $rule);
                 // But can contain extra params
 
-                if (!empty($ruleParams[1])) {
+                if (! empty($ruleParams[1])) {
                     $short = Str::contains($ruleParams[1], ',') ? explode(',', $ruleParams[1])[0]
                         : $ruleParams[1];
 
-                    if (!empty($short)) {
+                    if (! empty($short)) {
                         $toolQuestion = ToolQuestion::findByShort($short);
                         $toolQuestion = $toolQuestion instanceof ToolQuestion ? $toolQuestion : ToolQuestion::findByShort(Str::kebab(Str::camel($short)));
 

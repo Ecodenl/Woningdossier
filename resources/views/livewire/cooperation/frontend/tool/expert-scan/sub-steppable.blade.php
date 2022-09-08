@@ -1,5 +1,5 @@
 <div>
-    <div class="grid grid-cols-6 gap-6">
+    <div class="grid grid-cols-6 gap-x-6 gap-y-2">
         @foreach($subStep->subSteppables as $subSteppable)
             @switch($subSteppable->sub_steppable_type)
                 @case(\App\Models\ToolQuestion::class)

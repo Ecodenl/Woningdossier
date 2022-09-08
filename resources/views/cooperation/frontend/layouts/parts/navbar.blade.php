@@ -19,8 +19,7 @@
             @endif
 
             @if(Hoomdossier::user()->isFillingToolForOtherBuilding())
-                @php($building = \App\Helpers\HoomdossierSession::getBuilding(true))
-                    <p class="btn btn-purple">Woning: {{$building->user->getFullName()}} - {{"{$building->postal_code} - {$building->number} {$building->extension}"}}</p>
+                <p class="btn btn-purple">Woning: {{$building->user->getFullName()}} - {{"{$building->postal_code} - {$building->number} {$building->extension}"}}</p>
             @endif
         @endauth
         @if(App::environment() == 'local') {{-- currently only for local development --}}
@@ -81,7 +80,7 @@
                 @component('cooperation.frontend.layouts.components.dropdown', [
                     'label' => __('cooperation/frontend/layouts.navbar.current-role') . \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name,
                     'class' => 'in-text',
-                ])
+                    ])
                     @foreach(Hoomdossier::user()->roles()->orderBy('level', 'DESC')->get() as $role)
                         <li>
                             <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}"
@@ -93,11 +92,13 @@
                 @endcomponent
             @endif
 
+
+            @livewire('cooperation.frontend.layouts.parts.alerts', ['building' => $building, 'inputSource' => $masterInputSource])
             @livewire('cooperation.frontend.layouts.parts.messages')
 
             {{-- Keep local for ease of use --}}
             @if(app()->isLocal())
-                @if(($building = \App\Helpers\HoomdossierSession::getBuilding(true)) instanceof \App\Models\Building && $building->hasCompletedQuickScan(\App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT)))
+                @if($building instanceof \App\Models\Building && $building->hasCompletedQuickScan($masterInputSource))
                     @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
                         {{-- Loaded in NavbarComposer --}}
                         @foreach($expertSteps as $expertStep)
@@ -115,6 +116,8 @@
                     @endcomponent
                 @endif
             @endif
+
+
 
             @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-account-circle"></i>'])
                 <li>

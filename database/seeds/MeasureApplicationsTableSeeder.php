@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\MeasureApplication;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -26,7 +27,7 @@ class MeasureApplicationsTableSeeder extends Seeder
         $measureApplications = [
             // Energiebesparende maatregelen
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Vloerisolatie',
                 ],
@@ -51,7 +52,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Bodemisolatie',
                 ],
@@ -76,7 +77,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Vloerisolatie, meer info nodig',
                 ],
@@ -101,7 +102,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Spouwmuurisolatie',
                 ],
@@ -126,7 +127,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Binnengevelisolatie',
                 ],
@@ -151,7 +152,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Muurisolatie, meer info nodig',
                 ],
@@ -176,7 +177,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [ // stap: isolerende beglazing
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Glas-in-lood vervangen',
                 ],
@@ -201,7 +202,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [ // stap: isolerende beglazing
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'HR++ glas',
                 ],
@@ -226,7 +227,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [ // stap: isolerende beglazing
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'HR++ glas + kozijn',
                 ],
@@ -251,7 +252,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [ // stap: isolerende beglazing
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'HR+++ glas + kozijn',
                 ],
@@ -276,7 +277,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Kierdichting verbeteren',
                 ],
@@ -301,7 +302,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Schuin dak isoleren van binnenuit',
                 ],
@@ -326,7 +327,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Schuin dak isoleren + dakpannen vervangen',
                 ],
@@ -351,7 +352,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Plat dak isoleren op dakbedekking',
                 ],
@@ -376,7 +377,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Plat dak isoleren + dakbedekking vervangen',
                 ],
@@ -401,7 +402,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'CV-ketel vervangen ',
                 ],
@@ -426,7 +427,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Zonneboiler plaatsen/vervangen',
                 ],
@@ -451,7 +452,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Zonnepanelen plaatsen/vervangen',
                 ],
@@ -476,7 +477,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' =>'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Gebalanceerde ventilatie',
                 ],
@@ -501,7 +502,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' =>'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Decentrale mechanische ventilatie',
                 ],
@@ -526,7 +527,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' =>'energy_saving',
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
                 'measure_name' => [
                     'nl' => 'Vraaggestuurde ventilatie',
                 ],
@@ -550,11 +551,161 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'icon' => 'icon-ventilation',
                 ],
             ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Hybride warmtepomp met buitenlucht',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'hybrid-heat-pump-outside-air',
+                'application' => 'place',
+                'costs' => 4500,
+                'cost_unit' => [
+                    'nl' => 'per stuk',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'verwarming',
+                'configurations' => [
+                    'comfort' => 2,
+                    'icon' => 'icon-heat-pump-hybrid',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Hybride warmtepomp met ventilatielucht',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'hybrid-heat-pump-ventilation-air',
+                'application' => 'place',
+                'costs' => 3500,
+                'cost_unit' => [
+                    'nl' => 'per stuk',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'verwarming',
+                'configurations' => [
+                    'comfort' => 2,
+                    'icon' => 'icon-heat-pump-hybrid',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Hybride warmtepomp met pvt panelen',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'hybrid-heat-pump-pvt-panels',
+                'application' => 'place',
+                'costs' => 11000,
+                'cost_unit' => [
+                    'nl' => 'per stuk',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'verwarming',
+                'configurations' => [
+                    'comfort' => 2,
+                    'icon' => 'icon-heat-pump-hybrid',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Volledige warmtepomp met buitenlucht',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'full-heat-pump-outside-air',
+                'application' => 'place',
+                'costs' => 12000,
+                'cost_unit' => [
+                    'nl' => 'per stuk',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'verwarming',
+                'configurations' => [
+                    'comfort' => 3,
+                    'icon' => 'icon-heat-pump',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Volledige warmtepomp met bodemwarmte',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'full-heat-pump-ground-heat',
+                'application' => 'place',
+                'costs' => 29000,
+                'cost_unit' => [
+                    'nl' => 'per stuk',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'verwarming',
+                'configurations' => [
+                    'comfort' => 3,
+                    'icon' => 'icon-heat-pump',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Volledige warmtepomp met pvt panelen',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'full-heat-pump-pvt-panels',
+                'application' => 'place',
+                'costs' => 24000,
+                'cost_unit' => [
+                    'nl' => 'per stuk',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'verwarming',
+                'configurations' => [
+                    'comfort' => 3,
+                    'icon' => 'icon-heat-pump',
+                ],
+            ],
             // add more energiebesparende maatregelen here!
 
             // Onderhoudsmaatregelen
             [
-                'measure_type' => 'maintenance',
+                'measure_type' => MeasureApplication::MAINTENANCE,
                 'measure_name' => [
                     'nl' => 'Voegwerk repareren',
                 ],
@@ -579,7 +730,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'maintenance',
+                'measure_type' => MeasureApplication::MAINTENANCE,
                 'measure_name' => [
                     'nl' => 'Metselwerk reinigen',
                 ],
@@ -604,7 +755,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'maintenance',
+                'measure_type' => MeasureApplication::MAINTENANCE,
                 'measure_name' => [
                     'nl' => 'Gevelimpregnatie',
                 ],
@@ -629,7 +780,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'maintenance',
+                'measure_type' => MeasureApplication::MAINTENANCE,
                 'measure_name' => [
                     'nl' => 'Gevelschilderwerk (stuc- of metselwerk)',
                 ],
@@ -654,7 +805,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'maintenance',
+                'measure_type' => MeasureApplication::MAINTENANCE,
                 'measure_name' => [
                     'nl' => 'Gevelschilderwerk (hout)',
                 ],
@@ -679,7 +830,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'maintenance',
+                'measure_type' => MeasureApplication::MAINTENANCE,
                 'measure_name' => [
                     'nl' => 'Dakpannen vervangen',
                 ],
@@ -704,7 +855,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'maintenance',
+                'measure_type' => MeasureApplication::MAINTENANCE,
                 'measure_name' => [
                     'nl' => 'Dakbedekking vervangen',
                 ],
@@ -729,7 +880,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'maintenance',
+                'measure_type' => MeasureApplication::MAINTENANCE,
                 'measure_name' => [
                     'nl' => 'Dakreparatie',
                 ],
@@ -754,7 +905,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'maintenance',
+                'measure_type' => MeasureApplication::MAINTENANCE,
                 'measure_name' => [
                     'nl' => 'Zinkwerk schuin dak',
                 ],
@@ -779,7 +930,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
             ],
             [
-                'measure_type' => 'maintenance',
+                'measure_type' => MeasureApplication::MAINTENANCE,
                 'measure_name' => [
                     'nl' => 'Zinkwerk plat dak',
                 ],
@@ -810,14 +961,31 @@ class MeasureApplicationsTableSeeder extends Seeder
         foreach ($measureApplications as $measureApplication) {
             $step = DB::table('steps')->where('slug', $measureApplication['step'])->first();
 
+            $existingMeasureApplication = DB::table('measure_applications')
+                ->where('short',$measureApplication['short'])->first();
+
+            $name = $measureApplication['measure_name'];
+            $info = $measureApplication['measure_info'];
+            $configurations = $measureApplication['configurations'];
+
+            if ($existingMeasureApplication instanceof stdClass) {
+                $name = json_decode($existingMeasureApplication->measure_name);
+                $info = json_decode($existingMeasureApplication->measure_info);
+
+                $savedConfig = json_decode($existingMeasureApplication->measure_info);
+                if (! empty($savedConfig['icon'])) {
+                    $configurations['icon'] = $savedConfig['icon'];
+                }
+            }
+
             DB::table('measure_applications')->updateOrInsert(
                 [
                     'short' => $measureApplication['short'],
                 ],
                 [
                     'measure_type' => $measureApplication['measure_type'],
-                    'measure_name' => json_encode($measureApplication['measure_name']),
-                    'measure_info' => json_encode($measureApplication['measure_info']),
+                    'measure_name' => json_encode($name),
+                    'measure_info' => json_encode($info),
                     'application' => $measureApplication['application'],
                     'costs' => $measureApplication['costs'],
                     'cost_unit' => json_encode($measureApplication['cost_unit']),
@@ -825,7 +993,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'maintenance_interval' => $measureApplication['maintenance_interval'],
                     'maintenance_unit' => json_encode($measureApplication['maintenance_unit']),
                     'step_id' => $step->id,
-                    'configurations' => json_encode($measureApplication['configurations']),
+                    'configurations' => json_encode($configurations),
                 ]
             );
         }

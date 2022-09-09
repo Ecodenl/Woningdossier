@@ -54,6 +54,7 @@ class SeedAll extends Command
         Artisan::call('db:seed', ['--class' => \AlertsTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \KeyFigureHeatPumpCoveragesTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \HeatPumpCharacteristicsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => \MeasureApplicationsTableSeeder::class, '--force' => true]);
 
         Artisan::call('cache:clear');
     }

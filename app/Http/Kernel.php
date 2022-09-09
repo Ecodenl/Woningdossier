@@ -36,7 +36,6 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\CheckForCooperationRedirect::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\CheckForCooperationRedirect::class,
             \App\Http\Middleware\UserLanguage::class,
             \App\Http\Middleware\SentryContext::class,
         ],

@@ -19,6 +19,12 @@ class CooperationMiddleware
      */
     public function handle($request, Closure $next)
     {
+        Log::info("DBG ". $request->url());
+        $a = $request->route('cooperation');
+        Log::info("DBG ". $a);
+        $b = $request->route('cooperation');
+        Log::info("DBG ". $b);
+
         $cooperation = $request->route()->parameter('cooperation');
 
         //Log::debug("DBG CooperationMiddleware : Cooperation = " . $cooperation);

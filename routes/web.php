@@ -451,6 +451,7 @@ Route::get('/', function () {
     if (stristr(\Request::url(), '://www.')) {
         // The user has prefixed the subdomain with a www subdomain.
         // Remove the www part and redirect to that.
+        Log::channel('single')->debug("route..");
         return redirect(str_replace('://www.', '://', Request::url()));
     }
 

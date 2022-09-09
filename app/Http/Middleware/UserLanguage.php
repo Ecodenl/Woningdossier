@@ -19,7 +19,9 @@ class UserLanguage
      */
     public function handle($request, Closure $next)
     {
-        Log::channel('single')->debug(__METHOD__);
+        if ($request->query('test') == "1") {
+            Log::channel('single')->debug(__METHOD__);
+        }
         if (app()->environment('local')) {
             // Set the language from the URL segment (this allows us to later on
             // add a language switcher via URL for better front-site indexing).

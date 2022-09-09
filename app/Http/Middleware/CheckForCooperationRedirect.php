@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Cooperation;
 use App\Models\CooperationRedirect;
 use Closure;
+use Illuminate\Support\Facades\Log;
 
 class CheckForCooperationRedirect
 {
@@ -20,8 +21,10 @@ class CheckForCooperationRedirect
         $cooperation = $request->route()->parameter('cooperation');
 
         if (!$cooperation instanceof Cooperation) {
-
+            Log::debug("cooperation is not an instance of Cooperation");
             if (!empty($cooperation)) {
+                Log::debug("cooperation is not empty");
+                Log::debug("cooperation = '" . $cooperation . "'");
                 $redirect = CooperationRedirect::from($cooperation)->first();
 
                 if ($redirect instanceof CooperationRedirect) {

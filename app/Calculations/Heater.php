@@ -122,14 +122,10 @@ class Heater extends \App\Calculations\Calculator
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
 
-                $answer = $this->getAnswer('heater-type');
-                $serviceValue = ServiceValue::find($answer);
+                $answer = array_merge($this->getAnswer('heat-source'), $this->getAnswer('heat-source-warm-tap-water'));
 
-                if ($serviceValue instanceof ServiceValue) {
-                    $currentYear = Carbon::now()->year;
-                    // If the value is 1 ('geen'), we want it in to-do
-                    $result['year'] = $serviceValue->calculate_value > 1 ? $currentYear + 5 : $currentYear;
-                }
+                $currentYear = Carbon::now()->year;
+                $result['year'] = in_array('sun-boiler', $answer) ? $currentYear + 5 : $currentYear;
 
                 if ($helpFactor >= 0.84) {
                     $result['performance'] = [

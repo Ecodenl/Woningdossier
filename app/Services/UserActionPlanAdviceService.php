@@ -383,12 +383,11 @@ class UserActionPlanAdviceService
                     break;
 
                 case 'hr-boiler':
-                    // We first need to check if HR-boiler has been selected as option
+                    // We first need to check if the HR-boiler has been selected as option
                     $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
                     $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
-                    $heatSourceAnswer = $building->getAnswer($masterInputSource, $heatSourceQuestion);
-                    $heatSourceWaterAnswer = $building->getAnswer($masterInputSource, $heatSourceWaterQuestion);
-                    if (in_array('hr-boiler', $heatSourceAnswer) || in_array('hr-boiler', $heatSourceWaterAnswer)) {
+                    $answer = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion), $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    if (in_array('hr-boiler', $answer)) {
                         // The user has a boiler, let's see if there's an age for it
                         $ageQuestion = ToolQuestion::findByShort('boiler-placed-date');
                         $answer = $building->getAnswer($masterInputSource, $ageQuestion);
@@ -408,15 +407,13 @@ class UserActionPlanAdviceService
                     break;
 
                 case 'sun-boiler':
-                    $hasSunBoilerQuestion = ToolQuestion::findByShort('heater-type');
-                    $answer = $building->getAnswer($masterInputSource, $hasSunBoilerQuestion);
-                    $serviceValue = ServiceValue::find($answer);
+                    $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
+                    $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
+                    $answer = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion), $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
 
-                    if ($serviceValue instanceof ServiceValue) {
-                        // If the value is 1 (geen), we want it in to-do
-                        $category = $serviceValue->calculate_value > 1 ? static::CATEGORY_COMPLETE
-                            : static::CATEGORY_TO_DO;
-                    }
+                    // If they don't have a sun-boiler, we will put it in to-do
+                    $category = in_array('sun-boiler', $answer) ? static::CATEGORY_COMPLETE
+                        : static::CATEGORY_TO_DO;
                     break;
 
                 case 'solar-panels':

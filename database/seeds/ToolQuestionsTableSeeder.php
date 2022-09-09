@@ -51,8 +51,6 @@ class ToolQuestionsTableSeeder extends Seeder
         // Solar panels
         $solarPanels = Service::findByShort('total-sun-panels');
 
-        $heater = Service::findByShort('sun-boiler');
-
         // Floor insulation
         $floorInsulation = Element::findByShort('floor-insulation');
 
@@ -821,31 +819,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'string'],
                 'short' => 'heat-source-warm-tap-water-other',
                 'translation' => 'Wat wordt er dan gebruikt voor warm tapwater?',
-            ],
-            [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
-                'save_in' => "building_services.{$heater->id}.service_value_id",
-                'short' => 'heater-type',
-                'translation' => "Heeft u een zonneboiler?",
-                'tool_question_values' => $heater->values()->orderBy('order')->get(),
-                'extra' => [
-                    'column' => 'calculate_value',
-                    'data' => [
-                        1 => [
-                            'icon' => 'icon-sun-boiler-none',
-                        ],
-                        2 => [
-                            'icon' => 'icon-sun-boiler-hot-water',
-                        ],
-                        3 => [
-                            'icon' => 'icon-sun-boiler-heating',
-                        ],
-                        4 => [
-                            'icon' => 'icon-sun-boiler-both',
-                        ],
-                    ],
-                ],
             ],
             [
                 'data_type' => Caster::IDENTIFIER,

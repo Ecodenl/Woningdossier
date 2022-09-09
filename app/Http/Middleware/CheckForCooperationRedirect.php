@@ -20,12 +20,19 @@ class CheckForCooperationRedirect
         $cooperation = $request->route()->parameter('cooperation');
 
         if (!$cooperation instanceof Cooperation) {
-            $redirect = CooperationRedirect::from($cooperation)->first();
 
-            if ($redirect instanceof CooperationRedirect) {
-                return redirect(
-                    str_ireplace($cooperation, $redirect->cooperation->slug, $request->url())
-                );
+            if (!empty($cooperation)) {
+                $redirect = CooperationRedirect::from($cooperation)->first();
+
+                if ($redirect instanceof CooperationRedirect) {
+                    return redirect(
+                        str_ireplace(
+                            $cooperation,
+                            $redirect->cooperation->slug,
+                            $request->url()
+                        )
+                    );
+                }
             }
         }
 

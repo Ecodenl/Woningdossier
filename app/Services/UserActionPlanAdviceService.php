@@ -3,9 +3,8 @@
 namespace App\Services;
 
 use App\Helpers\Arr;
-use App\Helpers\Calculator;
-use App\Helpers\Number;
-use App\Helpers\NumberFormatter;
+use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\ElementValue;
@@ -14,12 +13,11 @@ use App\Models\MeasureApplication;
 use App\Models\RoofType;
 use App\Models\ServiceValue;
 use App\Models\Step;
+use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
-use App\Scopes\GetValueScope;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -203,25 +201,98 @@ class UserActionPlanAdviceService
     public static function setAdviceVisibility(UserActionPlanAdvice $userActionPlanAdvice)
     {
         $building = $userActionPlanAdvice->user->building;
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         // It's always going to be visible by default. Further logic follows.
         $visible = true;
 
         $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
 
-        if ($advisable instanceof MeasureApplication && $advisable->measure_type === MeasureApplication::MAINTENANCE) {
-            // If it's maintenance, change logic. We never show maintenance in the quickscan, only in expert
-            $visible = false;
+        if ($advisable instanceof MeasureApplication) {
+            if ($advisable->measure_type === MeasureApplication::MAINTENANCE) {
+                // If it's maintenance, change logic. We never show maintenance in the quickscan, only in expert
+                $visible = false;
 
-            if ($building instanceof Building && $building->hasAnsweredExpertQuestion()) {
-                // Building has answered an expert question, so it's visible, with 2 exceptions...
-                $visible = true;
+                if ($building instanceof Building && $building->hasAnsweredExpertQuestion()) {
+                    // Building has answered an expert question, so it's visible, with 2 exceptions...
+                    $visible = true;
 
-                $shorts = ['replace-tiles', 'replace-roof-insulation'];
+                    $shorts = ['replace-tiles', 'replace-roof-insulation'];
 
-                // Logic is simple for these 2 exceptions. If it's within 5 years, then we _do_ show it
-                if (in_array($advisable->short, $shorts) && !is_null($userActionPlanAdvice->year)) {
-                    $visible = $userActionPlanAdvice->year - now()->format('Y') <= 5;
+                    // Logic is simple for these 2 exceptions. If it's within 5 years, then we _do_ show it
+                    if (in_array($advisable->short, $shorts) && ! is_null($userActionPlanAdvice->year)) {
+                        $visible = $userActionPlanAdvice->year - now()->format('Y') <= 5;
+                    }
+                }
+            } elseif ($advisable->measure_type === MeasureApplication::ENERGY_SAVING) {
+                switch ($advisable->short) {
+                    case 'high-efficiency-boiler-replace':
+                        $subStep = SubStep::bySlug('warmtepomp')->first();
+                        $evaluation = ConditionEvaluator::init()
+                            ->building($building)
+                            ->inputSource($masterInputSource)
+                            ->evaluate($subStep->conditions);
+
+                        if ($evaluation) {
+                            // We hide the HR-boiler if the user has a full heat pump
+                            $type = ServiceValue::find(
+                                $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type'))
+                            );
+
+                            if ($type instanceof ServiceValue && $type->calculate_value > 3) {
+                                $visible = false;
+                            }
+                        }
+                        break;
+
+                    case 'hybrid-heat-pump-outside-air':
+                    case 'hybrid-heat-pump-ventilation-air':
+                    case 'hybrid-heat-pump-pvt-panels':
+                    case 'full-heat-pump-outside-air':
+                    case 'full-heat-pump-ground-heat':
+                    case 'full-heat-pump-pvt-panels':
+                        $considers = in_array('heat-pump', $building->getAnswer($masterInputSource,
+                            ToolQuestion::findByShort('heat-source-considerable')));
+                        $newType = ServiceValue::find(
+                            $building->getAnswer($masterInputSource, ToolQuestion::findByShort('new-heat-pump-type'))
+                        );
+
+                        // If the user has specifically selected which one they want, we will set only that one visible
+                        // Otherwise, we will check the interest.
+                        if ($considers && $newType instanceof ServiceValue) {
+                            $visible = HeatPumpHelper::MEASURE_SERVICE_LINK[$advisable->short] === $newType->calculate_value;
+                        } else {
+                            // The user has not defined a new type (yet). We will check their interest
+                            $subStep = SubStep::bySlug('warmtepomp-interesse')->first();
+                            $evaluation = ConditionEvaluator::init()
+                                ->building($building)
+                                ->inputSource($masterInputSource)
+                                ->evaluate($subStep->conditions);
+                            $interested = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('interested-in-heat-pump')) === 'yes';
+
+                            // If they can answer the interest, and are interested, we will look at their variant interest
+                            if ($evaluation && $interested) {
+                                $interest = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('interested-in-heat-pump-variant'));
+                                if ($interest === 'full-heat-pump') {
+                                    $visible = $advisable->short === 'full-heat-pump-outside-air';
+                                } elseif ($interest === 'hybrid-heat-pump') {
+                                    $visible = $advisable->short === 'hybrid-heat-pump-outside-air';
+                                } else {
+                                    // If they want advise, we advise based on heating temperature
+                                    $temp = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('boiler-setting-comfort-heat'));
+
+                                    if ($temp === 'temp-low') {
+                                        $visible = $advisable->short === 'full-heat-pump-outside-air';
+                                    } else {
+                                        // TODO: Unsure answer option...
+                                        $visible = $advisable->short === 'hybrid-heat-pump-outside-air';
+                                    }
+                                }
+                            } else {
+                                $visible = false;
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -282,6 +353,12 @@ class UserActionPlanAdviceService
                 'ventilation-balanced-wtw' => 'ventilation',
                 'ventilation-decentral-wtw' => 'ventilation',
                 'ventilation-demand-driven' => 'ventilation',
+                'hybrid-heat-pump-outside-air' => 'heat-pump',
+                'hybrid-heat-pump-ventilation-air' => 'heat-pump',
+                'hybrid-heat-pump-pvt-panels' => 'heat-pump',
+                'full-heat-pump-outside-air' => 'heat-pump',
+                'full-heat-pump-ground-heat' => 'heat-pump',
+                'full-heat-pump-pvt-panels' => 'heat-pump',
             ];
 
             $logicShort = $categorization[$measureApplication->short];
@@ -484,6 +561,20 @@ class UserActionPlanAdviceService
                                 break;
                         }
                     }
+                    break;
+
+                case 'heat-pump':
+                    $subStep = SubStep::bySlug('warmtepomp')->first();
+                    $evaluation = ConditionEvaluator::init()
+                        ->building($building)
+                        ->inputSource($masterInputSource)
+                        ->evaluate($subStep->conditions);
+                    $type = ServiceValue::find(
+                        $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type'))
+                    );
+
+                    $category = $evaluation && $type instanceof ServiceValue ? static::CATEGORY_COMPLETE
+                        : static::CATEGORY_TO_DO;
                     break;
             }
         }

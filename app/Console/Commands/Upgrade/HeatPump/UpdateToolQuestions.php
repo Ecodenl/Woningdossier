@@ -158,12 +158,12 @@ class UpdateToolQuestions extends Command
             'Hybride warmtepomp met pvt panelen' => [
                 'comfort' => 2,
             ],
-            'Volledige warmtepomp met bodemwarmte' => [
-                'old' => 'Volledige warmtepomp bodem',
-                'comfort' => 3,
-            ],
             'Volledige warmtepomp met buitenlucht' => [
                 'old' => 'Volledige warmtepomp buitenlucht',
+                'comfort' => 3,
+            ],
+            'Volledige warmtepomp met bodemwarmte' => [
+                'old' => 'Volledige warmtepomp bodem',
                 'comfort' => 3,
             ],
             'Volledige warmtepomp met pvt panelen' => [

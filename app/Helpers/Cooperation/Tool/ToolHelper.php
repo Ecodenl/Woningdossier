@@ -3,6 +3,7 @@
 namespace App\Helpers\Cooperation\Tool;
 
 use App\Models\InputSource;
+use App\Models\ToolQuestion;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -85,11 +86,19 @@ abstract class ToolHelper
         $considers = $this->getValues("considerables.{$model->id}.is_considering");
 
         // when not set, it will be null. not set = not considering
-        // almost impossible to happen as the $user->considers() method already returns a default but a fallback is never bet.
+        // almost impossible to happen as the $user->considers() method already returns a default but a fallback is never bad.
         if (is_null($considers)) {
             $considers = true;
         }
         return $considers;
+    }
+
+    public function considersByAnswer(string $toolQuestion, string $answer)
+    {
+        return in_array($answer, $this->building->getAnswer(
+            $this->masterInputSource,
+            ToolQuestion::findByShort($toolQuestion)
+        ));
     }
 
     /**

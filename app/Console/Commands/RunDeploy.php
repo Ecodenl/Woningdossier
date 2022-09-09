@@ -52,6 +52,5 @@ class RunDeploy extends Command
 //            $this->call($command, $arguments);
 //        }
 
-        $this->call(SeedCommand::class, ['--class' => 'CooperationRedirectsTableSeeder', '--force' => true]);
     }
 }

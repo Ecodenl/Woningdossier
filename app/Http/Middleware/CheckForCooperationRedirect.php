@@ -18,9 +18,8 @@ class CheckForCooperationRedirect
      */
     public function handle($request, Closure $next)
     {
-        Log::info("DBG ". $request->url());
+        Log::channel('single')->debug(__METHOD__);
         $cooperation = $request->route('cooperation');
-        Log::info("DBG ". $cooperation);
 
         if (!$cooperation instanceof Cooperation) {
             //Log::debug("DBG cooperation is not an instance of Cooperation");

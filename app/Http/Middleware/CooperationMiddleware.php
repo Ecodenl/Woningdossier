@@ -19,19 +19,11 @@ class CooperationMiddleware
      */
     public function handle($request, Closure $next)
     {
-        Log::info("DBG ". $request->url());
-        $a = $request->route('cooperation');
-        Log::info("DBG ". $a);
-        $b = $request->route('cooperation');
-        Log::info("DBG ". $b);
-
+        Log::channel('single')->debug(__METHOD__);
         $cooperation = $request->route()->parameter('cooperation');
-
-        //Log::debug("DBG CooperationMiddleware : Cooperation = " . $cooperation);
 
         // if no valid cooperation is found, return to index
         if (!$cooperation instanceof Cooperation) {
-            //Log::debug("DBG CooperationMiddleware : not instanceof Cooperation");
             return redirect()->route('index');
         }
 

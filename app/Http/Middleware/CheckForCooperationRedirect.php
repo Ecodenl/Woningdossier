@@ -18,13 +18,12 @@ class CheckForCooperationRedirect
      */
     public function handle($request, Closure $next)
     {
-        $cooperation = $request->route()->parameter('cooperation');
+        $cooperation = $request->route('cooperation');
 
         if (!$cooperation instanceof Cooperation) {
             Log::debug("cooperation is not an instance of Cooperation");
             if (!empty($cooperation)) {
-                Log::debug("cooperation is not empty");
-                Log::debug("cooperation = '" . $cooperation . "'");
+                Log::debug("cooperation is not empty ( = '" . $cooperation . "')");
                 $redirect = CooperationRedirect::from($cooperation)->first();
 
                 if ($redirect instanceof CooperationRedirect) {

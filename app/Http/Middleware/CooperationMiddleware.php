@@ -21,11 +21,11 @@ class CooperationMiddleware
     {
         $cooperation = $request->route()->parameter('cooperation');
 
-        Log::debug("CooperationMiddleware : Cooperation = " . $cooperation);
+        Log::debug("DBG CooperationMiddleware : Cooperation = " . $cooperation);
 
         // if no valid cooperation is found, return to index
         if (!$cooperation instanceof Cooperation) {
-            Log::debug("CooperationMiddleware : not instanceof Cooperation");
+            Log::debug("DBG CooperationMiddleware : not instanceof Cooperation");
             return redirect()->route('index');
         }
 

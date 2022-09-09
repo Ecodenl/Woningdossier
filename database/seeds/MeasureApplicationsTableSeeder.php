@@ -969,10 +969,10 @@ class MeasureApplicationsTableSeeder extends Seeder
             $configurations = $measureApplication['configurations'];
 
             if ($existingMeasureApplication instanceof stdClass) {
-                $name = json_decode($existingMeasureApplication->measure_name);
-                $info = json_decode($existingMeasureApplication->measure_info);
+                $name = json_decode($existingMeasureApplication->measure_name, true);
+                $info = json_decode($existingMeasureApplication->measure_info, true);
 
-                $savedConfig = json_decode($existingMeasureApplication->measure_info);
+                $savedConfig = json_decode($existingMeasureApplication->measure_info, true);
                 if (! empty($savedConfig['icon'])) {
                     $configurations['icon'] = $savedConfig['icon'];
                 }

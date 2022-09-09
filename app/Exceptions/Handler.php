@@ -122,11 +122,17 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof ModelNotFoundException) {
+            $cooperation = $request->route('cooperation');
             if (!empty($cooperation)) {
                 Log::debug("cooperation is not empty ( = '" . $cooperation . "')");
                 $redirect = CooperationRedirect::from($cooperation)->first();
 
                 if ($redirect instanceof CooperationRedirect) {
+                    Log::debug("Redirect to " . str_ireplace(
+                            $cooperation,
+                            $redirect->cooperation->slug,
+                            $request->url()
+                        ));
                     return redirect(
                         str_ireplace(
                             $cooperation,

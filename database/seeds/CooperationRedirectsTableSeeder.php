@@ -31,6 +31,10 @@ class CooperationRedirectsTableSeeder extends Seeder
 
         foreach($redirects as $redirect){
             $cooperation = $this->getCooperationIdBySlug($redirect['cooperation_id']);
+            if (!$cooperation instanceof \stdClass || !property_exists($cooperation, 'id')){
+                dump("Could not find cooperation by slug for redirect: " . data_get($redirect, 'cooperation_id'));
+                continue;
+            }
             $redirect['cooperation_id'] = $cooperation->id;
             DB::table('cooperation_redirects')->updateOrInsert($redirect);
         }

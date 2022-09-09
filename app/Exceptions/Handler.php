@@ -119,6 +119,24 @@ class Handler extends ExceptionHandler
             return redirect()->route('cooperation.home');
         }
 
+        //        if ($exception instanceof ModelNotFoundException) {
+//
+//            if (!empty($cooperation)) {
+//                Log::debug("cooperation is not empty ( = '" . $cooperation . "')");
+//                $redirect = CooperationRedirect::from($cooperation)->first();
+//
+//                if ($redirect instanceof CooperationRedirect) {
+//                    return redirect(
+//                        str_ireplace(
+//                            $cooperation,
+//                            $redirect->cooperation->slug,
+//                            $request->url()
+//                        )
+//                    );
+//                }
+//            }
+//        }
+
         return parent::render($request, $exception);
     }
 }

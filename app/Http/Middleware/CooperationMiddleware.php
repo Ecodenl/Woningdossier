@@ -21,8 +21,11 @@ class CooperationMiddleware
     {
         $cooperation = $request->route()->parameter('cooperation');
 
+        Log::debug("CooperationMiddleware : Cooperation = " . $cooperation);
+
         // if no valid cooperation is found, return to index
         if (!$cooperation instanceof Cooperation) {
+            Log::debug("CooperationMiddleware : not instanceof Cooperation");
             return redirect()->route('index');
         }
 

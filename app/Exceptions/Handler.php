@@ -6,11 +6,13 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Models\Cooperation;
+use App\Models\CooperationRedirect;
 use App\Models\Role;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Spatie\Permission\Exceptions\UnauthorizedException as SpatieUnauthorizedException;
 
@@ -119,23 +121,28 @@ class Handler extends ExceptionHandler
             return redirect()->route('cooperation.home');
         }
 
-        //        if ($exception instanceof ModelNotFoundException) {
-//
-//            if (!empty($cooperation)) {
-//                Log::debug("cooperation is not empty ( = '" . $cooperation . "')");
-//                $redirect = CooperationRedirect::from($cooperation)->first();
-//
-//                if ($redirect instanceof CooperationRedirect) {
-//                    return redirect(
-//                        str_ireplace(
-//                            $cooperation,
-//                            $redirect->cooperation->slug,
-//                            $request->url()
-//                        )
-//                    );
-//                }
-//            }
-//        }
+        if ($exception instanceof ModelNotFoundException) {
+            $cooperation = $request->route('cooperation');
+            if (!empty($cooperation)) {
+                Log::debug("cooperation is not empty ( = '" . $cooperation . "')");
+                $redirect = CooperationRedirect::from($cooperation)->first();
+
+                if ($redirect instanceof CooperationRedirect) {
+                    Log::debug("Redirect to " . str_ireplace(
+                            $cooperation,
+                            $redirect->cooperation->slug,
+                            $request->url()
+                        ));
+                    return redirect(
+                        str_ireplace(
+                            $cooperation,
+                            $redirect->cooperation->slug,
+                            $request->url()
+                        )
+                    );
+                }
+            }
+        }
 
         return parent::render($request, $exception);
     }

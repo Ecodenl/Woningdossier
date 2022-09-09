@@ -93,11 +93,7 @@
                                 @else
                                     @if(! \App\helpers\HoomdossierSession::isUserObserving())
                                         <button class="float-right btn btn-purple submit-main-form">
-                                            @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
-                                                @lang('default.buttons.next-page')
-                                            @else
-                                                @lang('default.buttons.save')
-                                            @endif
+                                            @lang('default.buttons.save')
                                         </button>
                                     @endif
                                 @endif
@@ -121,11 +117,7 @@
                                                 @livewire('cooperation.frontend.tool.expert-scan.buttons')
                                             @else
                                                 <button class="float-right btn btn-purple submit-main-form">
-                                                    @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
-                                                        @lang('default.buttons.next-page')
-                                                    @else
-                                                        @lang('default.buttons.save')
-                                                    @endif
+                                                    @lang('default.buttons.save')
                                                 </button>
                                             @endif
                                         </div>

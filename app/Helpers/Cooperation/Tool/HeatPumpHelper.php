@@ -44,7 +44,7 @@ class HeatPumpHelper extends ToolHelper
             ),
             'heatingTemperature' => $comfortHeat->toolQuestionCustomValues()->whereShort(
                 $this->building->getAnswer($this->masterInputSource, $comfortHeat),
-            ),
+            )->first(),
             'desiredPower' => $this->building->getAnswer($this->masterInputSource,
                 ToolQuestion::findByShort('heat-pump-preferred-power')),
             'updated_measure_ids' => [],

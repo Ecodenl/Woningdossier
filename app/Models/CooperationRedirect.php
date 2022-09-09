@@ -18,7 +18,7 @@ class CooperationRedirect extends Model
 
     public function scopeFrom(Builder $query, string $slug)
     {
-        $slug = strip_tags($slug);
+        $slug = strtolower(strip_tags($slug));
 
         return $query->whereRaw('lower(from_slug) = ?', [$slug]);
     }

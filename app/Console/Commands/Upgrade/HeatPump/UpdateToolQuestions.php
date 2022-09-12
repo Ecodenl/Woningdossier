@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Upgrade\HeatPump;
 
 use App\Helpers\Conditions\ConditionEvaluator;
-use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\CompletedStep;
 use App\Models\Service;
@@ -430,7 +429,8 @@ class UpdateToolQuestions extends Command
 
                 $incompleteSubSteps = $step->subSteps()
                     ->whereNotIn('id', $irrelevantSubSteps)
-                    ->orderBy('order');
+                    ->orderBy('order')
+                    ->get();
 
                 $evaluator = ConditionEvaluator::init()
                     ->building($building)
@@ -446,7 +446,7 @@ class UpdateToolQuestions extends Command
                 }
 
                 if ($shouldIncomplete) {
-                    StepHelper::incomplete($step, $building, $inputSource);
+                    $completedStep->delete();
                 }
 
                 ++$i;

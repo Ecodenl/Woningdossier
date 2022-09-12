@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
 
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\SubStepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
@@ -159,11 +160,15 @@ class Form extends Component
         // since we are done saving all the filled in answers, we can safely mark the sub steps as completed
         foreach ($this->subSteps as $subStep) {
             // Now mark the sub step as complete
-            CompletedSubStep::firstOrCreate([
+            $completedSubStep = CompletedSubStep::firstOrCreate([
                 'sub_step_id' => $subStep->id,
                 'building_id' => $this->building->id,
                 'input_source_id' => $this->currentInputSource->id
             ]);
+
+            if (! $completedSubStep->wasRecentlyCreated) {
+                SubStepHelper::checkConditionals($completedSubStep);
+            }
         }
 
         return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $this->cooperation]);

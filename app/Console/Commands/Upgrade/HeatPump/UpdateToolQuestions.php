@@ -412,6 +412,16 @@ class UpdateToolQuestions extends Command
         $completedStepsQuery->orderBy('id')->chunkById(100, function ($completedSteps) use (&$i, $total) {
             foreach ($completedSteps as $completedStep) {
                 $building = $completedStep->building;
+                if (! $building instanceof Building) {
+                    $building = DB::table('buildings')->where('id', $completedStep->building_id)->first();
+
+                    // If a building is deleted, we don't need to notify
+                    if ($building instanceof \stdClass && empty($building->deleted_at)) {
+                        $this->infoLog("Skipping completed_step with ID {$completedStep->id} for non-existent building ({$completedStep->building_id})");
+                    }
+                    continue;
+                }
+
                 $inputSource = $completedStep->inputSource;
                 $step = $completedStep->step;
 

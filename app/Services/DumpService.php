@@ -45,17 +45,63 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
-use App\Models\Service;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
-use App\Scopes\NoGeneralDataScope;
+use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
 
 class DumpService
 {
+    use FluentCaller;
+
+    protected Cooperation $cooperation;
+    protected Building $building;
+    protected InputSource $inputSource;
+
+    /**
+     * @param  Cooperation  $cooperation
+     *
+     * @return $this
+     */
+    public function cooperation(Cooperation $cooperation): self
+    {
+        $this->cooperation = $cooperation;
+
+        return $this;
+    }
+
+    /**
+     * @param  Building  $building
+     *
+     * @return $this
+     */
+    public function building(Building $building): self
+    {
+        $this->building = $building;
+
+        return $this;
+    }
+
+    /**
+     * @param  InputSource  $inputSource
+     *
+     * @return $this
+     */
+    public function inputSource(InputSource $inputSource): self
+    {
+        $this->inputSource = $inputSource;
+
+        return $this;
+    }
+
+
+
+
+
+
     public static function makeHeaderText($stepName, $subStepName, $text)
     {
         // inside the content structure a step with no sub steps will be given a "-" as step

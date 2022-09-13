@@ -229,23 +229,7 @@ class Form extends Component
         }
 
         if (in_array('heat-pump', $considerables)) {
-            $saveInToolQuestionShorts = [
-                'new-heat-pump-type' => 'heatPumpConfigurable',
-                'new-boiler-type' => 'boiler',
-                'new-boiler-setting-comfort-heat' => 'heatingTemperature',
-                'heat-pump-preferred-power' => 'desiredPower',
-            ];
-
-            $calculateData = $this->getCalculateData($saveInToolQuestionShorts);
-
-            // So the heat pump expects "full", resolved answers (models). So, we will set them
-            $calculateData['heatPumpConfigurable'] = ServiceValue::find($calculateData['heatPumpConfigurable']);
-            $calculateData['boiler'] = ServiceValue::find($calculateData['boiler']);
-            $calculateData['heatingTemperature'] = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
-                ->toolQuestionCustomValues()->whereShort($calculateData['heatingTemperature'])->first();
-
-            $heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, $energyHabit,
-                $calculateData);
+            $heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, $energyHabit, collect($this->filledInAnswers));
         }
 
         $this->emit('calculationsPerformed', [

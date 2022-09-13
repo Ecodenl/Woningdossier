@@ -6,10 +6,13 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
+use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 
 abstract class Calculator
 {
+    use FluentCaller;
+
     public Building $building;
 
     public InputSource $inputSource;
@@ -19,6 +22,7 @@ abstract class Calculator
 
     public ?Collection $answers = null;
 
+    // TODO: Replace with just answers in the long run
     public array $calculateData = [];
 
     // TODO: Uniform constructor

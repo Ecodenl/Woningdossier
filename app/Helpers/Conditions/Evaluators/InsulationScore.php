@@ -11,12 +11,10 @@ class InsulationScore implements ShouldEvaluate
 {
     public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool
     {
-        $calculator = new HeatPump(
+        return HeatPump::init(
             $building, $inputSource,
             $building->user->energyHabit()->forInputSource($inputSource)->first(),
-            [],
-        );
-
-        return $calculator->insulationScore() < 2.5;
+            $answers
+        )->insulationScore() < 2.5;
     }
 }

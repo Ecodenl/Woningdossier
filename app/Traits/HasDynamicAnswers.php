@@ -34,7 +34,7 @@ trait HasDynamicAnswers
     }
 
     /**
-     * Static wrapper for getAnswer
+     * Static wrapper for getAnswer. NOTE: This ONLY works for empty constructor classes!
      *
      * @return array|mixed
      */

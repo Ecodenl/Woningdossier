@@ -566,7 +566,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
-                'maintenance_interval' => 0,
+                'maintenance_interval' => 18,
                 'maintenance_unit' => [
                     'nl' => 'jaar',
                 ],
@@ -591,7 +591,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
-                'maintenance_interval' => 0,
+                'maintenance_interval' => 18,
                 'maintenance_unit' => [
                     'nl' => 'jaar',
                 ],
@@ -616,7 +616,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
-                'maintenance_interval' => 0,
+                'maintenance_interval' => 18,
                 'maintenance_unit' => [
                     'nl' => 'jaar',
                 ],
@@ -641,7 +641,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
-                'maintenance_interval' => 0,
+                'maintenance_interval' => 18,
                 'maintenance_unit' => [
                     'nl' => 'jaar',
                 ],
@@ -666,7 +666,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
-                'maintenance_interval' => 0,
+                'maintenance_interval' => 18,
                 'maintenance_unit' => [
                     'nl' => 'jaar',
                 ],
@@ -691,7 +691,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
-                'maintenance_interval' => 0,
+                'maintenance_interval' => 18,
                 'maintenance_unit' => [
                     'nl' => 'jaar',
                 ],
@@ -699,6 +699,31 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'configurations' => [
                     'comfort' => 3,
                     'icon' => 'icon-heat-pump',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Warmtepompboiler plaatsen/vervangen',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'heat-pump-boiler-place-replace',
+                'application' => 'place',
+                'costs' => 25000,
+                'cost_unit' => [
+                    'nl' => 'per stuk',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'verwarming',
+                'configurations' => [
+                    'comfort' => 3,
+                    'icon' => 'icon-placeholder',
                 ],
             ],
             // add more energiebesparende maatregelen here!

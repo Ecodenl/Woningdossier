@@ -4,14 +4,13 @@ namespace App\Traits;
 
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\ToolQuestion;
 use Illuminate\Support\Collection;
 
 trait HasDynamicAnswers
 {
-    public Building $building;
-
-    public InputSource $inputSource;
+    use RetrievesAnswers {
+        getAnswer as getBuildingAnswer;
+    }
 
     public ?Collection $answers = null;
 
@@ -27,10 +26,7 @@ trait HasDynamicAnswers
         $answers = is_null($this->answers) ? collect() : $this->answers;
 
         return $answers->has($toolQuestion) ? $answers->get($toolQuestion) :
-            $this->building->getAnswer(
-                $this->inputSource,
-                ToolQuestion::findByShort($toolQuestion)
-            );
+            $this->getBuildingAnswer($toolQuestion);
     }
 
     /**

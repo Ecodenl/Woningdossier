@@ -5,21 +5,18 @@ namespace App\Helpers\Cooperation\Tool;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Models\User;
+use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 abstract class ToolHelper
 {
+    use RetrievesAnswers;
+
     /** @var User */
     public $user;
 
-    /** @var InputSource */
-    public $inputSource;
-
     public InputSource $masterInputSource;
-
-    /** @var \App\Models\Building */
-    public $building;
 
     public bool $withOldAdvices = true;
 

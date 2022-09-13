@@ -51,9 +51,9 @@ class HeatPumpHelper extends ToolHelper
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 
         $step = Step::findByShort('heat-pump');
-
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
+        // Prepare: Tons of logic to define heat pump measures... (scroll further for heat pump boiler)
         if ($this->considers($step)) {
             $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
             $heatPumpsToCalculate = [];
@@ -66,9 +66,7 @@ class HeatPumpHelper extends ToolHelper
             // First check if the user has a heat pump currently
             $heatPumpSubStep = SubStep::bySlug('warmtepomp')->first();
             if ($evaluator->evaluate($heatPumpSubStep->conditions)) {
-                $type = ServiceValue::find(
-                    $this->building->getAnswer($this->inputSource, ToolQuestion::findByShort('heat-pump-type'))
-                );
+                $type = ServiceValue::find($this->getAnswer('heat-pump-type'));
 
                 if ($type instanceof ServiceValue) {
                     $short = array_flip(static::MEASURE_SERVICE_LINK)[$type->calculate_value];
@@ -78,9 +76,7 @@ class HeatPumpHelper extends ToolHelper
             }
 
             // Now check if they have interest / already selected which heat pump they wants
-            $newType = ServiceValue::find(
-                $this->building->getAnswer($this->inputSource, ToolQuestion::findByShort('new-heat-pump-type'))
-            );
+            $newType = ServiceValue::find($this->getAnswer('new-heat-pump-type'));
 
             if ($newType instanceof ServiceValue) {
                 $short = array_flip(static::MEASURE_SERVICE_LINK)[$newType->calculate_value];
@@ -89,13 +85,11 @@ class HeatPumpHelper extends ToolHelper
                 // No new type selected, so the user has not yet answered the expert page. We will look at their
                 // interest.
                 $heatPumpInterestSubStep = SubStep::bySlug('warmtepomp-interesse')->first();
-                $interested = $this->building->getAnswer($this->inputSource,
-                        ToolQuestion::findByShort('interested-in-heat-pump')) === 'yes';
+                $interested = $this->getAnswer('interested-in-heat-pump') === 'yes';
 
                 // If they can answer the interest, and are interested, we will look at their variant interest
                 if ($evaluator->evaluate($heatPumpInterestSubStep->conditions) && $interested) {
-                    $interest = $this->building->getAnswer($this->inputSource,
-                        ToolQuestion::findByShort('interested-in-heat-pump-variant'));
+                    $interest = $this->getAnswer('interested-in-heat-pump-variant');
 
                     if ($interest === 'full-heat-pump') {
                         $heatPumpsToCalculate[] = 'full-heat-pump-outside-air';
@@ -103,8 +97,7 @@ class HeatPumpHelper extends ToolHelper
                         $heatPumpsToCalculate[] = 'hybrid-heat-pump-outside-air';
                     } else {
                         // If they want advise, we advise based on heating temperature
-                        $temp = $this->building->getAnswer($this->inputSource,
-                            ToolQuestion::findByShort('boiler-setting-comfort-heat'));
+                        $temp = $this->getAnswer('boiler-setting-comfort-heat');
 
                         // If they use low temp, we suggest a full heat pump. Otherwise we always suggest hybrid.
                         // In the case the user is unsure about their temp usage, we assume the worst case and thus
@@ -138,10 +131,7 @@ class HeatPumpHelper extends ToolHelper
                 if (! is_null($currentType) && $currentType === $serviceValueId) {
                     // Type exists, and this iteration is that type. We don't need to evaluate a second time, since
                     // by the fact we have the current type, we already know the user was able to answer the question.
-                    $placeYear = ServiceValue::find(
-                        $this->building->getAnswer($this->inputSource,
-                            ToolQuestion::findByShort('heat-pump-placed-date'))
-                    );
+                    $placeYear = ServiceValue::find($this->getAnswer('heat-pump-placed-date'));
 
                     if (is_numeric($placeYear)) {
                         $diff = now()->format('Y') - $placeYear;
@@ -158,8 +148,6 @@ class HeatPumpHelper extends ToolHelper
                     if ($measureApplication instanceof MeasureApplication) {
                         $actionPlanAdvice = new UserActionPlanAdvice($results);
                         $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
-                        $actionPlanAdvice->savings_gas = $results['savings_gas'];
-                        $actionPlanAdvice->savings_electricity = $results['savings_electricity'];
                         $actionPlanAdvice->savings_money = is_null($savingsMoney) ? $results['savings_money'] : $savingsMoney;
                         $actionPlanAdvice->input_source_id = $this->inputSource->id;
                         $actionPlanAdvice->user()->associate($this->user);
@@ -175,6 +163,33 @@ class HeatPumpHelper extends ToolHelper
                         $actionPlanAdvice->save();
                     }
                 }
+            }
+        }
+
+        $heatSourceWaterAnswers = array_merge(
+            $this->getAnswer('heat-source-warm-tap-water'),
+            $this->getAnswer('new-heat-source-warm-tap-water')
+        );
+
+        // The user uses a heat pump boiler or wants one so we provide the measure application
+        if (in_array('heat-pump-boiler', $heatSourceWaterAnswers)) {
+            $measureApplication = MeasureApplication::findByShort('heat-pump-boiler-place-replace');
+            if ($measureApplication instanceof MeasureApplication) {
+                // TODO: Values!
+                $actionPlanAdvice = new UserActionPlanAdvice();
+                //$actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
+                $actionPlanAdvice->input_source_id = $this->inputSource->id;
+                $actionPlanAdvice->user()->associate($this->user);
+                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
+                $actionPlanAdvice->step()->associate($step);
+
+                // We only want to check old advices if the updated attributes are not relevant to this measure
+                if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                        $oldAdvices);
+                }
+
+                $actionPlanAdvice->save();
             }
         }
 

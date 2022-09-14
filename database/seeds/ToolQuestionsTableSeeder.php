@@ -1094,7 +1094,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'options' => ['value' => 'no'],
                 'tool_question_custom_values' => [
                     'yes' => [
-                        'name' => 'yes',
+                        'name' => 'Ja',
                         'extra' => [
                             'icon' => 'icon-heat-pump',
                         ],

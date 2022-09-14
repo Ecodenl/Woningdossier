@@ -244,55 +244,6 @@ class UserActionPlanAdviceService
                             }
                         }
                         break;
-
-                    case 'hybrid-heat-pump-outside-air':
-                    case 'hybrid-heat-pump-ventilation-air':
-                    case 'hybrid-heat-pump-pvt-panels':
-                    case 'full-heat-pump-outside-air':
-                    case 'full-heat-pump-ground-heat':
-                    case 'full-heat-pump-pvt-panels':
-                        $considers = in_array('heat-pump', $building->getAnswer($masterInputSource,
-                            ToolQuestion::findByShort('heat-source-considerable')));
-                        $newType = ServiceValue::find(
-                            $building->getAnswer($masterInputSource, ToolQuestion::findByShort('new-heat-pump-type'))
-                        );
-
-                        // If the user has specifically selected which one they want, we will set only that one visible
-                        // Otherwise, we will check the interest.
-                        if ($considers && $newType instanceof ServiceValue) {
-                            $visible = HeatPumpHelper::MEASURE_SERVICE_LINK[$advisable->short] === $newType->calculate_value;
-                        } else {
-                            // The user has not defined a new type (yet). We will check their interest
-                            $subStep = SubStep::bySlug('warmtepomp-interesse')->first();
-                            $evaluation = ConditionEvaluator::init()
-                                ->building($building)
-                                ->inputSource($masterInputSource)
-                                ->evaluate($subStep->conditions);
-                            $interested = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('interested-in-heat-pump')) === 'yes';
-
-                            // If they can answer the interest, and are interested, we will look at their variant interest
-                            if ($evaluation && $interested) {
-                                $interest = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('interested-in-heat-pump-variant'));
-                                if ($interest === 'full-heat-pump') {
-                                    $visible = $advisable->short === 'full-heat-pump-outside-air';
-                                } elseif ($interest === 'hybrid-heat-pump') {
-                                    $visible = $advisable->short === 'hybrid-heat-pump-outside-air';
-                                } else {
-                                    // If they want advise, we advise based on heating temperature
-                                    $temp = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('boiler-setting-comfort-heat'));
-
-                                    if ($temp === 'temp-low') {
-                                        $visible = $advisable->short === 'full-heat-pump-outside-air';
-                                    } else {
-                                        // TODO: Unsure answer option...
-                                        $visible = $advisable->short === 'hybrid-heat-pump-outside-air';
-                                    }
-                                }
-                            } else {
-                                $visible = false;
-                            }
-                        }
-                        break;
                 }
             }
         }
@@ -573,8 +524,23 @@ class UserActionPlanAdviceService
                         $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type'))
                     );
 
-                    $category = $evaluation && $type instanceof ServiceValue ? static::CATEGORY_COMPLETE
-                        : static::CATEGORY_TO_DO;
+                    if ($evaluation && $type instanceof ServiceValue) {
+                        $category = self::CATEGORY_COMPLETE;
+
+                        $placeYear = ServiceValue::find($building->getAnswer($masterInputSource,
+                            ToolQuestion::findByShort('heat-pump-placed-date')));
+
+                        if (is_numeric($placeYear)) {
+                            $diff = now()->format('Y') - $placeYear;
+
+                            // Maintenance interval
+                            if ($diff >= 18) {
+                                $category = static::CATEGORY_TO_DO;
+                            }
+                        }
+                    } else {
+                        $category = static::CATEGORY_TO_DO;
+                    }
                     break;
             }
         }

@@ -76,7 +76,12 @@ class HeatPumpHelper extends ToolHelper
             }
 
             // Now check if they have interest / already selected which heat pump they wants
-            $newType = ServiceValue::find($this->getAnswer('new-heat-pump-type'));
+            $newType = Service::findByShort('heat-pump')->values()
+                ->where(
+                    'calculate_value',
+                    ToolQuestion::findByShort('new-heat-pump-type')->toolQuestionCustomValues()
+                        ->whereShort($this->getAnswer('new-heat-pump-type'))->first()->extra['calculate_value'] ?? null
+                )->first();
 
             if ($newType instanceof ServiceValue) {
                 $short = array_flip(static::MEASURE_SERVICE_LINK)[$newType->calculate_value];

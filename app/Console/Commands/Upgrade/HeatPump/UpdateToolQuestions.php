@@ -76,6 +76,17 @@ class UpdateToolQuestions extends Command
     {
         $this->infoLog('Starting pre-question map');
 
+        $shorts = [
+            'new-water-comfort', 'new-heat-pump-type', 'new-boiler-type',
+        ];
+
+        foreach ($shorts as $short) {
+            $tq = ToolQuestion::findByShort($short);
+            if ($tq instanceof ToolQuestion) {
+                DB::table('tool_question_valuables')->where('tool_question_id', $tq->id)->delete();
+            }
+        }
+
         // Update question names
         $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
         $heatSourceQuestion->update(['name' => ['nl' => 'Wat wordt er gebruikt voor verwarming']]);

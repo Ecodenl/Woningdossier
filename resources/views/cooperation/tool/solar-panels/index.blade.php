@@ -105,7 +105,6 @@
                                 $toolQuestion,
                                 $building,
                                 $masterInputSource,
-                                $cooperation
                             );
                         @endphp
                         @foreach($questionValues as $toolQuestionValue)

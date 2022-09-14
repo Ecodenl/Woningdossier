@@ -3,7 +3,7 @@
         $toolQuestion,
         $building,
         $masterInputSource,
-        $cooperation
+        collect($filledInAnswers)
     );
 @endphp
 @foreach($questionValues as $toolQuestionValue)

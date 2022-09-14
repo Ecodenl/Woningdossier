@@ -319,6 +319,51 @@ class AlertsTableSeeder extends Seeder
                     ]
                 ],
             ],
+            [
+                'short' => 'full-heat-pump-not-available',
+                'text' => [
+                    'nl' => 'Een volledige warmtepomp is niet beschikbaar omdat je overweegt een CV ketel te nemen.',
+                ],
+                'type' => Alert::TYPE_INFO,
+                'conditions' => [
+                    [
+                        [
+                            'column' => 'heat-source-considerable',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'heat-pump',
+                        ],
+                        [
+                            'column' => 'heat-source-considerable',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'hr-boiler',
+                        ],
+                    ],
+                    [
+                        [
+                            'column' => 'heat-source-considerable',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'heat-pump',
+                        ],
+                        [
+                            'column' => 'new-heat-source',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'hr-boiler',
+                        ],
+                    ],
+                    [
+                        [
+                            'column' => 'heat-source-considerable',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'heat-pump',
+                        ],
+                        [
+                            'column' => 'new-heat-source-warm-tap-water',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'hr-boiler',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         foreach ($alerts as $alert) {

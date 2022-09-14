@@ -6,7 +6,6 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\NumberFormatter;
-use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;
@@ -21,7 +20,7 @@ class HighEfficiencyBoiler extends \App\Calculations\Calculator
         $this->energyHabit = $energyHabit;
         //$this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $this->answers = $calculateData['answers'] ?? [];
+        $this->answers = $calculateData['answers'] ?? null;
 
         $this->calculateData = $calculateData;
     }
@@ -36,7 +35,7 @@ class HighEfficiencyBoiler extends \App\Calculations\Calculator
         return $calculator->performCalculations();
     }
 
-    public function performCalculations()
+    public function performCalculations(): array
     {
         $result = [
             'amount_gas' => 0,

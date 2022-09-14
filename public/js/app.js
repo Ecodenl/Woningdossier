@@ -34054,8 +34054,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     init: function init() {
       var _this = this;
 
+      var context = this;
       setTimeout(function () {
-        _this.constructSelect();
+        context.constructSelect();
+
+        if (null !== context.select) {
+          var observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+              context.constructSelect();
+              window.triggerEvent(context.select, 'change');
+            });
+          });
+          observer.observe(_this.select, {
+            childList: true
+          });
+        }
       });
     },
     constructSelect: function constructSelect() {
@@ -34087,7 +34100,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         } // Build the alpine select
 
 
-        var optionDropdown = this.$refs['select-options'];
+        var optionDropdown = this.$refs['select-options']; // Clear any options there might be left
+
+        optionDropdown.children.remove();
         var options = this.select.options; // Loop options to build
         // Note: we cannot use forEach, as options is a HTML collection, which is not an array
 

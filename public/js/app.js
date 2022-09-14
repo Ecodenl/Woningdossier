@@ -34052,13 +34052,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     // Is the dropdown multiple supported?
     multiple: false,
     init: function init() {
-      var context = this;
+      var _this = this;
+
       setTimeout(function () {
-        context.constructSelect();
+        _this.constructSelect();
       });
     },
     constructSelect: function constructSelect() {
-      var _this = this;
+      var _this2 = this;
 
       var wrapper = this.$refs['select-wrapper']; // Get the select element
 
@@ -34067,10 +34068,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (null !== this.select) {
         this.multiple = this.select.hasAttribute('multiple'); // Bind event listener for change
 
-        var context = this;
         this.select.addEventListener('change', function (event) {
-          context.updateSelectedValues();
+          _this2.updateSelectedValues();
         });
+
+        if (this.multiple) {
+          // If it's multiple, we will add an event listener to rebuild the input on resizing
+          window.addEventListener('resize', function (event) {
+            _this2.setInputValue();
+          });
+        }
+
         this.disabled = this.select.hasAttribute('disabled'); // Add class if disabled, so CSS can do magic
 
         if (this.disabled) {
@@ -34092,7 +34100,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         this.$refs['select-input-group'].style.display = '';
         setTimeout(function () {
-          _this.updateSelectedValues();
+          _this2.updateSelectedValues();
         });
       }
     },
@@ -34180,14 +34188,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.setInputValue();
     },
     setInputValue: function setInputValue() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.multiple) {
         (function () {
           // Reset first
-          var input = _this2.$refs['select-input'];
+          var input = _this3.$refs['select-input'];
           input.value = '';
-          var inputGroup = _this2.$refs['select-input-group'];
+          var inputGroup = _this3.$refs['select-input-group'];
           inputGroup.querySelectorAll('.form-input-option').remove(); // Space to keep from the right at all times to accommodate the icons
 
           var inputHeight = 44; // px, same as 2.75rem
@@ -34205,9 +34213,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           var _loop = function _loop() {
             var key = _Object$keys[_i];
 
-            var option = _this2.$refs['select-options'].querySelector("span[data-value=\"".concat(key, "\"]"));
+            var option = _this3.$refs['select-options'].querySelector("span[data-value=\"".concat(key, "\"]"));
 
-            var text = _this2.values[key];
+            var text = _this3.values[key];
             var newInputOption = document.createElement('span');
 
             if (option && option.hasAttribute("data-icon")) {
@@ -34238,7 +34246,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             });
           };
 
-          for (var _i = 0, _Object$keys = Object.keys(_this2.values); _i < _Object$keys.length; _i++) {
+          for (var _i = 0, _Object$keys = Object.keys(_this3.values); _i < _Object$keys.length; _i++) {
             _loop();
           }
         })();

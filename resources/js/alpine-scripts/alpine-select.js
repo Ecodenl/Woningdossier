@@ -11,9 +11,8 @@ export default (initiallyOpen = false) => ({
     multiple: false,
 
     init() {
-        let context = this;
         setTimeout(() => {
-            context.constructSelect();
+            this.constructSelect();
         });
     },
     constructSelect() {
@@ -25,10 +24,15 @@ export default (initiallyOpen = false) => ({
             this.multiple = this.select.hasAttribute('multiple');
 
             // Bind event listener for change
-            let context = this;
-            this.select.addEventListener('change', function (event) {
-                context.updateSelectedValues();
+            this.select.addEventListener('change', (event) => {
+                this.updateSelectedValues();
             });
+            if (this.multiple) {
+                // If it's multiple, we will add an event listener to rebuild the input on resizing
+                window.addEventListener('resize', (event) => {
+                    this.setInputValue();
+                });
+            }
 
             this.disabled = this.select.hasAttribute('disabled');
 

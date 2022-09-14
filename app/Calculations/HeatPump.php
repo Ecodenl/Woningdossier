@@ -77,7 +77,7 @@ class HeatPump extends \App\Calculations\Calculator
         $this->answers = $answers;
 
         // TODO: Check if we can potentially move these inline so we only have to query when we actually need them
-        $this->boiler = Service::findByShort('heat-pump')->values()
+        $this->boiler = Service::findByShort('boiler')->values()
             ->where(
                 'calculate_value',
                 ToolQuestion::findByShort('new-boiler-type')->toolQuestionCustomValues()

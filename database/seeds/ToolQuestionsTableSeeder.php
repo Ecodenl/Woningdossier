@@ -1448,9 +1448,69 @@ class ToolQuestionsTableSeeder extends Seeder
                         1 => [],
                         2 => [],
                         3 => [],
-                        4 => [],
-                        5 => [],
-                        6 => [],
+                        4 => [
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'clause' => Clause::NOT_CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                    [
+                                        'column' => 'new-heat-source',
+                                        'clause' => Clause::NOT_CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'clause' => Clause::NOT_CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                ],
+                            ]
+                        ],
+                        5 => [
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'clause' => Clause::NOT_CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                    [
+                                        'column' => 'new-heat-source',
+                                        'clause' => Clause::NOT_CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'clause' => Clause::NOT_CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                ],
+                            ]
+                        ],
+                        6 => [
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'clause' => Clause::NOT_CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                    [
+                                        'column' => 'new-heat-source',
+                                        'clause' => Clause::NOT_CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'clause' => Clause::NOT_CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                ],
+                            ]
+                        ],
                     ],
                 ],
             ],
@@ -1612,9 +1672,13 @@ class ToolQuestionsTableSeeder extends Seeder
                 $extra = $questionData['extra'] ?? [];
 
                 foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
+                    $extraData = null;
+                    $conditions = [];
+
                     if (isset($extra['column'])) {
-                        // TODO: Not relevant for now but when needed we could put the conditions inside the $extraData
                         $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
+                        $conditions = $extraData['conditions'] ?? [];
+                        unset($extraData['conditions']);
                     }
 
                     $insertData = [
@@ -1625,6 +1689,7 @@ class ToolQuestionsTableSeeder extends Seeder
                         'tool_question_valuable_id' => $toolQuestionValue->id,
                         // We grab the extra data by the set column (e.g. calculate_value)
                         'extra' => json_encode(($extraData ?? $extra)),
+                        'conditions' => json_encode($conditions),
                     ];
 
                     DB::table('tool_question_valuables')->updateOrInsert([

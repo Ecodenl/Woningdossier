@@ -1,5 +1,5 @@
 <div x-data="alpineSelect(!!'{{$initiallyOpen ?? false}}')" x-ref="select-wrapper" class="select-wrapper"
-     x-on:keyup.escape="close()">
+     x-on:keyup.escape.window="close()">
     {{-- Expect at least a select with options --}}
     {{ $slot }}
 

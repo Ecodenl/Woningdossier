@@ -310,6 +310,7 @@ class UserActionPlanAdviceService
                 'full-heat-pump-outside-air' => 'heat-pump',
                 'full-heat-pump-ground-heat' => 'heat-pump',
                 'full-heat-pump-pvt-panels' => 'heat-pump',
+                'heat-pump-boiler-place-replace' => 'heat-pump-boiler',
             ];
 
             $logicShort = $categorization[$measureApplication->short];
@@ -541,6 +542,14 @@ class UserActionPlanAdviceService
                     } else {
                         $category = static::CATEGORY_TO_DO;
                     }
+                    break;
+
+                case 'heat-pump-boiler':
+                    // If it's been calculated, the user has selected it in either the new or the old situation, so
+                    // we only need to check one of them because it's safe to assume the situation.
+                    $category = in_array('heat-pump-boiler',
+                        $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type')))
+                        ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     break;
             }
         }

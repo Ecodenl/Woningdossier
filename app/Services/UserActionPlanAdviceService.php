@@ -525,7 +525,9 @@ class UserActionPlanAdviceService
                         $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type'))
                     );
 
-                    if ($evaluation && $type instanceof ServiceValue) {
+                    // We complete it if it's the current heat pump and isn't for maintenance yet.
+                    if ($evaluation && $type instanceof ServiceValue
+                        && HeatPumpHelper::MEASURE_SERVICE_LINK[$measureApplication->short] === $type->calculate_value) {
                         $category = self::CATEGORY_COMPLETE;
 
                         $placeYear = ServiceValue::find($building->getAnswer($masterInputSource,
@@ -548,7 +550,7 @@ class UserActionPlanAdviceService
                     // If it's been calculated, the user has selected it in either the new or the old situation, so
                     // we only need to check one of them because it's safe to assume the situation.
                     $category = in_array('heat-pump-boiler',
-                        $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type')))
+                        $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-source')))
                         ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
                     break;
             }

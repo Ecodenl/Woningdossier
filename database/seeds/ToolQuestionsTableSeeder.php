@@ -846,7 +846,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
+                'validation' => ['required', 'exists:service_value,id'],
                 'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'heat-pump-type',
                 'translation' => "Wat voor type warmtepomp is er?",
@@ -1195,7 +1195,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:comfort_level_tap_waters,id'],
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'new-water-comfort',
                 'translation' => 'Wat wordt het comfortniveau voor het gebruik van warm tapwater?',
                 'tool_question_custom_values' => [
@@ -1358,7 +1358,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 //'save_in' => "building_services.{$boiler->id}.service_value_id",
                 'short' => 'new-boiler-type',
                 'translation' => "Wat is het type van de nieuwe ketel?",
@@ -1449,7 +1449,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 //'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'new-heat-pump-type',
                 'translation' => "Welke soort warmtepomp moet er komen?",

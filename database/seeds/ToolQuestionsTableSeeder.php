@@ -1481,17 +1481,17 @@ class ToolQuestionsTableSeeder extends Seeder
                             [
                                 [
                                     'column' => 'heat-source-considerable',
-                                    'clause' => Clause::NOT_CONTAINS,
+                                    'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
                                 ],
                                 [
                                     'column' => 'new-heat-source',
-                                    'clause' => Clause::NOT_CONTAINS,
+                                    'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
                                 ],
                                 [
                                     'column' => 'new-heat-source-warm-tap-water',
-                                    'clause' => Clause::NOT_CONTAINS,
+                                    'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
                                 ],
                             ],
@@ -1506,17 +1506,17 @@ class ToolQuestionsTableSeeder extends Seeder
                             [
                                 [
                                     'column' => 'heat-source-considerable',
-                                    'clause' => Clause::NOT_CONTAINS,
+                                    'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
                                 ],
                                 [
                                     'column' => 'new-heat-source',
-                                    'clause' => Clause::NOT_CONTAINS,
+                                    'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
                                 ],
                                 [
                                     'column' => 'new-heat-source-warm-tap-water',
-                                    'clause' => Clause::NOT_CONTAINS,
+                                    'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
                                 ],
                             ],
@@ -1531,17 +1531,17 @@ class ToolQuestionsTableSeeder extends Seeder
                             [
                                 [
                                     'column' => 'heat-source-considerable',
-                                    'clause' => Clause::NOT_CONTAINS,
+                                    'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
                                 ],
                                 [
                                     'column' => 'new-heat-source',
-                                    'clause' => Clause::NOT_CONTAINS,
+                                    'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
                                 ],
                                 [
                                     'column' => 'new-heat-source-warm-tap-water',
-                                    'clause' => Clause::NOT_CONTAINS,
+                                    'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
                                 ],
                             ],

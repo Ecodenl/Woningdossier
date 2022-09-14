@@ -194,7 +194,8 @@ class ToolQuestionService {
                 $answerData
             );
 
-        $this->checkConditionalAnswers($givenAnswer);
+        // TODO: Enable and check if conditions are added to valuables
+        //$this->checkConditionalAnswers($givenAnswer);
     }
 
     /**
@@ -218,8 +219,8 @@ class ToolQuestionService {
         // Quotes around the short are important. If we don't, then MySQL throws a hissy fit.
         $conditionalCustomValues = ToolQuestionCustomValue::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$this->toolQuestion->short}\""])
             ->get();
-        $toolQuestionValuables = ToolQuestionValuable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$this->toolQuestion->short}\""])
-            ->get();
+        //$toolQuestionValuables = ToolQuestionValuable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$this->toolQuestion->short}\""])
+        //    ->get();
 
         $evaluator = ConditionEvaluator::init()
             ->inputSource($this->currentInputSource)
@@ -245,24 +246,24 @@ class ToolQuestionService {
                 }
             }
         }
-        foreach ($toolQuestionValuables as $conditionalValuable) {
-            if (! $evaluator->evaluateCollection($conditionalValuable->conditions, $answers)) {
-                $answer = $this->building->getAnswer($this->currentInputSource, $conditionalValuable->toolQuestion);
-
-                // TODO: Expand this if there are multi-value answers
-                if (! is_array($answer) && $conditionalValuable->tool_question_valuable_id == $answer) {
-                    // Add tool question to array to use later for resetting sub steps
-                    $toolQuestionsToUnset[] = $conditionalValuable->toolQuestion;
-
-                    // Reset answer
-                    $where = [
-                        'building_id' => $this->building->id,
-                        'tool_question_id' => $conditionalValuable->toolQuestion->id,
-                    ];
-                    $this->clearAnswer($conditionalValuable->toolQuestion, $where);
-                }
-            }
-        }
+        //foreach ($toolQuestionValuables as $conditionalValuable) {
+        //    if (! $evaluator->evaluateCollection($conditionalValuable->conditions, $answers)) {
+        //        $answer = $this->building->getAnswer($this->currentInputSource, $conditionalValuable->toolQuestion);
+        //
+        //        // TODO: Expand this if there are multi-value answers
+        //        if (! is_array($answer) && $conditionalValuable->tool_question_valuable_id == $answer) {
+        //            // Add tool question to array to use later for resetting sub steps
+        //            $toolQuestionsToUnset[] = $conditionalValuable->toolQuestion;
+        //
+        //            // Reset answer
+        //            $where = [
+        //                'building_id' => $this->building->id,
+        //                'tool_question_id' => $conditionalValuable->toolQuestion->id,
+        //            ];
+        //            $this->clearAnswer($conditionalValuable->toolQuestion, $where);
+        //        }
+        //    }
+        //}
 
         if (! empty($toolQuestionsToUnset)) {
             $processedIds = [];

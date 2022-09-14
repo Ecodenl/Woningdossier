@@ -1477,18 +1477,75 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'calculate_value' => '4',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'heat-source-considerable',
+                                    'clause' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source',
+                                    'clause' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source-warm-tap-water',
+                                    'clause' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                            ],
+                        ]
                     ],
                     'full-heat-pump-ground-heat' => [
                         'name' => 'Volledige warmtepomp met bodemwarmte',
                         'extra' => [
                             'calculate_value' => '5',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'heat-source-considerable',
+                                    'clause' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source',
+                                    'clause' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source-warm-tap-water',
+                                    'clause' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                            ],
+                        ]
                     ],
                     'full-heat-pump-pvt-panels' => [
                         'name' => 'Volledige warmtepomp met pvt panelen',
                         'extra' => [
                             'calculate_value' => '6',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'heat-source-considerable',
+                                    'clause' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source',
+                                    'clause' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source-warm-tap-water',
+                                    'clause' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                            ],
+                        ]
                     ],
                 ],
             ],

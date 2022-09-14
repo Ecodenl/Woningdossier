@@ -35196,6 +35196,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         this.open = !this.open;
       }
     },
+    close: function close() {
+      this.open = false;
+    },
     changeOption: function changeOption(element) {
       if (!element.classList.contains('disabled')) {
         this.setSourceValue(element.getAttribute('data-input-source-short'));

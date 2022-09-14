@@ -61,6 +61,9 @@ export default (inputSource = 'no-match') => ({
             this.open = ! this.open
         }
     },
+    close() {
+        this.open = false;
+    },
     changeOption(element) {
         if (! element.classList.contains('disabled')) {
             this.setSourceValue(element.getAttribute('data-input-source-short'));

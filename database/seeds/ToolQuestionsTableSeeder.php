@@ -846,7 +846,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:service_value,id'],
+                'validation' => ['required', 'exists:service_values,id'],
                 'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'heat-pump-type',
                 'translation' => "Wat voor type warmtepomp is er?",

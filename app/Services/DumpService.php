@@ -22,8 +22,8 @@ use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
+use App\Helpers\ToolQuestionHelper;
 use App\Helpers\Translation;
-use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\buildingHeater;
@@ -35,7 +35,6 @@ use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
 use App\Models\BuildingVentilation;
 use App\Models\Cooperation;
-use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
@@ -52,37 +51,31 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class DumpService
 {
     use FluentCaller;
 
-    protected Cooperation $cooperation;
-    protected Building $building;
+    protected User $user;
     protected InputSource $inputSource;
 
     public array $headerStructure;
+    public bool $anonymize = false;
 
-    /**
-     * @param  Cooperation  $cooperation
-     *
-     * @return $this
-     */
-    public function cooperation(Cooperation $cooperation): self
+    public function __construct()
     {
-        $this->cooperation = $cooperation;
-
-        return $this;
+        $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
 
     /**
-     * @param  Building  $building
+     * @param  User  $user
      *
      * @return $this
      */
-    public function building(Building $building): self
+    public function user(User $user): self
     {
-        $this->building = $building;
+        $this->user = $user;
 
         return $this;
     }
@@ -99,16 +92,44 @@ class DumpService
         return $this;
     }
 
-    public function setHeaderStructure(array $headerStructure): self
+    /**
+     * Anonymize the dump.
+     *
+     * @param  bool  $anonymize
+     *
+     * @return $this
+     */
+    public function anonymize(bool $anonymize = true): self
     {
-        $this->headerStructure = $headerStructure;
+        $this->anonymize = $anonymize;
 
         return $this;
     }
 
-    public function createHeaderStructure(bool $anonymized, bool $setStepPrefix = true): self
+    /**
+     * Set a header structure to re-use.
+     *
+     * @param  array  $headerStructure
+     *
+     * @return $this
+     */
+    public function setHeaderStructure(array $headerStructure): self
     {
-        if ($anonymized) {
+        $this->headerStructure = Arr::dot($headerStructure);
+
+        return $this;
+    }
+
+    /**
+     * Create the header structure.
+     *
+     * @param  bool  $setStepPrefix
+     *
+     * @return $this
+     */
+    public function createHeaderStructure(bool $setStepPrefix = true): self
+    {
+        if ($this->anonymize) {
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
@@ -151,12 +172,96 @@ class DumpService
         }
         $structure = Arr::dot($structure);
 
-        $this->headerStructure = array_merge($headers, $structure);
-
-        return $this;
+        return $this->setHeaderStructure(array_merge($headers, $structure));
     }
 
+    /**
+     * Create a dump for the set header structure.
+     *
+     * @param  bool  $withConditionalLogic  If we should follow conditional logic. Answers won't be shown if conditions
+     *     don't match
+     *
+     * @return array
+     */
+    public function generateDump(bool $withConditionalLogic = false): array
+    {
+        $user = $this->user;
+        $building = $user->building;
+        $inputSource = $this->inputSource;
 
+        $createdAt = optional($user->created_at)->format('Y-m-d');
+        $mostRecentStatus = $building->getMostRecentBuildingStatus();
+        $buildingStatus = $mostRecentStatus->status->name;
+
+        $city = $building->city;
+        $postalCode = $building->postal_code;
+
+        if ($this->anonymize) {
+            $data = [
+                $createdAt, $buildingStatus, $postalCode, $city,
+            ];
+        } else {
+            $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
+            $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+            $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
+                ->map(function ($user) {
+                    return $user->getFullName();
+                })->implode(', ');
+
+
+            $firstName = $user->first_name;
+            $lastName = $user->last_name;
+            $email = $user->account->email;
+            $phoneNumber = CsvHelper::escapeLeadingZero($user->phone_number);
+
+            $street = $building->street;
+            $number = $building->number;
+            $extension = $building->extension ?? '';
+
+            $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
+
+            $data = [
+                $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
+                $firstName, $lastName, $email, $phoneNumber,
+                $street, trim($number . ' ' . $extension), $postalCode, $city,
+            ];
+        }
+
+        foreach ($this->headerStructure as $key => $translation) {
+            if (is_string(($key))) {
+                // Structure is as follows:
+                // 0: step shorts
+                // 1: steppable short / save_in / calculation ref / considerables
+                // n: potential calculation field / considerable struct
+                $structure = explode('.', $key);
+
+                $potentialShort = $structure[1];
+                if (Str::startsWith($potentialShort, 'question_')) {
+                    // TODO: Conditionals
+                    $toolQuestion = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
+                    $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource, $toolQuestion);
+                    // Priority slider situation
+                    if (is_array($humanReadableAnswer)) {
+                        $temp = '';
+                        foreach ($humanReadableAnswer as $name => $answer) {
+                            $temp .= "{$name}: {$answer}, ";
+                        }
+                        $humanReadableAnswer = substr($temp, 0, -2);
+                    }
+                    $data[] = $humanReadableAnswer;
+                } elseif (Str::startsWith($potentialShort, 'calculation_')) {
+                    // TODO: Generate calculations, pluck result
+                    $column = Str::replaceFirst('calculation_', '', $potentialShort);
+                    $data[] = 'WIP';
+                } else {
+                    // TODO: Handle legacy data
+                    $data[] = 'WIP';
+                }
+            }
+        }
+
+        return $data;
+    }
 
 
     public static function makeHeaderText($stepName, $subStepName, $text)

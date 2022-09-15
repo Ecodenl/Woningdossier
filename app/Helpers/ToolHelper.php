@@ -86,255 +86,134 @@ class ToolHelper
             'building-data', 'usage-quick-scan', 'living-requirements', 'residential-status',
             // TODO: More legacy
             'ventilation' => [
-                'building_ventilations.how' => [
-                    'label' => __(
-                        'cooperation/tool/ventilation.index.how.title'
-                    ),
-                ],
-                'building_ventilations.living_situation' => [
-                    'label' => __(
-                        'cooperation/tool/ventilation.index.living-situation.title'
-                    ),
-                ],
-                'building_ventilations.usage' => [
-                    'label' => __(
-                        'cooperation/tool/ventilation.index.usage.title'
-                    ),
-                ],
-                'calculations' => [
-                    'savings_gas' => __(
-                        'ventilation.costs.gas.title'
-                    ),
-                    'savings_co2' => __(
-                        'ventilation.costs.co2.title'
-                    ),
-                    'savings_money' => __(
-                        'cooperation/tool/ventilation.index.savings-in-euro.title'
-                    ),
-                    'cost_indication' => __(
-                        'cooperation/tool/ventilation.index.indicative-costs.title'
-                    ),
-                    'interest_comparable' => __(
-                        'cooperation/tool/ventilation.index.comparable-rent.title'
-                    ),
-                ],
+                'building_ventilations.how' => __('cooperation/tool/ventilation.index.how.title'),
+                'building_ventilations.living_situation' => __('cooperation/tool/ventilation.index.living-situation.title'),
+                'building_ventilations.usage' => __('cooperation/tool/ventilation.index.usage.title'),
+                'calculation_savings_gas' => __('ventilation.costs.gas.title'),
+                'calculation_savings_co2' => __('ventilation.costs.co2.title'),
+                'calculation_savings_money' => __('cooperation/tool/ventilation.index.savings-in-euro.title'),
+                'calculation_cost_indication' => __('cooperation/tool/ventilation.index.indicative-costs.title'),
+                'calculation_interest_comparable' => __('cooperation/tool/ventilation.index.comparable-rent.title'),
             ],
             'wall-insulation' => [
-                "{$stepConsiderableKey}.{$wallInsulationStep->id}.is_considering" => self::considerationOptions($wallInsulationStep->name),
-                'building_features.cavity_wall' => [
-                    'label' => __(
-                        'wall-insulation.intro.has-cavity-wall.title'
+                "{$stepConsiderableKey}.{$wallInsulationStep->id}.is_considering" => $wallInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                'building_features.cavity_wall' => __('wall-insulation.intro.has-cavity-wall.title'),
+                'building_features.facade_plastered_painted' => __('wall-insulation.intro.is-facade-plastered-painted.title'),
+                'building_features.facade_plastered_surface_id' => __('wall-insulation.intro.surface-paintwork.title'),
+                'building_features.facade_damaged_paintwork_id' => __('wall-insulation.intro.damage-paintwork.title'),
+                'building_features.wall_joints' => __('wall-insulation.optional.flushing.title'),
+                'building_features.contaminated_wall_joints' => __('wall-insulation.optional.is-facade-dirty.title'),
+                'building_features.wall_surface' => __('wall-insulation.optional.facade-surface.title'),
+                'building_features.insulation_wall_surface' => __('wall-insulation.optional.insulated-surface.title'),
+                'calculation_savings_gas' => __(
+                    'wall-insulation.index.costs.gas.title'
+                ),
+                'calculation_savings_co2' => __(
+                    'wall-insulation.index.costs.co2.title'
+                ),
+                'calculation_savings_money' => __(
+                    'wall-insulation.index.savings-in-euro.title'
+                ),
+                'calculation_cost_indication' => __(
+                    'wall-insulation.index.indicative-costs.title'
+                ),
+                'calculation_interest_comparable' => __(
+                    'wall-insulation.index.comparable-rent.title'
+                ),
+                'calculation_repair_joint' => [
+                    'costs' => __(
+                        'wall-insulation.taking-into-account.repair-joint.title'
+                    ),
+                    'year' => __(
+                        'wall-insulation.taking-into-account.repair-joint.year.title'
                     ),
                 ],
-                'building_features.facade_plastered_painted' => [
-                    'label' => __(
-                        'wall-insulation.intro.is-facade-plastered-painted.title'
+                'calculation_clean_brickwork' => [
+                    'costs' => __(
+                        'wall-insulation.taking-into-account.clean-brickwork.title'
+                    ),
+                    'year' => __(
+                        'wall-insulation.taking-into-account.clean-brickwork.year.title'
                     ),
                 ],
-                'building_features.facade_plastered_surface_id' => [
-                    'label' => __(
-                        'wall-insulation.intro.surface-paintwork.title'
+                'calculation_impregnate_wall' => [
+                    'costs' => __(
+                        'wall-insulation.taking-into-account.impregnate-wall.title'
+                    ),
+                    'year' => __(
+                        'wall-insulation.taking-into-account.impregnate-wall.year.title'
                     ),
                 ],
-                'building_features.facade_damaged_paintwork_id' => [
-                    'label' => __(
-                        'wall-insulation.intro.damage-paintwork.title'
+                'calculation_paint_wall' => [
+                    'costs' => __(
+                        'wall-insulation.taking-into-account.wall-painting.title'
                     ),
-                ],
-                'building_features.wall_joints' => [
-                    'label' => __(
-                        'wall-insulation.optional.flushing.title'
+                    'year' => __(
+                        'wall-insulation.taking-into-account.wall-painting.year.title'
                     ),
-                ],
-                'building_features.contaminated_wall_joints' => [
-                    'label' => __(
-                        'wall-insulation.optional.is-facade-dirty.title'
-                    ),
-                ],
-                'building_features.wall_surface' => [
-                    'label' => __(
-                        'wall-insulation.optional.facade-surface.title'
-                    ),
-                ],
-                'building_features.insulation_wall_surface' => [
-                    'label' => __(
-                        'wall-insulation.optional.insulated-surface.title'
-                    ),
-                ],
-                'calculations' => [
-                    'savings_gas' => __(
-                        'wall-insulation.index.costs.gas.title'
-                    ),
-                    'savings_co2' => __(
-                        'wall-insulation.index.costs.co2.title'
-                    ),
-                    'savings_money' => __(
-                        'wall-insulation.index.savings-in-euro.title'
-                    ),
-                    'cost_indication' => __(
-                        'wall-insulation.index.indicative-costs.title'
-                    ),
-                    'interest_comparable' => __(
-                        'wall-insulation.index.comparable-rent.title'
-                    ),
-                    'repair_joint' => [
-                        'costs' => __(
-                            'wall-insulation.taking-into-account.repair-joint.title'
-                        ),
-                        'year' => __(
-                            'wall-insulation.taking-into-account.repair-joint.year.title'
-                        ),
-                    ],
-                    'clean_brickwork' => [
-                        'costs' => __(
-                            'wall-insulation.taking-into-account.clean-brickwork.title'
-                        ),
-                        'year' => __(
-                            'wall-insulation.taking-into-account.clean-brickwork.year.title'
-                        ),
-                    ],
-                    'impregnate_wall' => [
-                        'costs' => __(
-                            'wall-insulation.taking-into-account.impregnate-wall.title'
-                        ),
-                        'year' => __(
-                            'wall-insulation.taking-into-account.impregnate-wall.year.title'
-                        ),
-                    ],
-                    'paint_wall' => [
-                        'costs' => __(
-                            'wall-insulation.taking-into-account.wall-painting.title'
-                        ),
-                        'year' => __(
-                            'wall-insulation.taking-into-account.wall-painting.year.title'
-                        ),
-                    ],
                 ],
             ],
             'insulated-glazing' => [
-                'building_features.window_surface' => [
-                    'label' => __(
-                        'insulated-glazing.windows-surface.title'
-                    ),
-                    'type' => 'text',
-                    'unit' => __('general.unit.square-meters.title'),
-                ],
-                'element.' . $frames->id => [
-                    'label' => __(
-                        'insulated-glazing.paint-work.which-frames.title'
-                    ),
-                ],
-                'element.' . $woodElements->id => [
-                    'label' => __(
-                        'insulated-glazing.paint-work.other-wood-elements.title'
-                    ),
-                ],
-                'building_paintwork_statuses.last_painted_year' => [
-                    'label' => __(
-                        'insulated-glazing.paint-work.last-paintjob.title'
-                    ),
-                ],
-                'building_paintwork_statuses.paintwork_status_id' => [
-                    'label' => __(
-                        'insulated-glazing.paint-work.paint-damage-visible.title'
-                    ),
-                ],
-                'building_paintwork_statuses.wood_rot_status_id' => [
-                    'label' => __(
-                        'insulated-glazing.paint-work.wood-rot-visible.title'
-                    ),
-                ],
+                'building_features.window_surface' => __('insulated-glazing.windows-surface.title'),
+                'element.' . $frames->id => __('insulated-glazing.paint-work.which-frames.title'),
+                'element.' . $woodElements->id => __('insulated-glazing.paint-work.other-wood-elements.title'),
+                'building_paintwork_statuses.last_painted_year' => __('insulated-glazing.paint-work.last-paintjob.title'),
+                'building_paintwork_statuses.paintwork_status_id' => __('insulated-glazing.paint-work.paint-damage-visible.title'),
+                'building_paintwork_statuses.wood_rot_status_id' => __('insulated-glazing.paint-work.wood-rot-visible.title'),
             ],
             'floor-insulation' => [
-                "{$stepConsiderableKey}.{$floorInsulationStep->id}.is_considering" => self::considerationOptions($floorInsulationStep->name),
-                'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
-                    'label' => __(
-                        'floor-insulation.has-crawlspace.title'
-                    ),
-                ],
-                'element.' . $crawlspace->id . '.extra.access' => [
-                    'label' => __(
-                        'floor-insulation.crawlspace-access.title'
-                    ),
-                ],
-                'element.' . $crawlspace->id . '.element_value_id' => [
-                    'label' => __(
-                        'floor-insulation.crawlspace-height.title'
-                    ),
-                ],
-                'building_features.floor_surface' => [
-                    'label' => __('floor-insulation.surface.title'),
-                ],
-                'building_features.insulation_surface' => [
-                    'label' => __(
-                        'floor-insulation.insulation-surface.title'
-                    ),
-                ],
-
-                'calculations' => [
-                    'savings_gas' => __(
-                        'floor-insulation.index.costs.gas.title'
-                    ),
-                    'savings_co2' => __(
-                        'floor-insulation.index.costs.co2.title'
-                    ),
-                    'savings_money' => __(
-                        'floor-insulation.index.savings-in-euro.title'
-                    ),
-                    'cost_indication' => __(
-                        'floor-insulation.index.indicative-costs.title'
-                    ),
-                    'interest_comparable' => __(
-                        'floor-insulation.index.comparable-rent.title'
-                    ),
-                ],
+                "{$stepConsiderableKey}.{$floorInsulationStep->id}.is_considering" => $floorInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                'element.' . $crawlspace->id . '.extra.has_crawlspace' => __('floor-insulation.has-crawlspace.title'),
+                'element.' . $crawlspace->id . '.extra.access' => __('floor-insulation.crawlspace-access.title'),
+                'element.' . $crawlspace->id . '.element_value_id' => __('floor-insulation.crawlspace-height.title'),
+                'building_features.floor_surface' => __('floor-insulation.surface.title'),
+                'building_features.insulation_surface' => __('floor-insulation.insulation-surface.title'),
+                'calculation_savings_gas' => __(
+                    'floor-insulation.index.costs.gas.title'
+                ),
+                'calculation_savings_co2' => __(
+                    'floor-insulation.index.costs.co2.title'
+                ),
+                'calculation_savings_money' => __(
+                    'floor-insulation.index.savings-in-euro.title'
+                ),
+                'calculation_cost_indication' => __(
+                    'floor-insulation.index.indicative-costs.title'
+                ),
+                'calculation_interest_comparable' => __(
+                    'floor-insulation.index.comparable-rent.title'
+                ),
             ],
             'roof-insulation' => [
-                "{$stepConsiderableKey}.{$roofInsulationStep->id}.is_considering" => self::considerationOptions($roofInsulationStep->name),
+                "{$stepConsiderableKey}.{$roofInsulationStep->id}.is_considering" => $roofInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
                 // Rest will be added dynamically
             ],
             'solar-panels' => [
-                "{$stepConsiderableKey}.{$solarPanelStep->id}.is_considering" => self::considerationOptions($solarPanelStep->name),
-                'user_energy_habits.amount_electricity' => [
-                    'label' => __('solar-panels.electra-usage.title'),
-                ],
-                'building_pv_panels.total_installed_power' => [
-                    'label' => __('solar-panels.total-installed-power.label'),
-                ],
-                'building_pv_panels.peak_power' => [
-                    'label' => __('solar-panels.peak-power.title'),
-                ],
-                'building_pv_panels.number' => [
-                    'label' => __('solar-panels.number.title'),
-                ],
-                'building_pv_panels.pv_panel_orientation_id' => [
-                    'label' => __(
-                        'solar-panels.pv-panel-orientation-id.title'
-                    ),
-                ],
-                'building_pv_panels.angle' => [
-                    'label' => __('solar-panels.angle.title'),
-                ],
-                'calculations' => [
-                    'yield_electricity' => __(
-                        'solar-panels.indication-for-costs.yield-electricity.title'
-                    ),
-                    'raise_own_consumption' => __(
-                        'solar-panels.indication-for-costs.raise-own-consumption.title'
-                    ),
-                    'savings_co2' => __(
-                        'solar-panels.index.costs.co2.title'
-                    ),
-                    'savings_money' => __(
-                        'solar-panels.index.savings-in-euro.title'
-                    ),
-                    'cost_indication' => __(
-                        'solar-panels.index.indicative-costs.title'
-                    ),
-                    'interest_comparable' => __(
-                        'solar-panels.index.comparable-rent.title'
-                    ),
-                ],
+                "{$stepConsiderableKey}.{$solarPanelStep->id}.is_considering" => $solarPanelStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                'user_energy_habits.amount_electricity' => __('solar-panels.electra-usage.title'),
+                'building_pv_panels.total_installed_power' => __('solar-panels.total-installed-power.label'),
+                'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
+                'building_pv_panels.number' => __('solar-panels.number.title'),
+                'building_pv_panels.pv_panel_orientation_id' => __('solar-panels.pv-panel-orientation-id.title'),
+                'building_pv_panels.angle' => __('solar-panels.angle.title'),
+                'calculation_yield_electricity' => __(
+                    'solar-panels.indication-for-costs.yield-electricity.title'
+                ),
+                'calculation_raise_own_consumption' => __(
+                    'solar-panels.indication-for-costs.raise-own-consumption.title'
+                ),
+                'calculation_savings_co2' => __(
+                    'solar-panels.index.costs.co2.title'
+                ),
+                'calculation_savings_money' => __(
+                    'solar-panels.index.savings-in-euro.title'
+                ),
+                'calculation_cost_indication' => __(
+                    'solar-panels.index.indicative-costs.title'
+                ),
+                'calculation_interest_comparable' => __(
+                    'solar-panels.index.comparable-rent.title'
+                ),
             ],
             'heating' => [
                 'huidige-situatie', 'nieuwe-situatie',
@@ -355,9 +234,9 @@ class ToolHelper
                 $stepShort = $stepShortOrIndex;
 
                 //TODO: Legacy support, remove if we don't have static steps anymore.
-                // If it's a legacy step, it's an array and we can skip the structure logic
+                // If it's a legacy step, the keys are not indexed
 
-                if (is_string(Arr::first($stepDataOrStepShort))) {
+                if (is_numeric(array_key_first($stepDataOrStepShort))) {
                     $isSpecificOrder = true;
                 } else {
                     $structure[$stepShortOrIndex] = $stepDataOrStepShort;
@@ -391,6 +270,204 @@ class ToolHelper
                     }
                 }
             }
+        }
+
+        // TODO: Also more legacy support
+
+        // As Darkwing Duck would say: Let's get dangerous
+        //
+        // We're going to get all insulated-glazing stuff out of the array,
+        // put all measure applications in first, then put the stuff back and
+        // then add the calculations.
+        // The order was accepted for the example buildings, but not for the
+        // CSV files. And the order should be the same, but not "the same".
+        // Makes sense.. no?
+        // (hint: no it doesn't..)
+        $insulatedGlazingStuffSoFar = $structure['insulated-glazing'];
+        $structure['insulated-glazing'] = [];
+
+        // Insulated glazing
+        $igShorts = [
+            'hrpp-glass-only',
+            'hrpp-glass-frames',
+            'hr3p-frames',
+            'glass-in-lead',
+        ];
+
+        foreach ($igShorts as $igShort) {
+            $measureApplication = MeasureApplication::where('short', $igShort)
+                ->first();
+            if ($measureApplication instanceof MeasureApplication) {
+
+                $structure['insulated-glazing']["{$measureApplicationConsiderableKey}.{$measureApplication->id}.is_considering"] = $measureApplication->measure_name . ': ' . __('cooperation/admin/example-buildings.form.is-considering');
+                $structure['insulated-glazing']['building_insulated_glazings.'
+                . $measureApplication->id . '.insulating_glazing_id']
+                    =  $measureApplication->measure_name . ': ' . __(
+                            'insulated-glazing.' . $measureApplication->short
+                            . '.current-glass.title'
+                        );
+                $structure['insulated-glazing']['building_insulated_glazings.'
+                . $measureApplication->id . '.building_heating_id']
+                    =  $measureApplication->measure_name . ': ' . __(
+                            'insulated-glazing.' . $measureApplication->short
+                            . '.rooms-heated.title'
+                        );
+                $structure['insulated-glazing']['building_insulated_glazings.'
+                . $measureApplication->id . '.m2']
+                    = $measureApplication->measure_name . ': ' . __(
+                            'insulated-glazing.' . $measureApplication->short
+                            . '.m2.title'
+                        );
+                $structure['insulated-glazing']['building_insulated_glazings.'
+                . $measureApplication->id . '.windows']
+                    = $measureApplication->measure_name . ': ' . __(
+                            'insulated-glazing.' . $measureApplication->short
+                            . '.window-replace.title'
+                        );
+            }
+        }
+        foreach ($insulatedGlazingStuffSoFar as $igK => $igV) {
+            $structure['insulated-glazing'][$igK] = $igV;
+        }
+
+        // set the calculations on the end because of the order
+        $structure['insulated-glazing']['calculation_savings_gas'] = __(
+            'insulated-glazing.index.costs.gas.title'
+        );
+        $structure['insulated-glazing']['calculation_savings_co2'] = __(
+            'insulated-glazing.index.costs.co2.title'
+        );
+        $structure['insulated-glazing']['calculation_savings_money'] = __(
+            'insulated-glazing.index.savings-in-euro.title'
+        );
+        $structure['insulated-glazing']['calculation_cost_indication'] = __(
+            'insulated-glazing.index.indicative-costs.title'
+        );
+        $structure['insulated-glazing']['calculation_interest_comparable'] = __(
+            'insulated-glazing.index.comparable-rent.title'
+        );
+        $structure['insulated-glazing']['calculation_paintwork'] = [
+            'costs' => __(
+                'insulated-glazing.taking-into-account.paintwork.title'
+            ),
+            'year' => __(
+                'insulated-glazing.taking-into-account.paintwork_year.title'
+            ),
+        ];
+
+        // Roof insulation
+        // have to refactor this
+        // pitched = 1
+        // flat = 2
+        $pitched = new \stdClass();
+        $pitched->id = 1;
+        $pitched->short = 'pitched';
+        $flat = new \stdClass();
+        $flat->id = 2;
+        $flat->short = 'flat';
+        $roofTypes1 = collect([$pitched, $flat]);
+
+        // $roofTypes1 should become $roofTypes->where('short', '!=', 'none');
+
+        foreach ($roofTypes1 as $roofType) {
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.element_value_id']
+                = __('roof-insulation.current-situation.is-');
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.roof_surface']
+                = __('roof-insulation.current-situation.');
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.insulation_roof_surface']
+                = __('roof-insulation.current-situation.insulation-');
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.extra.zinc_replaced_date']
+                = __('roof-insulation.current-situation.zinc-replaced.title');
+            if ('flat' == $roofType->short) {
+                $structure['roof-insulation']['building_roof_types.'
+                . $roofType->id . '.extra.bitumen_replaced_date']
+                    = __('roof-insulation.current-situation.bitumen-insulated.title');
+            }
+            if ('pitched' == $roofType->short) {
+                $structure['roof-insulation']['building_roof_types.'
+                . $roofType->id . '.extra.tiles_condition']
+                    = __('roof-insulation.current-situation.in-which-condition-tiles.title');
+            }
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.extra.measure_application_id']
+                = __('roof-insulation.');
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.building_heating_id']
+                = __('roof-insulation.');
+
+            if ($roofType->short == $roofTypes1->last()->short) {
+                $structure['roof-insulation']['calculation_flat'] = [
+                    'savings_gas' => __(
+                        'roof-insulation.flat.costs.gas.title'
+                    ),
+                    'savings_co2' => __(
+                        'roof-insulation.flat.costs.co2.title'
+                    ),
+                    'savings_money' => __(
+                        'roof-insulation.index.savings-in-euro.title'
+                    ),
+                    'cost_indication' => __(
+                        'roof-insulation.index.indicative-costs.title'
+                    ),
+                    'interest_comparable' => __(
+                        'roof-insulation.index.comparable-rent.title'
+                    ),
+
+                    'replace' => [
+                        'costs' => __(
+                            'roof-insulation.flat.indicative-costs-replacement.title'
+                        ),
+                        'year' => __(
+                            'roof-insulation.flat.indicative-replacement.year.title'
+                        ),
+                    ],
+                ];
+                $structure['roof-insulation']['calculation_pitched'] = [
+                    'savings_gas' => __(
+                        'roof-insulation.pitched.costs.gas.title'
+                    ),
+                    'savings_co2' => __(
+                        'roof-insulation.pitched.costs.co2.title'
+                    ),
+                    'savings_money' => __(
+                        'roof-insulation.index.savings-in-euro.title'
+                    ),
+                    'cost_indication' => __(
+                        'roof-insulation.index.indicative-costs.title'
+                    ),
+                    'interest_comparable' => __(
+                        'roof-insulation.index.comparable-rent.title'
+                    ),
+
+                    'replace' => [
+                        'costs' => __(
+                            'roof-insulation.pitched.indicative-costs-replacement.title'
+                        ),
+                        'year' => __(
+                            'roof-insulation.pitched.indicative-replacement.year.title'
+                        ),
+                    ],
+                ];
+            }
+        }
+
+        // and here we will add the interest options for the ventilation information
+        $measureApplicationsForVentilation = MeasureApplication::whereIn(
+            'short',
+            [
+                'ventilation-balanced-wtw',
+                'ventilation-decentral-wtw',
+                'ventilation-demand-driven',
+                'crack-sealing',
+            ]
+        )->get();
+
+        foreach ($measureApplicationsForVentilation as $measureApplication) {
+            $structure['ventilation']["{$measureApplicationConsiderableKey}.{$measureApplication->id}.is_considering"] = $measureApplication->measure_name . ': ' . __('cooperation/admin/example-buildings.form.is-considering');
         }
 
         return $structure;

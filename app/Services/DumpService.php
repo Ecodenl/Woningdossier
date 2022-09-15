@@ -61,6 +61,8 @@ class DumpService
     protected Building $building;
     protected InputSource $inputSource;
 
+    public array $headerStructure;
+
     /**
      * @param  Cooperation  $cooperation
      *
@@ -97,7 +99,62 @@ class DumpService
         return $this;
     }
 
+    public function setHeaderStructure(array $headerStructure): self
+    {
+        $this->headerStructure = $headerStructure;
 
+        return $this;
+    }
+
+    public function createHeaderStructure(bool $anonymized, bool $setStepPrefix = true): self
+    {
+        if ($anonymized) {
+            $headers = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+            ];
+        } else {
+            $headers = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.coach-appointment-date'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
+
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+            ];
+        }
+
+        $structure = ToolHelper::getNewContentStructure();
+        // If we should set the step prefix, we want to add the step name to each field
+        if ($setStepPrefix) {
+            foreach ($structure as $stepShort => $content) {
+                $step = Step::findByShort($stepShort);
+
+                if ($step instanceof Step) {
+                    foreach (Arr::dot($content) as $dottedKey => $header) {
+                        Arr::set($structure[$stepShort], $dottedKey, "{$step->name}: {$header}");
+                    }
+                }
+            }
+        }
+        $structure = Arr::dot($structure);
+
+        $this->headerStructure = array_merge($headers, $structure);
+
+        return $this;
+    }
 
 
 

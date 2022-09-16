@@ -383,6 +383,11 @@ class DumpService
             'solar-panels' => $solarPanelSavings,
             'heater' => $heaterSavings,
             'heat-pump' => $heatPumpSavings,
+            'heating' => [
+                'hr-boiler' => $highEfficiencyBoilerSavings,
+                'sun-boiler' => $heaterSavings,
+                'heat-pump' => $heatPumpSavings,
+            ],
         ];
     }
 

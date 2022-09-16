@@ -17,7 +17,7 @@ class HeatingAgesTableSeeder extends Seeder
                 'calculate_value' => 1,
             ],
             [
-                'name' => 'Aaanwezig, tussen 6 en 13 jaar oud',
+                'name' => 'Aanwezig, tussen 6 en 13 jaar oud',
                 'calculate_value' => 1,
             ],
             [

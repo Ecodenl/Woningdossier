@@ -11,6 +11,7 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\ConsiderableHelper;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\HeaterHelper;
@@ -229,6 +230,9 @@ class DumpService
         }
 
         $calculateData = $this->getNewCalculateData();
+        $evaluator = ConditionEvaluator::init()
+            ->building($building)
+            ->inputSource($inputSource);
 
         foreach ($this->headerStructure as $key => $translation) {
             if (is_string(($key))) {
@@ -241,17 +245,33 @@ class DumpService
                 $step = $structure[0];
                 $potentialShort = $structure[1];
                 if (Str::startsWith($potentialShort, 'question_')) {
-                    // TODO: Conditionals
+                    $processAnswer = true;
+                    $humanReadableAnswer = null;
                     $toolQuestion = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
-                    $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource, $toolQuestion);
-                    // Priority slider situation
-                    if (is_array($humanReadableAnswer)) {
-                        $temp = '';
-                        foreach ($humanReadableAnswer as $name => $answer) {
-                            $temp .= "{$name}: {$answer}, ";
+
+                    // If we need to handle conditional logic, we basically check all sub steps and itself.
+                    if ($withConditionalLogic) {
+                        foreach ($toolQuestion->subSteps as $subStep) {
+                            // TODO: Should it be an "OR" situation?
+                            $processAnswer = $processAnswer && $evaluator->evaluate($subStep->conditions ?? []);
                         }
-                        $humanReadableAnswer = substr($temp, 0, -2);
+
+                        $processAnswer = $processAnswer && $evaluator->evaluate($toolQuestion->conditions ?? []);
                     }
+
+                    if ($processAnswer) {
+                        $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
+                            $toolQuestion);
+                        // Priority slider situation
+                        if (is_array($humanReadableAnswer)) {
+                            $temp = '';
+                            foreach ($humanReadableAnswer as $name => $answer) {
+                                $temp .= "{$name}: {$answer}, ";
+                            }
+                            $humanReadableAnswer = substr($temp, 0, -2);
+                        }
+                    }
+
                     $data[] = $humanReadableAnswer;
                 } elseif (Str::startsWith($potentialShort, 'calculation_')) {
                     $columnNest = implode('.', array_slice($structure, 2));

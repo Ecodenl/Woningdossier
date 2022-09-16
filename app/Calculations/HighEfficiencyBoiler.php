@@ -21,7 +21,7 @@ class HighEfficiencyBoiler extends \App\Calculations\Calculator
         $this->energyHabit = $energyHabit;
         //$this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $this->answers = $calculateData['answers'] ?? [];
+        $this->answers = $calculateData['answers'] ?? null;
 
         $this->calculateData = $calculateData;
     }

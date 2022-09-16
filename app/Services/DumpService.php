@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Calculations\FloorInsulation;
 use App\Calculations\Heater;
+use App\Calculations\HeatPump;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Calculations\InsulatedGlazing;
 use App\Calculations\RoofInsulation;
@@ -227,6 +228,8 @@ class DumpService
             ];
         }
 
+        $calculateData = $this->getNewCalculateData();
+
         foreach ($this->headerStructure as $key => $translation) {
             if (is_string(($key))) {
                 // Structure is as follows:
@@ -235,6 +238,7 @@ class DumpService
                 // n: potential calculation field / considerable struct
                 $structure = explode('.', $key);
 
+                $step = $structure[0];
                 $potentialShort = $structure[1];
                 if (Str::startsWith($potentialShort, 'question_')) {
                     // TODO: Conditionals
@@ -250,9 +254,12 @@ class DumpService
                     }
                     $data[] = $humanReadableAnswer;
                 } elseif (Str::startsWith($potentialShort, 'calculation_')) {
-                    // TODO: Generate calculations, pluck result
-                    $column = Str::replaceFirst('calculation_', '', $potentialShort);
-                    $data[] = 'WIP';
+                    $columnNest = implode('.', array_slice($structure, 2));
+
+                    $column = Str::replaceFirst('calculation_', '', $potentialShort)
+                        . (empty($columnNest) ? '' : ".{$columnNest}");
+
+                    $data[] = Arr::get($calculateData[$step], $column);
                 } else {
                     // TODO: Handle legacy data
                     $data[] = 'WIP';
@@ -263,7 +270,83 @@ class DumpService
         return $data;
     }
 
+    protected function getNewCalculateData(): array
+    {
+        // TODO: When the calculators are uniform, instead call them via step short (so we can iterate);
 
+        // collect some info about their building
+        $user = $this->user;
+        $building = $user->building;
+        $inputSource = $this->inputSource;
+        $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
+
+        $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
+            (new WallInsulationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
+            (new InsulatedGlazingHelper($user, $inputSource))
+                ->createValues()
+                ->getValues());
+
+        $floorInsulationSavings = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit,
+            (new FloorInsulationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $roofInsulationSavings = RoofInsulation::calculate(
+            $building,
+            $inputSource,
+            $userEnergyHabit,
+            (new RoofInsulationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate(
+            $userEnergyHabit,
+            (new HighEfficiencyBoilerHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $solarPanelSavings = SolarPanel::calculate(
+            $building,
+            (new SolarPanelHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $heaterSavings = Heater::calculate($building, $userEnergyHabit,
+            (new HeaterHelper($user, $inputSource))
+                ->createValues()
+                ->getValues());
+
+        $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
+            (new VentilationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $heatPumpSavings = HeatPump::calculate($building, $inputSource, $userEnergyHabit);
+
+        return [
+            'ventilation' => $ventilationSavings['result']['crack_sealing'],
+            'wall-insulation' => $wallInsulationSavings,
+            'insulated-glazing' => $insulatedGlazingSavings,
+            'floor-insulation' => $floorInsulationSavings,
+            'roof-insulation' => $roofInsulationSavings,
+            'high-efficiency-boiler' => $highEfficiencyBoilerSavings,
+            'solar-panels' => $solarPanelSavings,
+            'heater' => $heaterSavings,
+            'heat-pump' => $heatPumpSavings,
+        ];
+    }
+
+    ## TODO: Replace legacy
     public static function makeHeaderText($stepName, $subStepName, $text)
     {
         // inside the content structure a step with no sub steps will be given a "-" as step

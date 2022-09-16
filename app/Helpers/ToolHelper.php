@@ -29,6 +29,21 @@ use Illuminate\Support\Collection;
 
 class ToolHelper
 {
+    const OPTION_TRANS = [
+        'ventilation.building_ventilations.how' => [
+            'class' => VentilationHelper::class,
+            'method' => 'getHowValues',
+        ],
+        'ventilation.building_ventilations.living_situation' => [
+            'class' => VentilationHelper::class,
+            'method' => 'getLivingSituationValues',
+        ],
+        'ventilation.building_ventilations.usage' => [
+            'class' => VentilationHelper::class,
+            'method' => 'getUsageValues',
+        ],
+    ];
+
     public static function createOptions(
         Collection $collection,
         $value = 'name',
@@ -69,6 +84,9 @@ class ToolHelper
      */
     public static function getNewContentStructure(): array
     {
+        // TODO: CHECK FOR DUPLICATES BETWEEN TOOL QUESTIONS AND EXPERT (LEGACY) STEP QUESTIONS
+
+
         // TODO: Legacy, replace with dynamic steps in the future
         $solarPanelStep = Step::findByShort('solar-panels');
         $wallInsulationStep = Step::findByShort('wall-insulation');
@@ -372,13 +390,13 @@ class ToolHelper
         foreach ($roofTypes1 as $roofType) {
             $structure['roof-insulation']['building_roof_types.'
             . $roofType->id . '.element_value_id']
-                = __('roof-insulation.current-situation.is-');
+                = __('roof-insulation.current-situation.is-'  . $roofType->short . '-roof-insulated.title');
             $structure['roof-insulation']['building_roof_types.'
             . $roofType->id . '.roof_surface']
-                = __('roof-insulation.current-situation.');
+                = __('roof-insulation.current-situation.'  . $roofType->short . '-roof-surface.title');
             $structure['roof-insulation']['building_roof_types.'
             . $roofType->id . '.insulation_roof_surface']
-                = __('roof-insulation.current-situation.insulation-');
+                = __('roof-insulation.current-situation.insulation-' . $roofType->short . '-roof-surface.title');
             $structure['roof-insulation']['building_roof_types.'
             . $roofType->id . '.extra.zinc_replaced_date']
                 = __('roof-insulation.current-situation.zinc-replaced.title');
@@ -394,10 +412,10 @@ class ToolHelper
             }
             $structure['roof-insulation']['building_roof_types.'
             . $roofType->id . '.extra.measure_application_id']
-                = __('roof-insulation.');
+                = __('roof-insulation.' . $roofType->short . '-roof-.insulate-roof.title');
             $structure['roof-insulation']['building_roof_types.'
             . $roofType->id . '.building_heating_id']
-                = __('roof-insulation.');
+                = __('roof-insulation.' . $roofType->short . '-roof.situation.title');
 
             if ($roofType->short == $roofTypes1->last()->short) {
                 $structure['roof-insulation']['calculation_flat'] = [

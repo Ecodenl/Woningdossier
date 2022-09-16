@@ -234,6 +234,7 @@ class DumpService
             ->building($building)
             ->inputSource($inputSource);
 
+        // TODO: Check if we require the key in the returned data array
         foreach ($this->headerStructure as $key => $translation) {
             if (is_string(($key))) {
                 // Structure is as follows:
@@ -272,6 +273,12 @@ class DumpService
                         }
                     }
 
+                    // So, by default the human readable answer is a mention of no answer being filled.
+                    // However, this reads pretty gnarly so we nullify it.
+                    if ($humanReadableAnswer === __('cooperation/frontend/tool.no-answer-given')) {
+                        $humanReadableAnswer = null;
+                    }
+
                     $data[] = $humanReadableAnswer;
                 } elseif (Str::startsWith($potentialShort, 'calculation_')) {
                     $columnNest = implode('.', array_slice($structure, 2));
@@ -301,7 +308,24 @@ class DumpService
 
                         $modelName = "App\\Models\\" . Str::studly(Str::singular($table));
 
-                        $data[] = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
+                        $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
+
+                        if (is_array($answer)) {
+                            //TODO: For now we have a simple struct, this works fine for this situation. Check
+                            // If we need to translate more, and if so, how to
+                            if (array_key_exists($key, ToolHelper::OPTION_TRANS)) {
+                                $struct = ToolHelper::OPTION_TRANS[$key];
+                                $trans = call_user_func(implode('::', $struct));
+
+                                foreach ($answer as $index => $value) {
+                                    $answer[$index] = $trans[$value] ?? $value;
+                                }
+                            }
+
+                            $answer = implode(', ', $answer);
+                        }
+
+                        $data[] = $answer;
                     }
                 }
             }
@@ -539,10 +563,10 @@ class DumpService
                 return $user->getFullName();
             })->implode(', ');
 
-
         $firstName = $user->first_name;
         $lastName = $user->last_name;
         $email = $user->account->email;
+
         $phoneNumber = CsvHelper::escapeLeadingZero($user->phone_number);
 
         $street = $building->street;

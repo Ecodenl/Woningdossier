@@ -15,13 +15,36 @@ use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
 use App\Models\ServiceValue;
-use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
-class Heater
+class Heater extends \App\Calculations\Calculator
 {
-    public static function calculate(Building $building, $energyHabit, $calculateData)
+    public $energyHabit;
+
+    public function __construct(Building $building, $energyHabit, array $calculateData)
+    {
+        $this->building = $building;
+        $this->energyHabit = $energyHabit;
+        $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+        $this->answers = $calculateData['answers'] ?? [];
+
+        $this->calculateData = $calculateData;
+    }
+
+    public static function calculate(Building $building, $energyHabit, array $calculateData)
+    {
+        $calculator = new static (
+            $building,
+            $energyHabit,
+            $calculateData
+        );
+
+        return $calculator->performCalculations();
+    }
+
+    public function performCalculations()
     {
         $result = [
             'consumption' => [
@@ -35,6 +58,8 @@ class Heater
             'year' => null,
             'production_heat' => 0,
             'percentage_consumption' => 0,
+            'amount_gas' => 0,
+            'amount_electricity' => 0,
             'savings_gas' => 0,
             'savings_co2' => 0,
             'savings_money' => 0,
@@ -42,11 +67,14 @@ class Heater
             'interest_comparable' => 0,
         ];
 
-        $comfortLevelId = $calculateData['user_energy_habits']['water_comfort_id'] ?? 0;
+        $comfortLevelId = $this->calculateData['user_energy_habits']['water_comfort_id'] ?? 0;
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
 
-        if ($energyHabit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
-            $consumption = KeyFigures::getCurrentConsumption($energyHabit, $comfortLevel);
+        if ($this->energyHabit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
+            $result['amount_gas'] = $this->energyHabit->amount_gas;
+            $result['amount_electricity'] = $this->energyHabit->amount_electricity;
+
+            $consumption = KeyFigures::getCurrentConsumption($this->energyHabit, $comfortLevel);
             if ($consumption instanceof KeyFigureConsumptionTapWater) {
                 $result['consumption'] = [
                     'water' => $consumption->water_consumption,
@@ -55,18 +83,18 @@ class Heater
             }
             // \Log::debug('Heater: Current consumption: '.json_encode($result['consumption']));
 
-            $buildingHeaters = $calculateData['building_heaters'] ?? [];
+            $buildingHeaters = $this->calculateData['building_heaters'] ?? [];
             $angle = $buildingHeaters['angle'] ?? 0;
             $orientationId = $buildingHeaters['pv_panel_orientation_id'] ?? 0;
             $orientation = PvPanelOrientation::find($orientationId);
 
-            $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
+            $locationFactor = KeyFigures::getLocationFactor($this->building->postal_code);
             $helpFactor = 1;
             if ($orientation instanceof PvPanelOrientation && $angle > 0) {
                 $yield = KeyFigures::getYield($orientation, $angle);
                 // \Log::debug('Heater: Yield for '.$orientation->name.' at '.$angle.' degrees = '.$yield->yield);
                 if ($yield instanceof PvPanelYield && $locationFactor instanceof PvPanelLocationFactor) {
-                    // \Log::debug('Heater: Location factor for '.$building->postal_code.' is '.$locationFactor->factor);
+                    // \Log::debug('Heater: Location factor for '.$this->building->postal_code.' is '.$locationFactor->factor);
                     $helpFactor = $yield->yield * $locationFactor->factor;
                 }
             }
@@ -94,17 +122,13 @@ class Heater
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
 
-                $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-                $hasSunBoilerQuestion = ToolQuestion::findByShort('heater-type');
-                if ($hasSunBoilerQuestion instanceof ToolQuestion) {
-                    $answer = $building->getAnswer($masterInputSource, $hasSunBoilerQuestion);
-                    $serviceValue = ServiceValue::find($answer);
+                $answer = $this->getAnswer('heater-type');
+                $serviceValue = ServiceValue::find($answer);
 
-                    if ($serviceValue instanceof ServiceValue) {
-                        $currentYear = Carbon::now()->year;
-                        // If the value is 1 (geen), we want it in to-do
-                        $result['year'] = $serviceValue->calculate_value > 1 ? $currentYear + 5 : $currentYear;
-                    }
+                if ($serviceValue instanceof ServiceValue) {
+                    $currentYear = Carbon::now()->year;
+                    // If the value is 1 ('geen'), we want it in to-do
+                    $result['year'] = $serviceValue->calculate_value > 1 ? $currentYear + 5 : $currentYear;
                 }
 
                 if ($helpFactor >= 0.84) {

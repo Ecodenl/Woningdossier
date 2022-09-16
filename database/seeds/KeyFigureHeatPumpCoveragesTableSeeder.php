@@ -13,21 +13,22 @@ class KeyFigureHeatPumpCoveragesTableSeeder extends Seeder
      */
     public function run()
     {
-        $high  = DB::table('tool_question_custom_values')->where(
-            'short',
-            '=',
-            'temp-high'
-        )->first()->id;
-        $fifty = DB::table('tool_question_custom_values')->where(
-            'short',
-            '=',
-            'temp-50'
-        )->first()->id;
-        $low   = DB::table('tool_question_custom_values')->where(
-            'short',
-            '=',
-            'temp-low'
-        )->first()->id;
+        $temperatureQuestion = DB::table('tool_questions')
+            ->where('short', 'new-boiler-setting-comfort-heat')
+            ->first();
+
+        $high = DB::table('tool_question_custom_values')
+            ->where('short', 'temp-high')
+            ->where('tool_question_id', $temperatureQuestion->id)
+            ->first()->id;
+        $fifty = DB::table('tool_question_custom_values')
+            ->where('short', 'temp-50')
+            ->where('tool_question_id', $temperatureQuestion->id)
+            ->first()->id;
+        $low = DB::table('tool_question_custom_values')
+            ->where('short', 'temp-low')
+            ->where('tool_question_id', $temperatureQuestion->id)
+            ->first()->id;
 
         $coverages = [
             [

@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 
 class SpecificExampleBuilding implements ShouldEvaluate
 {
-    public static function evaluate(Building $building, InputSource $inputSource, ?Collection $answers = null): bool
+    public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool
     {
         $buildingTypeId = $building->getAnswer(
             $inputSource,

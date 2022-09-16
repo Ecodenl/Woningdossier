@@ -1,10 +1,10 @@
 @php
-    $toolQuestion = $subSteppable->subSteppable;
+    $toolQuestion = $subSteppablePivot->subSteppable;
     $disabled = ! $building->user->account->can('answer', $toolQuestion);
     $humanReadableAnswer = null;
 @endphp
 
-<div class="{{$subSteppable->size}}" wire:key="question-{{$toolQuestion->id}}">
+<div class="{{$subSteppablePivot->size}}" wire:key="question-{{$toolQuestion->id}}">
     @component('cooperation.frontend.layouts.components.form-group', [
         'class' => 'form-group-heading',
         'labelClass' => 'text-sm',
@@ -26,8 +26,7 @@
                 {!! $toolQuestion->help_text !!}
             </p>
         @endslot
-
-        @include("cooperation.tool-question-type-templates.{$subSteppable->toolQuestionType->short}.show", [
+        @include("cooperation.tool-question-type-templates.{$subSteppablePivot->toolQuestionType->short}.show", [
             'disabled' => $disabled,
         ])
     @endcomponent

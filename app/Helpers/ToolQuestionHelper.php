@@ -29,6 +29,8 @@ class ToolQuestionHelper
      */
     const TABLE_COLUMN = [
         'building_elements' => 'element_id',
+        'building_insulated_glazings' => 'measure_application_id',
+        'building_roof_types' => 'roof_type_id',
         'building_services' => 'service_id',
         'step_comments' => [
             'step_id',
@@ -114,14 +116,14 @@ class ToolQuestionHelper
     /**
      * Simple method to resolve the save in to something we can use.
      *
-     * @param ToolQuestion $toolQuestion
-     * @param Building $building
+     * @param  string  $saveIn
+     * @param  Building  $building
      *
      * @return array
      */
-    public static function resolveSaveIn(ToolQuestion $toolQuestion, Building $building): array
+    public static function resolveSaveIn(string $saveIn, Building $building): array
     {
-        $savedInParts = explode('.', $toolQuestion->save_in);
+        $savedInParts = explode('.',$saveIn);
         $table = $savedInParts[0];
         $column = $savedInParts[1];
         $where = [];

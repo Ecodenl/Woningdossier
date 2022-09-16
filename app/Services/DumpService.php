@@ -261,8 +261,28 @@ class DumpService
 
                     $data[] = Arr::get($calculateData[$step], $column);
                 } else {
-                    // TODO: Handle legacy data
-                    $data[] = 'WIP';
+                    if ($potentialShort === 'considerables') {
+                        $considerableModel = $structure[2];
+                        $considerableId = $structure[3];
+
+                        // returns a bool, the values are keyed by 0 and 1
+                        $considerable = $considerableModel::find($considerableId);
+                        $considers = $user->considers($considerable, $inputSource);
+
+                        $data[] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
+                    } else {
+                        // Using the legacy notation, we will mimick getting the answer
+                        $saveIn = ToolQuestionHelper::resolveSaveIn(Str::replaceFirst("{$step}.", '', $key),
+                            $building);
+                        $table  = $saveIn['table'];
+                        $column = $saveIn['column'];
+                        $where = $saveIn['where'];
+                        $where['input_source_id'] = $inputSource->id;
+
+                        $modelName = "App\\Models\\" . Str::studly(Str::singular($table));
+
+                        $data[] = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
+                    }
                 }
             }
         }

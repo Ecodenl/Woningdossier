@@ -78,7 +78,7 @@ class ExampleBuildingService
                             'building_services' => 'service',
                         ];
 
-                        $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $building);
+                        $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $building);
 
                         $table = $saveIn['table'];
                         // So, in some cases, the save_in holds table > id > column values. To respect this, we have to

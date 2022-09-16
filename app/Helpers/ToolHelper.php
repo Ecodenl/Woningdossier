@@ -96,7 +96,7 @@ class ToolHelper
                 'calculation_interest_comparable' => __('cooperation/tool/ventilation.index.comparable-rent.title'),
             ],
             'wall-insulation' => [
-                "{$stepConsiderableKey}.{$wallInsulationStep->id}.is_considering" => $wallInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                "{$stepConsiderableKey}.{$wallInsulationStep->id}" => $wallInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
                 'building_features.cavity_wall' => __('wall-insulation.intro.has-cavity-wall.title'),
                 'building_features.facade_plastered_painted' => __('wall-insulation.intro.is-facade-plastered-painted.title'),
                 'building_features.facade_plastered_surface_id' => __('wall-insulation.intro.surface-paintwork.title'),
@@ -155,17 +155,17 @@ class ToolHelper
             ],
             'insulated-glazing' => [
                 'building_features.window_surface' => __('insulated-glazing.windows-surface.title'),
-                'element.' . $frames->id => __('insulated-glazing.paint-work.which-frames.title'),
-                'element.' . $woodElements->id => __('insulated-glazing.paint-work.other-wood-elements.title'),
+                'building_elements.' . $frames->id => __('insulated-glazing.paint-work.which-frames.title'),
+                'building_elements.' . $woodElements->id => __('insulated-glazing.paint-work.other-wood-elements.title'),
                 'building_paintwork_statuses.last_painted_year' => __('insulated-glazing.paint-work.last-paintjob.title'),
                 'building_paintwork_statuses.paintwork_status_id' => __('insulated-glazing.paint-work.paint-damage-visible.title'),
                 'building_paintwork_statuses.wood_rot_status_id' => __('insulated-glazing.paint-work.wood-rot-visible.title'),
             ],
             'floor-insulation' => [
-                "{$stepConsiderableKey}.{$floorInsulationStep->id}.is_considering" => $floorInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
-                'element.' . $crawlspace->id . '.extra.has_crawlspace' => __('floor-insulation.has-crawlspace.title'),
-                'element.' . $crawlspace->id . '.extra.access' => __('floor-insulation.crawlspace-access.title'),
-                'element.' . $crawlspace->id . '.element_value_id' => __('floor-insulation.crawlspace-height.title'),
+                "{$stepConsiderableKey}.{$floorInsulationStep->id}" => $floorInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                'building_elements.' . $crawlspace->id . '.extra.has_crawlspace' => __('floor-insulation.has-crawlspace.title'),
+                'building_elements.' . $crawlspace->id . '.extra.access' => __('floor-insulation.crawlspace-access.title'),
+                'building_elements.' . $crawlspace->id . '.element_value_id' => __('floor-insulation.crawlspace-height.title'),
                 'building_features.floor_surface' => __('floor-insulation.surface.title'),
                 'building_features.insulation_surface' => __('floor-insulation.insulation-surface.title'),
                 'calculation_savings_gas' => __(
@@ -185,11 +185,11 @@ class ToolHelper
                 ),
             ],
             'roof-insulation' => [
-                "{$stepConsiderableKey}.{$roofInsulationStep->id}.is_considering" => $roofInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                "{$stepConsiderableKey}.{$roofInsulationStep->id}" => $roofInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
                 // Rest will be added dynamically
             ],
             'solar-panels' => [
-                "{$stepConsiderableKey}.{$solarPanelStep->id}.is_considering" => $solarPanelStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                "{$stepConsiderableKey}.{$solarPanelStep->id}" => $solarPanelStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
                 'user_energy_habits.amount_electricity' => __('solar-panels.electra-usage.title'),
                 'building_pv_panels.total_installed_power' => __('solar-panels.total-installed-power.label'),
                 'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
@@ -299,7 +299,7 @@ class ToolHelper
                 ->first();
             if ($measureApplication instanceof MeasureApplication) {
 
-                $structure['insulated-glazing']["{$measureApplicationConsiderableKey}.{$measureApplication->id}.is_considering"] = $measureApplication->measure_name . ': ' . __('cooperation/admin/example-buildings.form.is-considering');
+                $structure['insulated-glazing']["{$measureApplicationConsiderableKey}.{$measureApplication->id}"] = $measureApplication->measure_name . ': ' . __('cooperation/admin/example-buildings.form.is-considering');
                 $structure['insulated-glazing']['building_insulated_glazings.'
                 . $measureApplication->id . '.insulating_glazing_id']
                     =  $measureApplication->measure_name . ': ' . __(
@@ -467,7 +467,7 @@ class ToolHelper
         )->get();
 
         foreach ($measureApplicationsForVentilation as $measureApplication) {
-            $structure['ventilation']["{$measureApplicationConsiderableKey}.{$measureApplication->id}.is_considering"] = $measureApplication->measure_name . ': ' . __('cooperation/admin/example-buildings.form.is-considering');
+            $structure['ventilation']["{$measureApplicationConsiderableKey}.{$measureApplication->id}"] = $measureApplication->measure_name . ': ' . __('cooperation/admin/example-buildings.form.is-considering');
         }
 
         return $structure;

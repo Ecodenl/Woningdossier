@@ -139,7 +139,7 @@ class Building extends Model
         ];
         // this means we should get the answer the "traditional way" , in another table (not from the tool_question_answers)
         if (! is_null($toolQuestion->save_in)) {
-            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table  = $saveIn['table'];
             $column = $saveIn['column'];
             $where  = array_merge($saveIn['where'], $where);
@@ -213,7 +213,7 @@ class Building extends Model
         $where['input_source_id'] = $inputSource->id;
         // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
         if (! is_null($toolQuestion->save_in)) {
-            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table  = $saveIn['table'];
             $column = $saveIn['column'];
             $where  = array_merge($saveIn['where'], $where);

@@ -9,7 +9,6 @@ use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\User;
 use App\Models\UserActionPlanAdviceComments;
@@ -32,12 +31,10 @@ class UserReportController extends Controller
         // Always retrieve from master
         $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $headers = DumpService::getStructureForTotalDumpService(false, false);
+        $dumpService = DumpService::init()->user($user)->inputSource($inputSource)
+            ->createHeaderStructure();
 
         $user = UserService::eagerLoadUserData($user, $inputSource);
-
-        $building = $user->building;
-
         $buildingFeatures = $building->buildingFeatures;
 
         $GLOBALS['_cooperation'] = $userCooperation;
@@ -76,36 +73,27 @@ class UserReportController extends Controller
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($headers, $userCooperation, $user, $inputSource, false, true, true);
+        $reportForUser = $dumpService->generateDump();
 
         // the translations for the columns / tables in the user data
-        $reportTranslations = $reportForUser['translations-for-columns'];
+        $reportTranslations = $dumpService->headerStructure;
 
-        $calculations = $reportForUser['calculations'];
-        $reportData = [];
-
-        foreach ($reportForUser['user-data'] as $key => $value) {
-            // so we now its a step.
-            if (is_string($key)) {
-                $keys = explode('.', $key);
-
-                $tableData = array_splice($keys, 2);
-
-                // we dont want the calculations in the report data, we need them separate
-                if (!in_array('calculation', $tableData)) {
-                    $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
-                }
-            }
-        }
-
-        // steps that are considered to be measures.
-        $stepShorts = DB::table('steps')
-            ->where('short', '!=', 'general-data')
-            ->select('short', 'id')
-            ->get()
-            ->pluck('short', 'id')
-            ->flip()
-            ->toArray();
+        //$calculations = $reportForUser['calculations'];
+        //$reportData = [];
+        //
+        //foreach ($reportForUser['user-data'] as $key => $value) {
+        //    // so we now its a step.
+        //    if (is_string($key)) {
+        //        $keys = explode('.', $key);
+        //
+        //        $tableData = array_splice($keys, 2);
+        //
+        //        // we dont want the calculations in the report data, we need them separate
+        //        if (!in_array('calculation', $tableData)) {
+        //            $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
+        //        }
+        //    }
+        //}
 
         $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
         $connectedCoachNames = [];
@@ -123,21 +111,13 @@ class UserReportController extends Controller
             ->pluck('comment', 'inputSource.name')
             ->toArray();
 
-        $noInterest = Interest::where('calculate_value', 4)->first();
-
-//        /** @var \Barryvdh\DomPDF\PDF $pdf */
+        /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
-            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
+            'user', 'building', 'userCooperation', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
+            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser',
             'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
-//
-        return $pdf->stream();
 
-        return view('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'connectedCoachNames', 'userEnergyHabit',
-            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-            'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
-        ));
+        return $pdf->stream();
     }
 }

@@ -47,18 +47,15 @@
 @endcomponent
 
 
-@foreach ($reportData as $stepShort => $dataForStep)
-    <?php
+@foreach($reportData as $stepShort => $dataForStep)
+    @php
         $hasResidentCompletedStep = $building->hasCompleted(
-            \App\Models\Step::withGeneralData()->where('short', $stepShort)->first(),
+            \App\Models\Step::findByShort($stepShort),
             $inputSource
         );
-    ?>
-    @if (array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
+    @endphp
+    @if ($hasResidentCompletedStep)
         @foreach ($dataForStep as $subStepShort => $dataForSubStep)
-            <?php
-                $shortToUseAsMainSubject = $subStepShort == '-' ? $stepShort : $subStepShort
-            ?>
             @include('cooperation.pdf.user-report.parts.measure-page')
         @endforeach
     @endif

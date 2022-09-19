@@ -208,8 +208,6 @@ class ToolHelper
             ],
             'solar-panels' => [
                 "{$stepConsiderableKey}.{$solarPanelStep->id}" => $solarPanelStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
-                'user_energy_habits.amount_electricity' => __('solar-panels.electra-usage.title'),
-                'building_pv_panels.total_installed_power' => __('solar-panels.total-installed-power.label'),
                 'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
                 'building_pv_panels.number' => __('solar-panels.number.title'),
                 'building_pv_panels.pv_panel_orientation_id' => __('solar-panels.pv-panel-orientation-id.title'),

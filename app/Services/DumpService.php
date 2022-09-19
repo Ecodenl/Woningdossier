@@ -185,7 +185,7 @@ class DumpService
      *
      * @return array
      */
-    public function generateDump(bool $withConditionalLogic = false): array
+    public function generateDump(bool $withConditionalLogic = true): array
     {
         $user = $this->user;
         $building = $user->building;

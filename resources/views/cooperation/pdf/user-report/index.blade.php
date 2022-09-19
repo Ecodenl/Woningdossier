@@ -7,7 +7,7 @@
 
     @if(app()->environment() === 'local')
         @php
-          $href = $_SERVER['DOCUMENT_ROOT'] . '/css/pdf.css';
+            $href = $_SERVER['DOCUMENT_ROOT'] . '/css/pdf.css';
         @endphp
     @else
         @php
@@ -65,6 +65,5 @@
 @endforeach
 
 @include('cooperation.pdf.user-report.parts.outro')
-
 
 </html>

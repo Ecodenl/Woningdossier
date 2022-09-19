@@ -17,7 +17,7 @@ use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class UserReportController extends Controller
 {
@@ -31,8 +31,7 @@ class UserReportController extends Controller
         // Always retrieve from master
         $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $dumpService = DumpService::init()->user($user)->inputSource($inputSource)
-            ->createHeaderStructure();
+        $dumpService = DumpService::init()->user($user)->createHeaderStructure();
 
         $user = UserService::eagerLoadUserData($user, $inputSource);
         $buildingFeatures = $building->buildingFeatures;
@@ -73,27 +72,24 @@ class UserReportController extends Controller
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
-        $reportForUser = $dumpService->generateDump();
+        $reportForUser = $dumpService->generateDump(true);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $dumpService->headerStructure;
 
-        //$calculations = $reportForUser['calculations'];
-        //$reportData = [];
-        //
-        //foreach ($reportForUser['user-data'] as $key => $value) {
-        //    // so we now its a step.
-        //    if (is_string($key)) {
-        //        $keys = explode('.', $key);
-        //
-        //        $tableData = array_splice($keys, 2);
-        //
-        //        // we dont want the calculations in the report data, we need them separate
-        //        if (!in_array('calculation', $tableData)) {
-        //            $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
-        //        }
-        //    }
-        //}
+        $calculations = [];
+        $reportData = [];
+
+        foreach ($reportForUser as $key => $value) {
+            // so we now its a step.
+            if (is_string($key)) {
+                if (Str::contains($key, 'calculation_')) {
+                    $calculations[$key] = $value;
+                } else {
+                    $reportData[$key] = $value;
+                }
+            }
+        }
 
         $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
         $connectedCoachNames = [];

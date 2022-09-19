@@ -180,12 +180,11 @@ class DumpService
     /**
      * Create a dump for the set header structure.
      *
-     * @param  bool  $withConditionalLogic  If we should follow conditional logic. Answers won't be shown if conditions
-     *     don't match
+     * @param  bool  $unsetConditionals  If true, conditionally unmet questions are not added to the result dump.
      *
      * @return array
      */
-    public function generateDump(bool $withConditionalLogic = true): array
+    public function generateDump(bool $unsetConditionals = false): array
     {
         $user = $this->user;
         $building = $user->building;
@@ -250,35 +249,37 @@ class DumpService
                     $humanReadableAnswer = null;
                     $toolQuestion = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
 
-                    // If we need to handle conditional logic, we basically check all sub steps and itself.
-                    if ($withConditionalLogic) {
-                        foreach ($toolQuestion->subSteps as $subStep) {
-                            $processAnswer = $processAnswer || $evaluator->evaluate($subStep->conditions ?? []);
-                        }
-
-                        $processAnswer = $processAnswer && $evaluator->evaluate($toolQuestion->conditions ?? []);
+                    // We ALWAYS check all sub steps and itself to see if the question can be answered.
+                    foreach ($toolQuestion->subSteps as $subStep) {
+                        $processAnswer = $processAnswer || $evaluator->evaluate($subStep->conditions ?? []);
                     }
 
-                    if ($processAnswer) {
-                        $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
-                            $toolQuestion);
-                        // Priority slider situation
-                        if (is_array($humanReadableAnswer)) {
-                            $temp = '';
-                            foreach ($humanReadableAnswer as $name => $answer) {
-                                $temp .= "{$name}: {$answer}, ";
+                    $processAnswer = $processAnswer && $evaluator->evaluate($toolQuestion->conditions ?? []);
+
+                    // If we want to unset conditionals, we won't even process any further unless the question can be
+                    // answered
+                    if (! $unsetConditionals || $processAnswer) {
+                        if ($processAnswer) {
+                            $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
+                                $toolQuestion);
+                            // Priority slider situation
+                            if (is_array($humanReadableAnswer)) {
+                                $temp = '';
+                                foreach ($humanReadableAnswer as $name => $answer) {
+                                    $temp .= "{$name}: {$answer}, ";
+                                }
+                                $humanReadableAnswer = substr($temp, 0, -2);
                             }
-                            $humanReadableAnswer = substr($temp, 0, -2);
                         }
-                    }
 
-                    // So, by default the human readable answer is a mention of no answer being filled.
-                    // However, this reads pretty gnarly so we nullify it.
-                    if ($humanReadableAnswer === __('cooperation/frontend/tool.no-answer-given')) {
-                        $humanReadableAnswer = null;
-                    }
+                        // So, by default the human readable answer is a mention of no answer being filled.
+                        // However, this reads pretty gnarly so we nullify it.
+                        if ($humanReadableAnswer === __('cooperation/frontend/tool.no-answer-given')) {
+                            $humanReadableAnswer = null;
+                        }
 
-                    $data[$key] = $humanReadableAnswer;
+                        $data[$key] = $humanReadableAnswer;
+                    }
                 } elseif (Str::startsWith($potentialShort, 'calculation_')) {
                     $columnNest = implode('.', array_slice($structure, 2));
 

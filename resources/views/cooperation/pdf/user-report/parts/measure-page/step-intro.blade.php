@@ -1,9 +1,5 @@
 @php
     $stepIconMap = [
-        'building-data' => '',
-        'usage-quick-scan' => '',
-        'living-requirements' => '',
-        'residential-status' => '',
         'wall-insulation' => 'icons/wall-insulation-excellent.svg',
         'ventilation' => 'icons/ventilation.svg',
         'insulated-glazing' => 'icons/glass-hr-tp.png',

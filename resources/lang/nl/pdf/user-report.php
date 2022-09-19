@@ -14,6 +14,7 @@ return [
         'high-efficiency-boiler' => 'Is uw cv-ketel ouder dan 15 jaar, dan is het tijd het om aan een nieuwe ketel te denken. De kans op storingen stijgt, en bovendien kan er het nodige aan uw situatie zijn veranderd. Is uw huishouden groter of kleiner geworden? Heeft u andere leefgewoontes? Nieuwe ketels zijn daarnaast beter in te stellen, waardoor ze ook nog eens zuiniger zijn.',
         'solar-panels' => 'Steeds meer mensen laten zonnepanelen monteren. Dat is wel zo slim. Gemiddeld verbruikt een gezin in Nederland zo’n 3500 kWh aan stroom per jaar. Met zonnepanelen kunt u deze energie zelf duurzaam opwekken. Dat scheelt op uw energierekening én is beter voor het milieu.',
         'heater' => 'Voor huishoudens waar veel wordt gedoucht, kan de zonneboiler een uitkomst zijn. Met een zonneboiler verwarmt u water met de energie van de zon. U kunt zo bijna de helft van uw energiegebruik voor warm water besparen. Ideaal voor gezinnen met kinderen.',
+        'heating' => 'Het verwarmingssyteem.',
     ],
     'front-page' => [
         'intro' => [

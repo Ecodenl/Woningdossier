@@ -50,7 +50,6 @@ class GenerateTotalReport implements ShouldQueue
         $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $dumpService = DumpService::init()->anonymize($this->anonymizeData)
-            ->inputSource($inputSource)
             ->createHeaderStructure();
 
         $cooperation = $this->cooperation;

@@ -122,8 +122,8 @@ class SolarPanelsController extends ToolController
             Arr::set($values, 'building_services.7.extra.value', null);
             Arr::set($values, 'building_pv_panels.total_installed_power', null);
         }
-
         $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new SolarPanelHelper($user, $inputSource))
             ->setValues($values)
             ->saveValues()

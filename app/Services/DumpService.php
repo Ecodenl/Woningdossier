@@ -246,15 +246,14 @@ class DumpService
                 $step = $structure[0];
                 $potentialShort = $structure[1];
                 if (Str::startsWith($potentialShort, 'question_')) {
-                    $processAnswer = true;
+                    $processAnswer = false;
                     $humanReadableAnswer = null;
                     $toolQuestion = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
 
                     // If we need to handle conditional logic, we basically check all sub steps and itself.
                     if ($withConditionalLogic) {
                         foreach ($toolQuestion->subSteps as $subStep) {
-                            // TODO: Should it be an "OR" situation?
-                            $processAnswer = $processAnswer && $evaluator->evaluate($subStep->conditions ?? []);
+                            $processAnswer = $processAnswer || $evaluator->evaluate($subStep->conditions ?? []);
                         }
 
                         $processAnswer = $processAnswer && $evaluator->evaluate($toolQuestion->conditions ?? []);

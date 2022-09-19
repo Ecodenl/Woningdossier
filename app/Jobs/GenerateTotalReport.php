@@ -84,7 +84,6 @@ class GenerateTotalReport implements ShouldQueue
             }, 'energyHabit' => fn ($q) => $q->forInputSource($inputSource)])
             ->chunkById(100, function($users) use ($dumpService, &$rows) {
                 foreach ($users as $user) {
-                    // TODO: Should we use conditional logic? I think we should, else we get weird answers in the CSV
                     $rows[$user->building->id] = $dumpService->user($user)->generateDump(true);
                 }
 

@@ -278,14 +278,15 @@ class DumpService
                         $humanReadableAnswer = null;
                     }
 
-                    $data[] = $humanReadableAnswer;
+                    $data[$key] = $humanReadableAnswer;
                 } elseif (Str::startsWith($potentialShort, 'calculation_')) {
                     $columnNest = implode('.', array_slice($structure, 2));
 
                     $column = Str::replaceFirst('calculation_', '', $potentialShort)
                         . (empty($columnNest) ? '' : ".{$columnNest}");
 
-                    $data[] = Arr::get($calculateData[$step], $column);
+                    $answer = Arr::get($calculateData[$step], $column);
+                    $data[$key] = $this->formatCalculation($key, $answer);
                 } else {
                     if ($potentialShort === 'considerables') {
                         $considerableModel = $structure[2];
@@ -295,7 +296,7 @@ class DumpService
                         $considerable = $considerableModel::find($considerableId);
                         $considers = $user->considers($considerable, $inputSource);
 
-                        $data[] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
+                        $data[$key] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
                     } else {
                         // Using the legacy notation, we will mimick getting the answer
                         $saveIn = ToolQuestionHelper::resolveSaveIn(Str::replaceFirst("{$step}.", '', $key),
@@ -309,22 +310,19 @@ class DumpService
 
                         $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
 
+                        // Attempt translation
+                        $answer = ToolHelper::translateLegacyAnswer($key, $answer);
+
                         if (is_array($answer)) {
-                            //TODO: For now we have a simple struct, this works fine for this situation. Check
-                            // If we need to translate more, and if so, how to
-                            if (array_key_exists($key, ToolHelper::OPTION_TRANS)) {
-                                $struct = ToolHelper::OPTION_TRANS[$key];
-                                $trans = call_user_func(implode('::', $struct));
-
-                                foreach ($answer as $index => $value) {
-                                    $answer[$index] = $trans[$value] ?? $value;
-                                }
-                            }
-
                             $answer = implode(', ', $answer);
                         }
 
-                        $data[] = $answer;
+                        // Exception to the rule
+                        if (Str::endsWith($key, 'window_surface')) {
+                            $answer = NumberFormatter::format($answer, 2);
+                        }
+
+                        $data[$key] = $answer;
                     }
                 }
             }
@@ -412,6 +410,27 @@ class DumpService
                 'heat-pump' => $heatPumpSavings,
             ],
         ];
+    }
+
+    protected function formatCalculation($key, $value)
+    {
+        $decimals = 0;
+        $shouldRound = false;
+
+        if (self::isYear($key) || ! is_numeric($value)) {
+            return $value;
+        }
+
+        if (Str::contains($key, 'specs.size_collector') || Str::contains($key, 'interest_comparable')) {
+            $decimals = 1;
+        }
+
+        if (Str::contains($key, 'percentage_consumption') || Str::contains($key, 'savings_')
+            || (Str::contains($key, 'cost') && ! Str::contains( $key, 'roof-insulation'))) {
+            $shouldRound = true;
+        }
+
+        return self::formatOutput($key, $value, $decimals, $shouldRound);
     }
 
     ## TODO: Replace legacy
@@ -1149,6 +1168,10 @@ class DumpService
             /// round the cost for paintwork
             $shouldRound = true;
         }
+        if (in_array($column, ['percentage_consumption']) || Str::contains($column, 'savings_') ||
+            Str::contains($column, 'cost')) {
+            $shouldRound = true;
+        }
 
         return self::formatOutput($column, $value, $decimals, $shouldRound);
     }
@@ -1165,16 +1188,10 @@ class DumpService
      */
     protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false)
     {
-        //dump("formatOutput (" . $column . ", " . $value . ", " . $decimals . ", " . $shouldRound . ")");
-
-        if (in_array($column, ['percentage_consumption']) ||
-            false !== stristr($column, 'savings_') ||
-            stristr($column, 'cost')) {
-            $value = NumberFormatter::round($value);
-        }
         if ($shouldRound) {
             $value = NumberFormatter::round($value);
         }
+
         // We should let Excel do the separation of thousands
         return number_format($value, $decimals, ',', '');
         //return NumberFormatter::format($value, $decimals, $shouldRound);
@@ -1192,15 +1209,16 @@ class DumpService
     /**
      * Returns whether or not two (optional!) columns contain a year or not.
      *
-     * @param string $column
-     * @param string $extraValue
+     * @param  string  $column
+     * @param  string  $extraValue
      *
      * @return bool
      */
-    protected static function isYear($column, $extraValue = '')
+    protected static function isYear($column, $extraValue = ''): bool
     {
-        if (!is_null($column)) {
-            if (false !== stristr($column, 'year')) {
+        // TODO: extraValue can be made redundant in the future
+        if (! is_null($column)) {
+            if (Str::contains($column, 'year')) {
                 return true;
             }
             if ('extra' == $column) {

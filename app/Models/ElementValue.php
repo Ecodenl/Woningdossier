@@ -43,6 +43,14 @@ class ElementValue extends Model
         'configurations' => 'array',
     ];
 
+    # Attributes
+    public function getInsulationFactorAttribute(): int
+    {
+        $configurations = $this->configurations;
+        return (int) ($configurations['insulation_factor'] ?? 0);
+    }
+
+    # Relations
     public function element()
     {
         return $this->belongsTo(Element::class);

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Arr;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\QuestionValues\QuestionValue;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
@@ -137,8 +138,8 @@ class Building extends Model
             ],
         ];
         // this means we should get the answer the "traditional way" , in another table (not from the tool_question_answers)
-        if ( ! is_null($toolQuestion->save_in)) {
-            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
+        if (! is_null($toolQuestion->save_in)) {
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table  = $saveIn['table'];
             $column = $saveIn['column'];
             $where  = array_merge($saveIn['where'], $where);
@@ -184,7 +185,7 @@ class Building extends Model
                 $answer = optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer;
                 $answers[$toolQuestionAnswer->inputSource->short][$index] = [
                     'answer' => $answer,
-                    'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? null,
+                    'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? $answer,
                 ];
             }
         }
@@ -208,14 +209,14 @@ class Building extends Model
     {
         // TODO: Should this check `for_specific_input_source`?
 
-        $answer  = null;
-        $where[] = ['input_source_id', '=', $inputSource->id];
+        $answer = null;
+        $where['input_source_id'] = $inputSource->id;
         // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
-        if ( ! is_null($toolQuestion->save_in)) {
-            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
+        if (! is_null($toolQuestion->save_in)) {
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table  = $saveIn['table'];
             $column = $saveIn['column'];
-            $where  = array_merge($saveIn['where'], $where);
+            $where = array_merge($saveIn['where'], $where);
 
             $modelName = "App\\Models\\".Str::studly(Str::singular($table));
 
@@ -223,14 +224,17 @@ class Building extends Model
             $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
         } else {
             $where['building_id'] = $this->id;
-            $toolQuestionAnswers  = $toolQuestion
+            $toolQuestionAnswers = $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->where($where)
                 ->get();
 
             // todo: refactor this to something sensible
-            if ($toolQuestion->toolQuestionType->short == 'checkbox-icon') {
+            // TODO: Should we still refactor?
+            if ($toolQuestion->data_type === Caster::ARRAY) {
+                $answer = [];
+
                 foreach ($toolQuestionAnswers as $toolQuestionAnswer) {
                     if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
                         if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {

@@ -10,8 +10,7 @@ use Illuminate\Support\Collection;
 
 class BuildingType implements ShouldReturnQuestionValues
 {
-
-    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource): Collection
+    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource, ?Collection $answers = null): Collection
     {
         $conditionalQuestion = ToolQuestion::findByShort('building-type-category');
 
@@ -24,6 +23,5 @@ class BuildingType implements ShouldReturnQuestionValues
         // so multiple building types = next step.
         $matchedBuildingType = BuildingTypeModel::where('building_type_category_id', $buildingTypeCategoryId)->get();
         return $questionValues->whereIn('value', $matchedBuildingType->pluck('id')->toArray());
-
     }
 }

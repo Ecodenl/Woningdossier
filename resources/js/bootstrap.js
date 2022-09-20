@@ -92,6 +92,40 @@ window.triggerCustomEvent = function (element, eventName, params = {}) {
 }
 
 /**
+ * Expand HTML object functionality
+ */
+
+//--- HTMLCollection
+
+/**
+ * Remove all elements in the HTML collection
+ */
+Object.defineProperty(HTMLCollection.prototype, 'remove', {
+    value: function() {
+        Array.from(this).forEach((nodeElement) => {
+            nodeElement.remove();
+        });
+    },
+    enumerable: false,
+    configurable: false,
+});
+
+//--- NodeList
+
+/**
+ * Remove all elements in the node list
+ */
+Object.defineProperty(NodeList.prototype, 'remove', {
+    value: function() {
+        Array.from(this).forEach((nodeElement) => {
+            nodeElement.remove();
+        });
+    },
+    enumerable: false,
+    configurable: false,
+});
+
+/**
  * Set up Alpine JS with extra data functions that can be used throughout
  * the whole application.
  */

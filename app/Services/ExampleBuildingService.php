@@ -3,62 +3,112 @@
 namespace App\Services;
 
 use App\Events\ExampleBuildingChanged;
-use App\Helpers\StepHelper;
+use App\Helpers\Arr;
+use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
-use App\Models\Considerable;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\Service;
-use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
-use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class ExampleBuildingService
 {
+    const NEVER_OVERWRITE_TOOL_QUESTION_SHORTS = [
+        'build-year',
+        'surface',
+    ];
+
     /**
      * Apply an example building on the given building.
-     *
-     *
      *
      * @param ExampleBuilding $exampleBuilding
      * @param int $buildYear Build year for selecting the appropriate example building content
      * @param Building $building Target building to apply to
      * @param InputSource|null $inputSource
      * @param InputSource|null $initiatingInputSource The input source starting this action.
+     *
+     * @return void
      */
     public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building, ?InputSource $inputSource = null, ?InputSource $initiatingInputSource = null)
     {
-        $inputSource = $inputSource ?? InputSource::findByShort(
-                InputSource::EXAMPLE_BUILDING
-            );
+        $preFilledData = [];
+        $inputSource = $inputSource ?? InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
         // unless stated differently: compare to master input values
-        $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(
-                InputSource::MASTER_SHORT
-            );
+        $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(InputSource::MASTER_SHORT);
         //self::log($exampleBuilding->id . ", " . $buildYear . ", " . $building->id . ", " . $inputSource->name . ", " . $initiatingInputSource->name);
         $buildingOwner = $building->user;
 
         // Clear the current example building data
-        self::log(
-            'Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ")"
-        );
+        self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ")");
         $contents = $exampleBuilding->getContentForYear($buildYear);
 
-        if (!$contents instanceof ExampleBuildingContent) {
+        if (! $contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
             self::log('No data to apply');
 
             return;
+        }
+
+        // We don't need this if the input source is the example building
+        if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
+            // Fetch pre-filled data
+            $preFilledData = [];
+            // tool questions which can never be overwritten by the example building
+            $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
+            foreach ($fixedToolQuestionShorts as $toolQuestionShort) {
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+
+                if ($toolQuestion instanceof ToolQuestion) {
+                    $saveIn = [
+                        'table' => null,
+                        'column' => null,
+                    ];
+                    if (! is_null($toolQuestion->save_in)) {
+                        // These tables should map to the following example building content "$columnOrTable" keys.
+                        $tableToEBContentMap = [
+                            'building_elements' => 'element',
+                            'building_services' => 'service',
+                        ];
+
+                        $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $building);
+
+                        $table = $saveIn['table'];
+                        // So, in some cases, the save_in holds table > id > column values. To respect this, we have to
+                        // reverse it back into the column so it makes sense in the way that the values of the example
+                        // building content is presented.
+                        if (array_key_exists($table, $tableToEBContentMap)) {
+                            $saveIn['table'] = $tableToEBContentMap[$table];
+                            $whereColumn = ToolQuestionHelper::TABLE_COLUMN[$table];
+
+                            // Reverse engineer the value of the where
+                            $where = Arr::first(Arr::where($saveIn['where'], function ($value, $column) use ($whereColumn) {
+                                return $column == $whereColumn;
+                            }));
+
+                            $saveIn['column'] = "{$where}.{$saveIn['column']}";
+                        }
+                    }
+
+                    $preFilledData[$toolQuestionShort] = [
+                        'answer' => $building->getAnswer($initiatingInputSource, $toolQuestion),
+                        'table' => $saveIn['table'],
+                        'column' => $saveIn['column'],
+                    ];
+                }
+            }
+            // 0 is an accepted answer, so we specifically filter on null. Since the values are an array anyway, we need
+            // to explicitly check the answer.
+            $preFilledData = array_filter($preFilledData, function ($value) {
+                return ! is_null($value['answer']);
+            });
         }
 
         $boilerService = Service::where('short', 'boiler')->first();
@@ -96,26 +146,6 @@ class ExampleBuildingService
             'Applying Example Building ' . $exampleBuilding->name . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
         );
 
-        $oldFeatures = [];
-
-        // Don't do this for the example building, otherwise it might get the old values from other input sources
-        // which is unwanted.
-        if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
-            self::log("User already started filling in the tool. We merge that data.");
-            // Save the features for later. We merge this with the example building contents.
-            // Note that $oldFeatures *might* be null in the highly unlikely case.
-            /** @var BuildingFeature|null $currentInputSourceFeatures */
-            $currentInputSourceFeatures = $building->buildingFeatures()->forInputSource($initiatingInputSource)->first();
-
-            if ($currentInputSourceFeatures instanceof BuildingFeature) {
-                // so we want to keep these since the example building can't overwrite this.
-                $oldFeatures = [
-                    'build_year' => $currentInputSourceFeatures->build_year,
-                    'surface' => $currentInputSourceFeatures->surface,
-                ];
-            }
-        }
-
         self::clearExampleBuilding($building, $inputSource);
 
         $features = [];
@@ -136,6 +166,38 @@ class ExampleBuildingService
                         continue;
                     }
 
+                    // We don't want to overwrite the example building values
+                    if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
+                        $foundData = Arr::where($preFilledData, function ($data, $short) use ($columnOrTable) {
+                            return $data['table'] == $columnOrTable;
+                        });
+
+                        // TODO: For now, this works. This will NOT work with tool question custom valuables
+                        if (! empty($foundData)) {
+                            foreach ($foundData as $short => $data) {
+                                // We check if the column exists before replacing. However, element and service values may just have the ID as value instead of as column.
+                                // We ensure we set it correctly if that's the case.
+                                $column = $data['column'];
+                                if (Arr::has($values, $column)) {
+                                    Arr::set($values, $column, $data['answer']);
+                                    unset($preFilledData[$short]);
+                                } else {
+                                    $shortColumn = str_replace('.element_value_id', '', $column);
+                                    if ($columnOrTable === 'element' && Arr::has($values, $shortColumn)) {
+                                        Arr::set($values, $shortColumn, $data['answer']);
+                                        unset($preFilledData[$short]);
+                                    } else {
+                                        $shortColumn = str_replace('.service_value_id', '', $column);
+                                        if ($columnOrTable === 'service' && Arr::has($values, $shortColumn)) {
+                                            Arr::set($values, $shortColumn, $data['answer']);
+                                            unset($preFilledData[$short]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     if ('user_energy_habits' == $columnOrTable) {
                         $buildingOwner->energyHabit()
                             ->forInputSource($inputSource)
@@ -151,7 +213,7 @@ class ExampleBuildingService
                                 $extra = null;
                                 $elementValues = [];
                                 if (is_array($elementValueData)) {
-                                    if (!array_key_exists('element_value_id', $elementValueData)) {
+                                    if (! array_key_exists('element_value_id', $elementValueData)) {
                                         // perhaps a nested array (e.g. wood elements)
                                         foreach ($elementValueData as $elementValueDataItem) {
                                             if (is_array($elementValueDataItem) && array_key_exists('element_value_id', $elementValueDataItem)) {
@@ -240,7 +302,7 @@ class ExampleBuildingService
                                 $extra = null;
                                 // note: in the case of solar panels the service_value_id can be null!!
                                 if (is_array($serviceValueData)) {
-                                    if (!array_key_exists(
+                                    if (! array_key_exists(
                                         'service_value_id',
                                         $serviceValueData
                                     )) {
@@ -299,7 +361,7 @@ class ExampleBuildingService
                                         $buildingService->extra = $extra;
                                     }
 
-                                    if (!is_null($serviceValueId)) {
+                                    if (! is_null($serviceValueId)) {
                                         $serviceValue = $service->values()->where('id', $serviceValueId)->first();
                                         $buildingService->serviceValue()->associate($serviceValue);
                                     }
@@ -356,7 +418,7 @@ class ExampleBuildingService
                             // the value was stored inside the insulated_glazing_id key, however this changed to insulating_glazing_id.
                             // recent updated example buildings will have the new key, old ones wont.
                             // so if the insulating_glazing_id does not exist, we will set the old one.
-                            if (!array_key_exists(
+                            if (! array_key_exists(
                                 'insulating_glazing_id',
                                 $glazingData
                             )) {
@@ -467,7 +529,7 @@ class ExampleBuildingService
 
                     if ('tool_question_answers' == $columnOrTable) {
                         foreach ($values as $questionShort => $answers) {
-                            if (!is_array($answers)) {
+                            if (! is_array($answers)) {
                                 $answers = [$answers];
                             }
                             /** @var ToolQuestion $toolQuestion */
@@ -499,9 +561,6 @@ class ExampleBuildingService
             }
         }
 
-        // replace particular features with the old features (build year and surface).
-        $features = array_replace_recursive($features, $oldFeatures);
-
         $buildingFeatures = new BuildingFeature($features);
         $buildingFeatures->buildingType()->associate(
             $exampleBuilding->buildingType
@@ -509,6 +568,21 @@ class ExampleBuildingService
         $buildingFeatures->inputSource()->associate($inputSource);
         $buildingFeatures->building()->associate($building);
         $buildingFeatures->save();
+
+        if (! empty($preFilledData)) {
+            // So, there have been fields that have not been properly saved (most likely because they don't exist
+            // for the example building). We must save these or they will get lost. However, since we reverse engineered
+            // these to fit the above structure, we will just go via the ToolQuestion.
+            foreach ($preFilledData as $short => $data) {
+                $toolQuestion = ToolQuestion::findByShort($short);
+                if ($toolQuestion instanceof ToolQuestion) {
+                    ToolQuestionService::init($toolQuestion)
+                        ->building($building)
+                        ->currentInputSource($inputSource)
+                        ->save($data['answer']);
+                }
+            }
+        }
 
         self::log(
             'Update or creating building features ' . json_encode(

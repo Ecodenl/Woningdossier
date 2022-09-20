@@ -18,6 +18,7 @@ use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\DB;
 
 class UserReportController extends Controller
 {
@@ -98,7 +99,7 @@ class UserReportController extends Controller
         }
 
         // steps that are considered to be measures.
-        $stepShorts = \DB::table('steps')
+        $stepShorts = DB::table('steps')
             ->where('short', '!=', 'general-data')
             ->select('short', 'id')
             ->get()

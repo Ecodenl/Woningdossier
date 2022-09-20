@@ -60,6 +60,7 @@ class SubStep extends Model
         'conditions' => 'array',
     ];
 
+    # Model methods
     public function getRouteKeyName(): string
     {
         $locale = app()->getLocale();
@@ -71,6 +72,19 @@ class SubStep extends Model
         return $this->slug;
     }
 
+    # Scopes
+    public function scopeOrdered(Builder $query)
+    {
+        return $query->orderBy('order');
+    }
+
+    // TODO: Slug trait?
+    public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
+    {
+        return $query->where("slug->{$locale}", $slug);
+    }
+
+    # Relations
     public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
@@ -83,13 +97,22 @@ class SubStep extends Model
 
     public function toolQuestions()
     {
-        return $this->belongsToMany(ToolQuestion::class, 'sub_step_tool_questions')
+        return $this->morphedByMany(ToolQuestion::class, 'sub_steppable')
+            ->using(SubSteppable::class)
             ->orderBy('order')
-            ->withPivot('order');
+            ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
 
-    public function scopeOrdered(Builder $query)
+    public function subSteppables()
     {
-        return $query->orderBy('order');
+        return $this->hasMany(SubSteppable::class);
+    }
+
+    /**
+     * Get the parent commentable model (post or video).
+     */
+    public function commentable()
+    {
+        return $this->morphTo();
     }
 }

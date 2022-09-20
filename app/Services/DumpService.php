@@ -4,12 +4,14 @@ namespace App\Services;
 
 use App\Calculations\FloorInsulation;
 use App\Calculations\Heater;
+use App\Calculations\HeatPump;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Calculations\InsulatedGlazing;
 use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\ConsiderableHelper;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\HeaterHelper;
@@ -22,8 +24,8 @@ use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
+use App\Helpers\ToolQuestionHelper;
 use App\Helpers\Translation;
-use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\buildingHeater;
@@ -35,7 +37,6 @@ use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
 use App\Models\BuildingVentilation;
 use App\Models\Cooperation;
-use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
@@ -45,17 +46,394 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
-use App\Models\Service;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
-use App\Scopes\NoGeneralDataScope;
+use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class DumpService
 {
+    use FluentCaller;
+
+    protected User $user;
+    protected InputSource $inputSource;
+
+    public array $headerStructure;
+    public bool $anonymize = false;
+
+    public function __construct()
+    {
+        $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+    }
+
+    /**
+     * @param  User  $user
+     *
+     * @return $this
+     */
+    public function user(User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @param  InputSource  $inputSource
+     *
+     * @return $this
+     */
+    public function inputSource(InputSource $inputSource): self
+    {
+        $this->inputSource = $inputSource;
+
+        return $this;
+    }
+
+    /**
+     * Anonymize the dump.
+     *
+     * @param  bool  $anonymize
+     *
+     * @return $this
+     */
+    public function anonymize(bool $anonymize = true): self
+    {
+        $this->anonymize = $anonymize;
+
+        return $this;
+    }
+
+    /**
+     * Set a header structure to re-use.
+     *
+     * @param  array  $headerStructure
+     *
+     * @return $this
+     */
+    public function setHeaderStructure(array $headerStructure): self
+    {
+        $this->headerStructure = Arr::dot($headerStructure);
+
+        return $this;
+    }
+
+    /**
+     * Create the header structure.
+     *
+     * @param  bool  $setStepPrefix
+     *
+     * @return $this
+     */
+    public function createHeaderStructure(bool $setStepPrefix = true): self
+    {
+        if ($this->anonymize) {
+            $headers = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+            ];
+        } else {
+            $headers = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.coach-appointment-date'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
+
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+            ];
+        }
+
+        $structure = ToolHelper::getNewContentStructure();
+        // If we should set the step prefix, we want to add the step name to each field
+        if ($setStepPrefix) {
+            foreach ($structure as $stepShort => $content) {
+                $step = Step::findByShort($stepShort);
+
+                if ($step instanceof Step) {
+                    foreach (Arr::dot($content) as $dottedKey => $header) {
+                        Arr::set($structure[$stepShort], $dottedKey, "{$step->name}: {$header}");
+                    }
+                }
+            }
+        }
+        $structure = Arr::dot($structure);
+
+        return $this->setHeaderStructure(array_merge($headers, $structure));
+    }
+
+    /**
+     * Create a dump for the set header structure.
+     *
+     * @param  bool  $withConditionalLogic  If we should follow conditional logic. Answers won't be shown if conditions
+     *     don't match
+     *
+     * @return array
+     */
+    public function generateDump(bool $withConditionalLogic = true): array
+    {
+        $user = $this->user;
+        $building = $user->building;
+        $inputSource = $this->inputSource;
+
+        $createdAt = optional($user->created_at)->format('Y-m-d');
+        $mostRecentStatus = $building->getMostRecentBuildingStatus();
+        $buildingStatus = $mostRecentStatus->status->name;
+
+        $city = $building->city;
+        $postalCode = $building->postal_code;
+
+        if ($this->anonymize) {
+            $data = [
+                $createdAt, $buildingStatus, $postalCode, $city,
+            ];
+        } else {
+            $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
+            $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+            $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
+                ->map(function ($user) {
+                    return $user->getFullName();
+                })->implode(', ');
+
+
+            $firstName = $user->first_name;
+            $lastName = $user->last_name;
+            $email = $user->account->email;
+            $phoneNumber = CsvHelper::escapeLeadingZero($user->phone_number);
+
+            $street = $building->street;
+            $number = $building->number;
+            $extension = $building->extension ?? '';
+
+            $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
+
+            $data = [
+                $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
+                $firstName, $lastName, $email, $phoneNumber,
+                $street, trim($number . ' ' . $extension), $postalCode, $city,
+            ];
+        }
+
+        $calculateData = $this->getNewCalculateData();
+        $evaluator = ConditionEvaluator::init()
+            ->building($building)
+            ->inputSource($inputSource);
+
+        // TODO: Check if we require the key in the returned data array
+        foreach ($this->headerStructure as $key => $translation) {
+            if (is_string(($key))) {
+                // Structure is as follows:
+                // 0: step shorts
+                // 1: steppable short / save_in / calculation ref / considerables
+                // n: potential calculation field / considerable struct
+                $structure = explode('.', $key);
+
+                $step = $structure[0];
+                $potentialShort = $structure[1];
+                if (Str::startsWith($potentialShort, 'question_')) {
+                    $processAnswer = false;
+                    $humanReadableAnswer = null;
+                    $toolQuestion = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
+
+                    // If we need to handle conditional logic, we basically check all sub steps and itself.
+                    if ($withConditionalLogic) {
+                        foreach ($toolQuestion->subSteps as $subStep) {
+                            $processAnswer = $processAnswer || $evaluator->evaluate($subStep->conditions ?? []);
+                        }
+
+                        $processAnswer = $processAnswer && $evaluator->evaluate($toolQuestion->conditions ?? []);
+                    }
+
+                    if ($processAnswer) {
+                        $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
+                            $toolQuestion);
+                        // Priority slider situation
+                        if (is_array($humanReadableAnswer)) {
+                            $temp = '';
+                            foreach ($humanReadableAnswer as $name => $answer) {
+                                $temp .= "{$name}: {$answer}, ";
+                            }
+                            $humanReadableAnswer = substr($temp, 0, -2);
+                        }
+                    }
+
+                    // So, by default the human readable answer is a mention of no answer being filled.
+                    // However, this reads pretty gnarly so we nullify it.
+                    if ($humanReadableAnswer === __('cooperation/frontend/tool.no-answer-given')) {
+                        $humanReadableAnswer = null;
+                    }
+
+                    $data[$key] = $humanReadableAnswer;
+                } elseif (Str::startsWith($potentialShort, 'calculation_')) {
+                    $columnNest = implode('.', array_slice($structure, 2));
+
+                    $column = Str::replaceFirst('calculation_', '', $potentialShort)
+                        . (empty($columnNest) ? '' : ".{$columnNest}");
+
+                    $answer = Arr::get($calculateData[$step], $column);
+                    $data[$key] = $this->formatCalculation($key, $answer);
+                } else {
+                    if ($potentialShort === 'considerables') {
+                        $considerableModel = $structure[2];
+                        $considerableId = $structure[3];
+
+                        // returns a bool, the values are keyed by 0 and 1
+                        $considerable = $considerableModel::find($considerableId);
+                        $considers = $user->considers($considerable, $inputSource);
+
+                        $data[$key] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
+                    } else {
+                        // Using the legacy notation, we will mimick getting the answer
+                        $saveIn = ToolQuestionHelper::resolveSaveIn(Str::replaceFirst("{$step}.", '', $key),
+                            $building);
+                        $table  = $saveIn['table'];
+                        $column = $saveIn['column'];
+                        $where = $saveIn['where'];
+                        $where['input_source_id'] = $inputSource->id;
+
+                        $modelName = "App\\Models\\" . Str::studly(Str::singular($table));
+
+                        $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
+
+                        // Attempt translation
+                        $answer = ToolHelper::translateLegacyAnswer($key, $answer);
+
+                        if (is_array($answer)) {
+                            $answer = implode(', ', $answer);
+                        }
+
+                        // Exception to the rule
+                        if (Str::endsWith($key, 'window_surface')) {
+                            $answer = NumberFormatter::format($answer, 2);
+                        }
+
+                        $data[$key] = $answer;
+                    }
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    protected function getNewCalculateData(): array
+    {
+        // TODO: When the calculators are uniform, instead call them via step short (so we can iterate);
+
+        // collect some info about their building
+        $user = $this->user;
+        $building = $user->building;
+        $inputSource = $this->inputSource;
+        $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
+
+        $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
+            (new WallInsulationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
+            (new InsulatedGlazingHelper($user, $inputSource))
+                ->createValues()
+                ->getValues());
+
+        $floorInsulationSavings = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit,
+            (new FloorInsulationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $roofInsulationSavings = RoofInsulation::calculate(
+            $building,
+            $inputSource,
+            $userEnergyHabit,
+            (new RoofInsulationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate(
+            $userEnergyHabit,
+            (new HighEfficiencyBoilerHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $solarPanelSavings = SolarPanel::calculate(
+            $building,
+            (new SolarPanelHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $heaterSavings = Heater::calculate($building, $userEnergyHabit,
+            (new HeaterHelper($user, $inputSource))
+                ->createValues()
+                ->getValues());
+
+        $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
+            (new VentilationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
+
+        $heatPumpSavings = HeatPump::calculate($building, $inputSource, $userEnergyHabit);
+
+        return [
+            'ventilation' => $ventilationSavings['result']['crack_sealing'],
+            'wall-insulation' => $wallInsulationSavings,
+            'insulated-glazing' => $insulatedGlazingSavings,
+            'floor-insulation' => $floorInsulationSavings,
+            'roof-insulation' => $roofInsulationSavings,
+            'high-efficiency-boiler' => $highEfficiencyBoilerSavings,
+            'solar-panels' => $solarPanelSavings,
+            'heater' => $heaterSavings,
+            'heat-pump' => $heatPumpSavings,
+            'heating' => [
+                'hr-boiler' => $highEfficiencyBoilerSavings,
+                'sun-boiler' => $heaterSavings,
+                'heat-pump' => $heatPumpSavings,
+            ],
+        ];
+    }
+
+    protected function formatCalculation($key, $value)
+    {
+        $decimals = 0;
+        $shouldRound = false;
+
+        if (self::isYear($key) || ! is_numeric($value)) {
+            return $value;
+        }
+
+        if (Str::contains($key, 'specs.size_collector') || Str::contains($key, 'interest_comparable')) {
+            $decimals = 1;
+        }
+
+        if (Str::contains($key, 'percentage_consumption') || Str::contains($key, 'savings_')
+            || (Str::contains($key, 'cost') && ! Str::contains( $key, 'roof-insulation'))) {
+            $shouldRound = true;
+        }
+
+        return self::formatOutput($key, $value, $decimals, $shouldRound);
+    }
+
+    ## TODO: Replace legacy
     public static function makeHeaderText($stepName, $subStepName, $text)
     {
         // inside the content structure a step with no sub steps will be given a "-" as step
@@ -203,10 +581,10 @@ class DumpService
                 return $user->getFullName();
             })->implode(', ');
 
-
         $firstName = $user->first_name;
         $lastName = $user->last_name;
         $email = $user->account->email;
+
         $phoneNumber = CsvHelper::escapeLeadingZero($user->phone_number);
 
         $street = $building->street;
@@ -790,6 +1168,10 @@ class DumpService
             /// round the cost for paintwork
             $shouldRound = true;
         }
+        if (in_array($column, ['percentage_consumption']) || Str::contains($column, 'savings_') ||
+            Str::contains($column, 'cost')) {
+            $shouldRound = true;
+        }
 
         return self::formatOutput($column, $value, $decimals, $shouldRound);
     }
@@ -806,16 +1188,10 @@ class DumpService
      */
     protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false)
     {
-        //dump("formatOutput (" . $column . ", " . $value . ", " . $decimals . ", " . $shouldRound . ")");
-
-        if (in_array($column, ['percentage_consumption']) ||
-            false !== stristr($column, 'savings_') ||
-            stristr($column, 'cost')) {
-            $value = NumberFormatter::round($value);
-        }
         if ($shouldRound) {
             $value = NumberFormatter::round($value);
         }
+
         // We should let Excel do the separation of thousands
         return number_format($value, $decimals, ',', '');
         //return NumberFormatter::format($value, $decimals, $shouldRound);
@@ -833,15 +1209,16 @@ class DumpService
     /**
      * Returns whether or not two (optional!) columns contain a year or not.
      *
-     * @param string $column
-     * @param string $extraValue
+     * @param  string  $column
+     * @param  string  $extraValue
      *
      * @return bool
      */
-    protected static function isYear($column, $extraValue = '')
+    protected static function isYear($column, $extraValue = ''): bool
     {
-        if (!is_null($column)) {
-            if (false !== stristr($column, 'year')) {
+        // TODO: extraValue can be made redundant in the future
+        if (! is_null($column)) {
+            if (Str::contains($column, 'year')) {
                 return true;
             }
             if ('extra' == $column) {

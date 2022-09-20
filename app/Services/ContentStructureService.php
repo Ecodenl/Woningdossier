@@ -2,21 +2,19 @@
 
 namespace App\Services;
 
+use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-class ContentStructureService {
+class ContentStructureService
+{
+    use FluentCaller;
 
     protected array $contentStructure;
 
     public function __construct(array $contentStructure)
     {
         $this->contentStructure = $contentStructure;
-    }
-
-    public static function init(): self
-    {
-        return new self (...func_get_args());
     }
 
     public function applicableForExampleBuildings(): array

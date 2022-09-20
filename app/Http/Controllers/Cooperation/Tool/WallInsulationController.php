@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\WallInsulation;
+use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -17,6 +18,7 @@ use App\Models\MeasureApplication;
 use App\Scopes\GetValueScope;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
+use Illuminate\Support\Facades\Log;
 
 class WallInsulationController extends ToolController
 {
@@ -86,6 +88,13 @@ class WallInsulationController extends ToolController
         }
 
         $values = $request->validated();
+        // As of right now, values are not dynamically updated. Therefore, if the answer for facade_plastered_painted
+        // is set to "no", we will nullify related questions.
+        $answer = Arr::get($values, 'building_features.facade_plastered_painted');
+        if ($answer == 2) {
+            Arr::set($values, 'building_features.facade_damaged_paintwork_id', null);
+            Arr::set($values, 'building_features.facade_plastered_surface_id', null);
+        }
         $values['updated_measure_ids'] = $updatedMeasureIds;
 
         (new WallInsulationHelper($user, $inputSource))

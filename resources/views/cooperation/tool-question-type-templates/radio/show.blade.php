@@ -1,10 +1,10 @@
 @php
-$questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
-    $toolQuestion,
-    $building,
-    $masterInputSource,
-    $cooperation
-);
+    $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
+        $toolQuestion,
+        $building,
+        $masterInputSource,
+        collect($this->prepareAnswersForEvaluation())
+    );
 @endphp
 @foreach($questionValues as $toolQuestionValue)
     @php

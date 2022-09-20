@@ -1,1 +1,62 @@
-var beenPolled=!1;function updateTotalUnreadMessageCount(){$.ajax({url:window.location.origin+"/messages/count",type:"GET",success:function(o){0===o.count?$("#total-unread-message-count").removeClass("badge-primary"):$("#total-unread-message-count").addClass("badge-primary"),$("#total-unread-message-count").html(o.count)},statusCode:{401:function(){window.location.href="/login"}}})}function pollForMessageCount(){var o=0;beenPolled&&(o=1e4),setTimeout(function(){beenPolled=!0,updateTotalUnreadMessageCount(),pollForMessageCount()},o)}var wasRecalculating=!1;function updateNotifications(){$.ajax({url:window.location.origin+"/notifications",type:"GET",success:function(o){void 0===o.notifications[0]&&(wasRecalculating=!0),wasRecalculating&&$(".jq-toast-wrap").length>0&&($.toast().reset("all"),$.toast({text:"Actieplan is herberekend.",showHideTransition:"slide",icon:"success",hideAfter:2e3,position:"bottom-right",beforeHide:function(){"/tool/my-plan"===window.location.pathname&&window.location.reload()}}))},statusCode:{401:function(){window.location.href="/login"}}})}function pollForNotifications(){if(-1!==window.location.pathname.indexOf("tool/my-plan")){var o=0;notificationBeenPolled&&(o=5e3),setTimeout(function(){notificationBeenPolled=!0,updateNotifications(),pollForNotifications()},o)}}function hoomdossierRound(o,t){return null!==o?(void 0===t&&(t=5),Math.round(o/t)*t):0}function hoomdossierNumberFormat(o,t,n){return null!==o?("string"==typeof o&&(o=parseFloat(o)),o.toLocaleString(t,{minimumFractionDigits:n})):0}notificationBeenPolled=!1;
+// to determine if a poll has been done
+var beenPolled = false;
+
+// function to update the total unread message badge
+function updateTotalUnreadMessageCount() {
+    $.ajax({
+        url: window.location.origin + '/messages/count',
+        type: "GET",
+        success: function (response) {
+            if (response.count === 0) {
+                $('#total-unread-message-count').removeClass('badge-primary')
+            } else {
+                $('#total-unread-message-count').addClass('badge-primary')
+            }
+            $('#total-unread-message-count').html(response.count);
+        },
+        statusCode: {
+            401: function () {
+                // Redirect the to the login page.
+                window.location.href = '/login';
+            }
+        }
+    });
+}
+
+// poll for the message count
+function pollForMessageCount() {
+
+    var timeout = 0;
+
+    if (beenPolled) {
+        // 10 seconds
+        timeout = 10000;
+    }
+    setTimeout(function () {
+        beenPolled = true;
+        updateTotalUnreadMessageCount();
+        pollForMessageCount();
+    }, timeout);
+};
+
+function hoomdossierRound(value, bucket) {
+
+    if (value !== null) {
+        if (typeof bucket === "undefined") {
+            bucket = 5;
+        }
+
+        return Math.round(value / bucket) * bucket;
+    }
+    return 0;
+};
+
+function hoomdossierNumberFormat(value, locale, decimals) {
+    if (value !== null) {
+        if (typeof value === "string") {
+            value = parseFloat(value);
+        }
+        return value.toLocaleString(locale, {minimumFractionDigits: decimals});
+    }
+    return 0;
+};

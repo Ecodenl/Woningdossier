@@ -34,6 +34,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'order' => 0,
                         'configurations' => [
                             'comfort' => 0,
+                            'insulation_factor' => 1,
                         ],
                     ],
                     [
@@ -43,6 +44,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'order' => 1,
                         'configurations' => [
                             'comfort' => 3,
+                            'insulation_factor' => 2,
                         ],
                     ],
                     [
@@ -52,6 +54,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'order' => 2,
                         'configurations' => [
                             'comfort' => 5,
+                            'insulation_factor' => 3,
                         ],
                     ],
                     [
@@ -61,6 +64,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'order' => 3,
                         'configurations' => [
                             'comfort' => 5,
+                            'insulation_factor' => 4,
                         ],
                     ],
                 ],
@@ -86,6 +90,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'order' => 0,
                         'configurations' => [
                             'comfort' => 0,
+                            'insulation_factor' => 1,
                         ],
                     ],
                     [
@@ -95,6 +100,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'order' => 1,
                         'configurations' => [
                             'comfort' => 3,
+                            'insulation_factor' => 2,
                         ],
                     ],
                     [
@@ -104,6 +110,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'order' => 2,
                         'configurations' => [
                             'comfort' => 5,
+                            'insulation_factor' => 3,
                         ],
                     ],
                     [
@@ -113,6 +120,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'order' => 3,
                         'configurations' => [
                             'comfort' => 5,
+                            'insulation_factor' => 4,
                         ],
                     ],
                 ],
@@ -139,6 +147,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 1,
                         'configurations' => [
                             'comfort' => 0,
+                            'insulation_factor' => 1,
                         ],
                     ],
                     [
@@ -149,6 +158,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 2,
                         'configurations' => [
                             'comfort' => 0,
+                            'insulation_factor' => 1,
                         ],
                     ],
                     [
@@ -159,6 +169,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 3,
                         'configurations' => [
                             'comfort' => 3,
+                            'insulation_factor' => 2,
                         ],
                     ],
                     [
@@ -169,6 +180,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 4,
                         'configurations' => [
                             'comfort' => 3,
+                            'insulation_factor' => 3,
                         ],
                     ],
                     [
@@ -179,6 +191,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 5,
                         'configurations' => [
                             'comfort' => 5,
+                            'insulation_factor' => 4,
                         ],
                     ],
                 ],
@@ -205,6 +218,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 1,
                         'configurations' => [
                             'comfort' => 0,
+                            'insulation_factor' => 1,
                         ],
                     ],
                     [
@@ -215,6 +229,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 2,
                         'configurations' => [
                             'comfort' => 0,
+                            'insulation_factor' => 1,
                         ],
                     ],
                     [
@@ -225,6 +240,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 3,
                         'configurations' => [
                             'comfort' => 3,
+                            'insulation_factor' => 2,
                         ],
                     ],
                     [
@@ -235,6 +251,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 4,
                         'configurations' => [
                             'comfort' => 3,
+                            'insulation_factor' => 3,
                         ],
                     ],
                     [
@@ -245,6 +262,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 5,
                         'configurations' => [
                             'comfort' => 5,
+                            'insulation_factor' => 4,
                         ],
                     ],
                     [
@@ -255,6 +273,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 6,
                         'configurations' => [
                             'comfort' => 0,
+                            'insulation_factor' => 4,
                         ],
                     ],
                 ],
@@ -281,6 +300,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 1,
                         'configurations' => [
                             'comfort' => 0,
+                            'insulation_factor' => 1,
                         ],
                     ],
                     [
@@ -291,6 +311,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 2,
                         'configurations' => [
                             'comfort' => 0,
+                            'insulation_factor' => 1,
                         ],
                     ],
                     [
@@ -301,6 +322,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 3,
                         'configurations' => [
                             'comfort' => 3,
+                            'insulation_factor' => 2,
                         ],
                     ],
                     [
@@ -311,6 +333,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 4,
                         'configurations' => [
                             'comfort' => 3,
+                            'insulation_factor' => 3,
                         ],
                     ],
                     [
@@ -321,6 +344,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 5,
                         'configurations' => [
                             'comfort' => 5,
+                            'insulation_factor' => 4,
                         ],
                     ],
                     [
@@ -331,6 +355,7 @@ class ElementsValuesTableSeeder extends Seeder
                         'calculate_value' => 6,
                         'configurations' => [
                             'comfort' => 0,
+                            'insulation_factor' => 4,
                         ],
                     ],
                 ],

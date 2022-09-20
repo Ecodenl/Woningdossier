@@ -12,7 +12,6 @@ use App\Helpers\ToolQuestionHelper;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
-use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
@@ -197,8 +196,6 @@ class Form extends Component
         $considerables = $this->filledInAnswers[$considerableQuestion->id]
             ?? $this->building->getAnswer($this->masterInputSource, $considerableQuestion);
 
-        $energyHabit = $this->building->user->energyHabit()->forInputSource($this->masterInputSource)->first();
-
         $hrBoilerCalculations = [];
         $sunBoilerCalculations = [];
         $heatPumpCalculations = [];
@@ -218,7 +215,7 @@ class Form extends Component
             ];
 
             // the HR boiler and solar boiler are not built with the tool questions in mind, we have to work with it for the time being
-            $hrBoilerCalculations = HighEfficiencyBoiler::calculate($energyHabit,
+            $hrBoilerCalculations = HighEfficiencyBoiler::calculate($this->building, $this->masterInputSource,
                 $this->getCalculateData($saveInToolQuestionShorts));
         }
 
@@ -229,12 +226,12 @@ class Form extends Component
                 'heater-pv-panel-angle' => null,
             ];
 
-            $sunBoilerCalculations = Heater::calculate($this->building, $energyHabit,
+            $sunBoilerCalculations = Heater::calculate($this->building, $this->masterInputSource,
                 $this->getCalculateData($saveInToolQuestionShorts));
         }
 
         if (in_array('heat-pump', $considerables)) {
-            $heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, $energyHabit, collect($this->filledInAnswers));
+            $heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, collect($this->filledInAnswers));
         }
 
         $this->emit('calculationsPerformed', [

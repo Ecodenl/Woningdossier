@@ -14,32 +14,26 @@ use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
-use App\Models\ServiceValue;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
 class Heater extends \App\Calculations\Calculator
 {
-    public $energyHabit;
-
-    public function __construct(Building $building, $energyHabit, array $calculateData)
+    public function __construct(Building $building, InputSource $inputSource, array $calculateData)
     {
         $this->building = $building;
-        $this->energyHabit = $energyHabit;
-        $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->inputSource = $inputSource;
+
+        $this->setEnergyHabit();
 
         $this->answers = $calculateData['answers'] ?? null;
 
         $this->calculateData = $calculateData;
     }
 
-    public static function calculate(Building $building, $energyHabit, array $calculateData)
+    public static function calculate(Building $building, InputSource $inputSource, array $calculateData): array
     {
-        $calculator = new static (
-            $building,
-            $energyHabit,
-            $calculateData
-        );
+        $calculator = new static($building, $inputSource, $calculateData);
 
         return $calculator->performCalculations();
     }

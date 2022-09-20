@@ -26,8 +26,7 @@ class HrBoilerAdvice implements ShouldEvaluate
                     ->whereShort(static::getQuickAnswer('new-boiler-type', $building, $inputSource, $answers))->first()->extra['calculate_value'] ?? null
             )->first();
 
-        $results = HighEfficiencyBoiler::calculate(
-            $building->user->energyHabit()->forInputSource($inputSource)->first(),
+        $results = HighEfficiencyBoiler::calculate($building, $inputSource,
             [
                 'building_services' => [
                     'service_value_id' => optional($service)->id,

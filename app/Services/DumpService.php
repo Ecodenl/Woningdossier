@@ -367,8 +367,7 @@ class DumpService
                 ->getValues()
         );
 
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate(
-            $userEnergyHabit,
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource,
             (new HighEfficiencyBoilerHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -381,7 +380,7 @@ class DumpService
                 ->getValues()
         );
 
-        $heaterSavings = Heater::calculate($building, $userEnergyHabit,
+        $heaterSavings = Heater::calculate($building, $inputSource,
             (new HeaterHelper($user, $inputSource))
                 ->createValues()
                 ->getValues());
@@ -392,7 +391,7 @@ class DumpService
                 ->getValues()
         );
 
-        $heatPumpSavings = HeatPump::calculate($building, $inputSource, $userEnergyHabit);
+        $heatPumpSavings = HeatPump::calculate($building, $inputSource);
 
         return [
             'ventilation' => $ventilationSavings['result']['crack_sealing'],
@@ -1090,8 +1089,7 @@ class DumpService
                 ->getValues()
         );
 
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate(
-            $userEnergyHabit,
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource,
             (new HighEfficiencyBoilerHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -1104,7 +1102,7 @@ class DumpService
                 ->getValues()
         );
 
-        $heaterSavings = Heater::calculate($building, $userEnergyHabit,
+        $heaterSavings = Heater::calculate($building, $inputSource,
             (new HeaterHelper($user, $inputSource))
                 ->createValues()
                 ->getValues());

@@ -17,7 +17,6 @@ use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
-use App\Models\UserEnergyHabit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -56,25 +55,18 @@ class HeatPump extends \App\Calculations\Calculator
 
     protected array $advices = [];
 
-    protected ?UserEnergyHabit $energyHabit;
-
     /**
      * @param  \App\Models\Building  $building
      * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\UserEnergyHabit  $energyHabit
      * @param  \Illuminate\Support\Collection|null  $answers
      */
-    public function __construct(
-        Building $building,
-        InputSource $inputSource,
-        ?UserEnergyHabit $energyHabit,
-        ?Collection $answers = null
-    )
+    public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         $this->building = $building;
         $this->inputSource = $inputSource;
-        $this->energyHabit = $energyHabit;
         $this->answers = $answers;
+
+        $this->setEnergyHabit();
 
         // TODO: Check if we can potentially move these inline so we only have to query when we actually need them
         $this->boiler = Service::findByShort('boiler')->values()
@@ -99,24 +91,13 @@ class HeatPump extends \App\Calculations\Calculator
      *
      * @param  \App\Models\Building  $building
      * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\UserEnergyHabit|null  $energyHabit
      * @param  \Illuminate\Support\Collection|null  $answers
      *
      * @return array
      */
-    public static function calculate(
-        Building $building,
-        InputSource $inputSource,
-        ?UserEnergyHabit $energyHabit,
-        ?Collection $answers= null
-    ): array
+    public static function calculate(Building $building, InputSource $inputSource, ?Collection $answers= null): array
     {
-        $calculator = new static(
-            $building,
-            $inputSource,
-            $energyHabit,
-            $answers,
-        );
+        $calculator = new static($building, $inputSource, $answers);
 
         return $calculator->performCalculations();
     }
@@ -142,8 +123,7 @@ class HeatPump extends \App\Calculations\Calculator
         ];
 
         // D2
-        // TODO: Should we fall back to energyHabit? It could be a different input source
-        $amountGas = $this->getAnswer('amount-gas') ?? $this->energyHabit->amount_gas ?? 0;
+        $amountGas = $this->getAnswer('amount-gas') ?? 0;
 
         $gasUsage = HighEfficiencyBoilerCalculator::calculateGasUsage(
             $this->boiler,
@@ -185,8 +165,7 @@ class HeatPump extends \App\Calculations\Calculator
         // C73 = from mapping Maatregelopties en kengetallen: B58:D60 icm future situation
         $electricityUsageCooking = 0;
         // D11
-        // TODO: Should we fall back to energyHabit? It could be a different input source
-        $currentElectricityUsage = $this->getAnswer('amount-electricity') ?? $this->energyHabit->amount_electricity ?? 0;
+        $currentElectricityUsage = $this->getAnswer('amount-electricity') ?? 0;
         // D12
         $currentElectricityUsageHeating = 0;
         // D13

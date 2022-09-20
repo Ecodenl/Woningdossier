@@ -13,10 +13,6 @@ class InsulationScore implements ShouldEvaluate
     {
         // This evaluator checks if the user's insulation is good enough to install a heat pump.
 
-        return HeatPump::init(
-            $building, $inputSource,
-            $building->user->energyHabit()->forInputSource($inputSource)->first(),
-            $answers
-        )->insulationScore() < 2.5;
+        return HeatPump::init($building, $inputSource, $answers)->insulationScore() < 2.5;
     }
 }

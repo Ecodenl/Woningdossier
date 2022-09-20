@@ -84,8 +84,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
     {
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 
-        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
-        $results = HighEfficiencyBoiler::calculate($userEnergyHabit, $this->getValues());
+        $results = HighEfficiencyBoiler::calculate($this->user->building, $this->inputSource, $this->getValues());
 
         $step = Step::findByShort('high-efficiency-boiler');
 

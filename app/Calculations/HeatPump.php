@@ -14,9 +14,11 @@ use App\Models\InputSource;
 use App\Models\KeyFigureHeatPumpCoverage;
 use App\Models\KeyFigureInsulationFactor;
 use App\Models\ServiceValue;
+use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\UserEnergyHabit;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class HeatPump extends \App\Calculations\Calculator
 {
@@ -59,26 +61,26 @@ class HeatPump extends \App\Calculations\Calculator
      * @param  \App\Models\Building  $building
      * @param  \App\Models\InputSource  $inputSource
      * @param  \App\Models\UserEnergyHabit  $energyHabit
-     * @param  array  $calculateData
+     * @param  \Illuminate\Support\Collection|null  $answers
      */
     public function __construct(
         Building $building,
         InputSource $inputSource,
         UserEnergyHabit $energyHabit,
-        array $calculateData = []
+        ?Collection $answers = null
     )
     {
         $this->building = $building;
         $this->inputSource = $inputSource;
         $this->energyHabit = $energyHabit;
+        $this->answers = $answers;
 
-        $this->boiler = $calculateData['boiler'] ?? null;
-        $this->heatingTemperature = $calculateData['heatingTemperature'] ?? null;
-        $this->heatPumpConfigurable = $calculateData['heatPumpConfigurable'] ?? null;
-        $this->desiredPower = $calculateData['desiredPower'] ?? 0;
-        $this->answers = $calculateData['answers'] ?? null;
-
-        $this->calculateData = $calculateData;
+        // TODO: Check if we can potentially move these inline so we only have to query when we actually need them
+        $this->boiler = ServiceValue::find($this->getAnswer('new-boiler-type'));
+        $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
+            ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
+        $this->heatPumpConfigurable = ServiceValue::find($this->getAnswer('new-heat-pump-type'));
+        $this->desiredPower = $this->getAnswer('heat-pump-preferred-power') ?? 0;
     }
 
     /**
@@ -87,7 +89,7 @@ class HeatPump extends \App\Calculations\Calculator
      * @param  \App\Models\Building  $building
      * @param  \App\Models\InputSource  $inputSource
      * @param  \App\Models\UserEnergyHabit  $energyHabit
-     * @param  array  $calculateData
+     * @param  \Illuminate\Support\Collection|null  $answers
      *
      * @return array
      */
@@ -95,14 +97,14 @@ class HeatPump extends \App\Calculations\Calculator
         Building $building,
         InputSource $inputSource,
         UserEnergyHabit $energyHabit,
-        array $calculateData = []
+        ?Collection $answers= null
     ): array
     {
         $calculator = new static(
             $building,
             $inputSource,
             $energyHabit,
-            $calculateData,
+            $answers,
         );
 
         return $calculator->performCalculations();
@@ -129,6 +131,7 @@ class HeatPump extends \App\Calculations\Calculator
         ];
 
         // D2
+        // TODO: Should we fall back to energyHabit? It could be a different input source
         $amountGas = $this->getAnswer('amount-gas') ?? $this->energyHabit->amount_gas;
 
         $gasUsage = HighEfficiencyBoilerCalculator::calculateGasUsage(
@@ -171,6 +174,7 @@ class HeatPump extends \App\Calculations\Calculator
         // C73 = from mapping Maatregelopties en kengetallen: B58:D60 icm future situation
         $electricityUsageCooking = 0;
         // D11
+        // TODO: Should we fall back to energyHabit? It could be a different input source
         $currentElectricityUsage = $this->getAnswer('amount-electricity') ?? $this->energyHabit->amount_electricity;
         // D12
         $currentElectricityUsageHeating = 0;

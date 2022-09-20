@@ -14,7 +14,7 @@ class InsulationAdvice implements ShouldEvaluate
         $calculator = new HeatPump(
             $building, $inputSource,
             $building->user->energyHabit()->forInputSource($inputSource)->first(),
-            [],
+            $answers
         );
 
         // We don't need the return value, but the method sets the advices

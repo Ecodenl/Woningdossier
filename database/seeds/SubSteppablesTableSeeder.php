@@ -416,19 +416,8 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                     ],
                 ],
-                'Zonnenboiler' => [
-                    'order' => 7,
-                    'sub_step_template_id' => $templateDefault->id,
-                    'morphs' => [
-                        [
-                            'morph' => ToolQuestion::findByShort('heater-type'),
-                            'tool_question_type_id' => $radioIconType->id,
-                            'size' => 'w-full',
-                        ],
-                    ]
-                ],
                 'Gasketel vragen' => [
-                    'order' => 8,
+                    'order' => 7,
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
@@ -460,7 +449,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Warmtepomp' => [
-                    'order' => 9,
+                    'order' => 8,
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
@@ -485,7 +474,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Hoe is de verwarming' => [
-                    'order' => 10,
+                    'order' => 9,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -510,7 +499,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 '50 graden test' => [
-                    'order' => 11,
+                    'order' => 10,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -542,7 +531,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Ventilatie' => [
-                    'order' => 12,
+                    'order' => 11,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -586,7 +575,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Kierdichting' => [
-                    'order' => 13,
+                    'order' => 12,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -597,7 +586,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Zonnepanelen' => [
-                    'order' => 14,
+                    'order' => 13,
                     'sub_step_template_id' => $template2rows3top1bottom->id,
                     'morphs' => [
                         [
@@ -650,7 +639,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Warmtepomp interesse' => [
-                    'order' => 15,
+                    'order' => 14,
                     'sub_step_template_id' => $templateDefault->id,
                     // When a user has a full heat pump, we don't ask interest. However, if they don't have a heat
                     // pump at all, we also want to show it. In the case a user changes his heat pump state,

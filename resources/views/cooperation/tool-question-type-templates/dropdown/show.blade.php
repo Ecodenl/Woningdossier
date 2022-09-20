@@ -3,7 +3,7 @@
         $toolQuestion,
         $building,
         $masterInputSource,
-        $cooperation
+        collect($this->prepareAnswersForEvaluation())
     );
 @endphp
 @component('cooperation.frontend.layouts.components.alpine-select')

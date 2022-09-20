@@ -52,6 +52,7 @@ class ToolQuestionHelper
         'water-comfort',
         'amount-gas',
         'amount-electricity',
+        'heat-source-considerable',
     ];
 
     /**
@@ -68,10 +69,14 @@ class ToolQuestionHelper
         'current-roof-insulation' => ['roof-insulation'],
         'current-living-rooms-windows' => ['insulated-glazing'],
         'current-sleeping-rooms-windows' => ['insulated-glazing'],
-        'heat-source' => ['high-efficiency-boiler'],
+        'heat-source' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'heat-source-warm-tap-water' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'boiler-type' => ['high-efficiency-boiler'],
         'boiler-placed-date' => ['high-efficiency-boiler'],
-        'heater-type' => ['heater'],
+        'heat-pump-type' => ['heat-pump'],
+        'heat-pump-placed-date' => ['heat-pump'],
+        'interested-in-heat-pump' => ['heat-pump'],
+        'interested-in-heat-pump-variant' => ['heat-pump'],
         'ventilation-type' => ['ventilation'],
         'ventilation-demand-driven' => ['ventilation'],
         'ventilation-heat-recovery' => ['ventilation'],
@@ -80,6 +85,9 @@ class ToolQuestionHelper
         'solar-panel-count' => ['solar-panels'],
         'total-installed-power' => ['solar-panels'],
         'solar-panels-placed-date' => ['solar-panels'],
+        'new-heat-pump-type' => ['heat-pump'],
+        'heater-pv-panel-orientation' => ['heater'],
+        'heater-pv-panel-angle' => ['heater'],
     ];
 
     /**

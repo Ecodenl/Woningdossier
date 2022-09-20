@@ -706,6 +706,7 @@ class ToolHelper
         $solarPanelsOptionsAngle = ['' => '-']
             + SolarPanelsKeyFigures::getAngles();
 
+        // TODO: Ensure we get answers from the heat-source/-warm-tap-water questions instead of the services now!
         $heater = Service::findByShort('sun-boiler');
         $heaterOptionsAngle = ['' => '-'] + HeaterKeyFigures::getAngles();
 

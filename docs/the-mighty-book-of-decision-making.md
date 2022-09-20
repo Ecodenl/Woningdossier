@@ -18,9 +18,26 @@ The only exception is, of course, if both 'from' and 'to' are set. Then, it's a 
 range and 'from' should contain the smallest value.
 
 ### Number formatting
-It was decided that numbers should always be formatted as "1,0" within the Quickscan,
+It was decided that numbers should always be formatted as "1,0" within the quick scan,
 unless it is a Slider number, or a number that should logically not be formatted,
 like years.
+
+## Scans
+To prepare the tool for the future, we have converted the expert tool and quick scan to so called "scans". These are 
+variants of the tool that make it easier to get certain info. For example, the quick scan is the baseline to get a 
+quick overview, whereas the expert scan goes more in depth. 
+
+### Dynamic steps
+In the expert scan, we now have static and dynamic steps. The difference is that static scans are hardcoded, while 
+dynamic scans are generated like the quick scan. 
+
+### Expert scan "SubSteppable"
+In the expert scan, we have a component for each sub step. This is called the "SubSteppable". They were separated 
+from the main scan form component to be easier to maintain and not create a massive, confusing component. However, 
+this has its downsides. This means that the main form and the unknown amount of sub step components don't have any 
+direct communication. To overcome this, we use emits to create a bridge. The answers are transmitted to the main 
+component, each time they are updated. This way, the main component knows _exactly_ what is going on. This component
+will then perform the calculations, and return the results, so each SubSteppable can display them as required. 
 
 ## Duplicating user data for input source
 This is a feature which "allows" the user to copy data from a opposing input source to its own.

@@ -74,6 +74,11 @@ class ToolQuestionsTableSeeder extends Seeder
         $stepLivingRequirements = Step::findByShort('living-requirements');
         $stepResidentialStatus = Step::findByShort('residential-status');
 
+        // Expert scan steps
+        $hrBoilerStep = Step::findByShort('high-efficiency-boiler');
+        $sunBoilerStep = Step::findByShort('heater');
+        $heatPumpStep = Step::findByShort('heat-pump');
+
         $questions = [
             #-------------------------
             # Quick-scan only / shared with expert-scan questions
@@ -1218,19 +1223,107 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
-                //'save_in' => "building_services.{$boiler->id}.service_value_id",
-                'short' => 'new-boiler-type',
-                'translation' => "Wat is het type van de nieuwe ketel?",
-                'tool_question_values' => $boiler->values()->orderBy('order')->get(),
-                'extra' => [
-                    'column' => 'calculate_value',
-                    'data' => [
-                        1 => [],
-                        2 => [],
-                        3 => [],
-                        4 => [],
-                        5 => [],
+                'validation' => ['required', 'exists:comfort_level_tap_waters,id'],
+                'short' => 'new-water-comfort',
+                'translation' => 'Wat wordt het comfortniveau voor het gebruik van warm tapwater?',
+                'tool_question_values' => $comfortLevelsTapWater,
+            ],
+            [
+                'data_type' => Caster::ARRAY,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'new-heat-source',
+                'translation' => "Wat er komen voor verwarming?",
+                'options' => ['value' => ['hr-boiler'],],
+                'tool_question_custom_values' => [
+                    'hr-boiler' => [
+                        'name' => 'Gasketel',
+                        'extra' => [
+                            'icon' => 'icon-central-heater-gas',
+                        ],
+                    ],
+                    'heat-pump' => [
+                        'name' => 'Warmtepomp',
+                        'extra' => [
+                            'icon' => 'icon-heat-pump',
+                        ],
+                    ],
+                    'infrared' => [
+                        'name' => 'Warmtepanelen / Infrarood',
+                        'extra' => [
+                            'icon' => 'icon-infrared-heater',
+                        ],
+                    ],
+                    'district-heating' => [
+                        'name' => 'Stadsverwarming',
+                        'extra' => [
+                            'icon' => 'icon-district-heating',
+                        ],
+                    ],
+                    'sun-boiler' => [
+                        'name' => 'Zonneboiler',
+                        'extra' => [
+                            'icon' => 'icon-sun-boiler-heating',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'data_type' => Caster::ARRAY,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'new-heat-source-warm-tap-water',
+                'translation' => "Wat moet er komen voor warm tapwater?",
+                'options' => ['value' => ['hr-boiler'],],
+                'tool_question_custom_values' => [
+                    'hr-boiler' => [
+                        'name' => 'Gasketel',
+                        'extra' => [
+                            'icon' => 'icon-central-heater-gas',
+                        ],
+                    ],
+                    'kitchen-geyser' => [
+                        'name' => 'Bad/keukengeiser',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'electric-boiler' => [
+                        'name' => 'Elektrische boiler',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'heat-pump-boiler' => [
+                        'name' => 'Warmtepomp boiler',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'heat-pump' => [
+                        'name' => 'Warmtepomp',
+                        'extra' => [
+                            'icon' => 'icon-heat-pump',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'new-heat-source',
+                                    'operator' => Clause::CONTAINS,
+                                    'value' => 'heat-pump',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'sun-boiler' => [
+                        'name' => 'Zonneboiler',
+                        'extra' => [
+                            'icon' => 'icon-sun-boiler-heating',
+                        ],
+                    ],
+                    'district-heating' => [
+                        'name' => 'Stadsverwarming',
+                        'extra' => [
+                            'icon' => 'icon-district-heating',
+                        ],
                     ],
                 ],
             ],
@@ -1269,6 +1362,24 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-radiator-low-temp',
                         ],
+                    ],
+                ],
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:element_values,id'],
+                //'save_in' => "building_services.{$boiler->id}.service_value_id",
+                'short' => 'new-boiler-type',
+                'translation' => "Wat is het type van de nieuwe ketel?",
+                'tool_question_values' => $boiler->values()->orderBy('order')->get(),
+                'extra' => [
+                    'column' => 'calculate_value',
+                    'data' => [
+                        1 => [],
+                        2 => [],
+                        3 => [],
+                        4 => [],
+                        5 => [],
                     ],
                 ],
             ],
@@ -1397,6 +1508,28 @@ class ToolQuestionsTableSeeder extends Seeder
                 'help_text' => "Geef hier aan onder welke hellingshoek de zonnecollector geplaatst wordt. Op een hellend dak is de hellingshoek van de collector meestal gelijk aan de dakhelling.",
                 'tool_question_custom_values' => collect(\App\Helpers\KeyFigures\Heater\KeyFigures::getAngles())
                     ->map(fn ($angle) => ['name' => $angle]),
+            ],
+            // TODO: How to handle if we delete these steps?
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$hrBoilerStep->id}.comment",
+                'short' => 'hr-boiler-comment',
+                'translation' => 'Toelichting op de CV ketel',
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$heatPumpStep->id}.comment",
+                'short' => 'heat-pump-comment',
+                'translation' => 'Toelichting op de warmtepomp',
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$sunBoilerStep->id}.comment",
+                'short' => 'sun-boiler-comment',
+                'translation' => 'Toelichting op de zonneboiler',
             ],
         ];
 

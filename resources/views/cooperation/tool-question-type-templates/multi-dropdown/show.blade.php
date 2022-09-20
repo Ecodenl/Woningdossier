@@ -9,9 +9,6 @@
 @component('cooperation.frontend.layouts.components.alpine-select')
     <select multiple id="{{$toolQuestion->short}}" class="form-input hidden"
             wire:model="filledInAnswers.{{$toolQuestion->id}}">
-        <option value="">
-            @lang('default.form.dropdown.choose')
-        </option>
         @foreach($questionValues as $toolQuestionValue)
             <option value="{{ $toolQuestionValue['value'] }}"
                     @if(! empty($toolQuestionValue['extra']['icon'])) data-icon="{{ $toolQuestionValue['extra']['icon'] }}" @endif>

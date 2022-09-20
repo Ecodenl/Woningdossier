@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Helpers\Conditions\Evaluators;
+
+use App\Calculations\HeatPump;
+use App\Models\Building;
+use App\Models\InputSource;
+use Illuminate\Support\Collection;
+
+class InsulationScore implements ShouldEvaluate
+{
+    public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool
+    {
+        return HeatPump::init(
+            $building, $inputSource,
+            $building->user->energyHabit()->forInputSource($inputSource)->first(),
+            $answers
+        )->insulationScore() < 2.5;
+    }
+}

@@ -194,8 +194,7 @@ class ToolQuestionService {
                 $answerData
             );
 
-        // TODO: Enable and check if conditions are added to valuables
-        //$this->checkConditionalAnswers($givenAnswer);
+        $this->checkConditionalAnswers($givenAnswer);
     }
 
     /**
@@ -246,6 +245,11 @@ class ToolQuestionService {
                 }
             }
         }
+
+        //TODO: When we get conditional valuables, we want this to check whether there are valuables
+        // that no longer pass the conditions, because then the answer(s) for the related tool questions
+        // should be reset
+
         //foreach ($toolQuestionValuables as $conditionalValuable) {
         //    if (! $evaluator->evaluateCollection($conditionalValuable->conditions, $answers)) {
         //        $answer = $this->building->getAnswer($this->currentInputSource, $conditionalValuable->toolQuestion);

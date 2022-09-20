@@ -55,6 +55,7 @@ class SubStepHelper
      * @param  \App\Models\CompletedSubStep  $completedSubStep
      *
      * @return void
+     * @throws \Exception
      */
     public static function checkConditionals(CompletedSubStep $completedSubStep)
     {
@@ -87,6 +88,8 @@ class SubStepHelper
             ->building($building)
             ->inputSource($masterInputSource);
 
+        $stepsToCheck = [];
+
         foreach ($subSteps as $subStep) {
             $completedSubStep = CompletedSubStep::allInputSources()
                 ->where([
@@ -109,7 +112,17 @@ class SubStepHelper
                     static::incomplete($subStep, $building, $currentInputSource);
                     static::incomplete($subStep, $building, $masterInputSource);
                 }
+
+                // Add to array if not already there so we can check the step completion later
+                if (! array_key_exists($subStep->step->id, $stepsToCheck)) {
+                    $stepsToCheck[$subStep->step->id] = $subStep->step;
+                }
             }
+        }
+
+        foreach ($stepsToCheck as $step) {
+            // Check if we can complete the step if necessary
+            StepHelper::completeStepIfNeeded($subStep->step, $building, $currentInputSource, false);
         }
     }
 }

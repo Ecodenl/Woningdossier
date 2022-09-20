@@ -13,6 +13,7 @@ use App\Models\HeatPumpCharacteristic;
 use App\Models\InputSource;
 use App\Models\KeyFigureHeatPumpCoverage;
 use App\Models\KeyFigureInsulationFactor;
+use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
@@ -76,10 +77,20 @@ class HeatPump extends \App\Calculations\Calculator
         $this->answers = $answers;
 
         // TODO: Check if we can potentially move these inline so we only have to query when we actually need them
-        $this->boiler = ServiceValue::find($this->getAnswer('new-boiler-type'));
+        $this->boiler = Service::findByShort('boiler')->values()
+            ->where(
+                'calculate_value',
+                ToolQuestion::findByShort('new-boiler-type')->toolQuestionCustomValues()
+                    ->whereShort($this->getAnswer('new-boiler-type'))->first()->extra['calculate_value'] ?? null
+            )->first();
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
             ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
-        $this->heatPumpConfigurable = ServiceValue::find($this->getAnswer('new-heat-pump-type'));
+        $this->heatPumpConfigurable = Service::findByShort('heat-pump')->values()
+            ->where(
+                'calculate_value',
+                ToolQuestion::findByShort('new-heat-pump-type')->toolQuestionCustomValues()
+                    ->whereShort($this->getAnswer('new-heat-pump-type'))->first()->extra['calculate_value'] ?? null
+            )->first();
         $this->desiredPower = $this->getAnswer('heat-pump-preferred-power') ?? 0;
     }
 

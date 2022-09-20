@@ -209,14 +209,14 @@ class Building extends Model
     {
         // TODO: Should this check `for_specific_input_source`?
 
-        $answer  = null;
+        $answer = null;
         $where['input_source_id'] = $inputSource->id;
         // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
         if (! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
             $table  = $saveIn['table'];
             $column = $saveIn['column'];
-            $where  = array_merge($saveIn['where'], $where);
+            $where = array_merge($saveIn['where'], $where);
 
             $modelName = "App\\Models\\".Str::studly(Str::singular($table));
 
@@ -233,6 +233,8 @@ class Building extends Model
             // todo: refactor this to something sensible
             // TODO: Should we still refactor?
             if ($toolQuestion->data_type === Caster::ARRAY) {
+                $answer = [];
+
                 foreach ($toolQuestionAnswers as $toolQuestionAnswer) {
                     if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
                         if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {

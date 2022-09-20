@@ -79,6 +79,17 @@ class UpdateToolQuestions extends Command
     {
         $this->infoLog('Starting pre-question map');
 
+        $shorts = [
+            'new-water-comfort', 'new-heat-pump-type', 'new-boiler-type',
+        ];
+
+        foreach ($shorts as $short) {
+            $tq = ToolQuestion::findByShort($short);
+            if ($tq instanceof ToolQuestion) {
+                DB::table('tool_question_valuables')->where('tool_question_id', $tq->id)->delete();
+            }
+        }
+
         // Update question names
         $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
         $heatSourceQuestion->update(['name' => ['nl' => 'Wat wordt er gebruikt voor verwarming']]);
@@ -161,12 +172,12 @@ class UpdateToolQuestions extends Command
             'Hybride warmtepomp met pvt panelen' => [
                 'comfort' => 2,
             ],
-            'Volledige warmtepomp met bodemwarmte' => [
-                'old' => 'Volledige warmtepomp bodem',
-                'comfort' => 3,
-            ],
             'Volledige warmtepomp met buitenlucht' => [
                 'old' => 'Volledige warmtepomp buitenlucht',
+                'comfort' => 3,
+            ],
+            'Volledige warmtepomp met bodemwarmte' => [
+                'old' => 'Volledige warmtepomp bodem',
                 'comfort' => 3,
             ],
             'Volledige warmtepomp met pvt panelen' => [
@@ -249,6 +260,65 @@ class UpdateToolQuestions extends Command
                 }
             }
         });
+
+        $heaterTypeQuestion = ToolQuestion::findByShort('heater-type');
+        if ($heaterTypeQuestion instanceof ToolQuestion) {
+            $sunBoilerService = Service::findByShort('sun-boiler');
+            $noneValue = ServiceValue::where('service_id', $sunBoilerService->id)
+                ->where('calculate_value', 1)->first();
+            $waterValue = ServiceValue::where('service_id', $sunBoilerService->id)
+                ->where('calculate_value', 2)->first();
+            $heatingValue = ServiceValue::where('service_id', $sunBoilerService->id)
+                ->where('calculate_value', 3)->first();
+            $bothValue = ServiceValue::where('service_id', $sunBoilerService->id)
+                ->where('calculate_value', 4)->first();
+
+            $heatSourceAnswer = $heatSourceQuestion->toolQuestionCustomValues()->whereShort('sun-boiler')->first();
+            $heatSourceWaterAnswer = $heatSourceWaterQuestion->toolQuestionCustomValues()->whereShort('sun-boiler')->first();
+
+            $mapping = [
+                $waterValue->id => [$heatSourceWaterAnswer],
+                $heatingValue->id => [$heatSourceAnswer],
+                $bothValue->id => [$heatSourceAnswer, $heatSourceWaterAnswer],
+            ];
+
+            $boilerQuery = DB::table('building_services')
+                ->where('service_id', $sunBoilerService->id)
+                ->where('service_value_id', '!=', $noneValue->id)
+                ->whereNotNull('service_value_id');
+
+            $total = $boilerQuery->count();
+
+            $this->infoLog("Starting heater-type to heat-source/-warm-tap-water map for a total of {$total} building_services");
+
+            $i = 0;
+
+            $boilerQuery->orderBy('id')->chunkById(100, function ($buildingServices) use (&$i, $total, $mapping) {
+                foreach ($buildingServices as $buildingService) {
+                    foreach ($mapping[$buildingService->service_value_id] as $customValue) {
+                        DB::table('tool_question_answers')->updateOrInsert(
+                            [
+                                'building_id' => $buildingService->building_id,
+                                'input_source_id' => $buildingService->input_source_id,
+                                'tool_question_id' => $customValue->tool_question_id,
+                                'tool_question_custom_value_id' => $customValue->id,
+                            ],
+                            [
+                                'answer' => $customValue->short,
+                            ]
+                        );
+                    }
+
+                    ++$i;
+
+                    if ($i % 1000 === 0) {
+                        $this->infoLog("{$i} / {$total}");
+                    }
+                }
+            });
+
+            $heaterTypeQuestion->delete();
+        }
 
         $heatPump = Service::findByShort('heat-pump');
         $collectiveValue = ServiceValue::where('service_id', $heatPump->id)->byValue('Collectieve warmtepomp')->first();

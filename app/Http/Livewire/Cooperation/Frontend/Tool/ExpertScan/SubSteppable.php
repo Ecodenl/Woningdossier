@@ -19,6 +19,13 @@ class SubSteppable extends Scannable
     public $subStep;
     public $nextUrl;
 
+    public $calculationResults = [];
+
+    protected $listeners = [
+        'calculationsPerformed',
+        'save',
+    ];
+
     public function mount(Step $step, SubStep $subStep)
     {
         $this->step = $step;
@@ -56,6 +63,20 @@ class SubSteppable extends Scannable
         $this->originalAnswers = $this->filledInAnswers;
     }
 
+    public function render()
+    {
+        $this->rehydrateToolQuestions();
+        return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
+    }
+
+    public function init()
+    {
+        // Emits don't work before the first render of a component is processed. Therefore, we only emit after the first
+        // load (also known as the init or initialization). We need to pass the answers to the main component so it
+        // can perform calculations
+        $this->emit('updateFilledInAnswers', $this->filledInAnswers);
+    }
+
     public function hydrateToolQuestions()
     {
         $this->toolQuestions = $this->subStep->toolQuestions;
@@ -76,6 +97,13 @@ class SubSteppable extends Scannable
         $this->refreshAlerts();
 
         $this->setDirty(true);
+
+        $this->emitUp('updateFilledInAnswers', $this->filledInAnswers);
+    }
+
+    public function calculationsPerformed($calculationResults)
+    {
+        $this->calculationResults = $calculationResults;
     }
 
     protected function evaluateToolQuestions()
@@ -153,12 +181,6 @@ class SubSteppable extends Scannable
                 }
             }
         }
-    }
-
-    public function render()
-    {
-        $this->rehydrateToolQuestions();
-        return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
     }
 
     public function save($nextUrl = "")

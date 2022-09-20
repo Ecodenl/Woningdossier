@@ -46,6 +46,7 @@ class DoUpgrade extends Command
                 ['--class' => 'AlertsTableSeeder', '--force' => true],
                 ['--class' => 'KeyFigureHeatPumpCoveragesTableSeeder', '--force' => true],
                 ['--class' => 'HeatPumpCharacteristicsTableSeeder', '--force' => true],
+                ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
         ];
 

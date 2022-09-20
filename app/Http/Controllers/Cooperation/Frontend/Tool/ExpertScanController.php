@@ -28,6 +28,17 @@ class ExpertScanController extends ToolController
             return view('cooperation.frontend.tool.expert-scan.index', compact('step', 'masterInputSource', 'building'));
         }
 
+        $redirectSteps = [
+            'heater' => 'heating',
+            'heat-pump' => 'heating',
+        ];
+        if (array_key_exists($step->short, $redirectSteps)) {
+            Log::debug('ExpertScanController::index found redirect step ' . $step->short);
+
+            $step = Step::findByShort($redirectSteps[$step->short]);
+            return redirect()->route('cooperation.frontend.tool.expert-scan.index', compact('step'));
+        }
+
         Log::debug('ExpertScanController::index found static step ' . $step->short);
         // at this point the step exists, however wrong url. So we will help them a bit.
         return redirect()->route("cooperation.tool.{$step->short}.index");

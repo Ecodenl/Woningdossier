@@ -109,10 +109,10 @@ class RecalculateForUser extends Command
 
                     $stepsToRecalculateChain = [];
 
-                    if (!empty($stepShorts)) {
+                    if (! empty($stepShorts)) {
                         $stepsToRecalculate = Step::expert()->whereIn('short', $stepShorts)->get();
                     } else {
-                        $stepsToRecalculate = Step::expert()->where('short', '!=', 'heat-pump')->get();
+                        $stepsToRecalculate = Step::expert()->get();
                     }
 
                     foreach ($stepsToRecalculate as $stepToRecalculate) {

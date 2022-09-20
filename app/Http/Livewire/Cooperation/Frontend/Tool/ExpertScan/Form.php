@@ -2,6 +2,9 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
 
+use App\Calculations\Heater;
+use App\Calculations\HeatPump;
+use App\Calculations\HighEfficiencyBoiler;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\SubStepHelper;
@@ -9,10 +12,12 @@ use App\Helpers\ToolQuestionHelper;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use Artisan;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
@@ -34,9 +39,10 @@ class Form extends Component
 
     public $activeSubStep;
 
-    public $listeners = [
+    protected $listeners = [
         'subStepValidationSucceeded' => 'subStepSucceeded',
         'failedValidationForSubSteps',
+        'updateFilledInAnswers',
     ];
 
     public function mount(Step $step, Cooperation $cooperation)
@@ -50,6 +56,11 @@ class Form extends Component
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
+    }
+
+    public function render()
+    {
+        return view('livewire.cooperation.frontend.tool.expert-scan.form');
     }
 
     public function activeSubStep($subStepSlug)
@@ -89,6 +100,12 @@ class Form extends Component
         foreach ($filledInAnswers as $toolQuestionId => $answer) {
             $this->filledInAnswers[$toolQuestionId] = $answer;
         }
+    }
+
+    public function updateFilledInAnswers($filledInAnswers)
+    {
+        $this->setFilledInAnswers($filledInAnswers);
+        $this->performCalculations();
     }
 
     public function allSubStepsSucceeded()
@@ -174,8 +191,76 @@ class Form extends Component
         return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $this->cooperation]);
     }
 
-    public function render()
+    public function performCalculations()
     {
-        return view('livewire.cooperation.frontend.tool.expert-scan.form');
+        $considerableQuestion = ToolQuestion::findByShort('heat-source-considerable');
+        $considerables = $this->filledInAnswers[$considerableQuestion->id]
+            ?? $this->building->getAnswer($this->masterInputSource, $considerableQuestion);
+
+        $energyHabit = $this->building->user->energyHabit()->forInputSource($this->masterInputSource)->first();
+
+        $hrBoilerCalculations = [];
+        $sunBoilerCalculations = [];
+        $heatPumpCalculations = [];
+
+        // No need to calculate if we're not considering it
+        if (in_array('hr-boiler', $considerables)) {
+            // key = tool question short
+            // value = custom key for the calculate data, sometimes we can use the save in
+            // for ex; new-boiler-type is a "new" question, previously we just had this as building_services for the current situation
+            // the HR boiler calculate class is not adjusted to the old / new situation. It only knows that building_services.service_value_id is a boiler.
+            // ideally this gets refactored when the time is ripe
+            $saveInToolQuestionShorts = [
+                'amount-gas' => null,
+                'new-boiler-type' => 'building_services.service_value_id',
+                // this question is not asked on this page, which means we should retrieve it.
+                'boiler-placed-date' => 'building_services.extra.date',
+            ];
+
+            // the HR boiler and solar boiler are not built with the tool questions in mind, we have to work with it for the time being
+            $hrBoilerCalculations = HighEfficiencyBoiler::calculate($energyHabit,
+                $this->getCalculateData($saveInToolQuestionShorts));
+        }
+
+        if (in_array('sun-boiler', $considerables)) {
+            $saveInToolQuestionShorts = [
+                'new-water-comfort' => 'user_energy_habits.water_comfort_id',
+                'heater-pv-panel-orientation' => null,
+                'heater-pv-panel-angle' => null,
+            ];
+
+            $sunBoilerCalculations = Heater::calculate($this->building, $energyHabit,
+                $this->getCalculateData($saveInToolQuestionShorts));
+        }
+
+        if (in_array('heat-pump', $considerables)) {
+            $heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, $energyHabit, collect($this->filledInAnswers));
+        }
+
+        $this->emit('calculationsPerformed', [
+            'hr-boiler' => $hrBoilerCalculations,
+            'sun-boiler' => $sunBoilerCalculations,
+            'heat-pump' => $heatPumpCalculations,
+        ]);
+    }
+
+    private function getCalculateData($saveInToolQuestionShorts)
+    {
+        $calculateData = [];
+        foreach($saveInToolQuestionShorts as $toolQuestionShort => $key) {
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+
+            // it may be possible that the tool question is not present in the filled in answers.
+            // that simply means the tool question is not available for the user on the current page
+            // however it may be filled elsewhere, so we will get it through the getAnswer
+            $answer = $this->filledInAnswers[$toolQuestion->id] ?? $this->building->getAnswer($this->masterInputSource,
+                    $toolQuestion);
+
+            Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);
+        }
+
+        $calculateData['answers'] = collect($this->filledInAnswers);
+
+        return $calculateData;
     }
 }

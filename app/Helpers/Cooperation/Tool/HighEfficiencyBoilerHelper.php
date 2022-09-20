@@ -66,7 +66,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
+                    'is_considering' => $this->considersByAnswer('heat-source-considerable', 'hr-boiler'),
                 ],
             ],
             'building_services' => $buildingBoilerArray,
@@ -98,7 +98,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
         // make sure the user actually selected a hr-boiler as heat source
         // considers the step
         // and has a cost indication before creating a advice
-        if (in_array('hr-boiler', $heatSources) && in_array('hr-boiler', $heatSourcesWarmTapWater)
+        if ((in_array('hr-boiler', $heatSources) || in_array('hr-boiler', $heatSourcesWarmTapWater))
             && $this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0
         ) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();

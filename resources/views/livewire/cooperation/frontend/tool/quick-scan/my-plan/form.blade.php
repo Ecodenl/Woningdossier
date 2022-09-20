@@ -186,14 +186,16 @@
 
                         <ul class="mt-4 w-full text-blue-500 text-sm bg-white rounded-lg border border-blue-500 border-opacity-50 divide-y divide-blue-500 py-2 list-none pl-0">
                             @foreach(\App\Models\Step::expert()->get() as $step)
-                                <li class="py-1 px-3">
-                                    <a href="{{ route("cooperation.frontend.tool.expert-scan.index", compact('cooperation', 'step')) }}"
-                                       class="in-text">
-                                        <img src="{{ asset("images/icons/{$step->slug}.png") }}"
-                                             alt="{{ $step->name }}" class="rounded-1/2 inline-block h-8 w-8">
-                                        {{ $step->name }}
-                                    </a>
-                                </li>
+                                @if(! in_array($step->short, ['high-efficiency-boiler', 'heater', 'heat-pump']))
+                                    <li class="py-1 px-3">
+                                        <a href="{{ route("cooperation.frontend.tool.expert-scan.index", compact('cooperation', 'step')) }}"
+                                           class="in-text">
+                                            <img src="{{ asset("images/icons/{$step->slug}.png") }}"
+                                                 alt="{{ $step->name }}" class="rounded-1/2 inline-block h-8 w-8">
+                                            {{ $step->name }}
+                                        </a>
+                                    </li>
+                                @endif
                             @endforeach
                         </ul>
                     @endcomponent

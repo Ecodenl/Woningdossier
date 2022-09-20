@@ -182156,7 +182156,7 @@ textarea.form-input {
 .form-input:disabled, .radio-wrapper input[type="radio"]:disabled + label, .checkbox-wrapper input[type="checkbox"]:disabled + label {
   cursor: not-allowed;
   --tw-bg-opacity: 1;
-  background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
   --tw-bg-opacity: 0.5;
 }
 

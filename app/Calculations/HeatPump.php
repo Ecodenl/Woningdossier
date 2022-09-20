@@ -2,6 +2,7 @@
 
 namespace App\Calculations;
 
+use App\Deprecation\ToolHelper;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
@@ -13,7 +14,6 @@ use App\Models\HeatPumpCharacteristic;
 use App\Models\InputSource;
 use App\Models\KeyFigureHeatPumpCoverage;
 use App\Models\KeyFigureInsulationFactor;
-use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
@@ -77,20 +77,12 @@ class HeatPump extends \App\Calculations\Calculator
         $this->answers = $answers;
 
         // TODO: Check if we can potentially move these inline so we only have to query when we actually need them
-        $this->boiler = Service::findByShort('boiler')->values()
-            ->where(
-                'calculate_value',
-                ToolQuestion::findByShort('new-boiler-type')->toolQuestionCustomValues()
-                    ->whereShort($this->getAnswer('new-boiler-type'))->first()->extra['calculate_value'] ?? null
-            )->first();
+        $this->boiler = ToolHelper::getServiceValueByCustomValue('boiler', 'new-boiler-type',
+            $this->getAnswer('new-boiler-type'));
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
             ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
-        $this->heatPumpConfigurable = Service::findByShort('heat-pump')->values()
-            ->where(
-                'calculate_value',
-                ToolQuestion::findByShort('new-heat-pump-type')->toolQuestionCustomValues()
-                    ->whereShort($this->getAnswer('new-heat-pump-type'))->first()->extra['calculate_value'] ?? null
-            )->first();
+        $this->heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue('heat-pump', 'new-heat-pump-type',
+            $this->getAnswer('new-heat-pump-type'));
         $this->desiredPower = $this->getAnswer('heat-pump-preferred-power') ?? 0;
     }
 
@@ -108,7 +100,7 @@ class HeatPump extends \App\Calculations\Calculator
         Building $building,
         InputSource $inputSource,
         ?UserEnergyHabit $energyHabit,
-        ?Collection $answers= null
+        ?Collection $answers = null
     ): array
     {
         $calculator = new static(

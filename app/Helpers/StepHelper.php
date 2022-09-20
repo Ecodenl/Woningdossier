@@ -104,6 +104,12 @@ class StepHelper
 
     /**
      * Complete a step for a building.
+     *
+     * @param  \App\Models\Step  $step
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     *
+     * @return void
      */
     public static function complete(Step $step, Building $building, InputSource $inputSource)
     {
@@ -112,5 +118,24 @@ class StepHelper
             'input_source_id' => $inputSource->id,
             'building_id' => $building->id,
         ]);
+    }
+
+    /**
+     * Incomplete a step for a building.
+     *
+     * @param  \App\Models\Step  $step
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public static function incomplete(Step $step, Building $building, InputSource $inputSource)
+    {
+        CompletedStep::allInputSources()->where([
+            'step_id' => $step->id,
+            'input_source_id' => $inputSource->id,
+            'building_id' => $building->id,
+        ])->delete();
     }
 }

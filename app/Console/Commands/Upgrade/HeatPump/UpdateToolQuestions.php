@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands\Upgrade\HeatPump;
 
+use App\Helpers\Conditions\ConditionEvaluator;
+use App\Models\Building;
+use App\Models\CompletedStep;
 use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\Step;
@@ -454,7 +457,7 @@ class UpdateToolQuestions extends Command
 
                     ++$i;
 
-                    if ($i % 100 === 0) {
+                    if ($i % 1000 === 0) {
                         $this->infoLog("{$i} / {$total}");
                     }
                 }
@@ -465,6 +468,65 @@ class UpdateToolQuestions extends Command
                 ->where('considerable_id', $considerableStep->id)
                 ->delete();
         }
+
+        $residentialStatus = Step::findByShort('residential-status');
+        $completedStepsQuery = CompletedStep::allInputSources()->where('step_id', $residentialStatus->id);
+
+        $total = $completedStepsQuery->count();
+
+        $this->infoLog("Checking if we should incomplete the 'woonstatus' step for {$total} completed steps");
+
+        $i = 0;
+
+        $completedStepsQuery->orderBy('id')->chunkById(100, function ($completedSteps) use (&$i, $total) {
+            foreach ($completedSteps as $completedStep) {
+                $building = $completedStep->building;
+                if (! $building instanceof Building) {
+                    $building = DB::table('buildings')->where('id', $completedStep->building_id)->first();
+
+                    // If a building is deleted, we don't need to notify
+                    if ($building instanceof \stdClass && empty($building->deleted_at)) {
+                        $this->infoLog("Skipping completed_step with ID {$completedStep->id} for non-existent building ({$completedStep->building_id})");
+                    }
+                    continue;
+                }
+
+                $inputSource = $completedStep->inputSource;
+                $step = $completedStep->step;
+
+                $irrelevantSubSteps = $building->completedSubSteps()->forInputSource($inputSource)
+                    ->pluck('sub_step_id')->toArray();
+
+                $incompleteSubSteps = $step->subSteps()
+                    ->whereNotIn('id', $irrelevantSubSteps)
+                    ->orderBy('order')
+                    ->get();
+
+                $evaluator = ConditionEvaluator::init()
+                    ->building($building)
+                    ->inputSource($inputSource);
+
+                $shouldIncomplete = false;
+
+                foreach ($incompleteSubSteps as $incompleteSubStep) {
+                    if ($evaluator->evaluate($incompleteSubStep->conditions ?? [])) {
+                        $shouldIncomplete = true;
+                        break;
+                    }
+                }
+
+                if ($shouldIncomplete) {
+                    $completedStep->delete();
+                }
+
+                ++$i;
+
+                if ($i % 1000 === 0) {
+                    $this->infoLog("{$i} / {$total}");
+                }
+            }
+        });
+
 
         $this->infoLog('Deleting language lines');
 

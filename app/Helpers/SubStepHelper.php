@@ -58,7 +58,8 @@ class SubStepHelper
      */
     public static function checkConditionals(CompletedSubStep $completedSubStep)
     {
-        // TODO: Check if we should provide more logic to handle custom evaluators
+        // TODO: We must find a way to make this faster
+
         $building = $completedSubStep->building;
         $currentInputSource = $completedSubStep->inputSource;
         // We must do it for the master also because we're not using model events
@@ -69,8 +70,15 @@ class SubStepHelper
         foreach ($subStep->toolQuestions as $toolQuestion) {
             $subStepsRelated = array_merge($subStepsRelated,
                 SubStep::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$toolQuestion->short}\""])
-                    ->pluck('id')->toArray());
+                    ->pluck('id')->toArray()
+            );
         }
+
+        // Also add sub steps with custom evaluators
+        $subStepsRelated = array_merge($subStepsRelated,
+            SubStep::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"fn\""])
+                ->pluck('id')->toArray()
+        );
 
         $subStepsRelated = array_unique($subStepsRelated);
         $subSteps = SubStep::whereIn('id', $subStepsRelated)->get();

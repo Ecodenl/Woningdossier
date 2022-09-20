@@ -204,7 +204,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::resource('example-building', 'ExampleBuildingController')->only('store');
                 Route::resource('building-type', 'BuildingTypeController')->only('store');
 
-                //Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
                 Route::get('heat-pump', function () {
                     Log::debug('HeatPumpController::index redirecting to heating');
 
@@ -253,8 +252,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                         return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
                     })->name('index');
-                    //Route::resource('', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
-                    //Route::post('calculate', 'HighEfficiencyBoilerController@calculate')->name('calculate');
                 });
 
                 // Solar panels
@@ -270,8 +267,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                         return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
                     })->name('index');
-                    //Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
-                    //Route::post('calculate', 'HeaterController@calculate')->name('calculate');
                 });
             });
 

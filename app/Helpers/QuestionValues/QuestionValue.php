@@ -11,11 +11,8 @@ use Illuminate\Support\Str;
 
 class QuestionValue
 {
-    public static function getQuestionValues(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource): Collection
+    public static function getQuestionValues(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource, ?Collection $answers = null): Collection
     {
-        //TODO: In the future we might need to evaluate dynamic answer options also (like what we do for the
-        // ToolQuestions currently, within the Form)
-
         $questionValues = $toolQuestion->getQuestionValues();
 
         $className = Str::studly($toolQuestion->short);
@@ -25,7 +22,8 @@ class QuestionValue
             $questionValues = $questionValuesClass::getQuestionValues(
                 $questionValues,
                 $building,
-                $inputSource
+                $inputSource,
+                $answers
             );
         }
 
@@ -35,7 +33,10 @@ class QuestionValue
 
         foreach ($questionValues as $index => $questionValue) {
             if (! empty($questionValue['conditions'])) {
-                $passed = $evaluator->evaluate($questionValue['conditions']);
+                $passed = $evaluator->evaluateCollection(
+                    $questionValue['conditions'],
+                    $evaluator->getToolAnswersForConditions($questionValue['conditions'])->merge($answers)
+                );
 
                 if (! $passed) {
                     $questionValues->forget($index);

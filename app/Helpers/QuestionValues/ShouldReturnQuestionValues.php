@@ -13,5 +13,5 @@ interface ShouldReturnQuestionValues
      * @param Collection $questionValues (base question values from toolQuestion->getQuestionValues())
      * @return Collection
      */
-    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource): Collection;
+    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource, ?Collection $answers = null): Collection;
 }

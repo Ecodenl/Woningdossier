@@ -14,6 +14,17 @@ export default (initiallyOpen = false) => ({
         let context = this;
         setTimeout(() => {
             context.constructSelect();
+
+            if (null !== context.select) {
+                let observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        context.constructSelect();
+                        window.triggerEvent(context.select, 'change');
+                    });
+                });
+
+                observer.observe(this.select, { childList: true });
+            }
         });
     },
     constructSelect() {
@@ -25,10 +36,15 @@ export default (initiallyOpen = false) => ({
             this.multiple = this.select.hasAttribute('multiple');
 
             // Bind event listener for change
-            let context = this;
-            this.select.addEventListener('change', function (event) {
-                context.updateSelectedValues();
+            this.select.addEventListener('change', (event) => {
+                this.updateSelectedValues();
             });
+            if (this.multiple) {
+                // If it's multiple, we will add an event listener to rebuild the input on resizing
+                window.addEventListener('resize', (event) => {
+                    this.setInputValue();
+                });
+            }
 
             this.disabled = this.select.hasAttribute('disabled');
 
@@ -40,6 +56,8 @@ export default (initiallyOpen = false) => ({
 
             // Build the alpine select
             let optionDropdown = this.$refs['select-options'];
+            // Clear any options there might be left
+            optionDropdown.children.remove();
             let options = this.select.options;
             // Loop options to build
             // Note: we cannot use forEach, as options is a HTML collection, which is not an array

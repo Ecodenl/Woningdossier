@@ -99,7 +99,7 @@ class ToolQuestionService {
                 $givenAnswer = json_encode($givenAnswer);
             }
 
-            // Try to resolve the ID is the question has custom values
+            // Try to resolve the ID if the question has custom values
             if ($this->toolQuestion->toolQuestionCustomValues()->exists()) {
                 // if so, the given answer contains a short.
                 $toolQuestionCustomValue = ToolQuestionCustomValue::where('tool_question_id', $this->toolQuestion->id)
@@ -194,8 +194,7 @@ class ToolQuestionService {
                 $answerData
             );
 
-        // TODO: Make this functional when there's actually conditioned valuables
-        //$this->checkConditionalAnswers($givenAnswer);
+        $this->checkConditionalAnswers($givenAnswer);
     }
 
     /**
@@ -231,7 +230,7 @@ class ToolQuestionService {
             if (! $evaluator->evaluateCollection($conditionalCustomValue->conditions, $answers)) {
                 $answer = $this->building->getAnswer($this->currentInputSource, $conditionalCustomValue->toolQuestion);
 
-                // TODO: Expand this if there are single condition answers
+                // TODO: Expand this if there are single-value answers
                 if (is_array($answer) && in_array($conditionalCustomValue->short, $answer)) {
                     // Add tool question to array to use later for resetting sub steps
                     $toolQuestionsToUnset[] = $conditionalCustomValue->toolQuestion;
@@ -246,10 +245,27 @@ class ToolQuestionService {
                 }
             }
         }
-        // TODO: Make this functional when there's actually conditioned valuables
-        //foreach ($toolQuestionValuables as $conditionalCustomValue) {
-        //    if (! $evaluator->evaluateCollection($conditionalCustomValue->conditions, $answers)) {
-        //        //
+
+        //TODO: When we get conditional valuables, we want this to check whether there are valuables
+        // that no longer pass the conditions, because then the answer(s) for the related tool questions
+        // should be reset
+
+        //foreach ($toolQuestionValuables as $conditionalValuable) {
+        //    if (! $evaluator->evaluateCollection($conditionalValuable->conditions, $answers)) {
+        //        $answer = $this->building->getAnswer($this->currentInputSource, $conditionalValuable->toolQuestion);
+        //
+        //        // TODO: Expand this if there are multi-value answers
+        //        if (! is_array($answer) && $conditionalValuable->tool_question_valuable_id == $answer) {
+        //            // Add tool question to array to use later for resetting sub steps
+        //            $toolQuestionsToUnset[] = $conditionalValuable->toolQuestion;
+        //
+        //            // Reset answer
+        //            $where = [
+        //                'building_id' => $this->building->id,
+        //                'tool_question_id' => $conditionalValuable->toolQuestion->id,
+        //            ];
+        //            $this->clearAnswer($conditionalValuable->toolQuestion, $where);
+        //        }
         //    }
         //}
 
@@ -281,9 +297,15 @@ class ToolQuestionService {
 
     private function clearAnswer(ToolQuestion $toolQuestion, array $where)
     {
-        $toolQuestion->toolQuestionAnswers()
-            ->allInputSources()
-            ->where($where)
-            ->delete();
+        if (is_null($toolQuestion->save_in)) {
+            $toolQuestion->toolQuestionAnswers()
+                ->allInputSources()
+                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
+                ->where($where)
+                ->delete();
+        }
+
+        //TODO: check how to clear save_in type answers when needed, just nulling it is not something we can do
+        // since not every column is nullable
     }
 }

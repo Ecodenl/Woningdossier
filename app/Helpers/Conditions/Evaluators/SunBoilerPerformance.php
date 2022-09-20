@@ -14,6 +14,9 @@ class SunBoilerPerformance implements ShouldEvaluate
 
     public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool
     {
+        // This evaluator checks the performance for the sun-boiler in the user's situation. The calculation
+        // returns a given color which defines the performance.
+
         $results = Heater::calculate(
             $building,
             $building->user->energyHabit()->forInputSource($inputSource)->first(),

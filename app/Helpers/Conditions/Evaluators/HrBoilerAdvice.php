@@ -14,6 +14,9 @@ class HrBoilerAdvice implements ShouldEvaluate
 
     public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool
     {
+        // This evaluator checks if the boiler_advice is returned in the calculation. This advice tells the user
+        // that they won't receive much efficiency improvement because they already have a high quality HR-boiler
+
         $results = HighEfficiencyBoiler::calculate(
             $building->user->energyHabit()->forInputSource($inputSource)->first(),
             [

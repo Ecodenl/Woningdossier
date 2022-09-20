@@ -57,6 +57,7 @@ class UpdateToolQuestions extends Command
         Artisan::call('db:seed', ['--class' => \ScansTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \ToolLabelsTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \ToolQuestionTypesTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => \ToolCalculationResultsTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class, '--force' => true]);
 
         // Before we can update the ToolQuestions, we must update the values

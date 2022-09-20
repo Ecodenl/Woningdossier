@@ -122,7 +122,7 @@ class ToolQuestionService {
     {
         $toolQuestion = $this->toolQuestion;
 
-        $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this->building);
+        $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this->building);
         $table  = $saveIn['table'];
         $column = $saveIn['column'];
         $where  = $saveIn['where'];
@@ -143,7 +143,7 @@ class ToolQuestionService {
             $model = $modelName::allInputSources()->where($where)->first();
             // If it's valid, we need to check its extra values
 
-            if ($model instanceof $modelName && !empty($model->{$column}) && is_array($model->{$column})) {
+            if ($model instanceof $modelName && ! empty($model->{$column}) && is_array($model->{$column})) {
                 // Get model values, and then set the given key to the given answer
                 // We must do this, else all answers get overwritten
                 $tempAnswer = $model->{$column};

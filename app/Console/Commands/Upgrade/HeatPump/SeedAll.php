@@ -20,7 +20,7 @@ class SeedAll extends Command
      *
      * @var string
      */
-    protected $description = 'Just run the seeders for the upgrade, without all other mappings and mirgations';
+    protected $description = 'Just run the seeders for the upgrade, without all other mappings and migrations';
 
     /**
      * Create a new command instance.

@@ -56,7 +56,7 @@ class HeatPump extends \App\Calculations\Calculator
 
     protected array $advices = [];
 
-    protected UserEnergyHabit $energyHabit;
+    protected ?UserEnergyHabit $energyHabit;
 
     /**
      * @param  \App\Models\Building  $building
@@ -67,7 +67,7 @@ class HeatPump extends \App\Calculations\Calculator
     public function __construct(
         Building $building,
         InputSource $inputSource,
-        UserEnergyHabit $energyHabit,
+        ?UserEnergyHabit $energyHabit,
         ?Collection $answers = null
     )
     {
@@ -99,7 +99,7 @@ class HeatPump extends \App\Calculations\Calculator
      *
      * @param  \App\Models\Building  $building
      * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\UserEnergyHabit  $energyHabit
+     * @param  \App\Models\UserEnergyHabit|null  $energyHabit
      * @param  \Illuminate\Support\Collection|null  $answers
      *
      * @return array
@@ -107,7 +107,7 @@ class HeatPump extends \App\Calculations\Calculator
     public static function calculate(
         Building $building,
         InputSource $inputSource,
-        UserEnergyHabit $energyHabit,
+        ?UserEnergyHabit $energyHabit,
         ?Collection $answers= null
     ): array
     {
@@ -143,7 +143,7 @@ class HeatPump extends \App\Calculations\Calculator
 
         // D2
         // TODO: Should we fall back to energyHabit? It could be a different input source
-        $amountGas = $this->getAnswer('amount-gas') ?? $this->energyHabit->amount_gas;
+        $amountGas = $this->getAnswer('amount-gas') ?? $this->energyHabit->amount_gas ?? 0;
 
         $gasUsage = HighEfficiencyBoilerCalculator::calculateGasUsage(
             $this->boiler,
@@ -186,7 +186,7 @@ class HeatPump extends \App\Calculations\Calculator
         $electricityUsageCooking = 0;
         // D11
         // TODO: Should we fall back to energyHabit? It could be a different input source
-        $currentElectricityUsage = $this->getAnswer('amount-electricity') ?? $this->energyHabit->amount_electricity;
+        $currentElectricityUsage = $this->getAnswer('amount-electricity') ?? $this->energyHabit->amount_electricity ?? 0;
         // D12
         $currentElectricityUsageHeating = 0;
         // D13

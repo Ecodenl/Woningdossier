@@ -10,6 +10,7 @@ use App\Models\BuildingHeating;
 use App\Models\BuildingHeatingApplication;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
+use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
@@ -22,18 +23,165 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
+use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
 use App\Models\WoodRotStatus;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class ToolHelper
 {
+    /**
+     * TODO: When we phase out more legacy steps, we can shrink this down too
+     * This is purely to support legacy answers when creating dumps
+     *
+     * @param $key
+     * @param $answer
+     *
+     * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Translation\Translator|mixed|string|null
+     */
+    public static function translateLegacyAnswer($key, $answer)
+    {
+        $optionTrans = [
+            // One to one static keys
+            'ventilation.building_ventilations.how' => [
+                'class' => VentilationHelper::class,
+                'method' => 'getHowValues',
+            ],
+            'ventilation.building_ventilations.living_situation' => [
+                'class' => VentilationHelper::class,
+                'method' => 'getLivingSituationValues',
+            ],
+            'ventilation.building_ventilations.usage' => [
+                'class' => VentilationHelper::class,
+                'method' => 'getUsageValues',
+            ],
+            'wall-insulation.building_features.cavity_wall' => [
+                1 => 'general.options.yes.title',
+                2 => 'general.options.no.title',
+                0 => 'general.options.unknown.title',
+            ],
+            'wall-insulation.building_features.facade_plastered_painted' => [
+                1 => 'general.options.yes.title',
+                2 => 'general.options.no.title',
+                0 => 'general.options.unknown.title',
+            ],
+            'wall-insulation.building_features.facade_plastered_surface_id' => [
+                'model' => FacadePlasteredSurface::class,
+                'column' => 'name',
+            ],
+            'wall-insulation.building_features.facade_damaged_paintwork_id' => [
+                'model' => FacadeDamagedPaintwork::class,
+                'column' => 'name',
+            ],
+            'wall-insulation.building_features.wall_joints' => [
+                'model' => FacadeSurface::class,
+                'column' => 'name',
+            ],
+            'wall-insulation.building_features.contaminated_wall_joints' => [
+                'model' => FacadeSurface::class,
+                'column' => 'name',
+            ],
+            'insulated-glazing.building_paintwork_statuses.paintwork_status_id' => [
+                'model' => PaintworkStatus::class,
+                'column' => 'name',
+            ],
+            'insulated-glazing.building_paintwork_statuses.wood_rot_status_id' => [
+                'model' => WoodRotStatus::class,
+                'column' => 'name',
+            ],
+            // "Dynamic" keys
+            'insulated-glazing.building_insulated_glazings.measure_application_id.insulating_glazing_id' => [
+                'model' => InsulatingGlazing::class,
+                'column' => 'name',
+            ],
+            'roof-insulation.building_roof_types.roof_type_id.extra.tiles_condition' => [
+                'model' => RoofTileStatus::class,
+                'column' => 'name',
+            ],
+            'building_elements.element_id.element_value_id' => [
+                'model' => ElementValue::class,
+                'column' => 'value',
+            ],
+            'measure_applications.measure_application_id' => [
+                'model' => MeasureApplication::class,
+                'column' => 'measure_name',
+            ],
+            'building_heatings.building_heating_id' => [
+                'model' => BuildingHeating::class,
+                'column' => 'name',
+            ],
+            'roof_types.roof_type_id' => [
+                'model' => RoofType::class,
+                'column' => 'name',
+            ],
+            'pv_panel_orientations.pv_panel_orientation_id' => [
+                'model' => PvPanelOrientation::class,
+                'column' => 'name',
+            ],
+        ];
+
+        $hasTranslation = array_key_exists($key, $optionTrans);
+        if (! $hasTranslation) {
+            // The key might hold an ID; we'll do hardcoded simple checks to see if there's a translation.
+            // We don't have to go into complex quality structure since this should only be temporary until
+            // everything is ported to the expert scan
+            if (Str::startsWith($key, 'insulated-glazing.building_insulated_glazings') && Str::endsWith($key, 'insulating_glazing_id')) {
+                $key = 'insulated-glazing.building_insulated_glazings.measure_application_id.insulating_glazing_id';
+                $hasTranslation = true;
+            } elseif (Str::startsWith($key, 'roof-insulation.building_roof_types') && Str::endsWith($key, 'extra.tiles_condition')) {
+                $key = 'roof-insulation.building_roof_types.roof_type_id.extra.tiles_condition';
+                $hasTranslation = true;
+            } elseif (Str::endsWith($key, 'element_value_id')) {
+                $key = 'building_elements.element_id.element_value_id';
+                $hasTranslation = true;
+            } elseif (Str::endsWith($key, 'measure_application_id')) {
+                $key = 'measure_applications.measure_application_id';
+                $hasTranslation = true;
+            } elseif (Str::endsWith($key, 'building_heating_id')) {
+                $key = 'building_heatings.building_heating_id';
+                $hasTranslation = true;
+            } elseif (Str::endsWith($key, 'roof_type_id')) {
+                $key = 'roof_types.roof_type_id';
+                $hasTranslation = true;
+            } elseif (Str::endsWith($key, 'pv_panel_orientation_id')) {
+                $key = 'pv_panel_orientations.pv_panel_orientation_id';
+                $hasTranslation = true;
+            } elseif (in_array($answer, ['yes', 'no', 'unknown'], true)) {
+                $transKey = 'general.options.%s.title';
+                $answer = __(sprintf($transKey, $answer));
+            }
+        }
+
+        if ($hasTranslation) {
+            $struct = $optionTrans[$key];
+            $trans = array_key_exists('class', $struct) ? call_user_func(implode('::', $struct))
+                : $struct;
+
+            $isModel = array_key_exists('model', $trans);
+
+            if (is_array($answer)) {
+                foreach ($answer as $index => $value) {
+                    $answer[$index] = $isModel
+                        ? $trans['model']::find($value)->{$trans['column']} ?? $value
+                        : __(($trans[$value] ?? $value));
+                }
+            } else {
+                $answer = $isModel
+                    ? $trans['model']::find($answer)->{$trans['column']} ?? $answer
+                    : __(($trans[$answer] ?? $answer));
+            }
+        }
+
+        return $answer;
+    }
+
     public static function createOptions(
         Collection $collection,
         $value = 'name',
         $id = 'id',
         $nullPlaceholder = true
-    )
+    ): array
     {
         $options = [];
 
@@ -47,15 +195,427 @@ class ToolHelper
         return $options;
     }
 
-    protected static function considerationOptions($name){
+    protected static function considerationOptions($name): array
+    {
 
         return [
             'label' => $name . ': ' . __(
                     'cooperation/admin/example-buildings.form.is-considering'
                 ),
             'type' => 'select',
-            'options' => ConsiderableHelper::getConsiderableValues()
+            'options' => ConsiderableHelper::getConsiderableValues(),
         ];
+    }
+
+    /**
+     * Create the tool structure, which returns a mapping of shorts with labels attached.
+     * These shorts could either be a save_in or a short to a model. If it's a model, a class
+     * will be defined.
+     *
+     * @return array
+     */
+    public static function getNewContentStructure(): array
+    {
+        // TODO: Legacy, replace with dynamic steps in the future
+        $solarPanelStep = Step::findByShort('solar-panels');
+        $wallInsulationStep = Step::findByShort('wall-insulation');
+        $floorInsulationStep = Step::findByShort('floor-insulation');
+        $roofInsulationStep = Step::findByShort('roof-insulation');
+
+        $frames = Element::findByShort('frames');
+        $woodElements = Element::findByShort('wood-elements');
+        $crawlspace = Element::findByShort('crawlspace');
+
+        $measureApplicationConsiderableKey = 'considerables.' . MeasureApplication::class;
+        $stepConsiderableKey = 'considerables.' . Step::class;
+
+        $stepOrder = [
+            'building-data', 'usage-quick-scan', 'living-requirements', 'residential-status',
+            // TODO: More legacy
+            'ventilation' => [
+                'building_ventilations.how' => __('cooperation/tool/ventilation.index.how.title'),
+                'building_ventilations.living_situation' => __('cooperation/tool/ventilation.index.living-situation.title'),
+                'building_ventilations.usage' => __('cooperation/tool/ventilation.index.usage.title'),
+                'calculation_savings_gas' => __('ventilation.costs.gas.title'),
+                'calculation_savings_co2' => __('ventilation.costs.co2.title'),
+                'calculation_savings_money' => __('cooperation/tool/ventilation.index.savings-in-euro.title'),
+                'calculation_cost_indication' => __('cooperation/tool/ventilation.index.indicative-costs.title'),
+                'calculation_interest_comparable' => __('cooperation/tool/ventilation.index.comparable-rent.title'),
+            ],
+            'wall-insulation' => [
+                "{$stepConsiderableKey}.{$wallInsulationStep->id}" => $wallInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                'building_features.cavity_wall' => __('wall-insulation.intro.has-cavity-wall.title'),
+                'building_features.facade_plastered_painted' => __('wall-insulation.intro.is-facade-plastered-painted.title'),
+                'building_features.facade_plastered_surface_id' => __('wall-insulation.intro.surface-paintwork.title'),
+                'building_features.facade_damaged_paintwork_id' => __('wall-insulation.intro.damage-paintwork.title'),
+                'building_features.wall_joints' => __('wall-insulation.optional.flushing.title'),
+                'building_features.contaminated_wall_joints' => __('wall-insulation.optional.is-facade-dirty.title'),
+                'building_features.wall_surface' => __('wall-insulation.optional.facade-surface.title'),
+                'building_features.insulation_wall_surface' => __('wall-insulation.optional.insulated-surface.title'),
+                'calculation_savings_gas' => __(
+                    'wall-insulation.index.costs.gas.title'
+                ),
+                'calculation_savings_co2' => __(
+                    'wall-insulation.index.costs.co2.title'
+                ),
+                'calculation_savings_money' => __(
+                    'wall-insulation.index.savings-in-euro.title'
+                ),
+                'calculation_cost_indication' => __(
+                    'wall-insulation.index.indicative-costs.title'
+                ),
+                'calculation_interest_comparable' => __(
+                    'wall-insulation.index.comparable-rent.title'
+                ),
+                'calculation_repair_joint' => [
+                    'costs' => __(
+                        'wall-insulation.taking-into-account.repair-joint.title'
+                    ),
+                    'year' => __(
+                        'wall-insulation.taking-into-account.repair-joint.year.title'
+                    ),
+                ],
+                'calculation_clean_brickwork' => [
+                    'costs' => __(
+                        'wall-insulation.taking-into-account.clean-brickwork.title'
+                    ),
+                    'year' => __(
+                        'wall-insulation.taking-into-account.clean-brickwork.year.title'
+                    ),
+                ],
+                'calculation_impregnate_wall' => [
+                    'costs' => __(
+                        'wall-insulation.taking-into-account.impregnate-wall.title'
+                    ),
+                    'year' => __(
+                        'wall-insulation.taking-into-account.impregnate-wall.year.title'
+                    ),
+                ],
+                'calculation_paint_wall' => [
+                    'costs' => __(
+                        'wall-insulation.taking-into-account.wall-painting.title'
+                    ),
+                    'year' => __(
+                        'wall-insulation.taking-into-account.wall-painting.year.title'
+                    ),
+                ],
+            ],
+            'insulated-glazing' => [
+                'building_features.window_surface' => __('insulated-glazing.windows-surface.title'),
+                'building_elements.' . $frames->id . '.element_value_id' => __('insulated-glazing.paint-work.which-frames.title'),
+                'building_elements.' . $woodElements->id . '.element_value_id' => __('insulated-glazing.paint-work.other-wood-elements.title'),
+                'building_paintwork_statuses.last_painted_year' => __('insulated-glazing.paint-work.last-paintjob.title'),
+                'building_paintwork_statuses.paintwork_status_id' => __('insulated-glazing.paint-work.paint-damage-visible.title'),
+                'building_paintwork_statuses.wood_rot_status_id' => __('insulated-glazing.paint-work.wood-rot-visible.title'),
+            ],
+            'floor-insulation' => [
+                "{$stepConsiderableKey}.{$floorInsulationStep->id}" => $floorInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                'building_elements.' . $crawlspace->id . '.extra.has_crawlspace' => __('floor-insulation.has-crawlspace.title'),
+                'building_elements.' . $crawlspace->id . '.extra.access' => __('floor-insulation.crawlspace-access.title'),
+                'building_elements.' . $crawlspace->id . '.element_value_id' => __('floor-insulation.crawlspace-height.title'),
+                'building_features.floor_surface' => __('floor-insulation.surface.title'),
+                'building_features.insulation_surface' => __('floor-insulation.insulation-surface.title'),
+                'calculation_savings_gas' => __(
+                    'floor-insulation.index.costs.gas.title'
+                ),
+                'calculation_savings_co2' => __(
+                    'floor-insulation.index.costs.co2.title'
+                ),
+                'calculation_savings_money' => __(
+                    'floor-insulation.index.savings-in-euro.title'
+                ),
+                'calculation_cost_indication' => __(
+                    'floor-insulation.index.indicative-costs.title'
+                ),
+                'calculation_interest_comparable' => __(
+                    'floor-insulation.index.comparable-rent.title'
+                ),
+            ],
+            'roof-insulation' => [
+                "{$stepConsiderableKey}.{$roofInsulationStep->id}" => $roofInsulationStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                // Rest will be added dynamically
+            ],
+            'solar-panels' => [
+                "{$stepConsiderableKey}.{$solarPanelStep->id}" => $solarPanelStep->name . ': ' . __('cooperation/admin/example-buildings.form.is-considering'),
+                'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
+                'building_pv_panels.number' => __('solar-panels.number.title'),
+                'building_pv_panels.pv_panel_orientation_id' => __('solar-panels.pv-panel-orientation-id.title'),
+                'building_pv_panels.angle' => __('solar-panels.angle.title'),
+                'calculation_yield_electricity' => __(
+                    'solar-panels.indication-for-costs.yield-electricity.title'
+                ),
+                'calculation_raise_own_consumption' => __(
+                    'solar-panels.indication-for-costs.raise-own-consumption.title'
+                ),
+                'calculation_savings_co2' => __(
+                    'solar-panels.index.costs.co2.title'
+                ),
+                'calculation_savings_money' => __(
+                    'solar-panels.index.savings-in-euro.title'
+                ),
+                'calculation_cost_indication' => __(
+                    'solar-panels.index.indicative-costs.title'
+                ),
+                'calculation_interest_comparable' => __(
+                    'solar-panels.index.comparable-rent.title'
+                ),
+            ],
+            'heating' => [
+                'huidige-situatie', 'nieuwe-situatie',
+            ],
+        ];
+
+        $structure = [];
+
+        // Will hold shorts we already processed
+        $processedShorts = [];
+
+        foreach ($stepOrder as $stepShortOrIndex => $stepDataOrStepShort) {
+            $isSpecificOrder = false;
+            $stepShort = $stepDataOrStepShort;
+
+            if (is_string($stepShortOrIndex)) {
+                // If it's a string, we have a step short as index.
+                $stepShort = $stepShortOrIndex;
+
+                //TODO: Legacy support, remove if we don't have static steps anymore.
+                // If it's a legacy step, the keys are not indexed
+
+                if (is_numeric(array_key_first($stepDataOrStepShort))) {
+                    $isSpecificOrder = true;
+                } else {
+                    $structure[$stepShortOrIndex] = $stepDataOrStepShort;
+                    continue;
+                }
+            }
+
+            $step = Step::findByShort($stepShort);
+            $query = $step->subSteps();
+            if ($isSpecificOrder) {
+                $locale = 'nl';
+
+                // Order by custom order
+                $questionMarks = substr(str_repeat('?, ', count($stepDataOrStepShort)), 0, -2);
+                $query->orderByRaw("FIELD(slug->>'$.{$locale}', {$questionMarks})", $stepDataOrStepShort);
+            }
+            $subSteps = $query->get();
+
+            foreach ($subSteps as $subStep) {
+                $subSteppables = $subStep->subSteppables()->whereNotIn('sub_steppable_type', [ToolLabel::class])->get();
+                foreach ($subSteppables as $subSteppable) {
+                    $model = $subSteppable->subSteppable;
+
+                    if (! array_key_exists($model->short, $processedShorts)
+                        || ! in_array($subSteppable->sub_steppable_type, $processedShorts[$model->short])) {
+                        $shortToSave = ($subSteppable->sub_steppable_type === ToolQuestion::class ? 'question_' : 'calculation_') . $model->short;
+
+                        $structure[$stepShort][$shortToSave] = $model->name;
+
+                        $processedShorts[$model->short][] = $subSteppable->sub_steppable_type;
+                    }
+                }
+            }
+        }
+
+        // TODO: Also more legacy support
+
+        // As Darkwing Duck would say: Let's get dangerous
+        //
+        // We're going to get all insulated-glazing stuff out of the array,
+        // put all measure applications in first, then put the stuff back and
+        // then add the calculations.
+        // The order was accepted for the example buildings, but not for the
+        // CSV files. And the order should be the same, but not "the same".
+        // Makes sense.. no?
+        // (hint: no it doesn't..)
+        $insulatedGlazingStuffSoFar = $structure['insulated-glazing'];
+        $structure['insulated-glazing'] = [];
+
+        // Insulated glazing
+        $igShorts = [
+            'hrpp-glass-only',
+            'hrpp-glass-frames',
+            'hr3p-frames',
+            'glass-in-lead',
+        ];
+
+        foreach ($igShorts as $igShort) {
+            $measureApplication = MeasureApplication::where('short', $igShort)
+                ->first();
+            if ($measureApplication instanceof MeasureApplication) {
+
+                $structure['insulated-glazing']["{$measureApplicationConsiderableKey}.{$measureApplication->id}"] = $measureApplication->measure_name . ': ' . __('cooperation/admin/example-buildings.form.is-considering');
+                $structure['insulated-glazing']['building_insulated_glazings.'
+                . $measureApplication->id . '.insulating_glazing_id']
+                    =  $measureApplication->measure_name . ': ' . __(
+                            'insulated-glazing.' . $measureApplication->short
+                            . '.current-glass.title'
+                        );
+                $structure['insulated-glazing']['building_insulated_glazings.'
+                . $measureApplication->id . '.building_heating_id']
+                    =  $measureApplication->measure_name . ': ' . __(
+                            'insulated-glazing.' . $measureApplication->short
+                            . '.rooms-heated.title'
+                        );
+                $structure['insulated-glazing']['building_insulated_glazings.'
+                . $measureApplication->id . '.m2']
+                    = $measureApplication->measure_name . ': ' . __(
+                            'insulated-glazing.' . $measureApplication->short
+                            . '.m2.title'
+                        );
+                $structure['insulated-glazing']['building_insulated_glazings.'
+                . $measureApplication->id . '.windows']
+                    = $measureApplication->measure_name . ': ' . __(
+                            'insulated-glazing.' . $measureApplication->short
+                            . '.window-replace.title'
+                        );
+            }
+        }
+        foreach ($insulatedGlazingStuffSoFar as $igK => $igV) {
+            $structure['insulated-glazing'][$igK] = $igV;
+        }
+
+        // set the calculations on the end because of the order
+        $structure['insulated-glazing']['calculation_savings_gas'] = __(
+            'insulated-glazing.index.costs.gas.title'
+        );
+        $structure['insulated-glazing']['calculation_savings_co2'] = __(
+            'insulated-glazing.index.costs.co2.title'
+        );
+        $structure['insulated-glazing']['calculation_savings_money'] = __(
+            'insulated-glazing.index.savings-in-euro.title'
+        );
+        $structure['insulated-glazing']['calculation_cost_indication'] = __(
+            'insulated-glazing.index.indicative-costs.title'
+        );
+        $structure['insulated-glazing']['calculation_interest_comparable'] = __(
+            'insulated-glazing.index.comparable-rent.title'
+        );
+        $structure['insulated-glazing']['calculation_paintwork'] = [
+            'costs' => __(
+                'insulated-glazing.taking-into-account.paintwork.title'
+            ),
+            'year' => __(
+                'insulated-glazing.taking-into-account.paintwork_year.title'
+            ),
+        ];
+
+        // Roof insulation
+        // have to refactor this
+        // pitched = 1
+        // flat = 2
+        $pitched = new \stdClass();
+        $pitched->id = 1;
+        $pitched->short = 'pitched';
+        $flat = new \stdClass();
+        $flat->id = 2;
+        $flat->short = 'flat';
+        $roofTypes1 = collect([$pitched, $flat]);
+
+        // $roofTypes1 should become $roofTypes->where('short', '!=', 'none');
+
+        foreach ($roofTypes1 as $roofType) {
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.element_value_id']
+                = __('roof-insulation.current-situation.is-'  . $roofType->short . '-roof-insulated.title');
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.roof_surface']
+                = __('roof-insulation.current-situation.'  . $roofType->short . '-roof-surface.title');
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.insulation_roof_surface']
+                = __('roof-insulation.current-situation.insulation-' . $roofType->short . '-roof-surface.title');
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.extra.zinc_replaced_date']
+                = __('roof-insulation.current-situation.zinc-replaced.title');
+            if ('flat' == $roofType->short) {
+                $structure['roof-insulation']['building_roof_types.'
+                . $roofType->id . '.extra.bitumen_replaced_date']
+                    = __('roof-insulation.current-situation.bitumen-insulated.title');
+            }
+            if ('pitched' == $roofType->short) {
+                $structure['roof-insulation']['building_roof_types.'
+                . $roofType->id . '.extra.tiles_condition']
+                    = __('roof-insulation.current-situation.in-which-condition-tiles.title');
+            }
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.extra.measure_application_id']
+                = __('roof-insulation.' . $roofType->short . '-roof-.insulate-roof.title');
+            $structure['roof-insulation']['building_roof_types.'
+            . $roofType->id . '.building_heating_id']
+                = __('roof-insulation.' . $roofType->short . '-roof.situation.title');
+
+            if ($roofType->short == $roofTypes1->last()->short) {
+                $structure['roof-insulation']['calculation_flat'] = [
+                    'savings_gas' => __(
+                        'roof-insulation.flat.costs.gas.title'
+                    ),
+                    'savings_co2' => __(
+                        'roof-insulation.flat.costs.co2.title'
+                    ),
+                    'savings_money' => __(
+                        'roof-insulation.index.savings-in-euro.title'
+                    ),
+                    'cost_indication' => __(
+                        'roof-insulation.index.indicative-costs.title'
+                    ),
+                    'interest_comparable' => __(
+                        'roof-insulation.index.comparable-rent.title'
+                    ),
+
+                    'replace' => [
+                        'costs' => __(
+                            'roof-insulation.flat.indicative-costs-replacement.title'
+                        ),
+                        'year' => __(
+                            'roof-insulation.flat.indicative-replacement.year.title'
+                        ),
+                    ],
+                ];
+                $structure['roof-insulation']['calculation_pitched'] = [
+                    'savings_gas' => __(
+                        'roof-insulation.pitched.costs.gas.title'
+                    ),
+                    'savings_co2' => __(
+                        'roof-insulation.pitched.costs.co2.title'
+                    ),
+                    'savings_money' => __(
+                        'roof-insulation.index.savings-in-euro.title'
+                    ),
+                    'cost_indication' => __(
+                        'roof-insulation.index.indicative-costs.title'
+                    ),
+                    'interest_comparable' => __(
+                        'roof-insulation.index.comparable-rent.title'
+                    ),
+
+                    'replace' => [
+                        'costs' => __(
+                            'roof-insulation.pitched.indicative-costs-replacement.title'
+                        ),
+                        'year' => __(
+                            'roof-insulation.pitched.indicative-replacement.year.title'
+                        ),
+                    ],
+                ];
+            }
+        }
+
+        // and here we will add the interest options for the ventilation information
+        $measureApplicationsForVentilation = MeasureApplication::whereIn(
+            'short',
+            [
+                'ventilation-balanced-wtw',
+                'ventilation-decentral-wtw',
+                'ventilation-demand-driven',
+                'crack-sealing',
+            ]
+        )->get();
+
+        foreach ($measureApplicationsForVentilation as $measureApplication) {
+            $structure['ventilation']["{$measureApplicationConsiderableKey}.{$measureApplication->id}"] = $measureApplication->measure_name . ': ' . __('cooperation/admin/example-buildings.form.is-considering');
+        }
+
+        return $structure;
     }
 
     /**
@@ -264,7 +824,7 @@ class ToolHelper
                     'tool_question_answers.heat-source' => [
                         'label' => ToolQuestion::findByShort('heat-source')->name,
                         'type' => 'multiselect',
-                        'options' => ToolQuestion::findByShort('heat-source')->getQuestionValues()->pluck('name', 'short')->toArray()
+                        'options' => ToolQuestion::findByShort('heat-source')->getQuestionValues()->pluck('name', 'short')->toArray(),
                     ],
 
                     'service.' . $boiler->id . '.service_value_id' => [
@@ -280,7 +840,7 @@ class ToolHelper
                             'cooperation/tool/general-data/current-state.index.building-heating-applications.title'
                         ),
                         'type' => 'select',
-                        'options' => ToolQuestion::findByShort('building-heating-application')->getQuestionValues()->pluck('name', 'short')->toArray()
+                        'options' => ToolQuestion::findByShort('building-heating-application')->getQuestionValues()->pluck('name', 'short')->toArray(),
                     ],
 
                     'service.' . $solarPanels->id . '.extra.value' => [
@@ -366,7 +926,7 @@ class ToolHelper
                     'tool_question_answers.cook-type' => [
                         'label' => ToolQuestion::findByShort('cook-type')->name,
                         'type' => 'select',
-                        'options' => ToolQuestion::findByShort('cook-type')->getQuestionValues()->pluck('name', 'short')->toArray()
+                        'options' => ToolQuestion::findByShort('cook-type')->getQuestionValues()->pluck('name', 'short')->toArray(),
                     ],
                     'user_energy_habits.thermostat_high' => [
                         'label' => __(
@@ -660,7 +1220,7 @@ class ToolHelper
 
             'floor-insulation' => [
                 '-' => [
-                    "{$stepConsiderableKey}.{$floorInsulationStep->id}.is_considering" => self::considerationOptions($floorInsulationStep->name),
+                        "{$stepConsiderableKey}.{$floorInsulationStep->id}.is_considering" => self::considerationOptions($floorInsulationStep->name),
                     'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
                         'label' => __(
                             'floor-insulation.has-crawlspace.title'
@@ -916,7 +1476,7 @@ class ToolHelper
                 ],
             ],
         ];
- 
+
         $steps = Step::withoutChildren()->expert()->get();
 
         $steps = $steps->keyBy('short')->forget('general-data');

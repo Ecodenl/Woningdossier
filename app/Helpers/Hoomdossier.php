@@ -21,6 +21,7 @@ class Hoomdossier
      */
     public static function columnContains(string $column, string $needle)
     {
+        // TODO: Refactor references to Str::contains
         return false !== stristr($column, $needle);
     }
 

@@ -51,8 +51,6 @@ class ToolQuestionsTableSeeder extends Seeder
         // Solar panels
         $solarPanels = Service::findByShort('total-sun-panels');
 
-        $heater = Service::findByShort('sun-boiler');
-
         // Floor insulation
         $floorInsulation = Element::findByShort('floor-insulation');
 
@@ -420,7 +418,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:comfort_level_tap_waters,id'],
                 'save_in' => 'user_energy_habits.water_comfort_id',
                 'short' => 'water-comfort',
-                // was __('cooperation/tool/general-data/usage.index.water-gas.water-comfort.title'),
                 'translation' => 'Wat is het comfortniveau voor het gebruik van warm tapwater?',
                 'tool_question_values' => $comfortLevelsTapWater,
             ],
@@ -825,31 +822,6 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:element_values,id'],
-                'save_in' => "building_services.{$heater->id}.service_value_id",
-                'short' => 'heater-type',
-                'translation' => "Heeft u een zonneboiler?",
-                'tool_question_values' => $heater->values()->orderBy('order')->get(),
-                'extra' => [
-                    'column' => 'calculate_value',
-                    'data' => [
-                        1 => [
-                            'icon' => 'icon-sun-boiler-none',
-                        ],
-                        2 => [
-                            'icon' => 'icon-sun-boiler-hot-water',
-                        ],
-                        3 => [
-                            'icon' => 'icon-sun-boiler-heating',
-                        ],
-                        4 => [
-                            'icon' => 'icon-sun-boiler-both',
-                        ],
-                    ],
-                ],
-            ],
-            [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
                 'save_in' => "building_services.{$boiler->id}.service_value_id",
                 'short' => 'boiler-type',
                 'translation' => "Wat voor gasketel heeft u?",
@@ -874,7 +846,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
+                'validation' => ['required', 'exists:service_values,id'],
                 'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'heat-pump-type',
                 'translation' => "Wat voor type warmtepomp is er?",
@@ -1121,7 +1093,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'options' => ['value' => 'no'],
                 'tool_question_custom_values' => [
                     'yes' => [
-                        'name' => 'yes',
+                        'name' => 'Ja',
                         'extra' => [
                             'icon' => 'icon-heat-pump',
                         ],
@@ -1223,10 +1195,29 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:comfort_level_tap_waters,id'],
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'new-water-comfort',
                 'translation' => 'Wat wordt het comfortniveau voor het gebruik van warm tapwater?',
-                'tool_question_values' => $comfortLevelsTapWater,
+                'tool_question_custom_values' => [
+                    'standard' => [
+                        'name' => 'Standaard',
+                        'extra' => [
+                            'calculate_value' => '1',
+                        ],
+                    ],
+                    'comfortable' => [
+                        'name' => 'Comfortabel',
+                        'extra' => [
+                            'calculate_value' => '2',
+                        ],
+                    ],
+                    'extra-comfortable' => [
+                        'name' => 'Extra comfortabel',
+                        'extra' => [
+                            'calculate_value' => '3',
+                        ],
+                    ],
+                ],
             ],
             [
                 'data_type' => Caster::ARRAY,
@@ -1367,19 +1358,40 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 //'save_in' => "building_services.{$boiler->id}.service_value_id",
                 'short' => 'new-boiler-type',
                 'translation' => "Wat is het type van de nieuwe ketel?",
-                'tool_question_values' => $boiler->values()->orderBy('order')->get(),
-                'extra' => [
-                    'column' => 'calculate_value',
-                    'data' => [
-                        1 => [],
-                        2 => [],
-                        3 => [],
-                        4 => [],
-                        5 => [],
+                'tool_question_custom_values' => [
+                    'conventional' => [
+                        'name' => 'Conventioneel rendement ketel',
+                        'extra' => [
+                            'calculate_value' => '1',
+                        ],
+                    ],
+                    'improved-efficiency' => [
+                        'name' => 'verbeterd rendement ketel',
+                        'extra' => [
+                            'calculate_value' => '2',
+                        ],
+                    ],
+                    'hr100' => [
+                        'name' => 'HR100 ketel',
+                        'extra' => [
+                            'calculate_value' => '3',
+                        ],
+                    ],
+                    'hr104' => [
+                        'name' => 'HR104 ketel',
+                        'extra' => [
+                            'calculate_value' => '4',
+                        ],
+                    ],
+                    'hr107' => [
+                        'name' => 'HR107 ketel',
+                        'extra' => [
+                            'calculate_value' => '5',
+                        ],
                     ],
                 ],
             ],
@@ -1437,20 +1449,103 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 //'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'new-heat-pump-type',
                 'translation' => "Welke soort warmtepomp moet er komen?",
-                'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
-                'extra' => [
-                    'column' => 'calculate_value',
-                    'data' => [
-                        1 => [],
-                        2 => [],
-                        3 => [],
-                        4 => [],
-                        5 => [],
-                        6 => [],
+                'tool_question_custom_values' => [
+                    'hybrid-heat-pump-outside-air' => [
+                        'name' => 'Hybride warmtepomp met buitenlucht',
+                        'extra' => [
+                            'calculate_value' => '1',
+                        ],
+                    ],
+                    'hybrid-heat-pump-ventilation-air' => [
+                        'name' => 'Hybride warmtepomp met ventilatielucht',
+                        'extra' => [
+                            'calculate_value' => '2',
+                        ],
+                    ],
+                    'hybrid-heat-pump-pvt-panels' => [
+                        'name' => 'Hybride warmtepomp met pvt panelen',
+                        'extra' => [
+                            'calculate_value' => '3',
+                        ],
+                    ],
+                    'full-heat-pump-outside-air' => [
+                        'name' => 'Volledige warmtepomp met buitenlucht',
+                        'extra' => [
+                            'calculate_value' => '4',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'heat-source-considerable',
+                                    'operator' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source',
+                                    'operator' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source-warm-tap-water',
+                                    'operator' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                            ],
+                        ]
+                    ],
+                    'full-heat-pump-ground-heat' => [
+                        'name' => 'Volledige warmtepomp met bodemwarmte',
+                        'extra' => [
+                            'calculate_value' => '5',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'heat-source-considerable',
+                                    'operator' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source',
+                                    'operator' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source-warm-tap-water',
+                                    'operator' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                            ],
+                        ]
+                    ],
+                    'full-heat-pump-pvt-panels' => [
+                        'name' => 'Volledige warmtepomp met pvt panelen',
+                        'extra' => [
+                            'calculate_value' => '6',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'heat-source-considerable',
+                                    'operator' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source',
+                                    'operator' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                                [
+                                    'column' => 'new-heat-source-warm-tap-water',
+                                    'operator' => Clause::NOT_CONTAINS,
+                                    'value' => 'hr-boiler',
+                                ],
+                            ],
+                        ]
                     ],
                 ],
             ],
@@ -1612,9 +1707,13 @@ class ToolQuestionsTableSeeder extends Seeder
                 $extra = $questionData['extra'] ?? [];
 
                 foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
+                    $extraData = null;
+                    $conditions = [];
+
                     if (isset($extra['column'])) {
-                        // TODO: Not relevant for now but when needed we could put the conditions inside the $extraData
                         $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
+                        $conditions = $extraData['conditions'] ?? [];
+                        unset($extraData['conditions']);
                     }
 
                     $insertData = [
@@ -1625,6 +1724,7 @@ class ToolQuestionsTableSeeder extends Seeder
                         'tool_question_valuable_id' => $toolQuestionValue->id,
                         // We grab the extra data by the set column (e.g. calculate_value)
                         'extra' => json_encode(($extraData ?? $extra)),
+                        'conditions' => json_encode($conditions),
                     ];
 
                     DB::table('tool_question_valuables')->updateOrInsert([

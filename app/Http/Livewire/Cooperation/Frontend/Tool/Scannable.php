@@ -99,12 +99,19 @@ abstract class Scannable extends Component
 
     protected function refreshAlerts()
     {
+        $answers = $this->prepareAnswersForEvaluation();
+
+        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts', $answers);
+    }
+
+    public function prepareAnswersForEvaluation(): array
+    {
         $answers = [];
         foreach ($this->toolQuestions as $toolQuestion) {
             $answers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->id];
         }
 
-        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts', $answers);
+        return $answers;
     }
 
     public function updated($field, $value)

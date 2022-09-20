@@ -1,0 +1,107 @@
+<?php
+
+namespace App\Helpers;
+
+use App\Helpers\Conditions\ConditionEvaluator;
+use App\Models\Building;
+use App\Models\CompletedSubStep;
+use App\Models\InputSource;
+use App\Models\Step;
+use App\Models\SubStep;
+
+class SubStepHelper
+{
+    /**
+     * Complete a sub step for a building.
+     *
+     * @param  \App\Models\SubStep  $subStep
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     *
+     * @return void
+     */
+    public static function complete(SubStep $subStep, Building $building, InputSource $inputSource)
+    {
+        CompletedSubStep::allInputSources()->firstOrCreate([
+            'sub_step_id' => $subStep->id,
+            'input_source_id' => $inputSource->id,
+            'building_id' => $building->id,
+        ]);
+    }
+
+    /**
+     * Incomplete a step for a building.
+     *
+     * @param  \App\Models\SubStep  $subStep
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public static function incomplete(SubStep $subStep, Building $building, InputSource $inputSource)
+    {
+        CompletedSubStep::allInputSources()->where([
+            'sub_step_id' => $subStep->id,
+            'input_source_id' => $inputSource->id,
+            'building_id' => $building->id,
+        ])->delete();
+    }
+
+    /**
+     * Check if we should incomplete steps because conditional steps have come free, or if we need to
+     * incomplete sub steps because they are hidden now.
+     *
+     * @param  \App\Models\CompletedSubStep  $completedSubStep
+     *
+     * @return void
+     */
+    public static function checkConditionals(CompletedSubStep $completedSubStep)
+    {
+        // TODO: Check if we should provide more logic to handle custom evaluators
+        $building = $completedSubStep->building;
+        $currentInputSource = $completedSubStep->inputSource;
+        // We must do it for the master also because we're not using model events
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $subStep = $completedSubStep->subStep;
+        $subStepsRelated = [];
+
+        foreach ($subStep->toolQuestions as $toolQuestion) {
+            $subStepsRelated = array_merge($subStepsRelated,
+                SubStep::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$toolQuestion->short}\""])
+                    ->pluck('id')->toArray());
+        }
+
+        $subStepsRelated = array_unique($subStepsRelated);
+        $subSteps = SubStep::whereIn('id', $subStepsRelated)->get();
+
+        $evaluator = ConditionEvaluator::init()
+            ->building($building)
+            ->inputSource($masterInputSource);
+
+        foreach ($subSteps as $subStep) {
+            $completedSubStep = CompletedSubStep::allInputSources()
+                ->where([
+                    'sub_step_id' => $subStep->id,
+                    'input_source_id' => $masterInputSource->id,
+                    'building_id' => $building->id,
+                ])
+                ->first();
+
+            if ($evaluator->evaluate($subStep->conditions)) {
+                // If it's a visible step that is not complete, we want the parent step to also to also not be
+                // complete.
+                if (! $completedSubStep instanceof CompletedSubStep) {
+                    StepHelper::incomplete($subStep->step, $building, $currentInputSource);
+                    StepHelper::incomplete($subStep->step, $building, $masterInputSource);
+                }
+            } else {
+                // If it's an invisible step that is complete, we want to incomplete it.
+                if ($completedSubStep instanceof CompletedSubStep) {
+                    static::incomplete($subStep, $building, $currentInputSource);
+                    static::incomplete($subStep, $building, $masterInputSource);
+                }
+            }
+        }
+    }
+}

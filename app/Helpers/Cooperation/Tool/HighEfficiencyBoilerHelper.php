@@ -66,7 +66,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
+                    'is_considering' => $this->considersByAnswer('heat-source-considerable', 'hr-boiler'),
                 ],
             ],
             'building_services' => $buildingBoilerArray,

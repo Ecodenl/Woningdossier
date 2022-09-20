@@ -44,6 +44,8 @@ class RecalculateToolForUserListener
             'high-efficiency-boiler',
             'solar-panels',
             'heater',
+            // 'heat-pump', // Not relevant as the heat-pump is not a "completable" step
+            // TODO: In the future we would want to map boiler, heater and heat-pump to just heating instead
         ];
 
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {

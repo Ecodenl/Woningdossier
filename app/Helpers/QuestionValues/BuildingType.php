@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 
 class BuildingType implements ShouldReturnQuestionValues
 {
-    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource): Collection
+    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource, ?Collection $answers = null): Collection
     {
         $conditionalQuestion = ToolQuestion::findByShort('building-type-category');
 

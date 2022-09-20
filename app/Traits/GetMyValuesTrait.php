@@ -6,6 +6,8 @@ use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingRoofType;
+use App\Models\CompletedStep;
+use App\Models\CompletedSubStep;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
@@ -41,8 +43,15 @@ trait GetMyValuesTrait
         static::deleting(function (Model $model) {
             // might be handy to prevent getting into an infinite loop (-:>
             if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
-                // TODO: This needs to work for all models, but for now there's only time to make roof types work
-                if ($model instanceof BuildingRoofType || $model instanceof ToolQuestionAnswer) {
+                $supportedClasses = [
+                    BuildingRoofType::class,
+                    ToolQuestionAnswer::class,
+                    CompletedStep::class,
+                    CompletedSubStep::class,
+                ];
+
+                // TODO: This needs to work for all models
+                if (in_array(get_class($model), $supportedClasses)) {
                     $model->deleteForMasterInputSource();
                 }
             }
@@ -138,8 +147,7 @@ trait GetMyValuesTrait
 
     protected function deleteForMasterInputSource()
     {
-        // TODO: Since this is currently only for the building roof types and tool question answers, the full logic might not be complete!
-
+        // TODO: Logic might not be complete
         $tablesToIgnore = [
             'user_action_plan_advice_comments', 'step_comments',
         ];

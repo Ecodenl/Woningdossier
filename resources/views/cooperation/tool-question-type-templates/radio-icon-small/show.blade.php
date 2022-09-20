@@ -4,7 +4,7 @@
             $toolQuestion,
             $building,
             $masterInputSource,
-            $cooperation,
+            collect($this->prepareAnswersForEvaluation())
         );
     @endphp
     @foreach($questionValues as $toolQuestionValue)

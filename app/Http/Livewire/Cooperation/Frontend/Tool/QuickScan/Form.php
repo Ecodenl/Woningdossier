@@ -6,6 +6,7 @@ use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
+use App\Helpers\SubStepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\CompletedSubStep;
@@ -181,12 +182,17 @@ class Form extends Scannable
         }
 
         // Now mark the sub step as complete
-        CompletedSubStep::firstOrCreate([
+        $completedSubStep = CompletedSubStep::firstOrCreate([
             'sub_step_id' => $this->subStep->id,
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id
         ]);
 
+        if (! $completedSubStep->wasRecentlyCreated) {
+            SubStepHelper::checkConditionals($completedSubStep);
+        }
+
+        // TODO: We might have to generate the $nextUrl in real time if conditional steps follow a related question
         return redirect()->to($nextUrl);
     }
 }

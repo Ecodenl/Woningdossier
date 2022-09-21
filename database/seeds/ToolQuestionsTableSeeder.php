@@ -1135,7 +1135,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
-                'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
+                'save_in' => "step_comments.{$stepResidentialStatus->id}.element.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'residential-status-element-comment-resident',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
@@ -1143,7 +1143,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
-                'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
+                'save_in' => "step_comments.{$stepResidentialStatus->id}.element.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-element-comment-coach',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
@@ -1151,7 +1151,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
-                'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
+                'save_in' => "step_comments.{$stepResidentialStatus->id}.service.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'residential-status-service-comment-resident',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
@@ -1159,7 +1159,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
-                'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
+                'save_in' => "step_comments.{$stepResidentialStatus->id}.service.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-service-comment-coach',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',

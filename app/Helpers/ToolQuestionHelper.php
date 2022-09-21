@@ -7,6 +7,7 @@ use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -25,13 +26,14 @@ class ToolQuestionHelper
 
     /**
      * These tables should query on one or more extra column(s)
-     * Order for multiple columns is very important
+     * Order for multiple columns is very important, it should be ordered as the where values in the save_in
      */
     const TABLE_COLUMN = [
-        'building_elements' => 'element_id',
-        'building_insulated_glazings' => 'measure_application_id',
-        'building_roof_types' => 'roof_type_id',
-        'building_services' => 'service_id',
+        'building_elements' => [ 'element_id'],
+        'building_insulated_glazings' => ['measure_application_id'],
+        'building_roof_types' => ['roof_type_id'],
+        'building_services' => ['service_id'],
+        'considerables' => ['considerable_type', 'considerable_id'],
         'step_comments' => [
             'step_id',
             'short',
@@ -132,8 +134,8 @@ class ToolQuestionHelper
     public static function resolveSaveIn(string $saveIn, Building $building): array
     {
         $savedInParts = explode('.',$saveIn);
-        $table = $savedInParts[0];
-        $column = $savedInParts[1];
+        $table = array_shift($savedInParts);
+        $column = array_pop($savedInParts);
         $where = [];
 
         if (Schema::hasColumn($table, 'user_id')) {
@@ -144,25 +146,16 @@ class ToolQuestionHelper
 
         // 2 parts is the simple scenario, this just means a table + column
         // but in some cases it holds more info we need to build wheres.
-        if (count($savedInParts) > 2) {
+        if (count($savedInParts) > 0) {
             // In this case the column holds extra where values
 
-            // There's 2 cases. Either it's a single value, or a set of columns
-            if (Str::contains($column, '_')) {
-                // Set of columns, we set the wheres based on the order of values
-                $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
-                $values = explode('_', $column);
+            // Set of columns, we set the wheres based on the order of values
+            $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
+            Log::debug($savedInParts);
 
-                // Currently only for step_comments that can have a short
-                foreach ($values as $index => $value) {
-                    $where[$columns[$index]] = $value;
-                }
-            } else {
-                // Just a value, but the short table could be an array. We grab the first
-                $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
-                $columnForWhere = is_array($columns) ? $columns[0] : $columns;
-
-                $where[$columnForWhere] = $column;
+            // Currently only for step_comments that can have a short
+            foreach ($savedInParts as $index => $value) {
+                $where[$columns[$index]] = $value;
             }
 
             $columns = array_slice($savedInParts, 2);

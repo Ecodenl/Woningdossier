@@ -146,7 +146,6 @@ class ToolQuestionHelper
 
         // if there are saved in parts left, check if we should add extra wheres or prepend it to the column.
         if (count($savedInParts) > 0) {
-
             // first check if the table has additional wheres
             if (isset(ToolQuestionHelper::TABLE_COLUMN[$table])) {
                 // it does, check which are wheres and which are a columns
@@ -160,9 +159,9 @@ class ToolQuestionHelper
                     }
                 }
             } else {
+                // so no columns for the table are found, al of the extra saved in parts are columns.
                 $column = implode('.', $savedInParts).'.'.$column;
             }
-
         }
 
         return compact('table', 'column', 'where');

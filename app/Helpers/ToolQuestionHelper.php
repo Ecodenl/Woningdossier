@@ -29,7 +29,7 @@ class ToolQuestionHelper
      * Order for multiple columns is very important, it should be ordered as the where values in the save_in
      */
     const TABLE_COLUMN = [
-        'building_elements' => [ 'element_id'],
+        'building_elements' => ['element_id'],
         'building_insulated_glazings' => ['measure_application_id'],
         'building_roof_types' => ['roof_type_id'],
         'building_services' => ['service_id'],
@@ -120,20 +120,20 @@ class ToolQuestionHelper
      */
     public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion): bool
     {
-        return in_array($toolQuestion->short,self::TOOL_QUESTION_FULL_RECALCULATE, true);
+        return in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true);
     }
 
     /**
      * Simple method to resolve the save in to something we can use.
      *
-     * @param  string  $saveIn
-     * @param  Building  $building
+     * @param string $saveIn
+     * @param Building $building
      *
      * @return array
      */
     public static function resolveSaveIn(string $saveIn, Building $building): array
     {
-        $savedInParts = explode('.',$saveIn);
+        $savedInParts = explode('.', $saveIn);
         $table = array_shift($savedInParts);
         $column = array_pop($savedInParts);
         $where = [];
@@ -144,23 +144,25 @@ class ToolQuestionHelper
             $where['building_id'] = $building->id;
         }
 
-        // 2 parts is the simple scenario, this just means a table + column
-        // but in some cases it holds more info we need to build wheres.
+        // if there are saved in parts left, check if we should add extra wheres or prepend it to the column.
         if (count($savedInParts) > 0) {
-            // In this case the column holds extra where values
 
-            // Set of columns, we set the wheres based on the order of values
-            $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
-            Log::debug($savedInParts);
+            // first check if the table has additional wheres
+            if (isset(ToolQuestionHelper::TABLE_COLUMN[$table])) {
+                // it does, check which are wheres and which are a columns
+                $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
 
-            // Currently only for step_comments that can have a short
-            foreach ($savedInParts as $index => $value) {
-                if (isset($columns[$index])) {
-                    $where[$columns[$index]] = $value;
-                } else {
-                    $column = $value.'.'.$column;
+                foreach ($savedInParts as $index => $value) {
+                    if (isset($columns[$index])) {
+                        $where[$columns[$index]] = $value;
+                    } else {
+                        $column = $value . '.' . $column;
+                    }
                 }
+            } else {
+                $column = implode('.', $savedInParts).'.'.$column;
             }
+
         }
 
         return compact('table', 'column', 'where');
@@ -169,11 +171,11 @@ class ToolQuestionHelper
     /**
      * Get a human readable answer.
      *
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\ToolQuestion  $toolQuestion
-     * @param  bool  $withIcons
-     * @param  null  $answer
+     * @param \App\Models\Building $building
+     * @param \App\Models\InputSource $inputSource
+     * @param \App\Models\ToolQuestion $toolQuestion
+     * @param bool $withIcons
+     * @param null $answer
      *
      * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Translation\Translator|int|mixed|string|string[]|null
      */
@@ -185,7 +187,7 @@ class ToolQuestionHelper
             $answer = $building->getAnswer($inputSource, $toolQuestion);
         }
 
-        if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
+        if (!empty($answer) || (is_numeric($answer) && (int)$answer === 0)) {
             $questionValues = QuestionValue::getQuestionValues($toolQuestion, $building, $inputSource);
 
             if ($questionValues->isNotEmpty()) {
@@ -196,10 +198,10 @@ class ToolQuestionHelper
                 foreach ($answer as $subAnswer) {
                     $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
 
-                    if (! empty($questionValue)) {
+                    if (!empty($questionValue)) {
                         $answerToAppend = $questionValue['name'];
 
-                        if (! empty($questionValue['extra']['icon']) && $withIcons) {
+                        if (!empty($questionValue['extra']['icon']) && $withIcons) {
                             $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';
                         }
 
@@ -207,7 +209,7 @@ class ToolQuestionHelper
                     }
                 }
 
-                if (! empty($humanReadableAnswers)) {
+                if (!empty($humanReadableAnswers)) {
                     $humanReadableAnswer = implode(', ', $humanReadableAnswers);
                 }
             } else {
@@ -233,9 +235,9 @@ class ToolQuestionHelper
     /**
      * Handle potential replaceables in a tool question name.
      *
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\ToolQuestion  $toolQuestion
+     * @param \App\Models\Building $building
+     * @param \App\Models\InputSource $inputSource
+     * @param \App\Models\ToolQuestion $toolQuestion
      *
      * @return \App\Models\ToolQuestion
      */

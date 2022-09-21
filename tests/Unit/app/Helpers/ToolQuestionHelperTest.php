@@ -78,6 +78,16 @@ class ToolQuestionHelperTest extends TestCase
                 ]
             ],
             [
+                'sub_steps.a-column-which-should-be-prepended.comment',
+                [
+                    'table' => 'sub_steps',
+                    'column' => 'a-column-which-should-be-prepended.comment',
+                    'where' => [
+                        'building_id' => $building->id,
+                    ],
+                ]
+            ],
+            [
                 'considerables.App\\Models\\Step.3.is_considering',
                 [
                     'table' => 'considerables',

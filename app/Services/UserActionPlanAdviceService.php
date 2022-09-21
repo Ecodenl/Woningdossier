@@ -521,17 +521,17 @@ class UserActionPlanAdviceService
                         ->building($building)
                         ->inputSource($masterInputSource)
                         ->evaluate($subStep->conditions);
-                    $type = ServiceValue::find(
-                        $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type'))
-                    );
+
+                    $calculateValue = ToolQuestion::findByShort('new-heat-pump-type')->toolQuestionCustomValues()
+                        ->whereShort($building->getAnswer($masterInputSource, ToolQuestion::findByShort('new-heat-pump-type')))
+                        ->first()->extra['calculate_value'] ?? null;
 
                     // We complete it if it's the current heat pump and isn't for maintenance yet.
-                    if ($evaluation && $type instanceof ServiceValue
-                        && HeatPumpHelper::MEASURE_SERVICE_LINK[$measureApplication->short] === $type->calculate_value) {
+                    if ($evaluation && ! is_null($calculateValue)
+                        && HeatPumpHelper::MEASURE_SERVICE_LINK[$measureApplication->short] === $calculateValue) {
                         $category = self::CATEGORY_COMPLETE;
 
-                        $placeYear = ServiceValue::find($building->getAnswer($masterInputSource,
-                            ToolQuestion::findByShort('heat-pump-placed-date')));
+                        $placeYear = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-placed-date'));
 
                         if (is_numeric($placeYear)) {
                             $diff = now()->format('Y') - $placeYear;

@@ -3,8 +3,11 @@
 namespace App\Console\Commands\Upgrade\HeatPump;
 
 use App\Models\ExampleBuildingContent;
+use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class ExampleBuildingContentRestructure extends Command
 {
@@ -39,23 +42,32 @@ class ExampleBuildingContentRestructure extends Command
      */
     public function handle()
     {
-        $exampleBuildingContent = ExampleBuildingContent::first();
+        $missingSaveIn = [];
+        $exampleBuildingContent = ExampleBuildingContent::find(122);
 
         $contents = $exampleBuildingContent->content;
+        $newContent = [];
 
         foreach ($contents as $stepSlug => $dataForStep) {
             foreach ($dataForStep as $subStepSlug => $dataForSubStep) {
-                foreach ($dataForSubStep as $columnOrTable => $values) {
+                foreach (Arr::dot($dataForSubStep) as $saveIn => $value) {
+                    if (Str::startsWith($saveIn, 'element')) {
+                        $saveIn = Str::replaceFirst('element', 'building_elements', $saveIn);
+                    }
+                    if (Str::startsWith($saveIn, 'service')) {
+                        $saveIn = Str::replaceFirst('service', 'building_services', $saveIn);
+                    }
+                    $toolQuestion = ToolQuestion::where('save_in', $saveIn)
+                        ->first();
 
-                    if ('considerables' == $columnOrTable) {
-                        foreach ($values as $modelClass => $modelConsideration) {
-                            foreach ($modelConsideration as $id => $considering) {
-                                dd($modelConsideration, $id, $considering);
-                            }
-                        }
+                    if ($toolQuestion instanceof ToolQuestion) {
+                        $newContent[$toolQuestion->short] = $value;
+                    } else {
+                        $missingSaveIn[] = $saveIn;
                     }
                 }
             }
         }
+        asort($missingSaveIn);
     }
 }

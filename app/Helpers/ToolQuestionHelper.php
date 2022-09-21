@@ -155,11 +155,12 @@ class ToolQuestionHelper
 
             // Currently only for step_comments that can have a short
             foreach ($savedInParts as $index => $value) {
-                $where[$columns[$index]] = $value;
+                if (isset($columns[$index])) {
+                    $where[$columns[$index]] = $value;
+                } else {
+                    $column = $value.'.'.$column;
+                }
             }
-
-            $columns = array_slice($savedInParts, 2);
-            $column = implode('.', $columns);
         }
 
         return compact('table', 'column', 'where');

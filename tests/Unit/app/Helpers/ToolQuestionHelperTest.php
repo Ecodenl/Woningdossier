@@ -55,11 +55,24 @@ class ToolQuestionHelperTest extends TestCase
                 ]
             ],
             [
-                'building_features.roof_type_id',
+                'building_services.6.extra.demand_driven',
                 [
-                    'table' => 'building_features',
-                    'column' => 'roof_type_id',
+                    'table' => 'building_services',
+                    'column' => 'extra.demand_driven',
                     'where' => [
+                        'service_id' => 6,
+                        'building_id' => $building->id,
+                    ],
+                ]
+            ],
+            [
+                'step_comments.19.service.comment',
+                [
+                    'table' => 'step_comments',
+                    'column' => 'comment',
+                    'where' => [
+                        'step_id' => 19,
+                        'short' => 'service',
                         'building_id' => $building->id,
                     ],
                 ]

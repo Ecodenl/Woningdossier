@@ -55,6 +55,17 @@ class ToolQuestionHelperTest extends TestCase
                 ]
             ],
             [
+                'step_comments.7.comment',
+                [
+                    'table' => 'step_comments',
+                    'column' => 'comment',
+                    'where' => [
+                        'step_id' => 7,
+                        'building_id' => $building->id,
+                    ],
+                ]
+            ],
+            [
                 'building_services.6.extra.demand_driven',
                 [
                     'table' => 'building_services',

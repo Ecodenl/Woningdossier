@@ -166,12 +166,25 @@ class Building extends Model
                     'value'
                 );
 
-                $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
+                // in case the saved value is actually a array, loop through them and select them one by one.
+                // in most cases this isnt neceserry, because the first $values at line 156 holds them all
+                // weird cases lijk building values.
+                if (is_array($value)) {
+                    foreach ($value as $definitiveValue) {
 
-                $answers[$inputSource->short][] = [
-                    'answer' => $answer,
-                    'value'  => $value,
-                ];
+                        $answer = $questionValues->isNotEmpty() && ! is_null($definitiveValue) && isset($questionValues[$definitiveValue]) ? $questionValues[$definitiveValue] : $definitiveValue;
+                        $answers[$inputSource->short][] = [
+                            'answer' => $answer,
+                            'value'  => $definitiveValue,
+                        ];
+                    }
+                } else {
+                    $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
+                    $answers[$inputSource->short][] = [
+                        'answer' => $answer,
+                        'value'  => $value,
+                    ];
+                }
             }
         } else {
             $where['building_id'] = $this->id;

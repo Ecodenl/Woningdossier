@@ -68,6 +68,6 @@ class ExampleBuildingContentRestructure extends Command
                 }
             }
         }
-        asort($missingSaveIn);
+        dd($missingSaveIn);
     }
 }

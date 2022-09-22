@@ -1602,7 +1602,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => "Hellingshoek van de collector",
                 'help_text' => "Geef hier aan onder welke hellingshoek de zonnecollector geplaatst wordt. Op een hellend dak is de hellingshoek van de collector meestal gelijk aan de dakhelling.",
                 'tool_question_custom_values' => collect(\App\Helpers\KeyFigures\Heater\KeyFigures::getAngles())
-                    ->map(fn ($angle) => ['name' => $angle]),
+                    ->map(fn($angle) => ['name' => $angle]),
             ],
             // TODO: How to handle if we delete these steps?
             [
@@ -1626,111 +1626,735 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'sun-boiler-comment',
                 'translation' => 'Toelichting op de zonneboiler',
             ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$hrBoilerStep->id}.comment",
+                'short' => 'hr-boiler-comment',
+                'translation' => 'Toelichting op de CV ketel',
+            ],
+            // NEW COPIED
+            [
+                'data_type' => Caster::ARRAY,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_ventilations.how',
+                'translation' => 'Hoe wordt de woning nu geventileerd?',
+                'short' => 'ventilation-how',
+            ],
+            [
+                'data_type' => Caster::ARRAY,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_ventilations.living_situation',
+                'translation' => 'Onderstaand kun je aanvinken wat in jouw woning verder van toepassing is. Meerdere opties zijn mogelijk.',
+                'short' => 'ventilation-living-situation',
+            ],
+            [
+                'data_type' => Caster::ARRAY,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_ventilations.usage',
+                'translation' => 'Hoe gebruik je de ventilatie unit? Meerdere opties zijn mogelijk.',
+                'short' => 'ventilation-usage',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.11',
+                'translation' => 'Kierdichting verbeteren: Meenemen in berekening',
+                'short' => 'crack-sealing-considerable',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.29',
+                'translation' => 'Gebalanceerde ventilatie: Meenemen in berekening',
+                'short' => 'ventilation-balanced-wtw-considerable',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.30',
+                'translation' => 'Decentrale mechanische ventilatie: Meenemen in berekening',
+                'short' => 'ventilation-decentral-wtw-considerable',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.31',
+                'translation' => 'Vraaggestuurde ventilatie: Meenemen in berekening',
+                'short' => 'ventilation-demand-driven-considerable',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'considerables.App\\Models\\Step.3',
+                'translation' => 'Gevelisolatie: Meenemen in berekening',
+                'short' => 'wall-insulation-considerable',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_features.cavity_wall',
+                'translation' => 'Heeft deze woning een spouwmuur?',
+                'short' => 'has-cavity-wall',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_features.facade_plastered_painted',
+                'translation' => 'Is de gevel gestuct of geverfd ?',
+                'short' => 'wall-facade-plastered-painted',
+            ],
+            [
+                'data_type' => Caster::FLOAT,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_features.facade_plastered_surface_id',
+                'translation' => 'Wat is de oppervlakte van de geschilderde gevel?',
+                'short' => 'wall-facade-plastered-painted-surface',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_features.facade_damaged_paintwork_id',
+                'translation' => 'Is er schade aan het gevelschilderwerk?',
+                'short' => 'damaged-paintwork',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_features.wall_joints',
+                'translation' => 'Zijn er voegen die loslaten of uitgebroken zijn?',
+                'short' => 'damaged-wall-joints',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_features.contaminated_wall_joints',
+                'translation' => 'Is de gevel vervuild (aanslag op de stenen)?',
+                'short' => 'contaminated-wall-joints',
+            ],
+            [
+                'data_type' => Caster::FLOAT,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_features.wall_surface',
+                'translation' => 'Geveloppervlakte van de woning',
+                'short' => 'wall-surface',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_features.insulation_wall_surface',
+                'translation' => 'Te isoleren oppervlakte',
+                'short' => 'insulation-wall-surface',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.8',
+                'translation' => 'HR++ glas: Meenemen in berekening',
+                'short' => 'hrpp-glass-only-considerable',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.8.insulating_glazing_id',
+                'translation' => 'HR++ glas: Wat voor glas is er nu?',
+                'short' => 'hrpp-glass-current',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.8.building_heating_id',
+                'translation' => 'HR++ glas: Zijn de kamers verwarmd?',
+                'short' => 'hrpp-glass-rooms-heated',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.8.m2',
+                'translation' => 'HR++ glas: m2 te vervangen glas',
+                'short' => 'hrpp-glass-only-replacement-glass-surface',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.8.windows',
+                'translation' => 'HR++ glas: Het aantal te vervangen ruiten?',
+                'short' => 'hrpp-glass-only-replacement-glass-count',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.9',
+                'translation' => 'HR++ glas + kozijn: Meenemen in berekening',
+                'short' => 'hrpp-glass-frame-considerable',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.9.insulating_glazing_id',
+                'translation' => 'HR++ glas + kozijn: Wat voor glas is er nu?',
+                'short' => 'hrpp-glass-frame-current-glass',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.9.building_heating_id',
+                'translation' => 'HR++ glas + kozijn: Zijn de kamers verwarmd?',
+                'short' => 'hrpp-glass-frame-rooms-heated',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.9.m2',
+                'translation' => 'HR++ glas + kozijn: m2 te vervangen glas',
+                'short' => 'hrpp-glass-frame-replacement-glass-surface',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.9.windows',
+                'translation' => 'HR++ glas + kozijn: Het aantal te vervangen ruiten?',
+                'short' => 'hrpp-glass-frame-replacement-glass-count',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.10',
+                'translation' => 'HR+++ glas + kozijn: Meenemen in berekening',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.10.insulating_glazing_id',
+                'translation' => 'HR+++ glas + kozijn: Wat voor glas is er nu?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.10.building_heating_id',
+                'translation' => 'HR+++ glas + kozijn: Zijn de kamers verwarmd?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.10.m2',
+                'translation' => 'HR+++ glas + kozijn: m2 te vervangen glas',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.10.windows',
+                'translation' => 'HR+++ glas + kozijn: Het aantal te vervangen ruiten?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.7',
+                'translation' => 'Glas-in-lood vervangen: Meenemen in berekening',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.7.insulating_glazing_id',
+                'translation' => 'Glas-in-lood vervangen: Wat voor glas is er nu?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.7.building_heating_id',
+                'translation' => 'Glas-in-lood vervangen: Zijn de kamers verwarmd?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.7.m2',
+                'translation' => 'Glas-in-lood vervangen: m2 te vervangen glas',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_insulated_glazings.7.windows',
+                'translation' => 'Glas-in-lood vervangen: Het aantal te vervangen ruiten?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_features.window_surface',
+                'translation' => 'Totale raamoppervlakte van de woning',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_elements.7.element_value_id',
+                'translation' => 'Welke kozijnen heb je in jouw huis?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required',
+                ],
+                'save_in' => 'building_elements.8.element_value_id',
+                'translation' => 'Welke andere houten bouwdelen zijn aanwezig in jouw huis?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_paintwork_statuses.last_painted_year',
+                'translation' => 'Wanneer is het schilderwerk voor het laatst gedaan? (jaargetal)',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_paintwork_statuses.paintwork_status_id',
+                'translation' => 'Is verfschade waarneembaar? (barsten / afbladderen / blazen)',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_paintwork_statuses.wood_rot_status_id',
+                'translation' => 'Is houtrot waarneembaar?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'considerables.App\\Models\\Step.5',
+                'translation' => 'Vloerisolatie: Meenemen in berekening',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_elements.9.extra.has_crawlspace',
+                'translation' => 'Heeft deze woning een kruipruimte',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_elements.9.extra.access',
+                'translation' => 'Is de kruipruimte toegankelijk?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_elements.9.element_value_id',
+                'translation' => 'Hoe hoog is de kruipruimte?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_features.floor_surface',
+                'translation' => 'Vloeroppervlak van de woning',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_features.insulation_surface',
+                'translation' => 'Te isoleren oppervlakte',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'considerables.App\\Models\\Step.6',
+                'translation' => 'Dakisolatie: Meenemen in berekening',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.1.element_value_id',
+                'translation' => 'is het hellende dak geïsoleerd?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.1.roof_surface',
+                'translation' => 'Dakoppervlak hellend dak',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.1.insulation_roof_surface',
+                'translation' => 'Te isoleren oppervlakte van het hellende dak',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.1.extra.zinc_replaced_date',
+                'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.1.extra.tiles_condition',
+                'translation' => 'In welke staat verkeren de dakpannen?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.1.extra.measure_application_id',
+                'translation' => 'roof-insulation.pitched-roof-.insulate-roof.title',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.1.building_heating_id',
+                'translation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.2.element_value_id',
+                'translation' => 'Is het platte dak geïsoleerd?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.2.roof_surface',
+                'translation' => 'Dakoppervlak van platte dak',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.2.insulation_roof_surface',
+                'translation' => 'Te isoleren oppervlakte van het platte dak',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.2.extra.zinc_replaced_date',
+                'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.2.extra.bitumen_replaced_date',
+                'translation' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.2.extra.measure_application_id',
+                'translation' => 'roof-insulation.flat-roof-.insulate-roof.title',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.2.building_heating_id',
+                'translation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'considerables.App\\Models\\Step.9',
+                'translation' => 'Zonnepanelen: Meenemen in berekening',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_pv_panels.peak_power',
+                'translation' => 'Piekvermogen per paneel',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_pv_panels.number',
+                'translation' => 'Hoeveel zonnepanelen moeten er komen?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_pv_panels.pv_panel_orientation_id',
+                'translation' => 'Wat is de oriëntatie van de panelen?',
+                'short' => '',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_pv_panels.angle',
+                'translation' => 'Wat is de hellingshoek van de panelen?',
+                'short' => '',
+            ],
         ];
 
 
         foreach ($questions as $questionData) {
-            // Create the question itself
-
-            // Translation can be a key or text. We compare the results, because if it's a key, then the
-            // result will be different
-            $translation = $questionData['translation'];
-            $questionData['name'] = [
-                'nl' => \App\Helpers\Translation::hasTranslation($translation . '.title')
-                    ? __($translation . '.title') : $translation,
-            ];
-            $helpTextTranslation = $questionData['help_text'] ?? $translation;
-            $questionData['help_text'] = [
-                'nl' => \App\Helpers\Translation::hasTranslation($helpTextTranslation . '.help')
-                    ? __($helpTextTranslation . '.help') : $helpTextTranslation,
-            ];
-
-            $insertData = Arr::except($questionData,
-                ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation']);
-
-            // Encode data for DB insert...
-            $insertData['name'] = json_encode($insertData['name']);
-            $insertData['help_text'] = json_encode($insertData['help_text']);
-            $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode(['nl' => $insertData['placeholder']]);
-            $insertData['options'] = empty($insertData['options']) ? null : json_encode($insertData['options']);
-            $insertData['validation'] = empty($insertData['validation']) ? null : json_encode($insertData['validation']);
-
-            $toolQuestion = ToolQuestion::where('short', $questionData['short'])
-                ->first();
-
-            // We check if it exists already. Admins can change question names and help texts. We don't
-            // want to override that
-            if ($toolQuestion instanceof ToolQuestion) {
-                $insertData['name'] = json_encode($toolQuestion->getTranslations('name'));
-                $insertData['help_text'] = json_encode($toolQuestion->getTranslations('help_text'));
-            }
-
-            // We can updateOrInsert this!
-            DB::table('tool_questions')->updateOrInsert([
-                'short' => $questionData['short'],
-            ], $insertData);
-
-            $toolQuestion = ToolQuestion::where('short', $questionData['short'])
-                ->first();
+            if ($questionData['short'] != "") {
 
 
-            if (isset($questionData['tool_question_custom_values'])) {
-                $toolQuestionCustomValueOrder = 0;
-                foreach ($questionData['tool_question_custom_values'] as $short => $customValueData) {
-                    $name = $customValueData['name'];
-                    $extra = $customValueData['extra'] ?? [];
-                    $conditions = $customValueData['conditions'] ?? [];
+                // Create the question itself
 
-                    $insertData = [
-                        'tool_question_id' => $toolQuestion->id,
-                        'order' => $toolQuestionCustomValueOrder,
-                        'show' => true,
-                        // so we will compare the short to determine what is what, but we will keep value for now
-                        'short' => $short,
-                        'name' => json_encode([
-                            'nl' => $name,
-                        ]),
-                        'extra' => json_encode($extra),
-                        'conditions' => json_encode($conditions),
-                    ];
+                // Translation can be a key or text. We compare the results, because if it's a key, then the
+                // result will be different
+                $translation = $questionData['translation'];
+                $questionData['name'] = [
+                    'nl' => \App\Helpers\Translation::hasTranslation($translation . '.title')
+                        ? __($translation . '.title') : $translation,
+                ];
+                $helpTextTranslation = $questionData['help_text'] ?? $translation;
+                $questionData['help_text'] = [
+                    'nl' => \App\Helpers\Translation::hasTranslation($helpTextTranslation . '.help')
+                        ? __($helpTextTranslation . '.help') : $helpTextTranslation,
+                ];
 
-                    DB::table('tool_question_custom_values')->updateOrInsert([
-                        'short' => $short,
-                        'tool_question_id' => $toolQuestion->id,
-                    ], $insertData);
+                $insertData = Arr::except($questionData,
+                    ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation']);
 
-                    $toolQuestionCustomValueOrder++;
+                // Encode data for DB insert...
+                $insertData['name'] = json_encode($insertData['name']);
+                $insertData['help_text'] = json_encode($insertData['help_text']);
+                $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode(['nl' => $insertData['placeholder']]);
+                $insertData['options'] = empty($insertData['options']) ? null : json_encode($insertData['options']);
+                $insertData['validation'] = empty($insertData['validation']) ? null : json_encode($insertData['validation']);
+
+                $toolQuestion = ToolQuestion::where('short', $questionData['short'])
+                    ->first();
+
+                // We check if it exists already. Admins can change question names and help texts. We don't
+                // want to override that
+                if ($toolQuestion instanceof ToolQuestion) {
+                    $insertData['name'] = json_encode($toolQuestion->getTranslations('name'));
+                    $insertData['help_text'] = json_encode($toolQuestion->getTranslations('help_text'));
                 }
-            }
 
-            if (isset($questionData['tool_question_values'])) {
-                $extra = $questionData['extra'] ?? [];
+                // We can updateOrInsert this!
+                DB::table('tool_questions')->updateOrInsert([
+                    'short' => $questionData['short'],
+                ], $insertData);
 
-                foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
-                    $extraData = null;
-                    $conditions = [];
+                $toolQuestion = ToolQuestion::where('short', $questionData['short'])
+                    ->first();
 
-                    if (isset($extra['column'])) {
-                        $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
-                        $conditions = $extraData['conditions'] ?? [];
-                        unset($extraData['conditions']);
+
+                if (isset($questionData['tool_question_custom_values'])) {
+                    $toolQuestionCustomValueOrder = 0;
+                    foreach ($questionData['tool_question_custom_values'] as $short => $customValueData) {
+                        $name = $customValueData['name'];
+                        $extra = $customValueData['extra'] ?? [];
+                        $conditions = $customValueData['conditions'] ?? [];
+
+                        $insertData = [
+                            'tool_question_id' => $toolQuestion->id,
+                            'order' => $toolQuestionCustomValueOrder,
+                            'show' => true,
+                            // so we will compare the short to determine what is what, but we will keep value for now
+                            'short' => $short,
+                            'name' => json_encode([
+                                'nl' => $name,
+                            ]),
+                            'extra' => json_encode($extra),
+                            'conditions' => json_encode($conditions),
+                        ];
+
+                        DB::table('tool_question_custom_values')->updateOrInsert([
+                            'short' => $short,
+                            'tool_question_id' => $toolQuestion->id,
+                        ], $insertData);
+
+                        $toolQuestionCustomValueOrder++;
                     }
+                }
 
-                    $insertData = [
-                        'tool_question_id' => $toolQuestion->id,
-                        'order' => $toolQuestionValueOrder,
-                        'show' => true,
-                        'tool_question_valuable_type' => get_class($toolQuestionValue),
-                        'tool_question_valuable_id' => $toolQuestionValue->id,
-                        // We grab the extra data by the set column (e.g. calculate_value)
-                        'extra' => json_encode(($extraData ?? $extra)),
-                        'conditions' => json_encode($conditions),
-                    ];
+                if (isset($questionData['tool_question_values'])) {
+                    $extra = $questionData['extra'] ?? [];
 
-                    DB::table('tool_question_valuables')->updateOrInsert([
-                        'order' => $toolQuestionValueOrder,
-                        'tool_question_id' => $toolQuestion->id,
-                    ], $insertData);
+                    foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
+                        $extraData = null;
+                        $conditions = [];
+
+                        if (isset($extra['column'])) {
+                            $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
+                            $conditions = $extraData['conditions'] ?? [];
+                            unset($extraData['conditions']);
+                        }
+
+                        $insertData = [
+                            'tool_question_id' => $toolQuestion->id,
+                            'order' => $toolQuestionValueOrder,
+                            'show' => true,
+                            'tool_question_valuable_type' => get_class($toolQuestionValue),
+                            'tool_question_valuable_id' => $toolQuestionValue->id,
+                            // We grab the extra data by the set column (e.g. calculate_value)
+                            'extra' => json_encode(($extraData ?? $extra)),
+                            'conditions' => json_encode($conditions),
+                        ];
+
+                        DB::table('tool_question_valuables')->updateOrInsert([
+                            'order' => $toolQuestionValueOrder,
+                            'tool_question_id' => $toolQuestion->id,
+                        ], $insertData);
+                    }
                 }
             }
         }

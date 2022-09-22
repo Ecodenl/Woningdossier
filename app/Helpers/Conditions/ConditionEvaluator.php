@@ -167,7 +167,7 @@ class ConditionEvaluator
          */
 
         if ($this->explain) {
-            $v = $value;
+            $v = $value ?? "No value";
             if (is_array($v)) {
                 $v = json_encode($v);
             }
@@ -176,7 +176,7 @@ class ConditionEvaluator
                 Log::debug(
                     "evaluateClause EXPLAIN: " . sprintf(
                         '%s %s %s',
-                        $column,
+                        is_string($column) ? $column : json_encode($column),
                         $operator,
                         $v
                     )

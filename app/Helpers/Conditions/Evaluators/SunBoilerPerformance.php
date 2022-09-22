@@ -20,9 +20,9 @@ class SunBoilerPerformance implements ShouldEvaluate
         // returns a given color which defines the performance.
 
         $newWaterShort = static::getQuickAnswer('new-water-comfort', $building, $inputSource, $answers);
-        $value = ToolQuestion::findByShort('new-water-comfort')->toolQuestionCustomValues()
+        $newWaterComfort = ToolQuestion::findByShort('new-water-comfort')->toolQuestionCustomValues()
             ->whereShort($newWaterShort)->first();
-        $newWater = ComfortLevelTapWater::where('calculate_value', $value->extra['calculate_value'] ?? null)->first();
+        $newWater = ComfortLevelTapWater::where('calculate_value', $newWaterComfort->extra['calculate_value'] ?? null)->first();
 
         $results = Heater::calculate(
             $building,

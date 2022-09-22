@@ -522,9 +522,9 @@ class UserActionPlanAdviceService
                         ->inputSource($masterInputSource)
                         ->evaluate($subStep->conditions);
 
-                    $calculateValue = ToolQuestion::findByShort('new-heat-pump-type')->toolQuestionCustomValues()
-                        ->whereShort($building->getAnswer($masterInputSource, ToolQuestion::findByShort('new-heat-pump-type')))
-                        ->first()->extra['calculate_value'] ?? null;
+                    $calculateValue = ServiceValue::find(
+                        $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type'))
+                    )->calculate_value ?? null;
 
                     // We complete it if it's the current heat pump and isn't for maintenance yet.
                     if ($evaluation && ! is_null($calculateValue)

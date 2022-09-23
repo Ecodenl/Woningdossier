@@ -3,6 +3,7 @@
 namespace App\Helpers\Conditions\Evaluators;
 
 use App\Calculations\Heater;
+use App\Deprecation\ToolHelper;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\InputSource;
@@ -19,10 +20,11 @@ class SunBoilerPerformance implements ShouldEvaluate
         // This evaluator checks the performance for the sun-boiler in the user's situation. The calculation
         // returns a given color which defines the performance.
 
-        $newWaterShort = static::getQuickAnswer('new-water-comfort', $building, $inputSource, $answers);
-        $newWaterComfort = ToolQuestion::findByShort('new-water-comfort')->toolQuestionCustomValues()
-            ->whereShort($newWaterShort)->first();
-        $newWater = ComfortLevelTapWater::where('calculate_value', $newWaterComfort->extra['calculate_value'] ?? null)->first();
+        $newWater = ToolHelper::getModelByCustomValue(
+            ComfortLevelTapWater::query(),
+            'new-water-comfort',
+            static::getQuickAnswer('new-water-comfort', $building, $inputSource, $answers)
+        );
 
         $results = Heater::calculate(
             $building,

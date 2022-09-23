@@ -56,7 +56,7 @@ class HeatPumpHelper extends ToolHelper
         // Prepare: Tons of logic to define heat pump measures... (scroll further for heat pump boiler)
         if ($this->considers($step)) {
             $heatPumpsToCalculate = [];
-            $currentType = null;
+            $currentCalculateValue = null;
 
             $evaluator = ConditionEvaluator::init()
                 ->building($this->building)
@@ -69,8 +69,8 @@ class HeatPumpHelper extends ToolHelper
 
                 if ($type instanceof ServiceValue) {
                     $short = array_flip(static::MEASURE_SERVICE_LINK)[$type->calculate_value];
-                    $heatPumpsToCalculate[$short] = $type->id;
-                    $currentType = $type->id;
+                    $heatPumpsToCalculate[] = $short;
+                    $currentCalculateValue = $type->calculate_value;
                 }
             }
 
@@ -84,7 +84,7 @@ class HeatPumpHelper extends ToolHelper
 
             if ($newType instanceof ServiceValue) {
                 $short = array_flip(static::MEASURE_SERVICE_LINK)[$newType->calculate_value];
-                $heatPumpsToCalculate[$short] = $newType->id;
+                $heatPumpsToCalculate[] = $short;
             } else {
                 // No new type selected, so the user has not yet answered the expert page. We will look at their
                 // interest.
@@ -112,29 +112,24 @@ class HeatPumpHelper extends ToolHelper
                 }
             }
 
-            $heatPumpService = Service::findByShort('heat-pump');
-
-            foreach ($heatPumpsToCalculate as $indexOrShort => $shortOrTypeId) {
-                $measureShort = is_string($indexOrShort) ? $indexOrShort : $shortOrTypeId;
-
-                // To save DB resources we try to not double query; if the index is a string, we already have the
-                // type ID
-                $serviceValueId = is_string($indexOrShort) ? $shortOrTypeId : $heatPumpService->values()
-                    ->where('calculate_value', static::MEASURE_SERVICE_LINK[$measureShort])
-                    ->first()->id;
+            foreach ($heatPumpsToCalculate as $measureShort) {
+                $calculateValue = static::MEASURE_SERVICE_LINK[$measureShort];
 
                 $answers = $this->getValues();
-                $answers['new-heat-pump-type'] = $serviceValueId;
+                $answers['new-heat-pump-type'] = ToolQuestion::findByShort('new-heat-pump-type')
+                    ->toolQuestionCustomValues()
+                    ->where('extra->calculate_value', $calculateValue)
+                    ->first()->short;
                 $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));
 
                 $savingsMoney = null;
 
                 // We need to check the current type; if the placed date surpasses maintenance time, we will
                 // set savings to 0 since the measure will then qualify as a replace of the current type.
-                if (! is_null($currentType) && $currentType === $serviceValueId) {
+                if (! is_null($currentCalculateValue) && $currentCalculateValue === $calculateValue) {
                     // Type exists, and this iteration is that type. We don't need to evaluate a second time, since
                     // by the fact we have the current type, we already know the user was able to answer the question.
-                    $placeYear = ServiceValue::find($this->getAnswer('heat-pump-placed-date'));
+                    $placeYear = $this->getAnswer('heat-pump-placed-date');
 
                     if (is_numeric($placeYear)) {
                         $diff = now()->format('Y') - $placeYear;

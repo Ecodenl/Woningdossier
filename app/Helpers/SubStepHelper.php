@@ -157,11 +157,13 @@ class SubStepHelper
                 $questionsWithAnswers = 0;
                 $visibleQuestions = 0;
 
-                foreach ($subStep->toolQuestions as $subSteppable) {
+                foreach ($subStep->toolQuestions as $toolQuestion) {
+                    /** @var SubSteppable $subSteppable */
+                    $subSteppable = $toolQuestion->pivot;
                     if ($evaluator->evaluate($subSteppable->conditions ?? [])) {
                         $visibleQuestions++;
 
-                        if (!empty($building->getAnswer($masterInputSource, $subSteppable->subSteppable))) {
+                        if (!empty($building->getAnswer($masterInputSource, $toolQuestion))) {
                             $questionsWithAnswers++;
                         }
                     }

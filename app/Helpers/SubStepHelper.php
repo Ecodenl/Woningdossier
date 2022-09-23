@@ -157,7 +157,7 @@ class SubStepHelper
                 $questionsWithAnswers = 0;
                 $visibleQuestions = 0;
 
-                foreach ($subStep->subSteppables()->where('sub_steppable_type', ToolQuestion::class)->get() as $subSteppable) {
+                foreach ($subStep->toolQuestions as $subSteppable) {
                     if ($evaluator->evaluate($subSteppable->conditions ?? [])) {
                         $visibleQuestions++;
 

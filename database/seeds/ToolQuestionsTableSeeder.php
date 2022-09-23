@@ -1875,7 +1875,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'considerables.App\\Models\\MeasureApplication.10',
                 'translation' => 'HR+++ glas + kozijn: Meenemen in berekening',
-                'short' => '',
+                'short' => 'hr3p-glass-frame-considerable',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1884,7 +1884,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_insulated_glazings.10.insulating_glazing_id',
                 'translation' => 'HR+++ glas + kozijn: Wat voor glas is er nu?',
-                'short' => '',
+                'short' => 'hr3p-glass-frame-current-glass',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1893,7 +1893,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_insulated_glazings.10.building_heating_id',
                 'translation' => 'HR+++ glas + kozijn: Zijn de kamers verwarmd?',
-                'short' => '',
+                'short' => 'hr3p-glass-frame-rooms-heated',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1902,7 +1902,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_insulated_glazings.10.m2',
                 'translation' => 'HR+++ glas + kozijn: m2 te vervangen glas',
-                'short' => '',
+                'short' => 'hr3p-glass-frame-glass-surface',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1911,7 +1911,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_insulated_glazings.10.windows',
                 'translation' => 'HR+++ glas + kozijn: Het aantal te vervangen ruiten?',
-                'short' => '',
+                'short' => 'hr3p-glass-frame-glass-count',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,

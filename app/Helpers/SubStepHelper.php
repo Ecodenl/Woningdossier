@@ -16,9 +16,9 @@ class SubStepHelper
     /**
      * Complete a sub step for a building.
      *
-     * @param  \App\Models\SubStep  $subStep
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
+     * @param \App\Models\SubStep $subStep
+     * @param \App\Models\Building $building
+     * @param \App\Models\InputSource $inputSource
      *
      * @return void
      */
@@ -34,9 +34,9 @@ class SubStepHelper
     /**
      * Incomplete a step for a building.
      *
-     * @param  \App\Models\SubStep  $subStep
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
+     * @param \App\Models\SubStep $subStep
+     * @param \App\Models\Building $building
+     * @param \App\Models\InputSource $inputSource
      *
      * @return void
      * @throws \Exception
@@ -54,7 +54,7 @@ class SubStepHelper
      * Check if we should incomplete steps because conditional steps have come free, or if we need to
      * incomplete sub steps because they are hidden now.
      *
-     * @param  \App\Models\CompletedSubStep  $completedSubStep
+     * @param \App\Models\CompletedSubStep $completedSubStep
      *
      * @return void
      * @throws \Exception
@@ -107,17 +107,15 @@ class SubStepHelper
 
         foreach ($subSteps as $subStep) {
             $completedSubStep = CompletedSubStep::allInputSources()
-                ->where([
-                    'sub_step_id' => $subStep->id,
-                    'input_source_id' => $masterInputSource->id,
-                    'building_id' => $building->id,
-                ])
+                ->forInputSource($masterInputSource)
+                ->forBuilding($building)
+                ->where('sub_step_id', $subStep->id)
                 ->first();
 
             if ($evaluator->evaluate($subStep->conditions)) {
                 // If it's a visible step that is not complete, we want the parent step to also to also not be
                 // complete.
-                if (! $completedSubStep instanceof CompletedSubStep) {
+                if (!$completedSubStep instanceof CompletedSubStep) {
                     StepHelper::incomplete($subStep->step, $building, $currentInputSource);
                     StepHelper::incomplete($subStep->step, $building, $masterInputSource);
                 }
@@ -129,7 +127,7 @@ class SubStepHelper
                 }
 
                 // Add to array if not already there so we can check the step completion later
-                if (! array_key_exists($subStep->step->id, $stepsToCheck)) {
+                if (!array_key_exists($subStep->step->id, $stepsToCheck)) {
                     $stepsToCheck[$subStep->step->id] = $subStep->step;
                 }
             }
@@ -139,11 +137,9 @@ class SubStepHelper
             $subStep = $toolQuestionSubSteppable->subStep;
 
             $completedSubStep = CompletedSubStep::allInputSources()
-                ->where([
-                    'sub_step_id' => $subStep->id,
-                    'input_source_id' => $masterInputSource->id,
-                    'building_id' => $building->id,
-                ])
+                ->forInputSource($masterInputSource)
+                ->forBuilding($building)
+                ->where('sub_step_id', $subStep->id)
                 ->first();
 
             if ($evaluator->evaluate($toolQuestionSubSteppable->conditions)) {
@@ -165,7 +161,7 @@ class SubStepHelper
                     if ($evaluator->evaluate($subSteppable->conditions ?? [])) {
                         $visibleQuestions++;
 
-                        if (! empty($building->getAnswer($masterInputSource, $subSteppable->subSteppable))) {
+                        if (!empty($building->getAnswer($masterInputSource, $subSteppable->subSteppable))) {
                             $questionsWithAnswers++;
                         }
                     }
@@ -180,7 +176,7 @@ class SubStepHelper
                     static::complete($subStep, $building, $currentInputSource);
                     static::complete($subStep, $building, $masterInputSource);
 
-                    if (! array_key_exists($subStep->step->id, $stepsToCheck)) {
+                    if (!array_key_exists($subStep->step->id, $stepsToCheck)) {
                         $stepsToCheck[$subStep->step->id] = $subStep->step;
                     }
                 }

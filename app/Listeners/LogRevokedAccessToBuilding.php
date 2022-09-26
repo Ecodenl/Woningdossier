@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Log;
+use App\Models\User;
 
 class LogRevokedAccessToBuilding
 {
@@ -27,7 +28,8 @@ class LogRevokedAccessToBuilding
     public function handle($event)
     {
         Log::create([
-            'user_id' => Hoomdossier::user()->id,
+            'loggable_type' => User::class,
+            'loggable_id' => Hoomdossier::user()->id,
             'building_id' => HoomdossierSession::getBuilding(),
             'message' => __('woningdossier.log-messages.user-revoked-access', [
                 'full_name' => \App\Helpers\Hoomdossier::user()->getFullName(),

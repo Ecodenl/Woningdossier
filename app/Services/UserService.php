@@ -301,9 +301,6 @@ class UserService
                 'private_message_views',
                 //'user_motivations', will be deleted
             ],
-            'for_user_id' => [
-                'logs',
-            ],
             'from_user_id' => [
                 'private_messages',
             ],

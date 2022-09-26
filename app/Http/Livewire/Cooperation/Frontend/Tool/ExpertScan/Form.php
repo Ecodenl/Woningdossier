@@ -192,7 +192,7 @@ class Form extends Component
 
             if (! $completedSubStep->wasRecentlyCreated) {
                 ScanFlowService::init($this->building, $this->currentInputSource)
-                    ->checkConditionals($this->subStep, $dirtyToolQuestions);
+                    ->checkConditionals($subStep, $dirtyToolQuestions);
             }
         }
 

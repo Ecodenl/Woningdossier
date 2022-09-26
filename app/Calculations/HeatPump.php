@@ -8,12 +8,14 @@ use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
+use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\ElementValue;
 use App\Models\HeatPumpCharacteristic;
 use App\Models\InputSource;
 use App\Models\KeyFigureHeatPumpCoverage;
 use App\Models\KeyFigureInsulationFactor;
+use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
@@ -39,20 +41,13 @@ class HeatPump extends \App\Calculations\Calculator
     protected ?ToolQuestionCustomValue $heatingTemperature;
 
     /**
-     * Answer for tool question 'new-heat-pump-type' OR 'new-building-heating-application'  // TODO: Check this one
-     *
-     * @var ServiceValue|ToolQuestionCustomValue|null
-     */
-    protected $heatPumpConfigurable;
-
-    /**
      * Answer for tool question 'heat-pump-preferred-power'
      *
      * @var int
      */
     protected int $desiredPower = 0;
 
-    protected int $requiredPower = 0;
+    protected $requiredPower = 0;
 
     protected array $advices = [];
 
@@ -75,19 +70,15 @@ class HeatPump extends \App\Calculations\Calculator
         $this->inputSource = $inputSource;
         $this->energyHabit = $energyHabit;
         $this->answers = $answers;
+        //$this->answers = collect(json_decode('{"interested-in-heat-pump":"yes","heat-source-considerable":["heat-pump"],"new-water-comfort":null,"new-heat-source":["heat-pump"],"new-heat-source-warm-tap-water":["heat-pump-boiler"],"new-building-heating-application":["radiators"],"new-boiler-type":null,"hr-boiler-comment":null,"new-boiler-setting-comfort-heat":"temp-high","new-cook-type":"electric","new-heat-pump-type":"hybrid-heat-pump-outside-air","heat-pump-preferred-power":"13","outside-unit-space":"yes","inside-unit-space":"no","heat-pump-comment":null,"heater-pv-panel-orientation":null,"heater-pv-panel-angle":null,"sun-boiler-comment":null}', true));
 
-        // TODO: Check if we can potentially move these inline so we only have to query when we actually need them
-        $this->boiler = ToolHelper::getServiceValueByCustomValue('boiler', 'new-boiler-type',
-            $this->getAnswer('new-boiler-type'));
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
             ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
-        $this->heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue('heat-pump', 'new-heat-pump-type',
-            $this->getAnswer('new-heat-pump-type'));
-        $this->desiredPower = $this->getAnswer('heat-pump-preferred-power') ?? 0;
+        $this->desiredPower = (int) $this->getAnswer('heat-pump-preferred-power') ?? 0;
     }
 
     /**
-     * Short hand syntax to quickly calculate.
+     * Shorthand syntax to quickly calculate.
      *
      * @param  \App\Models\Building  $building
      * @param  \App\Models\InputSource  $inputSource
@@ -125,7 +116,7 @@ class HeatPump extends \App\Calculations\Calculator
         // return value affects other calculations.
 
         $advisedSystem = [
-            'required_power' => $this->requiredPower, // C60
+            'required_power' => NumberFormatter::format($this->requiredPower, 3), // C60
             'desired_power' => $this->desiredPower, // C61
             'share_heating' => $shareHeating, // C62
             'share_tap_water' => $characteristics->share_percentage_tap_water ?? 0, // C63
@@ -137,8 +128,14 @@ class HeatPump extends \App\Calculations\Calculator
         // TODO: Should we fall back to energyHabit? It could be a different input source
         $amountGas = $this->getAnswer('amount-gas') ?? $this->energyHabit->amount_gas ?? 0;
 
+        // Get the boiler for the situation. Note if there is no boiler, the
+        // user probably has a heat pump already, so we have to calculate with
+        // the most efficient boiler.
+        $boiler = ToolHelper::getServiceValueByCustomValue('boiler', 'new-boiler-type',
+            $this->getAnswer('new-boiler-type')) ?? Service::findByShort('boiler')->values()->orderByDesc('calculate_value')->limit(1)->first();
+
         $gasUsage = HighEfficiencyBoilerCalculator::calculateGasUsage(
-            $this->boiler,
+            $boiler,
             $this->energyHabit,
             $amountGas
         );
@@ -150,11 +147,17 @@ class HeatPump extends \App\Calculations\Calculator
 
         // Now we can calculate the new energy usage
         // C68 = D8 - (D8 * C62)
-        $gasUsageHeating = $nettoGasUsageHeating - ($nettoGasUsageHeating * $advisedSystem['share_heating']);
+        $gasUsageHeating = $nettoGasUsageHeating - ($nettoGasUsageHeating * ($advisedSystem['share_heating'] / 100));
         // C69 = D9 - (D9 * C63)
-        $gasUsageTapWater = $nettoGasUsageTapWater - ($nettoGasUsageTapWater * $advisedSystem['share_tap_water']);
+        $gasUsageTapWater = $nettoGasUsageTapWater - ($nettoGasUsageTapWater * ($advisedSystem['share_tap_water'] / 100));
         // C70
-        $gasUsageCooking = data_get($gasUsage, 'cooking', 0);
+        // note cookingInSituation will be used later on as well
+        $cookingInSituation = ToolQuestion::findByShort('new-cook-type')
+                    ->toolQuestionCustomValues()
+                    ->whereShort($this->getAnswer('new-cook-type'))
+                    ->first();
+
+        $gasUsageCooking = optional($cookingInSituation)->short == 'gas' ? Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS : 0;
 
         // E71
         // if volledige warmtepomp: C68 * KeyFigures::M3_GAS_TO_KWH
@@ -169,6 +172,7 @@ class HeatPump extends \App\Calculations\Calculator
                     $advisedSystem['scop_heating'],
                     1
                 )) + $electricalReheating;
+
         // C72 = ((D9-C69) * KeyFigures::M3_GAS_TO_KWH) / scop_tap_water)
         $electricityUsageTapWater = (($nettoGasUsageTapWater - $gasUsageTapWater) * KeyFigures::M3_GAS_TO_KWH) / max(
                 $advisedSystem['scop_tap_water'],
@@ -176,6 +180,12 @@ class HeatPump extends \App\Calculations\Calculator
             );
         // C73 = from mapping Maatregelopties en kengetallen: B58:D60 icm future situation
         $electricityUsageCooking = 0;
+        if (optional($cookingInSituation)->short == 'electric') {
+            $electricityUsageCooking = Kengetallen::ENERGY_USAGE_COOK_TYPE_ELECTRIC;
+        }
+        if (optional($cookingInSituation)->short == 'induction') {
+            $electricityUsageCooking = Kengetallen::ENERGY_USAGE_COOK_TYPE_INDUCTION;
+        }
         // D11
         // TODO: Should we fall back to energyHabit? It could be a different input source
         $currentElectricityUsage = $this->getAnswer('amount-electricity') ?? $this->energyHabit->amount_electricity ?? 0;
@@ -239,7 +249,8 @@ class HeatPump extends \App\Calculations\Calculator
 
         $surface = $this->getAnswer('surface');
 
-        return $this->format(($wattPerSquareMeter * $surface) / 1000);
+        //return $this->format(($wattPerSquareMeter * $surface) / 1000);
+        return ($wattPerSquareMeter * $surface) / 1000;
     }
 
     public function calculateShareHeating(): int
@@ -257,8 +268,11 @@ class HeatPump extends \App\Calculations\Calculator
 
     public function lookupHeatPumpCharacteristics(): ?HeatPumpCharacteristic
     {
-        if ($this->heatPumpConfigurable instanceof Model && $this->heatingTemperature instanceof ToolQuestionCustomValue) {
-            return HeatPumpCharacteristic::forHeatPumpConfigurable($this->heatPumpConfigurable)
+        $heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue('heat-pump', 'new-heat-pump-type',
+            $this->getAnswer('new-heat-pump-type'));
+
+        if ($heatPumpConfigurable instanceof Model && $this->heatingTemperature instanceof ToolQuestionCustomValue) {
+            return HeatPumpCharacteristic::forHeatPumpConfigurable($heatPumpConfigurable)
                 ->forHeatingTemperature($this->heatingTemperature)
                 ->first();
         }

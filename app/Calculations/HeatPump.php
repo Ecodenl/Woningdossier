@@ -132,7 +132,17 @@ class HeatPump extends \App\Calculations\Calculator
         // user probably has a heat pump already, so we have to calculate with
         // the most efficient boiler.
         $boiler = ToolHelper::getServiceValueByCustomValue('boiler', 'new-boiler-type',
-            $this->getAnswer('new-boiler-type')) ?? Service::findByShort('boiler')->values()->orderByDesc('calculate_value')->limit(1)->first();
+            $this->getAnswer('new-boiler-type'));
+        if (!$boiler instanceof ServiceValue){
+            // if boiler type was not filled in, we will calculate with the current boiler
+            $boiler = ToolHelper::getServiceValueByCustomValue('boiler', 'boiler-type',
+                $this->getAnswer('boiler-type'));
+        }
+        if (!$boiler instanceof ServiceValue) {
+            // if even the current boiler wasn't present, the user probably already
+            // has a heat pump, so we will calculate with the most efficient boiler
+            $boiler = Service::findByShort('boiler')->values()->orderByDesc('calculate_value')->limit(1)->first();
+        }
 
         $gasUsage = HighEfficiencyBoilerCalculator::calculateGasUsage(
             $boiler,

@@ -172,7 +172,7 @@ class StepHelper
 
             $cantSee = 0;
             foreach ($leftoverSubSteps as $subStep) {
-                if (! $building->user->account->can('show', $subStep)) {
+                if (! $building->user->account->can('show', [$subStep, $building])) {
                     ++$cantSee;
                 }
             }

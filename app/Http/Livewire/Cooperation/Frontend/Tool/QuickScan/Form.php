@@ -56,10 +56,14 @@ class Form extends Scannable
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
-    public function save($nextUrl = "")
+    public function save()
     {
+        $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+            ->forStep($this->step)
+            ->forSubStep($this->subStep);
+
         if (HoomdossierSession::isUserObserving()) {
-            return redirect()->to($nextUrl);
+            return redirect()->to($flowService->resolveNextUrl());
         }
 
         // Before we can validate (and save), we must reset the formatting from text to mathable
@@ -199,7 +203,8 @@ class Form extends Scannable
             'input_source_id' => $this->currentInputSource->id
         ]);
 
-        $flowService = ScanFlowService::init($this->building, $this->currentInputSource)
+        $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+            ->forStep($this->step)
             ->forSubStep($this->subStep);
 
         if (! $completedSubStep->wasRecentlyCreated) {
@@ -207,6 +212,6 @@ class Form extends Scannable
         }
 
         // TODO: We might have to generate the $nextUrl in real time if conditional steps follow a related question
-        return redirect()->to($flowService->resolveNextStep());
+        return redirect()->to($flowService->resolveNextUrl());
     }
 }

@@ -16,7 +16,7 @@
             @if(RouteLogic::inQuestionnaire(Route::currentRouteName()))
             x-on:click="$el.setAttribute('disabled', true); let form = document.querySelector('#questionnaire-form-{{$questionnaire->id}}'); let action = form.getAttribute('action'); action += '?nextUrl={{$nextUrl}}'; form.setAttribute('action', action); form.submit();"
             @else
-            wire:click="$emitTo('cooperation.frontend.tool.quick-scan.form', 'save', '{{$nextUrl}}')"
+            wire:click="$emitTo('cooperation.frontend.tool.quick-scan.form', 'save')"
             x-on:click="$el.setAttribute('disabled', true);"
             @endif
             x-on:validation-failed.window="$el.removeAttribute('disabled');"

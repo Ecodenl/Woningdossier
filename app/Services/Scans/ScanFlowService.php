@@ -9,6 +9,7 @@ use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubSteppable;
@@ -21,15 +22,19 @@ class ScanFlowService
     use FluentCaller;
 
     public Step $step;
-    public SubStep $subStep;
+    public Scan $scan;
     public Building $building;
     public InputSource $inputSource;
-    public Questionnaire $questionnaire;
+    public InputSource $masterInputSource;
+    public ?SubStep $subStep;
+    public ?Questionnaire $questionnaire;
 
-    public function __construct(Building $building, InputSource $inputSource)
+    public function __construct(Scan $scan, Building $building, InputSource $inputSource)
     {
         $this->building = $building;
         $this->inputSource = $inputSource;
+        $this->scan = $scan;
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
 
     public function forQuestionnaire(Questionnaire $questionnaire): self
@@ -61,7 +66,7 @@ class ScanFlowService
         $building = $this->building;
         $currentInputSource = $this->inputSource;
         // We must do it for the master also because we're not using model events
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $masterInputSource = $this->masterInputSource;
 
         $subStepsRelated = [];
         $toolQuestionsRelated = [];
@@ -194,12 +199,18 @@ class ScanFlowService
         }
     }
 
-    public function resolveNextStep()
+    public function resolveNextUrl(): string
     {
+        $nextStep = null;
+        $nextSubStep = null;
+        $nextQuestionnaire = null;
+        $firstIncompleteStep = null;
+
         if ($this->subStep instanceof SubStep) {
             $nextSubStep = $this->step->subSteps()->where('order', '>', $this->subStep->order)->orderBy('order')->first();
             // we will check if the current sub step is the last one, that way we know we have to go to the next one.
             $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
+
             if ($lastSubStepForStep->id === $this->subStep->id) {
                 // Let's check if there's questionnaires left
                 if ($this->step->hasActiveQuestionnaires()) {
@@ -220,7 +231,7 @@ class ScanFlowService
                 ->orderBy('order')->first();
 
             if ($potentialQuestionnaire instanceof Questionnaire) {
-                $this->nextQuestionnaire = $potentialQuestionnaire;
+                $nextQuestionnaire = $potentialQuestionnaire;
             } else {
                 // No more questionnaires, let's start the logic to get the next sub step
                 $nextStep = $this->step->nextQuickScan();
@@ -232,31 +243,38 @@ class ScanFlowService
             }
         }
 
+
         if (!$nextStep instanceof Step) {
             // No next step set, let's see if there are any steps left incomplete
-            $this->firstIncompleteStep = $this->building->getFirstIncompleteStep([$this->step->id], $this->masterInputSource);
+            $firstIncompleteStep = $this->building->getFirstIncompleteStep([$this->step->id], $this->masterInputSource);
         }
 
         // There are incomplete steps left, set the sub step
-        if ($this->firstIncompleteStep instanceof Step) {
-            $this->firstIncompleteSubStep = $this->building->getFirstIncompleteSubStep($this->firstIncompleteStep, [], $this->masterInputSource);
+        if ($firstIncompleteStep instanceof Step) {
+            $firstIncompleteSubStep = $this->building->getFirstIncompleteSubStep($firstIncompleteStep, [], $this->masterInputSource);
         }
 
+        // so this is insane right, its shit!
+        // for some fucktard borderline reason the cooperation isnt automatically binden, prob because of livewire
+        // so this crap remains here for now.
+        $cooperation = $this->building->user->cooperation;
 
-
-        if ($nextStep instanceof \App\Models\Step && $nextSubStep instanceof \App\Models\SubStep) {
+        if ($nextStep instanceof Step && $nextSubStep instanceof  SubStep) {
             $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $nextStep->scan, 'step' => $nextStep, 'subStep' => $nextSubStep]);
-        } elseif ($nextStep instanceof \App\Models\Step && $nextQuestionnaire instanceof \App\Models\Questionnaire) {
+        } elseif ($nextStep instanceof Step && $nextQuestionnaire instanceof Questionnaire) {
             $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['scan' => $nextStep->scan, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
         } else {
-            if ($firstIncompleteStep instanceof \App\Models\Step && $firstIncompleteSubStep instanceof \App\Models\SubStep) {
+            if ($firstIncompleteStep instanceof Step && $firstIncompleteSubStep instanceof SubStep) {
                 $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['scan' => $firstIncompleteStep->scan, 'step' => $firstIncompleteStep, 'subStep' => $firstIncompleteSubStep]);
             } else {
-                $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index', ['scan' => $currentScan]);
+                Log::debug($this->scan);
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $cooperation]);
+                Log::debug("afeer scan");
             }
         }
 
-        $this->nextUrl = $nextUrl ?? '';
+        Log::debug($nextUrl);
+        return $nextUrl ?? '';
     }
 
 }

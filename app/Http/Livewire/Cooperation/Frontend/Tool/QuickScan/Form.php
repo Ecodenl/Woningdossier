@@ -199,12 +199,14 @@ class Form extends Scannable
             'input_source_id' => $this->currentInputSource->id
         ]);
 
+        $flowService = ScanFlowService::init($this->building, $this->currentInputSource)
+            ->forSubStep($this->subStep);
+
         if (! $completedSubStep->wasRecentlyCreated) {
-            ScanFlowService::init($this->building, $this->currentInputSource)
-                ->checkConditionals($this->subStep, $dirtyToolQuestions);
+            $flowService->checkConditionals($dirtyToolQuestions);
         }
 
         // TODO: We might have to generate the $nextUrl in real time if conditional steps follow a related question
-        return redirect()->to($nextUrl);
+        return redirect()->to($flowService->resolveNextStep());
     }
 }

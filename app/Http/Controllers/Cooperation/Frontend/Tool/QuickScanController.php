@@ -32,6 +32,7 @@ class QuickScanController extends Controller
             ->forType(CloneOpposingInputSource::class)
             ->forInputSource($currentInputSource)->first();
 
+        dd($subStep);
         return view('cooperation.frontend.tool.quick-scan.index', compact('scan', 'step', 'subStep', 'notification', 'currentInputSource'));
     }
 }

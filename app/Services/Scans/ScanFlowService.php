@@ -185,6 +185,7 @@ class ScanFlowService
                 }
 
                 if ($questionsWithAnswers === $visibleQuestions) {
+                    Log::debug("Completing sub step {$subStep->name}");
                     SubStepHelper::complete($subStep, $building, $currentInputSource);
                     SubStepHelper::complete($subStep, $building, $masterInputSource);
 
@@ -197,6 +198,7 @@ class ScanFlowService
 
         foreach ($stepsToCheck as $step) {
             // Check if we can complete the step if necessary
+            Log::debug("Completing step {$step->name}");
             StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, false);
         }
     }

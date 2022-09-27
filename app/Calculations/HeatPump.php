@@ -260,6 +260,10 @@ class HeatPump extends \App\Calculations\Calculator
 
         $surface = $this->getAnswer('surface');
 
+        $surface = explode('.', $surface);
+        $surface = implode('', $surface);
+        $surface = NumberFormatter::reverseFormat($surface);
+
         //return $this->format(($wattPerSquareMeter * $surface) / 1000);
         return ($wattPerSquareMeter * $surface) / 1000;
     }

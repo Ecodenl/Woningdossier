@@ -183,7 +183,7 @@ class SubSteppable extends Scannable
         }
     }
 
-    public function save($nextUrl = "")
+    public function save()
     {
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {

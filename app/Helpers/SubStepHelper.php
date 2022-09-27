@@ -10,6 +10,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubSteppable;
 use App\Models\ToolQuestion;
+use Illuminate\Support\Collection;
 
 class SubStepHelper
 {
@@ -48,5 +49,24 @@ class SubStepHelper
             'input_source_id' => $inputSource->id,
             'building_id' => $building->id,
         ])->delete();
+    }
+
+    public static function getIncompleteSubSteps(Building $building, Step $step, InputSource $inputSource): ?Collection
+    {
+        // the completed steps, so the ones we do not want.
+        $irrelevantSubSteps = $building->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
+
+        $firstIncompleteSubSteps = $step->subSteps()
+            ->whereNotIn('id', $irrelevantSubSteps)
+            ->orderBy('order')
+            ->get();
+
+        if (! $firstIncompleteSubSteps->isEmpty() instanceof SubStep) {
+            $firstIncompleteSubStep = $step->subSteps()
+                ->orderBy('order')
+                ->get();
+        }
+
+        return $firstIncompleteSubSteps;
     }
 }

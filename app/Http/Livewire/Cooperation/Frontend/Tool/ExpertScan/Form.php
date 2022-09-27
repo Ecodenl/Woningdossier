@@ -141,7 +141,7 @@ class Form extends Component
                     ->building($this->building)
                     ->currentInputSource($this->currentInputSource)
                     ->applyExampleBuilding()
-                    ->save($givenAnswer);
+                        ->save($givenAnswer);
 
                 if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion) && $masterHasCompletedQuickScan) {
                     Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
@@ -192,7 +192,8 @@ class Form extends Component
 
             if (! $completedSubStep->wasRecentlyCreated) {
                 ScanFlowService::init($this->building, $this->currentInputSource)
-                    ->checkConditionals($subStep, $dirtyToolQuestions);
+                    ->forSubStep($subStep)
+                    ->checkConditionals($dirtyToolQuestions);
             }
         }
 

@@ -113,7 +113,7 @@ class SubSteppable extends Scannable
         $dynamicAnswers = [];
         foreach ($this->subStep->subSteppables as $subSteppablePivot) {
             if ($subSteppablePivot->isToolQuestion()) {
-                $dynamicAnswers[$subSteppablePivot->subSteppable->short] = $this->filledInAnswers[$subSteppablePivot->subSteppable->id];
+                $dynamicAnswers[$subSteppablePivot->subSteppable->short] = $this->filledInAnswers[$subSteppablePivot->subSteppable->short];
             }
         }
 
@@ -158,23 +158,23 @@ class SubSteppable extends Scannable
 
                     // we will only unset the rules if its a tool question, not relevant for other sub steppables.
                     if ($subSteppablePivot->isToolQuestion()) {
-                        $this->filledInAnswers[$toolQuestion->id] = null;
+                        $this->filledInAnswers[$toolQuestion->short] = null;
 
                         // and unset the validation for the question based on type.
                         switch ($toolQuestion->data_type) {
                             case Caster::JSON:
                                 foreach ($toolQuestion->options as $option) {
-                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
+                                    unset($this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"]);
                                 }
                                 break;
 
                             case Caster::ARRAY:
-                                unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
-                                unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
+                                unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
+                                unset($this->rules["filledInAnswers.{$toolQuestion->short}.*"]);
                                 break;
 
                             default:
-                                unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                                unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
                                 break;
                         }
                     }
@@ -188,7 +188,7 @@ class SubSteppable extends Scannable
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->data_type === Caster::FLOAT) {
-                $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]), 2);
+                $this->filledInAnswers[$toolQuestion->short] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->short]), 2);
             }
         }
 
@@ -210,7 +210,7 @@ class SubSteppable extends Scannable
                 // Validator failed, let's put it back as the user format
                 foreach ($this->toolQuestions as $toolQuestion) {
                     if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
-                        $this->filledInAnswers[$toolQuestion->id] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->id])->getFormatForUser();
+                        $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                     }
                 }
 
@@ -226,8 +226,8 @@ class SubSteppable extends Scannable
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
         if (! $this->dirty) {
-            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
-                $toolQuestion = ToolQuestion::find($toolQuestionId);
+            foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
+                $toolQuestion = ToolQuestion::find($toolQuestionShort);
 
                 // Define if we should check this question...
                 if ($this->building->user->account->can('answer', $toolQuestion)) {

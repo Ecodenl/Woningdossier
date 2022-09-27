@@ -203,7 +203,7 @@ class Form extends Component
     public function performCalculations()
     {
         $considerableQuestion = ToolQuestion::findByShort('heat-source-considerable');
-        $considerables = $this->filledInAnswers[$considerableQuestion->id]
+        $considerables = $this->filledInAnswers[$considerableQuestion->short]
             ?? $this->building->getAnswer($this->masterInputSource, $considerableQuestion);
 
         $energyHabit = $this->building->user->energyHabit()->forInputSource($this->masterInputSource)->first();

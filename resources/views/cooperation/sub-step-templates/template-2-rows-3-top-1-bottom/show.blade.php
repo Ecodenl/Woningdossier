@@ -16,11 +16,11 @@
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full lg:w-1/2 lg:pr-3',
                 'label' => $topLeft->name,
-                'inputName' => "filledInAnswers.{$topLeft->id}",
+                'inputName' => "filledInAnswers.{$topLeft->short}",
              ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                        'values' => $filledInAnswersForAllInputSources[$topLeft->id],
+                        'values' => $filledInAnswersForAllInputSources[$topLeft->short],
                         'toolQuestion' => $topLeft,
                     ])
                 @endslot
@@ -43,11 +43,11 @@
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'class' => 'form-group-heading w-full',
                     'label' => $topRightFirst->name,
-                    'inputName' => "filledInAnswers.{$topRightFirst->id}",
+                    'inputName' => "filledInAnswers.{$topRightFirst->short}",
                  ])
                     @slot('sourceSlot')
                         @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                            'values' => $filledInAnswersForAllInputSources[$topRightFirst->id],
+                            'values' => $filledInAnswersForAllInputSources[$topRightFirst->short],
                             'toolQuestion' => $topRightFirst,
                         ])
                     @endslot
@@ -68,11 +68,11 @@
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'class' => 'form-group-heading w-full',
                     'label' => $topRightSecond->name,
-                    'inputName' => "filledInAnswers.{$topRightSecond->id}",
+                    'inputName' => "filledInAnswers.{$topRightSecond->short}",
                 ])
                     @slot('sourceSlot')
                         @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                            'values' => $filledInAnswersForAllInputSources[$topRightSecond->id],
+                            'values' => $filledInAnswersForAllInputSources[$topRightSecond->short],
                             'toolQuestion' => $topRightSecond,
                         ])
                     @endslot
@@ -96,12 +96,12 @@
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full',
                 'label' => $bottomLeft->name,
-                'inputName' => "filledInAnswers.{$bottomLeft->id}",
+                'inputName' => "filledInAnswers.{$bottomLeft->short}",
                 'inputGroupClass' => 'w-1/2',
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                        'values' => $filledInAnswersForAllInputSources[$bottomLeft->id],
+                        'values' => $filledInAnswersForAllInputSources[$bottomLeft->short],
                         'toolQuestion' => $bottomLeft,
                     ])
                 @endslot

@@ -97,8 +97,8 @@ class Form extends Component
     {
         // We can't directly set the answers because there will be more than one sub step that is passing
         // answers. array_merge messes up the keys and addition (array + array) causes weird behaviour
-        foreach ($filledInAnswers as $toolQuestionId => $answer) {
-            $this->filledInAnswers[$toolQuestionId] = $answer;
+        foreach ($filledInAnswers as $toolQuestionShort => $answer) {
+            $this->filledInAnswers[$toolQuestionShort] = $answer;
         }
     }
 
@@ -262,7 +262,7 @@ class Form extends Component
             // it may be possible that the tool question is not present in the filled in answers.
             // that simply means the tool question is not available for the user on the current page
             // however it may be filled elsewhere, so we will get it through the getAnswer
-            $answer = $this->filledInAnswers[$toolQuestion->id] ?? $this->building->getAnswer($this->masterInputSource,
+            $answer = $this->filledInAnswers[$toolQuestion->short] ?? $this->building->getAnswer($this->masterInputSource,
                     $toolQuestion);
 
             Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);

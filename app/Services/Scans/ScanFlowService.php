@@ -80,6 +80,7 @@ class ScanFlowService
             $toolQuestionsRelated = array_merge($toolQuestionsRelated,
                 SubSteppable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$toolQuestion->short}\""])
                     ->where('sub_steppable_type', ToolQuestion::class)
+                    ->where('id', '!=', $this->subStep->id)
                     ->pluck('id')->toArray()
             );
         }
@@ -93,6 +94,7 @@ class ScanFlowService
         $toolQuestionsRelated = array_merge($toolQuestionsRelated,
             SubSteppable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"fn\""])
                 ->where('sub_steppable_type', ToolQuestion::class)
+                ->where('id', '!=', $this->subStep->id)
                 ->pluck('id')->toArray()
         );
 

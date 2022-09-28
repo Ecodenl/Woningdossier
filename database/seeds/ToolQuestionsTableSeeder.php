@@ -1666,7 +1666,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.11',
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.11.is_considering',
                 'translation' => 'Kierdichting verbeteren: Meenemen in berekening',
                 'short' => 'crack-sealing-considerable',
             ],
@@ -1675,7 +1675,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.29',
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.29.is_considering',
                 'translation' => 'Gebalanceerde ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-balanced-wtw-considerable',
             ],
@@ -1684,7 +1684,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.30',
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.30.is_considering',
                 'translation' => 'Decentrale mechanische ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-decentral-wtw-considerable',
             ],
@@ -1693,7 +1693,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.31',
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.31.is_considering',
                 'translation' => 'Vraaggestuurde ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-demand-driven-considerable',
             ],
@@ -1702,7 +1702,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\Step.3',
+                'save_in' => 'considerables.App\\Models\\Step.3.is_considering',
                 'translation' => 'Gevelisolatie: Meenemen in berekening',
                 'short' => 'wall-insulation-considerable',
             ],
@@ -1828,7 +1828,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.9',
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.9.is_considering',
                 'translation' => 'HR++ glas + kozijn: Meenemen in berekening',
                 'short' => 'hrpp-glass-frame-considerable',
             ],
@@ -1873,7 +1873,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.10',
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.10.is_considering',
                 'translation' => 'HR+++ glas + kozijn: Meenemen in berekening',
                 'short' => 'hr3p-glass-frame-considerable',
             ],
@@ -1918,7 +1918,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.7',
+                'save_in' => 'considerables.App\\Models\\MeasureApplication.7.is_considering',
                 'translation' => 'Glas-in-lood vervangen: Meenemen in berekening',
                 'short' => 'glass-in-lead-replace-considerable',
             ],
@@ -2017,7 +2017,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'considerables.App\\Models\\Step.5',
+                'save_in' => 'considerables.App\\Models\\Step.5.is_considering',
                 'translation' => 'Vloerisolatie: Meenemen in berekening',
                 'short' => 'floor-insulation-considerable',
             ],
@@ -2071,7 +2071,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'considerables.App\\Models\\Step.6',
+                'save_in' => 'considerables.App\\Models\\Step.6.is_considering',
                 'translation' => 'Dakisolatie: Meenemen in berekening',
                 'short' => 'roof-insulation-considerable',
             ],
@@ -2206,7 +2206,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'considerables.App\\Models\\Step.9',
+                'save_in' => 'considerables.App\\Models\\Step.9.is_considering',
                 'translation' => 'Zonnepanelen: Meenemen in berekening',
                 'short' => 'solar-panels-considerable',
             ],

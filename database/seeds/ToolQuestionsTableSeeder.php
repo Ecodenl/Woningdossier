@@ -13,6 +13,7 @@ use App\Models\PvPanelOrientation;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
+use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -36,10 +37,29 @@ class ToolQuestionsTableSeeder extends Seeder
         $heatPump = Service::findByShort('heat-pump');
         $ventilation = Service::findByShort('house-ventilation');
 
+        $glassInLead = MeasureApplication::findByShort('glass-in-lead');
+        $hrppGlassOnly = MeasureApplication::findByShort('hrpp-glass-only');
+        $hrppGlassFrames = MeasureApplication::findByShort('hrpp-glass-frames');
+        $hr3pFrames = MeasureApplication::findByShort('hr3p-frames');
+
+        $crackSealing = MeasureApplication::findByShort('crack-sealing');
+        $ventilationBalancedWtw = MeasureApplication::findByShort('ventilation-balanced-wtw');
+        $ventilationDecentralWtw = MeasureApplication::findByShort('ventilation-decentral-wtw');
+        $ventilationDemandDriven = MeasureApplication::findByShort('ventilation-demand-driven');
+
+        $frame = Element::findByShort('frames');
+        $woodElements = Element::findByShort('wood-elements');
+        $crawlspace = Element::findByShort('crawlspace');
+
         // Wall insulation
         $wallInsulation = Element::findByShort('wall-insulation');
         $energyLabels = EnergyLabel::ordered()->get();
         $comfortLevelsTapWater = ComfortLevelTapWater::where('calculate_value', '<=', 3)->get();
+
+        $wallInsulationStep = Step::findByShort('wall-insulation');
+        $solarPanelStep = Step::findByShort('solar-panels');
+        $floorInsulationStep = Step::findByShort('floor-insulation');
+        $roofInsulationStep = Step::findByShort('roof-insulation');
 
         // Insulated glazing
         $heatings = BuildingHeating::all();
@@ -1666,7 +1686,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.11.is_considering',
+                'save_in' => "considerables.App\\Models\\MeasureApplication.{$crackSealing->id}.is_considering",
                 'translation' => 'Kierdichting verbeteren: Meenemen in berekening',
                 'short' => 'crack-sealing-considerable',
             ],
@@ -1675,7 +1695,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.29.is_considering',
+                'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationBalancedWtw}.is_considering",
                 'translation' => 'Gebalanceerde ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-balanced-wtw-considerable',
             ],
@@ -1684,7 +1704,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.30.is_considering',
+                'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationDecentralWtw}.is_considering",
                 'translation' => 'Decentrale mechanische ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-decentral-wtw-considerable',
             ],
@@ -1693,7 +1713,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.31.is_considering',
+                'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationDemandDriven}.is_considering",
                 'translation' => 'Vraaggestuurde ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-demand-driven-considerable',
             ],
@@ -1702,7 +1722,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\Step.3.is_considering',
+                'save_in' => "considerables.App\\Models\\Step.{$wallInsulationStep->id}.is_considering",
                 'translation' => 'Gevelisolatie: Meenemen in berekening',
                 'short' => 'wall-insulation-considerable',
             ],
@@ -1783,7 +1803,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.8',
+                'save_in' => "considerables.App\\Models\\MeasureApplication.{$hrppGlassOnly->id}.is_considering",
                 'translation' => 'HR++ glas: Meenemen in berekening',
                 'short' => 'hrpp-glass-only-considerable',
             ],
@@ -1792,7 +1812,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'building_insulated_glazings.8.insulating_glazing_id',
+                'save_in' => "building_insulated_glazings.{$hrppGlassOnly->id}.insulating_glazing_id",
                 'translation' => 'HR++ glas: Wat voor glas is er nu?',
                 'short' => 'hrpp-glass-current',
             ],
@@ -1801,7 +1821,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'building_insulated_glazings.8.building_heating_id',
+                'save_in' => "building_insulated_glazings.{$hrppGlassOnly->id}.building_heating_id",
                 'translation' => 'HR++ glas: Zijn de kamers verwarmd?',
                 'short' => 'hrpp-glass-rooms-heated',
             ],
@@ -1810,7 +1830,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'building_insulated_glazings.8.m2',
+                'save_in' => "building_insulated_glazings.{$hrppGlassOnly->id}.m2",
                 'translation' => 'HR++ glas: m2 te vervangen glas',
                 'short' => 'hrpp-glass-only-replacement-glass-surface',
             ],
@@ -1819,7 +1839,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'building_insulated_glazings.8.windows',
+                'save_in' => "building_insulated_glazings.{$hrppGlassOnly->id}.windows",
                 'translation' => 'HR++ glas: Het aantal te vervangen ruiten?',
                 'short' => 'hrpp-glass-only-replacement-glass-count',
             ],
@@ -1828,135 +1848,135 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.9.is_considering',
+                'save_in' => "considerables.App\\Models\\MeasureApplication.{$hrppGlassFrames->id}.is_considering",
                 'translation' => 'HR++ glas + kozijn: Meenemen in berekening',
                 'short' => 'hrpp-glass-frame-considerable',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.9.insulating_glazing_id',
-                'translation' => 'HR++ glas + kozijn: Wat voor glas is er nu?',
-                'short' => 'hrpp-glass-frame-current-glass',
+                "save_in" => "building_insulated_glazings.{$hrppGlassFrames->id}.insulating_glazing_id",
+                "translation" => "HR++ glas + kozijn: Wat voor glas is er nu?",
+                "short" => "hrpp-glass-frame-current-glass",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.9.building_heating_id',
-                'translation' => 'HR++ glas + kozijn: Zijn de kamers verwarmd?',
-                'short' => 'hrpp-glass-frame-rooms-heated',
+                "save_in" => "building_insulated_glazings.{$hrppGlassFrames->id}.building_heating_id",
+                "translation" => "HR++ glas + kozijn: Zijn de kamers verwarmd?",
+                "short" => "hrpp-glass-frame-rooms-heated",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.9.m2',
-                'translation' => 'HR++ glas + kozijn: m2 te vervangen glas',
-                'short' => 'hrpp-glass-frame-replacement-glass-surface',
+                "save_in" => "building_insulated_glazings.{$hrppGlassFrames->id}.m2",
+                "translation" => "HR++ glas + kozijn: m2 te vervangen glas",
+                "short" => "hrpp-glass-frame-replacement-glass-surface",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.9.windows',
-                'translation' => 'HR++ glas + kozijn: Het aantal te vervangen ruiten?',
-                'short' => 'hrpp-glass-frame-replacement-glass-count',
+                "save_in" => "building_insulated_glazings.{$hrppGlassFrames->id}.windows",
+                "translation" => "HR++ glas + kozijn: Het aantal te vervangen ruiten?",
+                "short" => "hrpp-glass-frame-replacement-glass-count",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.10.is_considering',
-                'translation' => 'HR+++ glas + kozijn: Meenemen in berekening',
-                'short' => 'hr3p-glass-frame-considerable',
+                "save_in" => "considerables.App\\Models\\MeasureApplication.{$hr3pFrames->id}.is_considering",
+                "translation" => "HR+++ glas + kozijn: Meenemen in berekening",
+                "short" => "hr3p-glass-frame-considerable",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.10.insulating_glazing_id',
-                'translation' => 'HR+++ glas + kozijn: Wat voor glas is er nu?',
-                'short' => 'hr3p-glass-frame-current-glass',
+                "save_in" => "building_insulated_glazings.{$hr3pFrames->id}.insulating_glazing_id",
+                "translation" => "HR+++ glas + kozijn: Wat voor glas is er nu?",
+                "short" => "hr3p-glass-frame-current-glass",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.10.building_heating_id',
-                'translation' => 'HR+++ glas + kozijn: Zijn de kamers verwarmd?',
-                'short' => 'hr3p-glass-frame-rooms-heated',
+                "save_in" => "building_insulated_glazings.{$hr3pFrames->id}.building_heating_id",
+                "translation" => "HR+++ glas + kozijn: Zijn de kamers verwarmd?",
+                "short" => "hr3p-glass-frame-rooms-heated",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.10.m2',
-                'translation' => 'HR+++ glas + kozijn: m2 te vervangen glas',
-                'short' => 'hr3p-glass-frame-glass-surface',
+                "save_in" => "building_insulated_glazings.{$hr3pFrames->id}.m2",
+                "translation" => "HR+++ glas + kozijn: m2 te vervangen glas",
+                "short" => "hr3p-glass-frame-glass-surface",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.10.windows',
-                'translation' => 'HR+++ glas + kozijn: Het aantal te vervangen ruiten?',
-                'short' => 'hr3p-glass-frame-replacement-glass-count',
+                "save_in" => "building_insulated_glazings.{$hr3pFrames->id}.windows",
+                "translation" => "HR+++ glas + kozijn: Het aantal te vervangen ruiten?",
+                "short" => "hr3p-glass-frame-replacement-glass-count",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'considerables.App\\Models\\MeasureApplication.7.is_considering',
-                'translation' => 'Glas-in-lood vervangen: Meenemen in berekening',
-                'short' => 'glass-in-lead-replace-considerable',
+                "save_in" => "considerables.App\\Models\\MeasureApplication.{$glassInLead->id}.is_considering",
+                "translation" => "Glas-in-lood vervangen: Meenemen in berekening",
+                "short" => "glass-in-lead-replace-considerable",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.7.insulating_glazing_id',
-                'translation' => 'Glas-in-lood vervangen: Wat voor glas is er nu?',
-                'short' => 'glass-in-lead-replace-current-class',
+                "save_in" => "building_insulated_glazings.{$glassInLead->id}.insulating_glazing_id",
+                "translation" => "Glas-in-lood vervangen: Wat voor glas is er nu?",
+                "short" => "glass-in-lead-replace-current-class",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.7.building_heating_id',
-                'translation' => 'Glas-in-lood vervangen: Zijn de kamers verwarmd?',
-                'short' => 'glass-in-lead-rooms-heated',
+                "save_in" => "building_insulated_glazings.{$glassInLead->id}.building_heating_id",
+                "translation" => "Glas-in-lood vervangen: Zijn de kamers verwarmd?",
+                "short" => "glass-in-lead-rooms-heated",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.7.m2',
-                'translation' => 'Glas-in-lood vervangen: m2 te vervangen glas',
-                'short' => 'glass-in-lead-replace-surface',
+                "save_in" => "building_insulated_glazings.{$glassInLead->id}.m2",
+                "translation" => "Glas-in-lood vervangen: m2 te vervangen glas",
+                "short" => "glass-in-lead-replace-surface",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => [
-                    'required',
+                "data_type" => Caster::IDENTIFIER,
+                "validation" => [
+                    "required",
                 ],
-                'save_in' => 'building_insulated_glazings.7.windows',
-                'translation' => 'Glas-in-lood vervangen: Het aantal te vervangen ruiten?',
-                'short' => 'glass-in-lead-replace-replacement-glass-count',
+                "save_in" => "building_insulated_glazings.{$glassInLead->id}.windows",
+                "translation" => "Glas-in-lood vervangen: Het aantal te vervangen ruiten?",
+                "short" => "glass-in-lead-replace-replacement-glass-count",
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1972,7 +1992,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'building_elements.7.element_value_id',
+                'save_in' => "building_elements.{$frame->id}.element_value_id",
                 'translation' => 'Welke kozijnen heb je in jouw huis?',
                 'short' => 'frame-type',
             ],
@@ -1981,7 +2001,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => 'building_elements.8.element_value_id',
+                'save_in' => "building_elements.{$woodElements->id}}.element_value_id",
                 'translation' => 'Welke andere houten bouwdelen zijn aanwezig in jouw huis?',
                 'short' => 'wood-elements',
             ],
@@ -2017,7 +2037,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'considerables.App\\Models\\Step.5.is_considering',
+                'save_in' => "considerables.App\\Models\\Step.{$floorInsulationStep->id}.is_considering",
                 'translation' => 'Vloerisolatie: Meenemen in berekening',
                 'short' => 'floor-insulation-considerable',
             ],
@@ -2026,7 +2046,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_elements.9.extra.has_crawlspace',
+                'save_in' => "building_elements.{$crawlspace->id}.extra.has_crawlspace",
                 'translation' => 'Heeft deze woning een kruipruimte',
                 'short' => 'has-crawlspace',
             ],
@@ -2035,7 +2055,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_elements.9.extra.access',
+                'save_in' => "building_elements.{$crawlspace->id}.extra.access",
                 'translation' => 'Is de kruipruimte toegankelijk?',
                 'short' => 'crawlspace-accessible',
             ],
@@ -2044,7 +2064,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_elements.9.element_value_id',
+                'save_in' => "building_elements.{$crawlspace->id}.element_value_id",
                 'translation' => 'Hoe hoog is de kruipruimte?',
                 'short' => 'crawlspace-height',
             ],
@@ -2071,7 +2091,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'considerables.App\\Models\\Step.6.is_considering',
+                'save_in' => "considerables.App\\Models\\Step.{$roofInsulationStep->id}.is_considering",
                 'translation' => 'Dakisolatie: Meenemen in berekening',
                 'short' => 'roof-insulation-considerable',
             ],
@@ -2206,7 +2226,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'considerables.App\\Models\\Step.9.is_considering',
+                'save_in' => "considerables.App\\Models\\Step.{$solarPanelStep->id}.is_considering",
                 'translation' => 'Zonnepanelen: Meenemen in berekening',
                 'short' => 'solar-panels-considerable',
             ],

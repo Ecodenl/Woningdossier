@@ -126,10 +126,10 @@ class Form extends Component
         $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
-        foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+        foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
             // Define if we should answer this question...
             /** @var ToolQuestion $toolQuestion */
-            $toolQuestion = ToolQuestion::find($toolQuestionId);
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             if ($this->building->user->account->can('answer', $toolQuestion)) {
 
                 $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);

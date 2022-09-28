@@ -6,6 +6,7 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\QuickScanHelper;
 use App\Models\Account;
+use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
@@ -25,9 +26,9 @@ class SubStepPolicy
     {
     }
 
-    public function show(Account $account, SubStep $subStep)
+    public function show(Account $account, SubStep $subStep, Building $building = null)
     {
-        $building = HoomdossierSession::getBuilding(true);
+        $building = $building ?? HoomdossierSession::getBuilding(true);
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         return ConditionEvaluator::init()

@@ -231,8 +231,16 @@ class UpdateToolQuestions extends Command
         $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
         $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
 
+        // To keep it faster
+        $processedBuildings = DB::table('tool_question_answers')
+            ->where('tool_question_id', $heatSourceWaterQuestion->id)
+            ->distinct()
+            ->pluck('building_id')
+            ->toArray();
+
         $answersQuery = DB::table('tool_question_answers')
-            ->where('tool_question_id', $heatSourceQuestion->id);
+            ->where('tool_question_id', $heatSourceQuestion->id)
+            ->whereNotIn('building_id', $processedBuildings);
 
         $total = $answersQuery->count();
         $this->infoLog("Starting heat-source to heat-source-warm-tap-water map for a total of {$total} answers");

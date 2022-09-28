@@ -356,7 +356,7 @@ textarea.form-input {
 }
 
 .select-wrapper .select-dropdown {
-    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-50 top-full filter drop-shadow-xl;
+    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-50 top-full shadow-xl;
     min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
 }
 
@@ -415,7 +415,7 @@ textarea.form-input {
 }
 
 .source-select-wrapper .source-select-dropdown {
-    @apply bg-white bg-opacity-100 px-2 py-1 rounded absolute top-6 right-0 z-60 filter drop-shadow-xl;
+    @apply bg-white bg-opacity-100 px-2 py-1 rounded absolute top-6 right-0 z-60 shadow-xl;
     min-height: 1.25rem;
     min-width: 9rem;
     /* Css absolute position hack to make the dropdown stretch to content */

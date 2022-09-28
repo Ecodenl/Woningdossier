@@ -19,6 +19,14 @@
                 ]);
             @endphp
             <div class="flex flex-row flex-wrap w-full space-y-2">
+                @if(app()->environment() === 'local')
+                @php
+                    $completed = $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStepToSummarize->id)->first();
+                @endphp
+                @if(is_null($completed))
+                    <h1>{{$subStepToSummarize->name}} in niet afgerond</h1>
+                @endif
+                @endif
                 {{-- Custom changes has no tool questions, it's basically a whole other story --}}
                 @if($subStepToSummarize->slug === 'welke-zaken-vervangen')
                     <div class="flex flex-row flex-wrap w-full">

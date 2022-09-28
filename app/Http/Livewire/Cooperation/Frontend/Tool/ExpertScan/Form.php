@@ -12,9 +12,9 @@ use App\Helpers\ToolQuestionHelper;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
-use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\ToolQuestion;
+use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
 use Artisan;
 use Illuminate\Support\Arr;
@@ -121,6 +121,7 @@ class Form extends Component
     {
         $stepShortsToRecalculate = [];
         $shouldDoFullRecalculate = false;
+        $dirtyToolQuestions = [];
 
         $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
@@ -130,11 +131,17 @@ class Form extends Component
             /** @var ToolQuestion $toolQuestion */
             $toolQuestion = ToolQuestion::find($toolQuestionId);
             if ($this->building->user->account->can('answer', $toolQuestion)) {
+
+                $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                if ($masterAnswer !== $givenAnswer) {
+                    $dirtyToolQuestions[$toolQuestion->id] = $toolQuestion;
+                }
+
                 ToolQuestionService::init($toolQuestion)
                     ->building($this->building)
                     ->currentInputSource($this->currentInputSource)
                     ->applyExampleBuilding()
-                    ->save($givenAnswer);
+                        ->save($givenAnswer);
 
                 if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion) && $masterHasCompletedQuickScan) {
                     Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
@@ -184,7 +191,9 @@ class Form extends Component
             ]);
 
             if (! $completedSubStep->wasRecentlyCreated) {
-                SubStepHelper::checkConditionals($completedSubStep);
+                ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+                    ->forSubStep($subStep)
+                    ->checkConditionals($dirtyToolQuestions);
             }
         }
 

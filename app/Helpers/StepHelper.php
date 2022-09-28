@@ -2,12 +2,15 @@
 
 namespace App\Helpers;
 
+use App\Events\StepDataHasBeenChanged;
 use App\Models\Building;
 use App\Models\CompletedStep;
+use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\StepComment;
+use App\Models\SubStep;
 
 class StepHelper
 {
@@ -137,5 +140,53 @@ class StepHelper
             'input_source_id' => $inputSource->id,
             'building_id' => $building->id,
         ])->delete();
+    }
+
+
+    public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate)
+    {
+        $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
+            ->forBuilding($building)
+            ->whereHas('subStep', function ($query) use ($step) {
+                $query->where('step_id', $step->id);
+            })
+            ->pluck('sub_step_id')->toArray();
+
+        $allSubStepIds = $step->subSteps()->pluck('id')->toArray();
+
+        $diff = array_diff($allSubStepIds, $allCompletedSubStepIds);
+
+        if (empty($diff)) {
+            // The sub step that has been completed finished up the set, so we complete the main step
+            static::complete($step, $building, $inputSource);
+
+            // Trigger a recalculate if the tool is now complete
+            // TODO: Refactor this
+            if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
+                StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+            }
+        } else {
+            // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
+            // that we didn't get. Let's check
+            $leftoverSubSteps = SubStep::findMany($diff);
+
+            $cantSee = 0;
+            foreach ($leftoverSubSteps as $subStep) {
+                if (! $building->user->account->can('show', [$subStep, $building])) {
+                    ++$cantSee;
+                }
+            }
+
+            if ($cantSee === $leftoverSubSteps->count()) {
+                // Conditions "passed", so we complete!
+                static::complete($step, $building, $inputSource);
+
+                // Trigger a recalculate if the tool is now complete
+                // TODO: Refactor this
+                if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
+                    StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+                }
+            }
+        }
     }
 }

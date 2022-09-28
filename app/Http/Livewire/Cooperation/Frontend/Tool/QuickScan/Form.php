@@ -13,6 +13,7 @@ use App\Models\CompletedSubStep;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
+use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +28,7 @@ class Form extends Scannable
 
     public function mount(Step $step, SubStep $subStep)
     {
-        Log::debug('mounting form');
+        Log::debug("mounting form [Step: {$step->id}] [SubStep: {$subStep->id}]");
         $subStep->load([
             'toolQuestions' => function ($query) { $query->orderBy('order'); },
             'subStepTemplate',
@@ -55,10 +56,14 @@ class Form extends Scannable
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
-    public function save($nextUrl = "")
+    public function save()
     {
+        $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+            ->forStep($this->step)
+            ->forSubStep($this->subStep);
+
         if (HoomdossierSession::isUserObserving()) {
-            return redirect()->to($nextUrl);
+            return redirect()->to($flowService->resolveNextUrl());
         }
 
         // Before we can validate (and save), we must reset the formatting from text to mathable
@@ -103,9 +108,12 @@ class Form extends Scannable
             $validator->validate();
         }
 
+        // we will use this to check the conditionals later on.
+        $dirtyToolQuestions = [];
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
         if (! $this->dirty) {
+            Log::debug("Not dirty ing");
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 $toolQuestion = ToolQuestion::find($toolQuestionId);
 
@@ -117,6 +125,7 @@ class Form extends Scannable
                     // Master input source is important. Ensure both are set
                     if (is_null($currentAnswer) || is_null($masterAnswer)) {
                         $this->setDirty(true);
+                        $dirtyToolQuestions[$toolQuestion->id] = $toolQuestion;
                         break;
                     }
                 }
@@ -135,6 +144,12 @@ class Form extends Scannable
                 /** @var ToolQuestion $toolQuestion */
                 $toolQuestion = ToolQuestion::find($toolQuestionId);
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
+
+                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                    if ($masterAnswer !== $givenAnswer) {
+                        $dirtyToolQuestions[$toolQuestion->id] = $toolQuestion;
+                    }
+
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)
                         ->currentInputSource($this->currentInputSource)
@@ -188,11 +203,15 @@ class Form extends Scannable
             'input_source_id' => $this->currentInputSource->id
         ]);
 
+        $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+            ->forStep($this->step)
+            ->forSubStep($this->subStep);
+
         if (! $completedSubStep->wasRecentlyCreated) {
-            SubStepHelper::checkConditionals($completedSubStep);
+            $flowService->checkConditionals($dirtyToolQuestions);
         }
 
         // TODO: We might have to generate the $nextUrl in real time if conditional steps follow a related question
-        return redirect()->to($nextUrl);
+        return redirect()->to($flowService->resolveNextUrl());
     }
 }

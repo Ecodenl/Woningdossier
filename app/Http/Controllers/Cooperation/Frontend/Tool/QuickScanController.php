@@ -15,7 +15,6 @@ class QuickScanController extends Controller
 {
     public function start(Cooperation $cooperation)
     {
-        dd('quick scan index');
         $subStep = SubStep::ordered()->first();
         $step = $subStep->step;
         return redirect()->route('cooperation.frontend.tool.quick-scan.index', compact('step', 'subStep'));

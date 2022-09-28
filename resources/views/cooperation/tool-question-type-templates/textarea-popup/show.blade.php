@@ -1,6 +1,6 @@
 <div x-data="modal()" class="w-full flex">
 
-    <textarea wire:model="filledInAnswers.{{$toolQuestion['id']}}"
+    <textarea wire:model="filledInAnswers.{{$toolQuestion['short']}}"
               id="{{$toolQuestion->short}}"
               class="form-input"
               wire:ignore x-on:click="toggle()"
@@ -9,7 +9,7 @@
     </textarea>
 
     @component('cooperation.frontend.layouts.components.modal', ['class' => 'w-full md:w-1/2'])
-        <textarea wire:model="filledInAnswers.{{$toolQuestion['id']}}"
+        <textarea wire:model="filledInAnswers.{{$toolQuestion['short']}}"
                   id="{{$toolQuestion->short}}"
                   class="form-input w-full"
                   placeholder="{{$toolQuestion->placeholder}}"
@@ -19,11 +19,11 @@
             @lang('cooperation/frontend/tool.my-plan.comments.resident')
         @endslot
         <div class="flex justify-end space-x-2">
-            <button class="btn btn-orange" wire:click="resetToOriginalAnswer({{$toolQuestion['id']}})"
+            <button class="btn btn-orange" wire:click="resetToOriginalAnswer({{$toolQuestion['short']}})"
                     x-on:click="close()">
                 Annuleren
             </button>
-            <button class="btn btn-purple" wire:click="saveSpecificToolQuestion({{$toolQuestion['id']}})"
+            <button class="btn btn-purple" wire:click="saveSpecificToolQuestion({{$toolQuestion['short']}})"
                     x-on:click="close()">
                 @lang('default.buttons.save')
             </button>

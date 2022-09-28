@@ -7,7 +7,7 @@
     );
 @endphp
 @component('cooperation.frontend.layouts.components.alpine-select')
-    <select id="{{$toolQuestion->short}}" class="form-input hidden" wire:model="filledInAnswers.{{$toolQuestion->id}}">
+    <select id="{{$toolQuestion->short}}" class="form-input hidden" wire:model="filledInAnswers.{{$toolQuestion->short}}">
         <option value="">
             @lang('default.form.dropdown.choose')
         </option>

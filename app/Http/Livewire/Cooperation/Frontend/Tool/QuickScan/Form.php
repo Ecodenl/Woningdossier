@@ -69,7 +69,9 @@ class Form extends Scannable
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->data_type === Caster::FLOAT) {
-                $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]), 2);
+                $this->filledInAnswers[$toolQuestion->short] = Caster::init(
+                    $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
+                )->reverseFormatted();
             }
         }
 
@@ -82,9 +84,9 @@ class Form extends Scannable
             // Translate values also
             $defaultValues = __('validation.values.defaults');
 
-            foreach ($this->filledInAnswers as $toolQuestionId => $answer) {
+            foreach ($this->filledInAnswers as $toolQuestionShort => $answer) {
                 $validator->addCustomValues([
-                    "filledInAnswers.{$toolQuestionId}" => $defaultValues,
+                    "filledInAnswers.{$toolQuestionShort}" => $defaultValues,
                 ]);
             }
 
@@ -92,7 +94,7 @@ class Form extends Scannable
                 // Validator failed, let's put it back as the user format
                 foreach ($this->toolQuestions as $toolQuestion) {
                     if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
-                        $this->filledInAnswers[$toolQuestion->id] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->id])->getFormatForUser();
+                        $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                     }
                 }
 
@@ -114,8 +116,8 @@ class Form extends Scannable
         // they might not save...
         if (! $this->dirty) {
             Log::debug("Not dirty ing");
-            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
-                $toolQuestion = ToolQuestion::find($toolQuestionId);
+            foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
                 // Define if we should check this question...
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
@@ -139,10 +141,10 @@ class Form extends Scannable
         $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
-            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+            foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::find($toolQuestionId);
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
 
                     $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);

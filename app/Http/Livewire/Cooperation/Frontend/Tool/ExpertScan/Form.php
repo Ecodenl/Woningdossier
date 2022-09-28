@@ -97,8 +97,8 @@ class Form extends Component
     {
         // We can't directly set the answers because there will be more than one sub step that is passing
         // answers. array_merge messes up the keys and addition (array + array) causes weird behaviour
-        foreach ($filledInAnswers as $toolQuestionId => $answer) {
-            $this->filledInAnswers[$toolQuestionId] = $answer;
+        foreach ($filledInAnswers as $toolQuestionShort => $answer) {
+            $this->filledInAnswers[$toolQuestionShort] = $answer;
         }
     }
 
@@ -126,10 +126,10 @@ class Form extends Component
         $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
-        foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+        foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
             // Define if we should answer this question...
             /** @var ToolQuestion $toolQuestion */
-            $toolQuestion = ToolQuestion::find($toolQuestionId);
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             if ($this->building->user->account->can('answer', $toolQuestion)) {
 
                 $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
@@ -203,7 +203,7 @@ class Form extends Component
     public function performCalculations()
     {
         $considerableQuestion = ToolQuestion::findByShort('heat-source-considerable');
-        $considerables = $this->filledInAnswers[$considerableQuestion->id]
+        $considerables = $this->filledInAnswers[$considerableQuestion->short]
             ?? $this->building->getAnswer($this->masterInputSource, $considerableQuestion);
 
         $energyHabit = $this->building->user->energyHabit()->forInputSource($this->masterInputSource)->first();
@@ -262,7 +262,7 @@ class Form extends Component
             // it may be possible that the tool question is not present in the filled in answers.
             // that simply means the tool question is not available for the user on the current page
             // however it may be filled elsewhere, so we will get it through the getAnswer
-            $answer = $this->filledInAnswers[$toolQuestion->id] ?? $this->building->getAnswer($this->masterInputSource,
+            $answer = $this->filledInAnswers[$toolQuestion->short] ?? $this->building->getAnswer($this->masterInputSource,
                     $toolQuestion);
 
             Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);

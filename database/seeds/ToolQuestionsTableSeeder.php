@@ -1452,7 +1452,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 //'save_in' => "building_services.{$heatPump->id}.service_value_id",
                 'short' => 'new-heat-pump-type',
-                'translation' => "Welke soort warmtepomp moet er komen?",
+                'translation' => "Welk soort warmtepomp moet er komen?",
                 'tool_question_custom_values' => [
                     'hybrid-heat-pump-outside-air' => [
                         'name' => 'Hybride warmtepomp met buitenlucht',

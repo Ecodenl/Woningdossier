@@ -10,14 +10,14 @@
         @component('cooperation.frontend.layouts.components.form-group', [
             'class' => 'form-group-heading',
             'label' => $top->name,
-            'inputName' => "filledInAnswers.{$top->id}",
+            'inputName' => "filledInAnswers.{$top->short}",
         ])
             @php
                 $disabled = ! $building->user->account->can('answer', $top);
             @endphp
             @slot('sourceSlot')
                 @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                    'values' => $filledInAnswersForAllInputSources[$top->id],
+                    'values' => $filledInAnswersForAllInputSources[$top->short],
                     'toolQuestion' => $top,
                 ])
             @endslot
@@ -39,11 +39,11 @@
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full',
                 'label' => $bottomLeft->name,
-                'inputName' => "filledInAnswers.{$bottomLeft->id}",
+                'inputName' => "filledInAnswers.{$bottomLeft->short}",
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                        'values' => $filledInAnswersForAllInputSources[$bottomLeft->id],
+                        'values' => $filledInAnswersForAllInputSources[$bottomLeft->short],
                         'toolQuestion' => $bottomLeft,
                     ])
                 @endslot
@@ -65,11 +65,11 @@
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full ',
                 'label' => $bottomRight->name,
-                'inputName' => "filledInAnswers.{$bottomRight->id}",
+                'inputName' => "filledInAnswers.{$bottomRight->short}",
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                        'values' => $filledInAnswersForAllInputSources[$bottomRight->id],
+                        'values' => $filledInAnswersForAllInputSources[$bottomRight->short],
                         'toolQuestion' => $bottomRight,
                     ])
                 @endslot

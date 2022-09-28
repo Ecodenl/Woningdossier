@@ -1911,7 +1911,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_insulated_glazings.10.windows',
                 'translation' => 'HR+++ glas + kozijn: Het aantal te vervangen ruiten?',
-                'short' => 'hr3p-glass-frame-glass-count',
+                'short' => 'hr3p-glass-frame-replacement-glass-count',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1920,7 +1920,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'considerables.App\\Models\\MeasureApplication.7',
                 'translation' => 'Glas-in-lood vervangen: Meenemen in berekening',
-                'short' => '',
+                'short' => 'glass-in-lead-replace-considerable',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1929,7 +1929,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_insulated_glazings.7.insulating_glazing_id',
                 'translation' => 'Glas-in-lood vervangen: Wat voor glas is er nu?',
-                'short' => '',
+                'short' => 'glass-in-lead-replace-current-class',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1938,7 +1938,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_insulated_glazings.7.building_heating_id',
                 'translation' => 'Glas-in-lood vervangen: Zijn de kamers verwarmd?',
-                'short' => '',
+                'short' => 'glass-in-lead-rooms-heated',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1947,7 +1947,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_insulated_glazings.7.m2',
                 'translation' => 'Glas-in-lood vervangen: m2 te vervangen glas',
-                'short' => '',
+                'short' => 'glass-in-lead-replace-surface',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1956,7 +1956,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_insulated_glazings.7.windows',
                 'translation' => 'Glas-in-lood vervangen: Het aantal te vervangen ruiten?',
-                'short' => '',
+                'short' => 'glass-in-lead-replace-replacement-glass-count',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1965,7 +1965,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_features.window_surface',
                 'translation' => 'Totale raamoppervlakte van de woning',
-                'short' => '',
+                'short' => 'total-window-surface',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1974,7 +1974,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_elements.7.element_value_id',
                 'translation' => 'Welke kozijnen heb je in jouw huis?',
-                'short' => '',
+                'short' => 'frame-type',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1983,7 +1983,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_elements.8.element_value_id',
                 'translation' => 'Welke andere houten bouwdelen zijn aanwezig in jouw huis?',
-                'short' => '',
+                'short' => 'wood-elements',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1992,7 +1992,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_paintwork_statuses.last_painted_year',
                 'translation' => 'Wanneer is het schilderwerk voor het laatst gedaan? (jaargetal)',
-                'short' => '',
+                'short' => 'last-painted-year',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2001,7 +2001,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_paintwork_statuses.paintwork_status_id',
                 'translation' => 'Is verfschade waarneembaar? (barsten / afbladderen / blazen)',
-                'short' => '',
+                'short' => 'paintwork-status',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2010,7 +2010,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_paintwork_statuses.wood_rot_status_id',
                 'translation' => 'Is houtrot waarneembaar?',
-                'short' => '',
+                'short' => 'wood-rot-status',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2019,7 +2019,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'considerables.App\\Models\\Step.5',
                 'translation' => 'Vloerisolatie: Meenemen in berekening',
-                'short' => '',
+                'short' => 'floor-insulation-considerable',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2028,7 +2028,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_elements.9.extra.has_crawlspace',
                 'translation' => 'Heeft deze woning een kruipruimte',
-                'short' => '',
+                'short' => 'has-crawlspace',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2037,7 +2037,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_elements.9.extra.access',
                 'translation' => 'Is de kruipruimte toegankelijk?',
-                'short' => '',
+                'short' => 'crawlspace-accessible',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2046,7 +2046,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_elements.9.element_value_id',
                 'translation' => 'Hoe hoog is de kruipruimte?',
-                'short' => '',
+                'short' => 'crawlspace-height',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2055,7 +2055,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_features.floor_surface',
                 'translation' => 'Vloeroppervlak van de woning',
-                'short' => '',
+                'short' => 'floor-surface',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2064,7 +2064,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_features.insulation_surface',
                 'translation' => 'Te isoleren oppervlakte',
-                'short' => '',
+                'short' => 'insulation-floor-surface',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2073,7 +2073,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'considerables.App\\Models\\Step.6',
                 'translation' => 'Dakisolatie: Meenemen in berekening',
-                'short' => '',
+                'short' => 'roof-insulation-considerable',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2082,7 +2082,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.1.element_value_id',
                 'translation' => 'is het hellende dak geïsoleerd?',
-                'short' => '',
+                'short' => 'is-pitched-roof-insulated',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2091,7 +2091,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.1.roof_surface',
                 'translation' => 'Dakoppervlak hellend dak',
-                'short' => '',
+                'short' => 'pitched-roof-surface',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2100,7 +2100,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.1.insulation_roof_surface',
                 'translation' => 'Te isoleren oppervlakte van het hellende dak',
-                'short' => '',
+                'short' => 'pitched-roof-insulation-surface',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2109,7 +2109,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.1.extra.zinc_replaced_date',
                 'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
-                'short' => '',
+                'short' => 'pitched-roof-zinc-replaced-date',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2118,7 +2118,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.1.extra.tiles_condition',
                 'translation' => 'In welke staat verkeren de dakpannen?',
-                'short' => '',
+                'short' => 'pitched-roof-tiles-condition',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2126,8 +2126,8 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required'
                 ],
                 'save_in' => 'building_roof_types.1.extra.measure_application_id',
-                'translation' => 'roof-insulation.pitched-roof-.insulate-roof.title',
-                'short' => '',
+                'translation' => 'Hoe wil je het schuine dak isoleren? ',
+                'short' => 'pitched-roof-insulation',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2136,7 +2136,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.1.building_heating_id',
                 'translation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
-                'short' => '',
+                'short' => 'pitched-roof-heating',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2145,7 +2145,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.2.element_value_id',
                 'translation' => 'Is het platte dak geïsoleerd?',
-                'short' => '',
+                'short' => 'is-flat-roof-insulated',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2154,7 +2154,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.2.roof_surface',
                 'translation' => 'Dakoppervlak van platte dak',
-                'short' => '',
+                'short' => 'flat-roof-surface',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2163,7 +2163,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.2.insulation_roof_surface',
                 'translation' => 'Te isoleren oppervlakte van het platte dak',
-                'short' => '',
+                'short' => 'flat-roof-insulation-surface',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2172,7 +2172,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.2.extra.zinc_replaced_date',
                 'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
-                'short' => '',
+                'short' => 'flat-roof-zinc-replace-date',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2181,7 +2181,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.2.extra.bitumen_replaced_date',
                 'translation' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
-                'short' => '',
+                'short' => 'flat-roof-bitumen-replaced-date',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2189,8 +2189,8 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required'
                 ],
                 'save_in' => 'building_roof_types.2.extra.measure_application_id',
-                'translation' => 'roof-insulation.flat-roof-.insulate-roof.title',
-                'short' => '',
+                'translation' => 'Hoe wil je het platte dak isoleren? ',
+                'short' => 'flat-roof-insulation',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2199,7 +2199,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.2.building_heating_id',
                 'translation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
-                'short' => '',
+                'short' => 'flat-roof-heating',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2208,7 +2208,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'considerables.App\\Models\\Step.9',
                 'translation' => 'Zonnepanelen: Meenemen in berekening',
-                'short' => '',
+                'short' => 'solar-panels-considerable',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2217,7 +2217,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_pv_panels.peak_power',
                 'translation' => 'Piekvermogen per paneel',
-                'short' => '',
+                'short' => 'solar-panel-peak-power',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2226,7 +2226,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_pv_panels.number',
                 'translation' => 'Hoeveel zonnepanelen moeten er komen?',
-                'short' => '',
+                'short' => 'solar-panel-count',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2235,7 +2235,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_pv_panels.pv_panel_orientation_id',
                 'translation' => 'Wat is de oriëntatie van de panelen?',
-                'short' => '',
+                'short' => 'solar-panel-orientation',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2244,7 +2244,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_pv_panels.angle',
                 'translation' => 'Wat is de hellingshoek van de panelen?',
-                'short' => '',
+                'short' => 'solar-panel-angle',
             ],
         ];
 

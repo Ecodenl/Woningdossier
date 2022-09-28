@@ -69,7 +69,9 @@ class Form extends Scannable
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->data_type === Caster::FLOAT) {
-                $this->filledInAnswers[$toolQuestion->short] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->short]), 2);
+                $this->filledInAnswers[$toolQuestion->short] = Caster::init(
+                    $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
+                )->reverseFormatted();
             }
         }
 

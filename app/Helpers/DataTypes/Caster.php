@@ -67,6 +67,26 @@ class Caster
     }
 
     /**
+     * Reverse formatted will mean anything that the code can understand.
+     *
+     * @return mixed|string|int
+     */
+    public function reverseFormatted()
+    {
+        // if needed, the cast can be applied per datatype. (like the forUser method)
+        $value = $this->value;
+
+        switch ($this->dataType) {
+            case static::FLOAT:
+                $value = NumberFormatter::mathableFormat(str_replace('.', '', $value), 2);
+                break;
+            default:
+                break;
+        }
+
+        return $value;
+    }
+    /**
      * Format a value to a human format.
      *
      * @return array|bool|float|int|mixed|string|null

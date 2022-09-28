@@ -131,7 +131,7 @@ class SubSteppable extends Scannable
                         // on this page. We find it, and add the answer to our list
 
                         if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
-                            $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
+                            $otherSubStepToolQuestion = ToolQuestion::findByShort($condition['column']);
                             if ($otherSubStepToolQuestion instanceof ToolQuestion) {
 
                                 $otherSubStepAnswer = $this->building
@@ -188,7 +188,9 @@ class SubSteppable extends Scannable
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->data_type === Caster::FLOAT) {
-                $this->filledInAnswers[$toolQuestion->short] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->short]), 2);
+                $this->filledInAnswers[$toolQuestion->short] = Caster::init(
+                    $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
+                )->reverseFormatted();
             }
         }
 
@@ -227,7 +229,7 @@ class SubSteppable extends Scannable
         // they might not save...
         if (! $this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
-                $toolQuestion = ToolQuestion::find($toolQuestionShort);
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
                 // Define if we should check this question...
                 if ($this->building->user->account->can('answer', $toolQuestion)) {

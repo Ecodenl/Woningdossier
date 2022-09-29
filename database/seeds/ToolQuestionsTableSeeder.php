@@ -841,7 +841,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
+                'validation' => ['required', 'exists:service_values,id'],
                 'save_in' => "building_services.{$boiler->id}.service_value_id",
                 'short' => 'boiler-type',
                 'translation' => "Wat voor gasketel heeft u?",
@@ -989,7 +989,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:element_values,id'],
+                'validation' => ['required', 'exists:service_values,id'],
                 'save_in' => "building_services.{$ventilation->id}.service_value_id",
                 'short' => 'ventilation-type',
                 // was current-state -> hoe word het huis geventileerd

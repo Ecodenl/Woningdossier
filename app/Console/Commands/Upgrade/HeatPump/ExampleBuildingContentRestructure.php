@@ -52,7 +52,7 @@ class ExampleBuildingContentRestructure extends Command
             foreach ($dataForStep as $subStepSlug => $dataForSubStep) {
                 foreach (Arr::dot($dataForSubStep) as $saveIn => $value) {
                     if (Str::startsWith($saveIn, 'element')) {
-                        if (stripos($saveIn, 'extra') === false) {
+                        if (stripos($saveIn, 'extra') === false && stripos($saveIn, 'element_value_id') === false) {
                             $saveIn.='.element_value_id';
                         }
 

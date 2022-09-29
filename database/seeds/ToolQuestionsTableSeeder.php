@@ -1727,7 +1727,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'wall-insulation-considerable',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::INT,
                 'validation' => [
                     'required',
                 ],
@@ -1736,7 +1736,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'has-cavity-wall',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::INT,
                 'validation' => [
                     'required',
                 ],
@@ -1790,7 +1790,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'wall-surface',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::FLOAT,
                 'validation' => [
                     'required',
                 ],
@@ -1826,7 +1826,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'hrpp-glass-rooms-heated',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::FLOAT,
                 'validation' => [
                     'required',
                 ],
@@ -1835,7 +1835,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'hrpp-glass-only-replacement-glass-surface',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::INT,
                 'validation' => [
                     'required',
                 ],
@@ -1871,7 +1871,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "short" => "hrpp-glass-frame-rooms-heated",
             ],
             [
-                "data_type" => Caster::IDENTIFIER,
+                "data_type" => Caster::FLOAT,
                 "validation" => [
                     "required",
                 ],
@@ -1880,7 +1880,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "short" => "hrpp-glass-frame-replacement-glass-surface",
             ],
             [
-                "data_type" => Caster::IDENTIFIER,
+                "data_type" => Caster::INT,
                 "validation" => [
                     "required",
                 ],
@@ -1916,7 +1916,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "short" => "hr3p-glass-frame-rooms-heated",
             ],
             [
-                "data_type" => Caster::IDENTIFIER,
+                "data_type" => Caster::FLOAT,
                 "validation" => [
                     "required",
                 ],
@@ -1925,7 +1925,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "short" => "hr3p-glass-frame-glass-surface",
             ],
             [
-                "data_type" => Caster::IDENTIFIER,
+                "data_type" => Caster::INT,
                 "validation" => [
                     "required",
                 ],
@@ -1961,7 +1961,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "short" => "glass-in-lead-rooms-heated",
             ],
             [
-                "data_type" => Caster::IDENTIFIER,
+                "data_type" => Caster::FLOAT,
                 "validation" => [
                     "required",
                 ],
@@ -1970,7 +1970,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "short" => "glass-in-lead-replace-surface",
             ],
             [
-                "data_type" => Caster::IDENTIFIER,
+                "data_type" => Caster::INT,
                 "validation" => [
                     "required",
                 ],
@@ -1979,7 +1979,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "short" => "glass-in-lead-replace-replacement-glass-count",
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::FLOAT,
                 'validation' => [
                     'required',
                 ],
@@ -2006,7 +2006,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'wood-elements',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::STRING,
                 'validation' => [
                     'required'
                 ],
@@ -2042,7 +2042,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'floor-insulation-considerable',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::STRING,
                 'validation' => [
                     'required'
                 ],
@@ -2051,7 +2051,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'has-crawlspace',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::STRING,
                 'validation' => [
                     'required'
                 ],
@@ -2069,7 +2069,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'crawlspace-height',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::FLOAT,
                 'validation' => [
                     'required'
                 ],
@@ -2078,7 +2078,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'floor-surface',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::FLOAT,
                 'validation' => [
                     'required'
                 ],
@@ -2105,7 +2105,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'is-pitched-roof-insulated',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::FLOAT,
                 'validation' => [
                     'required'
                 ],
@@ -2114,7 +2114,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'pitched-roof-surface',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::FLOAT,
                 'validation' => [
                     'required'
                 ],
@@ -2123,7 +2123,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'pitched-roof-insulation-surface',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::STRING,
                 'validation' => [
                     'required'
                 ],
@@ -2168,7 +2168,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'is-flat-roof-insulated',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::FLOAT,
                 'validation' => [
                     'required'
                 ],
@@ -2177,7 +2177,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'flat-roof-surface',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::FLOAT,
                 'validation' => [
                     'required'
                 ],
@@ -2186,7 +2186,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'flat-roof-insulation-surface',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::STRING,
                 'validation' => [
                     'required'
                 ],
@@ -2195,7 +2195,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'flat-roof-zinc-replace-date',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::STRING,
                 'validation' => [
                     'required'
                 ],
@@ -2231,7 +2231,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'solar-panels-considerable',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::INT,
                 'validation' => [
                     'required'
                 ],
@@ -2240,13 +2240,13 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'solar-panel-peak-power',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::INT,
                 'validation' => [
                     'required'
                 ],
                 'save_in' => 'building_pv_panels.number',
                 'translation' => 'Hoeveel zonnepanelen moeten er komen?',
-                'short' => 'solar-panel-count',
+                'short' => 'desired-solar-panel-count',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2258,7 +2258,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'solar-panel-orientation',
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::INT,
                 'validation' => [
                     'required'
                 ],

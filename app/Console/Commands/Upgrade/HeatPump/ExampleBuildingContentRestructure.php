@@ -52,9 +52,17 @@ class ExampleBuildingContentRestructure extends Command
             foreach ($dataForStep as $subStepSlug => $dataForSubStep) {
                 foreach (Arr::dot($dataForSubStep) as $saveIn => $value) {
                     if (Str::startsWith($saveIn, 'element')) {
+                        if (stripos($saveIn, 'extra') === false) {
+                            $saveIn.='.element_value_id';
+                        }
+
                         $saveIn = Str::replaceFirst('element', 'building_elements', $saveIn);
+
                     }
                     if (Str::startsWith($saveIn, 'service')) {
+                        if (stripos($saveIn, 'extra') === false && stripos($saveIn, 'service_value_id') === false) {
+                            $saveIn.='.service_value_id';
+                        }
                         $saveIn = Str::replaceFirst('service', 'building_services', $saveIn);
                     }
                     $toolQuestion = ToolQuestion::where('save_in', $saveIn)

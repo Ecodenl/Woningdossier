@@ -42,7 +42,7 @@ class ToolQuestionsTableSeeder extends Seeder
         $hrppGlassFrames = MeasureApplication::findByShort('hrpp-glass-frames');
         $hr3pFrames = MeasureApplication::findByShort('hr3p-frames');
 
-        $crackSealing = MeasureApplication::findByShort('crack-sealing');
+        $crackSealingMeasureApplication = MeasureApplication::findByShort('crack-sealing');
         $ventilationBalancedWtw = MeasureApplication::findByShort('ventilation-balanced-wtw');
         $ventilationDecentralWtw = MeasureApplication::findByShort('ventilation-decentral-wtw');
         $ventilationDemandDriven = MeasureApplication::findByShort('ventilation-demand-driven');
@@ -1686,7 +1686,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => "considerables.App\\Models\\MeasureApplication.{$crackSealing->id}.is_considering",
+                'save_in' => "considerables.App\\Models\\MeasureApplication.{$crackSealingMeasureApplication->id}.is_considering",
                 'translation' => 'Kierdichting verbeteren: Meenemen in berekening',
                 'short' => 'crack-sealing-considerable',
             ],
@@ -1695,7 +1695,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationBalancedWtw}.is_considering",
+                'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationBalancedWtw->id}.is_considering",
                 'translation' => 'Gebalanceerde ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-balanced-wtw-considerable',
             ],
@@ -1704,7 +1704,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationDecentralWtw}.is_considering",
+                'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationDecentralWtw->id}.is_considering",
                 'translation' => 'Decentrale mechanische ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-decentral-wtw-considerable',
             ],
@@ -1713,7 +1713,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationDemandDriven}.is_considering",
+                'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationDemandDriven->id}.is_considering",
                 'translation' => 'Vraaggestuurde ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-demand-driven-considerable',
             ],

@@ -2001,7 +2001,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required',
                 ],
-                'save_in' => "building_elements.{$woodElements->id}}.element_value_id",
+                'save_in' => "building_elements.{$woodElements->id}.element_value_id",
                 'translation' => 'Welke andere houten bouwdelen zijn aanwezig in jouw huis?',
                 'short' => 'wood-elements',
             ],
@@ -2132,6 +2132,15 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'pitched-roof-zinc-replaced-date',
             ],
             [
+                'data_type' => Caster::STRING,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.1.zinc_surface',
+                'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+                'short' => 'pitched-roof-zinc-surface',
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => [
                     'required'
@@ -2193,6 +2202,15 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_roof_types.2.extra.zinc_replaced_date',
                 'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
                 'short' => 'flat-roof-zinc-replace-date',
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => [
+                    'required'
+                ],
+                'save_in' => 'building_roof_types.2.zinc_surface',
+                'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+                'short' => 'flat-roof-zinc-surface',
             ],
             [
                 'data_type' => Caster::STRING,

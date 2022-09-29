@@ -84,7 +84,7 @@ class HighEfficiencyBoilerCalculator
         self::debug(__METHOD__.' boiler efficiencies of boiler: '.$boilerEfficiency->heating.'% (heating) and '.$boilerEfficiency->wtw.'% (tap water)');
 
         if ($habit instanceof UserEnergyHabit) {
-            // so ideally a building + input source should be passed instead of a habit, but that's just to much work for now
+            // so ideally a building + input source should be passed instead of a habit, but that's just too much work for now
             $building = $habit->user->building;
 
             $cookType = $building->getAnswer($habit->inputSource, ToolQuestion::findByShort('cook-type'));

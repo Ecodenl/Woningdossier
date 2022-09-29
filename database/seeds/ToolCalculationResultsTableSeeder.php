@@ -146,10 +146,10 @@ class ToolCalculationResultsTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Indicatie vervangingsmoment warmtepomp',
+                    'nl' => 'Meerverbruik elektra',
                 ],
-                'short' => 'heat-pump.replace_year',
-                'unit_of_measure' => '<i class="icon-sm icon-timer"></i>',
+                'short' => 'heat-pump.extra_consumption_electricity',
+                'unit_of_measure' => 'kWh / jaar',
             ],
             [
                 'name' => [

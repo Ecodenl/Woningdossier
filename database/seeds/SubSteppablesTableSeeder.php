@@ -1188,7 +1188,7 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('heat-pump.replace_year'),
+                            'morph' => ToolCalculationResult::findByShort('heat-pump.extra_consumption_electricity'),
                             'size' => 'col-span-2',
                             'conditions' => [
                                 [

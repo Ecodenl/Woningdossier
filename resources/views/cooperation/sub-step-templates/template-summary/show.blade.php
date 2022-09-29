@@ -163,12 +163,12 @@
                 'label' => $toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"),
                 'class' => 'w-full sm:w-1/2 ' . ($loop->iteration % 2 === 0 ? 'sm:pl-3' : 'sm:pr-3'),
                 'withInputSource' => ! $disabled,
-                'id' => "filledInAnswers-{$toolQuestion->id}",
-                'inputName' => "filledInAnswers.{$toolQuestion->id}",
+                'id' => "filledInAnswers-{$toolQuestion->short}",
+                'inputName' => "filledInAnswers.{$toolQuestion->short}",
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                        'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
+                        'values' => $filledInAnswersForAllInputSources[$toolQuestion->short],
                         'toolQuestion' => $toolQuestion,
                     ])
                 @endslot

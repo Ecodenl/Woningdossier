@@ -69,6 +69,13 @@ class ExampleBuildingContentRestructure extends Command
                                 array_pop($saveIn);
                                 $saveIn = implode('.', $saveIn);
                             }
+//                            if ($stepSlug == 'insulated-glazing') {
+//                                dd($saveIn, $dataForSubStep);
+//                            }
+                            if (stripos($saveIn, 'considerables') !== false) {
+                                // fix considerable
+                                $saveIn.='.is_considering';
+                            }
                             if (Str::startsWith($saveIn, 'element')) {
                                 if (stripos($saveIn, 'extra') === false && stripos($saveIn, 'element_value_id') === false) {
                                     $saveIn .= '.element_value_id';

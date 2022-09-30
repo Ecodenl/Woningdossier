@@ -3,16 +3,11 @@
 namespace App\Console\Commands\Upgrade\HeatPump;
 
 use App\Models\ExampleBuilding;
-use App\Models\ExampleBuildingContent;
 use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
-use App\Models\ToolQuestionCustomValue;
-use App\Services\ConsiderableService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ExampleBuildingContentRestructure extends Command

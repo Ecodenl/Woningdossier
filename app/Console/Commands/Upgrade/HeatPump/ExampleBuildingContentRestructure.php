@@ -4,10 +4,14 @@ namespace App\Console\Commands\Upgrade\HeatPump;
 
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
+use App\Models\Service;
+use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
+use App\Models\ToolQuestionCustomValue;
 use App\Services\ConsiderableService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -46,7 +50,7 @@ class ExampleBuildingContentRestructure extends Command
     {
         $missingSaveIn = [];
 
-        $exampleBuildings = ExampleBuilding::with('contents')->where('id', 91)->get();
+        $exampleBuildings = ExampleBuilding::with('contents')->get();
 
         $newContent = [];
 
@@ -63,6 +67,7 @@ class ExampleBuildingContentRestructure extends Command
 
                     foreach ($dataForStep as $subStepSlug => $dataForSubStep) {
                         foreach (Arr::dot($dataForSubStep) as $saveIn => $value) {
+
                             if ($stepSlug == 'ventilation') {
                                 // the save in is bogged, we have to correct it first.
                                 $saveIn = explode('.', $saveIn);
@@ -86,10 +91,50 @@ class ExampleBuildingContentRestructure extends Command
                                 }
                                 $saveIn = Str::replaceFirst('service', 'building_services', $saveIn);
                             }
-                            $toolQuestion = ToolQuestion::where('save_in', $saveIn)
-                                ->first();
 
-                            if ($toolQuestion instanceof ToolQuestion) {
+                            $toolQuestion = ToolQuestion::where('save_in', $saveIn)->first();
+
+
+                            if ($saveIn === 'building_services.3.service_value_id' && !is_null($value)) {
+                                // previously the answer for the sun-boiler was saved in the sun boiler service itself
+                                $sunBoilerService = Service::findByShort('sun-boiler');
+                                // we will map them to the heat source and heat source warm water, since its split up.
+                                $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
+                                $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
+
+
+                                $noneValue = ServiceValue::where('service_id', $sunBoilerService->id)
+                                    ->where('calculate_value', 1)->first();
+                                $waterValue = ServiceValue::where('service_id', $sunBoilerService->id)
+                                    ->where('calculate_value', 2)->first();
+                                $heatingValue = ServiceValue::where('service_id', $sunBoilerService->id)
+                                    ->where('calculate_value', 3)->first();
+                                $bothValue = ServiceValue::where('service_id', $sunBoilerService->id)
+                                    ->where('calculate_value', 4)->first();
+
+                                $heatSourceAnswer = $heatSourceQuestion->toolQuestionCustomValues()->whereShort('sun-boiler')->first();
+                                $heatSourceWaterAnswer = $heatSourceWaterQuestion->toolQuestionCustomValues()->whereShort('sun-boiler')->first();
+
+                                $mapping = [
+                                    $waterValue->id => [
+                                        $heatSourceWaterQuestion->short => $heatSourceWaterAnswer
+                                    ],
+                                    $heatingValue->id => [
+                                        $heatSourceQuestion->short => $heatSourceAnswer
+                                    ],
+                                    $bothValue->id => [
+                                        $heatSourceQuestion->short => $heatSourceAnswer,
+                                        $heatSourceWaterQuestion->short => $heatSourceWaterAnswer
+                                    ],
+                                ];
+
+
+                                if ($value != $noneValue->id) {
+                                    foreach ($mapping[$value] as $toolQuestionShort => $value) {
+                                        $newContent[$toolQuestionShort] = $value->short;
+                                    }
+                                }
+                            } else if ($toolQuestion instanceof ToolQuestion) {
                                 $newContent[$toolQuestion->short] = $value;
                             } else {
                                 $missingSaveIn[$saveIn] = $saveIn;
@@ -99,6 +144,6 @@ class ExampleBuildingContentRestructure extends Command
                 }
             }
         }
-        dd($missingSaveIn);
+        dd($newContent);
     }
 }

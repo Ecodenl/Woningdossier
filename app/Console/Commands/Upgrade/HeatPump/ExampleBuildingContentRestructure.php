@@ -48,23 +48,16 @@ class ExampleBuildingContentRestructure extends Command
      */
     public function handle()
     {
-        $missingSaveIn = [];
 
         $exampleBuildings = ExampleBuilding::with('contents')->get();
-
-        $newContent = [];
-
-        $missingSaveIn = [];
-
-
-        // todo: this has been refactored to the heat-source heat-source-warm-tapwater
-        // which means we should map the eb the same as the tool questions
-        // "building_services.3.service_value_id" => "building_services.3.service_value_id"
+        $bar = $this->output->createProgressBar(count($exampleBuildings));
+        $bar->start();
 
         foreach ($exampleBuildings as $exampleBuilding) {
             foreach ($exampleBuilding->contents as $content) {
+                // reset the content each time
+                $newContent = [];
                 foreach ($content->content as $stepSlug => $dataForStep) {
-
                     foreach ($dataForStep as $subStepSlug => $dataForSubStep) {
                         foreach (Arr::dot($dataForSubStep) as $saveIn => $value) {
 
@@ -77,7 +70,7 @@ class ExampleBuildingContentRestructure extends Command
 
                             if (stripos($saveIn, 'considerables') !== false && stripos($saveIn, 'is_considering') === false) {
                                 // fix considerable
-                                $saveIn.='.is_considering';
+                                $saveIn .= '.is_considering';
                             }
                             if (Str::startsWith($saveIn, 'element')) {
                                 if (stripos($saveIn, 'extra') === false && stripos($saveIn, 'element_value_id') === false) {
@@ -130,20 +123,22 @@ class ExampleBuildingContentRestructure extends Command
 
 
                                 if ($value != $noneValue->id) {
-                                    foreach ($mapping[$value] as $toolQuestionShort => $value) {
-                                        $newContent[$toolQuestionShort] = $value->short;
+                                    foreach ($mapping[$value] as $toolQuestionShort => $toolQuestionCustomValue) {
+                                        $newContent[$toolQuestionShort] = $toolQuestionCustomValue->short;
                                     }
                                 }
+
                             } else if ($toolQuestion instanceof ToolQuestion) {
                                 $newContent[$toolQuestion->short] = $value;
-                            } else {
-                                $missingSaveIn[$saveIn] = $saveIn;
                             }
                         }
                     }
                 }
+                // update the content of the example building content
+                $content->update(['content' => $newContent]);
             }
+            $bar->advance();
         }
-        dd($newContent);
+        $bar->finish();
     }
 }

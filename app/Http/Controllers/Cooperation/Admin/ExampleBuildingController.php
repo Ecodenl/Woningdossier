@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
@@ -12,6 +13,8 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\Service;
+use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Services\ContentStructureService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
@@ -26,20 +29,13 @@ class ExampleBuildingController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
-        $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id', 'asc')
-            ->orderBy('order', 'asc');
+        $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id')
+            ->orderBy('order');
 
-        if (false === stristr(HoomdossierSession::currentRole(), 'super')) {
+        if(HoomdossierSession::getRole(true)->name !== RoleHelper::ROLE_SUPER_ADMIN) {
             $exampleBuildingsQuery->forMyCooperation();
         }
 
-        $contentStructure = ContentStructureService::init(
-            ToolHelper::getContentStructure()
-        )->applicableForExampleBuildings();
-
-
-        $rows[] = ['Naam', 'Bouwjaar', ...collect($contentStructure)->pluck('*.*.label')->flatten()->filter()->toArray()];
-//        dd($rows);
         $exampleBuildings = $exampleBuildingsQuery->get();
 
         return view('cooperation.admin.example-buildings.index', compact('exampleBuildings', 'cooperation'));
@@ -51,8 +47,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public
-    function create(Cooperation $cooperation)
+    public function create(Cooperation $cooperation)
     {
         $buildingTypes = BuildingType::all();
 
@@ -79,8 +74,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public
-    function store(ExampleBuildingRequest $request)
+    public function store(ExampleBuildingRequest $request)
     {
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
@@ -137,14 +131,9 @@ class ExampleBuildingController extends Controller
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
-        $contentStructure = ContentStructureService::init(
-            ToolHelper::getContentStructure()
-        )->applicableForExampleBuildings();
-
         return view('cooperation.admin.example-buildings.edit',
             compact(
-                'exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'
-            )
+                 'exampleBuilding', 'buildingTypes', 'cooperations'            )
         );
     }
 

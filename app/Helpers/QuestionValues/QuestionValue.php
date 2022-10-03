@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class QuestionValue
 {
-    public static function getQuestionValues(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource, ?Collection $answers = null): Collection
+    public static function getQuestionValues(ToolQuestion $toolQuestion, Building $building = null, InputSource $inputSource = null, ?Collection $answers = null): Collection
     {
         $questionValues = $toolQuestion->getQuestionValues();
 
@@ -26,20 +26,22 @@ class QuestionValue
                 $answers
             );
         }
+        if ($building instanceof Building && $inputSource instanceof InputSource) {
 
-        $evaluator = ConditionEvaluator::init()
-            ->inputSource($inputSource)
-            ->building($building);
+            $evaluator = ConditionEvaluator::init()
+                ->inputSource($inputSource)
+                ->building($building);
 
-        foreach ($questionValues as $index => $questionValue) {
-            if (! empty($questionValue['conditions'])) {
-                $passed = $evaluator->evaluateCollection(
-                    $questionValue['conditions'],
-                    $evaluator->getToolAnswersForConditions($questionValue['conditions'])->merge($answers)
-                );
+            foreach ($questionValues as $index => $questionValue) {
+                if (!empty($questionValue['conditions'])) {
+                    $passed = $evaluator->evaluateCollection(
+                        $questionValue['conditions'],
+                        $evaluator->getToolAnswersForConditions($questionValue['conditions'])->merge($answers)
+                    );
 
-                if (! $passed) {
-                    $questionValues->forget($index);
+                    if (!$passed) {
+                        $questionValues->forget($index);
+                    }
                 }
             }
         }

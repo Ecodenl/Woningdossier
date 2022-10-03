@@ -1710,6 +1710,25 @@ class SubSteppablesTableSeeder extends Seeder
                     ],
                 ],
             ],
+            'ventilation' => [
+                'Hood vragen' => [
+                    [
+                        'morph' => ToolLabel::findByShort('ventilation-how'),
+                        'size' => 'col-span-12',
+                        'conditions' => [] // should have them
+                    ],
+                    [
+                        'morph' => ToolLabel::findByShort('ventilation-living-situation'),
+                        'size' => 'col-span-12',
+                        'conditions' => [] // should have them
+                    ],
+                    [
+                        'morph' => ToolLabel::findByShort('ventilation-usage'),
+                        'size' => 'col-span-12',
+                        'conditions' => [] // should have them
+                    ],
+                ],
+            ],
         ]);
     }
 

@@ -63,16 +63,13 @@ class ExampleBuildingService
 
         // new: merge-like behavior
         if ($exampleBuilding->isSpecific()) {
-            $genericExampleBuilding = ExampleBuilding::generic()->where(
-                'building_type_id',
-                $exampleBuilding->building_type_id,
-            )->first();
-            self::log(
-                "Example building is specific. Generic counterpart is " . $genericExampleBuilding->name
-            );
-            $genericContent = $genericExampleBuilding->getContentForYear(
-                $buildYear
-            );
+            $genericExampleBuilding = ExampleBuilding::generic()
+                ->where('building_type_id', $exampleBuilding->building_type_id)
+                ->first();
+            self::log("Example building is specific. Generic counterpart is " . $genericExampleBuilding->name);
+
+            $genericContent = $genericExampleBuilding->getContentForYear($buildYear);
+
             if ($genericContent instanceof ExampleBuildingContent) {
                 self::log("We merge the contents");
                 $exampleData = array_replace_recursive(
@@ -90,6 +87,7 @@ class ExampleBuildingService
 
         Log::debug($exampleBuilding);
 
+        // basically; tool questions that can only be updated when the user his own filled in answers are empty
         $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
 
         foreach ($exampleData as $toolQuestionShort => $value) {
@@ -120,6 +118,7 @@ class ExampleBuildingService
         }
 
 
+        // the building type is a part of the example building, not the example building its content.
        ToolQuestionService::init(ToolQuestion::findByShort('building-type'))
            ->building($building)
            ->currentInputSource($inputSource)

@@ -44,7 +44,7 @@ class ExampleBuildingService
         $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(InputSource::MASTER_SHORT);
 
         // Clear the current example building data
-        self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ")");
+        self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name. ") building id {$building->id}");
         $contents = $exampleBuilding->getContentForYear($buildYear);
 
         if (!$contents instanceof ExampleBuildingContent) {

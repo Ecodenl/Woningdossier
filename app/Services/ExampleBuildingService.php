@@ -101,15 +101,10 @@ class ExampleBuildingService
             if(in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
                 // the tool question is fixed one, lets not save it before the last check
                 $shouldSave = false;
+                // now check if the user has already answered the question with a non null value
                 if (is_null($building->getAnswer($initiatingInputSource, $toolQuestion))) {
-                    // the tool question answer is null, meaning we can set it.
+                    // the tool question answer is null, meaning we can update it with the exampel building value
                     $shouldSave = true;
-                }
-            }
-
-            if (in_array($toolQuestionShort, ['surface', 'build-year'])) {
-                if (empty($value)) {
-                    $shouldSave = false;
                 }
             }
 

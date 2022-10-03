@@ -37,8 +37,8 @@ class CooperationsTableSeeder extends Seeder
                 'slug' => 'energiekschiedam',
             ],
             [
-                'name' => 'Duurzaamheidsloket West Brabant',
-                'slug' => 'DuurzaamheidsloketWestBrabant',
+                'name' => 'West-Brabant Woont Slim',
+                'slug' => 'west-brabantwoontslim',
             ],
             [
                 'name' => '040energie',

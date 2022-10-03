@@ -11,13 +11,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
-use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -35,9 +35,8 @@ class UserController extends Controller
             }])
             ->orderByDesc('created_at')
             ->get();
-        $roles = Role::all();
 
-        return view('cooperation.admin.cooperation.users.index', compact('roles', 'users'));
+        return view('cooperation.admin.cooperation.users.index', compact('users'));
     }
 
     public function create(Cooperation $cooperation)
@@ -117,7 +116,7 @@ class UserController extends Controller
         $token = app('auth.password.broker')->createToken($account);
 
         // send a mail to the user
-        \Mail::to($account->email)->sendNow(new UserCreatedEmail($cooperation, $account->user(), $token));
+        Mail::to($account->email)->sendNow(new UserCreatedEmail($cooperation, $account->user(), $token));
     }
 
     /**

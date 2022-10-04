@@ -41,7 +41,6 @@ class QuestionValue
 
     public function forBuilding(Building $building): self
     {
-        Log::debug('Building set');
         $this->building = $building;
         return $this;
     }
@@ -60,7 +59,6 @@ class QuestionValue
 
     public function getQuestionValues(): Collection
     {
-        Log::debug("{$this->toolQuestion->short}");
         $toolQuestion = $this->toolQuestion;
         $questionValues = $toolQuestion->getQuestionValues();
 

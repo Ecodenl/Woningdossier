@@ -7,24 +7,15 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Traits\FluentCaller;
+use App\Traits\HasDynamicAnswers;
 use Illuminate\Support\Collection;
 
-class SpecificExampleBuilding
+class SpecificExampleBuilding extends QuestionValuable
 {
-    public Cooperation $cooperation;
-    public array $evaluatableAnswers;
-    public array $questionValues;
-
-    public function __construct(Cooperation $cooperation, array $questionValues, array $evaluatableAnswers)
-    {
-        $this->cooperation = $cooperation;
-        $this->questionValues = $questionValues;
-        $this->evaluatableAnswers = $evaluatableAnswers;
-    }
-
     public function getQuestionValues(Collection $questionValues): Collection
     {
-        $buildingTypeId = $this->evaluatableAnswers['building-type'];
+        $buildingTypeId = $this->getAnswer('building-type');
         $cooperationId = $this->cooperation->id;
 
         // Building type ID can be null, for example if we use $building->getAnswerForAllInputSources, it can

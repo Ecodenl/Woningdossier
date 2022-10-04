@@ -2,41 +2,22 @@
 
 namespace App\Helpers\QuestionValues;
 
-use App\Models\Building;
 use App\Models\Cooperation;
-use App\Models\InputSource;
-use App\Models\ToolQuestion;
 use App\Traits\FluentCaller;
+use App\Traits\HasDynamicAnswers;
+use Illuminate\Support\Collection;
 
 class QuestionValuable
 {
-    use FluentCaller;
+    use FluentCaller, HasDynamicAnswers;
 
-    public ToolQuestion $toolQuestion;
     public Cooperation $cooperation;
-    public array $evaluatableAnswers;
+    public array $questionValues;
 
-    // this bool will determine if we will "dumbly" return all the available options
-    // or check if we should only return specific options.
-    public bool $customEvaluation = false;
-    public Building $building;
-    public InputSource $inputSource;
-
-    public function __construct(Cooperation $cooperation, ToolQuestion $toolQuestion)
+    public function __construct(Cooperation $cooperation, array $questionValues, Collection $answers)
     {
         $this->cooperation = $cooperation;
-        $this->toolQuestion = $toolQuestion;
+        $this->questionValues = $questionValues;
+        $this->answers = $answers;
     }
-
-    public function evaluateableAnswers(array $answers)
-    {
-        $this->evaluatableAnswers = $answers;
-    }
-
-    public function withCustomEvaluation(): self
-    {
-        $this->customEvaluation = true;
-        return $this;
-    }
-
 }

@@ -82,6 +82,7 @@ class ToolQuestionsTableSeeder extends Seeder
         // Sun boiler
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
 
+
         // Input sources
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
@@ -1752,6 +1753,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.facade_plastered_surface_id',
                 'translation' => 'Wat is de oppervlakte van de geschilderde gevel?',
                 'short' => 'wall-facade-plastered-painted-surface',
+                'tool_question_values' => \App\Models\FacadePlasteredSurface::all(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1761,6 +1763,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.facade_damaged_paintwork_id',
                 'translation' => 'Is er schade aan het gevelschilderwerk?',
                 'short' => 'damaged-paintwork',
+                'tool_question_values' => \App\Models\FacadeDamagedPaintwork::all(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,

@@ -10,14 +10,11 @@ use Illuminate\Support\Collection;
 
 class BuildingType implements ShouldReturnQuestionValues
 {
-    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource, ?Collection $answers = null): Collection
+    public static function getQuestionValues(Collection $questionValues, Building $building): Collection
     {
         $conditionalQuestion = ToolQuestion::findByShort('building-type-category');
 
-        $buildingTypeCategoryId = $building->getAnswer(
-            $inputSource,
-            $conditionalQuestion
-        );
+        $buildingTypeCategoryId = $building->getAnswer($inputSource, $conditionalQuestion);
 
         // only one option would mean there are no multiple building types for the category, thus the page is redundant.
         // so multiple building types = next step.

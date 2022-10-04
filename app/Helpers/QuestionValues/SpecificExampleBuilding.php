@@ -3,18 +3,29 @@
 namespace App\Helpers\QuestionValues;
 
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use Illuminate\Support\Collection;
 
-class SpecificExampleBuilding implements ShouldReturnQuestionValues
+class SpecificExampleBuilding
 {
-    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource, ?Collection $answers = null): Collection
+    public Cooperation $cooperation;
+    public array $evaluatableAnswers;
+    public array $questionValues;
+
+    public function __construct(Cooperation $cooperation, array $questionValues, array $evaluatableAnswers)
     {
-        $conditionalQuestion = ToolQuestion::findByShort('building-type');
-        $cooperationId = $building->user->cooperation_id;
-        $buildingTypeId = $building->getAnswer($inputSource, $conditionalQuestion);
+        $this->cooperation = $cooperation;
+        $this->questionValues = $questionValues;
+        $this->evaluatableAnswers = $evaluatableAnswers;
+    }
+
+    public function getQuestionValues(Collection $questionValues): Collection
+    {
+        $buildingTypeId = $this->evaluatableAnswers['building-type'];
+        $cooperationId = $this->cooperation->id;
 
         // Building type ID can be null, for example if we use $building->getAnswerForAllInputSources, it can
         // end up with an input source that might not have answered this question yet. Since we only want

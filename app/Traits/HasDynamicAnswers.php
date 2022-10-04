@@ -17,7 +17,7 @@ trait HasDynamicAnswers
     /**
      * Get the answer, either dynamic if set, otherwise from the given building.
      *
-     * @param  string  $toolQuestion
+     * @param string $toolQuestion
      *
      * @return array|mixed
      */

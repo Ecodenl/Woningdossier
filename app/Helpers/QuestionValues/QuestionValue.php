@@ -6,37 +6,37 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Traits\FluentCaller;
+use App\Traits\HasDynamicAnswers;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class QuestionValue
+class QuestionValue extends QuestionValuable
 {
-    public static function getQuestionValues(ToolQuestion $toolQuestion, Building $building = null, InputSource $inputSource = null, ?Collection $answers = null): Collection
+    public function getQuestionValues(): Collection
     {
+        $toolQuestion = $this->toolQuestion;
         $questionValues = $toolQuestion->getQuestionValues();
 
         $className = Str::studly($toolQuestion->short);
         $questionValuesClass = "App\\Helpers\\QuestionValues\\{$className}";
 
         if (class_exists($questionValuesClass)) {
-            $questionValues = $questionValuesClass::getQuestionValues(
-                $questionValues,
-                $building,
-                $inputSource,
-                $answers
-            );
+            $questionValues = $questionValuesClass::init($questionValues, $this->cooperation, $this->evaluatableAnswers)
+                ->getQuestionValues();
         }
-        if ($building instanceof Building && $inputSource instanceof InputSource) {
+
+        if ($this->withCustomEvaluation()) {
 
             $evaluator = ConditionEvaluator::init()
-                ->inputSource($inputSource)
-                ->building($building);
+                ->inputSource($this->inputSource)
+                ->building($this->building);
 
             foreach ($questionValues as $index => $questionValue) {
                 if (!empty($questionValue['conditions'])) {
                     $passed = $evaluator->evaluateCollection(
                         $questionValue['conditions'],
-                        $evaluator->getToolAnswersForConditions($questionValue['conditions'])->merge($answers)
+                        $evaluator->getToolAnswersForConditions($questionValue['conditions'])->merge($this->evaluatableAnswers)
                     );
 
                     if (!$passed) {

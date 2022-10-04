@@ -187,7 +187,12 @@ class ToolQuestionHelper
         }
 
         if (!empty($answer) || (is_numeric($answer) && (int)$answer === 0)) {
-            $questionValues = QuestionValue::getQuestionValues($toolQuestion, $building, $inputSource);
+            $questionValues = QuestionValue::init($building->user->cooperation, $toolQuestion)
+                ->forInputSource($inputSource)
+                ->forBuilding($building)
+                ->withCustomEvaluation()
+                ->getQuestionValues();
+
 
             if ($questionValues->isNotEmpty()) {
                 $humanReadableAnswers = [];

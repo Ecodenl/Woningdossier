@@ -1,10 +1,10 @@
 @php
-    $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
-        $toolQuestion,
-        $building,
-        $masterInputSource,
-        collect($this->prepareAnswersForEvaluation())
-    );
+    $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
+                       ->forInputSource($masterInputSource)
+                       ->forBuilding($building)
+                       ->answers(collect($this->prepareAnswersForEvaluation()))
+                       ->withCustomEvaluation()
+                       ->getQuestionValues();
 @endphp
 @component('cooperation.frontend.layouts.components.alpine-select')
     <select id="{{$toolQuestion->short}}" class="form-input hidden" wire:model="filledInAnswers.{{$toolQuestion->short}}">

@@ -161,10 +161,15 @@ class Building extends Model
 
                 // these contain the human-readable answers, we need this because the answer for a yes, no, unknown
                 // could be a 1,2,3.
-                $questionValues = QuestionValue::getQuestionValues($toolQuestion, $this, $inputSource)->pluck(
-                    'name',
-                    'value'
-                );
+                $questionValues = QuestionValue::init($this->user->cooperation, $toolQuestion)
+                    ->forInputSource($inputSource)
+                    ->forBuilding($this)
+                    ->withCustomEvaluation()
+                    ->getQuestionValues()
+                    ->pluck(
+                        'name',
+                        'value'
+                    );
 
                 // in case the saved value is actually a array, loop through them and select them one by one.
                 // in most cases this isnt neceserry, because the first $values at line 156 holds them all
@@ -222,6 +227,7 @@ class Building extends Model
     {
         // TODO: Should this check `for_specific_input_source`?
 
+        \Illuminate\Support\Facades\Log::debug("{$toolQuestion->short} in getAnswer");
         $answer = null;
         $where['input_source_id'] = $inputSource->id;
         // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)

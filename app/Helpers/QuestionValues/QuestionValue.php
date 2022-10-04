@@ -10,6 +10,7 @@ use App\Models\ToolQuestion;
 use App\Traits\FluentCaller;
 use App\Traits\HasDynamicAnswers;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class QuestionValue
@@ -23,13 +24,26 @@ class QuestionValue
     // this bool will determine if we will "dumbly" return all the available options
     // or check if we should only return specific options.
     public bool $customEvaluation = false;
-    public Building $building;
+    public ?Building $building;
     public InputSource $inputSource;
 
     public function __construct(Cooperation $cooperation, ToolQuestion $toolQuestion)
     {
         $this->cooperation = $cooperation;
         $this->toolQuestion = $toolQuestion;
+    }
+
+    public function forInputSource(InputSource $inputSource): self
+    {
+        $this->inputSource = $inputSource;
+        return $this;
+    }
+
+    public function forBuilding(Building $building): self
+    {
+        Log::debug('Building set');
+        $this->building = $building;
+        return $this;
     }
 
     public function answers(Collection $answers): self
@@ -46,6 +60,7 @@ class QuestionValue
 
     public function getQuestionValues(): Collection
     {
+        Log::debug("{$this->toolQuestion->short}");
         $toolQuestion = $this->toolQuestion;
         $questionValues = $toolQuestion->getQuestionValues();
 
@@ -53,11 +68,17 @@ class QuestionValue
         $questionValuesClass = "App\\Helpers\\QuestionValues\\{$className}";
 
         if (class_exists($questionValuesClass)) {
-            $questionValues = $questionValuesClass::init($this->cooperation, $questionValues, $this->answers)
-                ->getQuestionValues();
+            $questionValues = $questionValuesClass::init($this->cooperation, $questionValues, $this->answers);
+            if ($this->building instanceof Building) {
+                $questionValues
+                    ->forBuilding($this->building)
+                    ->forInputSource($this->inputSource);
+            }
+
+            $questionValues = $questionValues->getQuestionValues();
         }
 
-        if ($this->withCustomEvaluation()) {
+        if ($this->customEvaluation) {
 
             $evaluator = ConditionEvaluator::init()
                 ->inputSource($this->inputSource)

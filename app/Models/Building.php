@@ -226,8 +226,6 @@ class Building extends Model
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
         // TODO: Should this check `for_specific_input_source`?
-
-        \Illuminate\Support\Facades\Log::debug("{$toolQuestion->short} in getAnswer");
         $answer = null;
         $where['input_source_id'] = $inputSource->id;
         // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)

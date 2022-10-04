@@ -88,7 +88,7 @@ class QuestionValue
                 if (!empty($questionValue['conditions'])) {
                     $passed = $evaluator->evaluateCollection(
                         $questionValue['conditions'],
-                        $evaluator->getToolAnswersForConditions($questionValue['conditions'])->merge($this->evaluatableAnswers)
+                        $evaluator->getToolAnswersForConditions($questionValue['conditions'])->merge($this->answers)
                     );
 
                     if (!$passed) {

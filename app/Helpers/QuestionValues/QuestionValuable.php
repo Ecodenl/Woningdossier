@@ -7,14 +7,14 @@ use App\Traits\FluentCaller;
 use App\Traits\HasDynamicAnswers;
 use Illuminate\Support\Collection;
 
-class QuestionValuable
+abstract class QuestionValuable implements ShouldReturnQuestionValues
 {
     use FluentCaller, HasDynamicAnswers;
 
     public Cooperation $cooperation;
-    public array $questionValues;
+    public Collection $questionValues;
 
-    public function __construct(Cooperation $cooperation, array $questionValues, Collection $answers)
+    public function __construct(Cooperation $cooperation, Collection $questionValues, Collection $answers = null)
     {
         $this->cooperation = $cooperation;
         $this->questionValues = $questionValues;

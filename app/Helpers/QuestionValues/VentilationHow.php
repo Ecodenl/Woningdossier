@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 
 class VentilationHow implements ShouldReturnQuestionValues
 {
-    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource): Collection
+    public function getQuestionValues(): Collection
     {
         $values = collect();
 

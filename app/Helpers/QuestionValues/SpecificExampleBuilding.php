@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 
 class SpecificExampleBuilding extends QuestionValuable
 {
-    public function getQuestionValues(Collection $questionValues): Collection
+    public function getQuestionValues(): Collection
     {
         $buildingTypeId = $this->getAnswer('building-type');
         $cooperationId = $this->cooperation->id;

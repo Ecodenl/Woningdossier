@@ -53,7 +53,7 @@ class QuestionValue
         $questionValuesClass = "App\\Helpers\\QuestionValues\\{$className}";
 
         if (class_exists($questionValuesClass)) {
-            $questionValues = $questionValuesClass::init($questionValues, $this->cooperation, $this->answers)
+            $questionValues = $questionValuesClass::init($this->cooperation, $questionValues, $this->answers)
                 ->getQuestionValues();
         }
 

@@ -1818,6 +1818,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_insulated_glazings.{$hrppGlassOnly->id}.insulating_glazing_id",
                 'translation' => 'HR++ glas: Wat voor glas is er nu?',
                 'short' => 'hrpp-glass-current',
+                'tool_question_values' => \App\Models\InsulatingGlazing::all(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1827,6 +1828,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_insulated_glazings.{$hrppGlassOnly->id}.building_heating_id",
                 'translation' => 'HR++ glas: Zijn de kamers verwarmd?',
                 'short' => 'hrpp-glass-rooms-heated',
+                'tool_question_values' => \App\Models\BuildingHeating::all(),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -1863,6 +1865,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "save_in" => "building_insulated_glazings.{$hrppGlassFrames->id}.insulating_glazing_id",
                 "translation" => "HR++ glas + kozijn: Wat voor glas is er nu?",
                 "short" => "hrpp-glass-frame-current-glass",
+                'tool_question_values' => \App\Models\InsulatingGlazing::all(),
             ],
             [
                 "data_type" => Caster::IDENTIFIER,
@@ -1872,6 +1875,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "save_in" => "building_insulated_glazings.{$hrppGlassFrames->id}.building_heating_id",
                 "translation" => "HR++ glas + kozijn: Zijn de kamers verwarmd?",
                 "short" => "hrpp-glass-frame-rooms-heated",
+                'tool_question_values' => \App\Models\BuildingHeating::all(),
             ],
             [
                 "data_type" => Caster::FLOAT,
@@ -1908,6 +1912,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "save_in" => "building_insulated_glazings.{$hr3pFrames->id}.insulating_glazing_id",
                 "translation" => "HR+++ glas + kozijn: Wat voor glas is er nu?",
                 "short" => "hr3p-glass-frame-current-glass",
+                'tool_question_values' => \App\Models\InsulatingGlazing::all(),
             ],
             [
                 "data_type" => Caster::IDENTIFIER,
@@ -1917,6 +1922,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "save_in" => "building_insulated_glazings.{$hr3pFrames->id}.building_heating_id",
                 "translation" => "HR+++ glas + kozijn: Zijn de kamers verwarmd?",
                 "short" => "hr3p-glass-frame-rooms-heated",
+                'tool_question_values' => \App\Models\BuildingHeating::all(),
             ],
             [
                 "data_type" => Caster::FLOAT,
@@ -1953,6 +1959,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "save_in" => "building_insulated_glazings.{$glassInLead->id}.insulating_glazing_id",
                 "translation" => "Glas-in-lood vervangen: Wat voor glas is er nu?",
                 "short" => "glass-in-lead-replace-current-class",
+                'tool_question_values' => \App\Models\InsulatingGlazing::all(),
             ],
             [
                 "data_type" => Caster::IDENTIFIER,
@@ -1962,6 +1969,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "save_in" => "building_insulated_glazings.{$glassInLead->id}.building_heating_id",
                 "translation" => "Glas-in-lood vervangen: Zijn de kamers verwarmd?",
                 "short" => "glass-in-lead-rooms-heated",
+                'tool_question_values' => \App\Models\BuildingHeating::all(),
             ],
             [
                 "data_type" => Caster::FLOAT,
@@ -1998,6 +2006,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_elements.{$frame->id}.element_value_id",
                 'translation' => 'Welke kozijnen heb je in jouw huis?',
                 'short' => 'frame-type',
+                'tool_question_values' => \App\Models\ElementValue::where('element_id', $frame->id)->get(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2007,6 +2016,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_elements.{$woodElements->id}.element_value_id",
                 'translation' => 'Welke andere houten bouwdelen zijn aanwezig in jouw huis?',
                 'short' => 'wood-elements',
+                'tool_question_values' => \App\Models\ElementValue::where('element_id', $woodElements->id)->get(),
             ],
             [
                 'data_type' => Caster::STRING,
@@ -2025,6 +2035,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_paintwork_statuses.paintwork_status_id',
                 'translation' => 'Is verfschade waarneembaar? (barsten / afbladderen / blazen)',
                 'short' => 'paintwork-status',
+                'tool_question_values' => \App\Models\PaintworkStatus::all(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2034,6 +2045,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_paintwork_statuses.wood_rot_status_id',
                 'translation' => 'Is houtrot waarneembaar?',
                 'short' => 'wood-rot-status',
+                'tool_question_values' => \App\Models\WoodRotStatus::all(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2070,6 +2082,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_elements.{$crawlspace->id}.element_value_id",
                 'translation' => 'Hoe hoog is de kruipruimte?',
                 'short' => 'crawlspace-height',
+                'tool_question_values' => \App\Models\ElementValue::where('element_id', $crawlspace->id)->get(),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2106,6 +2119,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_roof_types.1.element_value_id',
                 'translation' => 'is het hellende dak geïsoleerd?',
                 'short' => 'is-pitched-roof-insulated',
+                'tool_question_values' => Element::where('short', 'roof-insulation')->first()->values,
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2160,6 +2174,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_roof_types.1.extra.measure_application_id',
                 'translation' => 'Hoe wil je het schuine dak isoleren? ',
                 'short' => 'pitched-roof-insulation',
+                'tool_question_values' => MeasureApplication::whereIn('short', ['roof-insulation-pitched-inside','roof-insulation-pitched-replace-tiles'])->get(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2169,6 +2184,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_roof_types.1.building_heating_id',
                 'translation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
                 'short' => 'pitched-roof-heating',
+                'tool_question_values' => BuildingHeating::all(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2178,6 +2194,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_roof_types.2.element_value_id',
                 'translation' => 'Is het platte dak geïsoleerd?',
                 'short' => 'is-flat-roof-insulated',
+                'tool_question_values' => Element::where('short', 'roof-insulation')->first()->values,
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2232,6 +2249,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_roof_types.2.extra.measure_application_id',
                 'translation' => 'Hoe wil je het platte dak isoleren? ',
                 'short' => 'flat-roof-insulation',
+                'tool_question_values' => MeasureApplication::whereIn('short', ['roof-insulation-flat-current','roof-insulation-flat-replace-current'])->get(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2241,6 +2259,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_roof_types.2.building_heating_id',
                 'translation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
                 'short' => 'flat-roof-heating',
+                'tool_question_values' => BuildingHeating::all(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2277,6 +2296,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_pv_panels.pv_panel_orientation_id',
                 'translation' => 'Wat is de oriëntatie van de panelen?',
                 'short' => 'solar-panel-orientation',
+                'tool_question_values' => PvPanelOrientation::all(),
             ],
             [
                 'data_type' => Caster::INT,

@@ -1,3 +1,25 @@
+@php
+    $buildYear = $content->build_year ?? 'new';
+@endphp
+
+@if($buildYear == 'new')
+    <div class="alert alert-danger mt-3">
+        @lang('cooperation/admin/example-buildings.edit.new-warning')
+    </div>
+@endif
+
+
+<div class="form-group {{ $errors->has('contents.new.build_year') ? ' has-error' : '' }}">
+    <label for="build_year">@lang('cooperation/admin/example-buildings.form.build-year')</label>
+
+
+    <input id="build_year" type="number" min="0" wire:model="contents.new.build_year" class="form-control"/>
+    @if ($errors->has('contents.new.build_year'))
+        <span class="help-block">
+            <strong>{{ $errors->first('contents.new.build_year') }}</strong>
+        </span>
+    @endif
+</div>
 
 <table class="table table-responsive table-condensed">
     <thead>
@@ -7,22 +29,7 @@
     </tr>
     </thead>
     <tbody>
-    @php
-        $buildYear = $content->build_year ?? 'new';
-    @endphp
     @foreach($exampleBuildingSteps as $step)
-        @if($buildYear === "new" && $loop->first)
-        <tr>
-            <td>
-                Bouw jaar
-            </td>
-            <td>
-                <div class="form-group">
-                    <input type="text" class="form-control" wire:model="contents.new.build_year">
-                </div>
-            </td>
-        </tr>
-        @endif
         <tr>
             <td colspan="2">
                 <h2>{{$step->name}}</h2>
@@ -75,8 +82,7 @@
                                                                ->answers(collect($contents[$buildYear]))
                                                                ->getQuestionValues();
                                         @endphp
-                                        <select class="form-control"
-                                                wire:model  ="{{$inputName}}"
+                                        <select class="form-control" wire:model="{{$inputName}}"
                                                 @if($multiple) multiple="multiple" @endif >
                                             @foreach($questionValues as $toolQuestionValue)
                                                 <option value="{{ $toolQuestionValue['value'] }}">

@@ -28,7 +28,7 @@
     @foreach($exampleBuildingSteps as $step)
         <tr>
             <td colspan="2">
-                <h4>{{$step->name}}</h4>
+                <h2>{{$step->name}}</h2>
             </td>
         </tr>
         @foreach($step->subSteps as $subStep)
@@ -45,7 +45,7 @@
 
                 <tr>
                     <td>
-                        {{$subStep->name}}
+                        {{$subSteppable->name}}
                     </td>
                     <td>
 
@@ -56,15 +56,20 @@
                                     <span class="input-group-addon">{{$subSteppable->unit_of_measure}}</span>
                                     @endif
                                     @php
+                                        $inputName = ['contents', $content->build_year, $subSteppable->short];
                                         $select = false;
                                         $multiple = false;
                                         if(in_array($subSteppablePivot->toolQuestionType->short, ['radio-icon', 'radio-icon-small', 'radio', 'dropdown'])) {
                                             $select = true;
                                         }
+
                                         if(in_array($subSteppablePivot->toolQuestionType->short, ['checkbox-icon', 'multi-dropdown'])) {
                                             $select = true;
                                             $multiple = true;
+                                            $inputName[] = '*';
                                         }
+
+                                        $inputName = implode('.', $inputName);
                                     @endphp
 
                                     @if($select)
@@ -73,13 +78,17 @@
                                                                ->answers(collect($contents[$content->build_year]))
                                                                ->getQuestionValues();
                                         @endphp
-                                        <select class="form-control" name="contents.{{$content->build_year}}.{{$subSteppable->short}}" @if($multiple) multiple="multiple" @endif >
+                                        <select class="form-control"
+                                                name="{{$inputName}}"
+                                                @if($multiple) multiple="multiple" @endif >
                                             @foreach($questionValues as $toolQuestionValue)
                                                 <option value="{{ $toolQuestionValue['value'] }}">
                                                     {{ $toolQuestionValue['name'] }}
                                                 </option>
                                             @endforeach
                                         </select>
+                                    @else
+                                        <input type="text" class="form-control" wire:model="{{$inputName}}">
                                     @endif
 
                                     @if(isset($rowData['unit']))

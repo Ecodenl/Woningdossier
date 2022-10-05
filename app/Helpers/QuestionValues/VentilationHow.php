@@ -9,7 +9,7 @@ use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use Illuminate\Support\Collection;
 
-class VentilationHow implements ShouldReturnQuestionValues
+class VentilationHow extends QuestionValuable
 {
     public function getQuestionValues(): Collection
     {

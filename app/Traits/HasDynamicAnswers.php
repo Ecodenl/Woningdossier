@@ -26,11 +26,6 @@ trait HasDynamicAnswers
     {
         $answers = is_null($this->answers) ? collect() : $this->answers;
 
-
-        if ($toolQuestion == 'building-type-category') {
-            dd($answers);
-        }
-
         return $answers->has($toolQuestion) ? $answers->get($toolQuestion) :
             $this->getBuildingAnswer($toolQuestion);
     }

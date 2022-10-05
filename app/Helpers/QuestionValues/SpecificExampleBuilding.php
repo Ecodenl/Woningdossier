@@ -15,7 +15,6 @@ class SpecificExampleBuilding extends QuestionValuable
 {
     public function getQuestionValues(): Collection
     {
-        dd('beiur');
         $buildingTypeId = $this->getAnswer('building-type');
         $cooperationId = $this->cooperation->id;
 

@@ -36,15 +36,11 @@ class Form extends Component
         $this->cooperations = Cooperation::all();
         $this->exampleBuildingValues = $exampleBuilding->attributesToArray();
 
-        foreach ($exampleBuilding->contents as $content) {
-            $this->contents[$content->build_year] = $content->content;
-        }
-
         $this->contentStructure = [];
 
         $this->exampleBuildingSteps = Step::whereIn('short', [
             'building-data', 'usage-quick-scan', 'living-requirements', 'residential-status',
-            'ventilation'
+            'ventilation', 'wall-insulation', 'insulated-glazing'
         ])
             ->with(['subSteps.subSteppables' => function ($query) {
                 $query->where('sub_steppable_type', ToolQuestion::class);
@@ -60,7 +56,11 @@ class Form extends Component
             }
         }
 
-        dd($this->contents[1800], $this->contentStructure);
+        foreach ($exampleBuilding->contents as $content) {
+            // make sure it has all the available tool questions
+            $this->contents[$content->build_year] = array_merge($this->contentStructure, $content->content);
+        }
+
     }
 
     public function save()

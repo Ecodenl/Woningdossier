@@ -1817,7 +1817,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "building_insulated_glazings.{$hrppGlassOnly->id}.insulating_glazing_id",
                 'translation' => 'HR++ glas: Wat voor glas is er nu?',
-                'short' => 'hrpp-glass-current',
+                'short' => 'hrpp-glass-only-current',
                 'tool_question_values' => \App\Models\InsulatingGlazing::all(),
             ],
             [
@@ -1827,7 +1827,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "building_insulated_glazings.{$hrppGlassOnly->id}.building_heating_id",
                 'translation' => 'HR++ glas: Zijn de kamers verwarmd?',
-                'short' => 'hrpp-glass-rooms-heated',
+                'short' => 'hrpp-glass-only-rooms-heated',
                 'tool_question_values' => \App\Models\BuildingHeating::all(),
             ],
             [

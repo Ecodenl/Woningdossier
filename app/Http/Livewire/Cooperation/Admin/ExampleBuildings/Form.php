@@ -16,6 +16,7 @@ class Form extends Component
     public $cooperations;
     public $exampleBuildingSteps;
     public $contents = [];
+    public $contentStructure;
 
     public $exampleBuildingValues = [
         'name' => [],
@@ -39,6 +40,8 @@ class Form extends Component
             $this->contents[$content->build_year] = $content->content;
         }
 
+        $this->contentStructure = [];
+
         $this->exampleBuildingSteps = Step::whereIn('short', [
             'building-data', 'usage-quick-scan', 'living-requirements', 'residential-status',
             'ventilation'
@@ -48,6 +51,16 @@ class Form extends Component
             }])
             ->get();
 
+
+        foreach ($this->exampleBuildingSteps as $step) {
+            foreach ($step->subSteps as $subStep) {
+                foreach ($subStep->subSteppables as $subSteppablePivot) {
+                    $this->contentStructure[$subSteppablePivot->subSteppable->short] = null;
+                }
+            }
+        }
+
+        dd($this->contents[1800], $this->contentStructure);
     }
 
     public function save()

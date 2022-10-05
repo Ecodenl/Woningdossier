@@ -77,7 +77,7 @@
             @if($exampleBuilding instanceof \App\Models\ExampleBuilding)
                 @foreach($exampleBuilding->contents as $content)
                     <li role="presentation">
-                        <a href22="#{{ $content->id }}" aria-controls="{{ $content->id }}" role="tab" data-toggle="tab"
+                        <a href="#{{ $content->id }}" aria-controls="{{ $content->id }}" role="tab" data-toggle="tab"
                            @if(count($errors->get("content.{$content->id}.*")) > 0) style="border: 1px solid #a94442" @endif>
                             {{ $content->build_year }}
                         </a>

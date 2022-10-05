@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\Building;
 use App\Models\InputSource;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 trait HasDynamicAnswers
 {
@@ -24,6 +25,11 @@ trait HasDynamicAnswers
     protected function getAnswer(string $toolQuestion)
     {
         $answers = is_null($this->answers) ? collect() : $this->answers;
+
+
+        if ($toolQuestion == 'building-type-category') {
+            dd($answers);
+        }
 
         return $answers->has($toolQuestion) ? $answers->get($toolQuestion) :
             $this->getBuildingAnswer($toolQuestion);

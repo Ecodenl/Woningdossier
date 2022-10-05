@@ -55,11 +55,32 @@
                                 <div class="input-group">
                                     <span class="input-group-addon">{{$subSteppable->unit_of_measure}}</span>
                                     @endif
+                                    @php
+                                        $select = false;
+                                        $multiple = false;
+                                        if(in_array($subSteppablePivot->toolQuestionType->short, ['radio-icon', 'radio-icon-small', 'radio', 'dropdown'])) {
+                                            $select = true;
+                                        }
+                                        if(in_array($subSteppablePivot->toolQuestionType->short, ['checkbox-icon', 'multi-dropdown'])) {
+                                            $select = true;
+                                            $multiple = true;
+                                        }
+                                    @endphp
 
-                                    @include("cooperation.admin.example-buildings.tool-question-type-templates.{$subSteppablePivot->toolQuestionType->short}.show", [
-                                        'toolQuestion' => $subSteppable,
-                                        'disabled' => false,
-                                    ])
+                                    @if($select)
+                                        @php
+                                            $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $subSteppable)
+                                                               ->answers(collect($contents[$content->build_year]))
+                                                               ->getQuestionValues();
+                                        @endphp
+                                        <select class="form-control" name="contents.{{$content->build_year}}.{{$subSteppable->short}}" @if($multiple) multiple="multiple" @endif >
+                                            @foreach($questionValues as $toolQuestionValue)
+                                                <option value="{{ $toolQuestionValue['value'] }}">
+                                                    {{ $toolQuestionValue['name'] }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    @endif
 
                                     @if(isset($rowData['unit']))
                                 </div>

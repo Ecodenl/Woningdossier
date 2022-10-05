@@ -1,6 +1,9 @@
 <div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row gap-4">
     @php
-        $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues($toolQuestion);
+        $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
+            ->answers($)
+            ->withCustomEvaluation()
+            ->getQuestionValues();
     @endphp
     @foreach($questionValues as $toolQuestionValue)
         @php

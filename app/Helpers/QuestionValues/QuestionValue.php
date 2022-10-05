@@ -24,7 +24,7 @@ class QuestionValue
     // this bool will determine if we will "dumbly" return all the available options
     // or check if we should only return specific options.
     public bool $customEvaluation = false;
-    public ?Building $building;
+    public ?Building $building = null;
     public InputSource $inputSource;
 
     public function __construct(Cooperation $cooperation, ToolQuestion $toolQuestion)

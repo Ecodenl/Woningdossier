@@ -79,7 +79,7 @@
                                                                ->getQuestionValues();
                                         @endphp
                                         <select class="form-control"
-                                                name="{{$inputName}}"
+                                                wire:model  ="{{$inputName}}"
                                                 @if($multiple) multiple="multiple" @endif >
                                             @foreach($questionValues as $toolQuestionValue)
                                                 <option value="{{ $toolQuestionValue['value'] }}">

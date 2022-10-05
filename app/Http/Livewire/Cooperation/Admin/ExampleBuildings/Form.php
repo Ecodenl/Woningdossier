@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Admin\ExampleBuildings;
 
+use App\Helpers\ExampleBuildingHelper;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
@@ -65,7 +66,12 @@ class Form extends Component
 
     public function save()
     {
-        dd('save');
+        // previously something along the line of this was done
+        // $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
+        // however maybe we will take a diff approach
+        foreach ($this->contents as $buildYear => $content) {
+            $this->exampleBuilding->contents()->updateOrCreate(['build_year' => $buildYear], $content);
+        }
     }
 
     public function render()

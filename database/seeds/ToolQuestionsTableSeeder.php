@@ -1968,7 +1968,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "building_insulated_glazings.{$glassInLead->id}.building_heating_id",
                 "translation" => "Glas-in-lood vervangen: Zijn de kamers verwarmd?",
-                "short" => "glass-in-lead-rooms-heated",
+                "short" => "glass-in-lead-replace-rooms-heated",
                 'tool_question_values' => \App\Models\BuildingHeating::all(),
             ],
             [
@@ -1978,7 +1978,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "building_insulated_glazings.{$glassInLead->id}.m2",
                 "translation" => "Glas-in-lood vervangen: m2 te vervangen glas",
-                "short" => "glass-in-lead-replace-surface",
+                "short" => "glass-in-lead-replace-glass-surface",
             ],
             [
                 "data_type" => Caster::INT,
@@ -1987,7 +1987,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "building_insulated_glazings.{$glassInLead->id}.windows",
                 "translation" => "Glas-in-lood vervangen: Het aantal te vervangen ruiten?",
-                "short" => "glass-in-lead-replace-replacement-glass-count",
+                "short" => "glass-in-lead-replace-glass-count",
             ],
             [
                 'data_type' => Caster::FLOAT,

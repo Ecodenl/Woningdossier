@@ -1900,31 +1900,31 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
 
                         [
-                            'morph' => ToolQuestion::findByShort('glass-in-lead-considerable'),
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-considerable'),
                             'size' => 'col-span-12',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('glass-in-lead-current-glass'),
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-current-class'),
                             'size' => 'col-span-12',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('glass-in-lead-rooms-heated'),
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-rooms-heated'),
                             'size' => 'col-span-12',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('glass-in-lead-replacement-glass-surface'),
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-glass-surface'),
                             'size' => 'col-span-12',
                             'conditions' => [],
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('glass-in-lead-replacement-glass-count'),
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-glass-count'),
                             'size' => 'col-span-12',
                             'conditions' => [],
                             'tool_question_type_id' => $textType->id,
@@ -1989,9 +1989,6 @@ class SubSteppablesTableSeeder extends Seeder
                 $slugs = ['nl' => $subStepSlug];
 
 
-                if (!isset($subQuestionData['order'])) {
-                    dd($subQuestionData, $names, $stepShort);
-                }
                 $subStepData = [
                     'name' => json_encode($names),
                     'order' => $subQuestionData['order'],
@@ -2024,13 +2021,8 @@ class SubSteppablesTableSeeder extends Seeder
 
                 if (isset($subQuestionData['morphs'])) {
                     $orderForSubStepToolQuestions = 0;
-                    foreach ($subQuestionData['morphs'] as $morph) {
+                    foreach ($subQuestionData['morphs'] as $index => $morph) {
                         $conditions = $morph['conditions'] ?? null;
-
-                        if (empty($morph['morph'])) {
-                            dd($morph, $subStep, $stepShort, $prev);
-                        }
-                        $prev = $morph['morph']->name;
 
                         DB::table('sub_steppables')->updateOrInsert(
                             [

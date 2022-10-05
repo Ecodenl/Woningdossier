@@ -96,7 +96,12 @@ class Form extends Component
             }
         }
 
-        \Session::flash('success', 'cooperation/admin/example-buildings.update.success');
+        // hydrating again because if the save request returns a 200ok before a actual redirect happens
+        // which would then mess up the view due to missing relations..
+        $this->hydrateExampleBuildingSteps();
+        // normally we could use with, however this is livewire 1 and no support
+        // we do it the "old" way
+        \Session::flash('success', __lang('cooperation/admin/example-buildings.update.success'));
         return redirect()
             ->to(route('cooperation.admin.example-buildings.edit', ['cooperation' => HoomdossierSession::getCooperation(true), 'exampleBuilding' => $this->exampleBuilding]));
     }

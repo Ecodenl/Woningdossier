@@ -62,6 +62,8 @@ class Form extends Component
             $this->contents[$content->build_year] = array_merge($this->contentStructure, $content->content);
         }
 
+        $this->contents['new'] = $this->contentStructure;
+
     }
 
     public function save()
@@ -70,7 +72,14 @@ class Form extends Component
         // $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
         // however maybe we will take a diff approach
         foreach ($this->contents as $buildYear => $content) {
-            $this->exampleBuilding->contents()->updateOrCreate(['build_year' => $buildYear], $content);
+            // the build year will be empty (as a key) when its a newly added one
+            // in that case the build year will be manually added in the form.
+            if ($buildYear === "new") {
+                $buildYear = $content['build_year'];
+            }
+
+
+            $this->exampleBuilding->contents()->updateOrCreate(['build_year' => $buildYear], ['content' => $content]);
         }
     }
 

@@ -72,7 +72,7 @@
     </div>
 
         <h4>@lang('cooperation/admin/example-buildings.components.contents.title')</h4>
-        <ul class="nav nav-tabs" role="tablist">
+        <ul class="nav nav-tabs" role="tablist" wire:ignore>
             {{-- tabs --}}
             @if($exampleBuilding instanceof \App\Models\ExampleBuilding)
                 @foreach($exampleBuilding->contents as $content)
@@ -95,10 +95,13 @@
             {{-- tab contents --}}
             @if(isset($exampleBuilding) && $exampleBuilding instanceof \App\Models\ExampleBuilding)
                 @foreach($exampleBuilding->contents as $content)
-                    <div role="tabpanel" class="tab-pane" id="{{ $content->id }}">
+                    <div role="tabpanel" class="tab-pane" id="{{ $content->id }}" wire:ignore.self>
                         @include('cooperation.admin.example-buildings.components.content-table', ['content' => $content])
                     </div>
                 @endforeach
             @endif
+            <div role="tabpanel" class="tab-pane @if(Route::currentRouteName() === "cooperation.admin.example-buildings.create") active @endif" id="new" wire:ignore.self>
+                @include('cooperation.admin.example-buildings.components.content-table', ['content' => null])
+            </div>
         </div>
 </div>

@@ -1,21 +1,3 @@
-{{--@if(Route::currentRouteName() === "cooperation.admin.example-buildings.edit" && $fkey == 'new')--}}
-{{--    <div class="alert alert-danger mt-3">--}}
-{{--        @lang('cooperation/admin/example-buildings.edit.new-warning')--}}
-{{--    </div>--}}
-{{--@endif--}}
-
-{{--<div class="form-group {{ $errors->has('content.'.$fkey.'.build_year') ? ' has-error' : '' }}">--}}
-{{--    <label for="build_year">@lang('cooperation/admin/example-buildings.form.build-year')</label>--}}
-
-
-{{--    <input id="build_year" type="number" min="0" name="content[{{ $fkey }}][build_year]"--}}
-{{--           class="form-control" value="{{ old($fvalKey, $fallback) }}" />--}}
-{{--    @if ($errors->has('content.'.$fkey.'.build_year'))--}}
-{{--        <span class="help-block">--}}
-{{--            <strong>{{ $errors->first('content.'.$fkey.'.build_year') }}</strong>--}}
-{{--        </span>--}}
-{{--    @endif--}}
-{{--</div>--}}
 
 <table class="table table-responsive table-condensed">
     <thead>
@@ -25,7 +7,22 @@
     </tr>
     </thead>
     <tbody>
+    @php
+        $buildYear = $content->build_year ?? 'new';
+    @endphp
     @foreach($exampleBuildingSteps as $step)
+        @if($buildYear === "new" && $loop->first)
+        <tr>
+            <td>
+                Bouw jaar
+            </td>
+            <td>
+                <div class="form-group">
+                    <input type="text" class="form-control" wire:model="contents.new.build_year">
+                </div>
+            </td>
+        </tr>
+        @endif
         <tr>
             <td colspan="2">
                 <h2>{{$step->name}}</h2>
@@ -40,7 +37,7 @@
             @foreach($subStep->subSteppables as $subSteppablePivot)
                 @php
                     $subSteppable = $subSteppablePivot->subSteppable;
-                    $fvalKey = $content->build_year.$subSteppablePivot->subSteppable;
+                    $fvalKey = $buildYear.$subSteppablePivot->subSteppable;
                 @endphp
 
                 <tr>
@@ -56,7 +53,7 @@
                                     <span class="input-group-addon">{{$subSteppable->unit_of_measure}}</span>
                                     @endif
                                     @php
-                                        $inputName = ['contents', $content->build_year, $subSteppable->short];
+                                        $inputName = ['contents', $buildYear, $subSteppable->short];
                                         $select = false;
                                         $multiple = false;
                                         if(in_array($subSteppablePivot->toolQuestionType->short, ['radio-icon', 'radio-icon-small', 'radio', 'dropdown'])) {
@@ -75,7 +72,7 @@
                                     @if($select)
                                         @php
                                             $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $subSteppable)
-                                                               ->answers(collect($contents[$content->build_year]))
+                                                               ->answers(collect($contents[$buildYear]))
                                                                ->getQuestionValues();
                                         @endphp
                                         <select class="form-control"
@@ -107,29 +104,5 @@
             @endforeach
         @endforeach
     @endforeach
-    {{--        @foreach($contentStructure as $step => $dataForSubSteps)--}}
-    {{--            <?php $stepName = \App\Models\Step::findByShort($step)->name ?? __('cooperation/admin/example-buildings.form.general-data') ?>--}}
-    {{--            <tr>--}}
-    {{--                <td colspan="2">--}}
-    {{--                    <h3>{{$stepName}}</h3>--}}
-    {{--                </td>--}}
-    {{--            </tr>--}}
-
-    {{--            @foreach($dataForSubSteps as $subStep => $subStepData)--}}
-    {{--                <?php $possibleSubStep = \App\Models\Step::findByShort($subStep); ?>--}}
-    {{--                @if($possibleSubStep instanceof \App\Models\Step)--}}
-    {{--                    <tr>--}}
-    {{--                        <td colspan="2">--}}
-    {{--                            <h4>{{$possibleSubStep->name}}</h4>--}}
-    {{--                        </td>--}}
-    {{--                    </tr>--}}
-    {{--                @endif--}}
-    {{--                @foreach($subStepData as $formFieldName => $rowData)--}}
-    {{--                    @if($formFieldName != 'calculations' )--}}
-    {{--                        @include('cooperation.admin.example-buildings.parts.row-data')--}}
-    {{--                    @endif--}}
-    {{--                @endforeach--}}
-    {{--            @endforeach--}}
-    {{--        @endforeach--}}
     </tbody>
 </table>

@@ -33,16 +33,13 @@ class ExampleBuildingService
      * @param ExampleBuilding $exampleBuilding
      * @param int $buildYear Build year for selecting the appropriate example building content
      * @param Building $building Target building to apply to
-     * @param InputSource|null $inputSource
-     * @param InputSource|null $initiatingInputSource The input source starting this action.
      *
      * @return void
      */
-    public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building, ?InputSource $inputSource = null, ?InputSource $initiatingInputSource = null)
+    public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building, InputSource $inputSource)
     {
-        $inputSource = $inputSource ?? InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
-        // unless stated differently: compare to master input values
-        $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(InputSource::MASTER_SHORT);
+        // used to check if there is a answer available.
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         // Clear the current example building data
         self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ") building id {$building->id}");
@@ -55,7 +52,6 @@ class ExampleBuildingService
             return;
         }
         // used for throwing the event at the end
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $buildingFeature = $building->buildingFeatures()->forInputSource($masterInputSource)->first();
         $oldExampleBuilding = $buildingFeature->exampleBuilding;
 
@@ -73,10 +69,7 @@ class ExampleBuildingService
 
             if ($genericContent instanceof ExampleBuildingContent) {
                 self::log("We merge the contents");
-                $exampleData = array_replace_recursive(
-                    $exampleData,
-                    $genericContent->content
-                );
+                $exampleData = array_replace_recursive($exampleData, $genericContent->content);
             }
         }
 
@@ -93,19 +86,21 @@ class ExampleBuildingService
 
         foreach ($exampleData as $toolQuestionShort => $value) {
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-
             $shouldSave = true;
+
             // check if the tool question is a fixed one
             // a fixed on cant be overwritten by example building data unless the field is empty
-            if (in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
+            // AND unless its a example building, the data from the example building input source can always be overwritten.
+            if ($toolQuestion->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
                 // the tool question is fixed one, lets not save it before the last check
                 $shouldSave = false;
                 // now check if the user has already answered the question with a non null value
-                if (is_null($building->getAnswer($initiatingInputSource, $toolQuestion))) {
+                if (is_null($building->getAnswer($masterInputSource, $toolQuestion))) {
                     // the tool question answer is null, meaning we can update it with the exampel building value
                     $shouldSave = true;
                 }
             }
+
             // a relationship that is not set in the EB, we wont save it.
             if ($toolQuestion->data_type === Caster::IDENTIFIER && is_null($value)) {
                 $shouldSave = false;

@@ -45,7 +45,7 @@ class ExampleBuildingService
         $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(InputSource::MASTER_SHORT);
 
         // Clear the current example building data
-        self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name. ") building id {$building->id}");
+        self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ") building id {$building->id}");
         $contents = $exampleBuilding->getContentForYear($buildYear);
 
         if (!$contents instanceof ExampleBuildingContent) {
@@ -97,7 +97,7 @@ class ExampleBuildingService
             $shouldSave = true;
             // check if the tool question is a fixed one
             // a fixed on cant be overwritten by example building data unless the field is empty
-            if(in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
+            if (in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
                 // the tool question is fixed one, lets not save it before the last check
                 $shouldSave = false;
                 // now check if the user has already answered the question with a non null value
@@ -116,7 +116,7 @@ class ExampleBuildingService
                 ToolQuestionService::init($toolQuestion)
                     ->building($building)
                     ->currentInputSource($inputSource)
-                   ->save($value);
+                    ->save($value);
             } else {
                 Log::debug("Skipping {$toolQuestionShort}");
             }
@@ -124,10 +124,10 @@ class ExampleBuildingService
 
 
         // the building type is a part of the example building, not the example building its content.
-       ToolQuestionService::init(ToolQuestion::findByShort('building-type'))
-           ->building($building)
-           ->currentInputSource($inputSource)
-           ->save($exampleBuilding->building_type_id);
+        ToolQuestionService::init(ToolQuestion::findByShort('building-type'))
+            ->building($building)
+            ->currentInputSource($inputSource)
+            ->save($exampleBuilding->building_type_id);
 
 
         ExampleBuildingChanged::dispatch(

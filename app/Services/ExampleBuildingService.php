@@ -106,6 +106,9 @@ class ExampleBuildingService
                     $shouldSave = true;
                 }
             }
+            if (!$toolQuestion instanceof ToolQuestion) {
+                dd($toolQuestion, $toolQuestionShort);
+            }
             // a relationship that is not set in the EB, we wont save it.
             if ($toolQuestion->data_type === Caster::IDENTIFIER && is_null($value)) {
                 $shouldSave = false;

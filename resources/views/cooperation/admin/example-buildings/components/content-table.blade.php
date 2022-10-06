@@ -6,20 +6,20 @@
     <div class="alert alert-danger mt-3">
         @lang('cooperation/admin/example-buildings.edit.new-warning')
     </div>
-@endif
+
+    <div class="form-group {{ $errors->has('contents.new.build_year') ? ' has-error' : '' }}">
+        <label for="build_year">@lang('cooperation/admin/example-buildings.form.build-year')</label>
 
 
-<div class="form-group {{ $errors->has('contents.new.build_year') ? ' has-error' : '' }}">
-    <label for="build_year">@lang('cooperation/admin/example-buildings.form.build-year')</label>
-
-
-    <input id="build_year" type="number" min="0" wire:model="contents.new.build_year" class="form-control"/>
-    @if ($errors->has('contents.new.build_year'))
-        <span class="help-block">
+        <input id="build_year" type="number" min="0" wire:model="contents.new.build_year" class="form-control"/>
+        @if ($errors->has('contents.new.build_year'))
+            <span class="help-block">
             <strong>{{ $errors->first('contents.new.build_year') }}</strong>
         </span>
-    @endif
-</div>
+        @endif
+    </div>
+
+@endif
 
 <table class="table table-responsive table-condensed">
     <thead>
@@ -46,65 +46,65 @@
                     $subSteppable = $subSteppablePivot->subSteppable;
                 @endphp
                 @if(!in_array($subSteppable->short, $hideTheseToolQuestions))
-                <tr>
-                    <td>
-                        {{$subSteppable->name}}
-                    </td>
-                    <td>
+                    <tr>
+                        <td>
+                            {{$subSteppable->name}}
+                        </td>
+                        <td>
 
-                        @php
-                            $inputName = ['contents', $buildYear, $subSteppable->short];
-                            $select = false;
-                            $multiple = false;
-                            if(in_array($subSteppablePivot->toolQuestionType->short, ['radio-icon', 'radio-icon-small', 'radio', 'dropdown'])) {
-                                $select = true;
-                            }
+                            @php
+                                $inputName = ['contents', $buildYear, $subSteppable->short];
+                                $select = false;
+                                $multiple = false;
+                                if(in_array($subSteppablePivot->toolQuestionType->short, ['radio-icon', 'radio-icon-small', 'radio', 'dropdown'])) {
+                                    $select = true;
+                                }
 
-                            if(in_array($subSteppablePivot->toolQuestionType->short, ['checkbox-icon', 'multi-dropdown'])) {
-                                $select = true;
-                                $multiple = true;
-                                $inputName[] = '*';
-                            }
+                                if(in_array($subSteppablePivot->toolQuestionType->short, ['checkbox-icon', 'multi-dropdown'])) {
+                                    $select = true;
+                                    $multiple = true;
+                                    $inputName[] = '*';
+                                }
 
-                            $inputName = implode('.', $inputName);
-                        @endphp
-                        <div class="form-group {{ $errors->has($inputName) ? ' has-error' : '' }}">
+                                $inputName = implode('.', $inputName);
+                            @endphp
+                            <div class="form-group {{ $errors->has($inputName) ? ' has-error' : '' }}">
 
-                            @if(!empty($subSteppable->unit_of_measure))
-                                <div class="input-group">
-                                    <span class="input-group-addon">{{$subSteppable->unit_of_measure}}</span>
-                                    @endif
-                                    @if($select)
-                                        @php
-                                            $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $subSteppable)
-                                                               ->answers(collect($contents[$buildYear]))
-                                                               ->getQuestionValues();
-                                        @endphp
-                                        <select class="form-control" wire:model="{{$inputName}}"
-                                                @if($multiple) multiple="multiple" @endif >
-                                            @foreach($questionValues as $toolQuestionValue)
-                                                <option value="{{ $toolQuestionValue['value'] }}">
-                                                    {{ $toolQuestionValue['name'] }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    @else
-                                        <input type="text" class="form-control" wire:model="{{$inputName}}">
-                                    @endif
+                                @if(!empty($subSteppable->unit_of_measure))
+                                    <div class="input-group">
+                                        <span class="input-group-addon">{{$subSteppable->unit_of_measure}}</span>
+                                        @endif
+                                        @if($select)
+                                            @php
+                                                $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $subSteppable)
+                                                                   ->answers(collect($contents[$buildYear]))
+                                                                   ->getQuestionValues();
+                                            @endphp
+                                            <select class="form-control" wire:model="{{$inputName}}"
+                                                    @if($multiple) multiple="multiple" @endif >
+                                                @foreach($questionValues as $toolQuestionValue)
+                                                    <option value="{{ $toolQuestionValue['value'] }}">
+                                                        {{ $toolQuestionValue['name'] }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <input type="text" class="form-control" wire:model="{{$inputName}}">
+                                        @endif
 
-                                    @if(isset($rowData['unit']))
-                                </div>
-                            @endif
+                                        @if(isset($rowData['unit']))
+                                    </div>
+                                @endif
 
-                            @if ($errors->has($inputName))
-                                <span class="help-block">
+                                @if ($errors->has($inputName))
+                                    <span class="help-block">
                         <strong>{{ $errors->first($inputName) }}</strong>
                     </span>
-                            @endif
+                                @endif
 
-                        </div>
-                    </td>
-                </tr>
+                            </div>
+                        </td>
+                    </tr>
                 @endif
             @endforeach
         @endforeach

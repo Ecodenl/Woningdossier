@@ -24,12 +24,25 @@ class Form extends Component
     public $exampleBuildingValues = [
         'name' => [],
         'building_type_id' => null,
-        'cooperation_id' => null
+        'cooperation_id' => null,
+        'is_default' => 0,
     ];
 
     // tool questions which should be allowed to be set, for whatever reason..
     public $hideTheseToolQuestions = [
-        'building-type'
+        'building-type',
+        'build-year',
+        'specific-example-building',
+        'building-data-comment-resident',
+        'building-data-comment-coach',
+        'usage-quick-scan-comment-resident',
+        'usage-quick-scan-comment-coach',
+        'living-requirements-comment-resident',
+        'living-requirements-comment-coach',
+        'residential-status-element-comment-resident',
+        'residential-status-element-comment-coach',
+        'residential-status-service-comment-resident',
+        'residential-status-service-comment-coach',
     ];
 
     public function mount(ExampleBuilding $exampleBuilding = null)
@@ -92,6 +105,10 @@ class Form extends Component
 
     public function save()
     {
+        // hydrating as fast as possible again because if the save request returns a 200ok before a actual redirect happens
+        // which would then mess up the view due to missing relations..
+        $this->hydrateExampleBuildingSteps();
+
         $this->validate([
             'exampleBuildingValues.building_type_id' => 'required|exists:building_types,id',
             'exampleBuildingValues.cooperation_id' => 'nullable|exists:cooperations,id',
@@ -113,6 +130,11 @@ class Form extends Component
             // in that case the build year will be manually added in the form.
             if (($buildYear === "new" && isset($content['build_year'])) && !empty($content['build_year'])) {
                 $buildYear = $content['build_year'];
+                // unset it as field name.
+                unset($content['build_year']);
+                // set it as a tool question short so the apply method picks it up correctly
+                // plus to stay consistent
+                $content['build-year'] = $buildYear;
             }
 
             if ($buildYear !== "new") {
@@ -120,9 +142,6 @@ class Form extends Component
             }
         }
 
-        // hydrating again because if the save request returns a 200ok before a actual redirect happens
-        // which would then mess up the view due to missing relations..
-        $this->hydrateExampleBuildingSteps();
         // normally we could use with, however this is livewire 1 and no support
         // we do it the "old" way
         \Session::flash('success', __('cooperation/admin/example-buildings.update.success'));

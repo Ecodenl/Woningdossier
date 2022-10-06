@@ -51,19 +51,28 @@
         @endif
     </div>
 
-    <div class="form-group">
+    <div class="form-group {{ $errors->has('exampleBuildingValues.order') ? ' has-error' : '' }}">
         <label for="order">@lang('cooperation/admin/example-buildings.components.order')</label>
-        <input type="number" id="order" class="form-control" min="0" name="order"
-               wire:model="exampleBuildingValues.order">
+        <input type="number" id="order" class="form-control" min="0" wire:model="exampleBuildingValues.order">
+        @if ($errors->has('exampleBuildingValues.order'))
+            <span class="help-block">
+            <strong>{{ $errors->first('exampleBuildingValues.order') }}</strong>
+        </span>
+        @endif
     </div>
 
-    <div class="form-group">
+    <div class="form-group {{ $errors->has('exampleBuildingValues.is_default') ? ' has-error' : '' }}">
         <label for="is_default">@lang('cooperation/admin/example-buildings.components.is-default.label')</label>
         <select wire:model="exampleBuildingValues.is_default" class="form-control">
             @foreach(__('cooperation/admin/example-buildings.components.is-default.options') as $val => $string)
                 <option value="{{ $val }}">{{ $string }}</option>
             @endforeach
         </select>
+        @if ($errors->has('exampleBuildingValues.is_default'))
+            <span class="help-block">
+            <strong>{{ $errors->first('exampleBuildingValues.is_default') }}</strong>
+        </span>
+        @endif
     </div>
 
     <div class="form-group" style="margin-top: 5em;">

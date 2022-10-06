@@ -1974,6 +1974,106 @@ class SubSteppablesTableSeeder extends Seeder
                     ],
                 ],
             ],
+            'roof-insulation' => [
+                'Hoofd vragen' => [
+                    'order' => 0,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('roof-insulation-considerable'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        // TODO: ADD THE WHICH ROOF TYPES ARE THERE
+                        [
+                            'morph' => ToolQuestion::findByShort('is-flat-roof-insulated'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-insulation-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-zinc-replace-date'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-bitumen-replaced-date'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-insulation'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-heating'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        // pithced start
+                        [
+                            'morph' => ToolQuestion::findByShort('is-pitched-roof-insulated'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-insulation-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-zinc-replaced-date'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-tiles-condition'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-insulation'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-heating'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 

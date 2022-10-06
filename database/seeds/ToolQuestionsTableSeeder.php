@@ -2221,7 +2221,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => 'building_roof_types.2.extra.zinc_replaced_date',
                 'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
-                'short' => 'flat-roof-zinc-replace-date',
+                'short' => 'flat-roof-zinc-replaced-date',
             ],
             [
                 'data_type' => Caster::STRING,
@@ -2229,7 +2229,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required'
                 ],
                 'save_in' => 'building_roof_types.2.zinc_surface',
-                'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+                'translation' => 'Oppervlak van het zinkwerk?',
                 'short' => 'flat-roof-zinc-surface',
             ],
             [
@@ -2247,7 +2247,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required'
                 ],
                 'save_in' => 'building_roof_types.2.extra.measure_application_id',
-                'translation' => 'Hoe wil je het platte dak isoleren? ',
+                'translation' => 'Hoe wil je het platte dak isoleren?',
                 'short' => 'flat-roof-insulation',
                 'tool_question_values' => MeasureApplication::whereIn('short', ['roof-insulation-flat-current','roof-insulation-flat-replace-current'])->get(),
             ],

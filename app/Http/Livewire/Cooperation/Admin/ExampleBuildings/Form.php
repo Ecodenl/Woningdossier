@@ -7,13 +7,14 @@ use App\Helpers\HoomdossierSession;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
+use App\Models\Log;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use Livewire\Component;
 
 class Form extends Component
 {
-    public $exampleBuilding;
+    public $exampleBuilding = null;
     public $buildingTypes;
     public $cooperations;
     public $exampleBuildingSteps;
@@ -26,12 +27,16 @@ class Form extends Component
         'cooperation_id' => null
     ];
 
-    public function mount(ExampleBuilding $exampleBuilding)
+    // tool questions which should be allowed to be set, for whatever reason..
+    public $hideTheseToolQuestions = [
+        'building-type'
+    ];
+
+    public function mount(ExampleBuilding $exampleBuilding = null)
     {
         $this->exampleBuilding = $exampleBuilding;
         $this->buildingTypes = BuildingType::all();
         $this->cooperations = Cooperation::all();
-        $this->exampleBuildingValues = $exampleBuilding->attributesToArray();
 
         $this->contentStructure = [];
 
@@ -45,9 +50,12 @@ class Form extends Component
             }
         }
 
-        foreach ($exampleBuilding->contents as $content) {
-            // make sure it has all the available tool questions
-            $this->contents[$content->build_year] = array_merge($this->contentStructure, $content->content);
+        if ($exampleBuilding instanceof ExampleBuilding) {
+            $this->exampleBuildingValues = $exampleBuilding->attributesToArray();
+            foreach ($exampleBuilding->contents as $content) {
+                // make sure it has all the available tool questions
+                $this->contents[$content->build_year] = array_merge($this->contentStructure, $content->content);
+            }
         }
 
         $this->contents['new'] = $this->contentStructure;
@@ -74,20 +82,36 @@ class Form extends Component
 
     }
 
-    public function updated()
+    public function updated($key, $value)
     {
         $this->hydrateExampleBuildingSteps();
+        if ($key === "exampleBuildingValues.building_type_id") {
+            data_set($this->contents, '*.building-type-category', $value);
+        }
     }
 
     public function save()
     {
+        $this->validate([
+            'exampleBuildingValues.building_type_id' => 'required|exists:building_types,id',
+            'exampleBuildingValues.cooperation_id' => 'nullable|exists:cooperations,id',
+            'exampleBuildingValues.is_default' => 'required|boolean',
+            'exampleBuildingValues.order' => 'nullable|numeric|min:0',
+            'contents.new.build_year' => 'nullable|numeric|min:0'
+        ]);
+        // update or create
+        if ($this->exampleBuilding instanceof ExampleBuilding) {
+            $this->exampleBuilding->update($this->exampleBuildingValues);
+        } else {
+            $this->exampleBuilding = ExampleBuilding::create($this->exampleBuildingValues);
+        }
         // previously something along the line of this was done
         // $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
         // however maybe we will take a diff approach
         foreach ($this->contents as $buildYear => $content) {
             // the build year will be empty (as a key) when its a newly added one
             // in that case the build year will be manually added in the form.
-            if ($buildYear === "new" && isset($content['build_year'])) {
+            if (($buildYear === "new" && isset($content['build_year'])) && !empty($content['build_year'])) {
                 $buildYear = $content['build_year'];
             }
 
@@ -101,7 +125,7 @@ class Form extends Component
         $this->hydrateExampleBuildingSteps();
         // normally we could use with, however this is livewire 1 and no support
         // we do it the "old" way
-        \Session::flash('success', __lang('cooperation/admin/example-buildings.update.success'));
+        \Session::flash('success', __('cooperation/admin/example-buildings.update.success'));
         return redirect()
             ->to(route('cooperation.admin.example-buildings.edit', ['cooperation' => HoomdossierSession::getCooperation(true), 'exampleBuilding' => $this->exampleBuilding]));
     }

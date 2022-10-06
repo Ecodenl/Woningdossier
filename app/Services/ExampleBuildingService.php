@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\ExampleBuildingChanged;
 use App\Helpers\Arr;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -104,6 +105,10 @@ class ExampleBuildingService
                     // the tool question answer is null, meaning we can update it with the exampel building value
                     $shouldSave = true;
                 }
+            }
+            // a relationship that is not set in the EB, we wont save it.
+            if ($toolQuestion->data_type === Caster::IDENTIFIER && is_null($value)) {
+                $shouldSave = false;
             }
 
             if ($shouldSave) {

@@ -57,7 +57,7 @@ class ExampleBuilding extends Model
     ];
 
     public $fillable = [
-        'building_type_id', 'cooperation_id', 'order', 'is_default',
+        'name', 'building_type_id', 'cooperation_id', 'order', 'is_default',
     ];
 
     /**

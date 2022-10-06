@@ -44,38 +44,36 @@
             @foreach($subStep->subSteppables as $subSteppablePivot)
                 @php
                     $subSteppable = $subSteppablePivot->subSteppable;
-                    $fvalKey = $buildYear.$subSteppablePivot->subSteppable;
                 @endphp
-
+                @if(!in_array($subSteppable->short, $hideTheseToolQuestions))
                 <tr>
                     <td>
                         {{$subSteppable->name}}
                     </td>
                     <td>
 
-                        <div class="form-group {{ $errors->has($fvalKey) ? ' has-error' : '' }}">
+                        @php
+                            $inputName = ['contents', $buildYear, $subSteppable->short];
+                            $select = false;
+                            $multiple = false;
+                            if(in_array($subSteppablePivot->toolQuestionType->short, ['radio-icon', 'radio-icon-small', 'radio', 'dropdown'])) {
+                                $select = true;
+                            }
+
+                            if(in_array($subSteppablePivot->toolQuestionType->short, ['checkbox-icon', 'multi-dropdown'])) {
+                                $select = true;
+                                $multiple = true;
+                                $inputName[] = '*';
+                            }
+
+                            $inputName = implode('.', $inputName);
+                        @endphp
+                        <div class="form-group {{ $errors->has($inputName) ? ' has-error' : '' }}">
 
                             @if(!empty($subSteppable->unit_of_measure))
                                 <div class="input-group">
                                     <span class="input-group-addon">{{$subSteppable->unit_of_measure}}</span>
                                     @endif
-                                    @php
-                                        $inputName = ['contents', $buildYear, $subSteppable->short];
-                                        $select = false;
-                                        $multiple = false;
-                                        if(in_array($subSteppablePivot->toolQuestionType->short, ['radio-icon', 'radio-icon-small', 'radio', 'dropdown'])) {
-                                            $select = true;
-                                        }
-
-                                        if(in_array($subSteppablePivot->toolQuestionType->short, ['checkbox-icon', 'multi-dropdown'])) {
-                                            $select = true;
-                                            $multiple = true;
-                                            $inputName[] = '*';
-                                        }
-
-                                        $inputName = implode('.', $inputName);
-                                    @endphp
-
                                     @if($select)
                                         @php
                                             $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $subSteppable)
@@ -98,15 +96,16 @@
                                 </div>
                             @endif
 
-                            @if ($errors->has($fvalKey))
+                            @if ($errors->has($inputName))
                                 <span class="help-block">
-                        <strong>{{ $errors->first($fvalKey) }}</strong>
+                        <strong>{{ $errors->first($inputName) }}</strong>
                     </span>
                             @endif
 
                         </div>
                     </td>
                 </tr>
+                @endif
             @endforeach
         @endforeach
     @endforeach

@@ -82,7 +82,7 @@
                                             @endphp
                                             <select class="form-control" wire:model="{{$inputName}}"
                                                     @if($multiple) multiple="multiple" @endif >
-{{--                                                <option value="null">-</option>--}}
+                                                <option value="null">-</option>
                                                 @foreach($questionValues as $toolQuestionValue)
                                                     <option value="{{ $toolQuestionValue['value'] }}">
                                                         {{ $toolQuestionValue['name'] }}

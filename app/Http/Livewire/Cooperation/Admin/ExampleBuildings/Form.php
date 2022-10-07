@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Admin\ExampleBuildings;
 
+use App\Helpers\Arr;
 use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
 use App\Models\BuildingType;
@@ -129,9 +130,6 @@ class Form extends Component
         } else {
             $this->exampleBuilding = ExampleBuilding::create($this->exampleBuildingValues);
         }
-        // previously something along the line of this was done
-        // $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
-        // however maybe we will take a diff approach
         foreach ($this->contents as $buildYear => $content) {
             // the build year will be empty (as a key) when its a newly added one
             // in that case the build year will be manually added in the form.
@@ -143,6 +141,17 @@ class Form extends Component
                 // plus to stay consistent
                 $content['build-year'] = $buildYear;
             }
+
+            $content = Arr::dot($content);
+            // some multiselect answers may have a "null" value selected due to poor user behaviour
+            // filter those out
+            // the non multi selects will cast "null" as actual NULL which is fine.
+            foreach ($content as $toolQuestionShort => $value) {
+                if ($value === "null") {
+                    unset($content[$toolQuestionShort]);
+                }
+            }
+            $content = Arr::arrayUndot($content);
 
             if ($buildYear !== "new") {
                 $this->exampleBuilding->contents()->updateOrCreate(['build_year' => $buildYear], ['content' => $content]);

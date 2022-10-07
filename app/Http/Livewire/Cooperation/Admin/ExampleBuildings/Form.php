@@ -137,14 +137,14 @@ class Form extends Component
                 $content['build-year'] = $buildYear;
             }
 
-            // some multiselect answers may have a "null" value selected due to poor user behaviour
-            // filter those out
-            // the non multi selects will cast "null" as actual NULL which is fine.
-
             // note: dotting and undotting wont work
             // will give the array keys, and wire:model is to dumb to understand that.
             foreach ($content as $toolQuestionShort => $value) {
+
                 if (is_array($value)) {
+                    // multiselects
+                    // we dont need and dont WANT the keys
+                    // just the values, filter out null and only set the values.
                     $value = array_filter($value, fn($value) => $value !== "null");
                     $value = array_values($value);
                     $content[$toolQuestionShort] = $value;

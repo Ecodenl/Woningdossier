@@ -73,7 +73,6 @@ class Form extends Component
         }
 
         $this->contents['new'] = $this->contentStructure;
-
     }
 
     public function hydrateExampleBuildingSteps()
@@ -99,20 +98,16 @@ class Form extends Component
 
     public function updated($key, $value)
     {
+        \Illuminate\Support\Facades\Log::debug("Updated method");
         $this->hydrateExampleBuildingSteps();
-//        if (is_array($value)) {
-//            $value = array_filter($value, fn($value) => $value !== "null");
-//            $this->$key = $value;
-//        }
+
         if ($key === "exampleBuildingValues.building_type_id") {
             data_set($this->contents, '*.building-type-category', $value);
         }
-
     }
 
     public function save()
     {
-//        dd($this->contents);
         // hydrating as fast as possible again because if the save request returns a 200ok before a actual redirect happens
         // which would then mess up the view due to missing relations..
         $this->hydrateExampleBuildingSteps();
@@ -142,16 +137,22 @@ class Form extends Component
                 $content['build-year'] = $buildYear;
             }
 
-            $content = Arr::dot($content);
             // some multiselect answers may have a "null" value selected due to poor user behaviour
             // filter those out
             // the non multi selects will cast "null" as actual NULL which is fine.
+
+            // note: dotting and undotting wont work
+            // will give the array keys, and wire:model is to dumb to understand that.
             foreach ($content as $toolQuestionShort => $value) {
-                if ($value === "null") {
+                if (is_array($value)) {
+                    $value = array_filter($value, fn($value) => $value !== "null");
+                    $value = array_values($value);
+                    $content[$toolQuestionShort] = $value;
+                }
+                if ($value === null || $value === "null") {
                     unset($content[$toolQuestionShort]);
                 }
             }
-            $content = Arr::arrayUndot($content);
 
             if ($buildYear !== "new") {
                 $this->exampleBuilding->contents()->updateOrCreate(['build_year' => $buildYear], ['content' => $content]);

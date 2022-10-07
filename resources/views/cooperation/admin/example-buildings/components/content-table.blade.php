@@ -84,7 +84,7 @@
                                                     @if($multiple) multiple="multiple" @endif >
                                                 <option value="null">-</option>
                                                 @foreach($questionValues as $toolQuestionValue)
-                                                    <option value="{{ $toolQuestionValue['value'] }}">
+                                                    <option  value="{{ $toolQuestionValue['value'] }}">
                                                         {{ $toolQuestionValue['name'] }}
                                                     </option>
                                                 @endforeach

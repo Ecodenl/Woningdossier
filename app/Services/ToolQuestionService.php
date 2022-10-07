@@ -104,6 +104,9 @@ class ToolQuestionService {
                 // if so, the given answer contains a short.
                 $toolQuestionCustomValue = ToolQuestionCustomValue::where('tool_question_id', $this->toolQuestion->id)
                     ->whereShort($givenAnswer)->first();
+                if (!$toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                    dd($this->toolQuestion);
+                }
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
             }
 

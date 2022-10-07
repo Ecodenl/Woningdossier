@@ -1984,7 +1984,12 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
-                        // TODO: ADD THE WHICH ROOF TYPES ARE THERE
+                        [
+                            'morph' => ToolQuestion::findByShort('current-roof-types'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $multiDropdownType->id,
+                        ],
                         [
                             'morph' => ToolQuestion::findByShort('is-flat-roof-insulated'),
                             'size' => 'col-span-12',

@@ -63,7 +63,7 @@
                                 if(in_array($subSteppablePivot->toolQuestionType->short, ['checkbox-icon', 'multi-dropdown'])) {
                                     $select = true;
                                     $multiple = true;
-                                    $inputName[] = '*';
+                                    // $inputName[] = '*';
                                 }
 
                                 $inputName = implode('.', $inputName);
@@ -82,6 +82,7 @@
                                             @endphp
                                             <select class="form-control" wire:model="{{$inputName}}"
                                                     @if($multiple) multiple="multiple" @endif >
+{{--                                                <option value="null">-</option>--}}
                                                 @foreach($questionValues as $toolQuestionValue)
                                                     <option value="{{ $toolQuestionValue['value'] }}">
                                                         {{ $toolQuestionValue['name'] }}

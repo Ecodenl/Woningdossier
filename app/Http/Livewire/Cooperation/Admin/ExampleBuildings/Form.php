@@ -85,6 +85,7 @@ class Form extends Component
             'ventilation',
             'wall-insulation',
             'insulated-glazing',
+            'roof-insulation',
             'heating'
         ])
             ->orderBy('order')
@@ -98,13 +99,19 @@ class Form extends Component
     public function updated($key, $value)
     {
         $this->hydrateExampleBuildingSteps();
+//        if (is_array($value)) {
+//            $value = array_filter($value, fn($value) => $value !== "null");
+//            $this->$key = $value;
+//        }
         if ($key === "exampleBuildingValues.building_type_id") {
             data_set($this->contents, '*.building-type-category', $value);
         }
+
     }
 
     public function save()
     {
+//        dd($this->contents);
         // hydrating as fast as possible again because if the save request returns a 200ok before a actual redirect happens
         // which would then mess up the view due to missing relations..
         $this->hydrateExampleBuildingSteps();

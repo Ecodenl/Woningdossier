@@ -187,12 +187,25 @@ class ToolQuestionService {
             }
         }
 
+        if (in_array($toolQuestion->short, ['wood-elements', 'current-roof-types'])) {
+            foreach($answerData as $targetColumn => $values) {
+                foreach ($values as $value) {
+                    // Now save it
+                    $modelName::allInputSources()
+                        ->updateOrCreate(
+                            $where,
+                            [$targetColumn => $value]
+                        );
+                }
+            }
+        } else {
         // Now save it
         $modelName::allInputSources()
             ->updateOrCreate(
                 $where,
                 $answerData
             );
+        }
 
         $this->checkConditionalAnswers($givenAnswer);
     }

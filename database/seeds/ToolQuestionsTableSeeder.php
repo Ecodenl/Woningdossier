@@ -2114,6 +2114,16 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => [
+                    'required',
+                ],
+                'save_in' => "building_roof_types.roof_type_id",
+                'translation' => 'Welke daktypes zijn aanwezig in de woning? ',
+                'short' => 'current-roof-types',
+                'tool_question_values' => RoofType::all(),
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => [
                     'required'
                 ],
                 'save_in' => 'building_roof_types.1.element_value_id',

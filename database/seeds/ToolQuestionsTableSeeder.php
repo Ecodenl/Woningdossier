@@ -1958,7 +1958,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "building_insulated_glazings.{$glassInLead->id}.insulating_glazing_id",
                 "translation" => "Glas-in-lood vervangen: Wat voor glas is er nu?",
-                "short" => "glass-in-lead-replace-current-class",
+                "short" => "glass-in-lead-replace-current-glass",
                 'tool_question_values' => \App\Models\InsulatingGlazing::all(),
             ],
             [

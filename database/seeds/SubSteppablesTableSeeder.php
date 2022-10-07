@@ -1813,7 +1813,7 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('hrpp-glass-only-current'),
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-only-current-glass'),
                             'size' => 'col-span-12',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
@@ -1906,7 +1906,7 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-current-class'),
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-current-glass'),
                             'size' => 'col-span-12',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,

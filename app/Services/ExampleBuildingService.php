@@ -73,6 +73,7 @@ class ExampleBuildingService
             }
         }
 
+
         self::log(
             'Applying Example Building ' . $exampleBuilding->name . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
         );

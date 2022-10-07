@@ -119,12 +119,21 @@ class ExampleBuildingContentRestructure extends Command
 
                                 if ($value != $noneValue->id) {
                                     foreach ($mapping[$value] as $toolQuestionShort => $toolQuestionCustomValue) {
-                                        $newContent[$toolQuestionShort] = $toolQuestionCustomValue->short;
+                                        $newContent[$toolQuestionShort][] = $toolQuestionCustomValue->short;
                                     }
                                 }
 
                             } else if ($toolQuestion instanceof ToolQuestion) {
-                                $newContent[$toolQuestion->short] = $value;
+                                $shouldSet = true;
+                                if ($value === null) {
+                                    $shouldSet = false;
+                                }
+                                if ($value == "null") {
+                                    $shouldSet = false;
+                                }
+                                if ($shouldSet) {
+                                    $newContent[$toolQuestion->short] = $value;
+                                }
                             }
                         }
                     }

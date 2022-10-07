@@ -2009,7 +2009,7 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('flat-roof-zinc-replace-date'),
+                            'morph' => ToolQuestion::findByShort('flat-roof-zinc-replaced-date'),
                             'size' => 'col-span-12',
                             'conditions' => [],
                             'tool_question_type_id' => $textType->id,

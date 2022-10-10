@@ -62,7 +62,7 @@ class Buttons extends Component
             $subStep->load(['toolQuestions', 'subStepTemplate']);
 
             // the route will always be matched, however a sub step has to match the step.
-            abort_if(!$step->subSteps()->find($subStep->id) instanceof SubStep, 404);
+            abort_if(! $step->subSteps()->find($subStep->id) instanceof SubStep, 404);
 
             $this->subStep = $subStep;
 
@@ -90,6 +90,7 @@ class Buttons extends Component
 
     public function setUrl()
     {
+        // TODO: See if we can integrate this with the ScanFlowService
         $firstIncompleteStep = $this->firstIncompleteStep;
         $firstIncompleteSubStep = $this->firstIncompleteSubStep;
         $previousStep = $this->previousStep;

@@ -122,14 +122,14 @@ class ScanFlowService
                 // If it's a visible step that is not complete, we want the parent step to also to also not be
                 // complete.
                 if (!$completedSubStep instanceof CompletedSubStep) {
-                    Log::debug("Incompleting {$subStep->step->name} line 86");
+                    Log::debug("Incompleting step {$subStep->step->name} line 125");
                     StepHelper::incomplete($subStep->step, $building, $currentInputSource);
                     StepHelper::incomplete($subStep->step, $building, $masterInputSource);
                 }
             } else {
                 // If it's an invisible step that is complete, we want to incomplete it.
                 if ($completedSubStep instanceof CompletedSubStep) {
-                    Log::debug("Incompleting {$subStep->name} line 93");
+                    Log::debug("Incompleting sub step {$subStep->name} line 132");
                     SubStepHelper::incomplete($subStep, $building, $currentInputSource);
                     SubStepHelper::incomplete($subStep, $building, $masterInputSource);
                 }
@@ -154,11 +154,11 @@ class ScanFlowService
                 // If the conditions now match and the sub step was completed, we want to incomplete both the step
                 // and sub step
                 if ($completedSubStep instanceof CompletedSubStep) {
-                    Log::debug("Incompleting {$subStep->name} line 118");
+                    Log::debug("Incompleting step {$subStep->step->name} line 157");
                     StepHelper::incomplete($subStep->step, $building, $currentInputSource);
                     StepHelper::incomplete($subStep->step, $building, $masterInputSource);
 
-                    Log::debug("Incompleting {$subStep->name} line 122");
+                    Log::debug("Incompleting sub step {$subStep->name} line 161");
                     SubStepHelper::incomplete($subStep, $building, $currentInputSource);
                     SubStepHelper::incomplete($subStep, $building, $masterInputSource);
                 }
@@ -208,7 +208,6 @@ class ScanFlowService
         $nextStep = null;
         $nextSubStep = null;
         $nextQuestionnaire = null;
-        $firstIncompleteStep = null;
 
         if ($this->subStep instanceof SubStep) {
             $nextSubStep = $this->step->subSteps()->where('order', '>', $this->subStep->order)->orderBy('order')->first();
@@ -248,7 +247,7 @@ class ScanFlowService
         }
 
 
-        if (!$nextStep instanceof Step) {
+        if (! $nextStep instanceof Step) {
             Log::debug("No next step, fetching first in complete step..");
             // No next step set, let's see if there are any steps left incomplete
             $nextStep = $this->building->getFirstIncompleteStep([], $this->masterInputSource);
@@ -266,9 +265,8 @@ class ScanFlowService
             }
         }
 
-        // so this is insane right, its shit!
-        // for some fucktard borderline reason the cooperation isnt automatically binden, prob because of livewire
-        // so this crap remains here for now.
+        // For some reason the cooperation isn't automatically bound, probably because of Livewire.
+        // For now, this has to stay.
         $cooperation = $this->building->user->cooperation;
 
         if ($nextStep instanceof Step && $nextSubStep instanceof SubStep) {
@@ -284,5 +282,4 @@ class ScanFlowService
         Log::debug($nextUrl);
         return $nextUrl ?? '';
     }
-
 }

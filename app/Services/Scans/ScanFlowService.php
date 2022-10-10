@@ -246,7 +246,6 @@ class ScanFlowService
             }
         }
 
-
         if (! $nextStep instanceof Step) {
             Log::debug("No next step, fetching first in complete step..");
             // No next step set, let's see if there are any steps left incomplete

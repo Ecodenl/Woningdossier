@@ -1,13 +1,8 @@
 <div class="w-full flex justify-between">
     @php
-
-        $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
-                   ->forInputSource($masterInputSource)
-                   ->forBuilding($building)
-                   ->answers(collect($this->prepareAnswersForEvaluation()))
-                   ->withCustomEvaluation()
-                   ->getQuestionValues();
-
+        $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
+            $toolQuestion,
+        );
     @endphp
     @foreach($questionValues as $toolQuestionValue)
         @php

@@ -1710,6 +1710,375 @@ class SubSteppablesTableSeeder extends Seeder
                     ],
                 ],
             ],
+            'ventilation' => [
+                'Hoofd vragen' => [
+                    'order' => 0,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-how'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $multiDropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-living-situation'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $multiDropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-usage'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $multiDropdownType->id,
+                        ],
+                    ],
+                ],
+            ],
+            'wall-insulation' => [
+                'Hoofd vragen' => [
+                    'order' => 0,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('wall-insulation-considerable'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('has-cavity-wall'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('current-wall-insulation'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('wall-facade-plastered-painted'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('wall-facade-plastered-painted-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('damaged-paintwork'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('wall-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('insulation-wall-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('damaged-wall-joints'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('contaminated-wall-joints'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                    ],
+                ],
+            ],
+            'insulated-glazing' => [
+                'Hoofd vragen' => [
+                    'order' => 0,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-only-considerable'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-only-current-glass'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-only-rooms-heated'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-only-replacement-glass-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-only-replacement-glass-count'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-frame-considerable'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-frame-current-glass'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-frame-rooms-heated'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-frame-replacement-glass-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hrpp-glass-frame-replacement-glass-count'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('hr3p-glass-frame-considerable'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hr3p-glass-frame-current-glass'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hr3p-glass-frame-rooms-heated'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hr3p-glass-frame-replacement-glass-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hr3p-glass-frame-replacement-glass-count'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-considerable'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-current-glass'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-rooms-heated'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-glass-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('glass-in-lead-replace-glass-count'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('total-window-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('frame-type'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('wood-elements'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $multiDropdownType->id,
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('last-painted-year'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('paintwork-status'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('wood-rot-status'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+
+                    ],
+                ],
+            ],
+            'roof-insulation' => [
+                'Hoofd vragen' => [
+                    'order' => 0,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('roof-insulation-considerable'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('current-roof-types'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $multiDropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('is-flat-roof-insulated'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-insulation-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-zinc-replaced-date'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-bitumen-replaced-date'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-insulation'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-heating'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        // pithced start
+                        [
+                            'morph' => ToolQuestion::findByShort('is-pitched-roof-insulated'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-insulation-surface'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-zinc-replaced-date'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-tiles-condition'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-insulation'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pitched-roof-heating'),
+                            'size' => 'col-span-12',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 
@@ -1723,6 +2092,7 @@ class SubSteppablesTableSeeder extends Seeder
                 $subStepSlug = $subQuestionData['slug'] ?? Str::slug($subQuestionName);
                 $names = ['nl' => $subQuestionName];
                 $slugs = ['nl' => $subStepSlug];
+
 
                 $subStepData = [
                     'name' => json_encode($names),
@@ -1756,7 +2126,7 @@ class SubSteppablesTableSeeder extends Seeder
 
                 if (isset($subQuestionData['morphs'])) {
                     $orderForSubStepToolQuestions = 0;
-                    foreach ($subQuestionData['morphs'] as $morph) {
+                    foreach ($subQuestionData['morphs'] as $index => $morph) {
                         $conditions = $morph['conditions'] ?? null;
 
                         DB::table('sub_steppables')->updateOrInsert(

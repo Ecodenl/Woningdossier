@@ -27,7 +27,7 @@
             </div>
         @endforeach
     @endif
-    <div role="tabpanel" class="tab-pane @if(Route::currentRouteName() === "cooperation.admin.example-buildings.create") active @endif" id="new">
+    <div role="tabpanel" class="tab-pane @if(Route::currentRouteName() === "cooperation.admin.example-buildings.create") active biertje @endif" id="new">
         @include('cooperation.admin.example-buildings.components.content-table', ['content' => null])
     </div>
 </div>

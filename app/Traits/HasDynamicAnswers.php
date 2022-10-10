@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\Building;
 use App\Models\InputSource;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 trait HasDynamicAnswers
 {
@@ -17,7 +18,7 @@ trait HasDynamicAnswers
     /**
      * Get the answer, either dynamic if set, otherwise from the given building.
      *
-     * @param  string  $toolQuestion
+     * @param string $toolQuestion
      *
      * @return array|mixed
      */

@@ -164,7 +164,8 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         ExampleBuildingService::apply(
             $exampleBuilding,
             $buildYear,
-            $this->building
+            $this->building,
+            InputSource::findByShort(InputSource::EXAMPLE_BUILDING),
         );
 
         // We apply the example building only if the user has not proceeded further than the example building

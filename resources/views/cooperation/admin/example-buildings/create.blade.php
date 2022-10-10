@@ -9,22 +9,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{ route('cooperation.admin.example-buildings.store') }}" method="post">
-                        {{ csrf_field() }}
-
-                        @include('cooperation.admin.example-buildings.components.names')
-                        @include('cooperation.admin.example-buildings.components.building-type')
-                        @include('cooperation.admin.example-buildings.components.cooperation')
-                        @include('cooperation.admin.example-buildings.components.order')
-                        @include('cooperation.admin.example-buildings.components.is_default')
-                        @include('cooperation.admin.example-buildings.components.contents')
-
-                        <div class="form-group" style="margin-top: 5em;">
-                            <input type="hidden" name="new" value="1">
-                            <input type="submit" name="create" value="Create" class="btn btn-success btn-block">
-                        </div>
-                    </form>
-
+                    @livewire('cooperation.admin.example-buildings.form', ['exampleBuilding' => null])
                 </div>
             </div>
         </div>

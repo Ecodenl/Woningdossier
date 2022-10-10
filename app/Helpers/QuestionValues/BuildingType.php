@@ -7,21 +7,18 @@ use App\Models\BuildingType as BuildingTypeModel;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
-class BuildingType implements ShouldReturnQuestionValues
+class BuildingType extends QuestionValuable
 {
-    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource, ?Collection $answers = null): Collection
+    public function getQuestionValues(): Collection
     {
-        $conditionalQuestion = ToolQuestion::findByShort('building-type-category');
-
-        $buildingTypeCategoryId = $building->getAnswer(
-            $inputSource,
-            $conditionalQuestion
-        );
+        $buildingTypeCategoryId = $this->getAnswer('building-type-category');
+        Log::debug("Found a building type category with ID: {$buildingTypeCategoryId}");
 
         // only one option would mean there are no multiple building types for the category, thus the page is redundant.
         // so multiple building types = next step.
         $matchedBuildingType = BuildingTypeModel::where('building_type_category_id', $buildingTypeCategoryId)->get();
-        return $questionValues->whereIn('value', $matchedBuildingType->pluck('id')->toArray());
+        return $this->questionValues->whereIn('value', $matchedBuildingType->pluck('id')->toArray());
     }
 }

@@ -180,9 +180,9 @@
                 @endslot
 
 
-                    @include("cooperation.tool-question-type-templates.{$toolQuestion->pivot->toolQuestionType->short}.show", [
-                        'disabled' => $disabled,
-                    ])
+                @include("cooperation.tool-question-type-templates.{$toolQuestion->pivot->toolQuestionType->short}.show", [
+                    'disabled' => $disabled,
+                ])
 
             @endcomponent
         @endforeach

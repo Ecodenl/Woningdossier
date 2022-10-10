@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
@@ -12,6 +13,8 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\Service;
+use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Services\ContentStructureService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
@@ -26,20 +29,13 @@ class ExampleBuildingController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
-        $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id', 'asc')
-            ->orderBy('order', 'asc');
+        $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id')
+            ->orderBy('order');
 
-        if (false === stristr(HoomdossierSession::currentRole(), 'super')) {
+        if (HoomdossierSession::getRole(true)->name !== RoleHelper::ROLE_SUPER_ADMIN) {
             $exampleBuildingsQuery->forMyCooperation();
         }
 
-        $contentStructure = ContentStructureService::init(
-            ToolHelper::getContentStructure()
-        )->applicableForExampleBuildings();
-
-
-        $rows[] = ['Naam', 'Bouwjaar', ...collect($contentStructure)->pluck('*.*.label')->flatten()->filter()->toArray()];
-//        dd($rows);
         $exampleBuildings = $exampleBuildingsQuery->get();
 
         return view('cooperation.admin.example-buildings.index', compact('exampleBuildings', 'cooperation'));
@@ -51,24 +47,14 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public
-    function create(Cooperation $cooperation)
+    public function create(Cooperation $cooperation)
     {
         $buildingTypes = BuildingType::all();
-
-        $cooperations = collect()->push($cooperation);
-        if ('super-admin' === HoomdossierSession::getRole(true)->short) {
-            $cooperations = Cooperation::all();
-        }
-
-        $contentStructure = ContentStructureService::init(
-            ToolHelper::getContentStructure()
-        )->applicableForExampleBuildings();
+        $cooperations = Cooperation::all();
 
         return view('cooperation.admin.example-buildings.create',
             compact(
-                'buildingTypes', 'cooperations', 'contentStructure'
-            )
+                'buildingTypes', 'cooperations')
         );
     }
 
@@ -79,8 +65,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public
-    function store(ExampleBuildingRequest $request)
+    public function store(ExampleBuildingRequest $request)
     {
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
@@ -100,34 +85,13 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->save();
 
 
-
         $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
         return redirect()->route('cooperation.admin.example-buildings.edit', compact('exampleBuilding'))->with('success', __('cooperation/admin/example-buildings.store.success'));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public
-    function show($id)
-    {
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  $cooperation
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response|\Illuminate\View\View
-     */
-    public
-    function edit(Cooperation $cooperation, $exampleBuilding)
+    public function edit(Cooperation $cooperation, $exampleBuilding)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::with([
@@ -137,75 +101,12 @@ class ExampleBuildingController extends Controller
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
-        $contentStructure = ContentStructureService::init(
-            ToolHelper::getContentStructure()
-        )->applicableForExampleBuildings();
-
         return view('cooperation.admin.example-buildings.edit',
             compact(
-                'exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'
-            )
+                'exampleBuilding', 'buildingTypes', 'cooperations')
         );
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @param  $cooperation
-     *
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
-    public
-    function update(ExampleBuildingRequest $request, Cooperation $cooperation, ExampleBuilding $exampleBuilding)
-    {
-        $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
-        $cooperation = Cooperation::find($request->get('cooperation_id'));
-
-        $translations = $request->input('name', []);
-        $exampleBuilding->name = $translations;
-
-        $exampleBuilding->buildingType()->associate($buildingType);
-        if (!is_null($cooperation)) {
-            $exampleBuilding->cooperation()->associate($cooperation);
-        }
-        $exampleBuilding->is_default = $request->get('is_default', false);
-        $exampleBuilding->order = $request->get('order', null);
-
-        $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
-
-        $exampleBuilding->save();
-
-        return redirect()->route('cooperation.admin.example-buildings.edit', compact('exampleBuilding'))->with('success', __('cooperation/admin/example-buildings.update.success'));
-    }
-
-    private
-    function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
-    {
-        foreach ($contents as $cid => $data) {
-            if (!is_null($data['build_year'])) {
-                $data['content'] = array_key_exists('content', $data) ? $data['content'] : [];
-
-                $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
-
-                $content = null;
-                if (!is_numeric($cid) && 'new' == $cid) {
-                    if (1 == $new) {
-                        // addition
-                        $content = new ExampleBuildingContent($data);
-                    }
-                } else {
-                    $content = $exampleBuilding->contents()->where('id', $cid)->first();
-                    $content->fill($data);
-                }
-                if ($content instanceof ExampleBuildingContent) {
-                    $content->exampleBuilding()->associate($exampleBuilding);
-                    $content->save();
-                }
-            }
-        }
-    }
 
     /**
      * Remove the specified resource from storage.

@@ -8,26 +8,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-
-                    <form action="{{ route('cooperation.admin.example-buildings.update', compact('exampleBuilding')) }}"
-                          method="post">
-                        @csrf
-                        @method('PUT')
-
-                        @include('cooperation.admin.example-buildings.components.names')
-                        @include('cooperation.admin.example-buildings.components.building-type')
-                        @include('cooperation.admin.example-buildings.components.cooperation')
-                        @include('cooperation.admin.example-buildings.components.order')
-                        @include('cooperation.admin.example-buildings.components.is_default')
-                        @include('cooperation.admin.example-buildings.components.contents')
-
-
-                        <div class="form-group" style="margin-top: 5em;">
-                            <input type="hidden" name="new" value="0">
-                            <button type="submit" class="btn btn-success btn-block">@lang('cooperation/admin/example-buildings.form.update')</button>
-                        </div>
-                    </form>
-
+                    @livewire('cooperation.admin.example-buildings.form', compact('exampleBuilding'))
                 </div>
             </div>
         </div>

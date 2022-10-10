@@ -238,7 +238,7 @@ class AlertsTableSeeder extends Seeder
             [
                 'short' => 'insulation-advice-current-wall-insulation',
                 'text' => [
-                    'nl' => 'Jouw huis is niet optimaal geïsoleerd. Er wordt geadviseerd eerst de wallisolatie te verbeteren.',
+                    'nl' => 'Jouw huis is niet optimaal geïsoleerd. Er wordt geadviseerd eerst de muurisolatie te verbeteren.',
                 ],
                 'type' => Alert::TYPE_WARNING,
                 'conditions' => [

@@ -56,17 +56,9 @@ class SubStepHelper
         // the completed steps, so the ones we do not want.
         $irrelevantSubSteps = $building->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
 
-        $incompleteSubSteps = $step->subSteps()
+        return $step->subSteps()
             ->whereNotIn('id', $irrelevantSubSteps)
             ->orderBy('order')
             ->get();
-
-        if ($incompleteSubSteps->isEmpty()) {
-            $incompleteSubSteps = $step->subSteps()
-                ->orderBy('order')
-                ->get();
-        }
-
-        return $incompleteSubSteps;
     }
 }

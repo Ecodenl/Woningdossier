@@ -205,7 +205,7 @@ class ScanFlowService
 
     public function resolveNextUrl(): string
     {
-        $nextStep = null;
+        $nextStep = $this->step;
         $nextSubStep = null;
         $nextQuestionnaire = null;
 
@@ -255,7 +255,7 @@ class ScanFlowService
 
         // There are incomplete steps left, set the sub step
         if ($nextStep instanceof Step) {
-            // retrieve all in complete sub steps for the building
+            // retrieve all incomplete sub steps for the building
             $incompleteSubSteps = SubStepHelper::getIncompleteSubSteps($this->building, $nextStep, $this->masterInputSource);
             foreach ($incompleteSubSteps as $subStep) {
                 if ($this->building->user->account->can('show', [$subStep, $this->building])) {
@@ -269,17 +269,15 @@ class ScanFlowService
         // For now, this has to stay.
         $cooperation = $this->building->user->cooperation;
 
-        if ($nextStep instanceof Step && $nextSubStep instanceof SubStep) {
+        if ($nextStep instanceof Step && $nextSubStep instanceof SubStep && $nextSubStep->step_id === $nextStep->id) {
             $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'subStep' => $nextSubStep]);
-        } elseif ($nextStep instanceof Step && $nextQuestionnaire instanceof Questionnaire) {
+        } elseif ($nextStep instanceof Step && $nextQuestionnaire instanceof Questionnaire && $nextQuestionnaire->step_id === $nextStep->id) {
             $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
         } else {
-            Log::debug($this->scan);
             $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $cooperation]);
-            Log::debug("afeer scan");
         }
 
         Log::debug($nextUrl);
-        return $nextUrl ?? '';
+        return $nextUrl;
     }
 }

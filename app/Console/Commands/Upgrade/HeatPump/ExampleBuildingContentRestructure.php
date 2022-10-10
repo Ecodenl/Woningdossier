@@ -153,6 +153,7 @@ class ExampleBuildingContentRestructure extends Command
                         }
                         $content->update(['content' => $newContent]);
                     } else {
+                        $this->info("Step $stepSlug not found; breaking (is this correct, should only be shown on second run.)");
                         break;
                     }
                 }

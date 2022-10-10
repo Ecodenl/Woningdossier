@@ -14,6 +14,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubSteppable;
 use App\Models\ToolQuestion;
+use App\Services\DiscordNotifier;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\Log;
 
@@ -268,10 +269,22 @@ class ScanFlowService
         // For now, this has to stay.
         $cooperation = $this->building->user->cooperation;
 
-        if ($nextStep instanceof Step && $nextSubStep instanceof SubStep && $nextSubStep->step_id === $nextStep->id) {
-            $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'subStep' => $nextSubStep]);
-        } elseif ($nextStep instanceof Step && $nextQuestionnaire instanceof Questionnaire && $nextQuestionnaire->step_id === $nextStep->id) {
-            $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
+        if ($nextStep instanceof Step && $nextSubStep instanceof SubStep) {
+            if ($nextSubStep->step_id !== $nextStep->id) {
+                // TODO: Temporary, remove if when no issues arise
+                DiscordNotifier::init()->notify("Next sub step doesn't belong to next step! Step ID: {$nextStep->id}. Sub step ID: {$nextSubStep->id}.");
+                $nextUrl = '';
+            } else {
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'subStep' => $nextSubStep]);
+            }
+        } elseif ($nextStep instanceof Step && $nextQuestionnaire instanceof Questionnaire) {
+            if ($nextQuestionnaire->step_id !== $nextStep->id) {
+                // TODO: Temporary, remove if when no issues arise
+                DiscordNotifier::init()->notify("Next questionnaire doesn't belong to next step! Step ID: {$nextStep->id}. Questionnaire ID: {$nextQuestionnaire->id}.");
+                $nextUrl = '';
+            } else {
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
+            }
         } else {
             $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $cooperation]);
         }

@@ -509,12 +509,22 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => [
                                 [
                                     [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                    [
                                         'column' => 'building-heating-application',
                                         'operator' => Clause::CONTAINS,
                                         'value' => 'radiators',
                                     ],
                                 ],
                                 [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
                                     [
                                         'column' => 'building-heating-application',
                                         'operator' => Clause::CONTAINS,
@@ -1663,12 +1673,22 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => [
                                 [
                                     [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
+                                    [
                                         'column' => 'building-heating-application',
                                         'operator' => Clause::CONTAINS,
                                         'value' => 'radiators',
                                     ],
                                 ],
                                 [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'hr-boiler',
+                                    ],
                                     [
                                         'column' => 'building-heating-application',
                                         'operator' => Clause::CONTAINS,

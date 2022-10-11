@@ -34447,6 +34447,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }), _container),
     draggable: (_draggable = {}, _defineProperty(_draggable, 'x-on:dragstart.self', function xOnDragstartSelf() {
+      // We need this, else we can't drag/drop in Firefox...
+      this.$event.dataTransfer.setData('application/node type', this.$el);
       this.dragged = this.$el;
       this.draggedOrder = Array.from(this.dragged.parentElement.children).indexOf(this.dragged);
     }), _defineProperty(_draggable, 'x-on:drag', function xOnDrag() {

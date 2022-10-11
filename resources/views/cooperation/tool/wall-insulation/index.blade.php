@@ -121,11 +121,7 @@
                     @slot('sourceSlot')
                         @include('cooperation.tool.components.source-list', [
                             'inputType' => 'radio',
-                            'inputValues' => [
-                                1 => __('general.options.yes.title'),
-                                2 => __('general.options.no.title'),
-                                3 => __('general.options.unknown.title'),
-                            ],
+                            'inputValues' => \App\Helpers\Cooperation\Tool\WallInsulationHelper::getFacadePlasteredPaintedValues(),
                             'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'
                         ])
                     @endslot

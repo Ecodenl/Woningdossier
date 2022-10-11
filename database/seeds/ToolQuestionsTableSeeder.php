@@ -8,6 +8,7 @@ use App\Models\BuildingTypeCategory;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
 use App\Models\EnergyLabel;
+use App\Models\FacadeSurface;
 use App\Models\InputSource;
 use App\Models\PvPanelOrientation;
 use App\Models\RoofType;
@@ -1782,6 +1783,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.contaminated_wall_joints',
                 'translation' => 'Is de gevel vervuild (aanslag op de stenen)?',
                 'short' => 'contaminated-wall-joints',
+                'tool_question_values' => FacadeSurface::orderBy('order')->get(),
             ],
             [
                 'data_type' => Caster::FLOAT,

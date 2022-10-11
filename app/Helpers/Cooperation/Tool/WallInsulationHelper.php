@@ -19,6 +19,14 @@ use App\Services\UserActionPlanAdviceService;
 class WallInsulationHelper extends ToolHelper
 {
 
+    public static function getFacadePlasteredPaintedValues(): array
+    {
+        return [
+            1 => __('general.options.yes.title'),
+            2 => __('general.options.no.title'),
+            3 => __('general.options.unknown.title'),
+        ];
+    }
     public static function getCavityWallValues(): array
     {
         return [

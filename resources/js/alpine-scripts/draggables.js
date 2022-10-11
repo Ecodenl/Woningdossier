@@ -47,16 +47,12 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                                 ghostParentElement.replaceChild(this.dragged, ghost);
 
                                 // Dispatch the dropped position
-                                let event = new CustomEvent('draggable-dragged', {
-                                    detail: {
-                                        from: parentElement,
-                                        to: target,
-                                        id: this.dragged.id,
-                                        order: order,
-                                    },
-                                    bubbles: true,
+                                window.triggerCustomEvent(this.$el, 'draggable-dragged', {
+                                    from: parentElement,
+                                    to: target,
+                                    id: this.dragged.id,
+                                    order: order,
                                 });
-                                dispatchEvent(event);
                             }
                         }
                     }
@@ -213,14 +209,10 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                     parentElement.removeChild(this.dragged);
 
                     // Dispatch the item was removed position
-                    let event = new CustomEvent('draggable-trashed', {
-                        detail: {
-                            from: parentElement,
-                            id: this.dragged.id,
-                        },
-                        bubbles: true,
+                    window.triggerCustomEvent(this.$el, 'draggable-trashed', {
+                        from: parentElement,
+                        id: this.dragged.id,
                     });
-                    dispatchEvent(event);
                 }
             }
         },

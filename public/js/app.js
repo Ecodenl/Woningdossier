@@ -34358,16 +34358,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 ghostParentElement.replaceChild(this.dragged, ghost); // Dispatch the dropped position
 
-                var event = new CustomEvent('draggable-dragged', {
-                  detail: {
-                    from: parentElement,
-                    to: target,
-                    id: this.dragged.id,
-                    order: order
-                  },
-                  bubbles: true
+                window.triggerCustomEvent(this.$el, 'draggable-dragged', {
+                  from: parentElement,
+                  to: target,
+                  id: this.dragged.id,
+                  order: order
                 });
-                dispatchEvent(event);
               }
             }
           }
@@ -34499,14 +34495,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           parentElement.removeChild(this.dragged); // Dispatch the item was removed position
 
-          var event = new CustomEvent('draggable-trashed', {
-            detail: {
-              from: parentElement,
-              id: this.dragged.id
-            },
-            bubbles: true
+          window.triggerCustomEvent(this.$el, 'draggable-trashed', {
+            from: parentElement,
+            id: this.dragged.id
           });
-          dispatchEvent(event);
         }
       }
     }), _trash),

@@ -8,8 +8,10 @@ use App\Models\BuildingTypeCategory;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
 use App\Models\EnergyLabel;
+use App\Models\FacadeSurface;
 use App\Models\InputSource;
 use App\Models\PvPanelOrientation;
+use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
@@ -1773,6 +1775,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.wall_joints',
                 'translation' => 'Zijn er voegen die loslaten of uitgebroken zijn?',
                 'short' => 'damaged-wall-joints',
+                'tool_question_values' => FacadeSurface::orderBy('order')->get(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1782,6 +1785,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.contaminated_wall_joints',
                 'translation' => 'Is de gevel vervuild (aanslag op de stenen)?',
                 'short' => 'contaminated-wall-joints',
+                'tool_question_values' => FacadeSurface::orderBy('order')->get(),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2175,6 +2179,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_roof_types.1.extra.tiles_condition',
                 'translation' => 'In welke staat verkeren de dakpannen?',
                 'short' => 'pitched-roof-tiles-condition',
+                'tool_question_values' => RoofTileStatus::orderBy('order')->get(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,

@@ -34422,11 +34422,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }), _defineProperty(_container, 'x-on:dragenter.prevent', function xOnDragenterPrevent() {
       if (null !== this.dragged) {
         var eventTarget = this.$event.target;
-        this.lastEntered = eventTarget;
         var target = this.getSupportedTarget(eventTarget);
 
         if (null !== target) {
           target.style.backgroundColor = this.hoverColor;
+        }
+
+        if (this.$el !== eventTarget) {
+          this.lastEntered = eventTarget;
         }
       }
     }), _defineProperty(_container, 'x-on:dragleave', function xOnDragleave() {
@@ -34439,7 +34442,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           target.style.backgroundColor = '';
         }
 
-        this.lastEntered = null;
+        if (null !== this.lastEntered && this.$el !== eventTarget) {
+          this.lastEntered = null;
+        }
       }
     }), _container),
     draggable: (_draggable = {}, _defineProperty(_draggable, 'x-on:dragstart.self', function xOnDragstartSelf() {

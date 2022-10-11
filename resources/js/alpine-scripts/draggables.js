@@ -120,11 +120,14 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
         ['x-on:dragenter.prevent']() {
             if (null !== this.dragged) {
                 let eventTarget = this.$event.target;
-                this.lastEntered = eventTarget;
                 let target = this.getSupportedTarget(eventTarget);
 
                 if (null !== target) {
                     target.style.backgroundColor = this.hoverColor;
+                }
+
+                if (this.$el !== eventTarget) {
+                    this.lastEntered = eventTarget;
                 }
             }
         },
@@ -139,7 +142,9 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                     target.style.backgroundColor = '';
                 }
 
-                this.lastEntered = null
+                if (null !== this.lastEntered && this.$el !== eventTarget) {
+                    this.lastEntered = null;
+                }
             }
         },
     },

@@ -3,6 +3,7 @@
 use App\Models\Alert;
 use App\Models\SubStep;
 use App\Helpers\Conditions\Clause;
+use App\Services\UserActionPlanAdviceService;
 use Illuminate\Database\Seeder;
 
 class AlertsTableSeeder extends Seeder
@@ -95,6 +96,14 @@ class AlertsTableSeeder extends Seeder
                             'column' => 'fn',
                             'operator' => 'HrBoilerAdvice',
                         ],
+                        [
+                            'column' => 'fn',
+                            'operator' => 'AdviceCategory',
+                            'value' => [
+                                'measure_application' => 'high-efficiency-boiler-replace',
+                                'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
+                            ]
+                        ]
                     ],
                 ],
             ],
@@ -121,6 +130,7 @@ class AlertsTableSeeder extends Seeder
                         [
                             'column' => 'fn',
                             'operator' => 'InsulationScore',
+                            'value' => 2.5,
                         ],
                     ]
                 ],

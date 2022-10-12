@@ -379,6 +379,7 @@ class Form extends Component
         }
 
         $this->dispatchBrowserEvent('moved-card');
+        $this->refreshAlerts();
     }
 
     public function cardTrashed($fromCategory, $id)
@@ -407,6 +408,7 @@ class Form extends Component
         }
 
         $this->dispatchBrowserEvent('trashed-card');
+        $this->refreshAlerts();
     }
 
     public function recalculate()
@@ -587,7 +589,6 @@ class Form extends Component
         }
     }
 
-
     public function addHiddenCardToBoard($category, $id)
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
@@ -623,6 +624,12 @@ class Form extends Component
         }
 
         $this->dispatchBrowserEvent('readded-card');
+        $this->refreshAlerts();
+    }
+
+    protected function refreshAlerts()
+    {
+        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts');
     }
 
     private function loadHiddenCards()

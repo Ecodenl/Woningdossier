@@ -3,6 +3,7 @@
 namespace App\Helpers\QuestionValues;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -64,6 +65,16 @@ class QuestionValue
 
         $className = Str::studly($toolQuestion->short);
         $questionValuesClass = "App\\Helpers\\QuestionValues\\{$className}";
+
+        // note: this is not the way we intended it
+        // the is_considering save_in is used on multiple different question SHORTS
+        // which would mean we would have 8 questionValue classes, which are just copies for different tool questions
+        // to save time and clutter this is done.
+        $saveIn = explode('.', $toolQuestion->save_in);
+        $lastColumn = array_pop($saveIn);
+        if ($lastColumn === 'is_considering') {
+            $questionValuesClass = IsConsidering::class;
+        }
 
         if (class_exists($questionValuesClass)) {
             $questionValues = $questionValuesClass::init($this->cooperation, $questionValues, $this->answers);

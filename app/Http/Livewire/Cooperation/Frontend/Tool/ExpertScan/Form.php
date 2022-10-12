@@ -7,7 +7,6 @@ use App\Calculations\HeatPump;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\SubStepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;

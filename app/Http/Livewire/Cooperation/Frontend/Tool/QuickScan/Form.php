@@ -5,8 +5,6 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\NumberFormatter;
-use App\Helpers\SubStepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\CompletedSubStep;
@@ -23,8 +21,6 @@ class Form extends Scannable
 {
     public $step;
     public $subStep;
-
-    public $nextUrl;
 
     public function mount(Step $step, SubStep $subStep)
     {

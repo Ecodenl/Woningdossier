@@ -623,6 +623,7 @@ class Form extends Component
             $this->recalculate();
         }
 
+        $this->dispatchBrowserEvent('readded-card');
         $this->refreshAlerts();
     }
 

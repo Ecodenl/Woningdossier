@@ -210,26 +210,19 @@ class SubSteppable extends Scannable
             }
 
             Log::debug("Sub step {$this->subStep} ". $validator->fails() ? 'fails validation' : 'validatie goed');
+            foreach ($this->toolQuestions as $toolQuestion) {
+                if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                    $this->filledInAnswers[$toolQuestion->short] = Caster::init(
+                        $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
+                    )->getFormatForUser();
+                }
+            }
             if ($validator->fails()) {
                 // Validator failed, let's put it back as the user format
-                foreach ($this->toolQuestions as $toolQuestion) {
-                    if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
-                        $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
-                    }
-                }
-
                 // notify the main form that validation failed for this particular sub step.
                 $this->emitUp('failedValidationForSubSteps', $this->subStep);
 
                 $this->dispatchBrowserEvent('validation-failed');
-                foreach ($this->toolQuestions as $toolQuestion) {
-                    if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
-                        $this->filledInAnswers[$toolQuestion->short] = Caster::init(
-                            $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
-                        )->getFormatForUser();
-                    }
-                }
-
             }
 
             $validator->validate();

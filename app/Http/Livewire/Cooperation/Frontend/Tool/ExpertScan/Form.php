@@ -7,6 +7,7 @@ use App\Calculations\HeatPump;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Deprecation\ToolHelper;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\ComfortLevelTapWater;
@@ -132,6 +133,15 @@ class Form extends Component
             /** @var ToolQuestion $toolQuestion */
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             if ($this->building->user->account->can('answer', $toolQuestion)) {
+
+                // this is horseshit but is nesecerry, the sub steppable component reverseFormats and goes back to human readable
+                // so when we actually start saving it we have to format it one more time
+                if ($toolQuestion->data_type === Caster::FLOAT) {
+                    $givenAnswer = Caster::init(
+                        $toolQuestion->data_type, $givenAnswer
+                    )->reverseFormatted();
+                }
+
 
                 $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
                 if ($masterAnswer !== $givenAnswer) {

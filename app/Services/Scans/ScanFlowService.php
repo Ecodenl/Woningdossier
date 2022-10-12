@@ -14,6 +14,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubSteppable;
 use App\Models\ToolQuestion;
+use App\Services\DiscordNotifier;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\Log;
 
@@ -122,14 +123,14 @@ class ScanFlowService
                 // If it's a visible step that is not complete, we want the parent step to also to also not be
                 // complete.
                 if (!$completedSubStep instanceof CompletedSubStep) {
-                    Log::debug("Incompleting {$subStep->step->name} line 86");
+                    Log::debug("Incompleting step {$subStep->step->name} line 125");
                     StepHelper::incomplete($subStep->step, $building, $currentInputSource);
                     StepHelper::incomplete($subStep->step, $building, $masterInputSource);
                 }
             } else {
                 // If it's an invisible step that is complete, we want to incomplete it.
                 if ($completedSubStep instanceof CompletedSubStep) {
-                    Log::debug("Incompleting {$subStep->name} line 93");
+                    Log::debug("Incompleting sub step {$subStep->name} line 132");
                     SubStepHelper::incomplete($subStep, $building, $currentInputSource);
                     SubStepHelper::incomplete($subStep, $building, $masterInputSource);
                 }
@@ -154,11 +155,11 @@ class ScanFlowService
                 // If the conditions now match and the sub step was completed, we want to incomplete both the step
                 // and sub step
                 if ($completedSubStep instanceof CompletedSubStep) {
-                    Log::debug("Incompleting {$subStep->name} line 118");
+                    Log::debug("Incompleting step {$subStep->step->name} line 157");
                     StepHelper::incomplete($subStep->step, $building, $currentInputSource);
                     StepHelper::incomplete($subStep->step, $building, $masterInputSource);
 
-                    Log::debug("Incompleting {$subStep->name} line 122");
+                    Log::debug("Incompleting sub step {$subStep->name} line 161");
                     SubStepHelper::incomplete($subStep, $building, $currentInputSource);
                     SubStepHelper::incomplete($subStep, $building, $masterInputSource);
                 }
@@ -205,10 +206,9 @@ class ScanFlowService
 
     public function resolveNextUrl(): string
     {
-        $nextStep = null;
+        $nextStep = $this->step;
         $nextSubStep = null;
         $nextQuestionnaire = null;
-        $firstIncompleteStep = null;
 
         if ($this->subStep instanceof SubStep) {
             $nextSubStep = $this->step->subSteps()->where('order', '>', $this->subStep->order)->orderBy('order')->first();
@@ -247,8 +247,7 @@ class ScanFlowService
             }
         }
 
-
-        if (!$nextStep instanceof Step) {
+        if (! $nextStep instanceof Step) {
             Log::debug("No next step, fetching first in complete step..");
             // No next step set, let's see if there are any steps left incomplete
             $nextStep = $this->building->getFirstIncompleteStep([], $this->masterInputSource);
@@ -256,7 +255,7 @@ class ScanFlowService
 
         // There are incomplete steps left, set the sub step
         if ($nextStep instanceof Step) {
-            // retrieve all in complete sub steps for the building
+            // retrieve all incomplete sub steps for the building
             $incompleteSubSteps = SubStepHelper::getIncompleteSubSteps($this->building, $nextStep, $this->masterInputSource);
             foreach ($incompleteSubSteps as $subStep) {
                 if ($this->building->user->account->can('show', [$subStep, $this->building])) {
@@ -266,23 +265,31 @@ class ScanFlowService
             }
         }
 
-        // so this is insane right, its shit!
-        // for some fucktard borderline reason the cooperation isnt automatically binden, prob because of livewire
-        // so this crap remains here for now.
+        // For some reason the cooperation isn't automatically bound, probably because of Livewire.
+        // For now, this has to stay.
         $cooperation = $this->building->user->cooperation;
 
         if ($nextStep instanceof Step && $nextSubStep instanceof SubStep) {
-            $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'subStep' => $nextSubStep]);
+            if ($nextSubStep->step_id !== $nextStep->id) {
+                // TODO: Temporary, remove if when no issues arise
+                DiscordNotifier::init()->notify("Next sub step doesn't belong to next step! Step ID: {$nextStep->id}. Sub step ID: {$nextSubStep->id}.");
+                $nextUrl = '';
+            } else {
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'subStep' => $nextSubStep]);
+            }
         } elseif ($nextStep instanceof Step && $nextQuestionnaire instanceof Questionnaire) {
-            $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
+            if ($nextQuestionnaire->step_id !== $nextStep->id) {
+                // TODO: Temporary, remove if when no issues arise
+                DiscordNotifier::init()->notify("Next questionnaire doesn't belong to next step! Step ID: {$nextStep->id}. Questionnaire ID: {$nextQuestionnaire->id}.");
+                $nextUrl = '';
+            } else {
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
+            }
         } else {
-            Log::debug($this->scan);
             $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $cooperation]);
-            Log::debug("afeer scan");
         }
 
         Log::debug($nextUrl);
-        return $nextUrl ?? '';
+        return $nextUrl;
     }
-
 }

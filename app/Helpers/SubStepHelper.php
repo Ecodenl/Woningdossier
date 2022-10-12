@@ -51,22 +51,14 @@ class SubStepHelper
         ])->delete();
     }
 
-    public static function getIncompleteSubSteps(Building $building, Step $step, InputSource $inputSource): ?Collection
+    public static function getIncompleteSubSteps(Building $building, Step $step, InputSource $inputSource): Collection
     {
         // the completed steps, so the ones we do not want.
         $irrelevantSubSteps = $building->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
 
-        $firstIncompleteSubSteps = $step->subSteps()
+        return $step->subSteps()
             ->whereNotIn('id', $irrelevantSubSteps)
             ->orderBy('order')
             ->get();
-
-        if (! $firstIncompleteSubSteps->isEmpty() instanceof SubStep) {
-            $firstIncompleteSubStep = $step->subSteps()
-                ->orderBy('order')
-                ->get();
-        }
-
-        return $firstIncompleteSubSteps;
     }
 }

@@ -21,13 +21,6 @@ class ToolCalculationResultsTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Huidig elektragebruik',
-                ],
-                'short' => 'hr-boiler.amount_electricity',
-                'unit_of_measure' => 'kWh / jaar',
-            ],
-            [
-                'name' => [
                     'nl' => 'Gasbesparing',
                 ],
                 'short' => 'hr-boiler.savings_gas',

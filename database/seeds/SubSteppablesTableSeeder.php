@@ -839,19 +839,6 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('hr-boiler.amount_electricity'),
-                            'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
-                        ],
-                        [
                             'morph' => ToolCalculationResult::findByShort('hr-boiler.savings_gas'),
                             'size' => 'col-span-2',
                             'conditions' => [

@@ -6,9 +6,10 @@ use App\Calculations\Heater;
 use App\Calculations\HeatPump;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Console\Commands\Tool\RecalculateForUser;
+use App\Deprecation\ToolHelper;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\SubStepHelper;
 use App\Helpers\ToolQuestionHelper;
+use App\Models\ComfortLevelTapWater;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -238,8 +239,19 @@ class Form extends Component
                 'heater-pv-panel-angle' => null,
             ];
 
-            $sunBoilerCalculations = Heater::calculate($this->building, $energyHabit,
-                $this->getCalculateData($saveInToolQuestionShorts));
+            $calculateData = $this->getCalculateData($saveInToolQuestionShorts);
+            // Because of the logic change, new-water-comfort is no ID but a custom value
+            $waterAnswer = Arr::get($calculateData, 'user_energy_habits.water_comfort_id');
+
+            $newWater = ToolHelper::getModelByCustomValue(
+                ComfortLevelTapWater::query(),
+                'new-water-comfort',
+                $waterAnswer
+            );
+
+            Arr::set($calculateData, 'user_energy_habits.water_comfort_id', optional($newWater)->id);
+
+            $sunBoilerCalculations = Heater::calculate($this->building, $energyHabit, $calculateData);
         }
 
         if (in_array('heat-pump', $considerables)) {

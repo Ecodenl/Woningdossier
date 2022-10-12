@@ -1,14 +1,10 @@
 <div class="w-1/2 flex flex-wrap justify-center">
-
     @if($previousStep instanceof \App\Models\Step || $previousSubStep instanceof \App\Models\SubStep)
         <a href="{{$previousUrl}}" class="btn btn-outline-purple flex items-center mr-1">
             <i class="icon-xs icon-arrow-left-bold-purple mr-5"></i>
             @lang('default.buttons.previous')
         </a>
     @endif
-
-
-
 
     <button type="button" x-data
             {{-- Because a questionnaire is simply saved using an old school controller, we update the action, which

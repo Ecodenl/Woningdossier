@@ -34358,16 +34358,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 ghostParentElement.replaceChild(this.dragged, ghost); // Dispatch the dropped position
 
-                var event = new CustomEvent('draggable-dragged', {
-                  detail: {
-                    from: parentElement,
-                    to: target,
-                    id: this.dragged.id,
-                    order: order
-                  },
-                  bubbles: true
+                window.triggerCustomEvent(this.$el, 'draggable-dragged', {
+                  from: parentElement,
+                  to: target,
+                  id: this.dragged.id,
+                  order: order
                 });
-                dispatchEvent(event);
               }
             }
           }
@@ -34426,11 +34422,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }), _defineProperty(_container, 'x-on:dragenter.prevent', function xOnDragenterPrevent() {
       if (null !== this.dragged) {
         var eventTarget = this.$event.target;
-        this.lastEntered = eventTarget;
         var target = this.getSupportedTarget(eventTarget);
 
         if (null !== target) {
           target.style.backgroundColor = this.hoverColor;
+        }
+
+        if (this.$el !== eventTarget) {
+          this.lastEntered = eventTarget;
         }
       }
     }), _defineProperty(_container, 'x-on:dragleave', function xOnDragleave() {
@@ -34443,10 +34442,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           target.style.backgroundColor = '';
         }
 
-        this.lastEntered = null;
+        if (null !== this.lastEntered && this.$el !== eventTarget) {
+          this.lastEntered = null;
+        }
       }
     }), _container),
     draggable: (_draggable = {}, _defineProperty(_draggable, 'x-on:dragstart.self', function xOnDragstartSelf() {
+      // We need this, else we can't drag/drop in Firefox...
+      this.$event.dataTransfer.setData('application/node type', this.$el);
       this.dragged = this.$el;
       this.draggedOrder = Array.from(this.dragged.parentElement.children).indexOf(this.dragged);
     }), _defineProperty(_draggable, 'x-on:drag', function xOnDrag() {
@@ -34499,14 +34502,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           parentElement.removeChild(this.dragged); // Dispatch the item was removed position
 
-          var event = new CustomEvent('draggable-trashed', {
-            detail: {
-              from: parentElement,
-              id: this.dragged.id
-            },
-            bubbles: true
+          window.triggerCustomEvent(this.$el, 'draggable-trashed', {
+            from: parentElement,
+            id: this.dragged.id
           });
-          dispatchEvent(event);
         }
       }
     }), _trash),

@@ -11,6 +11,7 @@ use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class SubSteppable extends Scannable
@@ -208,14 +209,16 @@ class SubSteppable extends Scannable
                 ]);
             }
 
+            Log::debug("Sub step {$this->subStep} ". $validator->fails() ? 'fails validation' : 'validatie goed');
+            foreach ($this->toolQuestions as $toolQuestion) {
+                if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                    $this->filledInAnswers[$toolQuestion->short] = Caster::init(
+                        $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
+                    )->getFormatForUser();
+                }
+            }
             if ($validator->fails()) {
                 // Validator failed, let's put it back as the user format
-                foreach ($this->toolQuestions as $toolQuestion) {
-                    if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
-                        $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
-                    }
-                }
-
                 // notify the main form that validation failed for this particular sub step.
                 $this->emitUp('failedValidationForSubSteps', $this->subStep);
 

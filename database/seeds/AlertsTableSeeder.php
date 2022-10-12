@@ -364,6 +364,32 @@ class AlertsTableSeeder extends Seeder
                     ],
                 ],
             ],
+            [
+                'short' => 'heat-pump-space-research',
+                'text' => [
+                    'nl' => 'Er is niet genoeg ruimte voor een (hybride) warmtepomp, laat aanvullend onderzoek uitvoeren naar mogelijke alternatieven.',
+                ],
+                'type' => Alert::TYPE_INFO,
+                'conditions' => [
+                    [
+                        [
+                            'column' => 'heat-source-considerable',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'heat-pump',
+                        ],
+                        [
+                            'column' => 'outside-unit-space',
+                            'operator' => Clause::EQ,
+                            'value' => 'no',
+                        ],
+                        [
+                            'column' => 'inside-unit-space',
+                            'operator' => Clause::EQ,
+                            'value' => 'no',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         foreach ($alerts as $alert) {

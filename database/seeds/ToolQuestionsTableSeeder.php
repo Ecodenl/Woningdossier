@@ -58,11 +58,6 @@ class ToolQuestionsTableSeeder extends Seeder
         $energyLabels = EnergyLabel::ordered()->get();
         $comfortLevelsTapWater = ComfortLevelTapWater::where('calculate_value', '<=', 3)->get();
 
-        $wallInsulationStep = Step::findByShort('wall-insulation');
-        $solarPanelStep = Step::findByShort('solar-panels');
-        $floorInsulationStep = Step::findByShort('floor-insulation');
-        $roofInsulationStep = Step::findByShort('roof-insulation');
-
         // Insulated glazing
         $heatings = BuildingHeating::all();
         $crackSealing = Element::findByShort('crack-sealing');
@@ -99,6 +94,12 @@ class ToolQuestionsTableSeeder extends Seeder
         $hrBoilerStep = Step::findByShort('high-efficiency-boiler');
         $sunBoilerStep = Step::findByShort('heater');
         $heatPumpStep = Step::findByShort('heat-pump');
+        $ventilationStep = Step::findByShort('ventilation');
+        $wallInsulationStep = Step::findByShort('wall-insulation');
+        $insulatedGlazingStep = Step::findByShort('insulated-glazing');
+        $floorInsulationStep = Step::findByShort('floor-insulation');
+        $roofInsulationStep = Step::findByShort('roof-insulation');
+        $solarPanelStep = Step::findByShort('solar-panels');
 
         $questions = [
             #-------------------------
@@ -1649,13 +1650,6 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'sun-boiler-comment',
                 'translation' => 'Toelichting op de zonneboiler',
             ],
-            [
-                'data_type' => Caster::IDENTIFIER,
-                'validation' => ['nullable', 'string'],
-                'save_in' => "step_comments.{$hrBoilerStep->id}.comment",
-                'short' => 'hr-boiler-comment',
-                'translation' => 'Toelichting op de CV ketel',
-            ],
             // NEW COPIED
             [
                 'data_type' => Caster::ARRAY,
@@ -1692,6 +1686,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$crackSealingMeasureApplication->id}.is_considering",
                 'translation' => 'Kierdichting verbeteren: Meenemen in berekening',
                 'short' => 'crack-sealing-considerable',
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1701,6 +1696,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationBalancedWtw->id}.is_considering",
                 'translation' => 'Gebalanceerde ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-balanced-wtw-considerable',
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1710,6 +1706,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationDecentralWtw->id}.is_considering",
                 'translation' => 'Decentrale mechanische ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-decentral-wtw-considerable',
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1719,6 +1716,14 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$ventilationDemandDriven->id}.is_considering",
                 'translation' => 'Vraaggestuurde ventilatie: Meenemen in berekening',
                 'short' => 'ventilation-demand-driven-considerable',
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$ventilationStep->id}.comment",
+                'short' => 'ventilation-comment',
+                'translation' => 'Toelichting op de ventilatie',
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1728,6 +1733,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "considerables.App\\Models\\Step.{$wallInsulationStep->id}.is_considering",
                 'translation' => 'Gevelisolatie: Meenemen in berekening',
                 'short' => 'wall-insulation-considerable',
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
                 'data_type' => Caster::INT,
@@ -1806,6 +1812,13 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'insulation-wall-surface',
             ],
             [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$wallInsulationStep->id}.comment",
+                'short' => 'wall-insulation-comment',
+                'translation' => 'Toelichting op de muurisolatie',
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => [
                     'required',
@@ -1813,6 +1826,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$hrppGlassOnly->id}.is_considering",
                 'translation' => 'HR++ glas: Meenemen in berekening',
                 'short' => 'hrpp-glass-only-considerable',
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -1860,6 +1874,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$hrppGlassFrames->id}.is_considering",
                 'translation' => 'HR++ glas + kozijn: Meenemen in berekening',
                 'short' => 'hrpp-glass-frame-considerable',
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
                 "data_type" => Caster::IDENTIFIER,
@@ -1907,6 +1922,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$hr3pFrames->id}.is_considering",
                 "translation" => "HR+++ glas + kozijn: Meenemen in berekening",
                 "short" => "hr3p-glass-frame-considerable",
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
                 "data_type" => Caster::IDENTIFIER,
@@ -1954,6 +1970,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$glassInLead->id}.is_considering",
                 "translation" => "Glas-in-lood vervangen: Meenemen in berekening",
                 "short" => "glass-in-lead-replace-considerable",
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
                 "data_type" => Caster::IDENTIFIER,
@@ -2013,7 +2030,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_values' => \App\Models\ElementValue::where('element_id', $frame->id)->get(),
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::ARRAY,
                 'validation' => [
                     'required',
                 ],
@@ -2052,6 +2069,13 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_values' => \App\Models\WoodRotStatus::all(),
             ],
             [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$insulatedGlazingStep->id}.comment",
+                'short' => 'insulated-glazing-comment',
+                'translation' => 'Toelichting op de isolerende beglazing',
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => [
                     'required'
@@ -2059,6 +2083,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "considerables.App\\Models\\Step.{$floorInsulationStep->id}.is_considering",
                 'translation' => 'Vloerisolatie: Meenemen in berekening',
                 'short' => 'floor-insulation-considerable',
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
                 'data_type' => Caster::STRING,
@@ -2107,6 +2132,13 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'insulation-floor-surface',
             ],
             [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$floorInsulationStep->id}.comment",
+                'short' => 'floor-insulation-comment',
+                'translation' => 'Toelichting op de vloerisolatie',
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => [
                     'required'
@@ -2114,9 +2146,10 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "considerables.App\\Models\\Step.{$roofInsulationStep->id}.is_considering",
                 'translation' => 'Dakisolatie: Meenemen in berekening',
                 'short' => 'roof-insulation-considerable',
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
-                'data_type' => Caster::IDENTIFIER,
+                'data_type' => Caster::ARRAY,
                 'validation' => [
                     'required',
                 ],
@@ -2277,6 +2310,13 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_values' => BuildingHeating::all(),
             ],
             [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$roofInsulationStep->id}.comment",
+                'short' => 'roof-insulation-comment',
+                'translation' => 'Toelichting op de dakisolatie',
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => [
                     'required'
@@ -2284,6 +2324,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "considerables.App\\Models\\Step.{$solarPanelStep->id}.is_considering",
                 'translation' => 'Zonnepanelen: Meenemen in berekening',
                 'short' => 'solar-panels-considerable',
+                // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
                 'data_type' => Caster::INT,
@@ -2321,6 +2362,13 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_pv_panels.angle',
                 'translation' => 'Wat is de hellingshoek van de panelen?',
                 'short' => 'solar-panel-angle',
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$solarPanelStep->id}.comment",
+                'short' => 'solar-panels-comment',
+                'translation' => 'Toelichting op de zonnepanelen',
             ],
         ];
 

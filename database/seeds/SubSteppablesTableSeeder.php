@@ -1,6 +1,8 @@
 <?php
 
 use App\Helpers\Conditions\Clause;
+use App\Models\Element;
+use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\SubStep;
@@ -46,6 +48,18 @@ class SubSteppablesTableSeeder extends Seeder
         $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
         $dropdownType = ToolQuestionType::findByShort('dropdown');
         $multiDropdownType = ToolQuestionType::findByShort('multi-dropdown');
+
+        // Conditional required values
+        $wallInsulationUnknown = Element::findByShort('wall-insulation')->values()->where('calculate_value', 1)->first();
+        $wallInsulationNone = Element::findByShort('wall-insulation')->values()->where('calculate_value', 2)->first();
+
+        $floorInsulationUnknown = Element::findByShort('floor-insulation')->values()->where('calculate_value', 1)->first();
+        $floorInsulationNone = Element::findByShort('floor-insulation')->values()->where('calculate_value', 2)->first();
+
+        $roofInsulationUnknown = Element::findByShort('roof-insulation')->values()->where('calculate_value', 1)->first();
+        $roofInsulationNone = Element::findByShort('roof-insulation')->values()->where('calculate_value', 2)->first();
+        $pitchedRoof = RoofType::findByShort('pitched');
+        $flatRoof = RoofType::findByShort('flat');
 
         #-------------------------
         # Quick Scan sub steppables
@@ -1710,27 +1724,83 @@ class SubSteppablesTableSeeder extends Seeder
                     ],
                 ],
             ],
+            // TODO: Legacy tool labels
             'ventilation' => [
                 'Hoofd vragen' => [
                     'order' => 0,
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('ventilation-how'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $multiDropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('ventilation-living-situation'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $multiDropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('ventilation-usage'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $multiDropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-balanced-wtw-considerable'),
+                            'size' => 'col-span-6',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-decentral-wtw-considerable'),
+                            'size' => 'col-span-6',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-demand-driven-considerable'),
+                            'size' => 'col-span-6',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-sealing-considerable'),
+                            'size' => 'col-span-6',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('ventilation.savings_gas'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('ventilation.savings_co2'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('ventilation.savings_money'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('ventilation.cost_indication'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('ventilation.interest_comparable'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-comment'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [],
                         ],
                     ],
                 ],
@@ -1741,63 +1811,254 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('wall-insulation-considerable'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
-                            'tool_question_type_id' => $dropdownType->id,
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('has-cavity-wall'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-wall-insulation'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
+                            'morph' => ToolQuestion::findByShort('has-cavity-wall'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
                             'morph' => ToolQuestion::findByShort('wall-facade-plastered-painted'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('wall-facade-plastered-painted-surface'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('damaged-paintwork'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('wall-surface'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('insulation-wall-surface'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('damaged-wall-joints'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('contaminated-wall-joints'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.savings_gas'),
+                            'size' => 'col-span-2',
+                             'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.savings_co2'),
+                            'size' => 'col-span-2',
+                             'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.savings_money'),
+                            'size' => 'col-span-2',
+                             'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.cost_indication'),
+                            'size' => 'col-span-2',
+                             'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.interest_comparable'),
+                            'size' => 'col-span-2',
+                             'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-wall-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $wallInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.repair_joint.costs'),
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.repair_joint.year'),
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.clean_brickwork.costs'),
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.clean_brickwork.year'),
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.impregnate_wall.costs'),
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.impregnate_wall.year'),
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.paint_wall.costs'),
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('wall-insulation.paint_wall.year'),
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('wall-insulation-comment'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [],
                         ],
                     ],
                 ],
@@ -1808,170 +2069,561 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-only-considerable'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-only-current-glass'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hrpp-glass-only-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-only-rooms-heated'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hrpp-glass-only-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-only-replacement-glass-surface'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hrpp-glass-only-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-only-replacement-glass-count'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hrpp-glass-only-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
-
                         [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-frame-considerable'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-frame-current-glass'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hrpp-glass-frame-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-frame-rooms-heated'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hrpp-glass-frame-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-frame-replacement-glass-surface'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hrpp-glass-frame-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-frame-replacement-glass-count'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hrpp-glass-frame-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
-
                         [
                             'morph' => ToolQuestion::findByShort('hr3p-glass-frame-considerable'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hr3p-glass-frame-current-glass'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hr3p-glass-frame-current-glass',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hr3p-glass-frame-rooms-heated'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hr3p-glass-frame-current-glass',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hr3p-glass-frame-replacement-glass-surface'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hr3p-glass-frame-current-glass',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hr3p-glass-frame-replacement-glass-count'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'hr3p-glass-frame-current-glass',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
 
                         [
                             'morph' => ToolQuestion::findByShort('glass-in-lead-replace-considerable'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('glass-in-lead-replace-current-glass'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'glass-in-lead-replace-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('glass-in-lead-replace-rooms-heated'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'glass-in-lead-replace-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('glass-in-lead-replace-glass-surface'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'glass-in-lead-replace-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('glass-in-lead-replace-glass-count'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'glass-in-lead-replace-considerable',
+                                        'operator' => Clause::EQ,
+                                        'value' => 1,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
 
                         [
                             'morph' => ToolQuestion::findByShort('total-window-surface'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $textType->id,
                         ],
 
                         [
                             'morph' => ToolQuestion::findByShort('frame-type'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
 
                         [
                             'morph' => ToolQuestion::findByShort('wood-elements'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $multiDropdownType->id,
                         ],
 
                         [
                             'morph' => ToolQuestion::findByShort('last-painted-year'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $textType->id,
                         ],
 
                         [
                             'morph' => ToolQuestion::findByShort('paintwork-status'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('wood-rot-status'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
-
+                        [
+                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.savings_gas'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.savings_co2'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.savings_money'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.cost_indication'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.interest_comparable'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.calculation_paintwork.costs'),
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.calculation_paintwork.year'),
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('insulated-glazing-comment'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [],
+                        ],
                     ],
+                ],
+            ],
+            'floor-insulation' => [
+                [
+                    'morph' => ToolQuestion::findByShort('floor-insulation-considerable'),
+                    'size' => 'col-span-6',
+                    'conditions' => [],
+                    'tool_question_type_id' => $dropdownType->id,
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('current-floor-insulation'),
+                    'size' => 'col-span-6',
+                    'conditions' => [],
+                    'tool_question_type_id' => $dropdownType->id,
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('has-crawlspace'),
+                    'size' => 'col-span-6',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationNone->id,
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationUnknown->id,
+                            ],
+                        ],
+                    ],
+                    'tool_question_type_id' => $dropdownType->id,
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('crawlspace-accessible'),
+                    'size' => 'col-span-6',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationNone->id,
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationUnknown->id,
+                            ],
+                        ],
+                    ],
+                    'tool_question_type_id' => $dropdownType->id,
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('crawlspace-height'),
+                    'size' => 'col-span-6',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationNone->id,
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationUnknown->id,
+                            ],
+                        ],
+                    ],
+                    'tool_question_type_id' => $dropdownType->id,
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('floor-surface'),
+                    'size' => 'col-span-6',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationNone->id,
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationUnknown->id,
+                            ],
+                        ],
+                    ],
+                    'tool_question_type_id' => $dropdownType->id,
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('insulation-floor-surface'),
+                    'size' => 'col-span-6',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationNone->id,
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationUnknown->id,
+                            ],
+                        ],
+                    ],
+                    'tool_question_type_id' => $dropdownType->id,
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('floor-insulation.savings_gas'),
+                    'size' => 'col-span-2',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationNone->id,
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationUnknown->id,
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('floor-insulation.savings_co2'),
+                    'size' => 'col-span-2',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationNone->id,
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationUnknown->id,
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('floor-insulation.savings_money'),
+                    'size' => 'col-span-2',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationNone->id,
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationUnknown->id,
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('floor-insulation.cost_indication'),
+                    'size' => 'col-span-2',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationNone->id,
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationUnknown->id,
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('floor-insulation.interest_comparable'),
+                    'size' => 'col-span-2',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationNone->id,
+                            ],
+                        ],
+                        [
+                            [
+                                'column' => 'current-floor-insulation',
+                                'operator' => Clause::EQ,
+                                'value' => $floorInsulationUnknown->id,
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('floor-insulation-comment'),
+                    'tool_question_type_id' => $textareaType->id,
+                    'size' => 'col-span-6',
+                    'conditions' => [],
                 ],
             ],
             'roof-insulation' => [
@@ -1980,103 +2632,754 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('roof-insulation-considerable'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('current-roof-types'),
-                            'size' => 'col-span-12',
+                            'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $multiDropdownType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('is-flat-roof-insulated'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
-                            'tool_question_type_id' => $dropdownType->id,
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('flat-roof-surface'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
-                            'tool_question_type_id' => $textType->id,
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('flat-roof-insulation-surface'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
-                            'tool_question_type_id' => $textType->id,
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('flat-roof-zinc-replaced-date'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
-                            'tool_question_type_id' => $textType->id,
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('flat-roof-bitumen-replaced-date'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
-                            'tool_question_type_id' => $textType->id,
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('flat-roof-insulation'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
-                            'tool_question_type_id' => $dropdownType->id,
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('flat-roof-heating'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
-                            'tool_question_type_id' => $dropdownType->id,
-                        ],
-                        // pithced start
-                        [
                             'morph' => ToolQuestion::findByShort('is-pitched-roof-insulated'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('pitched-roof-surface'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('pitched-roof-insulation-surface'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
-
                         [
                             'morph' => ToolQuestion::findByShort('pitched-roof-zinc-replaced-date'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('pitched-roof-tiles-condition'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('pitched-roof-insulation'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('pitched-roof-heating'),
-                            'size' => 'col-span-12',
-                            'conditions' => [],
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.pitched.savings_gas'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.pitched.savings_co2'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.pitched.savings_money'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.pitched.cost_indication'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.pitched.interest_comparable'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.pitched.replace.costs'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.pitched.replace.year'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $pitchedRoof->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('is-flat-roof-insulated'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-surface'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-insulation-surface'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-zinc-replaced-date'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-bitumen-replaced-date'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-insulation'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('flat-roof-heating'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.flat.savings_gas'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.flat.savings_co2'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.flat.savings_money'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.flat.cost_indication'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.flat.interest_comparable'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                    [
+                                        'column' => 'is-pitched-roof-insulated',
+                                        'operator' => Clause::EQ,
+                                        'value' => $roofInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.flat.replace.costs'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('roof-insulation.flat.replace.year'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-roof-types',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => $flatRoof->id,
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('roof-insulation-comment'),
+                    'tool_question_type_id' => $textareaType->id,
+                    'size' => 'col-span-6',
+                    'conditions' => [],
+                ],
+            ],
+            'solar-panels' => [
+                [
+                    'morph' => ToolQuestion::findByShort('amount-electricity'),
+                    'tool_question_type_id' => $textType->id,
+                    'size' => 'col-span-3',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('solar-panel-peak-power'),
+                    'tool_question_type_id' => $textType->id,
+                    'size' => 'col-span-3',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('has-solar-panels'),
+                    'tool_question_type_id' => $radioIconType->id,
+                    'size' => 'col-span-3',
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('solar-panel-count'),
+                    'tool_question_type_id' => $textType->id,
+                    'size' => 'col-span-3',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'has-solar-panels',
+                                'operator' => Clause::EQ,
+                                'value' => 'yes',
+                            ]
+                        ],
+                    ],
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('total-installed-power'),
+                    'tool_question_type_id' => $textType->id,
+                    'size' => 'col-span-3',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'has-solar-panels',
+                                'operator' => Clause::EQ,
+                                'value' => 'yes',
+                            ]
+                        ],
+                    ],
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('solar-panels-placed-date'),
+                    'tool_question_type_id' => $textType->id,
+                    'size' => 'col-span-3',
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'has-solar-panels',
+                                'operator' => Clause::EQ,
+                                'value' => 'yes',
+                            ]
+                        ],
+                    ],
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('desired-solar-panel-count'),
+                    'tool_question_type_id' => $textType->id,
+                    'size' => 'col-span-3',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('solar-panel-orientation'),
+                    'tool_question_type_id' => $textType->id,
+                    'size' => 'col-span-3',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('solar-panel-angle'),
+                    'tool_question_type_id' => $textType->id,
+                    'size' => 'col-span-3',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('solar-panels.yield_electricity'),
+                    'size' => 'col-span-2',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('solar-panels.raise_own_consumption'),
+                    'size' => 'col-span-2',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('solar-panels.savings_co2'),
+                    'size' => 'col-span-2',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('solar-panels.savings_money'),
+                    'size' => 'col-span-2',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('solar-panels.cost_indication'),
+                    'size' => 'col-span-2',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolCalculationResult::findByShort('solar-panels.interest_comparable'),
+                    'size' => 'col-span-2',
+                    'conditions' => [],
+                ],
+                [
+                    'morph' => ToolQuestion::findByShort('solar-panels-comment'),
+                    'tool_question_type_id' => $textareaType->id,
+                    'size' => 'col-span-6',
+                    'conditions' => [],
                 ],
             ],
         ]);

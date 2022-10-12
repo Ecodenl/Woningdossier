@@ -621,6 +621,8 @@ class Form extends Component
 
             $this->recalculate();
         }
+
+        $this->dispatchBrowserEvent('readded-card');
     }
 
     private function loadHiddenCards()

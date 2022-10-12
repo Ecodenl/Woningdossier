@@ -298,6 +298,7 @@ class DumpService
 
                         $data[$key] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
                     } else {
+                        dd('Are you sure this is okay?');
                         // Using the legacy notation, we will mimick getting the answer
                         $saveIn = ToolQuestionHelper::resolveSaveIn(Str::replaceFirst("{$step}.", '', $key),
                             $building);

@@ -101,11 +101,11 @@
                     @endslot
                     <div class="w-full flex space-x-4">
                         @php
-                            $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
-                                $toolQuestion,
-                                $building,
-                                $masterInputSource,
-                            );
+                            $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
+                               ->forInputSource($masterInputSource)
+                               ->forBuilding($building)
+                               ->withCustomEvaluation()
+                               ->getQuestionValues();
                         @endphp
                         @foreach($questionValues as $toolQuestionValue)
                             @php

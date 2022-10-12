@@ -227,13 +227,6 @@ class ToolCalculationResultsTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Huidig elektragebruik',
-                ],
-                'short' => 'sun-boiler.amount_electricity',
-                'unit_of_measure' => 'kWh / jaar',
-            ],
-            [
-                'name' => [
                     'nl' => 'Gasbesparing',
                 ],
                 'help_text' => [

@@ -58,7 +58,6 @@ class ScanFlowService
     /**
      * Check if we should incomplete steps because conditional steps have come free, or if we need to
      * incomplete sub steps because they are hidden now.
-     *
      */
     public function checkConditionals(array $toolQuestions)
     {
@@ -75,12 +74,14 @@ class ScanFlowService
             $subStepsRelated = array_merge($subStepsRelated,
                 SubStep::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$toolQuestion->short}\""])
                     ->where('id', '!=', $this->subStep->id)
+                    ->forScan($this->scan)
                     ->pluck('id')->toArray()
             );
             $toolQuestionsRelated = array_merge($toolQuestionsRelated,
                 SubSteppable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$toolQuestion->short}\""])
                     ->where('sub_steppable_type', ToolQuestion::class)
                     ->where('sub_step_id', '!=', $this->subStep->id)
+                    ->forScan($this->scan)
                     ->pluck('id')->toArray()
             );
         }
@@ -89,21 +90,21 @@ class ScanFlowService
         $subStepsRelated = array_merge($subStepsRelated,
             SubStep::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"fn\""])
                 ->where('id', '!=', $this->subStep->id)
+                ->forScan($this->scan)
                 ->pluck('id')->toArray()
         );
         $toolQuestionsRelated = array_merge($toolQuestionsRelated,
             SubSteppable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"fn\""])
                 ->where('sub_steppable_type', ToolQuestion::class)
                 ->where('sub_step_id', '!=', $this->subStep->id)
+                ->forScan($this->scan)
                 ->pluck('id')->toArray()
         );
 
         $subStepsRelated = array_unique($subStepsRelated);
         $toolQuestionsRelated = array_unique($toolQuestionsRelated);
         $subSteps = SubStep::findMany($subStepsRelated);
-
         $toolQuestionSubSteppables = SubSteppable::findMany($toolQuestionsRelated);
-
 
         $evaluator = ConditionEvaluator::init()
             ->building($building)
@@ -173,7 +174,7 @@ class ScanFlowService
                     if ($evaluator->evaluate($subSteppable->conditions ?? [])) {
                         $visibleQuestions++;
 
-                        if (!empty($building->getAnswer($masterInputSource, $toolQuestion))) {
+                        if (! empty($building->getAnswer($masterInputSource, $toolQuestion))) {
                             $questionsWithAnswers++;
                         }
                     }

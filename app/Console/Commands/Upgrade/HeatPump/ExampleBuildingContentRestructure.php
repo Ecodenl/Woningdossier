@@ -96,6 +96,9 @@ class ExampleBuildingContentRestructure extends Command
 
                                 $toolQuestion = ToolQuestion::where('save_in', $saveIn)->first();
 
+                                if (Str::contains($saveIn, 'heat-source')) {
+                                    dd($dataForSubStep['tool_question_answers']['heat-source']);
+                                }
 
                                 if ($saveIn === 'building_services.3.service_value_id' && !is_null($value)) {
                                     // previously the answer for the sun-boiler was saved in the sun boiler service itself
@@ -148,6 +151,8 @@ class ExampleBuildingContentRestructure extends Command
                                     if ($shouldSet) {
                                         $newContent[$toolQuestion->short] = $value;
                                     }
+                                } else {
+                                    dd(Arr::dot($dataForSubStep), $saveIn);
                                 }
                             }
                         }

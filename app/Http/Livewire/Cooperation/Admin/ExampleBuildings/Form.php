@@ -76,15 +76,16 @@ class Form extends Component
             $this->exampleBuildingValues = $exampleBuilding->attributesToArray();
             foreach ($exampleBuilding->contents as $exampleBuildingContent) {
 
-                $content = $exampleBuildingContent->content;
+                $content = array_merge($this->contentStructure, $exampleBuildingContent->content);
                 // make sure it has all the available tool questions
                 foreach ($content as $toolQuestionShort => $value) {
 
-//                    if ($this->toolQuestionDataType[$toolQuestionShort] === \App\Helpers\DataTypes\Caster::FLOAT) {
-//                        $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->getFormatForUser();
-//                    }
+
+                    if ($this->toolQuestionDataType[$toolQuestionShort] === \App\Helpers\DataTypes\Caster::FLOAT) {
+                        $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->getFormatForUser();
+                    }
                 }
-                $this->contents[$exampleBuildingContent] = array_merge($this->contentStructure, $content);
+                $this->contents[$exampleBuildingContent->build_year] = $content;
             }
         }
 

@@ -10,6 +10,7 @@ use App\Models\Notification;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Http\Controllers\Controller;
+use App\Services\Models\NotificationService;
 use Illuminate\Http\Request;
 
 class MyPlanController extends Controller
@@ -19,9 +20,10 @@ class MyPlanController extends Controller
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
         // For quick testing purposes, we really don't want to run through the tool each time
         if (! app()->environment('local')) {
-            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             $firstIncompleteStep = $building->getFirstIncompleteStep([], $masterInputSource);
 
             // There are incomplete steps left, set the sub step
@@ -37,11 +39,21 @@ class MyPlanController extends Controller
             }
         }
 
+        $types = [\App\Jobs\RecalculateStepForUser::class, \App\Console\Commands\Tool\RecalculateForUser::class];
 
-        $notification = Notification::activeNotifications(
-            $building, InputSource::findByShort(InputSource::MASTER_SHORT)
-        )->forType(RecalculateStepForUser::class)->first();
+        $service = NotificationService::init()
+            ->forInputSource($masterInputSource)
+            ->forBuilding($building);
 
-        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'notification'));
+        $activeNotification = false;
+
+        foreach ($types as $type) {
+            if ($service->setType($type)->isActive()) {
+                $activeNotification = true;
+                break;
+            }
+        }
+
+        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'activeNotification'));
     }
 }

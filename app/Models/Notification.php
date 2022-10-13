@@ -41,14 +41,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Notification extends Model
 {
-    use GetMyValuesTrait;
-    use GetValueTrait;
+    use GetMyValuesTrait,
+        GetValueTrait;
 
     protected $fillable = [
         'type',
         'building_id',
         'input_source_id',
         'is_active',
+        'active_count',
     ];
 
     protected $casts = [
@@ -75,11 +76,6 @@ class Notification extends Model
 
     public static function setActive(Building $building, InputSource $inputSource, string $type, bool $active = false)
     {
-        Notification::allInputSources()->updateOrCreate([
-            'input_source_id' => $inputSource->id,
-            'type' => $type,
-            // the building owner is always passed to the job.
-            'building_id' => $building->id,
-        ], ['is_active' => $active]);
+        // TODO: refactor
     }
 }

@@ -234,7 +234,7 @@ class HeatPump extends \App\Calculations\Calculator
             'amount_gas' => $amountGas,
             'amount_electricity' => $currentElectricityUsage,
             'savings_gas' => NumberFormatter::format($savingsGas),
-            'extra_consumption_electricity' => $extraConsumptionElectricity,
+            'extra_consumption_electricity' => NumberFormatter::format($extraConsumptionElectricity, 0, true),
             'savings_co2' => NumberFormatter::format($savingsCo2),
             'savings_money' => NumberFormatter::format($savingsMoney),
             'cost_indication' => $characteristics->costs ?? 0,

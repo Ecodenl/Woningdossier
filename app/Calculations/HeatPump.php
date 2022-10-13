@@ -75,7 +75,7 @@ class HeatPump extends \App\Calculations\Calculator
 
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
             ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
-        $this->desiredPower = (int) $this->getAnswer('heat-pump-preferred-power') ?? 0;
+        //$this->desiredPower = (int) $this->getAnswer('heat-pump-preferred-power') ?? 0;
     }
 
     /**
@@ -111,6 +111,19 @@ class HeatPump extends \App\Calculations\Calculator
         $this->requiredPower = $this->calculateAdvisedSystemRequiredPower();
         // lookup the characteristics of the chosen heat pump (tool question answer).
         $characteristics = $this->lookupHeatPumpCharacteristics();
+
+        $this->desiredPower = $this->getAnswer('heat-pump-preferred-power');
+        // if it wasn't answered (by person in expert or example building)
+        if (empty($this->desiredPower)){
+            if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL){
+                // for full: required power
+                $this->desiredPower = $this->requiredPower;
+            }
+            else {
+                // for hybrid: fixed value / standard from table
+                $this->desiredPower = $characteristics->standard_power_kw;
+            }
+        }
 
         // note what this will return: either 40% or 0.4 ??
         $shareHeating = $this->calculateShareHeating();

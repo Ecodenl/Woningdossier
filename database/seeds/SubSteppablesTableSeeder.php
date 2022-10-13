@@ -751,6 +751,10 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         // Unconditional questions
                         [
+                            'morph' => ToolLabel::findByShort('heat-source'),
+                            'size' => 'col-span-6',
+                        ],
+                        [
                             'morph' => ToolQuestion::findByShort('new-water-comfort'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-6',

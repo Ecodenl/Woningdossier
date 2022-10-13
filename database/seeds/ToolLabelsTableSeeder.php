@@ -14,6 +14,12 @@ class ToolLabelsTableSeeder extends Seeder
         $labels = [
             [
                 'name' => [
+                    'nl' => 'Verwarming en warm water',
+                ],
+                'short' => 'heat-source',
+            ],
+            [
+                'name' => [
                     'nl' => 'HR CV Ketel',
                 ],
                 'short' => 'hr-boiler',

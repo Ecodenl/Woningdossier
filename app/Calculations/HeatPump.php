@@ -130,7 +130,7 @@ class HeatPump extends \App\Calculations\Calculator
         // return value affects other calculations.
 
         $advisedSystem = [
-            'required_power' => NumberFormatter::format($this->requiredPower, 3), // C60
+            'required_power' => NumberFormatter::format($this->requiredPower), // C60
             'desired_power' => $this->desiredPower, // C61
             'share_heating' => $shareHeating, // C62
             'share_tap_water' => $characteristics->share_percentage_tap_water ?? 0, // C63

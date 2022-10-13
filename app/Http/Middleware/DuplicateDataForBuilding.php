@@ -8,7 +8,7 @@ use App\Helpers\RoleHelper;
 use App\Jobs\CloneOpposingInputSource;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\Notification;
+use App\Services\Models\NotificationService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -45,7 +45,11 @@ class DuplicateDataForBuilding
                 Log::debug("User {$building->id} its opposing input source HAS completed sub steps for input source {$inputSource->short}, starting to clone..");
                 // we will set the notification before its picked up by the queue
                 // otherwise the user would get weird ux
-                Notification::setActive($building, $inputSource, CloneOpposingInputSource::class, true);
+                NotificationService::init()
+                    ->forBuilding($building)
+                    ->forInputSource($inputSource)
+                    ->setType(CloneOpposingInputSource::class)
+                    ->setActive();
                 CloneOpposingInputSource::dispatch($building, $inputSource, $opposingInputSource);
             }
         }

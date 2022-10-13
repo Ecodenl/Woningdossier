@@ -8,9 +8,9 @@ use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
-use App\Models\Notification;
 use App\Models\Step;
 use App\Models\User;
+use App\Services\Models\NotificationService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -105,8 +105,6 @@ class RecalculateForUser extends Command
 
                     Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
 
-                    Notification::setActive($user->building, $inputSource, RecalculateStepForUser::class, true);
-
                     $stepsToRecalculateChain = [];
 
                     if (! empty($stepShorts)) {
@@ -121,6 +119,12 @@ class RecalculateForUser extends Command
                     }
 
                     Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
+
+                    NotificationService::init()
+                        ->forBuilding($user->building)
+                        ->forInputSource($inputSource)
+                        ->setType(RecalculateStepForUser::class)
+                        ->setActive(count($stepsToRecalculateChain));
 
                     ProcessRecalculate::withChain($stepsToRecalculateChain)
                         ->dispatch()

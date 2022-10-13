@@ -39,7 +39,7 @@ class MyPlanController extends Controller
             }
         }
 
-        $types = [\App\Jobs\RecalculateStepForUser::class, \App\Console\Commands\Tool\RecalculateForUser::class];
+        $types = [\App\Jobs\RecalculateStepForUser::class];
 
         $service = NotificationService::init()
             ->forInputSource($masterInputSource)

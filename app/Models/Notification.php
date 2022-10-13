@@ -73,9 +73,4 @@ class Notification extends Model
     {
         return $query->where('type', $type);
     }
-
-    public static function setActive(Building $building, InputSource $inputSource, string $type, bool $active = false)
-    {
-        // TODO: refactor
-    }
 }

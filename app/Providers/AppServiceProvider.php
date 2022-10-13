@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use App\Jobs\CloneOpposingInputSource;
 use App\Jobs\RecalculateStepForUser;
-use App\Models\Notification;
 use App\Models\PersonalAccessToken;
+use App\Services\Models\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\Sanctum;
 
 //use Laravel\Dusk\DuskServiceProvider;
@@ -30,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \Validator::extend('needs_to_be_lower_or_same_as', function ($attribute, $value, $parameters, $validator) {
+        Validator::extend('needs_to_be_lower_or_same_as', function ($attribute, $value, $parameters, $validator) {
             $formData = Arr::dot($validator->getData());
             $compareFieldValue = $formData[$parameters[0]];
 
@@ -41,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        \Validator::replacer('needs_to_be_lower_or_same_as', function ($message, $attribute, $rule, $parameters) {
+        Validator::replacer('needs_to_be_lower_or_same_as', function ($message, $attribute, $rule, $parameters) {
             $compareFieldName = $parameters[0];
 
             return __('validation.custom')[$attribute][$rule] ?? __('validation.custom.needs_to_be_lower_or_same_as', [
@@ -73,7 +74,8 @@ class AppServiceProvider extends ServiceProvider
             if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
                 $building = $command->user->building ?? $command->building;
                 Log::debug("JOB {$jobName} started | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-                Notification::setActive($building, $command->inputSource, $jobName, true);
+                //Notification::setActive($building, $command->inputSource, $jobName, true);
+                // TODO: Check how we want to enable this notification without resetting its count
             }
 
         });
@@ -86,7 +88,11 @@ class AppServiceProvider extends ServiceProvider
             if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
                 $building = $command->user->building ?? $command->building;
                 Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-                Notification::setActive($building, $command->inputSource, $jobName, false);
+                NotificationService::init()
+                    ->forBuilding($building)
+                    ->forInputSource($command->inputSource)
+                    ->setType($jobName)
+                    ->deactivate();
             }
         });
 

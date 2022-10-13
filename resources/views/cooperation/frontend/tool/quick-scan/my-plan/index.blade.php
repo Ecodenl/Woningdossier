@@ -4,7 +4,7 @@
     @if($activeNotification)
         @livewire('cooperation.frontend.layouts.parts.notifications', [
             'nextUrl' => route('cooperation.frontend.tool.quick-scan.my-plan.index'),
-            'types' => [\App\Jobs\RecalculateStepForUser::class, \App\Console\Commands\Tool\RecalculateForUser::class]
+            'types' => [\App\Jobs\RecalculateStepForUser::class]
         ])
 
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])

@@ -90,7 +90,7 @@
                                                 @endforeach
                                             </select>
                                         @else
-                                            <input type="text" class="form-control" wire:model="{{$inputName}}">
+                                            <input type="text" class="form-control" wire:model.lazy="{{$inputName}}">
                                         @endif
 
                                         @if(isset($rowData['unit']))

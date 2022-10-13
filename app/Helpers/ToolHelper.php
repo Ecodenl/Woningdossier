@@ -220,7 +220,8 @@ class ToolHelper
             // Quick Scan
             'building-data', 'usage-quick-scan', 'living-requirements', 'residential-status',
             // Expert Scan
-            'ventilation', 'wall-insulation', 'insulated-glazing', 'floor-insulation', 'solar-panels',
+            'ventilation', 'wall-insulation', 'insulated-glazing', 'floor-insulation', 'roof-insulation',
+            'solar-panels',
             'heating' => [
                 'huidige-situatie', 'nieuwe-situatie',
             ],

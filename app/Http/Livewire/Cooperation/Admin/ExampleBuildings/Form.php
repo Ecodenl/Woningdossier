@@ -2,16 +2,14 @@
 
 namespace App\Http\Livewire\Cooperation\Admin\ExampleBuildings;
 
-use App\Helpers\Arr;
-use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
-use App\Models\Log;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use Livewire\Component;
+use Illuminate\Support\Facades\Session;
 
 class Form extends Component
 {
@@ -85,15 +83,16 @@ class Form extends Component
             'ventilation',
             'wall-insulation',
             'insulated-glazing',
+            'floor-insulation',
             'roof-insulation',
-            'heating'
+            'solar-panels',
+            'heating',
         ])
             ->orderBy('order')
             ->with(['subSteps.subSteppables' => function ($query) {
                 $query->where('sub_steppable_type', ToolQuestion::class);
             }])
             ->get();
-
     }
 
     public function updated($key, $value)
@@ -161,7 +160,7 @@ class Form extends Component
 
         // normally we could use with, however this is livewire 1 and no support
         // we do it the "old" way
-        \Session::flash('success', __('cooperation/admin/example-buildings.update.success'));
+        Session::flash('success', __('cooperation/admin/example-buildings.update.success'));
         return redirect()
             ->to(route('cooperation.admin.example-buildings.edit', ['cooperation' => HoomdossierSession::getCooperation(true), 'exampleBuilding' => $this->exampleBuilding]));
     }

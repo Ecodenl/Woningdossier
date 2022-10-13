@@ -2156,7 +2156,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_roof_types.roof_type_id",
                 'translation' => 'Welke daktypes zijn aanwezig in de woning? ',
                 'short' => 'current-roof-types',
-                'tool_question_values' => RoofType::all(),
+                'tool_question_values' => RoofType::whereIn('short', RoofType::SECONDARY_ROOF_TYPE_SHORTS)->orderBy('order')->get(),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,

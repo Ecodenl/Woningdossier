@@ -238,7 +238,14 @@ class Building extends Model
             $modelName = "App\\Models\\".Str::studly(Str::singular($table));
 
             // we do a get, so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
+            $tempAnswer = $modelName::allInputSources()->where($where)->get()->pluck($column);
+
+            // Just like with saving, an exception to the rule as these work differently
+            if (in_array($toolQuestion->short, ['wood-elements', 'current-roof-types'])) {
+                $answer = $tempAnswer->toArray();
+            } else {
+                $answer = $tempAnswer->first();
+            }
         } else {
             $where['building_id'] = $this->id;
             $toolQuestionAnswers = $toolQuestion

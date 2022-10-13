@@ -2422,228 +2422,233 @@ class SubSteppablesTableSeeder extends Seeder
                 ],
             ],
             'floor-insulation' => [
-                [
-                    'morph' => ToolQuestion::findByShort('floor-insulation-considerable'),
-                    'size' => 'col-span-6',
-                    'conditions' => [],
-                    'tool_question_type_id' => $dropdownType->id,
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('current-floor-insulation'),
-                    'size' => 'col-span-6',
-                    'conditions' => [],
-                    'tool_question_type_id' => $dropdownType->id,
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('has-crawlspace'),
-                    'size' => 'col-span-6',
-                    'conditions' => [
+                'Hoofd vragen' => [
+                    'order' => 0,
+                    'morphs' => [
                         [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationNone->id,
+                            'morph' => ToolQuestion::findByShort('floor-insulation-considerable'),
+                            'size' => 'col-span-6',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('current-floor-insulation'),
+                            'size' => 'col-span-6',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('has-crawlspace'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crawlspace-accessible'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crawlspace-height'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('floor-surface'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('insulation-floor-surface'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('floor-insulation.savings_gas'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationUnknown->id,
+                                    ],
+                                ],
                             ],
                         ],
                         [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationUnknown->id,
+                            'morph' => ToolCalculationResult::findByShort('floor-insulation.savings_co2'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationUnknown->id,
+                                    ],
+                                ],
                             ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('floor-insulation.savings_money'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('floor-insulation.cost_indication'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('floor-insulation.interest_comparable'),
+                            'size' => 'col-span-2',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationNone->id,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'current-floor-insulation',
+                                        'operator' => Clause::EQ,
+                                        'value' => $floorInsulationUnknown->id,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('floor-insulation-comment'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [],
                         ],
                     ],
-                    'tool_question_type_id' => $dropdownType->id,
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('crawlspace-accessible'),
-                    'size' => 'col-span-6',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationNone->id,
-                            ],
-                        ],
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationUnknown->id,
-                            ],
-                        ],
-                    ],
-                    'tool_question_type_id' => $dropdownType->id,
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('crawlspace-height'),
-                    'size' => 'col-span-6',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationNone->id,
-                            ],
-                        ],
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationUnknown->id,
-                            ],
-                        ],
-                    ],
-                    'tool_question_type_id' => $dropdownType->id,
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('floor-surface'),
-                    'size' => 'col-span-6',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationNone->id,
-                            ],
-                        ],
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationUnknown->id,
-                            ],
-                        ],
-                    ],
-                    'tool_question_type_id' => $dropdownType->id,
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('insulation-floor-surface'),
-                    'size' => 'col-span-6',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationNone->id,
-                            ],
-                        ],
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationUnknown->id,
-                            ],
-                        ],
-                    ],
-                    'tool_question_type_id' => $dropdownType->id,
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('floor-insulation.savings_gas'),
-                    'size' => 'col-span-2',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationNone->id,
-                            ],
-                        ],
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationUnknown->id,
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('floor-insulation.savings_co2'),
-                    'size' => 'col-span-2',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationNone->id,
-                            ],
-                        ],
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationUnknown->id,
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('floor-insulation.savings_money'),
-                    'size' => 'col-span-2',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationNone->id,
-                            ],
-                        ],
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationUnknown->id,
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('floor-insulation.cost_indication'),
-                    'size' => 'col-span-2',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationNone->id,
-                            ],
-                        ],
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationUnknown->id,
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('floor-insulation.interest_comparable'),
-                    'size' => 'col-span-2',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationNone->id,
-                            ],
-                        ],
-                        [
-                            [
-                                'column' => 'current-floor-insulation',
-                                'operator' => Clause::EQ,
-                                'value' => $floorInsulationUnknown->id,
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('floor-insulation-comment'),
-                    'tool_question_type_id' => $textareaType->id,
-                    'size' => 'col-span-6',
-                    'conditions' => [],
                 ],
             ],
             'roof-insulation' => [
@@ -3278,128 +3283,133 @@ class SubSteppablesTableSeeder extends Seeder
                                 ],
                             ],
                         ],
+                        [
+                            'morph' => ToolQuestion::findByShort('roof-insulation-comment'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [],
+                        ],
                     ],
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('roof-insulation-comment'),
-                    'tool_question_type_id' => $textareaType->id,
-                    'size' => 'col-span-6',
-                    'conditions' => [],
                 ],
             ],
             'solar-panels' => [
-                [
-                    'morph' => ToolQuestion::findByShort('amount-electricity'),
-                    'tool_question_type_id' => $textType->id,
-                    'size' => 'col-span-3',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('solar-panel-peak-power'),
-                    'tool_question_type_id' => $textType->id,
-                    'size' => 'col-span-3',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('has-solar-panels'),
-                    'tool_question_type_id' => $radioIconType->id,
-                    'size' => 'col-span-3',
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('solar-panel-count'),
-                    'tool_question_type_id' => $textType->id,
-                    'size' => 'col-span-3',
-                    'conditions' => [
+                'Hoofd vragen' => [
+                    'order' => 0,
+                    'morphs' => [
                         [
-                            [
-                                'column' => 'has-solar-panels',
-                                'operator' => Clause::EQ,
-                                'value' => 'yes',
-                            ]
+                            'morph' => ToolQuestion::findByShort('amount-electricity'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('solar-panel-peak-power'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('has-solar-panels'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'col-span-3',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('solar-panel-count'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => Clause::EQ,
+                                        'value' => 'yes',
+                                    ]
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('total-installed-power'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => Clause::EQ,
+                                        'value' => 'yes',
+                                    ]
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('solar-panels-placed-date'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => Clause::EQ,
+                                        'value' => 'yes',
+                                    ]
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('desired-solar-panel-count'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('solar-panel-orientation'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('solar-panel-angle'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-3',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('solar-panels.yield_electricity'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('solar-panels.raise_own_consumption'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('solar-panels.savings_co2'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('solar-panels.savings_money'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('solar-panels.cost_indication'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolCalculationResult::findByShort('solar-panels.interest_comparable'),
+                            'size' => 'col-span-2',
+                            'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('solar-panels-comment'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [],
                         ],
                     ],
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('total-installed-power'),
-                    'tool_question_type_id' => $textType->id,
-                    'size' => 'col-span-3',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'has-solar-panels',
-                                'operator' => Clause::EQ,
-                                'value' => 'yes',
-                            ]
-                        ],
-                    ],
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('solar-panels-placed-date'),
-                    'tool_question_type_id' => $textType->id,
-                    'size' => 'col-span-3',
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'has-solar-panels',
-                                'operator' => Clause::EQ,
-                                'value' => 'yes',
-                            ]
-                        ],
-                    ],
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('desired-solar-panel-count'),
-                    'tool_question_type_id' => $textType->id,
-                    'size' => 'col-span-3',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('solar-panel-orientation'),
-                    'tool_question_type_id' => $textType->id,
-                    'size' => 'col-span-3',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('solar-panel-angle'),
-                    'tool_question_type_id' => $textType->id,
-                    'size' => 'col-span-3',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('solar-panels.yield_electricity'),
-                    'size' => 'col-span-2',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('solar-panels.raise_own_consumption'),
-                    'size' => 'col-span-2',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('solar-panels.savings_co2'),
-                    'size' => 'col-span-2',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('solar-panels.savings_money'),
-                    'size' => 'col-span-2',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('solar-panels.cost_indication'),
-                    'size' => 'col-span-2',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolCalculationResult::findByShort('solar-panels.interest_comparable'),
-                    'size' => 'col-span-2',
-                    'conditions' => [],
-                ],
-                [
-                    'morph' => ToolQuestion::findByShort('solar-panels-comment'),
-                    'tool_question_type_id' => $textareaType->id,
-                    'size' => 'col-span-6',
-                    'conditions' => [],
                 ],
             ],
         ]);
@@ -3415,7 +3425,6 @@ class SubSteppablesTableSeeder extends Seeder
                 $subStepSlug = $subQuestionData['slug'] ?? Str::slug($subQuestionName);
                 $names = ['nl' => $subQuestionName];
                 $slugs = ['nl' => $subStepSlug];
-
 
                 $subStepData = [
                     'name' => json_encode($names),

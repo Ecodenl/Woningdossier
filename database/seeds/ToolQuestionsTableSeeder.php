@@ -101,6 +101,9 @@ class ToolQuestionsTableSeeder extends Seeder
         $roofInsulationStep = Step::findByShort('roof-insulation');
         $solarPanelStep = Step::findByShort('solar-panels');
 
+        $pitchedRoof = RoofType::findByShort('pitched');
+        $flatRoof = RoofType::findByShort('flat');
+
         $questions = [
             #-------------------------
             # Quick-scan only / shared with expert-scan questions
@@ -2163,7 +2166,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.1.element_value_id',
+                'save_in' => "building_roof_types.{$pitchedRoof->id}.element_value_id",
                 'translation' => 'is het hellende dak geïsoleerd?',
                 'short' => 'is-pitched-roof-insulated',
                 'tool_question_values' => Element::where('short', 'roof-insulation')->first()->values,
@@ -2173,7 +2176,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.1.roof_surface',
+                'save_in' => "building_roof_types.{$pitchedRoof->id}.roof_surface",
                 'translation' => 'Dakoppervlak hellend dak',
                 'short' => 'pitched-roof-surface',
             ],
@@ -2182,7 +2185,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.1.insulation_roof_surface',
+                'save_in' => "building_roof_types.{$pitchedRoof->id}.insulation_roof_surface",
                 'translation' => 'Te isoleren oppervlakte van het hellende dak',
                 'short' => 'pitched-roof-insulation-surface',
             ],
@@ -2191,7 +2194,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.1.extra.zinc_replaced_date',
+                'save_in' => "building_roof_types.{$pitchedRoof->id}.extra.zinc_replaced_date",
                 'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
                 'short' => 'pitched-roof-zinc-replaced-date',
             ],
@@ -2200,7 +2203,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.1.zinc_surface',
+                'save_in' => "building_roof_types.{$pitchedRoof->id}.zinc_surface",
                 'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
                 'short' => 'pitched-roof-zinc-surface',
             ],
@@ -2209,7 +2212,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.1.extra.tiles_condition',
+                'save_in' => "building_roof_types.{$pitchedRoof->id}.extra.tiles_condition",
                 'translation' => 'In welke staat verkeren de dakpannen?',
                 'short' => 'pitched-roof-tiles-condition',
                 'tool_question_values' => RoofTileStatus::orderBy('order')->get(),
@@ -2219,7 +2222,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.1.extra.measure_application_id',
+                'save_in' => "building_roof_types.{$pitchedRoof->id}.extra.measure_application_id",
                 'translation' => 'Hoe wil je het schuine dak isoleren? ',
                 'short' => 'pitched-roof-insulation',
                 'tool_question_values' => MeasureApplication::whereIn('short', ['roof-insulation-pitched-inside','roof-insulation-pitched-replace-tiles'])->get(),
@@ -2229,7 +2232,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.1.building_heating_id',
+                'save_in' => "building_roof_types.{$pitchedRoof->id}.building_heating_id",
                 'translation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
                 'short' => 'pitched-roof-heating',
                 'tool_question_values' => BuildingHeating::all(),
@@ -2239,7 +2242,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.2.element_value_id',
+                'save_in' => "building_roof_types.{$flatRoof->id}.element_value_id",
                 'translation' => 'Is het platte dak geïsoleerd?',
                 'short' => 'is-flat-roof-insulated',
                 'tool_question_values' => Element::where('short', 'roof-insulation')->first()->values,
@@ -2249,7 +2252,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.2.roof_surface',
+                'save_in' => "building_roof_types.{$flatRoof->id}.roof_surface",
                 'translation' => 'Dakoppervlak van platte dak',
                 'short' => 'flat-roof-surface',
             ],
@@ -2258,7 +2261,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.2.insulation_roof_surface',
+                'save_in' => "building_roof_types.{$flatRoof->id}.insulation_roof_surface",
                 'translation' => 'Te isoleren oppervlakte van het platte dak',
                 'short' => 'flat-roof-insulation-surface',
             ],
@@ -2267,7 +2270,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.2.extra.zinc_replaced_date',
+                'save_in' => "building_roof_types.{$flatRoof->id}.extra.zinc_replaced_date",
                 'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
                 'short' => 'flat-roof-zinc-replaced-date',
             ],
@@ -2276,7 +2279,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.2.zinc_surface',
+                'save_in' => "building_roof_types.{$flatRoof->id}.zinc_surface",
                 'translation' => 'Oppervlak van het zinkwerk?',
                 'short' => 'flat-roof-zinc-surface',
             ],
@@ -2285,7 +2288,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.2.extra.bitumen_replaced_date',
+                'save_in' => "building_roof_types.{$flatRoof->id}.extra.bitumen_replaced_date",
                 'translation' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
                 'short' => 'flat-roof-bitumen-replaced-date',
             ],
@@ -2294,7 +2297,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.2.extra.measure_application_id',
+                'save_in' => "building_roof_types.{$flatRoof->id}.extra.measure_application_id",
                 'translation' => 'Hoe wil je het platte dak isoleren?',
                 'short' => 'flat-roof-insulation',
                 'tool_question_values' => MeasureApplication::whereIn('short', ['roof-insulation-flat-current','roof-insulation-flat-replace-current'])->get(),
@@ -2304,7 +2307,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => [
                     'required'
                 ],
-                'save_in' => 'building_roof_types.2.building_heating_id',
+                'save_in' => "building_roof_types.{$flatRoof->id}.building_heating_id",
                 'translation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
                 'short' => 'flat-roof-heating',
                 'tool_question_values' => BuildingHeating::all(),

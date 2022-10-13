@@ -3,21 +3,13 @@
 namespace App\Services;
 
 use App\Events\ExampleBuildingChanged;
-use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
-use App\Models\BuildingElement;
-use App\Models\BuildingFeature;
-use App\Models\BuildingService;
-use App\Models\Element;
-use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
-use App\Models\Service;
 use App\Models\ToolQuestion;
-use App\Models\ToolQuestionCustomValue;
 use Illuminate\Support\Facades\Log;
 
 class ExampleBuildingService
@@ -45,7 +37,7 @@ class ExampleBuildingService
         self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ") building id {$building->id}");
         $contents = $exampleBuilding->getContentForYear($buildYear);
 
-        if (!$contents instanceof ExampleBuildingContent) {
+        if (! $contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
             self::log('No data to apply');
 
@@ -83,16 +75,19 @@ class ExampleBuildingService
         Log::debug($exampleBuilding);
 
         // basically; tool questions that can only be updated when the user his own filled in answers are empty
-        $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
+        $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS,
+            static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
 
         foreach ($exampleData as $toolQuestionShort => $value) {
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             $shouldSave = true;
 
             // check if the tool question is a fixed one
-            // a fixed on cant be overwritten by example building data unless the field is empty
+            // a fixed on can't be overwritten by example building data unless the field is empty
             // AND unless its a example building, the data from the example building input source can always be overwritten.
-            if ($toolQuestion->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
+            if ($toolQuestion->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort,
+                    $fixedToolQuestionShorts)
+            ) {
                 // the tool question is fixed one, lets not save it before the last check
                 $shouldSave = false;
                 // now check if the user has already answered the question with a non null value

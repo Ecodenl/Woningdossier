@@ -187,8 +187,9 @@ class ToolQuestionService {
             }
         }
 
+        // With everything we've built, it wouldn't be a classic Hoomdossier if there wasn't some exception to the rule
         if (in_array($toolQuestion->short, ['wood-elements', 'current-roof-types'])) {
-            foreach($answerData as $targetColumn => $values) {
+            foreach ($answerData as $targetColumn => $values) {
                 foreach ($values as $value) {
                     // Now save it
                     $modelName::allInputSources()
@@ -199,12 +200,12 @@ class ToolQuestionService {
                 }
             }
         } else {
-        // Now save it
-        $modelName::allInputSources()
-            ->updateOrCreate(
-                $where,
-                $answerData
-            );
+            // Now save it
+            $modelName::allInputSources()
+                ->updateOrCreate(
+                    $where,
+                    $answerData
+                );
         }
 
         $this->checkConditionalAnswers($givenAnswer);

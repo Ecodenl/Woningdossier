@@ -12,6 +12,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
     public function run()
     {
         $calculationResults = [
+            // HR Boiler
             [
                 'name' => [
                     'nl' => 'Huidig gasverbruik',
@@ -68,6 +69,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'short' => 'hr-boiler.interest_comparable',
                 'unit_of_measure' => '% / jaar',
             ],
+            // Heat pump
             [
                 'name' => [
                     'nl' => 'Benodigd indicatief vermogen van de warmtepomp',
@@ -165,6 +167,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'short' => 'heat-pump.interest_comparable',
                 'unit_of_measure' => '% / jaar',
             ],
+            // Sun boiler
             [
                 'name' => [
                     'nl' => 'Gebruik warm tapwater',
@@ -287,6 +290,362 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'nl' => 'Meer informatie over de vergelijkbare rente kunt u vinden bij Milieucentraal: <a title="Link Milieucentraal" href="https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/" target="_blank" rel="noopener">https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/</a>',
                 ],
                 'short' => 'sun-boiler.interest_comparable',
+                'unit_of_measure' => '% / jaar',
+            ],
+            // Ventilation
+            [
+                'name' => [
+                    'nl' => 'Gasbesparing',
+                ],
+                'short' => 'ventilation.savings_gas',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'CO2 Besparing',
+                ],
+                'short' => 'ventilation.savings_co2',
+                'unit_of_measure' => 'kg / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparing in €',
+                ],
+                'short' => 'ventilation.savings_money',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten',
+                ],
+                'short' => 'ventilation.cost_indication',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Vergelijkbare rente',
+                ],
+                'short' => 'ventilation.interest_comparable',
+                'unit_of_measure' => '% / jaar',
+            ],
+            // Wall insulation
+            [
+                'name' => [
+                    'nl' => 'Gasbesparing',
+                ],
+                'short' => 'wall-insulation.savings_gas',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'CO2 Besparing',
+                ],
+                'short' => 'wall-insulation.savings_co2',
+                'unit_of_measure' => 'kg / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparing in €',
+                ],
+                'short' => 'wall-insulation.savings_money',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten',
+                ],
+                'short' => 'wall-insulation.cost_indication',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Vergelijkbare rente',
+                ],
+                'short' => 'wall-insulation.interest_comparable',
+                'unit_of_measure' => '% / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Reparatie voegwerk',
+                ],
+                'short' => 'wall-insulation.repair_joint.costs',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Jaar voegwerk',
+                ],
+                'short' => 'wall-insulation.repair_joint.year',
+                'unit_of_measure' => 'jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Reinigen metselwerk',
+                ],
+                'short' => 'wall-insulation.clean_brickwork.costs',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Jaar gevelreiniging',
+                ],
+                'short' => 'wall-insulation.clean_brickwork.year',
+                'unit_of_measure' => 'jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Impregneren gevel',
+                ],
+                'short' => 'wall-insulation.impregnate_wall.costs',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Jaar gevel impregneren',
+                ],
+                'short' => 'wall-insulation.impregnate_wall.year',
+                'unit_of_measure' => 'jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Gevelschilderwerk op stuk of metselwerk',
+                ],
+                'short' => 'wall-insulation.paint_wall.costs',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Jaar gevelschilderwerk',
+                ],
+                'short' => 'wall-insulation.paint_wall.year',
+                'unit_of_measure' => 'jaar',
+            ],
+            // Ventilation
+            [
+                'name' => [
+                    'nl' => 'Gasbesparing',
+                ],
+                'short' => 'insulated-glazing.savings_gas',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'CO2 Besparing',
+                ],
+                'short' => 'insulated-glazing.savings_co2',
+                'unit_of_measure' => 'kg / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparing in €',
+                ],
+                'short' => 'insulated-glazing.savings_money',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten',
+                ],
+                'short' => 'insulated-glazing.cost_indication',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Vergelijkbare rente',
+                ],
+                'short' => 'insulated-glazing.interest_comparable',
+                'unit_of_measure' => '% / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten schilderwerk',
+                ],
+                'short' => 'insulated-glazing.calculation_paintwork.costs',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => ' Volgende schilderbeurt aanbevolen',
+                ],
+                'short' => 'insulated-glazing.calculation_paintwork.year',
+                'unit_of_measure' => 'jaar',
+            ],
+            // Floor insulation
+            [
+                'name' => [
+                    'nl' => 'Gasbesparing',
+                ],
+                'short' => 'floor-insulation.savings_gas',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'CO2 Besparing',
+                ],
+                'short' => 'floor-insulation.savings_co2',
+                'unit_of_measure' => 'kg / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparing in €',
+                ],
+                'short' => 'floor-insulation.savings_money',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten',
+                ],
+                'short' => 'floor-insulation.cost_indication',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Vergelijkbare rente',
+                ],
+                'short' => 'floor-insulation.interest_comparable',
+                'unit_of_measure' => '% / jaar',
+            ],
+            // Roof insulation
+            [
+                'name' => [
+                    'nl' => 'Gasbesparing',
+                ],
+                'short' => 'roof-insulation.flat.savings_gas',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'CO2 Besparing',
+                ],
+                'short' => 'roof-insulation.flat.savings_co2',
+                'unit_of_measure' => 'kg / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparing in €',
+                ],
+                'short' => 'roof-insulation.flat.savings_money',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten',
+                ],
+                'short' => 'roof-insulation.flat.cost_indication',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Vergelijkbare rente',
+                ],
+                'short' => 'roof-insulation.flat.interest_comparable',
+                'unit_of_measure' => '% / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten vervanging dakbedekking',
+                ],
+                'short' => 'roof-insulation.flat.replace.costs',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatief vervangingsmoment dakbedekking',
+                ],
+                'short' => 'roof-insulation.flat.replace.year',
+                'unit_of_measure' => 'jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Gasbesparing',
+                ],
+                'short' => 'roof-insulation.pitched.savings_gas',
+                'unit_of_measure' => 'm<sup>3</sup> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'CO2 Besparing',
+                ],
+                'short' => 'roof-insulation.pitched.savings_co2',
+                'unit_of_measure' => 'kg / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparing in €',
+                ],
+                'short' => 'roof-insulation.pitched.savings_money',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten',
+                ],
+                'short' => 'roof-insulation.pitched.cost_indication',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Vergelijkbare rente',
+                ],
+                'short' => 'roof-insulation.pitched.interest_comparable',
+                'unit_of_measure' => '% / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten vervanging dakbedekking',
+                ],
+                'short' => 'roof-insulation.pitched.replace.costs',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatief vervangingsmoment dakbedekking',
+                ],
+                'short' => 'roof-insulation.pitched.replace.year',
+                'unit_of_measure' => 'jaar',
+            ],
+            // Solar panels
+            [
+                'name' => [
+                    'nl' => ' Opbrengst elektra',
+                ],
+                'short' => 'solar-panels.yield_electricity',
+                'unit_of_measure' => 'kWh / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Opwekking t.o.v. eigen verbruik ',
+                ],
+                'short' => 'solar-panels.raise_own_consumption',
+                'unit_of_measure' => '%',
+            ],
+            [
+                'name' => [
+                    'nl' => 'CO2 Besparing',
+                ],
+                'short' => 'solar-panels.savings_co2',
+                'unit_of_measure' => 'kg / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparing in €',
+                ],
+                'short' => 'solar-panels.savings_money',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Indicatieve kosten',
+                ],
+                'short' => 'solar-panels.cost_indication',
+                'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Vergelijkbare rente',
+                ],
+                'short' => 'solar-panels.interest_comparable',
                 'unit_of_measure' => '% / jaar',
             ],
         ];

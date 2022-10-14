@@ -64,6 +64,6 @@ class RecalculateStepForUser implements ShouldQueue
             ->forBuilding($this->user->building)
             ->forInputSource($this->inputSource)
             ->setType(self::class)
-            ->deactivate();
+            ->deactivate(force);
     }
 }

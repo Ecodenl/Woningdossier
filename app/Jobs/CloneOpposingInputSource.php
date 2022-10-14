@@ -44,6 +44,6 @@ class CloneOpposingInputSource implements ShouldQueue
             ->forBuilding($this->building)
             ->forInputSource($this->inputSource)
             ->setType(CloneOpposingInputSource::class)
-            ->deactivate();
+            ->deactivate(true);
     }
 }

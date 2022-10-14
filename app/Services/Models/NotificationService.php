@@ -64,16 +64,30 @@ class NotificationService
     /**
      * Decrement the active count by one, and deactivate the notification if the count reaches 0.
      *
+     * @param bool $force If true the notification will be deactivated regardless of count.
+     *
      * @return void
      */
-    public function deactivate()
+    public function deactivate(bool $force = false)
     {
         $notification = $this->getNotification();
-        $notification->active_count--;
-        if ($notification->active_count === 0) {
-            $notification->is_active = false;
+
+        // If there's no notification there's nothing to deactivate
+        if ($notification instanceof Notification) {
+            if ($force) {
+                $notification->update([
+                    'active_count' => 0,
+                    'is_active' => false,
+                ]);
+            } else {
+                $notification->active_count--;
+                if ($notification->active_count === 0) {
+                    $notification->is_active = false;
+                }
+
+                $notification->save();
+            }
         }
-        $notification->save();
     }
 
     protected function getNotification(): ?Notification

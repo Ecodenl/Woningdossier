@@ -96,11 +96,17 @@ class ExampleBuildingContentRestructure extends Command
 
                                 $toolQuestion = ToolQuestion::where('save_in', $saveIn)->first();
 
-                                if (Str::contains($saveIn, 'heat-source')) {
-                                    dd($dataForSubStep['tool_question_answers']['heat-source']);
-                                }
+                                // the tool question answers are actually already in a ok format
+                                // however they need some small adjustments
+                                if (Str::contains($saveIn, 'tool_question_answers')) {
+                                    $saveIn = explode('.', $saveIn);
+                                    // kick of the prefix so we just have the short with its index
+                                    array_shift($saveIn);
+                                    $saveIn = implode('.', $saveIn);
 
-                                if ($saveIn === 'building_services.3.service_value_id' && !is_null($value)) {
+                                    data_set($newContent, $saveIn, $value);
+
+                                } else if ($saveIn === 'building_services.3.service_value_id' && !is_null($value)) {
                                     // previously the answer for the sun-boiler was saved in the sun boiler service itself
                                     $sunBoilerService = Service::findByShort('sun-boiler');
                                     // we will map them to the heat source and heat source warm water, since its split up.
@@ -133,13 +139,11 @@ class ExampleBuildingContentRestructure extends Command
                                         ],
                                     ];
 
-
                                     if ($value != $noneValue->id) {
                                         foreach ($mapping[$value] as $toolQuestionShort => $toolQuestionCustomValue) {
                                             $newContent[$toolQuestionShort][] = $toolQuestionCustomValue->short;
                                         }
                                     }
-
                                 } else if ($toolQuestion instanceof ToolQuestion) {
                                     $shouldSet = true;
                                     if ($value === null) {
@@ -151,8 +155,6 @@ class ExampleBuildingContentRestructure extends Command
                                     if ($shouldSet) {
                                         $newContent[$toolQuestion->short] = $value;
                                     }
-                                } else {
-                                    dd(Arr::dot($dataForSubStep), $saveIn);
                                 }
                             }
                         }

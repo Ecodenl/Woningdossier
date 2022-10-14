@@ -16,7 +16,7 @@ class AddActiveCountColumnToNotificationsTable extends Migration
 
         if (! Schema::hasColumn('notifications', 'active_count')) {
             Schema::table('notifications', function (Blueprint $table) {
-                $table->unsignedInteger('active_count')->default(1)->after('is_active');
+                $table->unsignedInteger('active_count')->default(0)->after('is_active');
             });
         }
     }

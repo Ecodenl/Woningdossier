@@ -27,7 +27,6 @@ class DuplicateDataForBuilding
             ->forInputSource($inputSource)
             ->exists();
 
-
         // when the current user for its current input source has no completed SUB steps
         // we will try to duplicate the data from a opposing input source, in this case the master.
         if ($completedSubStepsExists === false && Hoomdossier::user()->hasRoleAndIsCurrentRole([RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT])) {

@@ -43,6 +43,11 @@ class NotificationService
 
     public function setActive(int $count = 1)
     {
+        // Get current count. This is because we could have 2 RecalculateForUser processes being dispatched at the
+        // same time. It wouldn't make sense to show the action plan if one process is still running.
+        $count = $count + (optional($this->getNotification())->active_count ?? 0);
+        $active = $count > 0;
+
         Notification::allInputSources()->updateOrCreate(
             [
                 'input_source_id' => $this->inputSource->id,
@@ -50,12 +55,17 @@ class NotificationService
                 'building_id' => $this->building->id,
             ],
             [
-                'is_active' => true,
-                'count' => $count,
+                'is_active' => $active,
+                'active_count' => $count,
             ]
         );
     }
 
+    /**
+     * Decrement the active count by one, and deactivate the notification if the count reaches 0.
+     *
+     * @return void
+     */
     public function deactivate()
     {
         $notification = $this->getNotification();
@@ -66,7 +76,7 @@ class NotificationService
         $notification->save();
     }
 
-    private function getNotification(): ?Notification
+    protected function getNotification(): ?Notification
     {
         return Notification::forBuilding($this->building)
             ->forType($this->type)

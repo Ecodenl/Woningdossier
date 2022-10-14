@@ -74,8 +74,16 @@ class AppServiceProvider extends ServiceProvider
             if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
                 $building = $command->user->building ?? $command->building;
                 Log::debug("JOB {$jobName} started | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-                //Notification::setActive($building, $command->inputSource, $jobName, true);
-                // TODO: Check how we want to enable this notification without resetting its count
+                $service = NotificationService::init()
+                    ->forBuilding($building)
+                    ->forInputSource($command->inputSource)
+                    ->setType($jobName);
+
+                // We only active the notification if it isn't already. This is because it will increment the count of
+                // the current active notification, and we don't want to do that.
+                if (! $service->isActive()) {
+                    $service->setActive();
+                }
             }
 
         });

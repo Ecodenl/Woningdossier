@@ -102,9 +102,6 @@ class RecalculateForUser extends Command
                 // We can calculate / recalculate the advices when the user has completed the quick scan
                 // the quick scan provides the most basic information needed for calculations
                 if ($user->building->hasCompletedQuickScan($inputSource)) {
-
-                    Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
-
                     $stepsToRecalculateChain = [];
 
                     if (! empty($stepShorts)) {
@@ -118,13 +115,15 @@ class RecalculateForUser extends Command
                             ->onQueue(Queue::ASYNC);
                     }
 
-                    Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
+                    Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
 
                     NotificationService::init()
                         ->forBuilding($user->building)
                         ->forInputSource($inputSource)
                         ->setType(RecalculateStepForUser::class)
-                        ->setActive(count($stepsToRecalculateChain));
+                        ->setActive($stepsToRecalculate->count());
+
+                    Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
 
                     ProcessRecalculate::withChain($stepsToRecalculateChain)
                         ->dispatch()

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Upgrade\HeatPump;
 
+use App\Helpers\DataTypes\Caster;
 use App\Models\ExampleBuilding;
 use App\Models\Service;
 use App\Models\ServiceValue;
@@ -96,8 +97,18 @@ class ExampleBuildingContentRestructure extends Command
 
                                 $toolQuestion = ToolQuestion::where('save_in', $saveIn)->first();
 
+                                // the tool question answers are actually already in a ok format
+                                // however they need some small adjustments
+                                if (Str::contains($saveIn, 'tool_question_answers')) {
+                                    $saveIn = explode('.', $saveIn);
+                                    // kick of the prefix so we just have the short with its index
+                                    array_shift($saveIn);
+                                    // the save in here is actually already a tool question short!
+                                    $saveIn = implode('.', $saveIn);
 
-                                if ($saveIn === 'building_services.3.service_value_id' && !is_null($value)) {
+                                    data_set($newContent, $saveIn, $value);
+
+                                } else if ($saveIn === 'building_services.3.service_value_id' && !is_null($value)) {
                                     // previously the answer for the sun-boiler was saved in the sun boiler service itself
                                     $sunBoilerService = Service::findByShort('sun-boiler');
                                     // we will map them to the heat source and heat source warm water, since its split up.
@@ -130,14 +141,14 @@ class ExampleBuildingContentRestructure extends Command
                                         ],
                                     ];
 
-
                                     if ($value != $noneValue->id) {
                                         foreach ($mapping[$value] as $toolQuestionShort => $toolQuestionCustomValue) {
                                             $newContent[$toolQuestionShort][] = $toolQuestionCustomValue->short;
                                         }
                                     }
-
                                 } else if ($toolQuestion instanceof ToolQuestion) {
+
+
                                     $shouldSet = true;
                                     if ($value === null) {
                                         $shouldSet = false;
@@ -146,7 +157,11 @@ class ExampleBuildingContentRestructure extends Command
                                         $shouldSet = false;
                                     }
                                     if ($shouldSet) {
-                                        $newContent[$toolQuestion->short] = $value;
+                                        if (in_array($toolQuestion->short, ['ventilation-how', 'ventilation-living-situation', 'ventilation-usage'])) {
+                                            $newContent[$toolQuestion->short][] = $value;
+                                        } else {
+                                            $newContent[$toolQuestion->short] = $value;
+                                        }
                                     }
                                 }
                             }

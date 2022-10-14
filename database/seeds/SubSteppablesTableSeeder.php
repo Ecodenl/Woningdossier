@@ -3297,6 +3297,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'order' => 0,
                     'morphs' => [
                         [
+                            'morph' => ToolQuestion::findByShort('solar-panels-considerable'),
+                            'size' => 'col-span-6',
+                            'conditions' => [],
+                            'tool_question_type_id' => $dropdownType->id,
+                        ],
+                        [
                             'morph' => ToolQuestion::findByShort('amount-electricity'),
                             'tool_question_type_id' => $textType->id,
                             'size' => 'col-span-3',

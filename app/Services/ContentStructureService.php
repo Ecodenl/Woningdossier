@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\ExampleBuildingHelper;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -21,38 +22,17 @@ class ContentStructureService
     {
         $contentStructure = $this->contentStructure;
 
-        $filterOutUserInterests = function ($key) {
-            return false === stristr($key, 'user_interests');
-        };
+        // TODO: Refactor when colleagues give more clarity
+        $shortsToSkip = array_merge(ExampleBuildingHelper::UNANSWERABLE_TOOL_QUESTIONS, ExampleBuildingHelper::NOT_IN_CSV);
 
-        foreach (Arr::except($contentStructure, ['general-data', 'insulated-glazing', 'ventilation',]) as $stepShort => $structureWithinStep) {
-            $contentStructure[$stepShort]['-'] = array_filter($structureWithinStep['-'], $filterOutUserInterests, ARRAY_FILTER_USE_KEY);
-        }
-
-        unset(
-            $contentStructure['general-data']['building-characteristics']['building_features.building_type_id'],
-            $contentStructure['general-data']['building-characteristics']['building_features.build_year'],
-            $contentStructure['general-data']['usage']['user_energy_habits.resident_count'],
-
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_gas'],
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_electricity'],
-            $contentStructure['solar-panels']['-']['user_energy_habits.amount_electricity'],
-            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.resident_count'],
-
-            $contentStructure['heater']['-']['user_energy_habits.water_comfort_id'],
-            $contentStructure['solar-panels']['-']['building_pv_panels.total_installed_power']
-        );
-
-        // filter out interest stuff from the interest page
-        $contentStructure['general-data']['interest'] = array_filter($contentStructure['general-data']['interest'], function ($key) {
-            return false === stristr($key, 'user_interest');
-        }, ARRAY_FILTER_USE_KEY);
-
-        // Remove general data considerables
-        foreach (($contentStructure['general-data']['interest'] ?? []) as $interestField => $interestData) {
-            if (Str::endsWith($interestField, 'is_considering')) {
-                unset($contentStructure['general-data']['interest'][$interestField]);
-            }
+        foreach ($contentStructure as $step => $fields) {
+            $contentStructure[$step] = Arr::where($fields, function ($trans, $field) use ($shortsToSkip) {
+                // Questions are prefixed with "question_", so we remove that so we can check if this question
+                // should be in the CSV. Calculations are prefixed with "calculation_" and we for sure don't need those.
+                // Considerables are also skipped (TODO but why?)
+                return ! in_array(str_replace('question_', '', $field), $shortsToSkip)
+                    || Str::startsWith($field, 'calculation_') || Str::endsWith($field, 'considerable');
+            });
         }
 
         return $contentStructure;

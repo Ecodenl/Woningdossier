@@ -61,6 +61,34 @@ class ExampleBuildingHelper
         ],
     ];
 
+    /**
+     * These are tool questions that should not be answerable when setting example building content
+     */
+    const UNANSWERABLE_TOOL_QUESTIONS = [
+        'building-type',
+        'build-year',
+        'specific-example-building',
+        'building-data-comment-resident',
+        'building-data-comment-coach',
+        'usage-quick-scan-comment-resident',
+        'usage-quick-scan-comment-coach',
+        'living-requirements-comment-resident',
+        'living-requirements-comment-coach',
+        'residential-status-element-comment-resident',
+        'residential-status-element-comment-coach',
+        'residential-status-service-comment-resident',
+        'residential-status-service-comment-coach',
+    ];
+
+    const NOT_IN_CSV = [
+        //'building-type-category', // TODO: Apparently you _can_ choose this? Not sure why that makes sense
+        'resident-count',
+        'amount-gas',
+        'amount-electricity',
+        'water-comfort',
+        'total-installed-power',
+    ];
+
     public static function old($key, $default)
     {
         return Arr::dot(old())[$key] ?? $default;

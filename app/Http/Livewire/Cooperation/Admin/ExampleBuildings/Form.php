@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Admin\ExampleBuildings;
 
+use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
@@ -27,22 +28,8 @@ class Form extends Component
         'is_default' => 0,
     ];
 
-    // tool questions which should be allowed to be set, for whatever reason..
-    public $hideTheseToolQuestions = [
-        'building-type',
-        'build-year',
-        'specific-example-building',
-        'building-data-comment-resident',
-        'building-data-comment-coach',
-        'usage-quick-scan-comment-resident',
-        'usage-quick-scan-comment-coach',
-        'living-requirements-comment-resident',
-        'living-requirements-comment-coach',
-        'residential-status-element-comment-resident',
-        'residential-status-element-comment-coach',
-        'residential-status-service-comment-resident',
-        'residential-status-service-comment-coach',
-    ];
+    // Tool questions which should not be allowed to be set by the example building
+    public $hideTheseToolQuestions = ExampleBuildingHelper::UNANSWERABLE_TOOL_QUESTIONS;
 
     public function mount(ExampleBuilding $exampleBuilding = null)
     {

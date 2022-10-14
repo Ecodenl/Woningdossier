@@ -44,7 +44,7 @@ class GenerateExampleBuildingCsv implements ShouldQueue
     public function handle()
     {
         $contentStructure = ContentStructureService::init(
-            ToolHelper::getContentStructure()
+            ToolHelper::getNewContentStructure()
         )->applicableForExampleBuildings();
 
         $rows[] = ['Naam', 'Bouwjaar', ...collect($contentStructure)->pluck('*.*.label')->flatten()->filter()->toArray()];

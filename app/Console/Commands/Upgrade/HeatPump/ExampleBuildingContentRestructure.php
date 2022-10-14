@@ -148,6 +148,7 @@ class ExampleBuildingContentRestructure extends Command
                                     }
                                 } else if ($toolQuestion instanceof ToolQuestion) {
 
+
                                     $shouldSet = true;
                                     if ($value === null) {
                                         $shouldSet = false;

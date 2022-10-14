@@ -327,6 +327,7 @@ class UpdateToolQuestions extends Command
             });
 
             $heaterTypeQuestion->delete();
+            SubStep::where('slug->nl', 'zonnenboiler')->limit(1)->delete();
         }
 
         $heatPump = Service::findByShort('heat-pump');

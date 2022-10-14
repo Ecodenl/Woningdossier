@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Upgrade\HeatPump;
 
+use App\Helpers\DataTypes\Caster;
 use App\Models\ExampleBuilding;
 use App\Models\Service;
 use App\Models\ServiceValue;
@@ -145,6 +146,7 @@ class ExampleBuildingContentRestructure extends Command
                                         }
                                     }
                                 } else if ($toolQuestion instanceof ToolQuestion) {
+
                                     $shouldSet = true;
                                     if ($value === null) {
                                         $shouldSet = false;
@@ -153,7 +155,11 @@ class ExampleBuildingContentRestructure extends Command
                                         $shouldSet = false;
                                     }
                                     if ($shouldSet) {
-                                        $newContent[$toolQuestion->short] = $value;
+                                        if (in_array($toolQuestion->short, ['ventilation-how', 'ventilation-living-situation', 'ventilation-usage'])) {
+                                            $newContent[$toolQuestion->short][] = $value;
+                                        } else {
+                                            $newContent[$toolQuestion->short] = $value;
+                                        }
                                     }
                                 }
                             }

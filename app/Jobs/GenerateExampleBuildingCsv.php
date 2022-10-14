@@ -4,10 +4,12 @@ namespace App\Jobs;
 
 use App\Exports\Cooperation\CsvExport;
 use App\Helpers\ToolHelper;
+use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\FileStorage;
 use App\Models\FileType;
+use App\Models\ToolQuestion;
 use App\Services\ContentStructureService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -47,41 +49,40 @@ class GenerateExampleBuildingCsv implements ShouldQueue
             ToolHelper::getNewContentStructure()
         )->applicableForExampleBuildings();
 
-        $rows[] = ['Naam', 'Bouwjaar', ...collect($contentStructure)->pluck('*.*.label')->flatten()->filter()->toArray()];
+        // Use array_values because apparently you cannot unpack (...) associative arrays (until PHP 8.1, anyways)
+        $rows[] = ['Naam', 'Bouwjaar', ...array_values($contentStructure)];
 
         $exampleBuildings = ExampleBuilding::generic()->with('contents')->get();
         foreach ($exampleBuildings as $exampleBuilding) {
-
             foreach ($exampleBuilding->contents as $exampleBuildingContent) {
                 $rows[$exampleBuildingContent->id] = [
                     $exampleBuilding->name,
-                    $exampleBuildingContent->build_year
+                    $exampleBuildingContent->build_year,
                 ];
 
+                foreach ($contentStructure as $short => $translation) {
+                    // The value is not always the correct translation. We'll have to dive down the rabbit hole
+                    // to fetch the correct translation.
+                    $exampleBuildingValue = $exampleBuildingContent->getValue($short);
+                    $toolQuestion = ToolQuestion::findByShort($short);
+                    $toolQuestionType = $toolQuestion->subSteps()->first()->pivot->toolQuestionType;
 
-                foreach ($contentStructure as $step => $dataForSubSteps) {
-                    foreach ($dataForSubSteps as $subStep => $subStepData) {
-                        foreach ($subStepData as $formFieldName => $rowData) {
-                            if ($formFieldName != 'calculations') {
-                                $contentKey = "{$step}.{$subStep}.{$formFieldName}";
+                    $select = in_array($toolQuestionType->short, [
+                        'radio-icon', 'radio-icon-small', 'radio', 'dropdown', 'checkbox-icon', 'multi-dropdown',
+                    ]);
 
-                                // what the admins filled in as value for the example building
-                                $exampleBuildingValue = $exampleBuildingContent->getValue($contentKey);
+                    if ($select) {
+                        $exampleBuildingValue = (array) $exampleBuildingValue;
 
-                                if (array_key_exists('options', $rowData)) {
-                                    if (is_array($exampleBuildingValue)) {
-                                        $exampleBuildingValues = array_map(fn($value) => $rowData['options'][$value], $exampleBuildingValue);
-                                        $exampleBuildingValue = implode(',', $exampleBuildingValues);
-                                    } else if (!is_null($exampleBuildingValue)) {
-                                        $exampleBuildingValue = $rowData['options'][$exampleBuildingValue];
-                                    }
-                                }
-
-
-                                $rows[$exampleBuildingContent->id][$contentKey] = $exampleBuildingValue;
-                            }
-                        }
+                        $exampleBuildingValue = QuestionValue::init($this->cooperation, $toolQuestion)
+                            ->answers(collect($exampleBuildingContent->content))
+                            ->getQuestionValues()
+                            ->whereIn('value', $exampleBuildingValue)
+                            ->pluck('name')
+                            ->implode(', ');
                     }
+
+                    $rows[$exampleBuildingContent->id][$short] = $exampleBuildingValue;
                 }
             }
         }
@@ -95,5 +96,4 @@ class GenerateExampleBuildingCsv implements ShouldQueue
     {
         $this->fileStorage->delete();
     }
-
 }

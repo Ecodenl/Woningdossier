@@ -112,9 +112,9 @@ class HeatPump extends \App\Calculations\Calculator
         // lookup the characteristics of the chosen heat pump (tool question answer).
         $characteristics = $this->lookupHeatPumpCharacteristics();
 
-        $this->desiredPower = $this->getAnswer('heat-pump-preferred-power');
+        $this->desiredPower = (int) $this->getAnswer('heat-pump-preferred-power') ?? 0;
         // if it wasn't answered (by person in expert or example building)
-        if (empty($this->desiredPower)){
+        if ($this->desiredPower <= 0){
             if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL){
                 // for full: required power
                 $this->desiredPower = $this->requiredPower;
@@ -124,8 +124,6 @@ class HeatPump extends \App\Calculations\Calculator
                 $this->desiredPower = $characteristics->standard_power_kw;
             }
         }
-        // explicitly cast to int
-        $this->desiredPower = (int) $this->desiredPower;
 
         // note what this will return: either 40% or 0.4 ??
         $shareHeating = $this->calculateShareHeating();

@@ -75,7 +75,6 @@ class HeatPump extends \App\Calculations\Calculator
 
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
             ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
-        //$this->desiredPower = (int) $this->getAnswer('heat-pump-preferred-power') ?? 0;
     }
 
     /**
@@ -117,7 +116,7 @@ class HeatPump extends \App\Calculations\Calculator
         if ($this->desiredPower <= 0){
             if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL){
                 // for full: required power
-                $this->desiredPower = $this->requiredPower;
+                $this->desiredPower = (int) ceil($this->requiredPower);
             }
             else {
                 // for hybrid: fixed value / standard from table

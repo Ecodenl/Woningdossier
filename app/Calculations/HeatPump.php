@@ -124,6 +124,8 @@ class HeatPump extends \App\Calculations\Calculator
                 $this->desiredPower = $characteristics->standard_power_kw;
             }
         }
+        // explicitly cast to int
+        $this->desiredPower = (int) $this->desiredPower;
 
         // note what this will return: either 40% or 0.4 ??
         $shareHeating = $this->calculateShareHeating();

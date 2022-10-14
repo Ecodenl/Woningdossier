@@ -67,11 +67,9 @@ class GenerateExampleBuildingCsv implements ShouldQueue
                     $toolQuestion = ToolQuestion::findByShort($short);
                     $toolQuestionType = $toolQuestion->subSteps()->first()->pivot->toolQuestionType;
 
-                    $select = in_array($toolQuestionType->short, [
+                    if (in_array($toolQuestionType->short, [
                         'radio-icon', 'radio-icon-small', 'radio', 'dropdown', 'checkbox-icon', 'multi-dropdown',
-                    ]);
-
-                    if ($select) {
+                    ])) {
                         $exampleBuildingValue = (array) $exampleBuildingValue;
 
                         $exampleBuildingValue = QuestionValue::init($this->cooperation, $toolQuestion)

@@ -78,6 +78,7 @@ class ExampleBuildingHelper
         'residential-status-element-comment-coach',
         'residential-status-service-comment-resident',
         'residential-status-service-comment-coach',
+        // TODO: Should we exclude the expert scan comment fields also?
     ];
 
     const NOT_IN_CSV = [

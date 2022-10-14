@@ -35,10 +35,8 @@ class CsvExport extends Component
 
     public function generate()
     {
-        $this->authorize('store', [$this->fileStorage, $this->fileType]);
-
         // and we create the new file
-        $this->fileStorage = FileStorage::create([
+        $this->fileStorage = new FileStorage([
             'cooperation_id' => $this->cooperation->id,
             'file_type_id' => $this->fileType->id,
             'filename' => (new FileTypeService($this->fileType))->niceFileName(),
@@ -46,6 +44,8 @@ class CsvExport extends Component
             'is_being_processed' => true,
         ]);
 
+        $this->authorize('store', [$this->fileStorage, $this->fileType]);
+        $this->fileStorage->save();
         GenerateExampleBuildingCsv::dispatch($this->cooperation, $this->fileType, $this->fileStorage);
     }
 }

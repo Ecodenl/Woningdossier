@@ -103,6 +103,7 @@ class ExampleBuildingContentRestructure extends Command
                                     $saveIn = explode('.', $saveIn);
                                     // kick of the prefix so we just have the short with its index
                                     array_shift($saveIn);
+                                    // the save in here is actually already a tool question short!
                                     $saveIn = implode('.', $saveIn);
 
                                     data_set($newContent, $saveIn, $value);

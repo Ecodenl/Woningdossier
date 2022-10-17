@@ -5,7 +5,6 @@ namespace App\Http\Livewire\Cooperation\Admin\ExampleBuildings;
 use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\QuestionAnswers\BuildingTypeCategory;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;

@@ -287,44 +287,15 @@ class DumpService
 
                     $answer = Arr::get($calculateData[$step], $column);
                     $data[$key] = $this->formatCalculation($key, $answer);
-                } else {
-                    if ($potentialShort === 'considerables') {
-                        $considerableModel = $structure[2];
-                        $considerableId = $structure[3];
+                } elseif ($potentialShort === 'considerables') {
+                    $considerableModel = $structure[2];
+                    $considerableId = $structure[3];
 
-                        // returns a bool, the values are keyed by 0 and 1
-                        $considerable = $considerableModel::find($considerableId);
-                        $considers = $user->considers($considerable, $inputSource);
+                    // returns a bool, the values are keyed by 0 and 1
+                    $considerable = $considerableModel::find($considerableId);
+                    $considers = $user->considers($considerable, $inputSource);
 
-                        $data[$key] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
-                    } else {
-                        dd('Are you sure this is okay?');
-                        // Using the legacy notation, we will mimick getting the answer
-                        $saveIn = ToolQuestionHelper::resolveSaveIn(Str::replaceFirst("{$step}.", '', $key),
-                            $building);
-                        $table  = $saveIn['table'];
-                        $column = $saveIn['column'];
-                        $where = $saveIn['where'];
-                        $where['input_source_id'] = $inputSource->id;
-
-                        $modelName = "App\\Models\\" . Str::studly(Str::singular($table));
-
-                        $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
-
-                        // Attempt translation
-                        $answer = ToolHelper::translateLegacyAnswer($key, $answer);
-
-                        if (is_array($answer)) {
-                            $answer = implode(', ', $answer);
-                        }
-
-                        // Exception to the rule
-                        if (Str::endsWith($key, 'window_surface')) {
-                            $answer = NumberFormatter::format($answer, 2);
-                        }
-
-                        $data[$key] = $answer;
-                    }
+                    $data[$key] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
                 }
             }
         }

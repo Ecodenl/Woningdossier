@@ -113,7 +113,7 @@ class HeatPump extends \App\Calculations\Calculator
 
         $this->desiredPower = (int) $this->getAnswer('heat-pump-preferred-power') ?? 0;
         // if it wasn't answered (by person in expert or example building)
-        if ($this->desiredPower <= 0){
+        if ($this->desiredPower <= 0 && $characteristics instanceof HeatPumpCharacteristic) {
             if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL){
                 // for full: required power
                 $this->desiredPower = (int) ceil($this->requiredPower);
@@ -270,11 +270,14 @@ class HeatPump extends \App\Calculations\Calculator
         $kfInsulationFactor = KeyFigureInsulationFactor::forInsulationFactor($this->insulationScore())->first();
         $wattPerSquareMeter = $kfInsulationFactor->energy_consumption_per_m2 ?? 140;
 
-        $surface = $this->getAnswer('surface');
+        $surface = $this->getAnswer('surface') ?? 0;
+        //TODO: this is a shitty assumption based on below commented code. * 100 seems illogical, but is the result
+        // of exploding and imploding. Perhaps done under the assumption that the number would be in Dutch format?
+        $surface = (int) $surface * 100;
 
-        $surface = explode('.', $surface);
-        $surface = implode('', $surface);
-        $surface = NumberFormatter::reverseFormat($surface);
+        //$surface = explode('.', $surface);
+        //$surface = implode('', $surface);
+        //$surface = NumberFormatter::reverseFormat($surface);
 
         //return $this->format(($wattPerSquareMeter * $surface) / 1000);
         return ($wattPerSquareMeter * $surface) / 1000;

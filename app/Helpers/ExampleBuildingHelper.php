@@ -65,6 +65,7 @@ class ExampleBuildingHelper
      * These are tool questions that should not be answerable when setting example building content
      */
     const UNANSWERABLE_TOOL_QUESTIONS = [
+        //'building-type-category', // TODO: Apparently you _can_ choose this? Not sure why that makes sense
         'building-type',
         'build-year',
         'specific-example-building',
@@ -78,11 +79,18 @@ class ExampleBuildingHelper
         'residential-status-element-comment-coach',
         'residential-status-service-comment-resident',
         'residential-status-service-comment-coach',
-        // TODO: Should we exclude the expert scan comment fields also?
+        'hr-boiler-comment',
+        'heat-pump-comment',
+        'sun-boiler-comment',
+        'ventilation-comment',
+        'wall-insulation-comment',
+        'insulated-glazing-comment',
+        'floor-insulation-comment',
+        'roof-insulation-comment',
+        'solar-panels-comment',
     ];
 
     const NOT_IN_CSV = [
-        //'building-type-category', // TODO: Apparently you _can_ choose this? Not sure why that makes sense
         'resident-count',
         'amount-gas',
         'amount-electricity',

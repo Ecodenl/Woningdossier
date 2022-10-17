@@ -5,13 +5,11 @@ namespace App\Http\Controllers\Cooperation\Admin;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Arr;
 
 class ExampleBuildingController extends Controller
 {
@@ -51,37 +49,7 @@ class ExampleBuildingController extends Controller
         );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
-    public function store(ExampleBuildingRequest $request)
-    {
-        $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
-        $cooperation = Cooperation::find($request->get('cooperation_id'));
 
-        $exampleBuilding = new ExampleBuilding();
-
-        $translations = $request->input('name', []);
-        $translations = Arr::only($translations, config('hoomdossier.supported_locales'));
-        $exampleBuilding->name = $translations;
-
-        $exampleBuilding->buildingType()->associate($buildingType);
-        if (!is_null($cooperation)) {
-            $exampleBuilding->cooperation()->associate($cooperation);
-        }
-        $exampleBuilding->is_default = $request->get('is_default', false);
-        $exampleBuilding->order = $request->get('order', null);
-        $exampleBuilding->save();
-
-
-        $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
-
-        return redirect()->route('cooperation.admin.example-buildings.edit', compact('exampleBuilding'))->with('success', __('cooperation/admin/example-buildings.store.success'));
-    }
 
 
     public function edit(Cooperation $cooperation, $exampleBuilding)

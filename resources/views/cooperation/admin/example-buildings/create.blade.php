@@ -15,16 +15,3 @@
         </div>
     </div>
 @endsection
-
-@push('js')
-    <script>
-        $("form").on('submit', function (e) {
-            var openTabId = $(".tab-content .tab-pane.active").attr('id');
-            if (openTabId === 'new') {
-                $("input[name='new']").val(1);
-            } else {
-                $("input[name='new']").val(0);
-            }
-        });
-    </script>
-@endpush

@@ -219,7 +219,7 @@ class ToolQuestionHelper
             }
 
             // Format answers
-            if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+            if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                 $humanReadableAnswer = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getFormatForUser();
             } elseif ($toolQuestion->data_type === Caster::JSON) {
                 $humanReadableAnswerArray = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getCast();

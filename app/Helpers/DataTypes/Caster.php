@@ -77,8 +77,11 @@ class Caster
         $value = $this->value;
 
         switch ($this->dataType) {
+            case static::INT:
+                $value = (int) NumberFormatter::mathableFormat(str_replace('.', '', ($value ?? 0)), 0);
+                break;
             case static::FLOAT:
-                $value = NumberFormatter::mathableFormat(str_replace('.', '', $value), 2);
+                $value = (float) NumberFormatter::mathableFormat(str_replace('.', '', ($value ?? 0)), 2);
                 break;
             default:
                 break;

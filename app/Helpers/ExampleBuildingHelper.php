@@ -65,7 +65,7 @@ class ExampleBuildingHelper
      * These are tool questions that should not be answerable when setting example building content
      */
     const UNANSWERABLE_TOOL_QUESTIONS = [
-        //'building-type-category', // TODO: Apparently you _can_ choose this? Not sure why that makes sense
+        'building-type-category',
         'building-type',
         'build-year',
         'specific-example-building',

@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Cooperation\Admin\ExampleBuildings;
 
 use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\QuestionAnswers\BuildingTypeCategory;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
@@ -84,12 +85,7 @@ class Form extends Component
 
     public function updated($key, $value)
     {
-        \Illuminate\Support\Facades\Log::debug("Updated method");
         $this->hydrateExampleBuildingSteps();
-
-        if ($key === "exampleBuildingValues.building_type_id") {
-            data_set($this->contents, '*.building-type-category', $value);
-        }
     }
 
     public function save()

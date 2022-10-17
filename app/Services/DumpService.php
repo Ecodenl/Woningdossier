@@ -285,7 +285,7 @@ class DumpService
                     $column = Str::replaceFirst('calculation_', '', $potentialShort)
                         . (empty($columnNest) ? '' : ".{$columnNest}");
 
-                    $answer = Arr::get($calculateData[$step], $column);
+                    $answer = Arr::get($calculateData, $column);
                     $data[$key] = $this->formatCalculation($key, $answer);
                 } elseif ($potentialShort === 'considerables') {
                     $considerableModel = $structure[2];
@@ -372,15 +372,11 @@ class DumpService
             'insulated-glazing' => $insulatedGlazingSavings,
             'floor-insulation' => $floorInsulationSavings,
             'roof-insulation' => $roofInsulationSavings,
-            'high-efficiency-boiler' => $highEfficiencyBoilerSavings,
+            'hr-boiler' => $highEfficiencyBoilerSavings,
             'solar-panels' => $solarPanelSavings,
             'heater' => $heaterSavings,
+            'sun-boiler' => $heaterSavings,
             'heat-pump' => $heatPumpSavings,
-            'heating' => [
-                'hr-boiler' => $highEfficiencyBoilerSavings,
-                'sun-boiler' => $heaterSavings,
-                'heat-pump' => $heatPumpSavings,
-            ],
         ];
     }
 

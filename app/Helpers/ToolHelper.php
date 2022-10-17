@@ -128,6 +128,7 @@ class ToolHelper
         return $structure;
     }
 
+    // TODO: Remove legacy
     /**
      * @param $contentKey
      *

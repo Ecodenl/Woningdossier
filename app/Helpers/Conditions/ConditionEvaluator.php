@@ -143,7 +143,16 @@ class ConditionEvaluator
         }
 
         foreach ($clauses as $clause) {
-            $result = $result && $this->evaluateClause($clause, $collection);
+            $subResult = false;
+            if (array_key_exists('column', $clause)) {
+                $subResult = $this->evaluateClause($clause, $collection);
+            } else {
+                foreach ($clause as $subClause) {
+                    $subResult = $subResult || $this->evaluateClause($subClause, $collection);
+                }
+            }
+
+            $result = $result && $subResult;
             if ($this->explain) {
                 Log::debug("evaluateAnd EXPLAIN Between: Result is " . ($result ? "true" : "false"));
             }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Admin\ExampleBuildings;
 
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
@@ -19,6 +20,10 @@ class Form extends Component
     public $exampleBuildingSteps;
     public $contents = [];
     public $contentStructure;
+
+    // technically its available in the exampleBuildingSteps
+    // But this is a easy and faster way to access the datatype.
+    public $toolQuestionDataType = [];
 
     public $exampleBuildingValues = [
         'name' => [],
@@ -57,16 +62,28 @@ class Form extends Component
         foreach ($this->exampleBuildingSteps as $step) {
             foreach ($step->subSteps as $subStep) {
                 foreach ($subStep->subSteppables as $subSteppablePivot) {
+                    // create the default structure
                     $this->contentStructure[$subSteppablePivot->subSteppable->short] = null;
+                    // save the data type in a easy to access structure
+                    $this->toolQuestionDataType[$subSteppablePivot->subSteppable->short] = $subSteppablePivot->subSteppable->data_type;
                 }
             }
         }
 
         if ($exampleBuilding instanceof ExampleBuilding) {
             $this->exampleBuildingValues = $exampleBuilding->attributesToArray();
-            foreach ($exampleBuilding->contents as $content) {
+            foreach ($exampleBuilding->contents as $exampleBuildingContent) {
+
+                $content = array_merge($this->contentStructure, $exampleBuildingContent->content);
                 // make sure it has all the available tool questions
-                $this->contents[$content->build_year] = array_merge($this->contentStructure, $content->content);
+                foreach ($content as $toolQuestionShort => $value) {
+
+
+                    if ($this->toolQuestionDataType[$toolQuestionShort] === \App\Helpers\DataTypes\Caster::FLOAT) {
+                        $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->getFormatForUser();
+                    }
+                }
+                $this->contents[$exampleBuildingContent->build_year] = $content;
             }
         }
 
@@ -97,7 +114,6 @@ class Form extends Component
 
     public function updated($key, $value)
     {
-        \Illuminate\Support\Facades\Log::debug("Updated method");
         $this->hydrateExampleBuildingSteps();
 
         if ($key === "exampleBuildingValues.building_type_id") {
@@ -150,6 +166,11 @@ class Form extends Component
                 }
                 if ($value === null || $value === "null") {
                     unset($content[$toolQuestionShort]);
+                }
+
+                // cast the value to a database value (a int)
+                if ($this->toolQuestionDataType[$toolQuestionShort] === Caster::FLOAT) {
+                    $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->reverseFormatted();
                 }
             }
 

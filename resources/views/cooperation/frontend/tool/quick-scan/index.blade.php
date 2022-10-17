@@ -4,7 +4,7 @@
 
     @if($notification instanceof \App\Models\Notification)
         @livewire('cooperation.frontend.layouts.parts.notifications', [
-            'type' => App\Jobs\CloneOpposingInputSource::class,
+            'types' => [App\Jobs\CloneOpposingInputSource::class],
             'nextUrl' => route('cooperation.frontend.tool.quick-scan.index', compact('step', 'subStep')),
         ])
 

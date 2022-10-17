@@ -113,7 +113,7 @@ class HeatPump extends \App\Calculations\Calculator
 
         $this->desiredPower = (int) $this->getAnswer('heat-pump-preferred-power') ?? 0;
         // if it wasn't answered (by person in expert or example building)
-        if ($this->desiredPower <= 0){
+        if ($this->desiredPower <= 0 && $characteristics instanceof HeatPumpCharacteristic) {
             if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL){
                 // for full: required power
                 $this->desiredPower = (int) ceil($this->requiredPower);

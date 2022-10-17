@@ -88,13 +88,11 @@ class ExampleBuildingHelper
         'floor-insulation-comment',
         'roof-insulation-comment',
         'solar-panels-comment',
-    ];
-
-    const NOT_IN_CSV = [
         'resident-count',
         'amount-gas',
         'amount-electricity',
         'water-comfort',
+        'new-water-comfort', // TODO: Should we exclude this?
         'total-installed-power',
     ];
 

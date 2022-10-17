@@ -22,17 +22,13 @@ class ContentStructureService
     {
         $contentStructure = $this->contentStructure;
 
-        // TODO: Refactor when colleagues give more clarity
-        $shortsToSkip = array_merge(ExampleBuildingHelper::UNANSWERABLE_TOOL_QUESTIONS, ExampleBuildingHelper::NOT_IN_CSV);
-
         // First, remove all unnecessary fields
         foreach ($contentStructure as $step => $fields) {
-            $contentStructure[$step] = Arr::where($fields, function ($trans, $field) use ($shortsToSkip) {
+            $contentStructure[$step] = Arr::where($fields, function ($trans, $field) {
                 // Questions are prefixed with "question_", so we remove that so we can check if this question
                 // should be in the CSV. Calculations are prefixed with "calculation_" and we for sure don't need those.
-                // Considerables are also skipped (TODO but why?)
-                return ! in_array(str_replace('question_', '', $field), $shortsToSkip)
-                    && ! Str::startsWith($field, 'calculation_') && ! Str::endsWith($field, 'considerable');
+                return ! in_array(str_replace('question_', '', $field), ExampleBuildingHelper::UNANSWERABLE_TOOL_QUESTIONS)
+                    && ! Str::startsWith($field, 'calculation_');
             });
         }
 

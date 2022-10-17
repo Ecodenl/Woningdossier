@@ -965,7 +965,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'boiler-setting-comfort-heat',
-                'translation' => "Hoe moet de CV ketel ingesteld zijn om het huis comfortabel te kunnen verwarmen?",
+                'translation' => "Met welke stooktemperatuur kan het huis comfortabel verwarmd worden?",
                 'options' => ['value' => 'temp-high'],
                 'tool_question_custom_values' => [
                     'temp-high' => [
@@ -1753,7 +1753,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required',
                 ],
                 'save_in' => 'building_features.facade_plastered_painted',
-                'translation' => 'Is de gevel gestuct of geverfd ?',
+                'translation' => 'Is de gevel gestuct of geverfd?',
                 'short' => 'wall-facade-plastered-painted',
             ],
             [

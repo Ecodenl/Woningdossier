@@ -765,6 +765,10 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         // Unconditional questions
                         [
+                            'morph' => ToolLabel::findByShort('heat-source'),
+                            'size' => 'col-span-6',
+                        ],
+                        [
                             'morph' => ToolQuestion::findByShort('new-water-comfort'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-6',
@@ -841,19 +845,6 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('hr-boiler.amount_gas'),
-                            'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
-                        ],
-                        [
-                            'morph' => ToolCalculationResult::findByShort('hr-boiler.amount_electricity'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [
@@ -1320,6 +1311,19 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                         ],
                         [
+                            'morph' => ToolCalculationResult::findByShort('sun-boiler.amount_gas'),
+                            'size' => 'col-span-3',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-considerable',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'sun-boiler',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.consumption.water'),
                             'size' => 'col-span-3',
                             'conditions' => [
@@ -1412,32 +1416,6 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.percentage_consumption'),
-                            'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
-                        ],
-                        [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.amount_gas'),
-                            'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
-                        ],
-                        [
-                            'morph' => ToolCalculationResult::findByShort('sun-boiler.amount_electricity'),
                             'size' => 'col-span-3',
                             'conditions' => [
                                 [

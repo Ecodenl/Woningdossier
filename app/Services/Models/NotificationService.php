@@ -41,6 +41,11 @@ class NotificationService
         return (bool) optional($this->getNotification())->is_active;
     }
 
+    public function isNotActive(): bool
+    {
+        return ! $this->isActive();
+    }
+
     public function setActive(int $count = 1)
     {
         // Get current count. This is because we could have 2 RecalculateForUser processes being dispatched at the

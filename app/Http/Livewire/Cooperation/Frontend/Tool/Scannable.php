@@ -142,27 +142,13 @@ abstract class Scannable extends Component
             if (! empty($toolQuestion->pivot->conditions)) {
                 $conditions = $toolQuestion->pivot->conditions;
 
-                foreach ($conditions as $conditionSet) {
-                    foreach ($conditionSet as $condition) {
-                        // There is a possibility that the answer we're looking for is for a tool question not
-                        // on this page. We find it, and add the answer to our list
-                        if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
-                            $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
-                            if ($otherSubStepToolQuestion instanceof ToolQuestion) {
-                                $otherSubStepAnswer = $this->building->getAnswer($this->masterInputSource,
-                                    $otherSubStepToolQuestion);
+                $evaluator = ConditionEvaluator::init()
+                    ->building($this->building)
+                    ->inputSource($this->masterInputSource);
 
-                                $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
-                            }
-                        }
-                    }
-                }
+                $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)->merge(collect($answers));
 
-                $evaluatableAnswers = collect($answers);
-
-                $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
-
-                if (! $evaluation) {
+                if (! $evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
                     $this->toolQuestions = $this->toolQuestions->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they

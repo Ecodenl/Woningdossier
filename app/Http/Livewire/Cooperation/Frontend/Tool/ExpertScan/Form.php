@@ -7,6 +7,8 @@ use App\Calculations\HeatPump;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Deprecation\ToolHelper;
+use App\Helpers\Conditions\Clause;
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
@@ -213,9 +215,14 @@ class Form extends Component
 
     public function performCalculations()
     {
-        $considerableQuestion = ToolQuestion::findByShort('heat-source-considerable');
-        $considerables = $this->filledInAnswers[$considerableQuestion->short]
-            ?? $this->building->getAnswer($this->masterInputSource, $considerableQuestion);
+        $conditions = $this->getCalculatorConditions('hr-boiler');
+
+        $evaluator = ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->masterInputSource);
+
+        // We can reuse these answers because all below calculators use the same questions for their conditional logic
+        $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)->merge(collect($this->filledInAnswers));
 
         $energyHabit = $this->building->user->energyHabit()->forInputSource($this->masterInputSource)->first();
 
@@ -224,7 +231,7 @@ class Form extends Component
         $heatPumpCalculations = [];
 
         // No need to calculate if we're not considering it
-        if (in_array('hr-boiler', $considerables)) {
+        if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
             // key = tool question short
             // value = custom key for the calculate data, sometimes we can use the save in
             // for ex; new-boiler-type is a "new" question, previously we just had this as building_services for the current situation
@@ -242,7 +249,8 @@ class Form extends Component
                 $this->getCalculateData($saveInToolQuestionShorts));
         }
 
-        if (in_array('sun-boiler', $considerables)) {
+        $conditions = $this->getCalculatorConditions('sun-boiler');
+        if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
             $saveInToolQuestionShorts = [
                 'new-water-comfort' => 'user_energy_habits.water_comfort_id',
                 'heater-pv-panel-orientation' => null,
@@ -264,7 +272,8 @@ class Form extends Component
             $sunBoilerCalculations = Heater::calculate($this->building, $energyHabit, $calculateData);
         }
 
-        if (in_array('heat-pump', $considerables)) {
+        $conditions = $this->getCalculatorConditions('heat-pump');
+        if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
             $heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, $energyHabit, collect($this->filledInAnswers));
         }
 
@@ -293,5 +302,25 @@ class Form extends Component
         $calculateData['answers'] = collect($this->filledInAnswers);
 
         return $calculateData;
+    }
+
+    private function getCalculatorConditions(string $short): array
+    {
+        return [
+            [
+                [
+                    'column' => 'new-heat-source',
+                    'operator' => Clause::CONTAINS,
+                    'value' => $short,
+                ],
+            ],
+            [
+                [
+                    'column' => 'new-heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => $short,
+                ],
+            ],
+        ];
     }
 }

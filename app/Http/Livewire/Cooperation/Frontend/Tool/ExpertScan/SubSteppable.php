@@ -99,7 +99,7 @@ class SubSteppable extends Scannable
 
         $this->setDirty(true);
 
-        $this->emitUp('updateFilledInAnswers', $this->filledInAnswers);
+        $this->emit('updateFilledInAnswers', $this->filledInAnswers);
     }
 
     public function calculationsPerformed($calculationResults)
@@ -126,29 +126,13 @@ class SubSteppable extends Scannable
             if (! empty($subSteppablePivot->conditions)) {
                 $conditions = $subSteppablePivot->conditions;
 
-                foreach ($conditions as $conditionSet) {
-                    foreach ($conditionSet as $condition) {
-                        // There is a possibility that the answer we're looking for is for a tool question not
-                        // on this page. We find it, and add the answer to our list
+                $evaluator = ConditionEvaluator::init()
+                    ->building($this->building)
+                    ->inputSource($this->masterInputSource);
 
-                        if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
-                            $otherSubStepToolQuestion = ToolQuestion::findByShort($condition['column']);
-                            if ($otherSubStepToolQuestion instanceof ToolQuestion) {
+                $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)->merge(collect($answers));
 
-                                $otherSubStepAnswer = $this->building
-                                    ->getAnswer($this->masterInputSource, $otherSubStepToolQuestion);
-
-                                $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
-                            }
-                        }
-                    }
-                }
-
-                $evaluatableAnswers = collect($answers);
-
-                $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
-
-                if (! $evaluation) {
+                if (! $evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
                     $this->subStep->subSteppables = $this->subStep->subSteppables->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they

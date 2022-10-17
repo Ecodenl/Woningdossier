@@ -111,7 +111,7 @@ class HeatPump extends \App\Calculations\Calculator
         // lookup the characteristics of the chosen heat pump (tool question answer).
         $characteristics = $this->lookupHeatPumpCharacteristics();
 
-        $this->desiredPower = (int) $this->getAnswer('heat-pump-preferred-power') ?? 0;
+        $this->desiredPower = $this->getAnswer('heat-pump-preferred-power');
         // if it wasn't answered (by person in expert or example building)
         if ($this->desiredPower <= 0 && $characteristics instanceof HeatPumpCharacteristic) {
             if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL){
@@ -269,14 +269,8 @@ class HeatPump extends \App\Calculations\Calculator
     {
         $kfInsulationFactor = KeyFigureInsulationFactor::forInsulationFactor($this->insulationScore())->first();
         $wattPerSquareMeter = $kfInsulationFactor->energy_consumption_per_m2 ?? 140;
-
         $surface = $this->getAnswer('surface');
 
-        $surface = explode('.', $surface);
-        $surface = implode('', $surface);
-        $surface = NumberFormatter::reverseFormat($surface);
-
-        //return $this->format(($wattPerSquareMeter * $surface) / 1000);
         return ($wattPerSquareMeter * $surface) / 1000;
     }
 

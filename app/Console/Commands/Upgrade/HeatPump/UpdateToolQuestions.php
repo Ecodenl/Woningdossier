@@ -68,6 +68,14 @@ class UpdateToolQuestions extends Command
         // Before we can update the ToolQuestions, we must update the values
         $this->handlePreQuestionMap();
 
+        // Tool questions that got added but should be removed again. We could do this manually, but meh.
+        $shortsToDelete = [
+            'heat-source-considerable',
+        ];
+        foreach ($shortsToDelete as $shortToDelete) {
+            DB::table('tool_questions')->where('short', $shortToDelete)->delete();
+        }
+
         $this->infoLog('Seeding tool questions');
         Artisan::call('db:seed', ['--class' => \ToolQuestionsTableSeeder::class, '--force' => true]);
 
@@ -433,56 +441,57 @@ class UpdateToolQuestions extends Command
         $this->infoLog("Starting considerable to 'new situation' considerable question map");
 
         // Map considerables to new question
-        $considerableQuestion = ToolQuestion::findByShort('heat-source-considerable');
-        $hrBoilerCustomValue = ToolQuestionCustomValue::where('tool_question_id', $considerableQuestion->id)
-            ->whereShort('hr-boiler')
-            ->first();
-        $sunBoilerCustomValue = ToolQuestionCustomValue::where('tool_question_id', $considerableQuestion->id)
-            ->whereShort('sun-boiler')
-            ->first();
-        $steps = [
-            Step::findByShort('high-efficiency-boiler'),
-            Step::findByShort('heater'),
-        ];
-
-        foreach ($steps as $considerableStep) {
-            $customValueForStep = $considerableStep->short === 'heater' ? $sunBoilerCustomValue : $hrBoilerCustomValue;
-
-            $usersThatConsiderStepQuery = DB::table('considerables')
-                ->where('considerable_type', Step::class)
-                ->where('considerable_id', $considerableStep->id)
-                ->where('is_considering', 1);
-
-            $total = $usersThatConsiderStepQuery->count();
-            $this->infoLog("{$total} consider {$considerableStep->short}");
-
-            $i = 0;
-
-            $usersThatConsiderStepQuery->orderBy('id')->chunkById(100, function ($usersThatConsiderStep) use (&$i, $total, $considerableQuestion, $customValueForStep) {
-                foreach ($usersThatConsiderStep as $user) {
-                    $building = DB::table('buildings')->where('user_id', $user->user_id)->first();
-
-                    DB::table('tool_question_answers')
-                        ->updateOrInsert([
-                            'building_id' => $building->id,
-                            'input_source_id' => $user->input_source_id,
-                            'tool_question_id' => $considerableQuestion->id,
-                            'tool_question_custom_value_id' => $customValueForStep->id,
-                        ], ['answer' => $customValueForStep->short]);
-
-                    ++$i;
-
-                    if ($i % 1000 === 0) {
-                        $this->infoLog("{$i} / {$total}");
-                    }
-                }
-            });
-
-            DB::table('considerables')
-                ->where('considerable_type', Step::class)
-                ->where('considerable_id', $considerableStep->id)
-                ->delete();
-        }
+        // TODO: Get mapping
+        //$considerableQuestion = ToolQuestion::findByShort('heat-source-considerable');
+        //$hrBoilerCustomValue = ToolQuestionCustomValue::where('tool_question_id', $considerableQuestion->id)
+        //    ->whereShort('hr-boiler')
+        //    ->first();
+        //$sunBoilerCustomValue = ToolQuestionCustomValue::where('tool_question_id', $considerableQuestion->id)
+        //    ->whereShort('sun-boiler')
+        //    ->first();
+        //$steps = [
+        //    Step::findByShort('high-efficiency-boiler'),
+        //    Step::findByShort('heater'),
+        //];
+        //
+        //foreach ($steps as $considerableStep) {
+        //    $customValueForStep = $considerableStep->short === 'heater' ? $sunBoilerCustomValue : $hrBoilerCustomValue;
+        //
+        //    $usersThatConsiderStepQuery = DB::table('considerables')
+        //        ->where('considerable_type', Step::class)
+        //        ->where('considerable_id', $considerableStep->id)
+        //        ->where('is_considering', 1);
+        //
+        //    $total = $usersThatConsiderStepQuery->count();
+        //    $this->infoLog("{$total} consider {$considerableStep->short}");
+        //
+        //    $i = 0;
+        //
+        //    $usersThatConsiderStepQuery->orderBy('id')->chunkById(100, function ($usersThatConsiderStep) use (&$i, $total, $considerableQuestion, $customValueForStep) {
+        //        foreach ($usersThatConsiderStep as $user) {
+        //            $building = DB::table('buildings')->where('user_id', $user->user_id)->first();
+        //
+        //            DB::table('tool_question_answers')
+        //                ->updateOrInsert([
+        //                    'building_id' => $building->id,
+        //                    'input_source_id' => $user->input_source_id,
+        //                    'tool_question_id' => $considerableQuestion->id,
+        //                    'tool_question_custom_value_id' => $customValueForStep->id,
+        //                ], ['answer' => $customValueForStep->short]);
+        //
+        //            ++$i;
+        //
+        //            if ($i % 1000 === 0) {
+        //                $this->infoLog("{$i} / {$total}");
+        //            }
+        //        }
+        //    });
+        //
+        //    DB::table('considerables')
+        //        ->where('considerable_type', Step::class)
+        //        ->where('considerable_id', $considerableStep->id)
+        //        ->delete();
+        //}
 
         $residentialStatus = Step::findByShort('residential-status');
         $completedStepsQuery = CompletedStep::allInputSources()->where('step_id', $residentialStatus->id);

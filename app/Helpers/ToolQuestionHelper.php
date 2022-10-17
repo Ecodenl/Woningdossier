@@ -54,7 +54,6 @@ class ToolQuestionHelper
         'water-comfort',
         'amount-gas',
         'amount-electricity',
-        'heat-source-considerable',
     ];
 
     /**

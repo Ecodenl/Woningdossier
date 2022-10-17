@@ -752,17 +752,60 @@ class SubSteppablesTableSeeder extends Seeder
         #-------------------------
         # Expert sub steppables
         #-------------------------
+        $newHrBoilerCondition = [
+            [
+                [
+                    'column' => 'new-heat-source',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'hr-boiler',
+                ],
+            ],
+            [
+                [
+                    'column' => 'new-heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'hr-boiler',
+                ],
+            ],
+        ];
+        $newHeatPumpCondition = [
+            [
+                [
+                    'column' => 'new-heat-source',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'heat-pump',
+                ],
+            ],
+            [
+                [
+                    'column' => 'new-heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'heat-pump',
+                ],
+            ],
+        ];
+        $newSunBoilerCondition = [
+            [
+                [
+                    'column' => 'new-heat-source',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'sun-boiler',
+                ],
+            ],
+            [
+                [
+                    'column' => 'new-heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'sun-boiler',
+                ],
+            ],
+        ];
+
         $this->saveStructure([
             'heating' => [
                 'Nieuwe situatie' => [
                     'order' => 0,
                     'morphs' => [
-                        // Considerable
-                        [
-                            'morph' => ToolQuestion::findByShort('heat-source-considerable'),
-                            'tool_question_type_id' => $checkboxIconType->id,
-                            'size' => 'col-span-6',
-                        ],
                         // Unconditional questions
                         [
                             'morph' => ToolLabel::findByShort('heat-source'),
@@ -792,12 +835,37 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolLabel::findByShort('hr-boiler'),
                             'size' => 'col-span-6',
+                            'conditions' => $newHrBoilerCondition,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hr-boiler-replace'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
+                                        [
+                                            'column' => 'new-heat-source',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'hr-boiler',
+                                        ],
+                                        [
+                                            'column' => 'new-heat-source-warm-tap-water',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'hr-boiler',
+                                        ],
+                                    ],
+                                    [
+                                        [
+                                            'column' => 'heat-source',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'hr-boiler',
+                                        ],
+                                        [
+                                            'column' => 'heat-source-warm-tap-water',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'hr-boiler',
+                                        ],
                                     ],
                                 ],
                             ],
@@ -806,144 +874,89 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('new-boiler-type'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHrBoilerCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hr-boiler-comment'),
                             'tool_question_type_id' => $textareaType->id,
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHrBoilerCondition,
                         ],
                         [
                             'morph' => ToolLabel::findByShort('hr-boiler-cost-indication'),
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHrBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('hr-boiler.amount_gas'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHrBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('hr-boiler.savings_gas'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHrBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('hr-boiler.savings_co2'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHrBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('hr-boiler.savings_money'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHrBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('hr-boiler.replace_year'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHrBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('hr-boiler.cost_indication'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHrBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('hr-boiler.interest_comparable'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHrBoilerCondition,
                         ],
                         // Heat pump
                         [
                             'morph' => ToolLabel::findByShort('heat-pump'),
                             'size' => 'col-span-6',
+                            'conditions' => $newHeatPumpCondition,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-pump-replace'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
+                                        [
+                                            'column' => 'new-heat-source',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'heat-pump',
+                                        ],
+                                        [
+                                            'column' => 'new-heat-source-warm-tap-water',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'heat-pump',
+                                        ],
+                                    ],
+                                    [
+                                        [
+                                            'column' => 'heat-source',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'heat-pump',
+                                        ],
+                                        [
+                                            'column' => 'heat-source-warm-tap-water',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'heat-pump',
+                                        ],
                                     ],
                                 ],
                             ],
@@ -952,305 +965,154 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('new-boiler-setting-comfort-heat'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-cook-type'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('new-heat-pump-type'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.advised_system.required_power'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-preferred-power'),
                             'tool_question_type_id' => $textType->id,
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('outside-unit-space'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('inside-unit-space'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-comment'),
                             'tool_question_type_id' => $textareaType->id,
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolLabel::findByShort('heat-pump-efficiency-indication'),
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.advised_system.share_heating'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.advised_system.share_tap_water'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.advised_system.scop_heating'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.advised_system.scop_tap_water'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolLabel::findByShort('heat-pump-cost-indication'),
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.amount_gas'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.amount_electricity'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.savings_gas'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.savings_co2'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.savings_money'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.extra_consumption_electricity'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.cost_indication'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('heat-pump.interest_comparable'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newHeatPumpCondition,
                         ],
                         // Sun boiler
                         [
                             'morph' => ToolLabel::findByShort('sun-boiler'),
                             'size' => 'col-span-6',
+                            'conditions' => $newSunBoilerCondition,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('sun-boiler-replace'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'col-span-6',
                             'conditions' => [
                                 [
                                     [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
+                                        [
+                                            'column' => 'new-heat-source',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'sun-boiler',
+                                        ],
+                                        [
+                                            'column' => 'new-heat-source-warm-tap-water',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'sun-boiler',
+                                        ],
+                                    ],
+                                    [
+                                        [
+                                            'column' => 'heat-source',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'sun-boiler',
+                                        ],
+                                        [
+                                            'column' => 'heat-source-warm-tap-water',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'sun-boiler',
+                                        ],
                                     ],
                                 ],
                             ],
@@ -1259,238 +1121,94 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-orientation'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heater-pv-panel-angle'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('sun-boiler-comment'),
                             'tool_question_type_id' => $textareaType->id,
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolLabel::findByShort('sun-boiler-estimate-current-usage'),
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.amount_gas'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.consumption.water'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.consumption.gas'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolLabel::findByShort('sun-boiler-specifications'),
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.specs.size_boiler'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.specs.size_collector'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolLabel::findByShort('sun-boiler-cost-indication'),
                             'size' => 'col-span-6',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.production_heat'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.percentage_consumption'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.savings_gas'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.savings_co2'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.savings_money'),
                             'size' => 'col-span-2',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.cost_indication'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.interest_comparable'),
                             'size' => 'col-span-3',
-                            'conditions' => [
-                                [
-                                    [
-                                        'column' => 'heat-source-considerable',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'sun-boiler',
-                                    ],
-                                ],
-                            ],
+                            'conditions' => $newSunBoilerCondition,
                         ],
                     ],
                 ],

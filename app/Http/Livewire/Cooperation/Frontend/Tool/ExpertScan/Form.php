@@ -91,7 +91,7 @@ class Form extends Component
         $this->setFilledInAnswers($filledInAnswers);
         $this->succeededSubSteps[$subStep['slug'][$this->locale]] = $subStep['slug'][$this->locale];
 
-        // Save answers if all sub steps have been succesfully answered
+        // Save answers if all sub steps have been successfully answered
         if ($this->allSubStepsSucceeded()) {
             $this->saveFilledInAnswers();
         }

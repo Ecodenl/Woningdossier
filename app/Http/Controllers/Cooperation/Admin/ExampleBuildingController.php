@@ -7,6 +7,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
+use App\Jobs\ProcessApplyExampleBuilding;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
@@ -107,18 +108,6 @@ class ExampleBuildingController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public
-    function show($id)
-    {
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  $cooperation
@@ -176,6 +165,8 @@ class ExampleBuildingController extends Controller
         $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
         $exampleBuilding->save();
+
+        ProcessApplyExampleBuilding::dispatch($exampleBuilding);
 
         return redirect()->route('cooperation.admin.example-buildings.edit', compact('exampleBuilding'))->with('success', __('cooperation/admin/example-buildings.update.success'));
     }

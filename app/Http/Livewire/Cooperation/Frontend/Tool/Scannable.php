@@ -129,16 +129,7 @@ abstract class Scannable extends Component
 
     protected function evaluateToolQuestions()
     {
-        // Filter out the questions that do not match the condition
-        // now collect the given answers
-        $dynamicAnswers = [];
-        foreach ($this->toolQuestions as $toolQuestion) {
-            $dynamicAnswers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->short];
-        }
-
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-            $answers = $dynamicAnswers;
-
             if (! empty($toolQuestion->pivot->conditions)) {
                 $conditions = $toolQuestion->pivot->conditions;
 
@@ -146,7 +137,8 @@ abstract class Scannable extends Component
                     ->building($this->building)
                     ->inputSource($this->masterInputSource);
 
-                $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)->merge(collect($answers));
+                $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)
+                    ->merge(collect($this->filledInAnswers));
 
                 if (! $evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
                     $this->toolQuestions = $this->toolQuestions->forget($index);

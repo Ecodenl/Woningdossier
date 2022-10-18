@@ -10,7 +10,7 @@
             {{-- Because a questionnaire is simply saved using an old school controller, we update the action, which
             will handle redirecting us correctly to the questionnaire... TODO: Refactor this, no time for it now --}}
             @if(RouteLogic::inQuestionnaire(Route::currentRouteName()))
-            x-on:click="$el.setAttribute('disabled', true); let form = document.querySelector('#questionnaire-form-{{$questionnaire->id}}'); let action = form.getAttribute('action'); action += '?nextUrl={{$nextUrl}}'; form.setAttribute('action', action); form.submit();"
+            x-on:click="$el.setAttribute('disabled', true);"
             @else
             wire:click="$emitTo('cooperation.frontend.tool.quick-scan.form', 'save')"
             x-on:click="$el.setAttribute('disabled', true);"

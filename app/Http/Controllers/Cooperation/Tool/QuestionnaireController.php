@@ -55,6 +55,9 @@ class QuestionnaireController extends Controller
 
         $building->user->completeQuestionnaire($questionnaire, $currentInputSource);
 
+        $step = $questionnaire->step;
+
+
         // Next url will only be defined if we come from the quick scan, so we can go back to the quick scan
         if ($request->has('nextUrl')) {
             return redirect($request->input('nextUrl'));

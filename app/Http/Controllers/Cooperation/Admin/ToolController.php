@@ -8,7 +8,7 @@ use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Cooperation;
-use App\Models\Step;
+use App\Models\User;
 
 class ToolController extends Controller
 {
@@ -27,13 +27,7 @@ class ToolController extends Controller
 
         FillingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
-        $step = Step::findByShort('building-data');
-
-        return redirect()->route('cooperation.frontend.tool.quick-scan.index', [
-            'scan' => $step->scan,
-            'step' => $step,
-            'subStep' => $step->subSteps()->orderBy('order')->first(),
-        ]);
+        return redirect()->route('cooperation.frontend.tool.quick-scan.start');
     }
 
     /**
@@ -51,12 +45,6 @@ class ToolController extends Controller
 
         ObservingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
-        $step = Step::findByShort('building-data');
-
-        return redirect()->route('cooperation.frontend.tool.quick-scan.index', [
-            'scan' => $step->scan,
-            'step' => $step,
-            'subStep' => $step->subSteps()->orderBy('order')->first(),
-        ]);
+        return redirect()->route('cooperation.frontend.tool.quick-scan.start');
     }
 }

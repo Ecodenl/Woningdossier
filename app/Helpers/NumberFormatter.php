@@ -159,9 +159,10 @@ class NumberFormatter
      * Format a number for user display
      *
      * @param $number
-     * @param  bool  $isInteger
+     * @param bool $isInteger
+     * @param $alwaysNumber
      *
-     * @return int|string|null
+     * @return array|int|string|string[]|null
      */
     public static function formatNumberForUser($number, bool $isInteger = false, $alwaysNumber = true)
     {

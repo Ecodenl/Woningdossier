@@ -121,7 +121,7 @@ class ToolQuestion extends Model
                         $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short', 'building_type_id', 'cooperation_id']);
                         $questionValue['extra'] = $toolQuestionValuable->extra;
                         // the humane readable name is either set in the name or value column.
-                        $questionValue['name'] = $valuable->name ?? $valuable->value;
+                        $questionValue['name'] = $valuable->name ?? $valuable->value ?? $valuable->measure_name;
                         $questionValue['value'] = $valuable->id;
                         $questionValue['conditions'] = $toolQuestionValuable->conditions;
 

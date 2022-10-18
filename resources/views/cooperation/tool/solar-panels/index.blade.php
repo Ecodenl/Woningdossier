@@ -101,11 +101,11 @@
                     @endslot
                     <div class="w-full flex space-x-4">
                         @php
-                            $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
-                                $toolQuestion,
-                                $building,
-                                $masterInputSource,
-                            );
+                            $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
+                               ->forInputSource($masterInputSource)
+                               ->forBuilding($building)
+                               ->withCustomEvaluation()
+                               ->getQuestionValues();
                         @endphp
                         @foreach($questionValues as $toolQuestionValue)
                             @php
@@ -307,7 +307,8 @@
                     </div>
                     <div class="w-full sm:w-1/3">
                         @include('cooperation.layouts.indication-for-costs.co2', [
-                            'translation' => 'solar-panels.index.costs.co2'
+                                'id' => null,
+                                'translation' => 'solar-panels.index.costs.co2'
                         ])
                     </div>
                 </div>
@@ -315,16 +316,19 @@
             <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
                 <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.savings-in-euro',[
-                        'translation' => 'solar-panels.index.savings-in-euro'
+                            'id' => null,
+                            'translation' => 'solar-panels.index.savings-in-euro'
                     ])
                 </div>
                 <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.indicative-costs',[
+                        'id' => null,
                         'translation' => 'solar-panels.index.indicative-costs'
                     ])
                 </div>
                 <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.comparable-rent',[
+                        'id' => null,
                         'translation' => 'solar-panels.index.comparable-rent'
                     ])
                 </div>

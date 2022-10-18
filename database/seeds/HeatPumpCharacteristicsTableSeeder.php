@@ -38,7 +38,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                     'Hybride warmtepomp met buitenlucht'
                 ),
                 'tool_question_custom_value_id' => $high,
-                'scop'                          => 3.3,
+                'scop'                          => 3.34,
                 'scop_tap_water'                => 2.56,
                 'share_percentage_tap_water'    => 0,
                 'costs'                         => 4500,
@@ -51,7 +51,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                     'Hybride warmtepomp met buitenlucht'
                 ),
                 'tool_question_custom_value_id' => $fifty,
-                'scop'                          => 3.3,
+                'scop'                          => 3.34,
                 'scop_tap_water'                => 2.56,
                 'share_percentage_tap_water'    => 0,
                 'costs'                         => 4500,
@@ -78,7 +78,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                     'Hybride warmtepomp met ventilatielucht'
                 ),
                 'tool_question_custom_value_id' => $high,
-                'scop'                          => 4.5,
+                'scop'                          => 4.51,
                 'scop_tap_water'                => 2.56,
                 'share_percentage_tap_water'    => 0,
                 'costs'                         => 3500,
@@ -171,7 +171,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                     'Volledige warmtepomp met buitenlucht'
                 ),
                 'tool_question_custom_value_id' => $fifty,
-                'scop'                          => 3.3,
+                'scop'                          => 3.34,
                 'scop_tap_water'                => 2.56,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 12000,
@@ -184,7 +184,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                     'Volledige warmtepomp met buitenlucht'
                 ),
                 'tool_question_custom_value_id' => $low,
-                'scop'                          => 4.5,
+                'scop'                          => 4.51,
                 'scop_tap_water'                => 2.56,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 12000,
@@ -211,7 +211,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                     'Volledige warmtepomp met bodemwarmte'
                 ),
                 'tool_question_custom_value_id' => $fifty,
-                'scop'                          => 4.5,
+                'scop'                          => 4.51,
                 'scop_tap_water'                => 2.7,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 29000,

@@ -22,22 +22,22 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php
-                        /**
-                         * @var \App\Models\User $user
-                         * @var \App\Models\Building $building
-                         */
-                        ?>
+                        @php
+                            /**
+                             * @var \App\Models\User $user
+                             * @var \App\Models\Building $building
+                             */
+                        @endphp
                         @foreach($users as $user)
-                            <?php
+                            @php
                                 $building = $user->building;
                                 $mostRecentBuildingStatus = $building->buildingStatuses->last();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
-                                $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
-                            ?>
+                                $userCreatedAtStrToTime = strtotime($userCreatedAtFormatted);
+                            @endphp
                             <tr>
-                                <td data-sort="{{$userCreatedAtStrotime}}">
+                                <td data-sort="{{$userCreatedAtStrToTime}}">
                                     {{$userCreatedAtFormatted ?? '-'}}
                                     </td>
                                     <td>{{$user->getFullName()}}</td>
@@ -72,6 +72,7 @@
             var table = $('table');
             table.DataTable({
                 responsive: true,
+                stateSave: true,
                 order: [[0, "desc"]],
                 columns: [
                     {responsivePriority: 1},

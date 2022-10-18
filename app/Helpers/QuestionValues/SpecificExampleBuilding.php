@@ -3,18 +3,20 @@
 namespace App\Helpers\QuestionValues;
 
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Traits\FluentCaller;
+use App\Traits\HasDynamicAnswers;
 use Illuminate\Support\Collection;
 
-class SpecificExampleBuilding implements ShouldReturnQuestionValues
+class SpecificExampleBuilding extends QuestionValuable
 {
-    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource, ?Collection $answers = null): Collection
+    public function getQuestionValues(): Collection
     {
-        $conditionalQuestion = ToolQuestion::findByShort('building-type');
-        $cooperationId = $building->user->cooperation_id;
-        $buildingTypeId = $building->getAnswer($inputSource, $conditionalQuestion);
+        $buildingTypeId = $this->getAnswer('building-type');
+        $cooperationId = $this->cooperation->id;
 
         // Building type ID can be null, for example if we use $building->getAnswerForAllInputSources, it can
         // end up with an input source that might not have answered this question yet. Since we only want

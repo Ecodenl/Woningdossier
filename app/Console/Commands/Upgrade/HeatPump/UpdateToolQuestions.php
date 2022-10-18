@@ -53,10 +53,15 @@ class UpdateToolQuestions extends Command
         // Ensure we clear the cache so we don't run into potentially `null` cached shorts.
         Artisan::call('cache:clear');
 
-        $this->infoLog('Seeding scans, tool labels, tool question types and steps');
+        $this->infoLog('Seeding scans, tool labels, and tool question types');
         Artisan::call('db:seed', ['--class' => \ScansTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \ToolLabelsTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \ToolQuestionTypesTableSeeder::class, '--force' => true]);
+
+        $this->infoLog('Deleting all tool calculation results');
+        DB::table('tool_calculation_results')->truncate();
+
+        $this->infoLog('Seeding tool calculation results and steps');
         Artisan::call('db:seed', ['--class' => \ToolCalculationResultsTableSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class, '--force' => true]);
 
@@ -327,6 +332,7 @@ class UpdateToolQuestions extends Command
             });
 
             $heaterTypeQuestion->delete();
+            SubStep::where('slug->nl', 'zonnenboiler')->limit(1)->delete();
         }
 
         $heatPump = Service::findByShort('heat-pump');

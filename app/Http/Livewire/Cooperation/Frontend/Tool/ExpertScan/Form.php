@@ -6,14 +6,17 @@ use App\Calculations\Heater;
 use App\Calculations\HeatPump;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Console\Commands\Tool\RecalculateForUser;
+use App\Deprecation\ToolHelper;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\SubStepHelper;
 use App\Helpers\ToolQuestionHelper;
+use App\Models\ComfortLevelTapWater;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\ToolQuestion;
+use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
 use Artisan;
 use Illuminate\Support\Arr;
@@ -96,8 +99,8 @@ class Form extends Component
     {
         // We can't directly set the answers because there will be more than one sub step that is passing
         // answers. array_merge messes up the keys and addition (array + array) causes weird behaviour
-        foreach ($filledInAnswers as $toolQuestionId => $answer) {
-            $this->filledInAnswers[$toolQuestionId] = $answer;
+        foreach ($filledInAnswers as $toolQuestionShort => $answer) {
+            $this->filledInAnswers[$toolQuestionShort] = $answer;
         }
     }
 
@@ -120,20 +123,35 @@ class Form extends Component
     {
         $stepShortsToRecalculate = [];
         $shouldDoFullRecalculate = false;
+        $dirtyToolQuestions = [];
 
         $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
-        foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+        foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
             // Define if we should answer this question...
             /** @var ToolQuestion $toolQuestion */
-            $toolQuestion = ToolQuestion::find($toolQuestionId);
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             if ($this->building->user->account->can('answer', $toolQuestion)) {
+
+                // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
+                // so when we actually start saving it we have to format it one more time
+                if ($toolQuestion->data_type === Caster::FLOAT) {
+                    $givenAnswer = Caster::init(
+                        $toolQuestion->data_type, $givenAnswer
+                    )->reverseFormatted();
+                }
+
+                $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                if ($masterAnswer !== $givenAnswer) {
+                    $dirtyToolQuestions[$toolQuestion->id] = $toolQuestion;
+                }
+
                 ToolQuestionService::init($toolQuestion)
                     ->building($this->building)
                     ->currentInputSource($this->currentInputSource)
                     ->applyExampleBuilding()
-                    ->save($givenAnswer);
+                        ->save($givenAnswer);
 
                 if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion) && $masterHasCompletedQuickScan) {
                     Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
@@ -183,7 +201,9 @@ class Form extends Component
             ]);
 
             if (! $completedSubStep->wasRecentlyCreated) {
-                SubStepHelper::checkConditionals($completedSubStep);
+                ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+                    ->forSubStep($subStep)
+                    ->checkConditionals($dirtyToolQuestions);
             }
         }
 
@@ -193,7 +213,7 @@ class Form extends Component
     public function performCalculations()
     {
         $considerableQuestion = ToolQuestion::findByShort('heat-source-considerable');
-        $considerables = $this->filledInAnswers[$considerableQuestion->id]
+        $considerables = $this->filledInAnswers[$considerableQuestion->short]
             ?? $this->building->getAnswer($this->masterInputSource, $considerableQuestion);
 
         $hrBoilerCalculations = [];
@@ -226,8 +246,19 @@ class Form extends Component
                 'heater-pv-panel-angle' => null,
             ];
 
-            $sunBoilerCalculations = Heater::calculate($this->building, $this->masterInputSource,
-                $this->getCalculateData($saveInToolQuestionShorts));
+            $calculateData = $this->getCalculateData($saveInToolQuestionShorts);
+            // Because of the logic change, new-water-comfort is no ID but a custom value
+            $waterAnswer = Arr::get($calculateData, 'user_energy_habits.water_comfort_id');
+
+            $newWater = ToolHelper::getModelByCustomValue(
+                ComfortLevelTapWater::query(),
+                'new-water-comfort',
+                $waterAnswer
+            );
+
+            Arr::set($calculateData, 'user_energy_habits.water_comfort_id', optional($newWater)->id);
+
+            $sunBoilerCalculations = Heater::calculate($this->building, $this->masterInputSource, $calculateData);
         }
 
         if (in_array('heat-pump', $considerables)) {
@@ -250,7 +281,7 @@ class Form extends Component
             // it may be possible that the tool question is not present in the filled in answers.
             // that simply means the tool question is not available for the user on the current page
             // however it may be filled elsewhere, so we will get it through the getAnswer
-            $answer = $this->filledInAnswers[$toolQuestion->id] ?? $this->building->getAnswer($this->masterInputSource,
+            $answer = $this->filledInAnswers[$toolQuestion->short] ?? $this->building->getAnswer($this->masterInputSource,
                     $toolQuestion);
 
             Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);

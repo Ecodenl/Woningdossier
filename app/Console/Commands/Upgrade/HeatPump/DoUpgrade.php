@@ -47,7 +47,9 @@ class DoUpgrade extends Command
                 ['--class' => 'KeyFigureHeatPumpCoveragesTableSeeder', '--force' => true],
                 ['--class' => 'HeatPumpCharacteristicsTableSeeder', '--force' => true],
                 ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
+                ['--class' => 'KeyFigureInsulationFactorsTableSeeder', '--force' => true],
             ],
+            ExampleBuildingContentRestructure::class => [],
         ];
 
         foreach ($commands as $command => $variants) {

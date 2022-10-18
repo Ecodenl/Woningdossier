@@ -84,6 +84,13 @@ class SubStep extends Model
         return $query->where("slug->{$locale}", $slug);
     }
 
+    public function scopeForScan(Builder $query, Scan $scan): Builder
+    {
+        return $query->whereHas('step', function ($query) use ($scan) {
+            $query->where('scan_id', $scan->id);
+        });
+    }
+
     # Relations
     public function step(): BelongsTo
     {

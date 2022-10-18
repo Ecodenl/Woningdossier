@@ -10,7 +10,7 @@ class KeyFigureInsulationFactor extends Model
 
     public function scopeForInsulationFactor(Builder $query, $factor)
     {
-        $factor = number_format($factor, 2, '', '.');
+        $factor = number_format($factor, 2, '.', '');
 
         return $query->where('insulation_factor', '=', $factor);
     }

@@ -4,19 +4,19 @@
     $humanReadableAnswer = null;
 @endphp
 
-<div class="{{$subSteppablePivot->size}}" wire:key="question-{{$toolQuestion->id}}">
+<div class="{{$subSteppablePivot->size}}" wire:key="question-{{$toolQuestion->short}}">
     @component('cooperation.frontend.layouts.components.form-group', [
         'class' => 'form-group-heading',
         'labelClass' => 'text-sm',
         // 'defaultInputSource' => 'resident',
         // so we give the option to replace something in the question title
         'label' => __($toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"), ['name' => $humanReadableAnswer]),
-        'inputName' => "filledInAnswers.{$toolQuestion->id}",
+        'inputName' => "filledInAnswers.{$toolQuestion->short}",
         'withInputSource' => ! $disabled,
     ])
         @slot('sourceSlot')
             @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
+                'values' => $filledInAnswersForAllInputSources[$toolQuestion->short],
                 'toolQuestion' => $toolQuestion,
             ])
         @endslot

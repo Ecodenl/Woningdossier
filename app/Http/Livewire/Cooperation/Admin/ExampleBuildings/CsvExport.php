@@ -2,11 +2,11 @@
 
 namespace App\Http\Livewire\Cooperation\Admin\ExampleBuildings;
 
+use App\Helpers\HoomdossierSession;
 use App\Jobs\GenerateExampleBuildingCsv;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
-use App\Models\User;
 use App\Services\FileTypeService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
@@ -14,16 +14,18 @@ use Livewire\Component;
 class CsvExport extends Component
 {
     use AuthorizesRequests;
+
     public $cooperation;
     public $fileType;
     public $fileStorage;
-
+    public $inputSource;
 
     public function mount(Cooperation $cooperation)
     {
         $this->cooperation = $cooperation;
         $this->fileType = FileType::findByShort('example-building-overview');
         $this->fileStorage = $this->fileType->files()->mostRecent()->first();
+        $this->inputSource = HoomdossierSession::getInputSource(true);
     }
 
     public function render()
@@ -38,6 +40,7 @@ class CsvExport extends Component
             'cooperation_id' => $this->cooperation->id,
             'file_type_id' => $this->fileType->id,
             'filename' => (new FileTypeService($this->fileType))->niceFileName(),
+            'input_source_id' => $this->inputSource->id,
             'is_being_processed' => true,
         ]);
 

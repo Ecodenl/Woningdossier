@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 
 class BuildingType implements ShouldEvaluate
 {
-
     public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool
     {
         // check what kind of category the user has selected, it will determine whether we have to show the building type or not.

@@ -22,12 +22,12 @@
                 // 'defaultInputSource' => 'resident',
                 // so we give the option to replace something in the question title
                 'label' => __($toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"), ['name' => $humanReadableAnswer]),
-                'inputName' => "filledInAnswers.{$toolQuestion->id}",
+                'inputName' => "filledInAnswers.{$toolQuestion->short}",
                 'withInputSource' => ! $disabled,
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                        'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
+                        'values' => $filledInAnswersForAllInputSources[$toolQuestion->short],
                         'toolQuestion' => $toolQuestion,
                     ])
                 @endslot

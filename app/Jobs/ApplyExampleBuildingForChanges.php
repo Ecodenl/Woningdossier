@@ -9,7 +9,6 @@ use App\Models\BuildingType;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
-use App\Models\ToolQuestion;
 use App\Services\ExampleBuildingService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -48,13 +47,10 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
 
         if ($exampleBuilding instanceof ExampleBuilding) {
             Log::debug(__CLASS__." Example building should be (re)applied!");
-        } else {
-            Log::debug(__CLASS__." No change in example building contents");
-        }
-
-        if ($exampleBuilding instanceof ExampleBuilding) {
             // Apply the example building
             $this->retriggerExampleBuildingApplication($exampleBuilding);
+        } else {
+            Log::debug(__CLASS__." No change in example building contents");
         }
     }
 
@@ -71,7 +67,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         }
 
         // We need this to do stuff
-        if ($buildingFeature instanceof BuildingFeature && !is_null($buildingFeature->build_year)) {
+        if (! is_null($buildingFeature->build_year)) {
             // current values for comparison later on
             $currentExampleBuildingId = $this->building->example_building_id;
             $currentBuildYearValue = (int)$buildingFeature->build_year;
@@ -123,7 +119,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
 
             }
         } else {
-            Log::debug(__CLASS__." Building feature undefined, or build year not set for building {$this->building->id}");
+            Log::debug(__CLASS__." Build year not set for building {$this->building->id}");
         }
 
         return null;
@@ -164,7 +160,8 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         ExampleBuildingService::apply(
             $exampleBuilding,
             $buildYear,
-            $this->building
+            $this->building,
+            InputSource::findByShort(InputSource::EXAMPLE_BUILDING),
         );
 
         // We apply the example building only if the user has not proceeded further than the example building

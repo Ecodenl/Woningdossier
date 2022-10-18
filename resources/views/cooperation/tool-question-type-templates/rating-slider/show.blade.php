@@ -7,8 +7,8 @@
             $disabled = $disabled ?? false;
             $label = $option['name'];
 
-            $default = $filledInAnswers[$toolQuestion['id']][$option['short']] ?? 0;
-            $livewireModel = "filledInAnswers.{$toolQuestion['id']}.{$option['short']}";
+            $default = $filledInAnswers[$toolQuestion['short']][$option['short']] ?? 0;
+            $livewireModel = "filledInAnswers.{$toolQuestion['short']}.{$option['short']}";
         @endphp
 
         <div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', '{{$disabled}}')"

@@ -43,7 +43,9 @@ class HeaterHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->considersByAnswer('heat-source-considerable', 'sun-boiler'),
+                    'is_considering' => $this->considersByConditions(
+                        $this->getConditionsForHeatSourceQuestions('sun-boiler')
+                    ),
                 ],
             ],
             'building_heaters' => $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],

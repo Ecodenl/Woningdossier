@@ -37,7 +37,9 @@ class HeatPumpHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->considersByAnswer('heat-source-considerable', 'heat-pump'),
+                    'is_considering' => $this->considersByConditions(
+                        $this->getConditionsForHeatSourceQuestions('heat-pump')
+                    ),
                 ],
             ],
             'updated_measure_ids' => [],
@@ -76,12 +78,11 @@ class HeatPumpHelper extends ToolHelper
             }
 
             // Now check if they have interest / already selected which heat pump they wants
-            $newType = Service::findByShort('heat-pump')->values()
-                ->where(
-                    'calculate_value',
-                    ToolQuestion::findByShort('new-heat-pump-type')->toolQuestionCustomValues()
-                        ->whereShort($this->getAnswer('new-heat-pump-type'))->first()->extra['calculate_value'] ?? null
-                )->first();
+            $newType = \App\Deprecation\ToolHelper::getServiceValueByCustomValue(
+                'heat-pump',
+                'new-heat-pump-type',
+                $this->getAnswer('new-heat-pump-type'),
+            );
 
             if ($newType instanceof ServiceValue) {
                 $short = array_flip(static::MEASURE_SERVICE_LINK)[$newType->calculate_value];

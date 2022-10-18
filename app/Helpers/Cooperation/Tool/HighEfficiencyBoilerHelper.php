@@ -66,7 +66,9 @@ class HighEfficiencyBoilerHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->considersByAnswer('heat-source-considerable', 'hr-boiler'),
+                    'is_considering' => $this->considersByConditions(
+                        $this->getConditionsForHeatSourceQuestions('hr-boiler')
+                    ),
                 ],
             ],
             'building_services' => $buildingBoilerArray,
@@ -91,16 +93,10 @@ class HighEfficiencyBoilerHelper extends ToolHelper
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        $heatSources = $this->building->getAnswer($this->masterInputSource, ToolQuestion::findByShort('heat-source'));
-        $heatSourcesWarmTapWater = $this->building->getAnswer($this->masterInputSource,
-            ToolQuestion::findByShort('heat-source-warm-tap-water'));
-
         // make sure the user actually selected a hr-boiler as heat source
         // considers the step
         // and has a cost indication before creating a advice
-        if ((in_array('hr-boiler', $heatSources) || in_array('hr-boiler', $heatSourcesWarmTapWater))
-            && $this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0
-        ) {
+        if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);

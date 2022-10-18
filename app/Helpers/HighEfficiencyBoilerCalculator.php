@@ -33,7 +33,7 @@ class HighEfficiencyBoilerCalculator
 
         $newBoilerQuestion = ToolQuestion::findByShort('new-boiler-type');
         $canAnswer = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
-            ->evaluate($newBoilerQuestion->subSteps()->first()->pivot->conditions);
+            ->evaluate($newBoilerQuestion->getConditions());
 
         // We will see if the user has a new boiler, and otherwise we will grab the best boiler available.
         $newBoilerType = null;

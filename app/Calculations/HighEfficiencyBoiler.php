@@ -35,11 +35,9 @@ class HighEfficiencyBoiler extends \App\Calculations\Calculator
 
         $measure = MeasureApplication::findByShort('high-efficiency-boiler-replace');
 
-        $amountGas = $this->calculateData['user_energy_habits']['amount_gas'] ?? null;
-
         if ($this->energyHabit instanceof UserEnergyHabit) {
             $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType,
-                $this->energyHabit, $amountGas);
+                $this->energyHabit);
             $result['amount_gas'] = $this->energyHabit->amount_gas;
             $result['amount_electricity'] = $this->energyHabit->amount_electricity;
         }

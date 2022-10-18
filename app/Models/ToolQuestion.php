@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\ToolQuestion
@@ -96,6 +97,19 @@ class ToolQuestion extends Model
         return ! empty($this->options);
     }
 
+    /**
+     * To not rewrite the same query every fucking time.
+     *
+     * @return void
+     */
+    public function getConditions(): array
+    {
+        return $this->subSteps()->wherePivot('conditions', '!=', null)
+            ->wherePivot('conditions', '!=', DB::raw("cast('[]' as json)"))
+            ->first()
+            ->pivot
+            ->conditions ?? [];
+    }
 
 
     /**

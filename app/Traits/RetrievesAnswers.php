@@ -23,10 +23,8 @@ trait RetrievesAnswers
     protected function getAnswer(string $toolQuestionShort)
     {
         $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-        $conditions = $toolQuestion->subSteps()->first()->pivot->conditions;
-
         $evaluation = ConditionEvaluator::init()->building($this->building)->inputSource($this->inputSource)
-            ->evaluate($conditions);
+            ->evaluate($toolQuestion->getConditions());
 
         return $evaluation ? $this->building->getAnswer(
             $this->inputSource,

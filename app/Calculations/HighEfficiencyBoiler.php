@@ -6,6 +6,8 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\NumberFormatter;
+use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;
@@ -13,24 +15,21 @@ use App\Models\UserEnergyHabit;
 
 class HighEfficiencyBoiler extends \App\Calculations\Calculator
 {
-    public $energyHabit;
-
-    public function __construct($energyHabit, array $calculateData)
+    public function __construct(Building $building, InputSource $inputSource, array $calculateData)
     {
-        $this->energyHabit = $energyHabit;
-        //$this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->building = $building;
+        $this->inputSource = $inputSource;
+
+        $this->setEnergyHabit();
 
         $this->answers = $calculateData['answers'] ?? null;
 
         $this->calculateData = $calculateData;
     }
 
-    public static function calculate($energyHabit, array $calculateData)
+    public static function calculate(Building $building, InputSource $inputSource, array $calculateData)
     {
-        $calculator = new static (
-            $energyHabit,
-            $calculateData
-        );
+        $calculator = new static ($building, $inputSource, $calculateData);
 
         return $calculator->performCalculations();
     }

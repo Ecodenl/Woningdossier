@@ -28,7 +28,7 @@ class SunBoilerPerformance implements ShouldEvaluate
 
         $results = Heater::calculate(
             $building,
-            $building->user->energyHabit()->forInputSource($inputSource)->first(),
+            $inputSource,
             [
                 'user_energy_habits' => [
                     'water_comfort_id' => optional($newWater)->id,

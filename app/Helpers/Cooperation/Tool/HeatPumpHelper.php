@@ -57,7 +57,6 @@ class HeatPumpHelper extends ToolHelper
 
         // Prepare: Tons of logic to define heat pump measures... (scroll further for heat pump boiler)
         if ($this->considers($step)) {
-            $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
             $heatPumpsToCalculate = [];
             $currentCalculateValue = null;
 
@@ -122,8 +121,7 @@ class HeatPumpHelper extends ToolHelper
                     ->toolQuestionCustomValues()
                     ->where('extra->calculate_value', $calculateValue)
                     ->first()->short;
-                $results = HeatPump::calculate($this->building, $this->inputSource, $userEnergyHabit,
-                    collect($answers));
+                $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));
 
                 $savingsMoney = null;
 

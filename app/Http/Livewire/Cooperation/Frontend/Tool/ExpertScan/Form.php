@@ -136,14 +136,13 @@ class Form extends Component
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             if ($this->building->user->account->can('answer', $toolQuestion)) {
 
-                // this is horseshit but is nesecerry, the sub steppable component reverseFormats and goes back to human readable
+                // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
                 // so when we actually start saving it we have to format it one more time
                 if ($toolQuestion->data_type === Caster::FLOAT) {
                     $givenAnswer = Caster::init(
                         $toolQuestion->data_type, $givenAnswer
                     )->reverseFormatted();
                 }
-
 
                 $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
                 if ($masterAnswer !== $givenAnswer) {
@@ -224,8 +223,6 @@ class Form extends Component
         // We can reuse these answers because all below calculators use the same questions for their conditional logic
         $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)->merge(collect($this->filledInAnswers));
 
-        $energyHabit = $this->building->user->energyHabit()->forInputSource($this->masterInputSource)->first();
-
         $hrBoilerCalculations = [];
         $sunBoilerCalculations = [];
         $heatPumpCalculations = [];
@@ -245,7 +242,7 @@ class Form extends Component
             ];
 
             // the HR boiler and solar boiler are not built with the tool questions in mind, we have to work with it for the time being
-            $hrBoilerCalculations = HighEfficiencyBoiler::calculate($energyHabit,
+            $hrBoilerCalculations = HighEfficiencyBoiler::calculate($this->building, $this->masterInputSource,
                 $this->getCalculateData($saveInToolQuestionShorts));
         }
 
@@ -269,12 +266,12 @@ class Form extends Component
 
             Arr::set($calculateData, 'user_energy_habits.water_comfort_id', optional($newWater)->id);
 
-            $sunBoilerCalculations = Heater::calculate($this->building, $energyHabit, $calculateData);
+            $sunBoilerCalculations = Heater::calculate($this->building, $this->masterInputSource, $calculateData);
         }
 
         $conditions = $this->getCalculatorConditions('heat-pump');
         if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
-            $heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, $energyHabit, collect($this->filledInAnswers));
+            $heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, collect($this->filledInAnswers));
         }
 
         $this->emit('calculationsPerformed', [

@@ -20,7 +20,6 @@ use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
-use App\Models\UserEnergyHabit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -52,26 +51,19 @@ class HeatPump extends \App\Calculations\Calculator
 
     protected array $advices = [];
 
-    protected ?UserEnergyHabit $energyHabit;
-
     /**
      * @param  \App\Models\Building  $building
      * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\UserEnergyHabit  $energyHabit
      * @param  \Illuminate\Support\Collection|null  $answers
      */
-    public function __construct(
-        Building $building,
-        InputSource $inputSource,
-        ?UserEnergyHabit $energyHabit,
-        ?Collection $answers = null
-    )
+    public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         $this->building = $building;
         $this->inputSource = $inputSource;
-        $this->energyHabit = $energyHabit;
         $this->answers = $answers;
         //$this->answers = collect(json_decode('{"interested-in-heat-pump":"yes","heat-source-considerable":["heat-pump"],"new-water-comfort":null,"new-heat-source":["heat-pump"],"new-heat-source-warm-tap-water":["heat-pump-boiler"],"new-building-heating-application":["radiators"],"new-boiler-type":null,"hr-boiler-comment":null,"new-boiler-setting-comfort-heat":"temp-high","new-cook-type":"electric","new-heat-pump-type":"hybrid-heat-pump-outside-air","heat-pump-preferred-power":"13","outside-unit-space":"yes","inside-unit-space":"no","heat-pump-comment":null,"heater-pv-panel-orientation":null,"heater-pv-panel-angle":null,"sun-boiler-comment":null}', true));
+
+        $this->setEnergyHabit();
 
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
             ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
@@ -82,24 +74,13 @@ class HeatPump extends \App\Calculations\Calculator
      *
      * @param  \App\Models\Building  $building
      * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\UserEnergyHabit|null  $energyHabit
      * @param  \Illuminate\Support\Collection|null  $answers
      *
      * @return array
      */
-    public static function calculate(
-        Building $building,
-        InputSource $inputSource,
-        ?UserEnergyHabit $energyHabit,
-        ?Collection $answers = null
-    ): array
+    public static function calculate(Building $building, InputSource $inputSource, ?Collection $answers = null): array
     {
-        $calculator = new static(
-            $building,
-            $inputSource,
-            $energyHabit,
-            $answers,
-        );
+        $calculator = new static($building, $inputSource, $answers);
 
         return $calculator->performCalculations();
     }
@@ -111,7 +92,7 @@ class HeatPump extends \App\Calculations\Calculator
         // lookup the characteristics of the chosen heat pump (tool question answer).
         $characteristics = $this->lookupHeatPumpCharacteristics();
 
-        $this->desiredPower = (int) $this->getAnswer('heat-pump-preferred-power') ?? 0;
+        $this->desiredPower = $this->getAnswer('heat-pump-preferred-power');
         // if it wasn't answered (by person in expert or example building)
         if ($this->desiredPower <= 0 && $characteristics instanceof HeatPumpCharacteristic) {
             if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL){
@@ -138,8 +119,7 @@ class HeatPump extends \App\Calculations\Calculator
         ];
 
         // D2
-        // TODO: Should we fall back to energyHabit? It could be a different input source
-        $amountGas = $this->getAnswer('amount-gas') ?? $this->energyHabit->amount_gas ?? 0;
+        $amountGas = $this->getAnswer('amount-gas') ?? 0;
 
         // Get the boiler for the situation. Note if there is no boiler, the
         // user probably has a heat pump already, so we have to calculate with
@@ -210,8 +190,7 @@ class HeatPump extends \App\Calculations\Calculator
             $electricityUsageCooking = Kengetallen::ENERGY_USAGE_COOK_TYPE_INDUCTION;
         }
         // D11
-        // TODO: Should we fall back to energyHabit? It could be a different input source
-        $currentElectricityUsage = $this->getAnswer('amount-electricity') ?? $this->energyHabit->amount_electricity ?? 0;
+        $currentElectricityUsage = $this->getAnswer('amount-electricity') ?? 0;
         // D12
         $currentElectricityUsageHeating = 0;
         // D13
@@ -269,14 +248,8 @@ class HeatPump extends \App\Calculations\Calculator
     {
         $kfInsulationFactor = KeyFigureInsulationFactor::forInsulationFactor($this->insulationScore())->first();
         $wattPerSquareMeter = $kfInsulationFactor->energy_consumption_per_m2 ?? 140;
-
         $surface = $this->getAnswer('surface');
 
-        $surface = explode('.', $surface);
-        $surface = implode('', $surface);
-        $surface = NumberFormatter::reverseFormat($surface);
-
-        //return $this->format(($wattPerSquareMeter * $surface) / 1000);
         return ($wattPerSquareMeter * $surface) / 1000;
     }
 

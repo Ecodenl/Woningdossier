@@ -207,7 +207,7 @@ abstract class Scannable extends Component
             if ($validator->fails()) {
                 $toolQuestion = $this->toolQuestions->where('short', $toolQuestionShort)->first();
                 // Validator failed, let's put it back as the user format
-                if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                     $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                 }
 
@@ -287,7 +287,7 @@ abstract class Scannable extends Component
                     $this->attributes["filledInAnswers.{$toolQuestion->short}.*"] = $toolQuestion->name;
                     break;
                 default:
-                    if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                    if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                         // Before we would set sliders and text answers differently. Now, because they are mapped by the
                         // same (by data type) it could be that value is not set.
                         $answer = $answerForInputSource ?? $toolQuestion->options['value'] ?? 0;

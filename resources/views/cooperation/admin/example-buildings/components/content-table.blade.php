@@ -45,7 +45,7 @@
                 @php
                     $subSteppable = $subSteppablePivot->subSteppable;
                 @endphp
-                @if(!in_array($subSteppable->short, $hideTheseToolQuestions))
+                @if(! in_array($subSteppable->short, $hideTheseToolQuestions))
                     <tr>
                         <td>
                             {{$subSteppable->name}}

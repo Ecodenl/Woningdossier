@@ -285,46 +285,17 @@ class DumpService
                     $column = Str::replaceFirst('calculation_', '', $potentialShort)
                         . (empty($columnNest) ? '' : ".{$columnNest}");
 
-                    $answer = Arr::get($calculateData[$step], $column);
+                    $answer = Arr::get($calculateData, $column);
                     $data[$key] = $this->formatCalculation($key, $answer);
-                } else {
-                    if ($potentialShort === 'considerables') {
-                        $considerableModel = $structure[2];
-                        $considerableId = $structure[3];
+                } elseif ($potentialShort === 'considerables') {
+                    $considerableModel = $structure[2];
+                    $considerableId = $structure[3];
 
-                        // returns a bool, the values are keyed by 0 and 1
-                        $considerable = $considerableModel::find($considerableId);
-                        $considers = $user->considers($considerable, $inputSource);
+                    // returns a bool, the values are keyed by 0 and 1
+                    $considerable = $considerableModel::find($considerableId);
+                    $considers = $user->considers($considerable, $inputSource);
 
-                        $data[$key] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
-                    } else {
-                        dd('Are you sure this is okay?');
-                        // Using the legacy notation, we will mimick getting the answer
-                        $saveIn = ToolQuestionHelper::resolveSaveIn(Str::replaceFirst("{$step}.", '', $key),
-                            $building);
-                        $table  = $saveIn['table'];
-                        $column = $saveIn['column'];
-                        $where = $saveIn['where'];
-                        $where['input_source_id'] = $inputSource->id;
-
-                        $modelName = "App\\Models\\" . Str::studly(Str::singular($table));
-
-                        $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
-
-                        // Attempt translation
-                        $answer = ToolHelper::translateLegacyAnswer($key, $answer);
-
-                        if (is_array($answer)) {
-                            $answer = implode(', ', $answer);
-                        }
-
-                        // Exception to the rule
-                        if (Str::endsWith($key, 'window_surface')) {
-                            $answer = NumberFormatter::format($answer, 2);
-                        }
-
-                        $data[$key] = $answer;
-                    }
+                    $data[$key] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
                 }
             }
         }
@@ -368,8 +339,7 @@ class DumpService
                 ->getValues()
         );
 
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate(
-            $userEnergyHabit,
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource,
             (new HighEfficiencyBoilerHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -382,7 +352,7 @@ class DumpService
                 ->getValues()
         );
 
-        $heaterSavings = Heater::calculate($building, $userEnergyHabit,
+        $heaterSavings = Heater::calculate($building, $inputSource,
             (new HeaterHelper($user, $inputSource))
                 ->createValues()
                 ->getValues());
@@ -393,7 +363,7 @@ class DumpService
                 ->getValues()
         );
 
-        $heatPumpSavings = HeatPump::calculate($building, $inputSource, $userEnergyHabit);
+        $heatPumpSavings = HeatPump::calculate($building, $inputSource);
 
         return [
             'ventilation' => $ventilationSavings['result']['crack_sealing'],
@@ -401,15 +371,11 @@ class DumpService
             'insulated-glazing' => $insulatedGlazingSavings,
             'floor-insulation' => $floorInsulationSavings,
             'roof-insulation' => $roofInsulationSavings,
-            'high-efficiency-boiler' => $highEfficiencyBoilerSavings,
+            'hr-boiler' => $highEfficiencyBoilerSavings,
             'solar-panels' => $solarPanelSavings,
             'heater' => $heaterSavings,
+            'sun-boiler' => $heaterSavings,
             'heat-pump' => $heatPumpSavings,
-            'heating' => [
-                'hr-boiler' => $highEfficiencyBoilerSavings,
-                'sun-boiler' => $heaterSavings,
-                'heat-pump' => $heatPumpSavings,
-            ],
         ];
     }
 
@@ -1091,8 +1057,7 @@ class DumpService
                 ->getValues()
         );
 
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate(
-            $userEnergyHabit,
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource,
             (new HighEfficiencyBoilerHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -1105,7 +1070,7 @@ class DumpService
                 ->getValues()
         );
 
-        $heaterSavings = Heater::calculate($building, $userEnergyHabit,
+        $heaterSavings = Heater::calculate($building, $inputSource,
             (new HeaterHelper($user, $inputSource))
                 ->createValues()
                 ->getValues());

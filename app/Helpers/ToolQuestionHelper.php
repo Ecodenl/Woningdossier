@@ -185,13 +185,12 @@ class ToolQuestionHelper
             $answer = $building->getAnswer($inputSource, $toolQuestion);
         }
 
-        if (!empty($answer) || (is_numeric($answer) && (int)$answer === 0)) {
+        if (! empty($answer) || (is_numeric($answer) && (int)$answer === 0)) {
             $questionValues = QuestionValue::init($building->user->cooperation, $toolQuestion)
                 ->forInputSource($inputSource)
                 ->forBuilding($building)
                 ->withCustomEvaluation()
                 ->getQuestionValues();
-
 
             if ($questionValues->isNotEmpty()) {
                 $humanReadableAnswers = [];
@@ -201,10 +200,10 @@ class ToolQuestionHelper
                 foreach ($answer as $subAnswer) {
                     $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
 
-                    if (!empty($questionValue)) {
+                    if (! empty($questionValue)) {
                         $answerToAppend = $questionValue['name'];
 
-                        if (!empty($questionValue['extra']['icon']) && $withIcons) {
+                        if (! empty($questionValue['extra']['icon']) && $withIcons) {
                             $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';
                         }
 
@@ -212,16 +211,14 @@ class ToolQuestionHelper
                     }
                 }
 
-                if (!empty($humanReadableAnswers)) {
-                    $humanReadableAnswer = implode(', ', $humanReadableAnswers);
-                }
+                return implode(', ', $humanReadableAnswers);
             } else {
                 // If there are no question values, then it's user input
                 $humanReadableAnswer = $answer;
             }
 
             // Format answers
-            if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+            if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                 $humanReadableAnswer = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getFormatForUser();
             } elseif ($toolQuestion->data_type === Caster::JSON) {
                 $humanReadableAnswerArray = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getCast();

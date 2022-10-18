@@ -64,7 +64,7 @@ class HeaterHelper extends ToolHelper
 
         $step = Step::findByShort('heater');
 
-        $results = Heater::calculate($this->building, $this->inputSource, $this->getValues());
+        $results = Heater::calculate($this->building, $this->inputSource);
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 

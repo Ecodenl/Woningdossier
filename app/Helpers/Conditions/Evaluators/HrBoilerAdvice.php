@@ -3,7 +3,6 @@
 namespace App\Helpers\Conditions\Evaluators;
 
 use App\Calculations\HighEfficiencyBoiler;
-use App\Deprecation\ToolHelper;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Traits\HasDynamicAnswers;
@@ -18,19 +17,7 @@ class HrBoilerAdvice implements ShouldEvaluate
         // This evaluator checks if the boiler_advice is returned in the calculation. This advice tells the user
         // that they won't receive much efficiency improvement because they already have a high quality HR-boiler
 
-        $service = ToolHelper::getServiceValueByCustomValue(
-            'boiler',
-            'new-boiler-type',
-            static::getQuickAnswer('new-boiler-type', $building, $inputSource, $answers)
-        );
-
-        $results = HighEfficiencyBoiler::calculate($building, $inputSource,
-            [
-                'building_services' => [
-                    'service_value_id' => optional($service)->id,
-                ],
-            ],
-        );
+        $results = HighEfficiencyBoiler::calculate($building, $inputSource, $answers);
 
         return array_key_exists('boiler_advice', $results);
     }

@@ -7,7 +7,6 @@ use App\Models\BuildingService;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\Step;
-use App\Models\ToolQuestion;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\GetValueScope;
@@ -86,14 +85,13 @@ class HighEfficiencyBoilerHelper extends ToolHelper
     {
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 
-        $results = HighEfficiencyBoiler::calculate($this->user->building, $this->inputSource, $this->getValues());
+        $results = HighEfficiencyBoiler::calculate($this->user->building, $this->inputSource);
 
         $step = Step::findByShort('high-efficiency-boiler');
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        // make sure the user actually selected a hr-boiler as heat source
-        // considers the step
+        // make sure the user considers the step
         // and has a cost indication before creating a advice
         if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();

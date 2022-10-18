@@ -305,7 +305,7 @@ class DumpService
 
     protected function getNewCalculateData(): array
     {
-        // TODO: When the calculators are uniform, instead call them via step short (so we can iterate);
+        // TODO: When the other calculators are uniform, also call them via step short (so we can iterate);
 
         // collect some info about their building
         $user = $this->user;
@@ -313,24 +313,35 @@ class DumpService
         $inputSource = $this->inputSource;
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
-        $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations = [];
+        $calculate = [
+            'hr-boiler' => HighEfficiencyBoiler::class,
+            'sun-boiler' => Heater::class,
+            'heat-pump' => HeatPump::class,
+        ];
+
+        foreach ($calculate as $short => $calculator) {
+            $calculations[$short] = $calculator::calculate($building, $inputSource);
+        }
+
+        $calculations['wall-insulation'] = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
             (new WallInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
         );
 
-        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['insulated-glazing'] = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
             (new InsulatedGlazingHelper($user, $inputSource))
                 ->createValues()
                 ->getValues());
 
-        $floorInsulationSavings = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['floor-insulation'] = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit,
             (new FloorInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
         );
 
-        $roofInsulationSavings = RoofInsulation::calculate(
+        $calculations['roof-insulation'] = RoofInsulation::calculate(
             $building,
             $inputSource,
             $userEnergyHabit,
@@ -339,44 +350,20 @@ class DumpService
                 ->getValues()
         );
 
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource,
-            (new HighEfficiencyBoilerHelper($user, $inputSource))
-                ->createValues()
-                ->getValues()
-        );
-
-        $solarPanelSavings = SolarPanel::calculate(
+        $calculations['solar-panels'] = SolarPanel::calculate(
             $building,
             (new SolarPanelHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
         );
 
-        $heaterSavings = Heater::calculate($building, $inputSource,
-            (new HeaterHelper($user, $inputSource))
-                ->createValues()
-                ->getValues());
-
-        $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['ventilation'] = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
             (new VentilationHelper($user, $inputSource))
                 ->createValues()
-                ->getValues()
+                ->getValues()['result']['crack_sealing']
         );
 
-        $heatPumpSavings = HeatPump::calculate($building, $inputSource);
-
-        return [
-            'ventilation' => $ventilationSavings['result']['crack_sealing'],
-            'wall-insulation' => $wallInsulationSavings,
-            'insulated-glazing' => $insulatedGlazingSavings,
-            'floor-insulation' => $floorInsulationSavings,
-            'roof-insulation' => $roofInsulationSavings,
-            'hr-boiler' => $highEfficiencyBoilerSavings,
-            'solar-panels' => $solarPanelSavings,
-            'heater' => $heaterSavings,
-            'sun-boiler' => $heaterSavings,
-            'heat-pump' => $heatPumpSavings,
-        ];
+        return $calculations;
     }
 
     protected function formatCalculation($key, $value)
@@ -1026,6 +1013,7 @@ class DumpService
      */
     public static function getCalculateData(User $user, InputSource $inputSource): array
     {
+        // TODO: LEGACY, BUT NOW ALSO BROKEN
         // collect some info about their building
         $building = $user->building;
 

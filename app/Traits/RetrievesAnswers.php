@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
@@ -13,18 +14,24 @@ trait RetrievesAnswers
     public InputSource $inputSource;
 
     /**
-     * Get the answer from the given building.
+     * Get the answer from the given building (if allowed).
      *
-     * @param  string  $toolQuestion
+     * @param  string  $toolQuestionShort
      *
      * @return array|mixed
      */
-    protected function getAnswer(string $toolQuestion)
+    protected function getAnswer(string $toolQuestionShort)
     {
-        return $this->building->getAnswer(
+        $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+        $conditions = $toolQuestion->subSteps()->first()->pivot->conditions;
+
+        $evaluation = ConditionEvaluator::init()->building($this->building)->inputSource($this->inputSource)
+            ->evaluate($conditions);
+
+        return $evaluation ? $this->building->getAnswer(
             $this->inputSource,
-            ToolQuestion::findByShort($toolQuestion)
-        );
+            $toolQuestion
+        ) : null;
     }
 
     /**
@@ -32,12 +39,12 @@ trait RetrievesAnswers
      *
      * @return array|mixed
      */
-    protected static function getQuickAnswer(string $toolQuestion, Building $building, InputSource $inputSource)
+    protected static function getQuickAnswer(string $toolQuestionShort, Building $building, InputSource $inputSource)
     {
         $instance = new static;
         $instance->building = $building;
         $instance->inputSource = $inputSource;
 
-        return $instance->getAnswer($toolQuestion);
+        return $instance->getAnswer($toolQuestionShort);
     }
 }

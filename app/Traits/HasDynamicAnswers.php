@@ -47,13 +47,13 @@ trait HasDynamicAnswers
      *
      * @return array|mixed
      */
-    protected static function getQuickAnswer(string $toolQuestion, Building $building, InputSource $inputSource, ?Collection $answers = null)
+    protected static function getQuickAnswer(string $toolQuestionShort, Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         $instance = new static;
         $instance->building = $building;
         $instance->inputSource = $inputSource;
         $instance->answers = $answers;
 
-        return $instance->getAnswer($toolQuestion);
+        return $instance->getAnswer($toolQuestionShort);
     }
 }

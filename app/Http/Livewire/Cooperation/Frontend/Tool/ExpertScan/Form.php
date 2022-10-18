@@ -223,82 +223,23 @@ class Form extends Component
         // We can reuse these answers because all below calculators use the same questions for their conditional logic
         $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)->merge(collect($this->filledInAnswers));
 
-        $hrBoilerCalculations = [];
-        $sunBoilerCalculations = [];
-        $heatPumpCalculations = [];
+        $calculations = [];
+        $calculate = [
+            'hr-boiler' => HighEfficiencyBoiler::class,
+            'sun-boiler' => Heater::class,
+            'heat-pump' => HeatPump::class,
+        ];
 
-        // No need to calculate if we're not considering it
-        if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
-            // key = tool question short
-            // value = custom key for the calculate data, sometimes we can use the save in
-            // for ex; new-boiler-type is a "new" question, previously we just had this as building_services for the current situation
-            // the HR boiler calculate class is not adjusted to the old / new situation. It only knows that building_services.service_value_id is a boiler.
-            // ideally this gets refactored when the time is ripe
-            $saveInToolQuestionShorts = [
-                'amount-gas' => null,
-                'new-boiler-type' => 'building_services.service_value_id',
-                // this question is not asked on this page, which means we should retrieve it.
-                'boiler-placed-date' => 'building_services.extra.date',
-            ];
-
-            // the HR boiler and solar boiler are not built with the tool questions in mind, we have to work with it for the time being
-            $hrBoilerCalculations = HighEfficiencyBoiler::calculate($this->building, $this->masterInputSource,
-                $this->getCalculateData($saveInToolQuestionShorts));
+        foreach ($calculate as $short => $calculator) {
+            $performedCalculations = [];
+            $conditions = $this->getCalculatorConditions($short);
+            if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
+                $performedCalculations = $calculator::calculate($this->building, $this->masterInputSource, collect($this->filledInAnswers));
+            }
+            $calculations[$short] = $performedCalculations;
         }
 
-        $conditions = $this->getCalculatorConditions('sun-boiler');
-        if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
-            $saveInToolQuestionShorts = [
-                'new-water-comfort' => 'user_energy_habits.water_comfort_id',
-                'heater-pv-panel-orientation' => null,
-                'heater-pv-panel-angle' => null,
-            ];
-
-            $calculateData = $this->getCalculateData($saveInToolQuestionShorts);
-            // Because of the logic change, new-water-comfort is no ID but a custom value
-            $waterAnswer = Arr::get($calculateData, 'user_energy_habits.water_comfort_id');
-
-            $newWater = ToolHelper::getModelByCustomValue(
-                ComfortLevelTapWater::query(),
-                'new-water-comfort',
-                $waterAnswer
-            );
-
-            Arr::set($calculateData, 'user_energy_habits.water_comfort_id', optional($newWater)->id);
-
-            $sunBoilerCalculations = Heater::calculate($this->building, $this->masterInputSource, $calculateData);
-        }
-
-        $conditions = $this->getCalculatorConditions('heat-pump');
-        if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
-            $heatPumpCalculations = HeatPump::calculate($this->building, $this->masterInputSource, collect($this->filledInAnswers));
-        }
-
-        $this->emit('calculationsPerformed', [
-            'hr-boiler' => $hrBoilerCalculations,
-            'sun-boiler' => $sunBoilerCalculations,
-            'heat-pump' => $heatPumpCalculations,
-        ]);
-    }
-
-    private function getCalculateData($saveInToolQuestionShorts)
-    {
-        $calculateData = [];
-        foreach($saveInToolQuestionShorts as $toolQuestionShort => $key) {
-            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-
-            // it may be possible that the tool question is not present in the filled in answers.
-            // that simply means the tool question is not available for the user on the current page
-            // however it may be filled elsewhere, so we will get it through the getAnswer
-            $answer = $this->filledInAnswers[$toolQuestion->short] ?? $this->building->getAnswer($this->masterInputSource,
-                    $toolQuestion);
-
-            Arr::set($calculateData, $key ?? $toolQuestion->save_in, $answer);
-        }
-
-        $calculateData['answers'] = collect($this->filledInAnswers);
-
-        return $calculateData;
+        $this->emit('calculationsPerformed', $calculations);
     }
 
     private function getCalculatorConditions(string $short): array

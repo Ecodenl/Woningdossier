@@ -5,7 +5,6 @@ namespace App\Helpers\Cooperation\Tool;
 use App\Calculations\HeatPump;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\MeasureApplication;
-use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\SubStep;

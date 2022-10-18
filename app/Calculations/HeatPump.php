@@ -58,31 +58,10 @@ class HeatPump extends \App\Calculations\Calculator
      */
     public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
-        $this->building = $building;
-        $this->inputSource = $inputSource;
-        $this->answers = $answers;
-        //$this->answers = collect(json_decode('{"interested-in-heat-pump":"yes","heat-source-considerable":["heat-pump"],"new-water-comfort":null,"new-heat-source":["heat-pump"],"new-heat-source-warm-tap-water":["heat-pump-boiler"],"new-building-heating-application":["radiators"],"new-boiler-type":null,"hr-boiler-comment":null,"new-boiler-setting-comfort-heat":"temp-high","new-cook-type":"electric","new-heat-pump-type":"hybrid-heat-pump-outside-air","heat-pump-preferred-power":"13","outside-unit-space":"yes","inside-unit-space":"no","heat-pump-comment":null,"heater-pv-panel-orientation":null,"heater-pv-panel-angle":null,"sun-boiler-comment":null}', true));
-
-        $this->setEnergyHabit();
+        parent::__construct($building, $inputSource, $answers);
 
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
             ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
-    }
-
-    /**
-     * Shorthand syntax to quickly calculate.
-     *
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \Illuminate\Support\Collection|null  $answers
-     *
-     * @return array
-     */
-    public static function calculate(Building $building, InputSource $inputSource, ?Collection $answers = null): array
-    {
-        $calculator = new static($building, $inputSource, $answers);
-
-        return $calculator->performCalculations();
     }
 
     public function performCalculations(): array

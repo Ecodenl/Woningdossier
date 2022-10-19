@@ -55,6 +55,7 @@ class ExampleBuildingHelper
         'water-comfort',
         'new-water-comfort', // TODO: Should we exclude this?
         'total-installed-power',
+        'comfort-priority',
     ];
 
     public static function old($key, $default)

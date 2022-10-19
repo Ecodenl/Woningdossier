@@ -49,6 +49,16 @@
                     <tr>
                         <td>
                             {{$subSteppable->name}}
+                            @if(isset($subSteppable->options['min']))
+                                <small>
+                                    Minimaal {{$subSteppable->options['min']}}
+                                </small>
+                            @endif
+                            @if(isset($subSteppable->options['max']))
+                                <small>
+                                    Maximaal {{$subSteppable->options['max']}}
+                                </small>
+                            @endif
                         </td>
                         <td>
 

@@ -25,9 +25,16 @@ class AlertsTableSeeder extends Seeder
                 'conditions' => [
                     [
                         [
-                            'column' => 'heat-source-considerable',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'sun-boiler',
+                            [
+                                'column' => 'new-heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'sun-boiler',
+                            ],
+                            [
+                                'column' => 'new-heat-source-warm-tap-water',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'sun-boiler',
+                            ],
                         ],
                         [
                             'column' => 'fn',
@@ -46,9 +53,16 @@ class AlertsTableSeeder extends Seeder
                 'conditions' => [
                     [
                         [
-                            'column' => 'heat-source-considerable',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'sun-boiler',
+                            [
+                                'column' => 'new-heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'sun-boiler',
+                            ],
+                            [
+                                'column' => 'new-heat-source-warm-tap-water',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'sun-boiler',
+                            ],
                         ],
                         [
                             'column' => 'fn',
@@ -67,9 +81,16 @@ class AlertsTableSeeder extends Seeder
                 'conditions' => [
                     [
                         [
-                            'column' => 'heat-source-considerable',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'sun-boiler',
+                            [
+                                'column' => 'new-heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'sun-boiler',
+                            ],
+                            [
+                                'column' => 'new-heat-source-warm-tap-water',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'sun-boiler',
+                            ],
                         ],
                         [
                             'column' => 'fn',
@@ -88,9 +109,16 @@ class AlertsTableSeeder extends Seeder
                 'conditions' => [
                     [
                         [
-                            'column' => 'heat-source-considerable',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'hr-boiler',
+                            [
+                                'column' => 'new-heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'hr-boiler',
+                            ],
+                            [
+                                'column' => 'new-heat-source-warm-tap-water',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'hr-boiler',
+                            ],
                         ],
                         [
                             'column' => 'fn',
@@ -144,9 +172,16 @@ class AlertsTableSeeder extends Seeder
                 'conditions' => [
                     [
                         [
-                            'column' => 'heat-source-considerable',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'heat-pump',
+                            [
+                                'column' => 'new-heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                            [
+                                'column' => 'new-heat-source-warm-tap-water',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
                         ],
                         [
                             'column' => 'outside-unit-space',
@@ -338,38 +373,28 @@ class AlertsTableSeeder extends Seeder
                 'conditions' => [
                     [
                         [
-                            'column' => 'heat-source-considerable',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'heat-pump',
+                            [
+                                'column' => 'new-heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                            [
+                                'column' => 'new-heat-source-warm-tap-water',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
                         ],
                         [
-                            'column' => 'heat-source-considerable',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'hr-boiler',
-                        ],
-                    ],
-                    [
-                        [
-                            'column' => 'heat-source-considerable',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'heat-pump',
-                        ],
-                        [
-                            'column' => 'new-heat-source',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'hr-boiler',
-                        ],
-                    ],
-                    [
-                        [
-                            'column' => 'heat-source-considerable',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'heat-pump',
-                        ],
-                        [
-                            'column' => 'new-heat-source-warm-tap-water',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'hr-boiler',
+                            [
+                                'column' => 'new-heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'hr-boiler',
+                            ],
+                            [
+                                'column' => 'new-heat-source-warm-tap-water',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'hr-boiler',
+                            ],
                         ],
                     ],
                 ],
@@ -383,9 +408,16 @@ class AlertsTableSeeder extends Seeder
                 'conditions' => [
                     [
                         [
-                            'column' => 'heat-source-considerable',
-                            'operator' => Clause::CONTAINS,
-                            'value' => 'heat-pump',
+                            [
+                                'column' => 'new-heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                            [
+                                'column' => 'new-heat-source-warm-tap-water',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
                         ],
                         [
                             'column' => 'outside-unit-space',

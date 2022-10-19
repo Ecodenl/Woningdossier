@@ -87,6 +87,9 @@ class UpdateToolQuestions extends Command
 
         $this->infoLog('Seeding sub steppables');
         Artisan::call('db:seed', ['--class' => \SubSteppablesTableSeeder::class, '--force' => true]);
+
+        $this->infoLog('Deleting all alerts');
+        DB::table('alerts')->truncate();
     }
 
     private function handlePreQuestionMap()

@@ -166,7 +166,7 @@ class AlertsTableSeeder extends Seeder
             [
                 'short' => 'research-heat-pump',
                 'text' => [
-                    'nl' => 'Er is aanvullend onderzoek nodig of het mogelijk is om een (hybride) warmtepomp te installeren.',
+                    'nl' => 'Er is niet genoeg ruimte voor een (hybride) warmtepomp, laat aanvullend onderzoek uitvoeren naar mogelijke alternatieven.',
                 ],
                 'type' => Alert::TYPE_INFO,
                 'conditions' => [
@@ -395,39 +395,6 @@ class AlertsTableSeeder extends Seeder
                                 'operator' => Clause::CONTAINS,
                                 'value' => 'hr-boiler',
                             ],
-                        ],
-                    ],
-                ],
-            ],
-            [
-                'short' => 'heat-pump-space-research',
-                'text' => [
-                    'nl' => 'Er is niet genoeg ruimte voor een (hybride) warmtepomp, laat aanvullend onderzoek uitvoeren naar mogelijke alternatieven.',
-                ],
-                'type' => Alert::TYPE_INFO,
-                'conditions' => [
-                    [
-                        [
-                            [
-                                'column' => 'new-heat-source',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'heat-pump',
-                            ],
-                            [
-                                'column' => 'new-heat-source-warm-tap-water',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'heat-pump',
-                            ],
-                        ],
-                        [
-                            'column' => 'outside-unit-space',
-                            'operator' => Clause::EQ,
-                            'value' => 'no',
-                        ],
-                        [
-                            'column' => 'inside-unit-space',
-                            'operator' => Clause::EQ,
-                            'value' => 'no',
                         ],
                     ],
                 ],

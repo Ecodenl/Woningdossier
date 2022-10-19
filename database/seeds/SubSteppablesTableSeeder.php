@@ -1210,6 +1210,44 @@ class SubSteppablesTableSeeder extends Seeder
                             'size' => 'col-span-3',
                             'conditions' => $newSunBoilerCondition,
                         ],
+                        // Heat pump boiler
+                        [
+                            'morph' => ToolLabel::findByShort('heat-pump-boiler'),
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-pump-boiler-replace'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'col-span-6',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                 ],
                 'Huidige situatie' => [

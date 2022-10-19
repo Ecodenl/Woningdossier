@@ -72,6 +72,12 @@ class ToolLabelsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler-cost-indication',
             ],
+            [
+                'name' => [
+                    'nl' => 'Warmtepomp boiler',
+                ],
+                'short' => 'heat-pump-boiler',
+            ],
         ];
 
         foreach($labels as $data) {

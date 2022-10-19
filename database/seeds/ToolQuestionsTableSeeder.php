@@ -1661,6 +1661,22 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'sun-boiler-comment',
                 'translation' => 'Toelichting op de zonneboiler',
             ],
+            [
+                'data_type' => Caster::BOOL,
+                'validation' => ['required', 'boolean'],
+                'short' => 'heat-pump-boiler-replace',
+                'translation' => "Wilt u de huidige warmtepomp boiler vervangen?",
+                'tool_question_custom_values' => [
+                    true => [
+                        'name' => __('woningdossier.cooperation.radiobutton.yes'),
+                        'extra' => [],
+                    ],
+                    false => [
+                        'name' => __('woningdossier.cooperation.radiobutton.no'),
+                        'extra' => [],
+                    ],
+                ],
+            ],
             // NEW COPIED
             [
                 'data_type' => Caster::ARRAY,

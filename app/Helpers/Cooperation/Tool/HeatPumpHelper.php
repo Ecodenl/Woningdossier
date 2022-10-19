@@ -3,6 +3,7 @@
 namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\HeatPump;
+use App\Helpers\Conditions\Clause;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
@@ -166,13 +167,41 @@ class HeatPumpHelper extends ToolHelper
             }
         }
 
-        $heatSourceWaterAnswers = array_merge(
-            $this->getAnswer('heat-source-warm-tap-water'),
-            $this->getAnswer('new-heat-source-warm-tap-water')
-        );
+        // Slightly different than the default struct as the heat pump boiler is no part of the heat source questions
+        $conditionsForHeatPumpBoiler = [
+            [
+                [
+                    'column' => 'new-heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'heat-pump-boiler',
+                ],
+                [
+                    'column' => 'heat-source-warm-tap-water',
+                    'operator' => Clause::NOT_CONTAINS,
+                    'value' => 'heat-pump-boiler',
+                ],
+            ],
+            [
+                [
+                    'column' => 'new-heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'heat-pump-boiler',
+                ],
+                [
+                    'column' => 'heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'heat-pump-boiler',
+                ],
+                [
+                    'column' => 'heat-pump-boiler-replace',
+                    'operator' => Clause::EQ,
+                    'value' => true,
+                ],
+            ],
+        ];
 
         // The user uses a heat pump boiler or wants one so we provide the measure application
-        if (in_array('heat-pump-boiler', $heatSourceWaterAnswers)) {
+        if ($this->considersByConditions($conditionsForHeatPumpBoiler)) {
             $measureApplication = MeasureApplication::findByShort('heat-pump-boiler-place-replace');
             if ($measureApplication instanceof MeasureApplication) {
                 // TODO: Values!

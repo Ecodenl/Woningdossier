@@ -9,6 +9,7 @@ use App\Http\Requests\Cooperation\Tool\QuestionnaireRequest;
 use App\Models\Cooperation;
 use App\Models\Questionnaire;
 use App\Models\QuestionsAnswer;
+use App\Services\Models\QuestionnaireService;
 
 class QuestionnaireController extends Controller
 {
@@ -53,7 +54,11 @@ class QuestionnaireController extends Controller
 
         $currentInputSource = HoomdossierSession::getInputSource(true);
 
-        $building->user->completeQuestionnaire($questionnaire, $currentInputSource);
+        QuestionnaireService::init()
+            ->user($building->user)
+            ->questionnaire($questionnaire)
+            ->forInputSource($currentInputSource)
+            ->completeQuestionnaire();
 
         // Next url will only be defined if we come from the quick scan, so we can go back to the quick scan
         if ($request->has('nextUrl')) {

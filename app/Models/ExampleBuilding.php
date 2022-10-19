@@ -117,27 +117,6 @@ class ExampleBuilding extends Model
     }
 
     /**
-     * @param int    $year build year
-     * @param string $key  step->slug . form_element_name (dot notation)
-     *
-     * @return mixed|null
-     */
-    public function getExampleValueForYear($year, $key)
-    {
-        $content = $this->getContentForYear($year);
-
-        if (! $content instanceof ExampleBuildingContent) {
-            return null;
-        }
-        $content = $content->content;
-        if (array_key_exists($key, $content)) {
-            return $content[$key];
-        }
-
-        return null;
-    }
-
-    /**
      * Returns if this ExampleBuilding is a specific example building or not.
      */
     public function isSpecific(): bool

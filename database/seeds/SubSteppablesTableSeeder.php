@@ -2215,7 +2215,7 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-                            'tool_question_type_id' => $dropdownType->id,
+                            'tool_question_type_id' => $textType->id,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('insulation-floor-surface'),
@@ -2236,7 +2236,7 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
-                            'tool_question_type_id' => $dropdownType->id,
+                            'tool_question_type_id' => $textType->id,
                         ],
                         [
                             'morph' => ToolCalculationResult::findByShort('floor-insulation.savings_gas'),

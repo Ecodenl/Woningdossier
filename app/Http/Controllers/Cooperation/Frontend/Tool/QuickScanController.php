@@ -13,13 +13,6 @@ use App\Models\SubStep;
 
 class QuickScanController extends Controller
 {
-    public function start(Cooperation $cooperation)
-    {
-        $subStep = SubStep::ordered()->first();
-        $step = $subStep->step;
-        return redirect()->route('cooperation.frontend.tool.quick-scan.index', compact('step', 'subStep'));
-    }
-
     public function index(Cooperation $cooperation, Scan $scan, Step $step, SubStep $subStep)
     {
         // the route will always be matched, however a sub step has to match the step.

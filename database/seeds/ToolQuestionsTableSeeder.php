@@ -1224,7 +1224,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'new-heat-source',
-                'translation' => "Wat er komen voor verwarming?",
+                'translation' => "Wat moet er komen voor verwarming?",
                 'options' => ['value' => ['hr-boiler'],],
                 'tool_question_custom_values' => [
                     'hr-boiler' => [

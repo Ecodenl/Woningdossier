@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ServiceTypesTableSeeder::class);
         $this->call(RoofTypesTableSeeder::class);
         $this->call(CooperationsTableSeeder::class);
+        $this->call(CooperationRedirectsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(ModelHasRolesTableSeeder::class);
         $this->call(BuildingsTableSeeder::class);

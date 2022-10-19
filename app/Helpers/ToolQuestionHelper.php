@@ -54,7 +54,6 @@ class ToolQuestionHelper
         'water-comfort',
         'amount-gas',
         'amount-electricity',
-        'heat-source-considerable',
     ];
 
     /**
@@ -87,9 +86,10 @@ class ToolQuestionHelper
         'solar-panel-count' => ['solar-panels'],
         'total-installed-power' => ['solar-panels'],
         'solar-panels-placed-date' => ['solar-panels'],
-        'new-heat-pump-type' => ['heat-pump'],
         'heater-pv-panel-orientation' => ['heater'],
         'heater-pv-panel-angle' => ['heater'],
+        'fifty-degree-test' => ['heat-pump'],
+        'boiler-setting-comfort-heat' => ['heat-pump'],
     ];
 
     /**

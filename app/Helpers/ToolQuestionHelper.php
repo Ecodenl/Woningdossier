@@ -51,7 +51,6 @@ class ToolQuestionHelper
         'heating-second-floor',
         'surface',
         'resident-count',
-        'water-comfort',
         'amount-gas',
         'amount-electricity',
     ];
@@ -90,6 +89,20 @@ class ToolQuestionHelper
         'heater-pv-panel-angle' => ['heater'],
         'fifty-degree-test' => ['heat-pump'],
         'boiler-setting-comfort-heat' => ['heat-pump'],
+        'new-heat-source' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'new-heat-source-warm-tap-water' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'hr-boiler-replace' => ['high-efficiency-boiler'],
+        'new-boiler-type' => ['high-efficiency-boiler'],
+        'new-boiler-placed-date' => ['high-efficiency-boiler'],
+        'heat-pump-replace' => ['heat-pump'],
+        'new-heat-pump-type' => ['heat-pump'],
+        'new-heat-pump-placed-date' => ['heat-pump'],
+        'heat-pump-preferred-power' => ['heat-pump'],
+        'outside-unit-space' => ['heat-pump'],
+        'inside-unit-space' => ['heat-pump'],
+        'heat-pump-boiler-replace' => ['heat-pump'],
+        'sun-boiler-replace' => ['heater'],
+        'new-water-comfort' => ['heater'],
     ];
 
     /**

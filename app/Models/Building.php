@@ -57,7 +57,6 @@ use Illuminate\Support\Str;
  * @property-read \App\Models\BuildingPaintworkStatus|null $currentPaintworkStatus
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomMeasureApplication[] $customMeasureApplications
  * @property-read int|null $custom_measure_applications_count
- * @property-read \App\Models\ExampleBuilding $exampleBuilding
  * @property-read \App\Models\BuildingHeater|null $heater
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
  * @property-read int|null $private_messages_count
@@ -108,7 +107,6 @@ class Building extends Model
         'building_coach_status_id',
         'extension',
         'is_active',
-        'example_building_id',
     ];
 
     protected $casts = [
@@ -295,11 +293,6 @@ class Building extends Model
         return $fileIsGeneratedByBuilding && $fileInputSourceIsCurrentInputSource;
     }
 
-    public static function toolSettingColumnsToCheck()
-    {
-        return ['example_building_id'];
-    }
-
     /**
      * Scope to return the buildings with most recent information from the building status.
      *
@@ -459,79 +452,11 @@ class Building extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function exampleBuilding()
-    {
-        return $this->belongsTo(ExampleBuilding::class);
-    }
-
-    /**
      * @return HasMany
      */
     public function buildingVentilations()
     {
         return $this->hasMany(BuildingVentilation::class);
-    }
-
-    /**
-     * @return ExampleBuilding|null
-     */
-    public function getExampleBuilding()
-    {
-        $example = $this->exampleBuilding;
-        if ($example instanceof ExampleBuilding) {
-            return $example;
-        }
-
-        return $this->getFittingExampleBuilding();
-    }
-
-    /**
-     * @return ExampleBuilding|null
-     */
-    public function getFittingExampleBuilding()
-    {
-        // determine fitting example building based on year + house type
-        $features = $this->buildingFeatures;
-        if ( ! $features instanceof BuildingFeature) {
-            return null;
-        }
-        if ( ! $features->buildingType instanceof BuildingType) {
-            return null;
-        }
-        $example = ExampleBuilding::whereNull('cooperation_id')
-                                  ->where(
-                                      'buiding_type_id',
-                                      $features->buildingType->id
-                                  )
-                                  ->first();
-
-        return $example;
-    }
-
-    public function getExampleValueForStep(Step $step, $formKey)
-    {
-        return $this->getExampleValue($step->slug.'.'.$formKey);
-    }
-
-    public function getExampleValue($key)
-    {
-        $example = $this->getExampleBuilding();
-        if ( ! $example instanceof ExampleBuilding) {
-            return null;
-        }
-
-        return $example->getExampleValueForYear($this->getBuildYear(), $key);
-    }
-
-    public function getBuildYear()
-    {
-        if ( ! $this->buildingFeatures instanceof BuildingFeature) {
-            return null;
-        }
-
-        return $this->buildingFeatures->build_year;
     }
 
     /**

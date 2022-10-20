@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ff35d706856d1a70d5dbdb25ffe6b89",
+    "content-hash": "78db99d41154283829db065700b69e9e",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -3428,16 +3428,16 @@
         },
         {
             "name": "plank/laravel-mediable",
-            "version": "5.1.1",
+            "version": "5.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/plank/laravel-mediable.git",
-                "reference": "c26f8b3ebb2e1d3db8202dec83b3135f77ec4b88"
+                "reference": "a5ed07386e7696e5af22c940d6b60d12256e6ea4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/plank/laravel-mediable/zipball/c26f8b3ebb2e1d3db8202dec83b3135f77ec4b88",
-                "reference": "c26f8b3ebb2e1d3db8202dec83b3135f77ec4b88",
+                "url": "https://api.github.com/repos/plank/laravel-mediable/zipball/a5ed07386e7696e5af22c940d6b60d12256e6ea4",
+                "reference": "a5ed07386e7696e5af22c940d6b60d12256e6ea4",
                 "shasum": ""
             },
             "require": {
@@ -3447,7 +3447,7 @@
                 "illuminate/filesystem": ">6.0",
                 "illuminate/support": ">6.0",
                 "intervention/image": "^2.5",
-                "league/flysystem": "^1.0.23",
+                "league/flysystem": "^1.1.4",
                 "php": ">=7.3.0",
                 "psr/http-message": "^1.0"
             },
@@ -3498,7 +3498,11 @@
                 "media",
                 "uploader"
             ],
-            "time": "2021-04-30T02:05:55+00:00"
+            "support": {
+                "issues": "https://github.com/plank/laravel-mediable/issues",
+                "source": "https://github.com/plank/laravel-mediable/tree/5.3.1"
+            },
+            "time": "2021-12-11T19:44:41+00:00"
         },
         {
             "name": "predis/predis",
@@ -10485,5 +10489,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }

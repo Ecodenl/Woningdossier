@@ -35,5 +35,11 @@ return [
 
     'webhooks' => [
         'discord' => env('DISCORD_WEBHOOK_URL')
-    ]
+    ],
+
+    'media' => [
+        'accepted_file_mimes' => env('MEDIA_FILE_MIMES', 'doc,dot,docx,dotx,docm,dotm,pdf,txt'),
+        'accepted_image_mimes' => env('MEDIA_IMAGE_MIMES', 'jpg,jpeg,png'),
+        'max_size' => env('MEDIA_MAX_SIZE', 16384), // KB
+    ],
 ];

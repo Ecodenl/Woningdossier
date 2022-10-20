@@ -115,7 +115,7 @@ return [
     'string'               => 'De :attribute moet een tekst zijn.',
     'timezone'             => 'De :attribute moet een geldig tijdzone zijn.',
     'unique'               => 'De :attribute is al geregistreerd.',
-    'uploaded'             => 'is mislukt om :attribute failed to upload.',
+    'uploaded'             => 'Het is mislukt om :attribute te uploaden.',
     'url'                  => 'De :attribute formaat is ongeldig.',
     'uuid'                 => ':Attribute moet een geldig UUID zijn.',
 
@@ -176,6 +176,9 @@ return [
             'url' => 'Het formaat is ongeldig, de url moet beginnen met https:// of http://.'
         ],
 
+        'uploader' => [
+            'wrong-files' => 'Een of meerdere bestanden zijn ongeldig of te groot',
+        ],
     ],
     'custom-rules' => [
         'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',
@@ -208,6 +211,8 @@ return [
     'attributes' => [
         'nl' => 'Nederlands',
         'en' => 'Engels',
+
+        'documents' => 'bestanden',
 
         'building_services.7.extra.value' => 'Het aantal zonnepanelen',
         'email' => 'E-mailadres',

@@ -71,5 +71,9 @@ return [
         'download-report' => 'Download bestaande rapportage',
         'create-report' => 'Maak rapportage',
         'loading' => 'Woonplan wordt berekend...',
+
+        'uploader' => [
+            'add' => 'Bestanden toevoegen',
+        ],
     ],
 ];

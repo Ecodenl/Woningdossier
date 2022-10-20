@@ -85,6 +85,9 @@ class ToolHelper
         $structure = [];
 
         // Will hold shorts we already processed
+        // Some models / morphs (mostly tool questions),will be shown on multiple steps
+        // We dont want to do that for the CSV tho.
+        // this way we can keep track of that
         $processedShorts = [];
 
         foreach ($stepOrder as $stepShortOrIndex => $stepDataOrStepShort) {

@@ -98,21 +98,6 @@ class ToolQuestion extends Model
     }
 
     /**
-     * To not rewrite the same query every fucking time.
-     *
-     * @return void
-     */
-    public function getConditions(): array
-    {
-        return $this->subSteps()->wherePivot('conditions', '!=', null)
-            ->wherePivot('conditions', '!=', DB::raw("cast('[]' as json)"))
-            ->first()
-            ->pivot
-            ->conditions ?? [];
-    }
-
-
-    /**
      * Method to return the question values  (morphed models / the options for the question)
      *
      * @return mixed

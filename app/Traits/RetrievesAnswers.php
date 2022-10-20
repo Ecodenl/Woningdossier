@@ -6,6 +6,7 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Services\ToolQuestionService;
 
 trait RetrievesAnswers
 {
@@ -24,7 +25,7 @@ trait RetrievesAnswers
     {
         $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
         $evaluation = ConditionEvaluator::init()->building($this->building)->inputSource($this->inputSource)
-            ->evaluate($toolQuestion->getConditions());
+            ->evaluate(ToolQuestionService::init($toolQuestion)->getConditions());
 
         return $evaluation ? $this->building->getAnswer(
             $this->inputSource,

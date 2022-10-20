@@ -12,6 +12,7 @@ use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
+use App\Services\ToolQuestionService;
 use Carbon\Carbon;
 
 class HighEfficiencyBoilerCalculator
@@ -33,7 +34,7 @@ class HighEfficiencyBoilerCalculator
 
         $newBoilerQuestion = ToolQuestion::findByShort('new-boiler-type');
         $canAnswer = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
-            ->evaluate($newBoilerQuestion->getConditions());
+            ->evaluate(ToolQuestionService::init($newBoilerQuestion)->getConditions());
 
         // We will see if the user has a new boiler, and otherwise we will grab the best boiler available.
         $newBoilerType = null;

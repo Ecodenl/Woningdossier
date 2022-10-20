@@ -9,6 +9,8 @@ use App\Http\Requests\Cooperation\Tool\QuestionnaireRequest;
 use App\Models\Cooperation;
 use App\Models\Questionnaire;
 use App\Models\QuestionsAnswer;
+use App\Models\Scan;
+use App\Services\Scans\ScanFlowService;
 
 class QuestionnaireController extends Controller
 {
@@ -55,9 +57,15 @@ class QuestionnaireController extends Controller
 
         $building->user->completeQuestionnaire($questionnaire, $currentInputSource);
 
-        // Next url will only be defined if we come from the quick scan, so we can go back to the quick scan
-        if ($request->has('nextUrl')) {
-            return redirect($request->input('nextUrl'));
+        $step = $questionnaire->step;
+        $quickScan = Scan::bySlug('quick-scan')->first();
+
+        // TODO: For now only use scan flow service for quick scan
+        if ($step->scan_id === $quickScan->id) {
+            return redirect()->to(ScanFlowService::init($quickScan, $building, $currentInputSource)
+                ->forStep($step)
+                ->forQuestionnaire($questionnaire)
+                ->resolveNextUrl());
         }
 
         $url = StepHelper::getNextExpertStep($questionnaire->step, $questionnaire);

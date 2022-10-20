@@ -27,8 +27,8 @@ class ScanFlowService
     public Building $building;
     public InputSource $inputSource;
     public InputSource $masterInputSource;
-    public ?SubStep $subStep;
-    public ?Questionnaire $questionnaire;
+    public ?SubStep $subStep = null;
+    public ?Questionnaire $questionnaire = null;
 
     public function __construct(Scan $scan, Building $building, InputSource $inputSource)
     {

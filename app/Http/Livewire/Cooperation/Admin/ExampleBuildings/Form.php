@@ -33,9 +33,6 @@ class Form extends Component
         'is_default' => 0,
     ];
 
-    // Tool questions which should not be allowed to be set by the example building
-    public $hideTheseToolQuestions = ExampleBuildingHelper::UNANSWERABLE_TOOL_QUESTIONS;
-
     public function mount(ExampleBuilding $exampleBuilding = null)
     {
         $this->exampleBuilding = $exampleBuilding;
@@ -48,11 +45,11 @@ class Form extends Component
 
         foreach ($this->exampleBuildingSteps as $step) {
             foreach ($step->subSteps as $subStep) {
-                foreach ($subStep->subSteppables as $subSteppablePivot) {
+                foreach ($subStep->toolQuestions as $toolQuestion) {
                     // create the default structure
-                    $this->contentStructure[$subSteppablePivot->subSteppable->short] = null;
+                    $this->contentStructure[$toolQuestion->short] = null;
                     // save the data type in a easy to access structure
-                    $this->toolQuestionDataType[$subSteppablePivot->subSteppable->short] = $subSteppablePivot->subSteppable->data_type;
+                    $this->toolQuestionDataType[$toolQuestion->short] = $toolQuestion->data_type;
                 }
             }
         }
@@ -64,10 +61,13 @@ class Form extends Component
                 $content = array_merge($this->contentStructure, $exampleBuildingContent->content);
                 // make sure it has all the available tool questions
                 foreach ($content as $toolQuestionShort => $value) {
-
-
-                    if ($this->toolQuestionDataType[$toolQuestionShort] === \App\Helpers\DataTypes\Caster::FLOAT) {
-                        $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->getFormatForUser();
+                    if (array_key_exists($toolQuestionShort, $this->toolQuestionDataType)) {
+                        if ($this->toolQuestionDataType[$toolQuestionShort] === \App\Helpers\DataTypes\Caster::FLOAT) {
+                            $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->getFormatForUser();
+                        }
+                    } else {
+                        // If it's not found it means it should not be set
+                        unset($content[$toolQuestionShort]);
                     }
                 }
                 $this->contents[$exampleBuildingContent->build_year] = $content;
@@ -75,6 +75,11 @@ class Form extends Component
         }
 
         $this->contents['new'] = $this->contentStructure;
+    }
+
+    public function render()
+    {
+        return view('livewire.cooperation.admin.example-buildings.form');
     }
 
     public function hydrateExampleBuildingSteps()
@@ -93,8 +98,8 @@ class Form extends Component
             'heating',
         ])
             ->orderBy('order')
-            ->with(['subSteps.subSteppables' => function ($query) {
-                $query->where('sub_steppable_type', ToolQuestion::class);
+            ->with(['subSteps.toolQuestions' => function ($query) {
+                $query->whereNotIn('tool_questions.short', ExampleBuildingHelper::UNANSWERABLE_TOOL_QUESTIONS);
             }])
             ->get();
     }
@@ -167,10 +172,5 @@ class Form extends Component
         Session::flash('success', __('cooperation/admin/example-buildings.update.success'));
         return redirect()
             ->to(route('cooperation.admin.example-buildings.edit', ['cooperation' => HoomdossierSession::getCooperation(true), 'exampleBuilding' => $this->exampleBuilding]));
-    }
-
-    public function render()
-    {
-        return view('livewire.cooperation.admin.example-buildings.form');
     }
 }

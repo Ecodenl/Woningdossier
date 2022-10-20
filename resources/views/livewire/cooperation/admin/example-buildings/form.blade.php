@@ -77,7 +77,10 @@
 
     <div class="form-group" style="margin-top: 5em;">
         <input type="hidden" name="new" value="0">
-        <button wire:click="save" type="submit" class="btn btn-success btn-block">@lang('cooperation/admin/example-buildings.form.update')</button>
+        <button wire:click="save" wire:loading.attr="disabled" wire:target="save" type="submit"
+                class="btn btn-success btn-block">
+            @lang('cooperation/admin/example-buildings.form.update')
+        </button>
     </div>
 
         <h4>@lang('cooperation/admin/example-buildings.components.contents.title')</h4>

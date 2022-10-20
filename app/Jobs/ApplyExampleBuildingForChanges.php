@@ -66,10 +66,13 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             return ExampleBuilding::find($changes['example_building_id']);
         }
 
+        $currentBuildYearValue = $buildingFeature->build_year;
+        $changedBuildYear = $changes['build_year'] ?? null;
+
         // We need this to do stuff
-        if (! is_null($buildingFeature->build_year)) {
+        if (! is_null($currentBuildYearValue) || !is_null($changedBuildYear)) {
             // current values for comparison later on
-            $currentExampleBuildingId = $this->building->example_building_id;
+            $currentExampleBuildingId = $buildingFeature->example_building_id;
             $currentBuildYearValue = (int)$buildingFeature->build_year;
 
             if (array_key_exists('building_type_id', $changes)) {
@@ -86,6 +89,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
                 'building_type_id',
                 $buildingType->id
             )->first();
+
 
             if (!$exampleBuilding instanceof ExampleBuilding) {
                 // No example building, so can't change then.

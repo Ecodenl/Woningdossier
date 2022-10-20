@@ -9,6 +9,7 @@ use App\Http\Requests\Cooperation\Tool\QuestionnaireRequest;
 use App\Models\Cooperation;
 use App\Models\Questionnaire;
 use App\Models\QuestionsAnswer;
+use App\Services\Models\QuestionnaireService;
 use App\Models\Scan;
 use App\Services\Scans\ScanFlowService;
 
@@ -55,7 +56,11 @@ class QuestionnaireController extends Controller
 
         $currentInputSource = HoomdossierSession::getInputSource(true);
 
-        $building->user->completeQuestionnaire($questionnaire, $currentInputSource);
+        QuestionnaireService::init()
+            ->user($building->user)
+            ->questionnaire($questionnaire)
+            ->forInputSource($currentInputSource)
+            ->completeQuestionnaire();
 
         $step = $questionnaire->step;
         $quickScan = Scan::bySlug('quick-scan')->first();

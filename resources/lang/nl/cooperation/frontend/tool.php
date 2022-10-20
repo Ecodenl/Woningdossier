@@ -74,6 +74,18 @@ return [
 
         'uploader' => [
             'add' => 'Bestanden toevoegen',
+            'form' => [
+                'header' => 'Bestand bewerken',
+                'title' => [
+                    'placeholder' => 'Titel',
+                ],
+                'description' => [
+                    'placeholder' => 'Beschrijvijng',
+                ],
+                'delete' => [
+                    'confirm' => 'Weet je zeker dat je dit bestand wilt verwijderen?',
+                ],
+            ],
         ],
     ],
 ];

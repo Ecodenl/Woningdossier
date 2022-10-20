@@ -49,21 +49,20 @@ class Uploader extends Component
                 ]
             );
 
-            if ($validator->fails()) {
-                // TODO: This isn't working...
+            if ($validator->passes()) {
+                $media = MediaUploader::fromSource($document->getRealPath())
+                    ->toDestination('uploads', "buildings/{$this->building->id}")
+                    ->useFilename(pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME))
+                    ->upload();
+
+                $this->building->syncMedia($media, [MediaHelper::FILE]);
+                $this->files[] = $media;
+            } else {
                 $this->addError('documents', __('validation.custom.uploader.wrong-files'));
             }
 
-            $validator->validate();
-
-            // TODO: Broken
-            $media = MediaUploader::fromSource($document)
-                ->toDestination('uploads', "buildings/{$this->building->id}")
-                ->useFilename($document->getClientOriginalName())
-                ->upload();
-
-            $this->building->syncMedia($media, [MediaHelper::FILE]);
-            $this->files[] = $media;
+            // Delete file after processed
+            $document->delete();
         }
 
         $this->documents = [];

@@ -1757,7 +1757,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'wall-facade-plastered-painted',
             ],
             [
-                'data_type' => Caster::FLOAT,
+                'data_type' => Caster::IDENTIFIER,
                 'validation' => [
                     'required',
                 ],

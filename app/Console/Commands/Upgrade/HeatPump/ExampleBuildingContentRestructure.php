@@ -97,16 +97,27 @@ class ExampleBuildingContentRestructure extends Command
 
                                 $toolQuestion = ToolQuestion::where('save_in', $saveIn)->first();
 
+
+
                                 // the tool question answers are actually already in a ok format
                                 // however they need some small adjustments
                                 if (Str::contains($saveIn, 'tool_question_answers')) {
+                                    $olds = $saveIn;
                                     $saveIn = explode('.', $saveIn);
                                     // kick of the prefix so we just have the short with its index
                                     array_shift($saveIn);
                                     // the save in here is actually already a tool question short!
                                     $saveIn = implode('.', $saveIn);
 
-                                    data_set($newContent, $saveIn, $value);
+                                    $toolQuestion = ToolQuestion::findByShort($saveIn);
+                                    if ($toolQuestion instanceof ToolQuestion) {
+                                        // still a custom map becuase the old way saved it wrong..
+                                        if ($toolQuestion->data_type == Caster::ARRAY) {
+                                            $newContent[$saveIn][] = $value;
+                                        } else {
+                                            data_set($newContent, $saveIn, $value);
+                                        }
+                                    }
 
                                 } else if ($saveIn === 'building_services.3.service_value_id' && !is_null($value)) {
                                     // previously the answer for the sun-boiler was saved in the sun boiler service itself

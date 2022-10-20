@@ -90,6 +90,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
                 $buildingType->id
             )->first();
 
+
             if (!$exampleBuilding instanceof ExampleBuilding) {
                 // No example building, so can't change then.
                 return null;

@@ -102,7 +102,6 @@ class ExampleBuildingContentRestructure extends Command
                                 // the tool question answers are actually already in a ok format
                                 // however they need some small adjustments
                                 if (Str::contains($saveIn, 'tool_question_answers')) {
-                                    $olds = $saveIn;
                                     $saveIn = explode('.', $saveIn);
                                     // kick of the prefix so we just have the short with its index
                                     array_shift($saveIn);

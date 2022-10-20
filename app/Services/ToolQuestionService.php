@@ -55,12 +55,23 @@ class ToolQuestionService {
 
     public function getConditions(): array
     {
-        return $this->toolQuestion->subSteps()
+        $conditions = $this->toolQuestion->subSteps()
                 ->wherePivot('conditions', '!=', null)
                 ->wherePivot('conditions', '!=', DB::raw("cast('[]' as json)"))
                 ->first()
                 ->pivot
                 ->conditions ?? [];
+
+        // Fall back to a sub step
+        if (empty($conditions)) {
+            $conditions = $this->toolQuestion->subSteps()
+                ->where('sub_steps.conditions', '!=', null)
+                ->where('sub_steps.conditions', '!=', DB::raw("cast('[]' as json)"))
+                ->first()
+                ->conditions ?? [];
+        }
+
+        return $conditions;
     }
 
     public function save($givenAnswer)

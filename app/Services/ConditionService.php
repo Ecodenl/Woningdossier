@@ -25,6 +25,7 @@ class ConditionService
 
     public function forModel(Model $model): self
     {
+        // TODO: Should we check for supported classes or just expect the developers to not be retarded?
         $this->model = $model;
         return $this;
     }

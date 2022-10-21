@@ -11,7 +11,6 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
-use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\ConsiderableHelper;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\HeaterHelper;
@@ -47,6 +46,7 @@ use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
+use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
@@ -230,11 +230,10 @@ class DumpService
         }
 
         $calculateData = $this->getNewCalculateData();
-        $evaluator = ConditionEvaluator::init()
+        $conditionService = ConditionService::init()
             ->building($building)
             ->inputSource($inputSource);
 
-        // TODO: Check if we require the key in the returned data array
         foreach ($this->headerStructure as $key => $translation) {
             if (is_string(($key))) {
                 // Structure is as follows:
@@ -246,20 +245,15 @@ class DumpService
                 $step = $structure[0];
                 $potentialShort = $structure[1];
                 if (Str::startsWith($potentialShort, 'question_')) {
-                    $processAnswer = false;
+                    $processElement = true;
                     $humanReadableAnswer = null;
                     $toolQuestion = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
 
-                    // If we need to handle conditional logic, we basically check all sub steps and itself.
                     if ($withConditionalLogic) {
-                        foreach ($toolQuestion->subSteps as $subStep) {
-                            $processAnswer = $processAnswer || $evaluator->evaluate($subStep->conditions ?? []);
-                        }
-
-                        $processAnswer = $processAnswer && $evaluator->evaluate($toolQuestion->conditions ?? []);
+                        $processElement = $conditionService->forModel($toolQuestion)->isViewable();
                     }
 
-                    if ($processAnswer) {
+                    if ($processElement) {
                         $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
                             $toolQuestion);
                         // Priority slider situation
@@ -280,13 +274,29 @@ class DumpService
 
                     $data[$key] = $humanReadableAnswer;
                 } elseif (Str::startsWith($potentialShort, 'calculation_')) {
+                    $processElement = true;
+                    $result = null;
+
+                    // The structure is built using the step as main short part for the calculation. We don't know how
+                    // deeply nested the rest is, so we simply implode everything as that is also how its served.
                     $columnNest = implode('.', array_slice($structure, 2));
 
+                    // We remove the calculation string, and append the column nest. Now we have the full short, which
+                    // we can use to retrieve the model as well as to fetch from the array.
                     $column = Str::replaceFirst('calculation_', '', $potentialShort)
                         . (empty($columnNest) ? '' : ".{$columnNest}");
 
-                    $answer = Arr::get($calculateData, $column);
-                    $data[$key] = $this->formatCalculation($key, $answer);
+                    if ($withConditionalLogic) {
+                        $toolCalculationResult = ToolCalculationResult::findByShort($column);
+                        $processElement = $conditionService->forModel($toolCalculationResult)->isViewable();
+                    }
+
+                    if ($processElement) {
+                        $answer = Arr::get($calculateData, $column);
+                        $result = $this->formatCalculation($key, $answer);
+                    }
+
+                    $data[$key] = $result;
                 } elseif ($potentialShort === 'considerables') {
                     $considerableModel = $structure[2];
                     $considerableId = $structure[3];
@@ -360,8 +370,8 @@ class DumpService
         $calculations['ventilation'] = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
             (new VentilationHelper($user, $inputSource))
                 ->createValues()
-                ->getValues()['result']['crack_sealing']
-        );
+                ->getValues()
+        )['result']['crack_sealing'];
 
         return $calculations;
     }

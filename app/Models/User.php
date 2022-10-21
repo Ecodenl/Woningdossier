@@ -486,51 +486,20 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Retrieve the completed questionnaires from the user for a specific input source.
-     *
-     * @param  \App\Models\InputSource  $source
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function completedQuestionnairesForSource(InputSource $source)
-    {
-        return $this->completedQuestionnaires()->wherePivot('input_source_id', $source->id);
-    }
-
-    /**
      * Check whether a user completed a questionnaire.
      *
      * @return bool
      */
     public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null)
     {
+        $query = $this->completedQuestionnaires()
+            ->where('questionnaire_id', $questionnaire->id);
+
         if ($inputSource instanceof InputSource) {
-            return $this
-                ->completedQuestionnairesForSource($inputSource)
-                ->where('questionnaire_id', $questionnaire->id)
-                ->exists();
+            $query->wherePivot('input_source_id', $inputSource->id);
         }
 
-        return $this->completedQuestionnaires()
-            ->where('questionnaire_id', $questionnaire->id)
-            ->exists();
-    }
-
-    /**
-     * Complete a questionnaire for a user.
-     *
-     * @param  \App\Models\Questionnaire  $questionnaire
-     * @param  \App\Models\InputSource  $inputSource
-     */
-    public function completeQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource)
-    {
-        $this->completedQuestionnairesForSource($inputSource)->syncWithoutDetaching(/* @scrutinizer ignore-type, uses parseIds method. */
-            [
-                $questionnaire->id => [
-                    'input_source_id' => $inputSource->id,
-                ],
-            ]
-        );
+        return $query->exists();
     }
 
     /**

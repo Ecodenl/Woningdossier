@@ -67,6 +67,8 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             if ($changes['example_building_id'] !== $currentExampleBuildingId) {
                 return ExampleBuilding::find($changes['example_building_id']);
             }
+            // since the example_building_id is passed on there is no need to check the logic further down
+            return null;
         }
 
         $currentBuildYearValue = $buildingFeature->build_year;

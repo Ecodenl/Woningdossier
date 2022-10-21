@@ -238,8 +238,8 @@ class DumpService
             if (is_string(($key))) {
                 // Structure is as follows:
                 // 0: step shorts
-                // 1: steppable short / save_in / calculation ref / considerables
-                // n: potential calculation field / considerable struct
+                // 1: steppable short / calculation ref
+                // n: potential calculation field
                 $structure = explode('.', $key);
 
                 $step = $structure[0];
@@ -297,15 +297,6 @@ class DumpService
                     }
 
                     $data[$key] = $result;
-                } elseif ($potentialShort === 'considerables') {
-                    $considerableModel = $structure[2];
-                    $considerableId = $structure[3];
-
-                    // returns a bool, the values are keyed by 0 and 1
-                    $considerable = $considerableModel::find($considerableId);
-                    $considers = $user->considers($considerable, $inputSource);
-
-                    $data[$key] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
                 }
             }
         }

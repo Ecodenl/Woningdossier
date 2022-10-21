@@ -26,10 +26,10 @@ trait HasDynamicAnswers
     protected function getAnswer(string $toolQuestionShort)
     {
         $answers = is_null($this->answers) ? collect() : $this->answers;
+        $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
         // If the answer exists, we want to ensure we format it correctly for backend use
         if ($answers->has($toolQuestionShort)) {
-            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             $answer = $answers->get($toolQuestionShort);
 
             if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
@@ -38,7 +38,15 @@ trait HasDynamicAnswers
 
             return $answer;
         } else {
-            return $this->getBuildingAnswer($toolQuestionShort);
+            // So the answer might not be set. In terms of calculations we want a fixed result, so just like above
+            // we will cast the result
+            $answer = $this->getBuildingAnswer($toolQuestionShort);
+
+            if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
+                $answer = Caster::init($toolQuestion->data_type, $answer)->force()->getCast();
+            }
+
+            return $answer;
         }
     }
 

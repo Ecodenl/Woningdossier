@@ -2,11 +2,10 @@
 
 namespace App\Traits;
 
-use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
-use App\Services\ToolQuestionService;
+use App\Services\ConditionService;
 
 trait RetrievesAnswers
 {
@@ -24,8 +23,9 @@ trait RetrievesAnswers
     protected function getAnswer(string $toolQuestionShort)
     {
         $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-        $evaluation = ConditionEvaluator::init()->building($this->building)->inputSource($this->inputSource)
-            ->evaluate(ToolQuestionService::init($toolQuestion)->getConditions());
+        $evaluation = ConditionService::init()
+            ->building($this->building)->inputSource($this->inputSource)
+            ->forModel($toolQuestion)->isViewable();
 
         return $evaluation ? $this->building->getAnswer(
             $this->inputSource,

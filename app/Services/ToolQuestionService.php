@@ -13,9 +13,7 @@ use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
-use App\Models\ToolQuestionValuable;
 use App\Traits\FluentCaller;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -51,27 +49,6 @@ class ToolQuestionService {
     {
         $this->applyExampleBuilding = true;
         return $this;
-    }
-
-    public function getConditions(): array
-    {
-        $conditions = $this->toolQuestion->subSteps()
-                ->wherePivot('conditions', '!=', null)
-                ->wherePivot('conditions', '!=', DB::raw("cast('[]' as json)"))
-                ->first()
-                ->pivot
-                ->conditions ?? [];
-
-        // Fall back to a sub step
-        if (empty($conditions)) {
-            $conditions = $this->toolQuestion->subSteps()
-                ->where('sub_steps.conditions', '!=', null)
-                ->where('sub_steps.conditions', '!=', DB::raw("cast('[]' as json)"))
-                ->first()
-                ->conditions ?? [];
-        }
-
-        return $conditions;
     }
 
     public function save($givenAnswer)

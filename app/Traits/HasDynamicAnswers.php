@@ -6,14 +6,11 @@ use App\Helpers\DataTypes\Caster;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Services\ConditionService;
 use Illuminate\Support\Collection;
 
 trait HasDynamicAnswers
 {
-    use RetrievesAnswers {
-        getAnswer as getBuildingAnswer;
-    }
-
     public ?Collection $answers = null;
 
     /**
@@ -26,10 +23,10 @@ trait HasDynamicAnswers
     protected function getAnswer(string $toolQuestionShort)
     {
         $answers = is_null($this->answers) ? collect() : $this->answers;
+        $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
         // If the answer exists, we want to ensure we format it correctly for backend use
         if ($answers->has($toolQuestionShort)) {
-            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             $answer = $answers->get($toolQuestionShort);
 
             if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
@@ -38,7 +35,14 @@ trait HasDynamicAnswers
 
             return $answer;
         } else {
-            return $this->getBuildingAnswer($toolQuestionShort);
+            $evaluation = ConditionService::init()
+                ->building($this->building)->inputSource($this->inputSource)
+                ->forModel($toolQuestion)->isViewable($answers);
+
+            return $evaluation ? $this->building->getAnswer(
+                $this->inputSource,
+                $toolQuestion
+            ) : null;
         }
     }
 

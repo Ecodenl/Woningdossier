@@ -14,7 +14,7 @@ class Alert extends Model
     ];
 
     protected $casts = [
-        'conditions' => 'json'
+        'conditions' => 'array'
     ];
 
     const TYPE_INFO = 'info';

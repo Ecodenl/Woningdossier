@@ -3,7 +3,6 @@
 namespace App\Helpers;
 
 use App\Deprecation\ToolHelper;
-use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\ComfortLevelTapWater;
 use App\Models\KeyFigureConsumptionTapWater;
@@ -12,7 +11,7 @@ use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
-use App\Services\ToolQuestionService;
+use App\Services\ConditionService;
 use Carbon\Carbon;
 
 class HighEfficiencyBoilerCalculator
@@ -33,8 +32,8 @@ class HighEfficiencyBoilerCalculator
         $current = self::calculateGasUsage($currentBoiler, $habit, $amountGas);
 
         $newBoilerQuestion = ToolQuestion::findByShort('new-boiler-type');
-        $canAnswer = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
-            ->evaluate(ToolQuestionService::init($newBoilerQuestion)->getConditions());
+        $canAnswer = ConditionService::init()->building($building)->inputSource($inputSource)
+            ->forModel($newBoilerQuestion)->isViewable();
 
         // We will see if the user has a new boiler, and otherwise we will grab the best boiler available.
         $newBoilerType = null;

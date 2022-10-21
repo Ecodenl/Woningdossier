@@ -75,14 +75,26 @@ return [
         'uploader' => [
             'add' => 'Bestanden toevoegen',
             'view' => 'Bestanden bekijken',
-            'info' => 'Klik op een bestand om een titel en/of beschrijving toe te voegen/bewerken.',
+            'help' => 'Klik op een bestand om deze te bewerken.',
+            'info' => [
+                'title' => 'Informatie',
+                'uploaded-by' => 'Geüpload door',
+                'created-at' => 'Aangemaakt op',
+                'type' => 'Type bestand',
+            ],
             'form' => [
                 'header' => 'Bestand bewerken',
                 'title' => [
-                    'placeholder' => 'Titel',
+                    'label' => 'Titel',
                 ],
                 'description' => [
-                    'placeholder' => 'Beschrijvijng',
+                    'label' => 'Beschrijving',
+                ],
+                'tag' => [
+                    'label' => 'Type bestand',
+                ],
+                'share-with-cooperation' => [
+                    'label' => 'Met cooperatie delen',
                 ],
                 'download' => [
                     'title' => 'Downloaden',

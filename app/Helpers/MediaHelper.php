@@ -8,7 +8,12 @@ use App\Models\Cooperation;
 class MediaHelper {
     const LOGO = 'logo';
     const BACKGROUND = 'background';
-    const FILE = 'file';
+    const GENERIC_FILE = 'generic-file';
+    const GENERIC_IMAGE = 'generic-image';
+    const THERMAL_IMAGE = 'thermal-image';
+    const QUOTATION = 'quotation';
+    const INVOICE = 'invoice';
+    const BILL = 'bill';
 
     public static function getFillableTagsForClass(?string $class = null): array
     {
@@ -21,7 +26,12 @@ class MediaHelper {
 
             case Building::class:
                 return [
-                    self::FILE => self::FILE,
+                    self::GENERIC_FILE => self::GENERIC_FILE,
+                    self::GENERIC_IMAGE => self::GENERIC_IMAGE,
+                    self::THERMAL_IMAGE => self::THERMAL_IMAGE,
+                    self::QUOTATION => self::QUOTATION,
+                    self::INVOICE => self::INVOICE,
+                    self::BILL => self::BILL,
                 ];
 
             default:

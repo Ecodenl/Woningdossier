@@ -29,11 +29,13 @@ class Uploader extends Component
     {
         $this->building = $building;
 
-        $this->files = $building->getMedia(MediaHelper::FILE);
+        // We want all media regardless of tag
+        $this->files = $building->media;
         foreach ($this->files as $file) {
             $this->fileData[$file->id] = [
                 'title' => data_get($file->custom_properties, 'title'),
                 'description' => data_get($file->custom_properties, 'description'),
+                'tag' => $file->pivot->tag,
             ];
         }
     }
@@ -45,7 +47,7 @@ class Uploader extends Component
 
     public function updated(string $field)
     {
-        if (Str::endsWith($field, ['title', 'description'])) {
+        if (Str::endsWith($field, ['title', 'description', 'tag'])) {
             $this->updateMedia($field);
         }
     }
@@ -78,8 +80,13 @@ class Uploader extends Component
                     })
                     ->upload();
 
-                $this->building->attachMedia($media, [MediaHelper::FILE]);
+                $this->building->attachMedia($media, MediaHelper::GENERIC_FILE);
                 $this->files[] = $media;
+                $this->fileData[$media->id] = [
+                    'title' => null,
+                    'description' => null,
+                    'tag' => MediaHelper::GENERIC_FILE,
+                ];
             } else {
                 $this->addError('documents', __('validation.custom.uploader.wrong-files'));
             }
@@ -99,16 +106,24 @@ class Uploader extends Component
         $file = $this->files->where('id', $fileId)->first();
         $fileData = $this->fileData[$fileId];
 
-        // We don't want to override the JSON, so we only set the properties if they're set
-        $customProperties = $file->custom_properties;
-        if (! empty($fileData['title'])) {
-            $customProperties['title'] = $fileData['title'];
-        }
-        if (! empty($fileData['description'])) {
-            $customProperties['description'] = $fileData['description'];
-        }
+        $tagUpdated = Str::endsWith($field, 'tag');
 
-        $file->update($fileData);
+        // Keep queries to a more minimum amount by only doing the required tasks
+        if ($tagUpdated) {
+            $this->building->detachMedia($file);
+            $this->building->attachMedia($file, $fileData['tag']);
+        } else {
+            // We don't want to override the JSON, so we only set the properties if they're set
+            $customProperties = $file->custom_properties;
+            if (! empty($fileData['title'])) {
+                $customProperties['title'] = $fileData['title'];
+            }
+            if (! empty($fileData['description'])) {
+                $customProperties['description'] = $fileData['description'];
+            }
+
+            $file->update($fileData);
+        }
     }
 
     public function delete($fileId)

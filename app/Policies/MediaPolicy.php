@@ -40,7 +40,12 @@ class MediaPolicy
      */
     public function view(Account $user, Media $media)
     {
-        //
+        $currentInputSource = HoomdossierSession::getInputSource(true);
+        $currentBuilding = HoomdossierSession::getBuilding();
+
+        return $currentBuilding === $user->user()->building->id
+            || $currentInputSource->short === InputSource::COACH_SHORT
+            || ($currentInputSource->short === InputSource::COOPERATION_SHORT && data_get($media->custom_properties, 'share_with_cooperation'));
     }
 
     /**

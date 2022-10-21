@@ -114,6 +114,15 @@
                 @endif
             @endif
 
+            @can('viewAny', \App\Models\Media::class)
+                <div>
+                    <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media') }}"
+                       class="flex flex-wrap justify-center items-center">
+                        <i class="icon-md icon-document"></i>
+                    </a>
+                </div>
+            @endcan
+
             @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-account-circle"></i>'])
                 <li>
                     <a href="{{ route('cooperation.my-account.index', compact('cooperation')) }}"

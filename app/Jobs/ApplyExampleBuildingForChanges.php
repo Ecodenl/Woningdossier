@@ -63,8 +63,9 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         // Kinda obvious but still
         // if the user changed his example building in the frontend we will just apply that one.
         if (array_key_exists('example_building_id', $changes)) {
+
             // to prevent ANOTHER apply being executed, with 0 purpose.
-            if ($changes['example_building_id'] !== $currentExampleBuildingId) {
+            if ($changes['example_building_id'] != $currentExampleBuildingId) {
                 return ExampleBuilding::find($changes['example_building_id']);
             }
             // since the example_building_id is passed on there is no need to check the logic further down

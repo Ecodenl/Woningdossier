@@ -50,6 +50,11 @@ use Illuminate\Support\Facades\Request;
  */
 class Media extends \Plank\Mediable\Media
 {
+    protected $casts = [
+        'size' => 'int',
+        'custom_properties' => 'array',
+    ];
+
     # Model methods
     public function getUrl(): string
     {

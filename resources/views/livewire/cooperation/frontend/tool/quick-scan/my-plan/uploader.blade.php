@@ -1,4 +1,4 @@
-<div class="flex flex-wrap w-full flex pb-5" style="margin-top: 0;" {{-- Use style to override space-y-20 --}} x-data>
+<div class="flex flex-wrap w-full flex pb-5" x-data>
     <div class="flex flex-wrap w-full">
         @component('cooperation.frontend.layouts.components.form-group', [
            'label' => __('cooperation/frontend/tool.my-plan.uploader.add'),
@@ -11,6 +11,11 @@
                    class="form-input" id="uploader" type="file" multiple autocomplete="off"
                    x-on:livewire-upload-finish="livewire.emit('uploadDone')">
         @endcomponent
+        <div class="flex w-2/3 justify-end pt-4">
+            <p>
+                @lang('cooperation/frontend/tool.my-plan.uploader.info')
+            </p>
+        </div>
     </div>
 
     <hr class="w-full">
@@ -63,7 +68,7 @@
                     </div>
                     <div class="w-full border border-gray fixed left-0"></div>
                     <div class="flex flex-wrap justify-start space-x-2 mt-10 px-1">
-                        <a href="{{ $file->getUrl() }}" download
+                        <a href="{{ $file->getUrl() }}" target="_blank"
                            title="@lang('cooperation/frontend/tool.my-plan.uploader.download.title')"
                            class="rounded-full border-2 border-blue-500 bg-white hover:bg-blue hover:bg-opacity-25 transition duration-250 h-10 w-10 flex items-center justify-center">
                             <i class="icon-md icon-arrow-down"></i>

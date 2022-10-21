@@ -1,5 +1,13 @@
 <div class="w-full flex pt-5 pb-5">
-    <div class="flex w-full justify-end space-x-5">
+    <div class="flex w-1/3">
+        @can('viewAny', \App\Models\Media::class)
+            <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media', ['cooperation' => $cooperation]) }}"
+               class="btn btn-outline-green">
+                @lang('cooperation/frontend/tool.my-plan.uploader.view')
+            </a>
+        @endcan
+    </div>
+    <div class="flex w-2/3 justify-end space-x-5">
         <div wire:poll="checkIfFileIsProcessed">
             @if($fileStorage instanceof \App\Models\FileStorage)
                 <a href="{{route('cooperation.file-storage.download', compact('cooperation', 'fileStorage'))}}" class="btn btn-purple">

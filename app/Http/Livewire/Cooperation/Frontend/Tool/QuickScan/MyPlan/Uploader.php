@@ -32,15 +32,14 @@ class Uploader extends Component
         $this->files = $building->getMedia(MediaHelper::FILE);
         foreach ($this->files as $file) {
             $this->fileData[$file->id] = [
-                'title' => $file->title,
-                'description' => $file->description,
+                'title' => data_get($file->custom_properties, 'title'),
+                'description' => data_get($file->custom_properties, 'description'),
             ];
         }
     }
 
     public function render()
     {
-        \Log::debug($this->files);
         return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.uploader');
     }
 
@@ -72,6 +71,9 @@ class Uploader extends Component
                     ->toDestination('uploads', "buildings/{$this->building->id}")
                     ->useFilename(pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME))
                     ->beforeSave(function ($media) {
+                        $media->custom_properties = [
+                            'share_with_cooperation' => $this->building->user->allow_access,
+                        ];
                         $media->input_source_id = HoomdossierSession::getInputSource();
                     })
                     ->upload();
@@ -96,6 +98,16 @@ class Uploader extends Component
 
         $file = $this->files->where('id', $fileId)->first();
         $fileData = $this->fileData[$fileId];
+
+        // We don't want to override the JSON, so we only set the properties if they're set
+        $customProperties = $file->custom_properties;
+        if (! empty($fileData['title'])) {
+            $customProperties['title'] = $fileData['title'];
+        }
+        if (! empty($fileData['description'])) {
+            $customProperties['description'] = $fileData['description'];
+        }
+
         $file->update($fileData);
     }
 

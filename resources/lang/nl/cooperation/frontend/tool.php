@@ -74,6 +74,8 @@ return [
 
         'uploader' => [
             'add' => 'Bestanden toevoegen',
+            'view' => 'Bestanden bekijken',
+            'info' => 'Klik op een bestand om een titel en/of beschrijving toe te voegen/bewerken.',
             'form' => [
                 'header' => 'Bestand bewerken',
                 'title' => [

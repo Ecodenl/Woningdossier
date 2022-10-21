@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Frontend\Tool\QuickScan;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Media;
 use App\Models\Notification;
 use App\Models\Step;
 use App\Models\SubStep;
@@ -41,5 +42,13 @@ class MyPlanController extends Controller
             InputSource::findByShort(InputSource::MASTER_SHORT))->first();
 
         return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'notification'));
+    }
+
+    public function media()
+    {
+        $this->authorize('viewAny', Media::class);
+
+        $building = HoomdossierSession::getBuilding(true);
+        return view('cooperation.frontend.tool.quick-scan.my-plan.media', compact('building'));
     }
 }

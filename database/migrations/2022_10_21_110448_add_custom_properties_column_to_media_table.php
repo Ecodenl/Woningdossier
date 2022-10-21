@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddEditableColumnsToMediaTable extends Migration
+class AddCustomPropertiesColumnToMediaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +14,10 @@ class AddEditableColumnsToMediaTable extends Migration
     public function up()
     {
         Schema::table('media', function (Blueprint $table) {
-            $table->string('title')->nullable()->after('id');
-            $table->string('description')->nullable()->after('title');
-
-            $table->unsignedInteger('input_source_id')->nullable()->after('description');
+            $table->unsignedInteger('input_source_id')->nullable()->after('original_media_id');
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('set null');
+
+            $table->json('custom_properties')->nullable()->after('input_source_id');
         });
     }
 
@@ -31,7 +30,7 @@ class AddEditableColumnsToMediaTable extends Migration
     {
         Schema::table('media', function (Blueprint $table) {
             $table->dropForeign(['input_source_id']);
-            $table->dropColumn(['title', 'description', 'input_source_id']);
+            $table->dropColumn(['custom_properties', 'input_source_id']);
         });
     }
 }

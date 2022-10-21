@@ -116,6 +116,16 @@ class Building extends Model
         'is_active' => 'boolean',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        // The mediable only _detaches_ the media. We want to DELETE the media if set.
+        static::deleting(function (Building $building) {
+            $building->media()->delete();
+        });
+    }
+
     public function toolQuestionAnswers(): HasMany
     {
         return $this->hasMany(ToolQuestionAnswer::class);

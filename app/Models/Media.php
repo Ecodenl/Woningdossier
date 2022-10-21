@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Request;
 
 /**
@@ -49,6 +50,7 @@ use Illuminate\Support\Facades\Request;
  */
 class Media extends \Plank\Mediable\Media
 {
+    # Model methods
     public function getUrl(): string
     {
         $url =  parent::getUrl();
@@ -67,5 +69,11 @@ class Media extends \Plank\Mediable\Media
     public function getPath(): string
     {
         return parse_url($this->getUrl())['path'] ?? '';
+    }
+
+    # Relations
+    public function inputSource(): BelongsTo
+    {
+        return $this->belongsTo(InputSource::class);
     }
 }

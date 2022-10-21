@@ -18,11 +18,12 @@
     <div class="flex flex-wrap w-full pad-x-3">
         @foreach($files as $file)
             <div class="flex flex-wrap w-1/4 justify-center mb-4" x-data="modal()" wire:key="{{$file->id}}">
-                <p class="mb-2 italic cursor-pointer hover:opacity-75" x-on:click="toggle()">
-                    {{ "{$file->filename}.{$file->extension} - {$file->created_at->format('d-m-Y')}" }}
+                <p class="w-full italic cursor-pointer hover:opacity-75 text-center break-all" x-on:click="toggle()">
+                    {{ "{$file->filename}.{$file->extension}" }}<br>
+                    {{ $file->created_at->format('d-m-Y') }}<br>
+                    {{ $file->inputSource->name }}
                 </p>
-                <div class="max-h-60 flex justify-center">
-
+                <div class="max-h-60 flex justify-center mt-2">
                     @if(in_array($file->extension, MediaHelper::getImageMimes(true)))
                         {{-- Image --}}
                             <img src="{{ $file->getUrl() }}" class="img-responsive max-h-full border border-blue-500 cursor-pointer hover:opacity-75"
@@ -43,7 +44,7 @@
                            'id' => "edit-file-title-{$file->id}",
                            'withInputSource' => false,
                        ])
-                            <input class="form-input" wire:model="fileData.{{$file->id}}.title"
+                            <input class="form-input" wire:model.debounce.500ms="fileData.{{$file->id}}.title"
                                    id="edit-file-title-{{$file->id}}"
                                    placeholder="@lang('cooperation/frontend/tool.my-plan.uploader.form.title.placeholder')"
                             >
@@ -54,7 +55,7 @@
                            'id' => "edit-file-description-{$file->id}",
                            'withInputSource' => false,
                        ])
-                            <textarea class="form-input" wire:model="fileData.{{$file->id}}.description"
+                            <textarea class="form-input" wire:model.debounce.500ms="fileData.{{$file->id}}.description"
                                       id="edit-file-description-{{$file->id}}"
                                       placeholder="@lang('cooperation/frontend/tool.my-plan.uploader.form.description.placeholder')"
                         ></textarea>
@@ -62,11 +63,15 @@
                     </div>
                     <div class="w-full border border-gray fixed left-0"></div>
                     <div class="flex flex-wrap justify-start space-x-2 mt-10 px-1">
-                        <button class="rounded-full border-2 border-blue-500 bg-white hover:bg-blue hover:bg-opacity-25 transition duration-250 h-10 w-10 flex items-center justify-center">
+                        <a href="{{ $file->getUrl() }}" download
+                           title="@lang('cooperation/frontend/tool.my-plan.uploader.download.title')"
+                           class="rounded-full border-2 border-blue-500 bg-white hover:bg-blue hover:bg-opacity-25 transition duration-250 h-10 w-10 flex items-center justify-center">
                             <i class="icon-md icon-arrow-down"></i>
-                        </button>
-                        <button x-on:click="if (! confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) { $event.stopImmediatePropagation(); }"
+                        </a>
+                        {{-- It is important to have the wire:click AFTER the x-on:click, otherwise the confirm doesn't prevent wire:click --}}
+                        <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {close(); $el.closest('{{"[wire\\\\:key=\"{$file->id}\"]"}}').fadeOut(250);} else { $event.stopImmediatePropagation(); }"
                                 wire:click="delete({{$file->id}})"
+                                title="@lang('cooperation/frontend/tool.my-plan.uploader.delete.title')"
                                 class="rounded-full border-2 border-red bg-white hover:bg-red hover:bg-opacity-25 transition duration-250 h-10 w-10 flex items-center justify-center">
                             <i class="icon-md icon-trash-can-red"></i>
                         </button>

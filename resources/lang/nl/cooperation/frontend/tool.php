@@ -82,7 +82,11 @@ return [
                 'description' => [
                     'placeholder' => 'Beschrijvijng',
                 ],
+                'download' => [
+                    'title' => 'Downloaden',
+                ],
                 'delete' => [
+                    'title' => 'Verwijderen',
                     'confirm' => 'Weet je zeker dat je dit bestand wilt verwijderen?',
                 ],
             ],

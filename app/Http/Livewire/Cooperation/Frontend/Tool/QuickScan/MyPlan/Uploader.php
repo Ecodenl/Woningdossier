@@ -2,10 +2,12 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\MediaHelper;
 use App\Models\Building;
 use App\Models\Media;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Plank\Mediable\Facades\MediaUploader;
@@ -30,16 +32,23 @@ class Uploader extends Component
         $this->files = $building->getMedia(MediaHelper::FILE);
         foreach ($this->files as $file) {
             $this->fileData[$file->id] = [
-                //'title' => $file->title,
-                //'description' => $file->description,
-                //'input_source' => $file->inputSource->short,
+                'title' => $file->title,
+                'description' => $file->description,
             ];
         }
     }
 
     public function render()
     {
+        \Log::debug($this->files);
         return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.uploader');
+    }
+
+    public function updated(string $field)
+    {
+        if (Str::endsWith($field, ['title', 'description'])) {
+            $this->updateMedia($field);
+        }
     }
 
     public function saveFiles()
@@ -62,6 +71,9 @@ class Uploader extends Component
                 $media = MediaUploader::fromSource($document->getRealPath())
                     ->toDestination('uploads', "buildings/{$this->building->id}")
                     ->useFilename(pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME))
+                    ->beforeSave(function ($media) {
+                        $media->input_source_id = HoomdossierSession::getInputSource();
+                    })
                     ->upload();
 
                 $this->building->attachMedia($media, [MediaHelper::FILE]);
@@ -75,6 +87,16 @@ class Uploader extends Component
         }
 
         $this->documents = [];
+    }
+
+    public function updateMedia(string $field)
+    {
+        // We know the field is built as "fileData.{$id}.{$name}", so we can safely get the second value.
+        $fileId = explode('.', $field)[1];
+
+        $file = $this->files->where('id', $fileId)->first();
+        $fileData = $this->fileData[$fileId];
+        $file->update($fileData);
     }
 
     public function delete($fileId)

@@ -40,7 +40,7 @@ trait HasDynamicAnswers
                 ->forModel($toolQuestion)->isViewable($answers);
 
             if ($evaluation) {
-                $this->building->getAnswer($this->inputSource, $toolQuestion);
+                $answer = $this->building->getAnswer($this->inputSource, $toolQuestion);
 
                 if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                     $answer = Caster::init($toolQuestion->data_type, $answer)->force()->getCast();

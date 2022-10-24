@@ -6,6 +6,7 @@ use App\Events\ExampleBuildingChanged;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
@@ -137,7 +138,7 @@ class ExampleBuildingService
 
         Log::debug("Clearing example building for input source " . $inputSource->short);
 
-        $buildingFeatures = $building->buildingFeatures()->forInputSource($inputSource)->select(
+        $buildingFeature = $building->buildingFeatures()->forInputSource($inputSource)->select(
             ['building_type_category_id', 'surface', 'build_year', 'input_source_id', 'building_id', 'example_building_id']
         )->first();
 
@@ -146,7 +147,9 @@ class ExampleBuildingService
             $inputSource
         );
 
-        $buildingFeatures->save();
+        if ($buildingFeature instanceof BuildingFeature) {
+            $buildingFeature->create();
+        }
 
     }
 

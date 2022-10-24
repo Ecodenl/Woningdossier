@@ -39,10 +39,17 @@ trait HasDynamicAnswers
                 ->building($this->building)->inputSource($this->inputSource)
                 ->forModel($toolQuestion)->isViewable($answers);
 
-            return $evaluation ? $this->building->getAnswer(
-                $this->inputSource,
-                $toolQuestion
-            ) : null;
+            if ($evaluation) {
+                $this->building->getAnswer($this->inputSource, $toolQuestion);
+
+                if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
+                    $answer = Caster::init($toolQuestion->data_type, $answer)->force()->getCast();
+                }
+
+                return $answer;
+            }
+
+            return null;
         }
     }
 

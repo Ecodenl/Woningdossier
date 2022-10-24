@@ -37,7 +37,7 @@ class ExampleBuildingService
         self::log('Lookup ' . $exampleBuilding->name . ' for ' . $buildYear . " (" . $inputSource->name . ") building id {$building->id}");
         $contents = $exampleBuilding->getContentForYear($buildYear);
 
-        if (! $contents instanceof ExampleBuildingContent) {
+        if (!$contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
             self::log('No data to apply');
 
@@ -70,7 +70,27 @@ class ExampleBuildingService
             'Applying Example Building ' . $exampleBuilding->name . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
         );
 
+        // The building-type-category wont be set by the exampel building
+        // this is filled in before the user applied the example building
+        $buildingTypeCategory = ToolQuestion::findByShort('building-type-category');
+        $buildingTypeCategoryAnswer = $building->getAnswer($inputSource, $buildingTypeCategory);
+        // because the eb can be applied for multiple input sources
+        // assuming a answer exists, could mess up code further on the line.
+        // so that is why we check whether there was a answer in the first place.
+        $shouldReSaveAnswer = false;
+        if (!empty($buildingTypeCategoryAnswer)) {
+            $shouldReSaveAnswer = true;
+        }
+        // now clear it
         self::clearExampleBuilding($building, $inputSource);
+
+        if ($shouldReSaveAnswer) {
+            // and set it
+            ToolQuestionService::init($buildingTypeCategory)
+                ->currentInputSource($inputSource)
+                ->building($building)
+                ->save($buildingTypeCategoryAnswer);
+        }
 
         Log::debug($exampleBuilding);
 
@@ -103,13 +123,13 @@ class ExampleBuildingService
             }
 
             if ($shouldSave) {
-                Log::debug("Saving {$toolQuestionShort}..");
+//                Log::debug("Saving {$toolQuestionShort}..");
                 ToolQuestionService::init($toolQuestion)
                     ->building($building)
                     ->currentInputSource($inputSource)
                     ->save($value);
             } else {
-                Log::debug("Skipping {$toolQuestionShort}");
+//                Log::debug("Skipping {$toolQuestionShort}");
             }
         }
 

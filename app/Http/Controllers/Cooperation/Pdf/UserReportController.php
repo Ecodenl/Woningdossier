@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Pdf;
 
+use App\Calculations\Heater;
+use App\Calculations\HeatPump;
+use App\Calculations\HighEfficiencyBoiler;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
+use App\Helpers\ToolQuestionHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
@@ -11,6 +15,8 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
+use App\Models\ToolCalculationResult;
+use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\BuildingCoachStatusService;
@@ -19,6 +25,7 @@ use App\Services\UserActionPlanAdviceService;
 use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class UserReportController extends Controller
 {
@@ -101,7 +108,6 @@ class UserReportController extends Controller
         // Because the PDF will change we will just fuck the shit out of this old report
         unset($reportData['high-efficiency-boiler']);
         unset($reportData['heater']);
-//dd($reportTranslations);
 
         $newSituation = [
             'heating' => [
@@ -162,8 +168,50 @@ class UserReportController extends Controller
             ],
         ];
 
+        $calcs = [
+            'hr-boiler' => HighEfficiencyBoiler::calculate($building, $inputSource),
+            'heat-pump' => HeatPump::calculate($building, $inputSource),
+            'sun-boiler' => Heater::calculate($building, $inputSource),
+        ];
 
+        $newReportData = [];
 
+        foreach ($newSituation as $step => $data) {
+            foreach ($data as $label => $shorts) {
+                foreach ($shorts as $short) {
+                    $class = Str::contains($short, '.') ? ToolCalculationResult::class : ToolQuestion::class;
+
+                    $model = $class::findByShort($short);
+
+                    if ($model instanceof ToolQuestion) {
+                        $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
+                            $model);
+                        // Priority slider situation
+                        if (is_array($humanReadableAnswer)) {
+                            $temp = '';
+                            foreach ($humanReadableAnswer as $name => $answer) {
+                                $temp .= "{$name}: {$answer}, ";
+                            }
+                            $humanReadableAnswer = substr($temp, 0, -2);
+                        }
+                        $value = $humanReadableAnswer;
+                    } else {
+                        $value = data_get($calcs, $short);
+                    }
+
+                    $trans = $model->name;
+                    if ($model instanceof ToolQuestion && isset($model->for_specific_input_source_id)) {
+                        $trans .= " ({$model->forSpecificInputSource->name})";
+                    }
+
+                    $newReportData[$step][$label][$short] = [
+                        'label' => $trans,
+                        'value' => $value,
+                        'unit' => $model->unit_of_measure ?? null,
+                    ];
+                }
+            }
+        }
 
         // steps that are considered to be measures.
         $stepShorts = DB::table('steps')
@@ -195,7 +243,7 @@ class UserReportController extends Controller
 //        /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
-            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
+            'commentsByStep', 'reportTranslations', 'reportData', 'newReportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
             'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
 //

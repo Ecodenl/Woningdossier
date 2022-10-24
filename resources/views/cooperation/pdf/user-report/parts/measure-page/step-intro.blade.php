@@ -7,12 +7,14 @@
         'roof-insulation' => 'icons/roof-insulation-excellent.svg',
         'high-efficiency-boiler' => 'icons/central-heater.svg',
         'solar-panels' => 'icons/solar-panels.svg',
-        'heater' => 'icons/sun-boiler-both.svg'
+        'heater' => 'icons/sun-boiler-both.svg',
+        'heat-pump' => 'icons/heat-pump.svg',
+        'heating' => 'icons/placeholder.svg',
     ];
 @endphp
 
 <div class="step-intro">
     <img src="{{asset($stepIconMap[$shortToUseAsMainSubject])}}">
     <h2>{{\App\Models\Step::findByShort($shortToUseAsMainSubject)->name}}</h2>
-    <p>@lang('pdf/user-report.step-description.'.$shortToUseAsMainSubject )</p>
+    <p>{!! nl2br(strip_tags(__("pdf/user-report.step-description.{$shortToUseAsMainSubject}"))) !!}</p>
 </div>

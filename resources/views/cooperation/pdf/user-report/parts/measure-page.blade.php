@@ -33,30 +33,43 @@ $calculationsForStep = $calculations[$stepShort][$subStepShort] ?? [];
         ])
     @break
 
+    @case('heater')
+    @case('high-efficiency-boiler')
+    @case('heat-pump')
+    @case('heating')
+        @component('cooperation.pdf.components.new-page')
+            <div class="container">
+                @include('cooperation.pdf.user-report.parts.measure-page.step-intro')
+
+                @include('cooperation.pdf.user-report.parts.measure-page.filled-in-data-new')
+            </div>
+        @endcomponent
+    @break
+
     @default
-    @component('cooperation.pdf.components.new-page')
-        <div class="container">
+        @component('cooperation.pdf.components.new-page')
+            <div class="container">
 
-            @include('cooperation.pdf.user-report.parts.measure-page.step-intro')
+                @include('cooperation.pdf.user-report.parts.measure-page.step-intro')
 
-            @include('cooperation.pdf.user-report.parts.measure-page.filled-in-data')
+                @include('cooperation.pdf.user-report.parts.measure-page.filled-in-data')
 
-            {{-- since no calculations are done here --}}
-            @if($stepShort != 'general-data')
-                @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
+                {{-- since no calculations are done here --}}
+                @if($stepShort != 'general-data')
+                    @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
 
-                @include('cooperation.pdf.user-report.parts.measure-page.indicative-costs-and-measures')
-            @endif
+                    @include('cooperation.pdf.user-report.parts.measure-page.indicative-costs-and-measures')
+                @endif
 
-            @include('cooperation.pdf.user-report.parts.measure-page.advices')
+                @include('cooperation.pdf.user-report.parts.measure-page.advices')
 
-            @if(isset($commentsByStep[$stepShort][$subStepShort]) && !\App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort]))
-                @include('cooperation.pdf.user-report.parts.measure-page.comments', [
-                    'comments' => $commentsByStep[$stepShort][$subStepShort],
-                ])
-            @endif
-        </div>
-    @endcomponent
+                @if(isset($commentsByStep[$stepShort][$subStepShort]) && !\App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort]))
+                    @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+                        'comments' => $commentsByStep[$stepShort][$subStepShort],
+                    ])
+                @endif
+            </div>
+        @endcomponent
     @break
 
 @endswitch

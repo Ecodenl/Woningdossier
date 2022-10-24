@@ -35,6 +35,7 @@ class Uploader extends Component
             $this->fileData[$file->id] = [
                 'title' => data_get($file->custom_properties, 'title'),
                 'description' => data_get($file->custom_properties, 'description'),
+                'share_with_cooperation' => data_get($file->custom_properties, 'share_with_cooperation'),
                 'tag' => $file->pivot->tag,
             ];
         }
@@ -47,7 +48,7 @@ class Uploader extends Component
 
     public function updated(string $field)
     {
-        if (Str::endsWith($field, ['title', 'description', 'tag'])) {
+        if (Str::endsWith($field, ['title', 'description', 'share_with_cooperation', 'tag'])) {
             $this->updateMedia($field);
         }
     }
@@ -74,7 +75,7 @@ class Uploader extends Component
                     ->useFilename(pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME))
                     ->beforeSave(function ($media) {
                         $media->custom_properties = [
-                            'share_with_cooperation' => $this->building->user->allow_access,
+                            'share_with_cooperation' => (bool) $this->building->user->allow_access,
                         ];
                         $media->input_source_id = HoomdossierSession::getInputSource();
                     })
@@ -113,16 +114,15 @@ class Uploader extends Component
             $this->building->detachMedia($file);
             $this->building->attachMedia($file, $fileData['tag']);
         } else {
-            // We don't want to override the JSON, so we only set the properties if they're set
-            $customProperties = $file->custom_properties;
-            if (! empty($fileData['title'])) {
-                $customProperties['title'] = $fileData['title'];
-            }
-            if (! empty($fileData['description'])) {
-                $customProperties['description'] = $fileData['description'];
-            }
+            $customProperties = $file->custom_properties ?? [];
 
-            $file->update($fileData);
+            $customProperties['title'] = data_get($fileData, 'title', '');
+            $customProperties['description'] = data_get($fileData, 'description', '');
+            $customProperties['share_with_cooperation'] = (bool) data_get($fileData, 'share_with_cooperation');
+
+            $file->update([
+                'custom_properties' => $customProperties,
+            ]);
         }
     }
 

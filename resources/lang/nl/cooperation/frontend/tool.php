@@ -95,6 +95,10 @@ return [
                 ],
                 'share-with-cooperation' => [
                     'label' => 'Met cooperatie delen',
+                    'options' => [
+                        'show' => 'Zichtbaar voor cooperatie',
+                        'hide' => 'Niet zichtbaar voor cooperatie',
+                    ],
                 ],
                 'download' => [
                     'title' => 'Downloaden',

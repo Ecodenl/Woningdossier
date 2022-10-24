@@ -70,27 +70,8 @@ class ExampleBuildingService
             'Applying Example Building ' . $exampleBuilding->name . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
         );
 
-        // The building-type-category wont be set by the exampel building
-        // this is filled in before the user applied the example building
-        $buildingTypeCategory = ToolQuestion::findByShort('building-type-category');
-        $buildingTypeCategoryAnswer = $building->getAnswer($inputSource, $buildingTypeCategory);
-        // because the eb can be applied for multiple input sources
-        // assuming a answer exists, could mess up code further on the line.
-        // so that is why we check whether there was a answer in the first place.
-        $shouldReSaveAnswer = false;
-        if (!empty($buildingTypeCategoryAnswer)) {
-            $shouldReSaveAnswer = true;
-        }
         // now clear it
         self::clearExampleBuilding($building, $inputSource);
-
-        if ($shouldReSaveAnswer) {
-            // and set it
-            ToolQuestionService::init($buildingTypeCategory)
-                ->currentInputSource($inputSource)
-                ->building($building)
-                ->save($buildingTypeCategoryAnswer);
-        }
 
         Log::debug($exampleBuilding);
 
@@ -123,7 +104,6 @@ class ExampleBuildingService
             }
 
             if ($shouldSave) {
-//                Log::debug("Saving {$toolQuestionShort}..");
                 ToolQuestionService::init($toolQuestion)
                     ->building($building)
                     ->currentInputSource($inputSource)
@@ -148,7 +128,7 @@ class ExampleBuildingService
         );
     }
 
-    public static function clearExampleBuilding(Building $building, ?InputSource $inputSource = null)
+    public static function clearExampleBuilding(Building $building, InputSource $inputSource = null)
     {
         /** @var InputSource $inputSource */
         $inputSource = $inputSource ?? InputSource::findByShort(
@@ -157,10 +137,17 @@ class ExampleBuildingService
 
         Log::debug("Clearing example building for input source " . $inputSource->short);
 
-        return BuildingDataService::clearBuildingFromInputSource(
+        $buildingFeatures = $building->buildingFeatures()->forInputSource($inputSource)->select(
+            ['building_type_category_id', 'surface', 'build_year', 'input_source_id', 'building_id', 'example_building_id']
+        )->first();
+
+        BuildingDataService::clearBuildingFromInputSource(
             $building,
             $inputSource
         );
+
+        $buildingFeatures->save();
+
     }
 
     protected static function log($text)

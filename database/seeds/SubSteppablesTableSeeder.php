@@ -877,9 +877,15 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => $newHrBoilerCondition,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('hr-boiler-comment'),
+                            'morph' => ToolQuestion::findByShort('hr-boiler-comment-resident'),
                             'tool_question_type_id' => $textareaType->id,
-                            'size' => 'col-span-6',
+                            'size' => 'col-span-3',
+                            'conditions' => $newHrBoilerCondition,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hr-boiler-comment-coach'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-3',
                             'conditions' => $newHrBoilerCondition,
                         ],
                         [
@@ -1003,9 +1009,15 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => $newHeatPumpCondition,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('heat-pump-comment'),
+                            'morph' => ToolQuestion::findByShort('heat-pump-comment-resident'),
                             'tool_question_type_id' => $textareaType->id,
-                            'size' => 'col-span-6',
+                            'size' => 'col-span-3',
+                            'conditions' => $newHeatPumpCondition,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-pump-comment-coach'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-3',
                             'conditions' => $newHeatPumpCondition,
                         ],
                         [
@@ -1130,9 +1142,15 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => $newSunBoilerCondition,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('sun-boiler-comment'),
+                            'morph' => ToolQuestion::findByShort('sun-boiler-comment-resident'),
                             'tool_question_type_id' => $textareaType->id,
-                            'size' => 'col-span-6',
+                            'size' => 'col-span-3',
+                            'conditions' => $newSunBoilerCondition,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('sun-boiler-comment-coach'),
+                            'tool_question_type_id' => $textareaType->id,
+                            'size' => 'col-span-3',
                             'conditions' => $newSunBoilerCondition,
                         ],
                         [

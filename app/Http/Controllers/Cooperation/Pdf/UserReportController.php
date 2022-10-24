@@ -98,6 +98,73 @@ class UserReportController extends Controller
             }
         }
 
+        // Because the PDF will change we will just fuck the shit out of this old report
+        unset($reportData['high-efficiency-boiler']);
+        unset($reportData['heater']);
+//dd($reportTranslations);
+
+        $newSituation = [
+            'heating' => [
+                'Het huidig verbruik' => [
+                    'amount-gas', 'amount-electricity',
+                ],
+                'Hoe wordt de warmte in de nieuwe situatie opgewekt' => [
+                    'new-water-comfort', 'new-heat-source', 'new-heat-source-warm-tap-water',
+                    'new-building-heating-application',
+                ],
+            ],
+            'high-efficiency-boiler' => [
+                [
+                    'hr-boiler-replace', 'new-boiler-type',
+                ],
+                'Indicatie over kosten en baten van de cv-ketel' => [
+                    'hr-boiler.amount_gas', 'hr-boiler.savings_gas', 'hr-boiler.savings_co2', 'hr-boiler.replace_year',
+                    'hr-boiler.cost_indication', 'hr-boiler.interest_comparable',
+                ],
+                'Toelichting op de cv-ketel' => [
+                    'hr-boiler-comment-coach', 'hr-boiler-comment-resident',
+                ],
+            ],
+            'heat-pump' => [
+                'Gegevens van de nieuwe warmtepomp' => [
+                    'new-heat-pump-type', 'new-boiler-setting-comfort-heat', 'heat-pump.advised_system.required_power',
+                    'heat-pump-preferred-power', 'new-cook-type', 'outside-unit-space', 'inside-unit-space',
+                ],
+                'Indicatie voor de efficiëntie van de warmtepomp' => [
+                    'heat-pump.advised_system.share_heating', 'heat-pump.advised_system.share_tap_water',
+                    'heat-pump.advised_system.scop_heating', 'heat-pump.advised_system.scop_tap_water',
+                ],
+                'Indicatie voor kosten en baten van de warmtepomp' => [
+                    'heat-pump.savings_gas', 'heat-pump.savings_co2', 'heat-pump.savings_money',
+                    'heat-pump.extra_consumption_electricity', 'heat-pump.cost_indication',
+                    'heat-pump.interest_comparable',
+                ],
+                'Toelichting op de warmtepomp' => [
+                    'heat-pump-comment-coach', 'heat-pump-comment-resident',
+                ],
+            ],
+            'heater' => [
+                'Geschat huidig verbruik' => [
+                    'sun-boiler.consumption.water', 'sun-boiler.consumption.gas',
+                ],
+                'Specificaties systeem' => [
+                    'sun-boiler.specs.size_boiler', 'sun-boiler.specs.size_collector',
+                    'heater-pv-panel-orientation', 'heater-pv-panel-angle',
+                ],
+                'Indicatie voor kosten en baten van de zonneboiler' => [
+                    'sun-boiler.production_heat', 'sun-boiler.percentage_consumption', 'sun-boiler.savings_gas',
+                    'sun-boiler.savings_co2', 'sun-boiler.savings_money', 'sun-boiler.cost_indication',
+                    'sun-boiler.interest_comparable',
+                ],
+                'Toelichting op de zonneboiler' => [
+                    'sun-boiler-comment-coach', 'sun-boiler-comment-resident',
+                ],
+            ],
+        ];
+
+
+
+
         // steps that are considered to be measures.
         $stepShorts = DB::table('steps')
             ->where('short', '!=', 'general-data')

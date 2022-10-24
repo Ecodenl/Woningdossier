@@ -59,7 +59,7 @@ class ServiceValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Volledige warmtepomp buitenlucht',
+                            'nl' => 'Volledige warmtepomp met buitenlucht',
                         ],
                         'order' => 4,
                         'calculate_value' => 4,
@@ -69,7 +69,7 @@ class ServiceValuesTableSeeder extends Seeder
                     ],
                     [
                         'value' => [
-                            'nl' => 'Volledige warmtepomp bodemwarmte',
+                            'nl' => 'Volledige warmtepomp met bodemwarmte',
                         ],
                         'order' => 5,
                         'calculate_value' => 5,

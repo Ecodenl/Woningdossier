@@ -161,17 +161,35 @@ class Building extends Model
 
                 // these contain the human-readable answers, we need this because the answer for a yes, no, unknown
                 // could be a 1,2,3.
-                $questionValues = QuestionValue::getQuestionValues($toolQuestion, $this, $inputSource)->pluck(
-                    'name',
-                    'value'
-                );
+                $questionValues = QuestionValue::init($this->user->cooperation, $toolQuestion)
+                    ->forInputSource($inputSource)
+                    ->forBuilding($this)
+                    ->withCustomEvaluation()
+                    ->getQuestionValues()
+                    ->pluck(
+                        'name',
+                        'value'
+                    );
 
-                $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
+                // in case the saved value is actually a array, loop through them and select them one by one.
+                // in most cases this isnt neceserry, because the first $values at line 156 holds them all
+                // weird cases lijk building values.
+                if (is_array($value)) {
+                    foreach ($value as $definitiveValue) {
 
-                $answers[$inputSource->short][] = [
-                    'answer' => $answer,
-                    'value'  => $value,
-                ];
+                        $answer = $questionValues->isNotEmpty() && ! is_null($definitiveValue) && isset($questionValues[$definitiveValue]) ? $questionValues[$definitiveValue] : $definitiveValue;
+                        $answers[$inputSource->short][] = [
+                            'answer' => $answer,
+                            'value'  => $definitiveValue,
+                        ];
+                    }
+                } else {
+                    $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
+                    $answers[$inputSource->short][] = [
+                        'answer' => $answer,
+                        'value'  => $value,
+                    ];
+                }
             }
         } else {
             $where['building_id'] = $this->id;
@@ -208,7 +226,6 @@ class Building extends Model
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
         // TODO: Should this check `for_specific_input_source`?
-
         $answer = null;
         $where['input_source_id'] = $inputSource->id;
         // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
@@ -221,7 +238,14 @@ class Building extends Model
             $modelName = "App\\Models\\".Str::studly(Str::singular($table));
 
             // we do a get, so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
+            $tempAnswer = $modelName::allInputSources()->where($where)->get()->pluck($column);
+
+            // Just like with saving, an exception to the rule as these work differently
+            if (in_array($toolQuestion->short, ['wood-elements', 'current-roof-types'])) {
+                $answer = $tempAnswer->toArray();
+            } else {
+                $answer = $tempAnswer->first();
+            }
         } else {
             $where['building_id'] = $this->id;
             $toolQuestionAnswers = $toolQuestion

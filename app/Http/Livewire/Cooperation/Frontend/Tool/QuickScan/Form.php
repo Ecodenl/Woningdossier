@@ -5,14 +5,13 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\NumberFormatter;
-use App\Helpers\SubStepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\CompletedSubStep;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
+use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
@@ -23,11 +22,9 @@ class Form extends Scannable
     public $step;
     public $subStep;
 
-    public $nextUrl;
-
     public function mount(Step $step, SubStep $subStep)
     {
-        Log::debug('mounting form');
+        Log::debug("mounting form [Step: {$step->id}] [SubStep: {$subStep->id}]");
         $subStep->load([
             'toolQuestions' => function ($query) { $query->orderBy('order'); },
             'subStepTemplate',
@@ -55,16 +52,22 @@ class Form extends Scannable
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
-    public function save($nextUrl = "")
+    public function save()
     {
+        $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+            ->forStep($this->step)
+            ->forSubStep($this->subStep);
+
         if (HoomdossierSession::isUserObserving()) {
-            return redirect()->to($nextUrl);
+            return redirect()->to($flowService->resolveNextUrl());
         }
 
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->data_type === Caster::FLOAT) {
-                $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]), 2);
+                $this->filledInAnswers[$toolQuestion->short] = Caster::init(
+                    $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
+                )->reverseFormatted();
             }
         }
 
@@ -77,17 +80,17 @@ class Form extends Scannable
             // Translate values also
             $defaultValues = __('validation.values.defaults');
 
-            foreach ($this->filledInAnswers as $toolQuestionId => $answer) {
+            foreach ($this->filledInAnswers as $toolQuestionShort => $answer) {
                 $validator->addCustomValues([
-                    "filledInAnswers.{$toolQuestionId}" => $defaultValues,
+                    "filledInAnswers.{$toolQuestionShort}" => $defaultValues,
                 ]);
             }
 
             if ($validator->fails()) {
                 // Validator failed, let's put it back as the user format
                 foreach ($this->toolQuestions as $toolQuestion) {
-                    if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
-                        $this->filledInAnswers[$toolQuestion->id] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->id])->getFormatForUser();
+                    if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
+                        $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                     }
                 }
 
@@ -103,11 +106,14 @@ class Form extends Scannable
             $validator->validate();
         }
 
+        // we will use this to check the conditionals later on.
+        $dirtyToolQuestions = [];
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
         if (! $this->dirty) {
-            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
-                $toolQuestion = ToolQuestion::find($toolQuestionId);
+            Log::debug("Not dirty ing");
+            foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
                 // Define if we should check this question...
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
@@ -117,6 +123,7 @@ class Form extends Scannable
                     // Master input source is important. Ensure both are set
                     if (is_null($currentAnswer) || is_null($masterAnswer)) {
                         $this->setDirty(true);
+                        $dirtyToolQuestions[$toolQuestion->id] = $toolQuestion;
                         break;
                     }
                 }
@@ -130,11 +137,17 @@ class Form extends Scannable
         $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
-            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+            foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::find($toolQuestionId);
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
+
+                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                    if ($masterAnswer !== $givenAnswer) {
+                        $dirtyToolQuestions[$toolQuestion->id] = $toolQuestion;
+                    }
+
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)
                         ->currentInputSource($this->currentInputSource)
@@ -188,11 +201,15 @@ class Form extends Scannable
             'input_source_id' => $this->currentInputSource->id
         ]);
 
+        $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+            ->forStep($this->step)
+            ->forSubStep($this->subStep);
+
         if (! $completedSubStep->wasRecentlyCreated) {
-            SubStepHelper::checkConditionals($completedSubStep);
+            $flowService->checkConditionals($dirtyToolQuestions);
         }
 
         // TODO: We might have to generate the $nextUrl in real time if conditional steps follow a related question
-        return redirect()->to($nextUrl);
+        return redirect()->to($flowService->resolveNextUrl());
     }
 }

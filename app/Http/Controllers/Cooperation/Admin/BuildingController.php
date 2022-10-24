@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
 use App\Models\Building;
@@ -32,7 +33,7 @@ class BuildingController extends Controller
         })->first();
 
         if (! $user instanceof User) {
-            \Illuminate\Support\Facades\Log::debug('A admin tried to show a building that does not seem to exists with id: '.$buildingId);
+            \Illuminate\Support\Facades\Log::debug('An admin tried to show a building that does not seem to exists with id: '.$buildingId);
 
             return redirect(route('cooperation.admin.index'));
         }
@@ -42,9 +43,8 @@ class BuildingController extends Controller
 
         $buildingId = $building->id;
 
-        $roles = Role::where('name', '!=', 'superuser')
-            ->where('name', '!=', 'super-admin')
-            ->where('name', '!=', 'cooperation-admin')
+        $roles = Role::whereNotIn('name',
+            [RoleHelper::ROLE_SUPERUSER, RoleHelper::ROLE_SUPER_ADMIN, RoleHelper::ROLE_COOPERATION_ADMIN])
             ->get();
 
         $coaches = $cooperation->getCoaches()->get();

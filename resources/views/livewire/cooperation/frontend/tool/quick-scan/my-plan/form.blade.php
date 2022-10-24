@@ -32,11 +32,13 @@
                 <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
                     @foreach($cardCollection as $order => $card)
                         <div class="card @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled @endif"
-                             id="{{ $card['id'] }}"
+                             id="{{ $card['id'] }}" wire:key="card-{{$card['id']}}"
                              x-on:draggable-dragged.window="$el.classList.add('disabled');"
                              x-on:draggable-trashed.window="$el.classList.add('disabled');"
+                             x-on:draggable-readded.window="$el.classList.add('disabled');"
                              x-on:moved-card="$el.classList.remove('disabled');"
                              x-on:trashed-card="$el.classList.remove('disabled');"
+                             x-on:readded-card="$el.classList.remove('disabled');"
                              {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
                              x-bind="draggable"
                              @if(\App\Helpers\HoomdossierSession::isUserObserving()) draggable="false" @else draggable="true" @endif>
@@ -108,17 +110,17 @@
                         <div class="w-full h-full">
                             <div class="w-full h-full space-y-2">
                                 @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
-                                    <button class="btn btn-green flex w-full items-center justify-center"
+                                    <button class="btn btn-green flex w-full items-center justify-center" wire:key="trashed-button"
                                             x-on:click="window.triggerEvent(document.querySelector('#trashed'), 'open-modal'); close();">
                                         @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
                                     </button>
                                 @endif
-                                <button class="btn btn-green flex w-full items-center justify-center"
+                                <button class="btn btn-green flex w-full items-center justify-center" wire:key="expert-button"
                                         x-on:click="window.triggerEvent(document.querySelector('#expert'), 'open-modal'); close();">
                                     @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.button')
                                 </button>
                                 @if(! \App\Helpers\HoomdossierSession::isUserObserving())
-                                    <button class="btn btn-green flex w-full items-center justify-center"
+                                    <button class="btn btn-green flex w-full items-center justify-center" wire:key="custom-button"
                                             x-on:click="window.triggerEvent(document.querySelector('#add'), 'open-modal'); close();">
                                         @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.add.button')
                                     </button>
@@ -130,7 +132,7 @@
 
                 {{-- Modal for invisible measures --}}
                 @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
-                    <div x-data="modal()" class="">
+                    <div x-data="modal()" class="" wire:key="trashed-modal">
                         @component('cooperation.frontend.layouts.components.modal', [
                             'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.title'),
                             'id' => 'trashed',
@@ -145,7 +147,15 @@
                                         <div class="card-wrapper pb-0" data-category="{{$cardCategory}}">
                                             @foreach($cardCollection as $order => $card)
                                                 <div class="card clickable" id="{{ $card['id'] }}"
-                                                     wire:click="$emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'addHiddenCardToBoard', '{{$cardCategory}}', '{{$card['id']}}')">
+                                                     wire:key="hidden-card-{{$card['id']}}"
+                                                     x-on:click="window.triggerCustomEvent($el, 'draggable-readded');"
+                                                     wire:click="$emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'addHiddenCardToBoard', '{{$cardCategory}}', '{{$card['id']}}')"
+                                                     x-on:draggable-dragged.window="$el.classList.add('disabled');"
+                                                     x-on:draggable-trashed.window="$el.classList.add('disabled');"
+                                                     x-on:draggable-readded.window="$el.classList.add('disabled');"
+                                                     x-on:moved-card="$el.classList.remove('disabled');"
+                                                     x-on:trashed-card="$el.classList.remove('disabled');"
+                                                     x-on:readded-card="$el.classList.remove('disabled');">
                                                     <div class="icon-wrapper">
                                                         <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                                                     </div>
@@ -175,7 +185,7 @@
                     </div>
                 @endif
                 {{-- Modal for expert steps --}}
-                <div x-data="modal()" class="">
+                <div x-data="modal()" class="" wire:key="expert-modal">
                     @component('cooperation.frontend.layouts.components.modal', [
                         'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.title'),
                         'id' => 'expert',
@@ -202,7 +212,7 @@
                 </div>
                 {{-- Modal for custom measures --}}
                 @if(! \App\Helpers\HoomdossierSession::isUserObserving())
-                    <div x-data="modal()" class="">
+                    <div x-data="modal()" class="" wire:key="custom-modal">
                         @component('cooperation.frontend.layouts.components.modal', [
                             'header' => __('cooperation/frontend/tool.form.subject'),
                             'id' => 'add',

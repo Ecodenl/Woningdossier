@@ -1,11 +1,13 @@
 <div class="w-full flex justify-between">
     @php
-        $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
-            $toolQuestion,
-            $building,
-            $masterInputSource,
-            collect($this->prepareAnswersForEvaluation())
-        );
+
+        $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
+                   ->forInputSource($masterInputSource)
+                   ->forBuilding($building)
+                   ->answers(collect($this->prepareAnswersForEvaluation()))
+                   ->withCustomEvaluation()
+                   ->getQuestionValues();
+
     @endphp
     @foreach($questionValues as $toolQuestionValue)
         @php
@@ -14,7 +16,7 @@
         <div class="radio-wrapper media-wrapper media-wrapper-small">
             <input type="radio"
                    id="{{$uuid}}"
-                   wire:model="filledInAnswers.{{$toolQuestion['id']}}"
+                   wire:model="filledInAnswers.{{$toolQuestion['short']}}"
                    value="{{$toolQuestionValue['value']}}"
                    @if($disabled) disabled="disabled" @endif
             >

@@ -4,7 +4,7 @@
 
     @if($notification instanceof \App\Models\Notification)
         @livewire('cooperation.frontend.layouts.parts.notifications', [
-            'type' => App\Jobs\CloneOpposingInputSource::class,
+            'types' => [App\Jobs\CloneOpposingInputSource::class],
             'nextUrl' => route('cooperation.frontend.tool.quick-scan.index', compact('step', 'subStep')),
         ])
 
@@ -19,7 +19,7 @@
         <div class="w-full flex flex-wrap items-center">
             <div class="w-1/4 flex flex-wrap justify-start"></div>
             @livewire('cooperation.frontend.tool.quick-scan.buttons', [
-                'currentScan' => $scan, 'step' => $step, 'subStepOrQuestionnaire' => $subStep
+                'step' => $step, 'subStepOrQuestionnaire' => $subStep
             ])
             <div class="w-1/4 flex flex-wrap justify-end">
                 <p>

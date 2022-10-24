@@ -7,6 +7,7 @@ use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -25,13 +26,14 @@ class ToolQuestionHelper
 
     /**
      * These tables should query on one or more extra column(s)
-     * Order for multiple columns is very important
+     * Order for multiple columns is very important, it should be ordered as the where values in the save_in
      */
     const TABLE_COLUMN = [
-        'building_elements' => 'element_id',
-        'building_insulated_glazings' => 'measure_application_id',
-        'building_roof_types' => 'roof_type_id',
-        'building_services' => 'service_id',
+        'building_elements' => ['element_id'],
+        'building_insulated_glazings' => ['measure_application_id'],
+        'building_roof_types' => ['roof_type_id'],
+        'building_services' => ['service_id'],
+        'considerables' => ['considerable_type', 'considerable_id'],
         'step_comments' => [
             'step_id',
             'short',
@@ -49,10 +51,8 @@ class ToolQuestionHelper
         'heating-second-floor',
         'surface',
         'resident-count',
-        'water-comfort',
         'amount-gas',
         'amount-electricity',
-        'heat-source-considerable',
     ];
 
     /**
@@ -85,9 +85,22 @@ class ToolQuestionHelper
         'solar-panel-count' => ['solar-panels'],
         'total-installed-power' => ['solar-panels'],
         'solar-panels-placed-date' => ['solar-panels'],
-        'new-heat-pump-type' => ['heat-pump'],
         'heater-pv-panel-orientation' => ['heater'],
         'heater-pv-panel-angle' => ['heater'],
+        'fifty-degree-test' => ['heat-pump'],
+        'boiler-setting-comfort-heat' => ['heat-pump'],
+        'new-heat-source' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'new-heat-source-warm-tap-water' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'hr-boiler-replace' => ['high-efficiency-boiler'],
+        'new-boiler-type' => ['high-efficiency-boiler'],
+        'heat-pump-replace' => ['heat-pump'],
+        'new-heat-pump-type' => ['heat-pump'],
+        'heat-pump-preferred-power' => ['heat-pump'],
+        'outside-unit-space' => ['heat-pump'],
+        'inside-unit-space' => ['heat-pump'],
+        'heat-pump-boiler-replace' => ['heat-pump'],
+        'sun-boiler-replace' => ['heater'],
+        'new-water-comfort' => ['heater'],
     ];
 
     /**
@@ -118,22 +131,22 @@ class ToolQuestionHelper
      */
     public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion): bool
     {
-        return in_array($toolQuestion->short,self::TOOL_QUESTION_FULL_RECALCULATE, true);
+        return in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true);
     }
 
     /**
      * Simple method to resolve the save in to something we can use.
      *
-     * @param  string  $saveIn
-     * @param  Building  $building
+     * @param string $saveIn
+     * @param Building $building
      *
      * @return array
      */
     public static function resolveSaveIn(string $saveIn, Building $building): array
     {
-        $savedInParts = explode('.',$saveIn);
-        $table = $savedInParts[0];
-        $column = $savedInParts[1];
+        $savedInParts = explode('.', $saveIn);
+        $table = array_shift($savedInParts);
+        $column = array_pop($savedInParts);
         $where = [];
 
         if (Schema::hasColumn($table, 'user_id')) {
@@ -142,31 +155,24 @@ class ToolQuestionHelper
             $where['building_id'] = $building->id;
         }
 
-        // 2 parts is the simple scenario, this just means a table + column
-        // but in some cases it holds more info we need to build wheres.
-        if (count($savedInParts) > 2) {
-            // In this case the column holds extra where values
-
-            // There's 2 cases. Either it's a single value, or a set of columns
-            if (Str::contains($column, '_')) {
-                // Set of columns, we set the wheres based on the order of values
+        // if there are saved in parts left, check if we should add extra wheres or prepend it to the column.
+        if (count($savedInParts) > 0) {
+            // first check if the table has additional wheres
+            if (isset(ToolQuestionHelper::TABLE_COLUMN[$table])) {
+                // it does, check which are wheres and which are a columns
                 $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
-                $values = explode('_', $column);
 
-                // Currently only for step_comments that can have a short
-                foreach ($values as $index => $value) {
-                    $where[$columns[$index]] = $value;
+                foreach ($savedInParts as $index => $value) {
+                    if (isset($columns[$index])) {
+                        $where[$columns[$index]] = $value;
+                    } else {
+                        $column = $value . '.' . $column;
+                    }
                 }
             } else {
-                // Just a value, but the short table could be an array. We grab the first
-                $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
-                $columnForWhere = is_array($columns) ? $columns[0] : $columns;
-
-                $where[$columnForWhere] = $column;
+                // so no columns for the table are found, al of the extra saved in parts are columns.
+                $column = implode('.', $savedInParts).'.'.$column;
             }
-
-            $columns = array_slice($savedInParts, 2);
-            $column = implode('.', $columns);
         }
 
         return compact('table', 'column', 'where');
@@ -175,11 +181,11 @@ class ToolQuestionHelper
     /**
      * Get a human readable answer.
      *
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\ToolQuestion  $toolQuestion
-     * @param  bool  $withIcons
-     * @param  null  $answer
+     * @param \App\Models\Building $building
+     * @param \App\Models\InputSource $inputSource
+     * @param \App\Models\ToolQuestion $toolQuestion
+     * @param bool $withIcons
+     * @param null $answer
      *
      * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Translation\Translator|int|mixed|string|string[]|null
      */
@@ -191,8 +197,12 @@ class ToolQuestionHelper
             $answer = $building->getAnswer($inputSource, $toolQuestion);
         }
 
-        if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
-            $questionValues = QuestionValue::getQuestionValues($toolQuestion, $building, $inputSource);
+        if (! empty($answer) || (is_numeric($answer) && (int)$answer === 0)) {
+            $questionValues = QuestionValue::init($building->user->cooperation, $toolQuestion)
+                ->forInputSource($inputSource)
+                ->forBuilding($building)
+                ->withCustomEvaluation()
+                ->getQuestionValues();
 
             if ($questionValues->isNotEmpty()) {
                 $humanReadableAnswers = [];
@@ -213,16 +223,14 @@ class ToolQuestionHelper
                     }
                 }
 
-                if (! empty($humanReadableAnswers)) {
-                    $humanReadableAnswer = implode(', ', $humanReadableAnswers);
-                }
+                return implode(', ', $humanReadableAnswers);
             } else {
                 // If there are no question values, then it's user input
                 $humanReadableAnswer = $answer;
             }
 
             // Format answers
-            if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+            if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                 $humanReadableAnswer = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getFormatForUser();
             } elseif ($toolQuestion->data_type === Caster::JSON) {
                 $humanReadableAnswerArray = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getCast();
@@ -239,9 +247,9 @@ class ToolQuestionHelper
     /**
      * Handle potential replaceables in a tool question name.
      *
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\ToolQuestion  $toolQuestion
+     * @param \App\Models\Building $building
+     * @param \App\Models\InputSource $inputSource
+     * @param \App\Models\ToolQuestion $toolQuestion
      *
      * @return \App\Models\ToolQuestion
      */

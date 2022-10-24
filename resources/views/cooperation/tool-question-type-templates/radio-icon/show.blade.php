@@ -1,11 +1,11 @@
 <div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row gap-4">
     @php
-        $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
-            $toolQuestion,
-            $building,
-            $masterInputSource,
-            collect($this->prepareAnswersForEvaluation())
-        );
+ $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
+                    ->forInputSource($masterInputSource)
+                    ->forBuilding($building)
+                    ->answers(collect($this->prepareAnswersForEvaluation()))
+                    ->withCustomEvaluation()
+                    ->getQuestionValues();
     @endphp
     @foreach($questionValues as $toolQuestionValue)
         @php
@@ -14,7 +14,7 @@
         <div class="radio-wrapper media-wrapper">
             <input type="radio"
                    id="{{$uuid}}"
-                   wire:model="filledInAnswers.{{$toolQuestion['id']}}"
+                   wire:model="filledInAnswers.{{$toolQuestion['short']}}"
                    value="{{$toolQuestionValue['value']}}"
                    @if($disabled) disabled="disabled" @endif
 

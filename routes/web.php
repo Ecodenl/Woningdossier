@@ -334,7 +334,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         });
                     });
 
-                    Route::resource('coaches', 'CoachController')->only(['index', 'show'])->parameter('coaches', 'user');
+                    Route::resource('coaches', 'CoachController')->only(['index', 'show'])
+                        ->parameter('coaches', 'user');
+                    Route::resource('residents', 'ResidentController')->only(['index'])
+                        ->parameter('residents', 'user');
 
                     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');

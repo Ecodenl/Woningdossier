@@ -133,6 +133,12 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $query->withoutGlobalScope(VisibleScope::class);
     }
 
+    public function scopeForAdvisable(Builder $query, Model $advisable): Builder
+    {
+        return $query->where('user_action_plan_advisable_type', get_class($advisable))
+            ->where('user_action_plan_advisable_id', $advisable->id);
+    }
+
     /**
      * Method to only scope the invisible rows
      *

@@ -65,7 +65,7 @@ abstract class Scannable extends Component
 
     abstract function hydrateToolQuestions();
 
-    abstract function save($nextUrl = "");
+    abstract function save();
 
     abstract function rehydrateToolQuestions();
 
@@ -75,7 +75,7 @@ abstract class Scannable extends Component
             switch ($toolQuestion->data_type) {
                 case Caster::JSON:
                     foreach ($toolQuestion->options as $option) {
-                        $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
+                        $this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
                     }
                     break;
 
@@ -83,15 +83,15 @@ abstract class Scannable extends Component
                 case Caster::ARRAY:
                     // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
                     // and then also set required for the main question
-                    $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $this->prepareValidationRule($toolQuestion->validation);
+                    $this->rules["filledInAnswers.{$toolQuestion->short}.*"] = $this->prepareValidationRule($toolQuestion->validation);
 
                     if (in_array('required', $toolQuestion->validation)) {
-                        $this->rules["filledInAnswers.{$toolQuestion->id}"] = ['required'];
+                        $this->rules["filledInAnswers.{$toolQuestion->short}"] = ['required'];
                     }
                     break;
 
                 default:
-                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = $this->prepareValidationRule($toolQuestion->validation);
+                    $this->rules["filledInAnswers.{$toolQuestion->short}"] = $this->prepareValidationRule($toolQuestion->validation);
                     break;
             }
         }
@@ -108,7 +108,7 @@ abstract class Scannable extends Component
     {
         $answers = [];
         foreach ($this->toolQuestions as $toolQuestion) {
-            $answers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->id];
+            $answers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->short];
         }
 
         return $answers;
@@ -133,7 +133,7 @@ abstract class Scannable extends Component
         // now collect the given answers
         $dynamicAnswers = [];
         foreach ($this->toolQuestions as $toolQuestion) {
-            $dynamicAnswers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->id];
+            $dynamicAnswers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->short];
         }
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {
@@ -170,23 +170,23 @@ abstract class Scannable extends Component
                     // that are unvalidated (or not relevant).
 
                     // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
-                    $this->filledInAnswers[$toolQuestion->id] = null;
+                    $this->filledInAnswers[$toolQuestion->short] = null;
 
                     // and unset the validation for the question based on type.
                     switch ($toolQuestion->data_type) {
                         case Caster::JSON:
                             foreach ($toolQuestion->options as $option) {
-                                unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
+                                unset($this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"]);
                             }
                             break;
 
                         case Caster::ARRAY:
-                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
-                            unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
+                            unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
+                            unset($this->rules["filledInAnswers.{$toolQuestion->short}.*"]);
                             break;
 
                         default:
-                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                            unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
                             break;
                     }
                 }
@@ -195,34 +195,34 @@ abstract class Scannable extends Component
     }
 
     // specific for the popup questions
-    public function resetToOriginalAnswer($toolQuestionId)
+    public function resetToOriginalAnswer($toolQuestionShort)
     {
-        $this->filledInAnswers[$toolQuestionId] = $this->originalAnswers[$toolQuestionId];
+        $this->filledInAnswers[$toolQuestionShort] = $this->originalAnswers[$toolQuestionShort];
     }
 
     // specific to the popup question
-    public function saveSpecificToolQuestion($toolQuestionId)
+    public function saveSpecificToolQuestion($toolQuestionShort)
     {
         if (HoomdossierSession::isUserObserving()) {
             return null;
         }
         if (! empty($this->rules)) {
             $validator = Validator::make([
-                "filledInAnswers.{$toolQuestionId}" => $this->filledInAnswers[$toolQuestionId]
-            ], $this->rules["filledInAnswers.{$toolQuestionId}"], [], $this->attributes);
+                "filledInAnswers.{$toolQuestionShort}" => $this->filledInAnswers[$toolQuestionShort]
+            ], $this->rules["filledInAnswers.{$toolQuestionShort}"], [], $this->attributes);
 
             // Translate values also
             $defaultValues = __('validation.values.defaults');
 
             $validator->addCustomValues([
-                "filledInAnswers.{$toolQuestionId}" => $defaultValues,
+                "filledInAnswers.{$toolQuestionShort}" => $defaultValues,
             ]);
 
             if ($validator->fails()) {
-                $toolQuestion = $this->toolQuestions->find($toolQuestionId);
+                $toolQuestion = $this->toolQuestions->where('short', $toolQuestionShort)->first();
                 // Validator failed, let's put it back as the user format
-                if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
-                    $this->filledInAnswers[$toolQuestion->id] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->id])->getFormatForUser();
+                if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
+                    $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                 }
 
                 $this->rehydrateToolQuestions();
@@ -240,7 +240,7 @@ abstract class Scannable extends Component
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
         if (! $this->dirty) {
-            $toolQuestion = ToolQuestion::find($toolQuestionId);
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
             // Define if we should check this question...
             if ($this->building->user->account->can('answer', $toolQuestion)) {
@@ -256,10 +256,10 @@ abstract class Scannable extends Component
 
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
-            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+            foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::find($toolQuestionId);
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
                     ToolQuestionService::init($toolQuestion)
                         ->building($this->building)
@@ -276,7 +276,7 @@ abstract class Scannable extends Component
         // base key where every answer is stored
         foreach ($this->toolQuestions as $index => $toolQuestion) {
 
-            $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
+            $this->filledInAnswersForAllInputSources[$toolQuestion->short] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
             /** @var array|string $answerForInputSource */
             $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);
@@ -286,30 +286,30 @@ abstract class Scannable extends Component
                 case Caster::JSON:
                     $filledInAnswerOptions = json_decode($answerForInputSource, true);
                     foreach ($toolQuestion->options as $option) {
-                        $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? $option['value'] ?? 0;
-                        $this->attributes["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $option['name'];
+                        $this->filledInAnswers[$toolQuestion->short][$option['short']] = $filledInAnswerOptions[$option['short']] ?? $option['value'] ?? 0;
+                        $this->attributes["filledInAnswers.{$toolQuestion->short}.{$option['short']}"] = $option['name'];
                     }
                     break;
                 case Caster::ARRAY:
                     /** @var array $answerForInputSource */
                     $answerForInputSource = $answerForInputSource ?? $toolQuestion->options['value'] ?? [];
-                    $this->filledInAnswers[$toolQuestion->id] = [];
+                    $this->filledInAnswers[$toolQuestion->short] = [];
                     foreach ($answerForInputSource as $answer) {
-                        $this->filledInAnswers[$toolQuestion->id][] = $answer;
+                        $this->filledInAnswers[$toolQuestion->short][] = $answer;
                     }
-                    $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
-                    $this->attributes["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->name;
+                    $this->attributes["filledInAnswers.{$toolQuestion->short}"] = $toolQuestion->name;
+                    $this->attributes["filledInAnswers.{$toolQuestion->short}.*"] = $toolQuestion->name;
                     break;
                 default:
-                    if ($toolQuestion->data_type === Caster::INT || $toolQuestion->data_type === Caster::FLOAT) {
+                    if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                         // Before we would set sliders and text answers differently. Now, because they are mapped by the
                         // same (by data type) it could be that value is not set.
                         $answer = $answerForInputSource ?? $toolQuestion->options['value'] ?? 0;
                         $answerForInputSource = Caster::init($toolQuestion->data_type, $answer)->getFormatForUser();
                     }
 
-                    $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
-                    $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
+                    $this->filledInAnswers[$toolQuestion->short] = $answerForInputSource;
+                    $this->attributes["filledInAnswers.{$toolQuestion->short}"] = $toolQuestion->name;
                     break;
             }
         }
@@ -335,7 +335,7 @@ abstract class Scannable extends Component
 
                         if ($toolQuestion instanceof ToolQuestion) {
                             $validation[$index] = $ruleParams[0] . ':' . str_replace($short,
-                                    "filledInAnswers.{$toolQuestion->id}", $ruleParams[1]);
+                                    "filledInAnswers.{$toolQuestion->short}", $ruleParams[1]);
                         }
                     }
                 }

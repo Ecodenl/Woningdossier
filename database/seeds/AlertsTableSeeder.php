@@ -3,6 +3,7 @@
 use App\Models\Alert;
 use App\Models\SubStep;
 use App\Helpers\Conditions\Clause;
+use App\Services\UserActionPlanAdviceService;
 use Illuminate\Database\Seeder;
 
 class AlertsTableSeeder extends Seeder
@@ -95,6 +96,14 @@ class AlertsTableSeeder extends Seeder
                             'column' => 'fn',
                             'operator' => 'HrBoilerAdvice',
                         ],
+                        [
+                            'column' => 'fn',
+                            'operator' => 'AdviceCategory',
+                            'value' => [
+                                'measure_application' => 'high-efficiency-boiler-replace',
+                                'category' => UserActionPlanAdviceService::CATEGORY_TO_DO,
+                            ]
+                        ]
                     ],
                 ],
             ],
@@ -121,6 +130,7 @@ class AlertsTableSeeder extends Seeder
                         [
                             'column' => 'fn',
                             'operator' => 'InsulationScore',
+                            'value' => 2.5,
                         ],
                     ]
                 ],
@@ -238,7 +248,7 @@ class AlertsTableSeeder extends Seeder
             [
                 'short' => 'insulation-advice-current-wall-insulation',
                 'text' => [
-                    'nl' => 'Jouw huis is niet optimaal geïsoleerd. Er wordt geadviseerd eerst de wallisolatie te verbeteren.',
+                    'nl' => 'Jouw huis is niet optimaal geïsoleerd. Er wordt geadviseerd eerst de muurisolatie te verbeteren.',
                 ],
                 'type' => Alert::TYPE_WARNING,
                 'conditions' => [
@@ -360,6 +370,32 @@ class AlertsTableSeeder extends Seeder
                             'column' => 'new-heat-source-warm-tap-water',
                             'operator' => Clause::CONTAINS,
                             'value' => 'hr-boiler',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'short' => 'heat-pump-space-research',
+                'text' => [
+                    'nl' => 'Er is niet genoeg ruimte voor een (hybride) warmtepomp, laat aanvullend onderzoek uitvoeren naar mogelijke alternatieven.',
+                ],
+                'type' => Alert::TYPE_INFO,
+                'conditions' => [
+                    [
+                        [
+                            'column' => 'heat-source-considerable',
+                            'operator' => Clause::CONTAINS,
+                            'value' => 'heat-pump',
+                        ],
+                        [
+                            'column' => 'outside-unit-space',
+                            'operator' => Clause::EQ,
+                            'value' => 'no',
+                        ],
+                        [
+                            'column' => 'inside-unit-space',
+                            'operator' => Clause::EQ,
+                            'value' => 'no',
                         ],
                     ],
                 ],

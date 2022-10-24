@@ -84,6 +84,7 @@ return [
             ],
             'form' => [
                 'header' => 'Bestand bewerken',
+                'header-view' => 'Bestand bekijken',
                 'title' => [
                     'label' => 'Titel',
                 ],

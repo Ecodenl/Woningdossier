@@ -27,7 +27,8 @@ class MediaPolicy
         $currentBuilding = HoomdossierSession::getBuilding();
 
         return $currentBuilding === $user->user()->building->id
-            || in_array($currentInputSource->short, [InputSource::COACH_SHORT, InputSource::COOPERATION_SHORT]);
+            || $currentInputSource->short === InputSource::COACH_SHORT
+            || HoomdossierSession::isUserObserving();
     }
 
     /**
@@ -45,7 +46,7 @@ class MediaPolicy
 
         return $currentBuilding === $user->user()->building->id
             || $currentInputSource->short === InputSource::COACH_SHORT
-            || ($currentInputSource->short === InputSource::COOPERATION_SHORT && data_get($media->custom_properties, 'share_with_cooperation'));
+            || (HoomdossierSession::isUserObserving() && data_get($media->custom_properties, 'share_with_cooperation'));
     }
 
     /**

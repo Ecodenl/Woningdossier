@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\MediaHelper;
 use App\Models\Building;
 use App\Models\Media;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -14,7 +15,8 @@ use Plank\Mediable\Facades\MediaUploader;
 
 class Uploader extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads,
+        AuthorizesRequests;
 
     public $building;
     public $documents;
@@ -105,6 +107,9 @@ class Uploader extends Component
         $fileId = explode('.', $field)[1];
 
         $file = $this->files->where('id', $fileId)->first();
+
+        $this->authorize('update', $file);
+
         $fileData = $this->fileData[$fileId];
 
         $tagUpdated = Str::endsWith($field, 'tag');
@@ -129,6 +134,8 @@ class Uploader extends Component
     public function delete($fileId)
     {
         $file = $this->files->where('id', $fileId)->first();
+
+        $this->authorize('delete', $file);
 
         if ($file instanceof Media) {
             $file->delete();

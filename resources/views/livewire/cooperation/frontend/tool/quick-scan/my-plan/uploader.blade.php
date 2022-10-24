@@ -25,6 +25,7 @@
     <div class="flex flex-wrap w-full pl-8">
         @foreach($files as $file)
             @can('view', $file)
+                @php $canUpdate = Auth::user()->can('update', $file) @endphp
                 <div class="flex flex-wrap w-1/4 justify-center mb-4 pr-8" x-data="modal()" wire:key="{{$file->id}}">
                     <div class="space-y-6 pb-16 w-full">
                         <div>
@@ -43,13 +44,13 @@
                                         {{ "{$file->filename}.{$file->extension}" }}
                                     </h2>
                                 </div>
-                                @can('update', $file)
+                                @if($canUpdate)
                                     @if(data_get($fileData, "{$file->id}.share_with_cooperation"))
                                         <i class="icon-md icon-show"></i>
                                     @else
                                         <i class="icon-md icon-hide"></i>
                                     @endif
-                                @endcan
+                                @endif
                             </div>
                         </div>
                         <div>
@@ -81,13 +82,12 @@
                                         @lang("models/media.tags.{$fileData[$file->id]['tag']}")
                                     </dd>
                                 </div>
-                                @can('update', $file)
-                                    <div class="flex py-3">
-                                        <button x-on:click="toggle()" class="btn btn-purple">
-                                            @lang('cooperation/frontend/tool.my-plan.uploader.form.header')
-                                        </button>
-                                    </div>
-                                @endcan
+                                <div class="flex py-3">
+                                    <button x-on:click="toggle()" class="btn btn-purple">
+                                        @php $headerShort = $canUpdate ? 'header' : 'header-view'; @endphp
+                                        @lang("cooperation/frontend/tool.my-plan.uploader.form.{$headerShort}")
+                                    </button>
+                                </div>
                             </dl>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                                'label' => __('cooperation/frontend/tool.my-plan.uploader.form.title.label'),
                             ])
                                 <input class="form-input" wire:model.debounce.500ms="fileData.{{$file->id}}.title"
-                                       id="edit-file-title-{{$file->id}}"
+                                       id="edit-file-title-{{$file->id}}" @if(! $canUpdate) disabled @endif
                                        placeholder="@lang('cooperation/frontend/tool.my-plan.uploader.form.title.label')"
                                 >
                             @endcomponent
@@ -116,52 +116,54 @@
                                'label' => __('cooperation/frontend/tool.my-plan.uploader.form.description.label'),
                             ])
                                 <textarea class="form-input" wire:model.debounce.500ms="fileData.{{$file->id}}.description"
-                                          id="edit-file-description-{{$file->id}}"
+                                          id="edit-file-description-{{$file->id}}" @if(! $canUpdate) disabled @endif
                                           placeholder="@lang('cooperation/frontend/tool.my-plan.uploader.form.description.label')"
                                 ></textarea>
                             @endcomponent
-                            @component('cooperation.frontend.layouts.components.form-group', [
-                               'inputName' => "fileData.{$file->id}.share_with_cooperation",
-                               'class' => 'w-full',
-                               'id' => "edit-file-share-with-cooperation-{$file->id}",
-                               'withInputSource' => false,
-                               'label' => __('cooperation/frontend/tool.my-plan.uploader.form.share-with-cooperation.label'),
-                            ])
-                                @php $shareVal = data_get($fileData, "{$file->id}.share_with_cooperation") ? 'show' : 'hide'; @endphp
+                            @if($canUpdate)
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                   'inputName' => "fileData.{$file->id}.share_with_cooperation",
+                                   'class' => 'w-full',
+                                   'id' => "edit-file-share-with-cooperation-{$file->id}",
+                                   'withInputSource' => false,
+                                   'label' => __('cooperation/frontend/tool.my-plan.uploader.form.share-with-cooperation.label'),
+                                ])
+                                    @php $shareVal = data_get($fileData, "{$file->id}.share_with_cooperation") ? 'show' : 'hide'; @endphp
 
-                                <div class="checkbox-wrapper">
-                                    <input id="edit-file-share-with-cooperation-{{$file->id}}" type="checkbox"
-                                           wire:model="fileData.{{$file->id}}.share_with_cooperation"
-                                           value="1">
-                                    <label for="edit-file-share-with-cooperation-{{$file->id}}">
-                                        <span class="checkmark"></span>
-                                        <span class="flex items-center">
-                                            @lang("cooperation/frontend/tool.my-plan.uploader.form.share-with-cooperation.options.{$shareVal}")
-                                            <i class="ml-1 {{ "icon-{$shareVal}" }}"></i>
-                                        </span>
-                                    </label>
-                                </div>
-                            @endcomponent
-                            @component('cooperation.frontend.layouts.components.form-group', [
-                               'inputName' => "fileData.{$file->id}.tag",
-                               'class' => 'w-full',
-                               'id' => "edit-file-tag-{$file->id}",
-                               'withInputSource' => false,
-                               'label' => __('cooperation/frontend/tool.my-plan.uploader.form.tag.label'),
-                            ])
-                                {{-- In the develop heat pump upgrade, alpine select becomes usable for livewire. No point in re-inventing the wheel --}}
-                                {{-- TODO: use when available --}}
-        {{--                            @component('cooperation.frontend.layouts.components.alpine-select')--}}
-                                    <select id="edit-file-tag-{{$file->id}}" class="form-input"
-                                            wire:model="fileData.{{$file->id}}.tag">
-                                        @foreach(MediaHelper::getFillableTagsForClass(\App\Models\Building::class) as $tag)
-                                            <option value="{{ $tag }}">
-                                                @lang("models/media.tags.{$tag}")
-                                            </option>
-                                        @endforeach
-                                    </select>
-        {{--                            @endcomponent--}}
-                            @endcomponent
+                                    <div class="checkbox-wrapper">
+                                        <input id="edit-file-share-with-cooperation-{{$file->id}}" type="checkbox"
+                                               wire:model="fileData.{{$file->id}}.share_with_cooperation"
+                                               value="1">
+                                        <label for="edit-file-share-with-cooperation-{{$file->id}}">
+                                            <span class="checkmark"></span>
+                                            <span class="flex items-center">
+                                                @lang("cooperation/frontend/tool.my-plan.uploader.form.share-with-cooperation.options.{$shareVal}")
+                                                <i class="ml-1 {{ "icon-{$shareVal}" }}"></i>
+                                            </span>
+                                        </label>
+                                    </div>
+                                @endcomponent
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                   'inputName' => "fileData.{$file->id}.tag",
+                                   'class' => 'w-full',
+                                   'id' => "edit-file-tag-{$file->id}",
+                                   'withInputSource' => false,
+                                   'label' => __('cooperation/frontend/tool.my-plan.uploader.form.tag.label'),
+                                ])
+                                    {{-- In the develop heat pump upgrade, alpine select becomes usable for livewire. No point in re-inventing the wheel --}}
+                                    {{-- TODO: use when available --}}
+            {{--                            @component('cooperation.frontend.layouts.components.alpine-select')--}}
+                                        <select id="edit-file-tag-{{$file->id}}" class="form-input"
+                                                wire:model="fileData.{{$file->id}}.tag">
+                                            @foreach(MediaHelper::getFillableTagsForClass(\App\Models\Building::class) as $tag)
+                                                <option value="{{ $tag }}">
+                                                    @lang("models/media.tags.{$tag}")
+                                                </option>
+                                            @endforeach
+                                        </select>
+            {{--                            @endcomponent--}}
+                                @endcomponent
+                            @endif
                         </div>
                         <div class="w-full border border-gray fixed left-0"></div>
                         <div class="flex flex-wrap justify-between mt-10">

@@ -107,7 +107,6 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             }
 
             if (array_key_exists('build_year', $changes)) {
-                Log::debug(__CLASS__.": Build year check");
                 if ($currentBuildYearValue === $changedBuildYear) {
                     return null;
                 }
@@ -139,8 +138,8 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         Log::debug(__METHOD__);
         $buildingFeature =  $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
         if ($buildingFeature->example_building_id !== $exampleBuilding->id) {
+
             Log::debug(__CLASS__." Example building ID changes (" . $buildingFeature->example_building_id . " -> " . $exampleBuilding->id . ")");
-            // change example building, let the observer do the rest
             $buildingFeatureToUpdate = $this->building->buildingFeatures()->forInputSource($this->applyForInputSource)->first();
 
             if ($buildingFeatureToUpdate instanceof BuildingFeature) {

@@ -76,7 +76,7 @@ class ExampleBuildingService
         );
 
 
-        // there are some fixed tool questions which are now allowed to be overwritten by the example building
+        // there are some fixed tool questions which are NOT allowed to be overwritten by the example building
         // we collect them here, and possibly overwrite the example building data if the user his answer is not null
         $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
         foreach ($fixedToolQuestionShorts as $toolQuestionShort) {

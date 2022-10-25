@@ -82,7 +82,7 @@ class ExampleBuildingService
         foreach ($fixedToolQuestionShorts as $toolQuestionShort) {
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
-            if ($toolQuestion->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
+            if ($inputSource->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
 
                 $answer = $building->getAnswer($inputSource, $toolQuestion);
                 if (!is_null($answer)) {
@@ -102,25 +102,9 @@ class ExampleBuildingService
 
         Log::debug($exampleBuilding);
 
-        // basically; tool questions that can only be updated when the user his own filled in answers are empty
-        $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
-
         foreach ($exampleData as $toolQuestionShort => $value) {
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             $shouldSave = true;
-
-            // check if the tool question is a fixed one
-            // a fixed on can't be overwritten by example building data unless the field is empty
-            // AND unless its a example building, the data from the example building input source can always be overwritten.
-            if ($inputSource->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
-                // the tool question is fixed one, lets not save it before the last check
-                $shouldSave = false;
-                // now check if the user has already answered the question with a non null value
-                if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
-                    // the tool question answer is null, meaning we can update it with the exampel building value
-                    $shouldSave = true;
-                }
-            }
 
             // a relationship that is not set in the EB, we wont save it.
             if ($toolQuestion->data_type === Caster::IDENTIFIER && is_null($value)) {
@@ -132,8 +116,6 @@ class ExampleBuildingService
                     ->building($building)
                     ->currentInputSource($inputSource)
                     ->save($value);
-            } else {
-//                Log::debug("Skipping {$toolQuestionShort}");
             }
         }
 

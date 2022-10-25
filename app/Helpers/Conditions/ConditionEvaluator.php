@@ -63,11 +63,13 @@ class ConditionEvaluator
         // Get answers for condition columns, but ensure we don't fetch PASS clause columns (as they don't have
         // any answers so they don't need checking, and they could be arrays which would cause issues), and also
         // don't fetch special evaluators, as they don't have answers either.
-        $questionKeys = collect(Arr::flatten($conditions, 1))
+        $questionKeys = collect(Arr::flatten($conditions, 2))
+            ->merge(collect(Arr::flatten($conditions, 1)))
             ->whereNotIn('operator', [Clause::PASSES, Clause::NOT_PASSES])
             ->where('column', '!=', 'fn')
             ->pluck('column')
             ->unique()
+            ->filter()
             ->values();
 
         // the structure of the questionKeys tells us how to retrieve the answer
@@ -143,7 +145,16 @@ class ConditionEvaluator
         }
 
         foreach ($clauses as $clause) {
-            $result = $result && $this->evaluateClause($clause, $collection);
+            $subResult = false;
+            if (array_key_exists('column', $clause)) {
+                $subResult = $this->evaluateClause($clause, $collection);
+            } else {
+                foreach ($clause as $subClause) {
+                    $subResult = $subResult || $this->evaluateClause($subClause, $collection);
+                }
+            }
+
+            $result = $result && $subResult;
             if ($this->explain) {
                 Log::debug("evaluateAnd EXPLAIN Between: Result is " . ($result ? "true" : "false"));
             }

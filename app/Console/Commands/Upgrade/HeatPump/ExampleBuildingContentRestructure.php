@@ -98,21 +98,23 @@ class ExampleBuildingContentRestructure extends Command
                                 $toolQuestion = ToolQuestion::where('save_in', $saveIn)->first();
 
 
-
                                 // the tool question answers are actually already in a ok format
                                 // however they need some small adjustments
                                 if (Str::contains($saveIn, 'tool_question_answers')) {
-                                    $saveIn = explode('.', $saveIn);
-                                    // kick of the prefix so we just have the short with its index
-                                    array_shift($saveIn);
-                                    // the save in here is actually already a tool question short!
-                                    $saveIn = implode('.', $saveIn);
-
+                                    // We just want the short part
+                                    $saveIn = explode('.', $saveIn)[1];
                                     $toolQuestion = ToolQuestion::findByShort($saveIn);
                                     if ($toolQuestion instanceof ToolQuestion) {
-                                        // still a custom map becuase the old way saved it wrong..
+                                        // still a custom map because the old way saved it wrong..
                                         if ($toolQuestion->data_type == Caster::ARRAY) {
                                             $newContent[$saveIn][] = $value;
+
+                                            if ($saveIn === 'heat-source') {
+                                                // In case of heat source we want it to map to these values
+                                                $newContent['heat-source-warm-tap-water'][] = $value;
+                                                $newContent['new-heat-source'][] = $value;
+                                                $newContent['new-heat-source-warm-tap-water'][] = $value;
+                                            }
                                         } else {
                                             data_set($newContent, $saveIn, $value);
                                         }

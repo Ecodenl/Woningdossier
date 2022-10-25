@@ -11,7 +11,6 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
-use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\ConsiderableHelper;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\HeaterHelper;
@@ -47,6 +46,7 @@ use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
+use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
@@ -230,36 +230,30 @@ class DumpService
         }
 
         $calculateData = $this->getNewCalculateData();
-        $evaluator = ConditionEvaluator::init()
+        $conditionService = ConditionService::init()
             ->building($building)
             ->inputSource($inputSource);
 
-        // TODO: Check if we require the key in the returned data array
         foreach ($this->headerStructure as $key => $translation) {
             if (is_string(($key))) {
                 // Structure is as follows:
                 // 0: step shorts
-                // 1: steppable short / save_in / calculation ref / considerables
-                // n: potential calculation field / considerable struct
+                // 1: steppable short / calculation ref
+                // n: potential calculation field
                 $structure = explode('.', $key);
 
                 $step = $structure[0];
                 $potentialShort = $structure[1];
                 if (Str::startsWith($potentialShort, 'question_')) {
-                    $processAnswer = false;
+                    $processElement = true;
                     $humanReadableAnswer = null;
                     $toolQuestion = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
 
-                    // If we need to handle conditional logic, we basically check all sub steps and itself.
                     if ($withConditionalLogic) {
-                        foreach ($toolQuestion->subSteps as $subStep) {
-                            $processAnswer = $processAnswer || $evaluator->evaluate($subStep->conditions ?? []);
-                        }
-
-                        $processAnswer = $processAnswer && $evaluator->evaluate($toolQuestion->conditions ?? []);
+                        $processElement = $conditionService->forModel($toolQuestion)->isViewable();
                     }
 
-                    if ($processAnswer) {
+                    if ($processElement) {
                         $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
                             $toolQuestion);
                         // Priority slider situation
@@ -280,22 +274,29 @@ class DumpService
 
                     $data[$key] = $humanReadableAnswer;
                 } elseif (Str::startsWith($potentialShort, 'calculation_')) {
+                    $processElement = true;
+                    $result = null;
+
+                    // The structure is built using the step as main short part for the calculation. We don't know how
+                    // deeply nested the rest is, so we simply implode everything as that is also how its served.
                     $columnNest = implode('.', array_slice($structure, 2));
 
+                    // We remove the calculation string, and append the column nest. Now we have the full short, which
+                    // we can use to retrieve the model as well as to fetch from the array.
                     $column = Str::replaceFirst('calculation_', '', $potentialShort)
                         . (empty($columnNest) ? '' : ".{$columnNest}");
 
-                    $answer = Arr::get($calculateData, $column);
-                    $data[$key] = $this->formatCalculation($key, $answer);
-                } elseif ($potentialShort === 'considerables') {
-                    $considerableModel = $structure[2];
-                    $considerableId = $structure[3];
+                    if ($withConditionalLogic) {
+                        $toolCalculationResult = ToolCalculationResult::findByShort($column);
+                        $processElement = $conditionService->forModel($toolCalculationResult)->isViewable();
+                    }
 
-                    // returns a bool, the values are keyed by 0 and 1
-                    $considerable = $considerableModel::find($considerableId);
-                    $considers = $user->considers($considerable, $inputSource);
+                    if ($processElement) {
+                        $answer = Arr::get($calculateData, $column);
+                        $result = $this->formatCalculation($key, $answer);
+                    }
 
-                    $data[$key] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
+                    $data[$key] = $result;
                 }
             }
         }
@@ -305,7 +306,7 @@ class DumpService
 
     protected function getNewCalculateData(): array
     {
-        // TODO: When the calculators are uniform, instead call them via step short (so we can iterate);
+        // TODO: When the other calculators are uniform, also call them via step short (so we can iterate);
 
         // collect some info about their building
         $user = $this->user;
@@ -313,24 +314,35 @@ class DumpService
         $inputSource = $this->inputSource;
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
-        $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations = [];
+        $calculate = [
+            'hr-boiler' => HighEfficiencyBoiler::class,
+            'sun-boiler' => Heater::class,
+            'heat-pump' => HeatPump::class,
+        ];
+
+        foreach ($calculate as $short => $calculator) {
+            $calculations[$short] = $calculator::calculate($building, $inputSource);
+        }
+
+        $calculations['wall-insulation'] = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
             (new WallInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
         );
 
-        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['insulated-glazing'] = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
             (new InsulatedGlazingHelper($user, $inputSource))
                 ->createValues()
                 ->getValues());
 
-        $floorInsulationSavings = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['floor-insulation'] = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit,
             (new FloorInsulationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
         );
 
-        $roofInsulationSavings = RoofInsulation::calculate(
+        $calculations['roof-insulation'] = RoofInsulation::calculate(
             $building,
             $inputSource,
             $userEnergyHabit,
@@ -339,45 +351,20 @@ class DumpService
                 ->getValues()
         );
 
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate(
-            $userEnergyHabit,
-            (new HighEfficiencyBoilerHelper($user, $inputSource))
-                ->createValues()
-                ->getValues()
-        );
-
-        $solarPanelSavings = SolarPanel::calculate(
+        $calculations['solar-panels'] = SolarPanel::calculate(
             $building,
             (new SolarPanelHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
         );
 
-        $heaterSavings = Heater::calculate($building, $userEnergyHabit,
-            (new HeaterHelper($user, $inputSource))
-                ->createValues()
-                ->getValues());
-
-        $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
+        $calculations['ventilation'] = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
             (new VentilationHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
-        );
+        )['result']['crack_sealing'];
 
-        $heatPumpSavings = HeatPump::calculate($building, $inputSource, $userEnergyHabit);
-
-        return [
-            'ventilation' => $ventilationSavings['result']['crack_sealing'],
-            'wall-insulation' => $wallInsulationSavings,
-            'insulated-glazing' => $insulatedGlazingSavings,
-            'floor-insulation' => $floorInsulationSavings,
-            'roof-insulation' => $roofInsulationSavings,
-            'hr-boiler' => $highEfficiencyBoilerSavings,
-            'solar-panels' => $solarPanelSavings,
-            'heater' => $heaterSavings,
-            'sun-boiler' => $heaterSavings,
-            'heat-pump' => $heatPumpSavings,
-        ];
+        return $calculations;
     }
 
     protected function formatCalculation($key, $value)
@@ -1027,6 +1014,7 @@ class DumpService
      */
     public static function getCalculateData(User $user, InputSource $inputSource): array
     {
+        // TODO: LEGACY, BUT NOW ALSO BROKEN
         // collect some info about their building
         $building = $user->building;
 
@@ -1058,8 +1046,7 @@ class DumpService
                 ->getValues()
         );
 
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate(
-            $userEnergyHabit,
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource,
             (new HighEfficiencyBoilerHelper($user, $inputSource))
                 ->createValues()
                 ->getValues()
@@ -1072,7 +1059,7 @@ class DumpService
                 ->getValues()
         );
 
-        $heaterSavings = Heater::calculate($building, $userEnergyHabit,
+        $heaterSavings = Heater::calculate($building, $inputSource,
             (new HeaterHelper($user, $inputSource))
                 ->createValues()
                 ->getValues());

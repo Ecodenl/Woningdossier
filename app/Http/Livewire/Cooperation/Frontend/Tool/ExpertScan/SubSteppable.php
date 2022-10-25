@@ -5,7 +5,6 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\NumberFormatter;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\InputSource;
 use App\Models\Step;
@@ -22,8 +21,11 @@ class SubSteppable extends Scannable
 
     public $calculationResults = [];
 
+    public $intercontinentalAnswers = [];
+
     protected $listeners = [
         'calculationsPerformed',
+        'updateFilledInAnswers',
         'save',
     ];
 
@@ -75,7 +77,7 @@ class SubSteppable extends Scannable
         // Emits don't work before the first render of a component is processed. Therefore, we only emit after the first
         // load (also known as the init or initialization). We need to pass the answers to the main component so it
         // can perform calculations
-        $this->emit('updateFilledInAnswers', $this->filledInAnswers);
+        $this->emit('updateFilledInAnswers', $this->filledInAnswers, $this->id);
     }
 
     public function hydrateToolQuestions()
@@ -99,7 +101,7 @@ class SubSteppable extends Scannable
 
         $this->setDirty(true);
 
-        $this->emitUp('updateFilledInAnswers', $this->filledInAnswers);
+        $this->emit('updateFilledInAnswers', $this->filledInAnswers, $this->id);
     }
 
     public function calculationsPerformed($calculationResults)
@@ -109,46 +111,21 @@ class SubSteppable extends Scannable
 
     protected function evaluateToolQuestions()
     {
-        // Filter out the questions that do not match the condition
-        // now collect the given answers
-        $dynamicAnswers = [];
-        foreach ($this->subStep->subSteppables as $subSteppablePivot) {
-            if ($subSteppablePivot->isToolQuestion()) {
-                $dynamicAnswers[$subSteppablePivot->subSteppable->short] = $this->filledInAnswers[$subSteppablePivot->subSteppable->short];
-            }
-        }
-
         foreach ($this->subStep->subSteppables as $index => $subSteppablePivot) {
             $toolQuestion = $subSteppablePivot->subSteppable;
-
-            $answers = $dynamicAnswers;
 
             if (! empty($subSteppablePivot->conditions)) {
                 $conditions = $subSteppablePivot->conditions;
 
-                foreach ($conditions as $conditionSet) {
-                    foreach ($conditionSet as $condition) {
-                        // There is a possibility that the answer we're looking for is for a tool question not
-                        // on this page. We find it, and add the answer to our list
+                $evaluator = ConditionEvaluator::init()
+                    ->building($this->building)
+                    ->inputSource($this->masterInputSource);
 
-                        if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
-                            $otherSubStepToolQuestion = ToolQuestion::findByShort($condition['column']);
-                            if ($otherSubStepToolQuestion instanceof ToolQuestion) {
+                $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)
+                    ->merge(collect($this->filledInAnswers))
+                    ->merge(collect($this->intercontinentalAnswers));
 
-                                $otherSubStepAnswer = $this->building
-                                    ->getAnswer($this->masterInputSource, $otherSubStepToolQuestion);
-
-                                $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
-                            }
-                        }
-                    }
-                }
-
-                $evaluatableAnswers = collect($answers);
-
-                $evaluation = ConditionEvaluator::init()->evaluateCollection($conditions, $evaluatableAnswers);
-
-                if (! $evaluation) {
+                if (! $evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
                     $this->subStep->subSteppables = $this->subStep->subSteppables->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they
@@ -180,6 +157,15 @@ class SubSteppable extends Scannable
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public function updateFilledInAnswers(array $filledInAnswers, string $id)
+    {
+        if ($id !== $this->id) {
+            foreach ($filledInAnswers as $toolQuestionShort => $answer) {
+                $this->intercontinentalAnswers[$toolQuestionShort] = $answer;
             }
         }
     }

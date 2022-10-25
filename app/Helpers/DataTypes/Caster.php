@@ -19,11 +19,18 @@ class Caster
 
     protected string $dataType;
     protected $value;
+    protected bool $force = false;
 
     public function __construct(string $dataType, $value)
     {
         $this->dataType = $dataType;
         $this->value = $value;
+    }
+
+    public function force(): self
+    {
+        $this->force = true;
+        return $this;
     }
 
     /**
@@ -33,7 +40,7 @@ class Caster
      */
     public function getCast()
     {
-        if (is_null($this->value)) {
+        if (is_null($this->value) && ! $this->force) {
             return null;
         }
 

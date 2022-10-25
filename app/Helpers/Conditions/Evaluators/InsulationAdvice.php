@@ -15,11 +15,7 @@ class InsulationAdvice implements ShouldEvaluate
         // they should improve certain aspects of their home before considering a heat pump, because it might not
         // perform to ideal standards.
 
-        $calculator = new HeatPump(
-            $building, $inputSource,
-            $building->user->energyHabit()->forInputSource($inputSource)->first(),
-            $answers
-        );
+        $calculator = new HeatPump($building, $inputSource, $answers);
 
         // We don't need the return value, but the method sets the advices
         $calculator->insulationScore();

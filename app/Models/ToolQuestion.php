@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
@@ -96,8 +97,6 @@ class ToolQuestion extends Model
         return ! empty($this->options);
     }
 
-
-
     /**
      * Method to return the question values  (morphed models / the options for the question)
      *
@@ -156,7 +155,7 @@ class ToolQuestion extends Model
         return $this->hasMany(ToolQuestionAnswer::class);
     }
 
-    public function subSteppables()
+    public function subSteppables(): MorphMany
     {
         return $this->morphMany(SubSteppable::class, 'sub_steppable');
     }
@@ -167,6 +166,7 @@ class ToolQuestion extends Model
             ->using(SubSteppable::class)
             ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
+
     /**
      * Method to return the intermediary morph table
      *

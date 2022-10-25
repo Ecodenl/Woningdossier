@@ -173,7 +173,8 @@ class NumberFormatter
 
         $number = static::format($number, ($isInteger ? 0 : 1));
         if ($isInteger) {
-            $number = str_replace('.', '', $number);
+            // Remove thousand separator
+            $number = str_replace(self::$formatLocaleSeparators[app()->getLocale()]['thousands'], '', $number);
         }
 
         // We don't want decimals on a 0

@@ -43,7 +43,9 @@ class HeaterHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->considersByAnswer('heat-source-considerable', 'sun-boiler'),
+                    'is_considering' => $this->considersByConditions(
+                        $this->getConditionsForHeatSourceQuestions('sun-boiler')
+                    ),
                 ],
             ],
             'building_heaters' => $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
@@ -62,8 +64,7 @@ class HeaterHelper extends ToolHelper
 
         $step = Step::findByShort('heater');
 
-        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
-        $results = Heater::calculate($this->building, $userEnergyHabit, $this->getValues());
+        $results = Heater::calculate($this->building, $this->inputSource);
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 

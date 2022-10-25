@@ -3,9 +3,9 @@
 namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\HeatPump;
+use App\Helpers\Conditions\Clause;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\MeasureApplication;
-use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\SubStep;
@@ -37,7 +37,9 @@ class HeatPumpHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->considersByAnswer('heat-source-considerable', 'heat-pump'),
+                    'is_considering' => $this->considersByConditions(
+                        $this->getConditionsForHeatSourceQuestions('heat-pump')
+                    ),
                 ],
             ],
             'updated_measure_ids' => [],
@@ -55,37 +57,23 @@ class HeatPumpHelper extends ToolHelper
 
         // Prepare: Tons of logic to define heat pump measures... (scroll further for heat pump boiler)
         if ($this->considers($step)) {
-            $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
-            $heatPumpsToCalculate = [];
+            $heatPumpToCalculate = null;
             $currentCalculateValue = null;
 
             $evaluator = ConditionEvaluator::init()
                 ->building($this->building)
                 ->inputSource($this->inputSource);
 
-            // First check if the user has a heat pump currently
-            $heatPumpSubStep = SubStep::bySlug('warmtepomp')->first();
-            if ($evaluator->evaluate($heatPumpSubStep->conditions)) {
-                $type = ServiceValue::find($this->getAnswer('heat-pump-type'));
-
-                if ($type instanceof ServiceValue) {
-                    $short = array_flip(static::MEASURE_SERVICE_LINK)[$type->calculate_value];
-                    $heatPumpsToCalculate[] = $short;
-                    $currentCalculateValue = $type->calculate_value;
-                }
-            }
-
             // Now check if they have interest / already selected which heat pump they wants
-            $newType = Service::findByShort('heat-pump')->values()
-                ->where(
-                    'calculate_value',
-                    ToolQuestion::findByShort('new-heat-pump-type')->toolQuestionCustomValues()
-                        ->whereShort($this->getAnswer('new-heat-pump-type'))->first()->extra['calculate_value'] ?? null
-                )->first();
+            $newType = \App\Deprecation\ToolHelper::getServiceValueByCustomValue(
+                'heat-pump',
+                'new-heat-pump-type',
+                $this->getAnswer('new-heat-pump-type'),
+            );
 
             if ($newType instanceof ServiceValue) {
                 $short = array_flip(static::MEASURE_SERVICE_LINK)[$newType->calculate_value];
-                $heatPumpsToCalculate[] = $short;
+                $heatPumpToCalculate = $short;
             } else {
                 // No new type selected, so the user has not yet answered the expert page. We will look at their
                 // interest.
@@ -97,9 +85,9 @@ class HeatPumpHelper extends ToolHelper
                     $interest = $this->getAnswer('interested-in-heat-pump-variant');
 
                     if ($interest === 'full-heat-pump') {
-                        $heatPumpsToCalculate[] = 'full-heat-pump-outside-air';
+                        $heatPumpToCalculate = 'full-heat-pump-outside-air';
                     } elseif ($interest === 'hybrid-heat-pump') {
-                        $heatPumpsToCalculate[] = 'hybrid-heat-pump-outside-air';
+                        $heatPumpToCalculate = 'hybrid-heat-pump-outside-air';
                     } else {
                         // If they want advise, we advise based on heating temperature
                         $temp = $this->getAnswer('boiler-setting-comfort-heat');
@@ -107,22 +95,35 @@ class HeatPumpHelper extends ToolHelper
                         // If they use low temp, we suggest a full heat pump. Otherwise we always suggest hybrid.
                         // In the case the user is unsure about their temp usage, we assume the worst case and thus
                         // also suggest hybrid
-                        $heatPumpsToCalculate[] = $temp === 'temp-low' ? 'full-heat-pump-outside-air'
+                        $heatPumpToCalculate = $temp === 'temp-low' ? 'full-heat-pump-outside-air'
                             : 'hybrid-heat-pump-outside-air';
                     }
                 }
             }
 
-            foreach ($heatPumpsToCalculate as $measureShort) {
-                $calculateValue = static::MEASURE_SERVICE_LINK[$measureShort];
+            // No heat pump to calculate, so we will fall back to the one they already have
+            if (is_null($heatPumpToCalculate)) {
+                $heatPumpSubStep = SubStep::bySlug('warmtepomp')->first();
+                if ($evaluator->evaluate($heatPumpSubStep->conditions)) {
+                    $type = ServiceValue::find($this->getAnswer('heat-pump-type'));
+
+                    if ($type instanceof ServiceValue) {
+                        $short = array_flip(static::MEASURE_SERVICE_LINK)[$type->calculate_value];
+                        $heatPumpToCalculate = $short;
+                        $currentCalculateValue = $type->calculate_value;
+                    }
+                }
+            }
+
+            if (! is_null($heatPumpToCalculate)) {
+                $calculateValue = static::MEASURE_SERVICE_LINK[$heatPumpToCalculate];
 
                 $answers = $this->getValues();
                 $answers['new-heat-pump-type'] = ToolQuestion::findByShort('new-heat-pump-type')
                     ->toolQuestionCustomValues()
                     ->where('extra->calculate_value', $calculateValue)
                     ->first()->short;
-                $results = HeatPump::calculate($this->building, $this->inputSource, $userEnergyHabit,
-                    collect($answers));
+                $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));
 
                 $savingsMoney = null;
 
@@ -144,7 +145,7 @@ class HeatPumpHelper extends ToolHelper
                 }
 
                 if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-                    $measureApplication = MeasureApplication::findByShort($measureShort);
+                    $measureApplication = MeasureApplication::findByShort($heatPumpToCalculate);
                     if ($measureApplication instanceof MeasureApplication) {
                         $actionPlanAdvice = new UserActionPlanAdvice($results);
                         $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
@@ -166,13 +167,41 @@ class HeatPumpHelper extends ToolHelper
             }
         }
 
-        $heatSourceWaterAnswers = array_merge(
-            $this->getAnswer('heat-source-warm-tap-water'),
-            $this->getAnswer('new-heat-source-warm-tap-water')
-        );
+        // Slightly different than the default struct as the heat pump boiler is no part of the heat source questions
+        $conditionsForHeatPumpBoiler = [
+            [
+                [
+                    'column' => 'new-heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'heat-pump-boiler',
+                ],
+                [
+                    'column' => 'heat-source-warm-tap-water',
+                    'operator' => Clause::NOT_CONTAINS,
+                    'value' => 'heat-pump-boiler',
+                ],
+            ],
+            [
+                [
+                    'column' => 'new-heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'heat-pump-boiler',
+                ],
+                [
+                    'column' => 'heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => 'heat-pump-boiler',
+                ],
+                [
+                    'column' => 'heat-pump-boiler-replace',
+                    'operator' => Clause::EQ,
+                    'value' => true,
+                ],
+            ],
+        ];
 
         // The user uses a heat pump boiler or wants one so we provide the measure application
-        if (in_array('heat-pump-boiler', $heatSourceWaterAnswers)) {
+        if ($this->considersByConditions($conditionsForHeatPumpBoiler)) {
             $measureApplication = MeasureApplication::findByShort('heat-pump-boiler-place-replace');
             if ($measureApplication instanceof MeasureApplication) {
                 // TODO: Values!

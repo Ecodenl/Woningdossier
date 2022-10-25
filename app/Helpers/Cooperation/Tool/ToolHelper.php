@@ -2,8 +2,9 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
+use App\Helpers\Conditions\Clause;
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\InputSource;
-use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Model;
@@ -90,12 +91,73 @@ abstract class ToolHelper
         return $considers;
     }
 
-    public function considersByAnswer(string $toolQuestion, string $answer)
+    public function considersByConditions(array $conditions): bool
     {
-        return in_array($answer, $this->building->getAnswer(
-            $this->masterInputSource,
-            ToolQuestion::findByShort($toolQuestion)
-        ));
+        return ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->masterInputSource)
+            ->evaluate($conditions);
+    }
+
+    protected function getConditionsForHeatSourceQuestions(string $short): array
+    {
+        return [
+            [
+                [
+                    [
+                        'column' => 'new-heat-source',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $short,
+                    ],
+                    [
+                        'column' => 'new-heat-source-warm-tap-water',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $short,
+                    ],
+                ],
+                [
+                    [
+                        'column' => 'heat-source',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $short,
+                    ],
+                    [
+                        'column' => 'heat-source-warm-tap-water',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $short,
+                    ],
+                ],
+                [
+                    'column' => "{$short}-replace",
+                    'operator' => Clause::EQ,
+                    'value' => true,
+                ],
+            ],
+            [
+                [
+                    [
+                        'column' => 'new-heat-source',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $short,
+                    ],
+                    [
+                        'column' => 'new-heat-source-warm-tap-water',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $short,
+                    ],
+                ],
+                [
+                    'column' => 'heat-source',
+                    'operator' => Clause::NOT_CONTAINS,
+                    'value' => $short,
+                ],
+                [
+                    'column' => 'heat-source-warm-tap-water',
+                    'operator' => Clause::NOT_CONTAINS,
+                    'value' => $short,
+                ],
+            ],
+        ];
     }
 
     /**

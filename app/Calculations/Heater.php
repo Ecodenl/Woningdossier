@@ -2,48 +2,22 @@
 
 namespace App\Calculations;
 
+use App\Deprecation\ToolHelper;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
-use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\HeaterComponentCost;
-use App\Models\InputSource;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
-use App\Models\ServiceValue;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
 class Heater extends \App\Calculations\Calculator
 {
-    public $energyHabit;
-
-    public function __construct(Building $building, $energyHabit, array $calculateData)
-    {
-        $this->building = $building;
-        $this->energyHabit = $energyHabit;
-        $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-
-        $this->answers = $calculateData['answers'] ?? null;
-
-        $this->calculateData = $calculateData;
-    }
-
-    public static function calculate(Building $building, $energyHabit, array $calculateData)
-    {
-        $calculator = new static (
-            $building,
-            $energyHabit,
-            $calculateData
-        );
-
-        return $calculator->performCalculations();
-    }
-
     public function performCalculations(): array
     {
         $result = [
@@ -67,8 +41,11 @@ class Heater extends \App\Calculations\Calculator
             'interest_comparable' => 0,
         ];
 
-        $comfortLevelId = $this->calculateData['user_energy_habits']['water_comfort_id'] ?? 0;
-        $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
+        $comfortLevel = ToolHelper::getModelByCustomValue(
+            ComfortLevelTapWater::query(),
+            'new-water-comfort',
+            $this->getAnswer('new-water-comfort'),
+        );
 
         if ($this->energyHabit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
             $result['amount_gas'] = $this->energyHabit->amount_gas;
@@ -83,9 +60,8 @@ class Heater extends \App\Calculations\Calculator
             }
             // \Log::debug('Heater: Current consumption: '.json_encode($result['consumption']));
 
-            $buildingHeaters = $this->calculateData['building_heaters'] ?? [];
-            $angle = $buildingHeaters['angle'] ?? 0;
-            $orientationId = $buildingHeaters['pv_panel_orientation_id'] ?? 0;
+            $angle = $this->getAnswer('heater-pv-panel-angle') ?? 0;
+            $orientationId = $this->getAnswer('heater-pv-panel-orientation') ?? 0;
             $orientation = PvPanelOrientation::find($orientationId);
 
             $locationFactor = KeyFigures::getLocationFactor($this->building->postal_code);

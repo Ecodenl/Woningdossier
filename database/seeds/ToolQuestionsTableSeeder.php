@@ -1195,32 +1195,6 @@ class ToolQuestionsTableSeeder extends Seeder
             # Expert scan questions only
             #-------------------------
             [
-                'data_type' => Caster::ARRAY,
-                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
-                'short' => 'heat-source-considerable',
-                'translation' => 'Welke maatregelen wil je meenemen in de berekening?',
-                'tool_question_custom_values' => [
-                    'hr-boiler' => [
-                        'name' => 'Gasketel',
-                        'extra' => [
-                            'icon' => 'icon-central-heater-gas',
-                        ],
-                    ],
-                    'heat-pump' => [
-                        'name' => 'Warmtepomp',
-                        'extra' => [
-                            'icon' => 'icon-heat-pump',
-                        ],
-                    ],
-                    'sun-boiler' => [
-                        'name' => 'Zonneboiler',
-                        'extra' => [
-                            'icon' => 'icon-sun-boiler-hot-water',
-                        ],
-                    ],
-                ],
-            ],
-            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'new-water-comfort',
@@ -1250,7 +1224,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'data_type' => Caster::ARRAY,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'new-heat-source',
-                'translation' => "Wat er komen voor verwarming?",
+                'translation' => "Wat moet er komen voor verwarming?",
                 'options' => ['value' => ['hr-boiler'],],
                 'tool_question_custom_values' => [
                     'hr-boiler' => [
@@ -1384,6 +1358,22 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::BOOL,
+                'validation' => ['required', 'boolean'],
+                'short' => 'hr-boiler-replace',
+                'translation' => "Wilt u de huidige CV ketel vervangen?",
+                'tool_question_custom_values' => [
+                    true => [
+                        'name' => __('woningdossier.cooperation.radiobutton.yes'),
+                        'extra' => [],
+                    ],
+                    false => [
+                        'name' => __('woningdossier.cooperation.radiobutton.no'),
+                        'extra' => [],
+                    ],
+                ],
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 //'save_in' => "building_services.{$boiler->id}.service_value_id",
@@ -1419,6 +1409,22 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'calculate_value' => '5',
                         ],
+                    ],
+                ],
+            ],
+            [
+                'data_type' => Caster::BOOL,
+                'validation' => ['required', 'boolean'],
+                'short' => 'heat-pump-replace',
+                'translation' => "Wilt u de huidige warmtepomp vervangen?",
+                'tool_question_custom_values' => [
+                    true => [
+                        'name' => __('woningdossier.cooperation.radiobutton.yes'),
+                        'extra' => [],
+                    ],
+                    false => [
+                        'name' => __('woningdossier.cooperation.radiobutton.no'),
+                        'extra' => [],
                     ],
                 ],
             ],
@@ -1507,11 +1513,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         'conditions' => [
                             [
                                 [
-                                    'column' => 'heat-source-considerable',
-                                    'operator' => Clause::NOT_CONTAINS,
-                                    'value' => 'hr-boiler',
-                                ],
-                                [
                                     'column' => 'new-heat-source',
                                     'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
@@ -1532,11 +1533,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         'conditions' => [
                             [
                                 [
-                                    'column' => 'heat-source-considerable',
-                                    'operator' => Clause::NOT_CONTAINS,
-                                    'value' => 'hr-boiler',
-                                ],
-                                [
                                     'column' => 'new-heat-source',
                                     'operator' => Clause::NOT_CONTAINS,
                                     'value' => 'hr-boiler',
@@ -1556,11 +1552,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                         'conditions' => [
                             [
-                                [
-                                    'column' => 'heat-source-considerable',
-                                    'operator' => Clause::NOT_CONTAINS,
-                                    'value' => 'hr-boiler',
-                                ],
                                 [
                                     'column' => 'new-heat-source',
                                     'operator' => Clause::NOT_CONTAINS,
@@ -1612,6 +1603,22 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
+                'data_type' => Caster::BOOL,
+                'validation' => ['required', 'boolean'],
+                'short' => 'sun-boiler-replace',
+                'translation' => "Wilt u de huidige zonneboiler vervangen?",
+                'tool_question_custom_values' => [
+                    true => [
+                        'name' => __('woningdossier.cooperation.radiobutton.yes'),
+                        'extra' => [],
+                    ],
+                    false => [
+                        'name' => __('woningdossier.cooperation.radiobutton.no'),
+                        'extra' => [],
+                    ],
+                ],
+            ],
+            [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ["required", 'exists:pv_panel_orientations,id'],
                 'save_in' => 'building_heaters.pv_panel_orientation_id',
@@ -1631,7 +1638,8 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_custom_values' => collect(\App\Helpers\KeyFigures\Heater\KeyFigures::getAngles())
                     ->map(fn($angle) => ['name' => $angle]),
             ],
-            // TODO: How to handle if we delete these steps?
+            // TODO: If we were to delete these steps, besides the obvious calculator refactor, we should
+            // move these to the heating step with a short for the context
             [
                 'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
@@ -1652,6 +1660,22 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "step_comments.{$sunBoilerStep->id}.comment",
                 'short' => 'sun-boiler-comment',
                 'translation' => 'Toelichting op de zonneboiler',
+            ],
+            [
+                'data_type' => Caster::BOOL,
+                'validation' => ['required', 'boolean'],
+                'short' => 'heat-pump-boiler-replace',
+                'translation' => "Wilt u de huidige warmtepomp boiler vervangen?",
+                'tool_question_custom_values' => [
+                    true => [
+                        'name' => __('woningdossier.cooperation.radiobutton.yes'),
+                        'extra' => [],
+                    ],
+                    false => [
+                        'name' => __('woningdossier.cooperation.radiobutton.no'),
+                        'extra' => [],
+                    ],
+                ],
             ],
             // NEW COPIED
             [

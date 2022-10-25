@@ -6,14 +6,11 @@ use App\Helpers\DataTypes\Caster;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Services\ConditionService;
 use Illuminate\Support\Collection;
 
 trait HasDynamicAnswers
 {
-    use RetrievesAnswers {
-        getAnswer as getBuildingAnswer;
-    }
-
     public ?Collection $answers = null;
 
     /**
@@ -38,15 +35,21 @@ trait HasDynamicAnswers
 
             return $answer;
         } else {
-            // So the answer might not be set. In terms of calculations we want a fixed result, so just like above
-            // we will cast the result
-            $answer = $this->getBuildingAnswer($toolQuestionShort);
+            $evaluation = ConditionService::init()
+                ->building($this->building)->inputSource($this->inputSource)
+                ->forModel($toolQuestion)->isViewable($answers);
 
-            if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                $answer = Caster::init($toolQuestion->data_type, $answer)->force()->getCast();
+            if ($evaluation) {
+                $answer = $this->building->getAnswer($this->inputSource, $toolQuestion);
+
+                if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
+                    $answer = Caster::init($toolQuestion->data_type, $answer)->force()->getCast();
+                }
+
+                return $answer;
             }
 
-            return $answer;
+            return null;
         }
     }
 
@@ -55,13 +58,13 @@ trait HasDynamicAnswers
      *
      * @return array|mixed
      */
-    protected static function getQuickAnswer(string $toolQuestion, Building $building, InputSource $inputSource, ?Collection $answers = null)
+    protected static function getQuickAnswer(string $toolQuestionShort, Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         $instance = new static;
         $instance->building = $building;
         $instance->inputSource = $inputSource;
         $instance->answers = $answers;
 
-        return $instance->getAnswer($toolQuestion);
+        return $instance->getAnswer($toolQuestionShort);
     }
 }

@@ -27,10 +27,24 @@ Sometimes, answers can be dynamic. We use Livewire, in which the answers are cha
 database. There we offer `evaluateCollection`:
 
 ```php 
-ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers)
+ConditionEvaluator::init()
+    ->building($building)
+    ->inputSource($masterInputSource)
+    ->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers)
 ```
 
-This evaluates in the same manner, but you'll need to provide the answers yourself.
+This evaluates in the same manner, but you'll need to provide the answers yourself. In the case you have some 
+answers but not all, you could also merge them:
+
+```php 
+$evaluator = ConditionEvaluator::init()
+    ->building($this->building)
+    ->inputSource($this->inputSource);
+  
+$answers = $evaluator->getToolAnswersForConditions($toolQuestion->conditions)->merge(collect($answers));
+
+$evaluation = $evaluator->evaluateCollection($toolQuestion->conditions, $answers);
+```
 
 ## Constructing conditions
 To be able to understand how to use the evaluator further, you need to be able to know how conditions are built.
@@ -41,6 +55,50 @@ A structure is defined in 3 groups (all of which are `arrays`):
 - A singular outer group, which holds all the condition clauses.
 - An undefined amount of OR clauses. Only a single clause inside this group has to be truthy.
 - An undefined amount of AND clauses. Every clause inside this group must be truthy.
+  - An AND clause can hold a subgroup of OR clauses, to allow OR statements to be combined with AND statements.
+
+Example:
+```php
+// Outer holding group
+[
+    // OR groups
+    [
+        // AND groups
+        [
+            'column' => 'heat-source',
+            'operator' => Clause::CONTAINS,
+            'value' => 'heat-pump',
+        ],   
+        [
+            'column' => 'new-heat-source',
+            'operator' => Clause::CONTAINS,
+            'value' => 'heat-pump',
+        ],
+    ],
+    [
+        [
+            [
+                'column' => 'new-heat-source',
+                'operator' => Clause::CONTAINS,
+                'value' => 'heat-pump',
+            ],
+            [
+                'column' => 'new-heat-source-warm-tap-water',
+                'operator' => Clause::CONTAINS,
+                'value' => 'heat-pump',
+            ],
+        ],
+        [
+            'column' => 'heat-pump-replace',
+            'operator' => Clause::EQ,
+            'value' => true,
+        ],
+    ],
+];
+```
+
+This example will pass if both the question `heat-source` and `new-heat-source` have the value `heat-pump`, or if 
+either `new-heat-source` or `new-heat-source-warm-tap-water` holds `heat-pump`, and `heat-pump-replace` is `true`.
 
 ### Step 2: Final clause structure
 To be able to evaluate something, there needs to be certain logic to process these conditions. Therefore, a clause 

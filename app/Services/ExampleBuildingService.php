@@ -11,12 +11,16 @@ use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class ExampleBuildingService
 {
     const NEVER_OVERWRITE_TOOL_QUESTION_SHORTS = [
+        'building-type-category',
+        // 'building-type',
         'build-year',
+        'specific-example-building',
         'surface',
     ];
 
@@ -71,14 +75,35 @@ class ExampleBuildingService
             'Applying Example Building ' . $exampleBuilding->name . ' (' . $exampleBuilding->id . ', ' . $contents->build_year . ') for input source ' . $inputSource->name
         );
 
-        // now clear it
-        self::clearExampleBuilding($building, $inputSource);
+
+        // there are some fixed tool questions which are now allowed to be overwritten by the example building
+        // we collect them here, and possibly overwrite the example building data if the user his answer is not null
+        $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
+        foreach ($fixedToolQuestionShorts as $toolQuestionShort) {
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+
+            if ($toolQuestion->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
+
+                $answer = $building->getAnswer($inputSource, $toolQuestion);
+                if (!is_null($answer)) {
+                    // You may ask yourself; why not just unset the question ?
+                    // excellent question!
+                    // The clearExampleBuilding method will remove all the user its input
+                    // so the key here is to overwrite the exampleData, this way it will be saved again.
+                    $exampleData[$toolQuestionShort] = $answer;
+                }
+            }
+        }
+
+        // We already checked the non overwritteable tool questions
+        // now its safe to clear it.
+        self::clearBuilding($building, $inputSource);
+
 
         Log::debug($exampleBuilding);
 
         // basically; tool questions that can only be updated when the user his own filled in answers are empty
-        $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS,
-            static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
+        $fixedToolQuestionShorts = array_merge(ToolQuestionHelper::SUPPORTED_API_SHORTS, static::NEVER_OVERWRITE_TOOL_QUESTION_SHORTS);
 
         foreach ($exampleData as $toolQuestionShort => $value) {
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
@@ -87,13 +112,11 @@ class ExampleBuildingService
             // check if the tool question is a fixed one
             // a fixed on can't be overwritten by example building data unless the field is empty
             // AND unless its a example building, the data from the example building input source can always be overwritten.
-            if ($toolQuestion->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort,
-                    $fixedToolQuestionShorts)
-            ) {
+            if ($toolQuestion->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
                 // the tool question is fixed one, lets not save it before the last check
                 $shouldSave = false;
                 // now check if the user has already answered the question with a non null value
-                if (is_null($building->getAnswer($masterInputSource, $toolQuestion))) {
+                if (is_null($building->getAnswer($inputSource, $toolQuestion))) {
                     // the tool question answer is null, meaning we can update it with the exampel building value
                     $shouldSave = true;
                 }
@@ -129,28 +152,35 @@ class ExampleBuildingService
         );
     }
 
-    public static function clearExampleBuilding(Building $building, InputSource $inputSource = null)
+    public static function clearBuilding(Building $building, InputSource $inputSource)
     {
-        /** @var InputSource $inputSource */
-        $inputSource = $inputSource ?? InputSource::findByShort(
-                InputSource::EXAMPLE_BUILDING
-            );
-
         Log::debug("Clearing example building for input source " . $inputSource->short);
 
-        $buildingFeature = $building->buildingFeatures()->forInputSource($inputSource)->select(
-            ['building_type_category_id', 'surface', 'build_year', 'input_source_id', 'building_id', 'example_building_id']
-        )->first();
+        // Delete all building elements
+        $building->buildingElements()->forInputSource($inputSource)->delete();
+        $building->buildingFeatures()->forInputSource($inputSource)->delete();
 
-        BuildingDataService::clearBuildingFromInputSource(
-            $building,
-            $inputSource
-        );
+        $building->buildingServices()->forInputSource($inputSource)->delete();
+        $building->currentInsulatedGlazing()->forInputSource($inputSource)->delete();
 
-        if ($buildingFeature instanceof BuildingFeature) {
-            $buildingFeature->create();
+        $roofTypesToDelete = $building->roofTypes()->forInputSource($inputSource)->get();
+        foreach ($roofTypesToDelete as $roofTypeToDelete) {
+            // Manually delete these so the master input source updates with it
+            $roofTypeToDelete->delete();
         }
 
+        $building->currentPaintworkStatus()->forInputSource($inputSource)->delete();
+        $building->pvPanels()->forInputSource($inputSource)->delete();
+        $building->heater()->forInputSource($inputSource)->delete();
+        $building->toolQuestionAnswers()->forInputSource($inputSource)->delete();
+        if ($building->user instanceof User) {
+            // remove interests
+            $building->user->userInterests()->forInputSource($inputSource)->delete();
+            // remove energy habits
+            $building->user->energyHabit()->forInputSource($inputSource)->delete();
+        }
+
+        return true;
     }
 
     protected static function log($text)

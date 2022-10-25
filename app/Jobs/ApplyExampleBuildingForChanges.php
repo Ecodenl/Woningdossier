@@ -107,8 +107,8 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             }
 
             if (array_key_exists('build_year', $changes)) {
-                $new = (int)$changes['build_year'];
-                if ($currentBuildYearValue === $new) {
+                Log::debug(__CLASS__.": Build year check");
+                if ($currentBuildYearValue === $changedBuildYear) {
                     return null;
                 }
 
@@ -116,7 +116,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
                 // check the combination of example_building_id with new build_year
                 // against the combination of example_building_id with old build_year
                 $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
-                $newContents = $exampleBuilding->getContentForYear($new);
+                $newContents = $exampleBuilding->getContentForYear($changedBuildYear);
 
                 if ($oldContents instanceof ExampleBuildingContent) {
                     if ($oldContents->id !== $newContents->id) {

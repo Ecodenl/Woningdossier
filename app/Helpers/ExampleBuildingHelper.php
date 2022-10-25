@@ -52,8 +52,6 @@ class ExampleBuildingHelper
         'resident-count',
         'amount-gas',
         'amount-electricity',
-        'water-comfort',
-        'new-water-comfort', // TODO: Should we exclude this?
         'total-installed-power',
         'comfort-priority',
     ];

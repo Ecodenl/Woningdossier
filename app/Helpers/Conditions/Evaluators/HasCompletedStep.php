@@ -18,7 +18,7 @@ class HasCompletedStep implements ShouldEvaluate
         // 'should_pass' => whether or not this should pass; if set to false, the evaluation will be true if no steps
         // are completed
 
-        $steps = Step::findByShorts((array) $value['steps']);
+        $steps = Step::findByShorts((array) $value['step']);
         $inputSources = InputSource::findByShorts(empty($value['input_source']) ? [$inputSource] : (array) $value['input_source']);
         $shouldPass = $value['should_pass'] ?? true;
 

@@ -239,7 +239,31 @@ class HeatPump extends \App\Calculations\Calculator
                 ->forHeatingTemperature($this->heatingTemperature)
                 ->first();
 
-            return $coverage->percentage ?? 0;
+            if ($coverage instanceof KeyFigureHeatPumpCoverage){
+                return $coverage->percentage;
+            }
+
+            // if $coverage didn't result in anything -> fallback:
+            // 1) if required power - desired power >= 1: 100;
+            // 2) if required power - desired power >= 0 AND required power - desired power < 1:
+            // 100 for low heating temperature, 95 for 50 degrees, 85 for high heating temperature;
+
+            // scenario 1
+            if($this->requiredPower - $this->desiredPower >= 1){
+
+                return 100;
+            }
+            // scenario 2 (is basically the same as using betafactor 1.0)
+            if($this->requiredPower - $this->desiredPower >= 0 && $this->requiredPower - $this->desiredPower < 1){
+                $coverage = KeyFigureHeatPumpCoverage::forBetaFactor(1.0)
+                                                     ->forHeatingTemperature($this->heatingTemperature)
+                                                     ->first();
+
+                if ($coverage instanceof KeyFigureHeatPumpCoverage){
+                    return $coverage->percentage;
+                }
+            }
+
         }
 
         return 0;
@@ -260,9 +284,9 @@ class HeatPump extends \App\Calculations\Calculator
     }
 
     // = C61
-    public function betaFactor()
+    public function betaFactor() : float
     {
-        return $this->format($this->desiredPower / max($this->requiredPower, 1), 1);
+        return min(round($this->desiredPower / max($this->requiredPower, 1), 1), 1.0);
     }
 
     protected function energyUsageForCooking()

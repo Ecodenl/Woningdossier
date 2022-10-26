@@ -283,17 +283,32 @@ class HeatPump extends \App\Calculations\Calculator
 
     public function insulationScore(): float
     {
-        $toolQuestions = [
+        $score = 0;
+
+        $windowQuestions = [
             'current-living-rooms-windows' => 1.5,
             'current-sleeping-rooms-windows' => 0.5,
+        ];
+
+        $windowScore = $this->insulationSubScore($windowQuestions);
+        $score += ($windowScore / count($windowQuestions));
+
+        $toolQuestions = [
             'current-wall-insulation' => 1,
             'current-floor-insulation' => 1,
             'current-roof-insulation' => 1,
         ];
 
+        $score += $this->insulationSubScore($toolQuestions);
+
+        // count +1 because window also counts as one factor.
+        return round($score / (count($toolQuestions) + 1), 1);
+    }
+
+    protected function insulationSubScore($questions) : float {
         $score = 0;
 
-        foreach ($toolQuestions as $toolQuestion => $weight) {
+        foreach ($questions as $toolQuestion => $weight) {
             /** @var ElementValue $elementValue */
             $elementValue = ElementValue::find($this->getAnswer($toolQuestion));
 
@@ -305,7 +320,7 @@ class HeatPump extends \App\Calculations\Calculator
             $score += ($factor * $weight);
         }
 
-        return $this->format($score / count($toolQuestions));
+        return $score;
     }
 
     public function getAdvices(): array

@@ -71,7 +71,7 @@ class UpdateToolQuestions extends Command
 
         // Tool questions that got added but should be removed again. We could do this manually, but meh.
         $shortsToDelete = [
-            'heat-source-considerable',
+            'heat-source-considerable', 'hr-boiler-comment', 'heat-pump-comment', 'sun-boiler-comment',
         ];
         foreach ($shortsToDelete as $shortToDelete) {
             DB::table('tool_questions')->where('short', $shortToDelete)->delete();

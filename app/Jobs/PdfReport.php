@@ -2,7 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Calculations\Heater;
+use App\Calculations\HeatPump;
+use App\Calculations\HighEfficiencyBoiler;
 use App\Helpers\StepHelper;
+use App\Helpers\ToolQuestionHelper;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\FileStorage;
@@ -10,6 +14,8 @@ use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
+use App\Models\ToolCalculationResult;
+use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\BuildingCoachStatusService;
@@ -24,6 +30,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PdfReport implements ShouldQueue
 {
@@ -133,6 +140,114 @@ class PdfReport implements ShouldQueue
             }
         }
 
+        // Because the PDF will change we will just fuck the shit out of this old report
+        unset($reportData['high-efficiency-boiler']);
+        unset($reportData['heater']);
+
+        $newSituation = [
+            'heating' => [
+                'Het huidig verbruik' => [
+                    'amount-gas', 'amount-electricity',
+                ],
+                'Hoe wordt de warmte in de nieuwe situatie opgewekt' => [
+                    'new-water-comfort', 'new-heat-source', 'new-heat-source-warm-tap-water',
+                    'new-building-heating-application',
+                ],
+            ],
+            'high-efficiency-boiler' => [
+                [
+                    'hr-boiler-replace', 'new-boiler-type',
+                ],
+                'Indicatie over kosten en baten van de cv-ketel' => [
+                    'hr-boiler.amount_gas', 'hr-boiler.savings_gas', 'hr-boiler.savings_co2', 'hr-boiler.replace_year',
+                    'hr-boiler.cost_indication', 'hr-boiler.interest_comparable',
+                ],
+                'Toelichting op de cv-ketel' => [
+                    'hr-boiler-comment-coach', 'hr-boiler-comment-resident',
+                ],
+            ],
+            'heat-pump' => [
+                'Gegevens van de nieuwe warmtepomp' => [
+                    'new-heat-pump-type', 'new-boiler-setting-comfort-heat', 'heat-pump.advised_system.required_power',
+                    'heat-pump-preferred-power', 'new-cook-type', 'outside-unit-space', 'inside-unit-space',
+                ],
+                'Indicatie voor de efficiëntie van de warmtepomp' => [
+                    'heat-pump.advised_system.share_heating', 'heat-pump.advised_system.share_tap_water',
+                    'heat-pump.advised_system.scop_heating', 'heat-pump.advised_system.scop_tap_water',
+                ],
+                'Indicatie voor kosten en baten van de warmtepomp' => [
+                    'heat-pump.savings_gas', 'heat-pump.savings_co2', 'heat-pump.savings_money',
+                    'heat-pump.extra_consumption_electricity', 'heat-pump.cost_indication',
+                    'heat-pump.interest_comparable',
+                ],
+                'Toelichting op de warmtepomp' => [
+                    'heat-pump-comment-coach', 'heat-pump-comment-resident',
+                ],
+            ],
+            'heater' => [
+                'Geschat huidig verbruik' => [
+                    'sun-boiler.consumption.water', 'sun-boiler.consumption.gas',
+                ],
+                'Specificaties systeem' => [
+                    'sun-boiler.specs.size_boiler', 'sun-boiler.specs.size_collector',
+                    'heater-pv-panel-orientation', 'heater-pv-panel-angle',
+                ],
+                'Indicatie voor kosten en baten van de zonneboiler' => [
+                    'sun-boiler.production_heat', 'sun-boiler.percentage_consumption', 'sun-boiler.savings_gas',
+                    'sun-boiler.savings_co2', 'sun-boiler.savings_money', 'sun-boiler.cost_indication',
+                    'sun-boiler.interest_comparable',
+                ],
+                'Toelichting op de zonneboiler' => [
+                    'sun-boiler-comment-coach', 'sun-boiler-comment-resident',
+                ],
+            ],
+        ];
+
+        $calcs = [
+            'hr-boiler' => HighEfficiencyBoiler::calculate($building, $inputSource),
+            'heat-pump' => HeatPump::calculate($building, $inputSource),
+            'sun-boiler' => Heater::calculate($building, $inputSource),
+        ];
+
+        $newReportData = [];
+
+        foreach ($newSituation as $step => $data) {
+            foreach ($data as $label => $shorts) {
+                foreach ($shorts as $short) {
+                    $class = Str::contains($short, '.') ? ToolCalculationResult::class : ToolQuestion::class;
+
+                    $model = $class::findByShort($short);
+
+                    if ($model instanceof ToolQuestion) {
+                        $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
+                            $model);
+                        // Priority slider situation
+                        if (is_array($humanReadableAnswer)) {
+                            $temp = '';
+                            foreach ($humanReadableAnswer as $name => $answer) {
+                                $temp .= "{$name}: {$answer}, ";
+                            }
+                            $humanReadableAnswer = substr($temp, 0, -2);
+                        }
+                        $value = $humanReadableAnswer;
+                    } else {
+                        $value = data_get($calcs, $short);
+                    }
+
+                    $trans = $model->name;
+                    if ($model instanceof ToolQuestion && isset($model->for_specific_input_source_id)) {
+                        $trans .= " ({$model->forSpecificInputSource->name})";
+                    }
+
+                    $newReportData[$step][$label][$short] = [
+                        'label' => $trans,
+                        'value' => $value,
+                        'unit' => $model->unit_of_measure ?? null,
+                    ];
+                }
+            }
+        }
+
         // steps that are considered to be measures.
         $stepShorts = DB::table('steps')
             ->where('short', '!=', 'general-data')
@@ -160,10 +275,10 @@ class PdfReport implements ShouldQueue
 
         $noInterest = Interest::where('calculate_value', 4)->first();
 
-        /** @var \Barryvdh\DomPDF\PDF $pdf */
+//        /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
-            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
+            'commentsByStep', 'reportTranslations', 'reportData', 'newReportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
             'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
 

@@ -1014,7 +1014,7 @@ class DumpService
      */
     public static function getCalculateData(User $user, InputSource $inputSource): array
     {
-        // TODO: LEGACY, BUT NOW ALSO BROKEN
+        // TODO: LEGACY
         // collect some info about their building
         $building = $user->building;
 
@@ -1046,11 +1046,7 @@ class DumpService
                 ->getValues()
         );
 
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource,
-            (new HighEfficiencyBoilerHelper($user, $inputSource))
-                ->createValues()
-                ->getValues()
-        );
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource);
 
         $solarPanelSavings = SolarPanel::calculate(
             $building,
@@ -1059,10 +1055,7 @@ class DumpService
                 ->getValues()
         );
 
-        $heaterSavings = Heater::calculate($building, $inputSource,
-            (new HeaterHelper($user, $inputSource))
-                ->createValues()
-                ->getValues());
+        $heaterSavings = Heater::calculate($building, $inputSource);
 
         $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
             (new VentilationHelper($user, $inputSource))

@@ -45,22 +45,38 @@
         @include('cooperation.pdf.user-report.steps.general-data-page-3')
     </div>
 @endcomponent
-
-
-@foreach ($reportData as $stepShort => $dataForStep)
-    <?php
+    
+@foreach($reportData as $stepShort => $dataForStep)
+    @php
         $hasResidentCompletedStep = $building->hasCompleted(
             \App\Models\Step::withGeneralData()->where('short', $stepShort)->first(),
             $inputSource
         );
-    ?>
+    @endphp
     @if (array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
         @foreach ($dataForStep as $subStepShort => $dataForSubStep)
-            <?php
+            @php
                 $shortToUseAsMainSubject = $subStepShort == '-' ? $stepShort : $subStepShort
-            ?>
+            @endphp
             @include('cooperation.pdf.user-report.parts.measure-page')
         @endforeach
+    @endif
+@endforeach
+
+@foreach($newReportData as $stepShort => $dataForStep)
+    @php
+        $hasResidentCompletedStep = $building->hasCompleted(
+            \App\Models\Step::where('short', $stepShort)->first(),
+            $inputSource
+        );
+    @endphp
+    @if (array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
+        @php
+            // We don't use this, however to not break code we will set it.
+            $subStepShort = $stepShort;
+            $shortToUseAsMainSubject = $stepShort;
+        @endphp
+        @include('cooperation.pdf.user-report.parts.measure-page')
     @endif
 @endforeach
 

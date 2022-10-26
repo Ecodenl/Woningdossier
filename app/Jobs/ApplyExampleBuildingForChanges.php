@@ -107,8 +107,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             }
 
             if (array_key_exists('build_year', $changes)) {
-                $new = (int)$changes['build_year'];
-                if ($currentBuildYearValue === $new) {
+                if ($currentBuildYearValue === $changedBuildYear) {
                     return null;
                 }
 
@@ -116,7 +115,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
                 // check the combination of example_building_id with new build_year
                 // against the combination of example_building_id with old build_year
                 $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
-                $newContents = $exampleBuilding->getContentForYear($new);
+                $newContents = $exampleBuilding->getContentForYear($changedBuildYear);
 
                 if ($oldContents instanceof ExampleBuildingContent) {
                     if ($oldContents->id !== $newContents->id) {
@@ -139,8 +138,8 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         Log::debug(__METHOD__);
         $buildingFeature =  $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
         if ($buildingFeature->example_building_id !== $exampleBuilding->id) {
+
             Log::debug(__CLASS__." Example building ID changes (" . $buildingFeature->example_building_id . " -> " . $exampleBuilding->id . ")");
-            // change example building, let the observer do the rest
             $buildingFeatureToUpdate = $this->building->buildingFeatures()->forInputSource($this->applyForInputSource)->first();
 
             if ($buildingFeatureToUpdate instanceof BuildingFeature) {
@@ -173,6 +172,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             InputSource::findByShort(InputSource::EXAMPLE_BUILDING),
         );
 
+
         // We apply the example building only if the user has not proceeded further than the example building
         // sub steps. We simply check if the user has completed any sub step _besides_ the example building sub steps
         $totalOtherCompletedSubSteps = $this->building->completedSubSteps()
@@ -182,7 +182,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             ->count();
 
         if ($totalOtherCompletedSubSteps === 0) {
-            Log::debug(__CLASS__. ' Override user data with example building data.');
+            Log::debug(__CLASS__. ' Override user data with example building data. totalOtherCOmpletedSubSteps: '.$totalOtherCompletedSubSteps);
             ExampleBuildingService::apply(
                 $exampleBuilding,
                 $buildYear,

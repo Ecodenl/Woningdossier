@@ -16,90 +16,90 @@ class AlertsTableSeeder extends Seeder
     public function run()
     {
         $alerts = [
-            [
-                'short' => 'sun-boiler-performance-ideal',
-                'text' => [
-                    'nl' => 'Functioneren zonneboiler: ideaal',
-                ],
-                'type' => Alert::TYPE_SUCCESS,
-                'conditions' => [
-                    [
-                        [
-                            [
-                                'column' => 'new-heat-source',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'sun-boiler',
-                            ],
-                            [
-                                'column' => 'new-heat-source-warm-tap-water',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'sun-boiler',
-                            ],
-                        ],
-                        [
-                            'column' => 'fn',
-                            'operator' => 'SunBoilerPerformance',
-                            'value' => 'green',
-                        ],
-                    ],
-                ],
-            ],
-            [
-                'short' => 'sun-boiler-performance-possible',
-                'text' => [
-                    'nl' => 'Functioneren zonneboiler: mogelijk',
-                ],
-                'type' => Alert::TYPE_WARNING,
-                'conditions' => [
-                    [
-                        [
-                            [
-                                'column' => 'new-heat-source',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'sun-boiler',
-                            ],
-                            [
-                                'column' => 'new-heat-source-warm-tap-water',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'sun-boiler',
-                            ],
-                        ],
-                        [
-                            'column' => 'fn',
-                            'operator' => 'SunBoilerPerformance',
-                            'value' => 'yellow',
-                        ],
-                    ],
-                ],
-            ],
-            [
-                'short' => 'sun-boiler-performance-no-go',
-                'text' => [
-                    'nl' => 'Functioneren zonneboiler: onrendabel',
-                ],
-                'type' => Alert::TYPE_DANGER,
-                'conditions' => [
-                    [
-                        [
-                            [
-                                'column' => 'new-heat-source',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'sun-boiler',
-                            ],
-                            [
-                                'column' => 'new-heat-source-warm-tap-water',
-                                'operator' => Clause::CONTAINS,
-                                'value' => 'sun-boiler',
-                            ],
-                        ],
-                        [
-                            'column' => 'fn',
-                            'operator' => 'SunBoilerPerformance',
-                            'value' => 'red',
-                        ],
-                    ],
-                ],
-            ],
+            //[
+            //    'short' => 'sun-boiler-performance-ideal',
+            //    'text' => [
+            //        'nl' => 'Functioneren zonneboiler: ideaal',
+            //    ],
+            //    'type' => Alert::TYPE_SUCCESS,
+            //    'conditions' => [
+            //        [
+            //            [
+            //                [
+            //                    'column' => 'new-heat-source',
+            //                    'operator' => Clause::CONTAINS,
+            //                    'value' => 'sun-boiler',
+            //                ],
+            //                [
+            //                    'column' => 'new-heat-source-warm-tap-water',
+            //                    'operator' => Clause::CONTAINS,
+            //                    'value' => 'sun-boiler',
+            //                ],
+            //            ],
+            //            [
+            //                'column' => 'fn',
+            //                'operator' => 'SunBoilerPerformance',
+            //                'value' => 'green',
+            //            ],
+            //        ],
+            //    ],
+            //],
+            //[
+            //    'short' => 'sun-boiler-performance-possible',
+            //    'text' => [
+            //        'nl' => 'Functioneren zonneboiler: mogelijk',
+            //    ],
+            //    'type' => Alert::TYPE_WARNING,
+            //    'conditions' => [
+            //        [
+            //            [
+            //                [
+            //                    'column' => 'new-heat-source',
+            //                    'operator' => Clause::CONTAINS,
+            //                    'value' => 'sun-boiler',
+            //                ],
+            //                [
+            //                    'column' => 'new-heat-source-warm-tap-water',
+            //                    'operator' => Clause::CONTAINS,
+            //                    'value' => 'sun-boiler',
+            //                ],
+            //            ],
+            //            [
+            //                'column' => 'fn',
+            //                'operator' => 'SunBoilerPerformance',
+            //                'value' => 'yellow',
+            //            ],
+            //        ],
+            //    ],
+            //],
+            //[
+            //    'short' => 'sun-boiler-performance-no-go',
+            //    'text' => [
+            //        'nl' => 'Functioneren zonneboiler: onrendabel',
+            //    ],
+            //    'type' => Alert::TYPE_DANGER,
+            //    'conditions' => [
+            //        [
+            //            [
+            //                [
+            //                    'column' => 'new-heat-source',
+            //                    'operator' => Clause::CONTAINS,
+            //                    'value' => 'sun-boiler',
+            //                ],
+            //                [
+            //                    'column' => 'new-heat-source-warm-tap-water',
+            //                    'operator' => Clause::CONTAINS,
+            //                    'value' => 'sun-boiler',
+            //                ],
+            //            ],
+            //            [
+            //                'column' => 'fn',
+            //                'operator' => 'SunBoilerPerformance',
+            //                'value' => 'red',
+            //            ],
+            //        ],
+            //    ],
+            //],
             [
                 'short' => 'hr-boiler-replacement-inefficiency',
                 'text' => [
@@ -184,14 +184,16 @@ class AlertsTableSeeder extends Seeder
                             ],
                         ],
                         [
-                            'column' => 'outside-unit-space',
-                            'operator' => Clause::EQ,
-                            'value' => 'no',
-                        ],
-                        [
-                            'column' => 'inside-unit-space',
-                            'operator' => Clause::EQ,
-                            'value' => 'no',
+                            [
+                                'column' => 'outside-unit-space',
+                                'operator' => Clause::EQ,
+                                'value' => 'no',
+                            ],
+                            [
+                                'column' => 'inside-unit-space',
+                                'operator' => Clause::EQ,
+                                'value' => 'no',
+                            ],
                         ],
                     ],
                 ],

@@ -82,6 +82,7 @@ class HighEfficiencyBoilerCalculator
      */
     public static function calculateGasUsage($boiler, $habit, $amountGas = 0)
     {
+        // TODO: We don't want to pass a habit. We want to pass dedicated answers, a building and an input source
         $amountGas = $habit->amount_gas ?? $amountGas;
 
         $result = [
@@ -104,7 +105,6 @@ class HighEfficiencyBoilerCalculator
         self::debug(__METHOD__.' boiler efficiencies of boiler: '.$boilerEfficiency->heating.'% (heating) and '.$boilerEfficiency->wtw.'% (tap water)');
 
         if ($habit instanceof UserEnergyHabit) {
-            // so ideally a building + input source should be passed instead of a habit, but that's just too much work for now
             $building = $habit->user->building;
 
             $cookType = $building->getAnswer($habit->inputSource, ToolQuestion::findByShort('cook-type'));
@@ -116,8 +116,7 @@ class HighEfficiencyBoilerCalculator
             // From solar boiler / heater
             $comfortLevel = $habit->comfortLevelTapWater;
             if ($comfortLevel instanceof ComfortLevelTapWater) {
-                $consumption = KeyFigures::getCurrentConsumption($habit,
-                    $comfortLevel);
+                $consumption = KeyFigures::getCurrentConsumption($habit->resident_count, $comfortLevel);
                 if ($consumption instanceof KeyFigureConsumptionTapWater) {
                     $brutoTapWater = $consumption->energy_consumption;
                 }

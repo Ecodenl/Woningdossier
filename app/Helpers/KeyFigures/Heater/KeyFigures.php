@@ -50,23 +50,16 @@ class KeyFigures implements KeyFiguresInterface
     /**
      * Get the key figure for the current water consumption.
      *
-     * @return KeyFigureConsumptionTapWater|null
+     * @param int|null $residentCount
+     * @param \App\Models\ComfortLevelTapWater $comfortLevel
+     *
+     * @return \App\Models\KeyFigureConsumptionTapWater|null
      */
-    public static function getCurrentConsumption(UserEnergyHabit $habit, ComfortLevelTapWater $comfortLevel)
+    public static function getCurrentConsumption(?int $residentCount, ComfortLevelTapWater $comfortLevel): ?KeyFigureConsumptionTapWater
     {
-        $consumption = KeyFigureConsumptionTapWater::where('resident_count', $habit->resident_count)
-                                           ->where('comfort_level_tap_water_id', $comfortLevel->id)
-                                           ->first();
-
-        if ($consumption instanceof KeyFigureConsumptionTapWater) {
-            // \Log::debug(__METHOD__.' consumption: for '.
-//                    $habit->resident_count.' residents on comfort level '.
-//                    $comfortLevel->name.' is '.
-//                    $consumption->water_consumption.' (water) and '.
-//                    $consumption->energy_consumption.' (gas)');
-        }
-
-        return $consumption;
+        return KeyFigureConsumptionTapWater::where('resident_count', $residentCount)
+            ->where('comfort_level_tap_water_id', $comfortLevel->id)
+            ->first();
     }
 
     /**

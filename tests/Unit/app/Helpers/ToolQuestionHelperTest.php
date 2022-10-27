@@ -104,7 +104,7 @@ class ToolQuestionHelperTest extends TestCase
                     'table' => 'considerables',
                     'column' => 'is_considering',
                     'where' => [
-                        'considerable_type' => 'App\Models\Step',
+                        'considerable_type' => \App\Models\Step::class,
                         'considerable_id' => 3,
                         'user_id' => $residentUser->id,
                     ],

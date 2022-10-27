@@ -32,12 +32,12 @@ class HighEfficiencyBoilerCalculator
         $current = self::calculateGasUsage($currentBoiler, $habit, $amountGas);
 
         $newBoilerQuestion = ToolQuestion::findByShort('new-boiler-type');
-        $canAnswer = ConditionService::init()->building($building)->inputSource($inputSource)
-            ->forModel($newBoilerQuestion)->isViewable();
+        $conditionService = ConditionService::init()->building($building)->inputSource($inputSource)
+            ->forModel($newBoilerQuestion);
 
         // We will see if the user has a new boiler, and otherwise we will grab the best boiler available.
         $newBoilerType = null;
-        if ($canAnswer) {
+        if ($conditionService->isViewable() && $conditionService->hasCompletedSteps(['heating'])) {
             $newBoilerType = ToolHelper::getServiceValueByCustomValue(
                 'boiler',
                 'new-boiler-type',
@@ -64,11 +64,6 @@ class HighEfficiencyBoilerCalculator
 
         self::debug('Gas usage ( '.$usageNew.' ) with new boiler: '.json_encode($usage));
         self::debug('Results in saving of '.$result.' = '.$amountGas.' - '.$usageNew);
-
-        // we don't want to return negative values
-        if (Number::isNegative($result)) {
-            $result = 0;
-        }
 
         return $result;
     }

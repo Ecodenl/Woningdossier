@@ -42,9 +42,31 @@ class ConditionService
         return $this;
     }
 
+    public function hasCompletedSteps(array $steps): bool
+    {
+        return ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->inputSource)
+            ->evaluate([
+                [
+                    [
+                        'column' => 'fn',
+                        'operator' => 'HasCompletedStep',
+                        'value' => [
+                            'steps' => $steps,
+                            'input_source_shorts' => [
+                                InputSource::RESIDENT_SHORT,
+                                InputSource::COACH_SHORT,
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+    }
+
     public function isViewable(?Collection $answers = null): bool
     {
-        $answers = is_null($answers) ? collect(): $answers;
+        $answers = is_null($answers) ? collect() : $answers;
 
         $selfConditionsOnly = [
             SubStep::class, ToolQuestionCustomValue::class, ToolQuestionValuable::class, Alert::class,

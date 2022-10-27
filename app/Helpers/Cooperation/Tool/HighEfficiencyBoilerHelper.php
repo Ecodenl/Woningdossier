@@ -10,6 +10,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\GetValueScope;
+use App\Services\ConditionService;
 use App\Services\UserActionPlanAdviceService;
 
 class HighEfficiencyBoilerHelper extends ToolHelper
@@ -66,10 +67,11 @@ class HighEfficiencyBoilerHelper extends ToolHelper
             'considerables' => [
                 $step->id => [
                     'is_considering' => $this->considersByConditions(
-                        $this->getConditionsForHeatSourceQuestions('hr-boiler')
+                        $this->getConditionConsiderable('hr-boiler')
                     ),
                 ],
             ],
+            //'has_completed_expert' => ConditionService::init()->building($this->building)->inputSource($this->inputSource)->hasCompletedSteps(['heating']),
             'building_services' => $buildingBoilerArray,
             'user_energy_habits' => [
                 'amount_gas' => $userEnergyHabit->amount_gas ?? null,
@@ -85,7 +87,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
     {
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 
-        $results = HighEfficiencyBoiler::calculate($this->user->building, $this->inputSource);
+        $results = HighEfficiencyBoiler::calculate($this->building, $this->inputSource);
 
         $step = Step::findByShort('high-efficiency-boiler');
 
@@ -93,7 +95,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
 
         // make sure the user considers the step
         // and has a cost indication before creating a advice
-        if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+        if ($this->considers($step)) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);

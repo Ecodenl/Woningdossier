@@ -278,6 +278,8 @@ class UserActionPlanAdviceService
     public static function getCategoryFromMeasure(Building $building, MeasureApplication $measureApplication): string
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $hasAnsweredHeating = ConditionService::init()->building($building)->inputSource($masterInputSource)
+            ->hasCompletedSteps(['heating']);
 
         // We only allow energy saving measures
         if ($measureApplication->measure_type === MeasureApplication::ENERGY_SAVING) {
@@ -412,25 +414,40 @@ class UserActionPlanAdviceService
                     break;
 
                 case 'hr-boiler':
-                    // We first need to check if the HR-boiler has been selected as option
+                    // If user has not answered the heating expert, we will check the age of their current.
+                    // If they have, we will check if they want it replaced or not
+
                     $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
                     $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
-                    $answer = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion), $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
-                    if (in_array('hr-boiler', $answer)) {
-                        // The user has a boiler, let's see if there's an age for it
-                        $ageQuestion = ToolQuestion::findByShort('boiler-placed-date');
-                        $answer = $building->getAnswer($masterInputSource, $ageQuestion);
+                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion), $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    if ($hasAnsweredHeating) {
+                        $newHeatSourceQuestion = ToolQuestion::findByShort('new-heat-source');
+                        $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
+                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion), $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
+                        $replaceAnswer = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('hr-boiler-replace'));
 
-                        if (is_numeric($answer)) {
-                            $diff = now()->format('Y') - $answer;
-                            // If it's not 10 years old, it's complete
-                            // If it's between 10 and 13, it's later
-                            // If it's older than 13 years, it's to-do
-                            $category = $diff < 10 ? static::CATEGORY_COMPLETE
-                                : ($diff >= 13 ? static::CATEGORY_TO_DO : static::CATEGORY_LATER);
-                        } else {
-                            // No placing date available. We will assume it's fine
-                            $category = static::CATEGORY_COMPLETE;
+                        if (in_array('hr-boiler', $currentSituation) && in_array('hr-boiler', $newSituation)) {
+                            $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
+                        }
+                        // No need to check further, it'll fall back to TO DO anyway
+                    } else {
+                        // We first need to check if the HR-boiler has been selected as option
+                        if (in_array('hr-boiler', $currentSituation)) {
+                            // The user has a boiler, let's see if there's an age for it
+                            $ageQuestion = ToolQuestion::findByShort('boiler-placed-date');
+                            $answer = $building->getAnswer($masterInputSource, $ageQuestion);
+
+                            if (is_numeric($answer)) {
+                                $diff = now()->format('Y') - $answer;
+                                // If it's not 10 years old, it's complete
+                                // If it's between 10 and 13, it's later
+                                // If it's older than 13 years, it's to-do
+                                $category = $diff < 10 ? static::CATEGORY_COMPLETE
+                                    : ($diff >= 13 ? static::CATEGORY_TO_DO : static::CATEGORY_LATER);
+                            } else {
+                                // No placing date available. We will assume it's fine
+                                $category = static::CATEGORY_COMPLETE;
+                            }
                         }
                     }
                     break;
@@ -438,11 +455,22 @@ class UserActionPlanAdviceService
                 case 'sun-boiler':
                     $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
                     $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
-                    $answer = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion), $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion), $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    if ($hasAnsweredHeating) {
+                        $newHeatSourceQuestion = ToolQuestion::findByShort('new-heat-source');
+                        $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
+                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion), $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
+                        $replaceAnswer = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('sun-boiler-replace'));
 
-                    // If they don't have a sun-boiler, we will put it in to-do
-                    $category = in_array('sun-boiler', $answer) ? static::CATEGORY_COMPLETE
-                        : static::CATEGORY_TO_DO;
+                        if (in_array('sun-boiler', $currentSituation) && in_array('sun-boiler', $newSituation)) {
+                            $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
+                        }
+                        // No need to check further, it'll fall back to TO DO anyway
+                    } else {
+                        // If they don't have a sun-boiler, we will put it in to-do
+                        $category = in_array('sun-boiler', $currentSituation) ? static::CATEGORY_COMPLETE
+                            : static::CATEGORY_TO_DO;
+                    }
                     break;
 
                 case 'solar-panels':
@@ -516,42 +544,62 @@ class UserActionPlanAdviceService
                     break;
 
                 case 'heat-pump':
-                    $subStep = SubStep::bySlug('warmtepomp')->first();
-                    $evaluation = ConditionEvaluator::init()
-                        ->building($building)
-                        ->inputSource($masterInputSource)
-                        ->evaluate($subStep->conditions);
+                    $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
+                    $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
+                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion), $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    if ($hasAnsweredHeating) {
+                        $newHeatSourceQuestion = ToolQuestion::findByShort('new-heat-source');
+                        $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
+                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion), $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
+                        $replaceAnswer = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-replace'));
 
-                    $calculateValue = ServiceValue::find(
-                        $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type'))
-                    )->calculate_value ?? null;
+                        if (in_array('heat-pump', $currentSituation) && in_array('heat-pump', $newSituation)) {
+                            $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
+                        }
+                        // No need to check further, it'll fall back to TO DO anyway
+                    } else {
+                        if (in_array('heat-pump', $currentSituation)) {
+                            $calculateValue = ServiceValue::find(
+                                $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type'))
+                            )->calculate_value ?? null;
 
-                    // We complete it if it's the current heat pump and isn't for maintenance yet.
-                    if ($evaluation && ! is_null($calculateValue)
-                        && HeatPumpHelper::MEASURE_SERVICE_LINK[$measureApplication->short] === $calculateValue) {
-                        $category = self::CATEGORY_COMPLETE;
+                            // We complete it if it's the current heat pump and isn't for maintenance yet.
+                            if (! is_null($calculateValue)
+                                && HeatPumpHelper::MEASURE_SERVICE_LINK[$measureApplication->short] === $calculateValue) {
+                                $category = self::CATEGORY_COMPLETE;
 
-                        $placeYear = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-placed-date'));
+                                $placeYear = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-placed-date'));
 
-                        if (is_numeric($placeYear)) {
-                            $diff = now()->format('Y') - $placeYear;
+                                if (is_numeric($placeYear)) {
+                                    $diff = now()->format('Y') - $placeYear;
 
-                            // Maintenance interval
-                            if ($diff >= 18) {
-                                $category = static::CATEGORY_TO_DO;
+                                    // Maintenance interval
+                                    if ($diff >= 18) {
+                                        $category = static::CATEGORY_TO_DO;
+                                    }
+                                }
                             }
                         }
-                    } else {
-                        $category = static::CATEGORY_TO_DO;
+                        // No need to check further, it'll fall back to TO DO anyway
                     }
                     break;
 
                 case 'heat-pump-boiler':
-                    // If it's been calculated, the user has selected it in either the new or the old situation, so
-                    // we only need to check one of them because it's safe to assume the situation.
-                    $category = in_array('heat-pump-boiler',
-                        $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-source')))
-                        ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                    $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
+                    $currentSituation = $building->getAnswer($masterInputSource, $heatSourceWaterQuestion);
+                    if ($hasAnsweredHeating) {
+                        $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
+                        $newSituation = $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion);
+                        $replaceAnswer = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-boiler-replace'));
+
+                        if (in_array('heat-pump-boiler', $currentSituation) && in_array('heat-pump-boiler', $newSituation)) {
+                            $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
+                        }
+                        // No need to check further, it'll fall back to TO DO anyway
+                    } else {
+                        $category = in_array('heat-pump-boiler', $currentSituation)
+                            ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                    }
                     break;
             }
         }

@@ -5,14 +5,17 @@ namespace App\Helpers\Cooperation\Tool;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\InputSource;
+use App\Models\SubStep;
 use App\Models\User;
+use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 abstract class ToolHelper
 {
-    use RetrievesAnswers;
+    use RetrievesAnswers,
+        FluentCaller;
 
     /** @var User */
     public $user;
@@ -99,10 +102,21 @@ abstract class ToolHelper
             ->evaluate($conditions);
     }
 
-    protected function getConditionsForHeatSourceQuestions(string $short): array
+    protected function getConditionConsiderable(string $short): array
     {
-        return [
+        $conditions =  [
             [
+                [
+                    'column' => 'fn',
+                    'operator' => 'HasCompletedStep',
+                    'value' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
+                            InputSource::RESIDENT_SHORT,
+                            InputSource::COACH_SHORT,
+                        ],
+                    ],
+                ],
                 [
                     [
                         'column' => 'new-heat-source',
@@ -113,6 +127,20 @@ abstract class ToolHelper
                         'column' => 'new-heat-source-warm-tap-water',
                         'operator' => Clause::CONTAINS,
                         'value' => $short,
+                    ],
+                ],
+            ],
+            [
+                [
+                    'column' => 'fn',
+                    'operator' => 'HasCompletedStep',
+                    'value' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
+                            InputSource::RESIDENT_SHORT,
+                            InputSource::COACH_SHORT,
+                        ],
+                        'should_pass' => false,
                     ],
                 ],
                 [
@@ -127,37 +155,39 @@ abstract class ToolHelper
                         'value' => $short,
                     ],
                 ],
-                [
-                    'column' => "{$short}-replace",
-                    'operator' => Clause::EQ,
-                    'value' => true,
-                ],
-            ],
-            [
-                [
-                    [
-                        'column' => 'new-heat-source',
-                        'operator' => Clause::CONTAINS,
-                        'value' => $short,
-                    ],
-                    [
-                        'column' => 'new-heat-source-warm-tap-water',
-                        'operator' => Clause::CONTAINS,
-                        'value' => $short,
-                    ],
-                ],
-                [
-                    'column' => 'heat-source',
-                    'operator' => Clause::NOT_CONTAINS,
-                    'value' => $short,
-                ],
-                [
-                    'column' => 'heat-source-warm-tap-water',
-                    'operator' => Clause::NOT_CONTAINS,
-                    'value' => $short,
-                ],
             ],
         ];
+
+        // We can never have nice things
+        if ($short === 'heat-pump') {
+            $conditions[] = [
+                [
+                    'column' => 'fn',
+                    'operator' => 'HasCompletedStep',
+                    'value' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
+                            InputSource::RESIDENT_SHORT,
+                            InputSource::COACH_SHORT,
+                        ],
+                    ],
+                ],
+                [
+                    'column' => [
+                        'slug->nl' => 'warmtepomp-interesse',
+                    ],
+                    'operator' => Clause::PASSES,
+                    'value' => SubStep::class,
+                ],
+                [
+                    'column' => 'interested-in-heat-pump',
+                    'operator' => Clause::EQ,
+                    'value' => 'yes',
+                ],
+            ];
+        }
+
+        return $conditions;
     }
 
     /**

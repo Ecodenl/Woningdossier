@@ -46,7 +46,7 @@ class MyPlanController extends Controller
 
     public function media()
     {
-        $this->authorize('viewAny', Media::class);
+        $this->authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), HoomdossierSession::getBuilding(true)]);
 
         $building = HoomdossierSession::getBuilding(true);
         return view('cooperation.frontend.tool.quick-scan.my-plan.media', compact('building'));

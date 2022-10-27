@@ -1,5 +1,5 @@
 <div class="flex flex-wrap w-full flex pb-5" x-data>
-    @can('create', \App\Models\Media::class)
+    @can('create', [\App\Models\Media::class, $inputSource, $building])
         <div class="flex flex-wrap w-full">
             @component('cooperation.frontend.layouts.components.form-group', [
                'label' => __('cooperation/frontend/tool.my-plan.uploader.add'),
@@ -24,8 +24,8 @@
 
     <div class="flex flex-wrap w-full pl-8">
         @foreach($files as $file)
-            @can('view', $file)
-                @php $canUpdate = Auth::user()->can('update', $file) @endphp
+            @can('view', [$file, $inputSource, $building])
+                @php $canUpdate = Auth::user()->can('update', [$file, $inputSource, $building]) @endphp
                 <div class="flex flex-wrap w-1/4 justify-center mb-4 pr-8" x-data="modal()" wire:key="{{$file->id}}">
                     <div class="space-y-6 pb-16 w-full">
                         <div>
@@ -172,7 +172,7 @@
                                 @lang('cooperation/frontend/tool.my-plan.uploader.form.download.title')
                                 <i class="ml-2 icon-sm icon-arrow-down"></i>
                             </a>
-                            @can('delete', $file)
+                            @can('delete', [$file, $inputSource, $building])
                                 {{-- It is important to have the wire:click AFTER the x-on:click, otherwise the confirm doesn't prevent wire:click --}}
                                 <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {close(); $el.closest('{{"[wire\\\\:key=\"{$file->id}\"]"}}').fadeOut(250);} else { $event.stopImmediatePropagation(); }"
                                         wire:click="delete({{$file->id}})"

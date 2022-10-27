@@ -1,5 +1,6 @@
 {{-- Nav bar --}}
 <div class="flex flex-wrap flex-row justify-between items-center w-full bg-white h-12 px-5 xl:px-20 relative z-100 shadow-lg">
+    @php $building = \App\Helpers\HoomdossierSession::getBuilding(true); @endphp
     <div class="flex flex-row flex-wrap justify-between items-center space-x-4">
         {{-- TODO: Check if this should be interchangable per cooperation --}}
         <a href="{{ route('cooperation.welcome') }}">
@@ -19,8 +20,9 @@
             @endif
 
             @if(Hoomdossier::user()->isFillingToolForOtherBuilding())
-                @php($building = \App\Helpers\HoomdossierSession::getBuilding(true))
-                    <p class="btn btn-purple">Woning: {{$building->user->getFullName()}} - {{"{$building->postal_code} - {$building->number} {$building->extension}"}}</p>
+                <p class="btn btn-purple">
+                    Woning: {{$building->user->getFullName()}} - {{"{$building->postal_code} - {$building->number} {$building->extension}"}}
+                </p>
             @endif
         @endauth
         @if(App::environment() == 'local') {{-- currently only for local development --}}
@@ -97,7 +99,7 @@
 
             {{-- Keep local for ease of use --}}
             @if(app()->isLocal())
-                @if(($building = \App\Helpers\HoomdossierSession::getBuilding(true)) instanceof \App\Models\Building && $building->hasCompletedQuickScan(\App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT)))
+                @if($building instanceof \App\Models\Building && $building->hasCompletedQuickScan(\App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT)))
                     @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
                         {{-- Loaded in NavbarComposer --}}
                         @foreach($expertSteps as $expertStep)
@@ -114,7 +116,7 @@
                 @endif
             @endif
 
-            @can('viewAny', \App\Models\Media::class)
+            @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
                 <div>
                     <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media') }}"
                        class="flex flex-wrap justify-center items-center">

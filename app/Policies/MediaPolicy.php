@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
+use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Media;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -19,15 +20,13 @@ class MediaPolicy
      *
      * @return mixed
      */
-    public function viewAny(Account $user)
+    public function viewAny(Account $user, InputSource $inputSource, Building $building)
     {
         // Media can be viewed if it's either the user's own building, the user is a coach, or the user
         // belongs to the cooperation.
-        $currentInputSource = HoomdossierSession::getInputSource(true);
-        $currentBuilding = HoomdossierSession::getBuilding();
 
-        return $currentBuilding === $user->user()->building->id
-            || $currentInputSource->short === InputSource::COACH_SHORT
+        return $building->id === $user->user()->building->id
+            || $inputSource->short === InputSource::COACH_SHORT
             || HoomdossierSession::isUserObserving();
     }
 
@@ -39,13 +38,10 @@ class MediaPolicy
      *
      * @return mixed
      */
-    public function view(Account $user, Media $media)
+    public function view(Account $user, Media $media, InputSource $inputSource, Building $building)
     {
-        $currentInputSource = HoomdossierSession::getInputSource(true);
-        $currentBuilding = HoomdossierSession::getBuilding();
-
-        return $currentBuilding === $user->user()->building->id
-            || $currentInputSource->short === InputSource::COACH_SHORT
+        return $building->id === $user->user()->building->id
+            || $inputSource->short === InputSource::COACH_SHORT
             || (HoomdossierSession::isUserObserving() && data_get($media->custom_properties, 'share_with_cooperation'));
     }
 
@@ -56,13 +52,10 @@ class MediaPolicy
      *
      * @return mixed
      */
-    public function create(Account $user)
+    public function create(Account $user, InputSource $inputSource, Building $building)
     {
-        $currentInputSource = HoomdossierSession::getInputSource(true);
-        $currentBuilding = HoomdossierSession::getBuilding();
-
-        return $currentBuilding === $user->user()->building->id
-            || $currentInputSource->short === InputSource::COACH_SHORT;
+        return $building->id === $user->user()->building->id
+            || $inputSource->short === InputSource::COACH_SHORT;
     }
 
     /**
@@ -73,13 +66,10 @@ class MediaPolicy
      *
      * @return mixed
      */
-    public function update(Account $user, Media $media)
+    public function update(Account $user, Media $media, InputSource $inputSource, Building $building)
     {
-        $currentInputSource = HoomdossierSession::getInputSource(true);
-        $currentBuilding = HoomdossierSession::getBuilding();
-
-        return $currentBuilding === $user->user()->building->id
-            || $currentInputSource->short === InputSource::COACH_SHORT;
+        return $building->id === $user->user()->building->id
+            || $inputSource->short === InputSource::COACH_SHORT;
     }
 
     /**
@@ -90,38 +80,9 @@ class MediaPolicy
      *
      * @return mixed
      */
-    public function delete(Account $user, Media $media)
+    public function delete(Account $user, Media $media, InputSource $inputSource, Building $building)
     {
-        $currentInputSource = HoomdossierSession::getInputSource(true);
-        $currentBuilding = HoomdossierSession::getBuilding();
-
-        return $currentBuilding === $user->user()->building->id
-            || $currentInputSource->short === InputSource::COACH_SHORT;
-    }
-
-    /**
-     * Determine whether the user can restore the media.
-     *
-     * @param \App\Models\Account $user
-     * @param \App\Models\Media $media
-     *
-     * @return mixed
-     */
-    public function restore(Account $user, Media $media)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the media.
-     *
-     * @param \App\Models\Account $user
-     * @param \App\Models\Media $media
-     *
-     * @return mixed
-     */
-    public function forceDelete(Account $user, Media $media)
-    {
-        //
+        return $building->id === $user->user()->building->id
+            || $inputSource->short === InputSource::COACH_SHORT;
     }
 }

@@ -19,6 +19,7 @@ class Uploader extends Component
         AuthorizesRequests;
 
     public $building;
+    public $inputSource;
     public $documents;
     public $files;
     public array $fileData = [];
@@ -30,6 +31,7 @@ class Uploader extends Component
     public function mount(Building $building)
     {
         $this->building = $building;
+        $this->inputSource = HoomdossierSession::getInputSource(true);
 
         // We want all media regardless of tag
         $this->files = $building->media;
@@ -108,7 +110,7 @@ class Uploader extends Component
 
         $file = $this->files->where('id', $fileId)->first();
 
-        $this->authorize('update', $file);
+        $this->authorize('update', [$file, $this->inputSource, $this->building]);
 
         $fileData = $this->fileData[$fileId];
 
@@ -135,7 +137,7 @@ class Uploader extends Component
     {
         $file = $this->files->where('id', $fileId)->first();
 
-        $this->authorize('delete', $file);
+        $this->authorize('delete', [$file, $this->inputSource, $this->building]);
 
         if ($file instanceof Media) {
             $file->delete();

@@ -17,10 +17,11 @@ trait HasDynamicAnswers
      * Get the answer, either dynamic if set, otherwise from the given building.
      *
      * @param string $toolQuestionShort
+     * @param bool $withEvaluation Because sometimes, but ONLY sometimes we don't want validation
      *
      * @return array|mixed
      */
-    protected function getAnswer(string $toolQuestionShort)
+    protected function getAnswer(string $toolQuestionShort, bool $withEvaluation = true)
     {
         $answers = is_null($this->answers) ? collect() : $this->answers;
         $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
@@ -35,9 +36,12 @@ trait HasDynamicAnswers
 
             return $answer;
         } else {
-            $evaluation = ConditionService::init()
-                ->building($this->building)->inputSource($this->inputSource)
-                ->forModel($toolQuestion)->isViewable($answers);
+            $evaluation = true;
+            if ($withEvaluation) {
+                $evaluation = ConditionService::init()
+                    ->building($this->building)->inputSource($this->inputSource)
+                    ->forModel($toolQuestion)->isViewable($answers);
+            }
 
             $answer = null;
 

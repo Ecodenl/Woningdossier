@@ -17,15 +17,20 @@ trait RetrievesAnswers
      * Get the answer from the given building (if allowed).
      *
      * @param  string  $toolQuestionShort
+     * @param bool $withEvaluation Because sometimes, but ONLY sometimes we don't want validation
      *
      * @return array|mixed
      */
-    protected function getAnswer(string $toolQuestionShort)
+    protected function getAnswer(string $toolQuestionShort, bool $withEvaluation = true)
     {
         $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-        $evaluation = ConditionService::init()
-            ->building($this->building)->inputSource($this->inputSource)
-            ->forModel($toolQuestion)->isViewable();
+
+        $evaluation = true;
+        if ($withEvaluation) {
+            $evaluation = ConditionService::init()
+                ->building($this->building)->inputSource($this->inputSource)
+                ->forModel($toolQuestion)->isViewable();
+        }
 
         return $evaluation ? $this->building->getAnswer(
             $this->inputSource,

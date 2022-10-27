@@ -13,8 +13,6 @@ use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
 use App\Helpers\ConsiderableHelper;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
-use App\Helpers\Cooperation\Tool\HeaterHelper;
-use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
 use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
 use App\Helpers\Cooperation\Tool\SolarPanelHelper;

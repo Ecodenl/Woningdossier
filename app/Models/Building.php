@@ -223,7 +223,12 @@ class Building extends Model
      */
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
-        // TODO: Should this check `for_specific_input_source`?
+        if (! is_null($toolQuestion->for_specific_input_source_id)) {
+            // If a tool question has a specific input source, it won't be saved to master.
+            // We override to the only allowed input source, because otherwise the answer is _always_ null
+            $inputSource = $toolQuestion->forSpecificInputSource;
+        }
+
         $answer = null;
         $where['input_source_id'] = $inputSource->id;
         // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)

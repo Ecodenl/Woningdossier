@@ -105,22 +105,31 @@ class ToolHelper
             if ($isSpecificOrder) {
                 $locale = 'nl';
 
-                // Order by custom order
+                // Order by custom order (it's important to ensure every sub step is in the array, else the order might be weird)
                 $questionMarks = substr(str_repeat('?, ', count($stepDataOrStepShort)), 0, -2);
                 $query->orderByRaw("FIELD(slug->>'$.{$locale}', {$questionMarks})", $stepDataOrStepShort);
+            } else {
+                $query->orderBy('order');
             }
             $subSteps = $query->get();
 
             foreach ($subSteps as $subStep) {
-                $subSteppables = $subStep->subSteppables()->whereNotIn('sub_steppable_type', [ToolLabel::class])->get();
+                $subSteppables = $subStep->subSteppables()->whereNotIn('sub_steppable_type', [ToolLabel::class])->orderBy('order')->get();
                 foreach ($subSteppables as $subSteppable) {
                     $model = $subSteppable->subSteppable;
 
                     if (! array_key_exists($model->short, $processedShorts)
                         || ! in_array($subSteppable->sub_steppable_type, $processedShorts[$model->short])) {
-                        $shortToSave = ($subSteppable->sub_steppable_type === ToolQuestion::class ? 'question_' : 'calculation_') . $model->short;
+                        $isToolQuestion = $subSteppable->sub_steppable_type === ToolQuestion::class;
 
-                        $structure[$stepShort][$shortToSave] = $model->name;
+                        $shortToSave = ($isToolQuestion ? 'question_' : 'calculation_') . $model->short;
+
+                        $modelName = $model->name;
+                        if ($isToolQuestion && ! is_null($model->for_specific_input_source_id)) {
+                            $modelName .= " ({$model->forSpecificInputSource->name})";
+                        }
+
+                        $structure[$stepShort][$shortToSave] = $modelName;
 
                         $processedShorts[$model->short][] = $subSteppable->sub_steppable_type;
                     }

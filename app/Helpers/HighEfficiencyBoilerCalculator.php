@@ -65,14 +65,6 @@ class HighEfficiencyBoilerCalculator
         self::debug('Gas usage ( '.$usageNew.' ) with new boiler: '.json_encode($usage));
         self::debug('Results in saving of '.$result.' = '.$amountGas.' - '.$usageNew);
 
-        //TODO: If a user is going to place a boiler, he will have negative savings
-        // I assume we don't want to "hide" that
-
-        // we don't want to return negative values
-        //if (Number::isNegative($result)) {
-        //    $result = 0;
-        //}
-
         return $result;
     }
 

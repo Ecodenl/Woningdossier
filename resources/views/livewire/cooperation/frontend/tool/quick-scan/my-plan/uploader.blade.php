@@ -22,7 +22,7 @@
         <hr class="w-full">
     @endcan
 
-    <div class="flex flex-wrap w-full pl-8">
+    <div class="flex flex-wrap w-full">
         @foreach($files as $file)
             @can('view', [$file, $inputSource, $building])
                 @php $canUpdate = Auth::user()->can('update', [$file, $inputSource, $building]) @endphp
@@ -46,7 +46,7 @@
                                 </div>
                                 @if($canUpdate)
                                     @if(data_get($fileData, "{$file->id}.share_with_cooperation"))
-                                        <i class="icon-md icon-show"></i>
+                                        <i class="icon-md icon-show text-green"></i>
                                     @else
                                         <i class="icon-md icon-hide"></i>
                                     @endif
@@ -137,7 +137,7 @@
                                         <label for="edit-file-share-with-cooperation-{{$file->id}}">
                                             <span class="checkmark"></span>
                                             <span class="flex items-center">
-                                                @lang("cooperation/frontend/tool.my-plan.uploader.form.share-with-cooperation.options.{$shareVal}")
+                                                @lang("cooperation/frontend/tool.my-plan.uploader.form.share-with-cooperation.options.show")
                                                 <i class="ml-1 {{ "icon-{$shareVal}" }}"></i>
                                             </span>
                                         </label>

@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Step;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class HasCompletedStep implements ShouldEvaluate
 {
@@ -18,8 +19,10 @@ class HasCompletedStep implements ShouldEvaluate
         // 'should_pass' => whether or not this should pass; if set to false, the evaluation will be true if no steps
         // are completed
 
-        $steps = Step::findByShorts((array) $value['step']);
-        $inputSources = InputSource::findByShorts(empty($value['input_source']) ? [$inputSource] : (array) $value['input_source']);
+        $inputSourceShorts = $value['input_source_shorts'];
+
+        $steps = Step::findByShorts($value['steps']);
+        $inputSources = InputSource::findByShorts($inputSourceShorts);
         $shouldPass = $value['should_pass'] ?? true;
 
         $hasCompleted = $building->completedSteps()->allInputSources()

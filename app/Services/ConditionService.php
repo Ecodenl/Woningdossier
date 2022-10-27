@@ -53,8 +53,8 @@ class ConditionService
                         'column' => 'fn',
                         'operator' => 'HasCompletedStep',
                         'value' => [
-                            'step' => $steps,
-                            'input_source' => [
+                            'steps' => $steps,
+                            'input_source_shorts' => [
                                 InputSource::RESIDENT_SHORT,
                                 InputSource::COACH_SHORT,
                             ],

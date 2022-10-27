@@ -110,8 +110,8 @@ abstract class ToolHelper
                     'column' => 'fn',
                     'operator' => 'HasCompletedStep',
                     'value' => [
-                        'step' => 'heating',
-                        'input_source' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
                             InputSource::RESIDENT_SHORT,
                             InputSource::COACH_SHORT,
                         ],
@@ -135,8 +135,8 @@ abstract class ToolHelper
                     'column' => 'fn',
                     'operator' => 'HasCompletedStep',
                     'value' => [
-                        'step' => 'heating',
-                        'input_source' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
                             InputSource::RESIDENT_SHORT,
                             InputSource::COACH_SHORT,
                         ],
@@ -165,8 +165,8 @@ abstract class ToolHelper
                     'column' => 'fn',
                     'operator' => 'HasCompletedStep',
                     'value' => [
-                        'step' => 'heating',
-                        'input_source' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
                             InputSource::RESIDENT_SHORT,
                             InputSource::COACH_SHORT,
                         ],

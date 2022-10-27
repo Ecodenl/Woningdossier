@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Throwable;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
@@ -72,7 +73,7 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
         if (app()->bound('sentry') && $this->shouldReport($exception)) {
             app('sentry')->captureException($exception);
@@ -88,7 +89,7 @@ class Handler extends ExceptionHandler
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Symfony\Component\HttpFoundation\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         // Handle the exception if the role in the session is not associated with the user itself.
         if ($exception instanceof RoleInSessionHasNoAssociationWithUser) {

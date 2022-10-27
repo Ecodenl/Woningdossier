@@ -118,9 +118,16 @@ class ToolHelper
 
                     if (! array_key_exists($model->short, $processedShorts)
                         || ! in_array($subSteppable->sub_steppable_type, $processedShorts[$model->short])) {
-                        $shortToSave = ($subSteppable->sub_steppable_type === ToolQuestion::class ? 'question_' : 'calculation_') . $model->short;
+                        $isToolQuestion = $subSteppable->sub_steppable_type === ToolQuestion::class;
 
-                        $structure[$stepShort][$shortToSave] = $model->name;
+                        $shortToSave = ($isToolQuestion ? 'question_' : 'calculation_') . $model->short;
+
+                        $modelName = $model->name;
+                        if ($isToolQuestion && ! is_null($model->for_specific_input_source_id)) {
+                            $modelName .= " ({$model->forSpecificInputSource->name})";
+                        }
+
+                        $structure[$stepShort][$shortToSave] = $modelName;
 
                         $processedShorts[$model->short][] = $subSteppable->sub_steppable_type;
                     }

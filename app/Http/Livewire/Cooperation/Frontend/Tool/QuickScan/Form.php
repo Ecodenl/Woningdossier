@@ -205,6 +205,13 @@ class Form extends Scannable
             ->forStep($this->step)
             ->forSubStep($this->subStep);
 
+        if ($completedSubStep->wasRecentlyCreated) {
+            // No need to check SubSteps that were recently created because they passed conditions
+            $flowService->skipSubstep($completedSubStep->subStep);
+        }
+
+        $flowService->checkConditionals($dirtyToolQuestions);
+
         if (! $completedSubStep->wasRecentlyCreated) {
             $flowService->checkConditionals($dirtyToolQuestions);
         }

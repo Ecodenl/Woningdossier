@@ -15,14 +15,12 @@ class HasCompletedStep implements ShouldEvaluate
         // This evaluator checks if the user has completed one or more steps, for one or more input sources.
         // $value must be an array, where
         // 'step' => one or more step shorts,
-        // 'input_source' => zero or more input sources; if left empty, the passed $inputSource will be used,
+        // 'input_source' => one or more input sources,
         // 'should_pass' => whether or not this should pass; if set to false, the evaluation will be true if no steps
         // are completed
 
-        $inputSourceShorts = $value['input_source_shorts'];
-
         $steps = Step::findByShorts($value['steps']);
-        $inputSources = InputSource::findByShorts($inputSourceShorts);
+        $inputSources = InputSource::findByShorts($value['input_source_shorts']);
         $shouldPass = $value['should_pass'] ?? true;
 
         $hasCompleted = $building->completedSteps()->allInputSources()

@@ -2167,12 +2167,12 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => [],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.calculation_paintwork.costs'),
+                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.paintwork.costs'),
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
                         [
-                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.calculation_paintwork.year'),
+                            'morph' => ToolCalculationResult::findByShort('insulated-glazing.paintwork.year'),
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],

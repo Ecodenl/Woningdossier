@@ -29,7 +29,8 @@
         "spatie/laravel-permission": "^3.17",
         "spatie/laravel-translatable": "^4.6",
         "spatie/laravel-translation-loader": "^2.6",
-        "wedesignit/laravel-translations-import": "^0.1.8"
+        "wedesignit/laravel-translations-import": "^0.1.8",
+        "laravel/ui": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",

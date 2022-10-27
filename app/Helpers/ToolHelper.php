@@ -105,14 +105,16 @@ class ToolHelper
             if ($isSpecificOrder) {
                 $locale = 'nl';
 
-                // Order by custom order
+                // Order by custom order (it's important to ensure every sub step is in the array, else the order might be weird)
                 $questionMarks = substr(str_repeat('?, ', count($stepDataOrStepShort)), 0, -2);
                 $query->orderByRaw("FIELD(slug->>'$.{$locale}', {$questionMarks})", $stepDataOrStepShort);
+            } else {
+                $query->orderBy('order');
             }
             $subSteps = $query->get();
 
             foreach ($subSteps as $subStep) {
-                $subSteppables = $subStep->subSteppables()->whereNotIn('sub_steppable_type', [ToolLabel::class])->get();
+                $subSteppables = $subStep->subSteppables()->whereNotIn('sub_steppable_type', [ToolLabel::class])->orderBy('order')->get();
                 foreach ($subSteppables as $subSteppable) {
                     $model = $subSteppable->subSteppable;
 

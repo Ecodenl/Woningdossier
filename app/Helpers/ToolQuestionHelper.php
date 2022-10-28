@@ -197,7 +197,7 @@ class ToolQuestionHelper
             $answer = $building->getAnswer($inputSource, $toolQuestion);
         }
 
-        if (! empty($answer) || (is_numeric($answer) && (int)$answer === 0)) {
+        if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
             $questionValues = QuestionValue::init($building->user->cooperation, $toolQuestion)
                 ->forInputSource($inputSource)
                 ->forBuilding($building)

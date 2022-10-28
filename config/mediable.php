@@ -31,7 +31,7 @@ return [
     /*
      * The maximum file size in bytes for a single uploaded file
      */
-    'max_size' => 1024 * 1024 * 10,
+    'max_size' => env('MEDIA_MAX_SIZE', 16384) * 1000,
 
     /*
      * What to do if a duplicate file is uploaded.

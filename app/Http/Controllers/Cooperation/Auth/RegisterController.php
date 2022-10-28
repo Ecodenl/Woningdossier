@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterFormRequest;
 use App\Models\Account;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -73,7 +74,7 @@ class RegisterController extends Controller
      */
     public function register(RegisterFormRequest $request, Cooperation $cooperation)
     {
-        $user = UserService::register($cooperation, ['resident'], $request->all());
+        $user = UserService::register($cooperation, [InputSource::RESIDENT_SHORT], $request->all());
         $account = $user->account;
 
         if ($account->wasRecentlyCreated) {

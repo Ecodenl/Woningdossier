@@ -71,7 +71,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         }
 
         $currentBuildYearValue = $buildingFeature->build_year;
-        $changedBuildYear = $changes['build_year'];
+        $changedBuildYear = $changes['build_year'] ?? null;
 
         // We need this to do stuff
         if (! is_null($currentBuildYearValue) || !is_null($changedBuildYear)) {

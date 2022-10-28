@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class KeyFigureBoilerEfficienciesTableSeeder extends Seeder
@@ -13,7 +14,7 @@ class KeyFigureBoilerEfficienciesTableSeeder extends Seeder
      */
     public function run()
     {
-        $service = \DB::table('services')->where('short', 'boiler')->first();
+        $service = DB::table('services')->where('short', 'boiler')->first();
 
         $items = [
             [
@@ -44,12 +45,12 @@ class KeyFigureBoilerEfficienciesTableSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            $serviceValue = \DB::table('service_values')
+            $serviceValue = DB::table('service_values')
                                ->where('service_id', $service->id)
                             ->where('calculate_value', $item['service_value_calculate_value'])
                             ->first();
 
-            \DB::table('key_figure_boiler_efficiencies')->insert([
+            DB::table('key_figure_boiler_efficiencies')->insert([
                 'service_value_id' => $serviceValue->id,
                 'heating' => $item['heating'],
                 'wtw' => $item['wtw'],

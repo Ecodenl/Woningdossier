@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class BuildingsTableSeeder extends Seeder
@@ -13,7 +14,7 @@ class BuildingsTableSeeder extends Seeder
      */
     public function run()
     {
-        \DB::table('buildings')->insert([
+        DB::table('buildings')->insert([
             'user_id' => 1,
             'street' => 'Hoekzijdsestraatweg',
             'number' => 1,

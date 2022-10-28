@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class AssessmentTypesTableSeeder extends Seeder
@@ -65,7 +66,7 @@ class AssessmentTypesTableSeeder extends Seeder
         ];
 
         foreach ($types as $type) {
-            \DB::table('assessment_types')->insert([
+            DB::table('assessment_types')->insert([
                 'type' => $type['type'],
                 'name' => json_encode($type['name']),
             ]);

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class HeaterSpecificationsTableSeeder extends Seeder
@@ -142,6 +143,6 @@ class HeaterSpecificationsTableSeeder extends Seeder
             ],
         ];
 
-        \DB::table('heater_specifications')->insert($items);
+        DB::table('heater_specifications')->insert($items);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class KeyFigureConsumptionTapWatersTableSeeder extends Seeder
@@ -128,7 +129,7 @@ class KeyFigureConsumptionTapWatersTableSeeder extends Seeder
             $comfortLevelTapWater = \App\Models\ComfortLevelTapWater::where('calculate_value', $cltwCalcVal)->first();
             if ($comfortLevelTapWater instanceof \App\Models\ComfortLevelTapWater) {
                 foreach ($item as $residentCount => $consumptions) {
-                    \DB::table('key_figure_consumption_tap_waters')->insert([
+                    DB::table('key_figure_consumption_tap_waters')->insert([
                         'comfort_level_tap_water_id' => $comfortLevelTapWater->id,
                         'resident_count' => $residentCount,
                         'water_consumption' => $consumptions['water_consumption'],

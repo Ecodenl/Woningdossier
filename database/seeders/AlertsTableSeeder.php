@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Alert;
 use App\Models\SubStep;
 use App\Helpers\Conditions\Clause;

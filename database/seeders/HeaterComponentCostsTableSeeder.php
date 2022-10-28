@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class HeaterComponentCostsTableSeeder extends Seeder
@@ -77,6 +78,6 @@ class HeaterComponentCostsTableSeeder extends Seeder
             ],
         ];
 
-        \DB::table('heater_component_costs')->insert($costs);
+        DB::table('heater_component_costs')->insert($costs);
     }
 }

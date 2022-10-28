@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class EnergyLabelsTableSeeder extends Seeder
@@ -49,7 +50,7 @@ class EnergyLabelsTableSeeder extends Seeder
         ];
 
         foreach ($energyLabels as $order => $energyLabel) {
-            \DB::table('energy_labels')->updateOrInsert(
+            DB::table('energy_labels')->updateOrInsert(
                 [
                     'name' => $energyLabel['name']
                 ],

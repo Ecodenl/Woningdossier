@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class PvPanelLocationFactorsTableSeeder extends Seeder
@@ -471,7 +472,7 @@ class PvPanelLocationFactorsTableSeeder extends Seeder
         ];
 
         foreach ($locations as $location) {
-            \DB::table('pv_panel_location_factors')->insert($location);
+            DB::table('pv_panel_location_factors')->insert($location);
         }
     }
 }

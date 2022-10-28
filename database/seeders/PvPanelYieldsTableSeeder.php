@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class PvPanelYieldsTableSeeder extends Seeder
@@ -186,10 +187,10 @@ class PvPanelYieldsTableSeeder extends Seeder
         ];
 
         foreach ($items as $short => $item) {
-            $orientation = \DB::table('pv_panel_orientations')->where('short', $short)->first();
+            $orientation = DB::table('pv_panel_orientations')->where('short', $short)->first();
 
             foreach ($item as $angle => $yield) {
-                \DB::table('pv_panel_yields')->insert([
+                DB::table('pv_panel_yields')->insert([
                     'angle'                   => $angle,
                     'pv_panel_orientation_id' => $orientation->id,
                     'yield'                   => $yield,

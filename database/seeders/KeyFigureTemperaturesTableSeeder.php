@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class KeyFigureTemperaturesTableSeeder extends Seeder
@@ -185,24 +186,24 @@ class KeyFigureTemperaturesTableSeeder extends Seeder
         ];
 
         foreach ($figures as $figure) {
-            $measureApplication = \DB::table('measure_applications')
+            $measureApplication = DB::table('measure_applications')
                                      ->where('short', $figure['short'])
                                      ->first();
 
-            $insulatedGlazing = \DB::table('insulating_glazings')
+            $insulatedGlazing = DB::table('insulating_glazings')
                                      ->where('translations.language', '=', 'nl')
                                      ->where('translations.translation', '=', $figure['insulating_glazing'])
                                      ->join('translations', 'insulating_glazings.name', '=', 'translations.key')
                                      ->first(['insulating_glazings.*']);
 
-            $buildingHeating = \DB::table('building_heatings')
+            $buildingHeating = DB::table('building_heatings')
                                      ->where('translations.language', '=', 'nl')
                                      ->where('translations.translation', '=', $figure['building_heating'])
                                      ->join('translations', 'building_heatings.name', '=', 'translations.key')
                                      ->first(['building_heatings.*']);
 
             if (! is_null($measureApplication) && $buildingHeating instanceof \stdClass) {
-                \DB::table('key_figure_temperatures')->insert([
+                DB::table('key_figure_temperatures')->insert([
                     'measure_application_id' => $measureApplication->id,
                     'insulating_glazing_id'  => $insulatedGlazing instanceof \stdClass ? $insulatedGlazing->id : null,
                     'building_heating_id'    => $buildingHeating->id,

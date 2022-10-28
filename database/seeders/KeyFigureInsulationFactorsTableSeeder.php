@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class KeyFigureInsulationFactorsTableSeeder extends Seeder
@@ -172,7 +173,7 @@ class KeyFigureInsulationFactorsTableSeeder extends Seeder
         ];
 
         foreach($factors as $factor){
-            \DB::table('key_figure_insulation_factors')->updateOrInsert($factor);
+            DB::table('key_figure_insulation_factors')->updateOrInsert($factor);
         }
     }
 }

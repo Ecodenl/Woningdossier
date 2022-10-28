@@ -47,7 +47,7 @@ class MyPlanController extends Controller
     {
         $this->authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), HoomdossierSession::getBuilding(true)]);
 
-        $buildingId = $request->input('building', HoomdossierSession::getBuilding());
+        $buildingId = $request->input('building_id', HoomdossierSession::getBuilding());
         $building = \App\Helpers\Cache\Building::find($buildingId);
 
         return view('cooperation.frontend.tool.quick-scan.my-plan.media', compact('building'));

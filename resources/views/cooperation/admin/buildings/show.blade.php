@@ -256,7 +256,7 @@
                         </h4>
                     </div>
                     <div class="modal-body" style="margin: 0; padding: 0; height: 100%;">
-                        <iframe src="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media') . "?iframe=1&building={$building->id}" }}"
+                        <iframe src="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media') . "?iframe=1&building_id={$building->id}" }}"
                                 style="border: none; width: 100%; height: 100%;"></iframe>
                     </div>
                 </div>

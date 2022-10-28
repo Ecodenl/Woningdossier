@@ -446,14 +446,14 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 'name' => [
                     'nl' => 'Indicatieve kosten schilderwerk',
                 ],
-                'short' => 'insulated-glazing.calculation_paintwork.costs',
+                'short' => 'insulated-glazing.paintwork.costs',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
             ],
             [
                 'name' => [
                     'nl' => ' Volgende schilderbeurt aanbevolen',
                 ],
-                'short' => 'insulated-glazing.calculation_paintwork.year',
+                'short' => 'insulated-glazing.paintwork.year',
                 'unit_of_measure' => 'jaar',
             ],
             // Floor insulation

@@ -2,20 +2,14 @@
 
 namespace App\Helpers\QuestionValues;
 
-use App\Models\Building;
-use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
-use App\Models\InputSource;
-use App\Models\ToolQuestion;
-use App\Traits\FluentCaller;
-use App\Traits\HasDynamicAnswers;
 use Illuminate\Support\Collection;
 
 class SpecificExampleBuilding extends QuestionValuable
 {
     public function getQuestionValues(): Collection
     {
-        $buildingTypeId = $this->getAnswer('building-type');
+        $buildingTypeId = $this->getAnswer('building-type', false);
         $cooperationId = $this->cooperation->id;
 
         // Building type ID can be null, for example if we use $building->getAnswerForAllInputSources, it can
@@ -26,6 +20,9 @@ class SpecificExampleBuilding extends QuestionValuable
             $genericBuilding = ExampleBuilding::where('building_type_id', $buildingTypeId)
                 ->whereNull('cooperation_id')
                 ->first();
+
+            // TODO: use generic() scope
+            // TODO: use select(*)->addSelect(DB::RAW(trans as name)), this allows us to skip the boolean check on line 54
 
             // Get all available example buildings
             $exampleBuildings = ExampleBuilding::where('building_type_id', $buildingTypeId)

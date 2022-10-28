@@ -13,7 +13,6 @@ use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
-use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
 class Heater extends \App\Calculations\Calculator
@@ -47,11 +46,11 @@ class Heater extends \App\Calculations\Calculator
             $this->getAnswer('new-water-comfort'),
         );
 
-        if ($this->energyHabit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
-            $result['amount_gas'] = $this->energyHabit->amount_gas;
-            $result['amount_electricity'] = $this->energyHabit->amount_electricity;
+        if ($comfortLevel instanceof ComfortLevelTapWater) {
+            $result['amount_gas'] = $this->getAnswer('amount-gas');
+            $result['amount_electricity'] = $this->getAnswer('amount-electricity');
 
-            $consumption = KeyFigures::getCurrentConsumption($this->energyHabit, $comfortLevel);
+            $consumption = KeyFigures::getCurrentConsumption($this->getAnswer('resident-count'), $comfortLevel);
             if ($consumption instanceof KeyFigureConsumptionTapWater) {
                 $result['consumption'] = [
                     'water' => $consumption->water_consumption,

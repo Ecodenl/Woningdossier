@@ -44,11 +44,11 @@ class SubStepHelper
      */
     public static function incomplete(SubStep $subStep, Building $building, InputSource $inputSource)
     {
-        CompletedSubStep::allInputSources()->where([
+        optional(CompletedSubStep::allInputSources()->where([
             'sub_step_id' => $subStep->id,
             'input_source_id' => $inputSource->id,
             'building_id' => $building->id,
-        ])->delete();
+        ])->first())->delete();
     }
 
     public static function getIncompleteSubSteps(Building $building, Step $step, InputSource $inputSource): Collection

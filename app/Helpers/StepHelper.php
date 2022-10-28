@@ -135,11 +135,11 @@ class StepHelper
      */
     public static function incomplete(Step $step, Building $building, InputSource $inputSource)
     {
-        CompletedStep::allInputSources()->where([
+        optional(CompletedStep::allInputSources()->where([
             'step_id' => $step->id,
             'input_source_id' => $inputSource->id,
             'building_id' => $building->id,
-        ])->delete();
+        ])->first())->delete();
     }
 
 

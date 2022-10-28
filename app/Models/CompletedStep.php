@@ -19,10 +19,9 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
  * @property-read int|null $audits_count
+ * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\Step $step
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
- * @property-read int|null $steps_count
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forInputSource(\App\Models\InputSource $inputSource)

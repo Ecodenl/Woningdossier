@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $scan_id
  * @property-read \Illuminate\Database\Eloquent\Collection|Step[] $children
  * @property-read int|null $children_count
  * @property-read array $translations
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Step|null $parentStep
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
  * @property-read int|null $questionnaires_count
+ * @property-read \App\Models\Scan|null $scan
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
  * @property-read int|null $sub_steps_count
  * @method static Builder|Step childrenForStep(\App\Models\Step $step)
@@ -43,6 +45,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|Step whereName($value)
  * @method static Builder|Step whereOrder($value)
  * @method static Builder|Step whereParentId($value)
+ * @method static Builder|Step whereScanId($value)
  * @method static Builder|Step whereShort($value)
  * @method static Builder|Step whereSlug($value)
  * @method static Builder|Step whereUpdatedAt($value)

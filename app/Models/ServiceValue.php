@@ -21,18 +21,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read array $translations
  * @property-read \App\Models\KeyFigureBoilerEfficiency|null $keyFigureBoilerEfficiency
  * @property-read \App\Models\Service|null $service
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue query()
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue whereCalculateValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue whereConfigurations($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue whereIsDefault($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue whereServiceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ServiceValue whereValue($value)
+ * @method static Builder|ServiceValue byValue(string $name, string $locale = 'nl')
+ * @method static Builder|ServiceValue newModelQuery()
+ * @method static Builder|ServiceValue newQuery()
+ * @method static Builder|ServiceValue query()
+ * @method static Builder|ServiceValue whereCalculateValue($value)
+ * @method static Builder|ServiceValue whereConfigurations($value)
+ * @method static Builder|ServiceValue whereCreatedAt($value)
+ * @method static Builder|ServiceValue whereId($value)
+ * @method static Builder|ServiceValue whereIsDefault($value)
+ * @method static Builder|ServiceValue whereOrder($value)
+ * @method static Builder|ServiceValue whereServiceId($value)
+ * @method static Builder|ServiceValue whereUpdatedAt($value)
+ * @method static Builder|ServiceValue whereValue($value)
  * @mixin \Eloquent
  */
 class ServiceValue extends Model

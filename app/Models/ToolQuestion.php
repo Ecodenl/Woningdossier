@@ -23,6 +23,7 @@ use Illuminate\Support\Collection;
  * @property array $name
  * @property array $help_text
  * @property array|null $placeholder
+ * @property string $data_type
  * @property bool $coach
  * @property bool $resident
  * @property array|null $options
@@ -32,6 +33,8 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $forSpecificInputSource
  * @property-read array $translations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
+ * @property-read int|null $sub_steppables_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
@@ -45,6 +48,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion query()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCoach($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereDataType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereForSpecificInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereHelpText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereId($value)

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Services;
 
+use Database\Seeders\StatusesTableSeeder;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -17,7 +18,7 @@ class BuildingCoachStatusServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\StatusesTableSeeder::class);
+        $this->seed(StatusesTableSeeder::class);
     }
 
     public function testGetConnectedBuildingsByUser()

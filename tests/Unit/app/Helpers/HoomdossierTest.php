@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\app\Helpers;
 
+use Database\Seeders\StatusesTableSeeder;
+use Database\Seeders\InputSourcesTableSeeder;
 use App\Helpers\Hoomdossier;
 use App\Models\Account;
 use App\Models\Building;
@@ -25,8 +27,8 @@ class HoomdossierTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\StatusesTableSeeder::class);
-        $this->seed(\InputSourcesTableSeeder::class);
+        $this->seed(StatusesTableSeeder::class);
+        $this->seed(InputSourcesTableSeeder::class);
     }
 
     public function testGetMostCredibleValue()

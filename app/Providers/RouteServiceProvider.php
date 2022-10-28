@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Http\Request;
+use Illuminate\Cache\RateLimiting\Limit;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -31,9 +34,14 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        parent::boot();
+        $this->configureRateLimiting();
 
-        Route::model('cooperation', Cooperation::class);
+        $this->routes(function () {
+            $this->mapApiRoutes();
+
+            $this->mapWebRoutes();
+        });
+Route::model('cooperation', Cooperation::class);
 
         Route::bind('cooperation', function ($value) {
             if ($this->getCurrentRequest()->hasHeader('X-Cooperation-Slug')) {
@@ -41,20 +49,9 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             return Cooperation::whereSlug($value)->firstOrFail();
-        });
-    }
+        });    }
 
-    /**
-     * Define the routes for the application.
-     *
-     * @return void
-     */
-    public function map()
-    {
-        $this->mapApiRoutes();
 
-        $this->mapWebRoutes();
-    }
 
     /**
      * Define the "web" routes for the application.
@@ -84,5 +81,17 @@ class RouteServiceProvider extends ServiceProvider
             ->as('api.')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * Configure the rate limiters for the application.
+     *
+     * @return void
+     */
+    protected function configureRateLimiting()
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+        });
     }
 }

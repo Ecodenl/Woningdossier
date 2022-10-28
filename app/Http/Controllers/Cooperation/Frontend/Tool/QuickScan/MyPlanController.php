@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Media;
 use App\Models\Notification;
@@ -43,12 +44,13 @@ class MyPlanController extends Controller
         return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'notification'));
     }
 
-    public function media(Request $request)
+    public function media(Request $request, Cooperation $cooperation, ?Building $building = null)
     {
         $this->authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), HoomdossierSession::getBuilding(true)]);
 
-        $buildingId = $request->input('building_id', HoomdossierSession::getBuilding());
-        $building = \App\Helpers\Cache\Building::find($buildingId);
+        if (! $building instanceof Building) {
+            $building = HoomdossierSession::getBuilding(true);
+        }
 
         return view('cooperation.frontend.tool.quick-scan.my-plan.media', compact('building'));
     }

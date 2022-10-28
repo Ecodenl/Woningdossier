@@ -164,7 +164,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::get('', [QuickScanController::class, 'start'])->name('start');
                         Route::as('my-plan.')->prefix('woonplan')->group(function () {
                             Route::get('', 'QuickScan\\MyPlanController@index')->name('index');
-                            Route::get('bestanden', 'QuickScan\\MyPlanController@media')->name('media');
+                            Route::get('bestanden/{building?}', 'QuickScan\\MyPlanController@media')->name('media');
                         });
 
                         Route::get('{step}/vragenlijst/{questionnaire}', 'QuickScan\\QuestionnaireController@index')

@@ -144,9 +144,10 @@ class Form extends Component
                     )->reverseFormatted();
                 }
 
+                // TODO: this is a horrible way to trace dirty answers
                 $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
                 if ($masterAnswer !== $givenAnswer) {
-                    $dirtyToolQuestions[$toolQuestion->id] = $toolQuestion;
+                    $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
                 }
 
                 ToolQuestionService::init($toolQuestion)

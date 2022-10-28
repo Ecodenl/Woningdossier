@@ -132,7 +132,7 @@ class ScanFlowService
 
                 // If it's an invisible step that is complete, we want to incomplete it.
                 if ($completedSubStep instanceof CompletedSubStep) {
-                    Log::debug("Incompleting sub step {$subStep->name} because it's not visible.");
+                    Log::debug("Incompleting SubStep {$subStep->name} because it's not visible.");
                     SubStepHelper::incomplete($subStep, $building, $currentInputSource);
                 }
 
@@ -170,7 +170,11 @@ class ScanFlowService
         foreach ($stepsToCheck as $stepShort) {
             $step = Step::findByShort($stepShort);
             Log::debug("Completing Step {$step->name} if possible");
-            StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, false);
+            $completed = StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, false);
+            if (! $completed) {
+                Log::debug("Step {$step->name} could not be completed, so we incomplete it.");
+                StepHelper::incomplete($step, $building, $currentInputSource);
+            }
         }
     }
 

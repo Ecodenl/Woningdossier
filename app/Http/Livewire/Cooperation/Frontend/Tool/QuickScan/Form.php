@@ -111,7 +111,6 @@ class Form extends Scannable
         // Turns out, default values exist! We need to check if the tool questions have answers, else
         // they might not save...
         if (! $this->dirty) {
-            Log::debug("Not dirty ing");
             foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
@@ -123,7 +122,7 @@ class Form extends Scannable
                     // Master input source is important. Ensure both are set
                     if (is_null($currentAnswer) || is_null($masterAnswer)) {
                         $this->setDirty(true);
-                        $dirtyToolQuestions[$toolQuestion->id] = $toolQuestion;
+                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
                         break;
                     }
                 }
@@ -145,7 +144,7 @@ class Form extends Scannable
 
                     $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
                     if ($masterAnswer !== $givenAnswer) {
-                        $dirtyToolQuestions[$toolQuestion->id] = $toolQuestion;
+                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
                     }
 
                     ToolQuestionService::init($toolQuestion)
@@ -211,10 +210,6 @@ class Form extends Scannable
         }
 
         $flowService->checkConditionals($dirtyToolQuestions);
-
-        if (! $completedSubStep->wasRecentlyCreated) {
-            $flowService->checkConditionals($dirtyToolQuestions);
-        }
 
         // TODO: We might have to generate the $nextUrl in real time if conditional steps follow a related question
         return redirect()->to($flowService->resolveNextUrl());

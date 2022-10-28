@@ -142,8 +142,15 @@ class StepHelper
         ])->first())->delete();
     }
 
-
-    public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate)
+    /**
+     * @param \App\Models\Step $step
+     * @param \App\Models\Building $building
+     * @param \App\Models\InputSource $inputSource
+     * @param bool $triggerRecalculate
+     *
+     * @return bool True if the step can be completed, false if it can't be completed.
+     */
+    public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate): bool
     {
         $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
             ->forBuilding($building)
@@ -165,6 +172,8 @@ class StepHelper
             if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
                 StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
             }
+
+            return true;
         } else {
             // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
             // that we didn't get. Let's check
@@ -186,7 +195,11 @@ class StepHelper
                 if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
                     StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
                 }
+
+                return true;
             }
         }
+
+        return false;
     }
 }

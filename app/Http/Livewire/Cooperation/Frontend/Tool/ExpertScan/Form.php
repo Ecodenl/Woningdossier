@@ -144,9 +144,10 @@ class Form extends Component
                     )->reverseFormatted();
                 }
 
+                // TODO: this is a horrible way to trace dirty answers
                 $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
                 if ($masterAnswer !== $givenAnswer) {
-                    $dirtyToolQuestions[$toolQuestion->id] = $toolQuestion;
+                    $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
                 }
 
                 ToolQuestionService::init($toolQuestion)
@@ -202,13 +203,18 @@ class Form extends Component
                 'input_source_id' => $this->currentInputSource->id
             ]);
 
-            if (! $completedSubStep->wasRecentlyCreated) {
-                ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
-                    ->forSubStep($subStep)
-                    ->checkConditionals($dirtyToolQuestions);
+            $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+                ->forStep($this->step);
+
+            if ($completedSubStep->wasRecentlyCreated) {
+                // No need to check SubSteps that were recently created because they passed conditions
+                $flowService->skipSubstep($subStep);
             }
+
+            $flowService->checkConditionals($dirtyToolQuestions);
         }
 
+        // TODO: Make FlowService URL workable
         return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $this->cooperation]);
     }
 

@@ -16,26 +16,28 @@ use App\Models\SubSteppable;
 use App\Models\ToolQuestion;
 use App\Services\DiscordNotifier;
 use App\Traits\FluentCaller;
+use App\Traits\RetrievesAnswers;
 use Illuminate\Support\Facades\Log;
 
 class ScanFlowService
 {
-    use FluentCaller;
+    use FluentCaller,
+        RetrievesAnswers;
 
     public Step $step;
     public Scan $scan;
-    public Building $building;
-    public InputSource $inputSource;
-    public InputSource $masterInputSource;
+    public InputSource $currentInputSource;
     public ?SubStep $subStep = null;
     public ?Questionnaire $questionnaire = null;
+
+    protected array $skipSubSteps = [];
 
     public function __construct(Scan $scan, Building $building, InputSource $inputSource)
     {
         $this->building = $building;
-        $this->inputSource = $inputSource;
+        $this->currentInputSource = $inputSource;
         $this->scan = $scan;
-        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
 
     public function forQuestionnaire(Questionnaire $questionnaire): self
@@ -56,152 +58,123 @@ class ScanFlowService
         return $this;
     }
 
+    public function skipSubStep(SubStep $subStep): self
+    {
+        $this->skipSubSteps[] = $subStep->id;
+        $this->skipSubSteps = array_unique($this->skipSubSteps);
+        return $this;
+    }
+
     /**
      * Check if we should incomplete steps because conditional steps have come free, or if we need to
      * incomplete sub steps because they are hidden now.
      */
-    public function checkConditionals(array $toolQuestions)
+    public function checkConditionals(array $filledInAnswers)
     {
         Log::debug("Checking conditionals..");
         $building = $this->building;
-        $currentInputSource = $this->inputSource;
+        $currentInputSource = $this->currentInputSource;
         // We must do it for the master also because we're not using model events
-        $masterInputSource = $this->masterInputSource;
+        $masterInputSource = $this->inputSource;
 
-        $subStepsRelated = [];
-        $toolQuestionsRelated = [];
+        $subStepsRelated = SubStep::where(function ($query) use ($filledInAnswers) {
+            $query->whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"fn\""]);
+            foreach ($filledInAnswers as $toolQuestionShort => $answer) {
+                $query->orWhereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$toolQuestionShort}\""]);
+            }
+        })
+            ->whereNotIn('id', $this->skipSubSteps)
+            ->get();
 
-        foreach ($toolQuestions as $toolQuestion) {
-            $subStepsRelated = array_merge($subStepsRelated,
-                SubStep::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$toolQuestion->short}\""])
-                    ->where('id', '!=', $this->subStep->id)
-                    ->forScan($this->scan)
-                    ->pluck('id')->toArray()
-            );
-            $toolQuestionsRelated = array_merge($toolQuestionsRelated,
-                SubSteppable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$toolQuestion->short}\""])
-                    ->where('sub_steppable_type', ToolQuestion::class)
-                    ->where('sub_step_id', '!=', $this->subStep->id)
-                    ->forScan($this->scan)
-                    ->pluck('id')->toArray()
-            );
-        }
-
-        // Also add sub steps with custom evaluators
-        $subStepsRelated = array_merge($subStepsRelated,
-            SubStep::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"fn\""])
-                ->where('id', '!=', $this->subStep->id)
-                ->forScan($this->scan)
-                ->pluck('id')->toArray()
-        );
-        $toolQuestionsRelated = array_merge($toolQuestionsRelated,
-            SubSteppable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"fn\""])
-                ->where('sub_steppable_type', ToolQuestion::class)
-                ->where('sub_step_id', '!=', $this->subStep->id)
-                ->forScan($this->scan)
-                ->pluck('id')->toArray()
-        );
-
-        $subStepsRelated = array_unique($subStepsRelated);
-        $toolQuestionsRelated = array_unique($toolQuestionsRelated);
-        $subSteps = SubStep::findMany($subStepsRelated);
-        $toolQuestionSubSteppables = SubSteppable::findMany($toolQuestionsRelated);
+        $subSteppableRelated = SubSteppable::where(function ($query) use ($filledInAnswers) {
+            $query->whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"fn\""]);
+            foreach ($filledInAnswers as $toolQuestionShort => $answer) {
+                $query->orWhereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$toolQuestionShort}\""]);
+            }
+        })
+            ->where('sub_steppable_type', ToolQuestion::class)
+            ->whereNotIn('sub_step_id', $this->skipSubSteps)
+            ->whereNotIn('sub_step_id', $subStepsRelated->pluck('id')->toArray())
+            ->get();
 
         $evaluator = ConditionEvaluator::init()
             ->building($building)
             ->inputSource($masterInputSource);
 
         $stepsToCheck = [];
+        $processedSubSteps = [];
 
-        foreach ($subSteps as $subStep) {
-            $completedSubStep = CompletedSubStep::allInputSources()
-                ->forInputSource($masterInputSource)
-                ->forBuilding($building)
-                ->where('sub_step_id', $subStep->id)
-                ->first();
+        // The logic is as follows:
+        // If a SubStep can be seen, and has all answers answered, we will complete it/keep it complete, and we will
+        // check the Step because it might now be completable.
+        // If a SubStep can be seen, but is missing some answers, we will incomplete it and/or the related Step.
+        // If a SubStep cannot be seen, and it's complete, we incomplete it, and we will check the Step because it
+        // might be now completable.
 
+        foreach ($subStepsRelated as $subStep) {
             if ($evaluator->evaluate($subStep->conditions)) {
-                // If it's a visible step that is not complete, we want the parent step to also to also not be
-                // complete.
-                if (!$completedSubStep instanceof CompletedSubStep) {
-                    Log::debug("Incompleting step {$subStep->step->name} line 125");
+                // The SubStep is visible
+                if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
+                    Log::debug("Completing SubStep {$subStep->name} because it has answers.");
+                    SubStepHelper::complete($subStep, $building, $currentInputSource);
+                    $stepsToCheck[] = $subStep->step->short;
+                } else {
+                    Log::debug("Incompleting SubStep {$subStep->name} and Step {$subStep->step->name} because SubStep is missing answers.");
+                    SubStepHelper::incomplete($subStep, $building, $currentInputSource);
                     StepHelper::incomplete($subStep->step, $building, $currentInputSource);
-                    StepHelper::incomplete($subStep->step, $building, $masterInputSource);
                 }
             } else {
+                $completedSubStep = CompletedSubStep::allInputSources()
+                    ->forInputSource($masterInputSource)
+                    ->forBuilding($building)
+                    ->where('sub_step_id', $subStep->id)
+                    ->first();
+
                 // If it's an invisible step that is complete, we want to incomplete it.
                 if ($completedSubStep instanceof CompletedSubStep) {
-                    Log::debug("Incompleting sub step {$subStep->name} line 132");
+                    Log::debug("Incompleting SubStep {$subStep->name} because it's not visible.");
                     SubStepHelper::incomplete($subStep, $building, $currentInputSource);
-                    SubStepHelper::incomplete($subStep, $building, $masterInputSource);
                 }
 
-                // Add to array if not already there so we can check the step completion later
-                if (!array_key_exists($subStep->step->id, $stepsToCheck)) {
-                    $stepsToCheck[$subStep->step->id] = $subStep->step;
-                }
+                // Add to array so we can check the Step completion later
+                $stepsToCheck[] = $subStep->step->short;
             }
+
+            $processedSubSteps[] = $subStep->id;
         }
 
-        foreach ($toolQuestionSubSteppables as $toolQuestionSubSteppable) {
+        // The logic is as follows:
+        // We will simply check if the related SubStep has answers or not.
+
+        foreach ($subSteppableRelated as $toolQuestionSubSteppable) {
             $subStep = $toolQuestionSubSteppable->subStep;
 
-            $completedSubStep = CompletedSubStep::allInputSources()
-                ->forInputSource($masterInputSource)
-                ->forBuilding($building)
-                ->where('sub_step_id', $subStep->id)
-                ->first();
-
-            if ($evaluator->evaluate($toolQuestionSubSteppable->conditions)) {
-                // If the conditions now match and the sub step was completed, we want to incomplete both the step
-                // and sub step
-                if ($completedSubStep instanceof CompletedSubStep) {
-                    Log::debug("Incompleting step {$subStep->step->name} line 157");
-                    StepHelper::incomplete($subStep->step, $building, $currentInputSource);
-                    StepHelper::incomplete($subStep->step, $building, $masterInputSource);
-
-                    Log::debug("Incompleting sub step {$subStep->name} line 161");
-                    SubStepHelper::incomplete($subStep, $building, $currentInputSource);
-                    SubStepHelper::incomplete($subStep, $building, $masterInputSource);
-                }
-            } else {
-                // If the other questions have answers, we want to re-complete the sub step
-                $questionsWithAnswers = 0;
-                $visibleQuestions = 0;
-
-                foreach ($subStep->toolQuestions as $toolQuestion) {
-                    /** @var SubSteppable $subSteppable */
-                    $subSteppable = $toolQuestion->pivot;
-                    if ($evaluator->evaluate($subSteppable->conditions ?? [])) {
-                        $visibleQuestions++;
-
-                        if (! empty($building->getAnswer($masterInputSource, $toolQuestion))) {
-                            $questionsWithAnswers++;
-                        }
-                    }
-
-                    // Break early to ensure we don't do too many queries if not necessary
-                    if ($visibleQuestions !== $questionsWithAnswers) {
-                        break;
-                    }
-                }
-
-                if ($questionsWithAnswers === $visibleQuestions) {
-                    Log::debug("Completing sub step {$subStep->name}");
+            // Skip if already processed
+            if (! in_array($subStep->id, $processedSubSteps)) {
+                if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
+                    Log::debug("Completing SubStep {$subStep->name} because it has answers.");
                     SubStepHelper::complete($subStep, $building, $currentInputSource);
-                    SubStepHelper::complete($subStep, $building, $masterInputSource);
-
-                    if (!array_key_exists($subStep->step->id, $stepsToCheck)) {
-                        $stepsToCheck[$subStep->step->id] = $subStep->step;
-                    }
+                    $stepsToCheck[] = $subStep->step->short;
+                } else {
+                    Log::debug("Incompleting SubStep {$subStep->name} and Step {$subStep->step->name} because SubStep is missing answers.");
+                    SubStepHelper::incomplete($subStep, $building, $currentInputSource);
+                    StepHelper::incomplete($subStep->step, $building, $currentInputSource);
                 }
+
+                $processedSubSteps[] = $subStep->id;
             }
         }
 
-        foreach ($stepsToCheck as $step) {
-            // Check if we can complete the step if necessary
-            Log::debug("Completing step {$step->name}");
-            StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, false);
+        // Finally, we loop through the Steps and complete them if needed
+        $stepsToCheck = array_unique($stepsToCheck);
+        foreach ($stepsToCheck as $stepShort) {
+            $step = Step::findByShort($stepShort);
+            Log::debug("Completing Step {$step->name} if possible");
+            $completed = StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, false);
+            if (! $completed) {
+                Log::debug("Step {$step->name} could not be completed, so we incomplete it.");
+                StepHelper::incomplete($step, $building, $currentInputSource);
+            }
         }
     }
 
@@ -212,7 +185,8 @@ class ScanFlowService
         $nextQuestionnaire = null;
 
         if ($this->subStep instanceof SubStep) {
-            $nextSubStep = $this->step->subSteps()->where('order', '>', $this->subStep->order)->orderBy('order')->first();
+            $nextSubStep = $this->step->subSteps()->where('order', '>',
+                $this->subStep->order)->orderBy('order')->first();
             // we will check if the current sub step is the last one, that way we know we have to go to the next one.
             $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
 
@@ -251,13 +225,14 @@ class ScanFlowService
         if (! $nextStep instanceof Step) {
             Log::debug("No next step, fetching first in complete step..");
             // No next step set, let's see if there are any steps left incomplete
-            $nextStep = $this->building->getFirstIncompleteStep([], $this->masterInputSource);
+            $nextStep = $this->building->getFirstIncompleteStep([], $this->inputSource);
         }
 
         // There are incomplete steps left, set the sub step
         if ($nextStep instanceof Step) {
             // retrieve all incomplete sub steps for the building
-            $incompleteSubSteps = SubStepHelper::getIncompleteSubSteps($this->building, $nextStep, $this->masterInputSource);
+            $incompleteSubSteps = SubStepHelper::getIncompleteSubSteps($this->building, $nextStep,
+                $this->inputSource);
             foreach ($incompleteSubSteps as $subStep) {
                 if ($this->building->user->account->can('show', [$subStep, $this->building])) {
                     $nextSubStep = $subStep;
@@ -276,7 +251,8 @@ class ScanFlowService
                 DiscordNotifier::init()->notify("Next sub step doesn't belong to next step! Step ID: {$nextStep->id}. Sub step ID: {$nextSubStep->id}.");
                 $nextUrl = '';
             } else {
-                $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'subStep' => $nextSubStep]);
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.index',
+                    ['cooperation' => $cooperation, 'step' => $nextStep, 'subStep' => $nextSubStep]);
             }
         } elseif ($nextStep instanceof Step && $nextQuestionnaire instanceof Questionnaire) {
             if ($nextQuestionnaire->step_id !== $nextStep->id) {
@@ -284,7 +260,8 @@ class ScanFlowService
                 DiscordNotifier::init()->notify("Next questionnaire doesn't belong to next step! Step ID: {$nextStep->id}. Questionnaire ID: {$nextQuestionnaire->id}.");
                 $nextUrl = '';
             } else {
-                $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['cooperation' => $cooperation, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
+                $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index',
+                    ['cooperation' => $cooperation, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
             }
         } else {
             $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $cooperation]);
@@ -292,5 +269,31 @@ class ScanFlowService
 
         Log::debug($nextUrl);
         return $nextUrl;
+    }
+
+    private function hasAnsweredSubStep(SubStep $subStep, ConditionEvaluator $evaluator): bool
+    {
+        $questionsWithAnswers = 0;
+        $visibleQuestions = 0;
+
+        foreach ($subStep->toolQuestions as $toolQuestion) {
+            /** @var SubSteppable $subSteppable */
+            $subSteppable = $toolQuestion->pivot;
+            if ($evaluator->evaluate($subSteppable->conditions ?? [])) {
+                $visibleQuestions++;
+
+                $answer = $this->getAnswer($toolQuestion->short, false);
+                if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
+                    $questionsWithAnswers++;
+                }
+            }
+
+            // Break early to ensure we don't do too many queries if not necessary
+            if ($visibleQuestions !== $questionsWithAnswers) {
+                break;
+            }
+        }
+
+        return $questionsWithAnswers === $visibleQuestions;
     }
 }

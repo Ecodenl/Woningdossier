@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\QuestionValues\QuestionValue;
@@ -95,6 +96,8 @@ use Illuminate\Support\Str;
  */
 class Building extends Model
 {
+    use HasFactory;
+
     use SoftDeletes,
         ToolSettingTrait;
 

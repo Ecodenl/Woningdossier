@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
@@ -46,6 +47,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 class BuildingElement extends Model implements Auditable
 {
+    use HasFactory;
+
     use GetValueTrait,
         GetMyValuesTrait,
         ToolSettingTrait,

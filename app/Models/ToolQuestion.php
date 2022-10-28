@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Services\DiscordNotifier;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
@@ -65,6 +66,8 @@ use Illuminate\Support\Collection;
  */
 class ToolQuestion extends Model
 {
+    use HasFactory;
+
     use HasTranslations, HasShortTrait;
 
     protected $translatable = [

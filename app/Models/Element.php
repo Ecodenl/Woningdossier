@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -36,6 +37,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Element extends Model
 {
+    use HasFactory;
+
     use HasShortTrait,
         HasTranslations;
 

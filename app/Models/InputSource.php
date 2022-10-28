@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class InputSource extends Model
 {
+    use HasFactory;
+
     use HasShortTrait;
 
     const RESIDENT_SHORT = 'resident';

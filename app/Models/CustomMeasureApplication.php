@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Scopes\VisibleScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -45,6 +46,8 @@ use Spatie\Translatable\HasTranslations;
  */
 class CustomMeasureApplication extends Model
 {
+    use HasFactory;
+
     use HasTranslations,
         GetMyValuesTrait,
         GetValueTrait;

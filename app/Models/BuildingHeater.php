@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
@@ -40,6 +41,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingHeater extends Model
 {
+    use HasFactory;
+
     use GetValueTrait;
     use GetMyValuesTrait;
     use ToolSettingTrait;

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\HoomdossierSession;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -86,6 +87,8 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Model implements AuthorizableContract
 {
+    use HasFactory;
+
     use HasRoles,
         HasCooperationTrait,
         Authorizable;

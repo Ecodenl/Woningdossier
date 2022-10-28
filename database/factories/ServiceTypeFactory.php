@@ -1,10 +1,21 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(\App\Models\ServiceType::class, function (Faker $faker) {
-    return [
-        'name' => json_encode(['nl' => $faker->word]),
-        'iso' => "M" . $faker->randomDigit,
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class ServiceTypeFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+        'name' => json_encode(['nl' => $this->faker->word]),
+        'iso' => "M" . $this->faker->randomDigit,
     ];
-});
+    }
+}

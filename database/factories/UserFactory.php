@@ -1,6 +1,8 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,13 +15,22 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\Models\User::class, function (Faker $faker) {
-    return [
-        'account_id' => factory(\App\Models\Account::class),
-        'cooperation_id' => factory(\App\Models\Cooperation::class),
-        'first_name' => $faker->firstName,
-        'last_name' => $faker->lastName,
-        'phone_number' => $faker->phoneNumber,
-        'allow_access' => $faker->boolean,
+class UserFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+        'account_id' => \App\Models\Account::factory(),
+        'cooperation_id' => \App\Models\Cooperation::factory(),
+        'first_name' => $this->faker->firstName,
+        'last_name' => $this->faker->lastName,
+        'phone_number' => $this->faker->phoneNumber,
+        'allow_access' => $this->faker->boolean,
     ];
-});
+    }
+}

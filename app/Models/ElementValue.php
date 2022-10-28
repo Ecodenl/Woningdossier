@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,6 +35,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ElementValue extends Model
 {
+    use HasFactory;
+
     use HasTranslations;
 
     protected $translatable = [

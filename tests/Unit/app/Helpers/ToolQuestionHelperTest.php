@@ -33,15 +33,15 @@ class ToolQuestionHelperTest extends TestCase
 
     public function testResolveSaveIn()
     {
-        $cooperation = factory(Cooperation::class)->create();
+        $cooperation = Cooperation::factory()->create();
 
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
-        $residentUser = factory(User::class)->create([
+        $residentUser = User::factory()->create([
             'cooperation_id' => $cooperation->id,
             'account_id' => $account->id,
         ]);
-        $building = factory(Building::class)->create(['user_id' => $residentUser->id]);
+        $building = Building::factory()->create(['user_id' => $residentUser->id]);
 
         $provider = [
             [

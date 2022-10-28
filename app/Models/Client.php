@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -32,6 +33,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class Client extends Authenticatable
 {
+    use HasFactory;
+
     use HasApiTokens,
         HasShortTrait;
 

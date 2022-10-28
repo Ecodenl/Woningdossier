@@ -1,3 +1,16 @@
+@push('css')
+    <style>
+        .media-container > div:nth-of-type(4n+2) {
+            padding-left: 2rem;
+            padding-right: 1rem;
+        }
+        .media-container > div:nth-of-type(4n+3) {
+            padding-left: 1rem;
+            padding-right: 2rem;
+        }
+    </style>
+@endpush
+
 <div class="flex flex-wrap w-full flex pb-5" x-data>
     @can('create', [\App\Models\Media::class, $inputSource, $building])
         <div class="flex flex-wrap w-full">
@@ -22,11 +35,15 @@
         <hr class="w-full">
     @endcan
 
-    <div class="flex flex-wrap w-full">
+    <div class="flex flex-wrap w-full media-container">
         @foreach($files as $file)
             @can('view', [$file, $inputSource, $building])
-                @php $canUpdate = Auth::user()->can('update', [$file, $inputSource, $building]) @endphp
-                <div class="flex flex-wrap w-1/4 justify-center mb-4 pr-8" x-data="modal()" wire:key="{{$file->id}}">
+                @php
+                    $canUpdate = Auth::user()->can('update', [$file, $inputSource, $building]);
+                    $shareVal = data_get($fileData, "{$file->id}.share_with_cooperation") ? 'show' : 'hide';
+                @endphp
+
+                <div class="flex flex-wrap w-1/4 justify-center mb-4" x-data="modal()" wire:key="{{$file->id}}">
                     <div class="space-y-6 pb-16 w-full">
                         <div>
                             <div class="flex items-center justify-center h-60 w-full overflow-hidden rounded-lg">
@@ -44,12 +61,8 @@
                                         {{ "{$file->filename}.{$file->extension}" }}
                                     </h2>
                                 </div>
-                                @if($canUpdate)
-                                    @if(data_get($fileData, "{$file->id}.share_with_cooperation"))
-                                        <i class="icon-md icon-show text-green"></i>
-                                    @else
-                                        <i class="icon-md icon-hide"></i>
-                                    @endif
+                                @can('shareWithCooperation', [$file, $inputSource, $building])
+                                    <i class="icon-md {{ "icon-{$shareVal}" }}"></i>
                                 @endif
                             </div>
                         </div>
@@ -120,7 +133,7 @@
                                           placeholder="@lang('cooperation/frontend/tool.my-plan.uploader.form.description.label')"
                                 ></textarea>
                             @endcomponent
-                            @if($canUpdate)
+                            @can('shareWithCooperation', [$file, $inputSource, $building])
                                 @component('cooperation.frontend.layouts.components.form-group', [
                                    'inputName' => "fileData.{$file->id}.share_with_cooperation",
                                    'class' => 'w-full',
@@ -128,8 +141,6 @@
                                    'withInputSource' => false,
                                    'label' => __('cooperation/frontend/tool.my-plan.uploader.form.share-with-cooperation.label'),
                                 ])
-                                    @php $shareVal = data_get($fileData, "{$file->id}.share_with_cooperation") ? 'show' : 'hide'; @endphp
-
                                     <div class="checkbox-wrapper">
                                         <input id="edit-file-share-with-cooperation-{{$file->id}}" type="checkbox"
                                                wire:model="fileData.{{$file->id}}.share_with_cooperation"
@@ -143,6 +154,8 @@
                                         </label>
                                     </div>
                                 @endcomponent
+                            @endcan
+                            @if($canUpdate)
                                 @component('cooperation.frontend.layouts.components.form-group', [
                                    'inputName' => "fileData.{$file->id}.tag",
                                    'class' => 'w-full',

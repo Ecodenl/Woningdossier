@@ -26,8 +26,9 @@
 
 </head>
 <body id="app-body" style="overflow: auto;">
-
-@yield('header')
+@if(! request()->input('iframe', false))
+    @yield('header')
+@endif
 <?php
     $background = optional($cooperation->firstMedia(MediaHelper::BACKGROUND))->getUrl();
     $background = empty($background) ? asset('images/background.jpg') : $background;

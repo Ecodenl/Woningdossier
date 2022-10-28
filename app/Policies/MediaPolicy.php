@@ -7,11 +7,29 @@ use App\Models\Account;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Media;
+use App\Services\BuildingCoachStatusService;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MediaPolicy
 {
     use HandlesAuthorization;
+
+    public function before(Account $user, $ability, $media, InputSource $inputSource, Building $building)
+    {
+        // If user owns the building he can do everything.
+        if ($building->id === $user->user()->building->id) {
+            return true;
+        } elseif ($inputSource->short === InputSource::COACH_SHORT) {
+            // A coach is not allowed to do anything if he isn't coupled.
+            // Get the buildings the user is connected to.
+            $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user->user());
+
+            // Check if the current building is in that collection.
+            if (! $connectedBuildingsForUser->contains('building_id', $building->id)) {
+                return false;
+            }
+        }
+    }
 
     /**
      * Determine whether the user can view any media.
@@ -22,11 +40,10 @@ class MediaPolicy
      */
     public function viewAny(Account $user, InputSource $inputSource, Building $building): bool
     {
-        // Media can be viewed if it's either the user's own building, the user is a coach, or the user
-        // belongs to the cooperation.
+        // Media can be viewed if it's either the user's own building, or the user
+        // belongs to the cooperation (coach belongs to cooperation).
 
-        return $this->ownsBuilding($user, $building)
-            || $this->isCooperation($inputSource);
+        return $this->isCooperation($inputSource) || HoomdossierSession::isUserObserving();
     }
 
     /**
@@ -39,8 +56,8 @@ class MediaPolicy
      */
     public function view(Account $user, Media $media, InputSource $inputSource, Building $building): bool
     {
-        return $this->ownsBuilding($user, $building)
-            || ($this->isCooperation($inputSource) && data_get($media->custom_properties, 'share_with_cooperation'));
+        return ($this->isCooperation($inputSource) || HoomdossierSession::isUserObserving())
+            && data_get($media->custom_properties, 'share_with_cooperation');
     }
 
     /**
@@ -52,7 +69,7 @@ class MediaPolicy
      */
     public function create(Account $user, InputSource $inputSource, Building $building): bool
     {
-        return $this->ownsBuilding($user, $building) || $this->isCooperation($inputSource);
+        return$this->isCooperation($inputSource) && ! HoomdossierSession::isUserObserving();
     }
 
     /**
@@ -65,7 +82,7 @@ class MediaPolicy
      */
     public function update(Account $user, Media $media, InputSource $inputSource, Building $building): bool
     {
-        return $this->ownsBuilding($user, $building) || $this->isCooperation($inputSource);
+        return $this->isCooperation($inputSource) && ! HoomdossierSession::isUserObserving();
     }
 
     /**
@@ -78,16 +95,11 @@ class MediaPolicy
      */
     public function delete(Account $user, Media $media, InputSource $inputSource, Building $building): bool
     {
-        return $this->ownsBuilding($user, $building)
-            || ($this->isCooperation($inputSource) && data_get($media->custom_properties, 'share_with_cooperation'));
+        return $this->isCooperation($inputSource) && data_get($media->custom_properties, 'share_with_cooperation')
+            && ! HoomdossierSession::isUserObserving();
     }
 
     public function shareWithCooperation(Account $user, Media $media, InputSource $inputSource, Building $building): bool
-    {
-        return $this->ownsBuilding($user, $building);
-    }
-
-    private function ownsBuilding(Account $user, Building $building): bool
     {
         return $building->id === $user->user()->building->id;
     }

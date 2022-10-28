@@ -7,6 +7,7 @@ use App\Helpers\MediaHelper;
 use App\Models\Building;
 use App\Models\Media;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -74,12 +75,16 @@ class Uploader extends Component
             );
 
             if ($validator->passes()) {
+                // If we're in an iframe currently, then we know it's being done from the admin and share should be true.
+                // Otherwise, we check if the user has allowed cooperation access
+                $shareWithCooperation = (bool) (request()->input('iframe', false) ?: $this->building->user->allow_access);
+
                 $media = MediaUploader::fromSource($document->getRealPath())
                     ->toDestination('uploads', "buildings/{$this->building->id}")
                     ->useFilename(pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME))
-                    ->beforeSave(function ($media) {
+                    ->beforeSave(function ($media) use ($shareWithCooperation) {
                         $media->custom_properties = [
-                            'share_with_cooperation' => (bool) $this->building->user->allow_access,
+                            'share_with_cooperation' => $shareWithCooperation,
                         ];
                         $media->input_source_id = HoomdossierSession::getInputSource();
                     })
@@ -91,6 +96,7 @@ class Uploader extends Component
                     'title' => null,
                     'description' => null,
                     'tag' => MediaHelper::GENERIC_FILE,
+                    'share_with_cooperation' => $shareWithCooperation,
                 ];
             } else {
                 $this->addError('documents', __('validation.custom.uploader.wrong-files'));
@@ -125,7 +131,10 @@ class Uploader extends Component
 
             $customProperties['title'] = data_get($fileData, 'title', '');
             $customProperties['description'] = data_get($fileData, 'description', '');
-            $customProperties['share_with_cooperation'] = (bool) data_get($fileData, 'share_with_cooperation');
+            if (Auth::user()->can('shareWithCooperation', [$file, $this->inputSource, $this->building])) {
+                // Ensure we don't edit this if we're not allowed to
+                $customProperties['share_with_cooperation'] = (bool) data_get($fileData, 'share_with_cooperation');
+            }
 
             $file->update([
                 'custom_properties' => $customProperties,

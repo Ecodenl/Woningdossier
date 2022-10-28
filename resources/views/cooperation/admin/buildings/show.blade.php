@@ -17,13 +17,13 @@
 
         <input type="hidden" name="user[id]" value="{{$user->id}}">
         <div class="panel-body">
-            @if(!$user->allowedAccess())
-            <div class="row">
-                <div class="col-sm-12">
-                    <p class="text-warning" style="font-weight: bold;">@lang('cooperation/admin/buildings.show.user-disallowed-access'):</p>
-                    <p class="text-primary">(@lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name]))</p>
+            @if(! $user->allowedAccess())
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p class="text-warning" style="font-weight: bold;">@lang('cooperation/admin/buildings.show.user-disallowed-access'):</p>
+                        <p class="text-primary">(@lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name]))</p>
+                    </div>
                 </div>
-            </div>
             @endif
             {{-- delete a user --}}
             <div class="row">
@@ -53,6 +53,15 @@
                                 @lang('cooperation/admin/buildings.show.edit.label')
                                 @lang('cooperation/admin/buildings.show.edit.button')
                             </a>
+                        @endcan
+                    </div>
+                    <div class="btn-group pull-right">
+                        @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
+                            <button role="button" class="btn btn-info" id="view-files" data-toggle="modal"
+                                    data-target="#files-modal">
+                                @lang('cooperation/admin/buildings.show.view-files')
+                                <i class="glyphicon glyphicon-file"></i>
+                            </button>
                         @endcan
                     </div>
                 </div>
@@ -218,7 +227,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php /** @var \App\Models\Log $log */ ?>
+                                @php /** @var \App\Models\Log $log */ @endphp
                                 @foreach($logs as $log)
                                     <tr>
                                         <td data-sort="{{strtotime($log->created_at->format('d-m-Y H:i'))}}">{{$log->created_at->format('d-m-Y H:i')}}</td>
@@ -233,6 +242,27 @@
             @endif
         </div>
     </div>
+
+    @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
+        <div id="files-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog" style="height: 100vh; width: 100vw; margin: 0;">
+
+                <!-- Modal content-->
+                <div class="modal-content" style="height: 100%; width: 100%; overflow: hidden;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">
+                            @lang('cooperation/admin/buildings.show.view-files')
+                        </h4>
+                    </div>
+                    <div class="modal-body" style="margin: 0; padding: 0; height: 100%;">
+                        <iframe src="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media') . "?iframe=1&building={$building->id}" }}"
+                                style="border: none; width: 100%; height: 100%;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
 
 @push('js')

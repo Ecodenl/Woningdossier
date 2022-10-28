@@ -37,18 +37,19 @@ class MyPlanController extends Controller
             }
         }
 
-
         $notification = Notification::activeNotifications($building,
             InputSource::findByShort(InputSource::MASTER_SHORT))->first();
 
         return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'notification'));
     }
 
-    public function media()
+    public function media(Request $request)
     {
         $this->authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), HoomdossierSession::getBuilding(true)]);
 
-        $building = HoomdossierSession::getBuilding(true);
+        $buildingId = $request->input('building', HoomdossierSession::getBuilding());
+        $building = \App\Helpers\Cache\Building::find($buildingId);
+
         return view('cooperation.frontend.tool.quick-scan.my-plan.media', compact('building'));
     }
 }

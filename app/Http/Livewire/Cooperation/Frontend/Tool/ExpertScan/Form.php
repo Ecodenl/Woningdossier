@@ -151,7 +151,7 @@ class Form extends Component
                     ->building($this->building)
                     ->currentInputSource($this->currentInputSource)
                     ->applyExampleBuilding()
-                        ->save($givenAnswer);
+                    ->save($givenAnswer);
 
                 if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion) && $masterHasCompletedQuickScan) {
                     Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");

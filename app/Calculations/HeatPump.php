@@ -240,11 +240,11 @@ class HeatPump extends \App\Calculations\Calculator
         // 100 for low heating temperature, 95 for 50 degrees, 85 for high heating temperature;
 
         // scenario 1
-        if($this->requiredPower - $this->desiredPower >= 1) {
+        if($this->desiredPower - $this->requiredPower >= 1) {
             return 100;
         }
         // scenario 2 (is basically the same as using betafactor 1.0)
-        if($this->requiredPower - $this->desiredPower >= 0 && $this->requiredPower - $this->desiredPower < 1) {
+        if($this->desiredPower - $this->requiredPower >= 0 && $this->desiredPower - $this->requiredPower < 1) {
             $coverage = KeyFigureHeatPumpCoverage::forBetaFactor(1.0)
                                                  ->forHeatingTemperature($this->heatingTemperature)
                                                  ->first();

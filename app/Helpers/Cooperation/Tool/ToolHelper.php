@@ -170,6 +170,7 @@ abstract class ToolHelper
                             InputSource::RESIDENT_SHORT,
                             InputSource::COACH_SHORT,
                         ],
+                        'should_pass' => false,
                     ],
                 ],
                 [

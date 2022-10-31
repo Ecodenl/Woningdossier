@@ -95,7 +95,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
 
         // make sure the user considers the step
         // and has a cost indication before creating a advice
-        if ($this->considers($step)) {
+        if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);

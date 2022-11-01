@@ -52,7 +52,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'hr-boiler.replace_year',
                 'unit_of_measure' => '<i class="icon-sm icon-timer"></i>',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -407,7 +407,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.repair_joint.year',
                 'unit_of_measure' => 'jaar',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -423,7 +423,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.clean_brickwork.year',
                 'unit_of_measure' => 'jaar',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -439,7 +439,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.impregnate_wall.year',
                 'unit_of_measure' => 'jaar',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -455,7 +455,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.paint_wall.year',
                 'unit_of_measure' => 'jaar',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             // Ventilation
             [
@@ -512,7 +512,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'insulated-glazing.paintwork.year',
                 'unit_of_measure' => 'jaar',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             // Floor insulation
             [
@@ -610,7 +610,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.flat.replace.year',
                 'unit_of_measure' => 'jaar',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -666,7 +666,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.pitched.replace.year',
                 'unit_of_measure' => 'jaar',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             // Solar panels
             [

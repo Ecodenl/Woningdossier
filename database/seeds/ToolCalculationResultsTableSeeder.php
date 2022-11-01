@@ -85,7 +85,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.advised_system.share_heating',
                 'unit_of_measure' => '%',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -93,7 +93,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.advised_system.share_tap_water',
                 'unit_of_measure' => '%',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -104,7 +104,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.advised_system.scop_heating',
                 'unit_of_measure' => null,
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::FLOAT,
             ],
             [
                 'name' => [
@@ -115,7 +115,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.advised_system.scop_tap_water',
                 'unit_of_measure' => null,
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::FLOAT,
             ],
             [
                 'name' => [
@@ -224,7 +224,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.specs.size_collector',
                 'unit_of_measure' => 'm<sup>2</sup>',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::FLOAT,
             ],
             [
                 'name' => [
@@ -246,7 +246,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.percentage_consumption',
                 'unit_of_measure' => '%',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [

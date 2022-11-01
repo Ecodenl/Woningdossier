@@ -77,7 +77,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.advised_system.required_power',
                 'unit_of_measure' => 'kW',
-                'data_type' => Caster::INT_5,
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [

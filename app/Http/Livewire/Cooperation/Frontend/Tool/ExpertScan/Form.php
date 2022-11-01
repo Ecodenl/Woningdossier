@@ -6,6 +6,7 @@ use App\Calculations\Heater;
 use App\Calculations\HeatPump;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Console\Commands\Tool\RecalculateForUser;
+use App\Helpers\Arr;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
@@ -15,6 +16,7 @@ use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Step;
+use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
@@ -239,6 +241,16 @@ class Form extends Component
             if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
                 $performedCalculations = $calculator::calculate($this->building, $this->masterInputSource, collect($this->filledInAnswers));
             }
+
+            foreach (Arr::dot($performedCalculations) as $resultShort => $value) {
+                $result = ToolCalculationResult::findByShort("{$short}.{$resultShort}");
+
+                // Could be an unused result
+                if ($result instanceof ToolCalculationResult) {
+                    Arr::set($performedCalculations, $resultShort, Caster::init($result->data_type, $value)->getFormatForUser());
+                }
+            }
+
             $calculations[$short] = $performedCalculations;
         }
 

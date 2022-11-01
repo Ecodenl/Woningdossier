@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\DataTypes\Caster;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +19,7 @@ class CreateToolCalculationResultsTable extends Migration
             $table->json('name');
             $table->json('help_text')->nullable();
             $table->string('short');
+            $table->string('data_type')->default(Caster::STRING);
             $table->string('unit_of_measure')->nullable();
             $table->timestamps();
         });

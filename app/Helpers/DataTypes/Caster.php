@@ -11,6 +11,7 @@ class Caster
 
     public const STRING = 'string';
     public const INT = 'int';
+    public const INT_5 = 'int_5'; // INT with bucket 5 for rounding
     public const FLOAT = 'float';
     public const BOOL = 'bool';
     public const ARRAY = 'array';
@@ -47,6 +48,10 @@ class Caster
         switch ($this->dataType) {
             case static::STRING:
                 $this->value = (string) $this->value;
+                break;
+
+            case static::INT_5:
+                $this->value = (int) NumberFormatter::round((int) $this->value, 5);
                 break;
 
             case static::INT:
@@ -109,6 +114,10 @@ class Caster
         }
 
         switch ($this->dataType) {
+            case static::INT_5:
+                $value = NumberFormatter::formatNumberForUser($value, true, false);
+                break;
+
             case static::INT:
                 $value = NumberFormatter::formatNumberForUser($value, true, false);
                 break;

@@ -166,6 +166,8 @@ class NumberFormatter
      */
     public static function formatNumberForUser($number, bool $isInteger = false, $alwaysNumber = true)
     {
+        // TODO: Make this work with incorrect values (reverseFormat?)
+
         // Return null if value is not a useful number
         if (! $alwaysNumber && empty($number) && ! is_numeric($number)) {
             return null;

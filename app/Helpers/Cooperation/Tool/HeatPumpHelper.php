@@ -113,18 +113,19 @@ class HeatPumpHelper extends ToolHelper
                             : 'hybrid-heat-pump-outside-air';
                     }
                 }
+            }
 
-                // No heat pump to calculate, so we will fall back to the one they already have
-                if (is_null($heatPumpToCalculate)) {
-                    $heatPumpSubStep = SubStep::bySlug('warmtepomp')->first();
-                    if ($evaluator->evaluate($heatPumpSubStep->conditions)) {
-                        $type = ServiceValue::find($this->getAnswer('heat-pump-type'));
+            $heatPumpSubStep = SubStep::bySlug('warmtepomp')->first();
+            if ($evaluator->evaluate($heatPumpSubStep->conditions)) {
+                $type = ServiceValue::find($this->getAnswer('heat-pump-type'));
 
-                        if ($type instanceof ServiceValue) {
-                            $short = array_flip(static::MEASURE_SERVICE_LINK)[$type->calculate_value];
-                            $heatPumpToCalculate = $short;
-                            $currentCalculateValue = $type->calculate_value;
-                        }
+                if ($type instanceof ServiceValue) {
+                    $currentCalculateValue = $type->calculate_value;
+
+                    // No heat pump to calculate, so we will fall back to the one they already have
+                    if (is_null($heatPumpToCalculate) && ! $this->getValues('has_completed_expert')) {
+                        $short = array_flip(static::MEASURE_SERVICE_LINK)[$type->calculate_value];
+                        $heatPumpToCalculate = $short;
                     }
                 }
             }

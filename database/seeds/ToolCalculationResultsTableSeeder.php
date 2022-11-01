@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\DataTypes\Caster;
 use Illuminate\Database\Seeder;
 
 class ToolCalculationResultsTableSeeder extends Seeder
@@ -19,6 +20,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'hr-boiler.amount_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -26,6 +28,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'hr-boiler.savings_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -33,6 +36,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'hr-boiler.savings_co2',
                 'unit_of_measure' => 'kg / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -40,6 +44,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'hr-boiler.savings_money',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -47,6 +52,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'hr-boiler.replace_year',
                 'unit_of_measure' => '<i class="icon-sm icon-timer"></i>',
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -54,6 +60,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'hr-boiler.cost_indication',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -61,6 +68,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'hr-boiler.interest_comparable',
                 'unit_of_measure' => '% / jaar',
+                'data_type' => Caster::FLOAT,
             ],
             // Heat pump
             [
@@ -69,6 +77,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.advised_system.required_power',
                 'unit_of_measure' => 'kW',
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -76,6 +85,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.advised_system.share_heating',
                 'unit_of_measure' => '%',
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -83,6 +93,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.advised_system.share_tap_water',
                 'unit_of_measure' => '%',
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -93,6 +104,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.advised_system.scop_heating',
                 'unit_of_measure' => null,
+                'data_type' => Caster::FLOAT,
             ],
             [
                 'name' => [
@@ -103,6 +115,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.advised_system.scop_tap_water',
                 'unit_of_measure' => null,
+                'data_type' => Caster::FLOAT,
             ],
             [
                 'name' => [
@@ -110,6 +123,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.amount_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -117,6 +131,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.amount_electricity',
                 'unit_of_measure' => 'kWh / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -124,6 +139,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.savings_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -131,6 +147,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.savings_co2',
                 'unit_of_measure' => 'kg / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -138,6 +155,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.savings_money',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -145,6 +163,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.extra_consumption_electricity',
                 'unit_of_measure' => 'kWh / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -152,6 +171,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.cost_indication',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -159,6 +179,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump.interest_comparable',
                 'unit_of_measure' => '% / jaar',
+                'data_type' => Caster::FLOAT,
             ],
             // Sun boiler
             [
@@ -170,6 +191,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.consumption.water',
                 'unit_of_measure' => 'liter / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -180,6 +202,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.consumption.gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -190,6 +213,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.specs.size_boiler',
                 'unit_of_measure' => 'liter',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -200,6 +224,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.specs.size_collector',
                 'unit_of_measure' => 'm<sup>2</sup>',
+                'data_type' => Caster::FLOAT,
             ],
             [
                 'name' => [
@@ -210,6 +235,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.production_heat',
                 'unit_of_measure' => 'kWh / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -220,6 +246,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.percentage_consumption',
                 'unit_of_measure' => '%',
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -227,6 +254,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.amount_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -237,6 +265,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.savings_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -247,6 +276,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.savings_co2',
                 'unit_of_measure' => 'kg / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -257,6 +287,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.savings_money',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -267,6 +298,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.cost_indication',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -277,6 +309,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'sun-boiler.interest_comparable',
                 'unit_of_measure' => '% / jaar',
+                'data_type' => Caster::FLOAT,
             ],
             // Ventilation
             [
@@ -285,6 +318,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'ventilation.savings_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -292,6 +326,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'ventilation.savings_co2',
                 'unit_of_measure' => 'kg / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -299,6 +334,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'ventilation.savings_money',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -306,6 +342,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'ventilation.cost_indication',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -313,6 +350,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'ventilation.interest_comparable',
                 'unit_of_measure' => '% / jaar',
+                'data_type' => Caster::FLOAT,
             ],
             // Wall insulation
             [
@@ -321,6 +359,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.savings_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -328,6 +367,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.savings_co2',
                 'unit_of_measure' => 'kg / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -335,6 +375,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.savings_money',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -342,6 +383,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.cost_indication',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -349,6 +391,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.interest_comparable',
                 'unit_of_measure' => '% / jaar',
+                'data_type' => Caster::FLOAT,
             ],
             [
                 'name' => [
@@ -356,6 +399,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.repair_joint.costs',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -363,6 +407,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.repair_joint.year',
                 'unit_of_measure' => 'jaar',
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -370,6 +415,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.clean_brickwork.costs',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -377,6 +423,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.clean_brickwork.year',
                 'unit_of_measure' => 'jaar',
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -384,6 +431,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.impregnate_wall.costs',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -391,6 +439,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.impregnate_wall.year',
                 'unit_of_measure' => 'jaar',
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -398,6 +447,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.paint_wall.costs',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -405,6 +455,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'wall-insulation.paint_wall.year',
                 'unit_of_measure' => 'jaar',
+                'data_type' => Caster::INT,
             ],
             // Ventilation
             [
@@ -413,6 +464,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'insulated-glazing.savings_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -420,6 +472,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'insulated-glazing.savings_co2',
                 'unit_of_measure' => 'kg / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -427,6 +480,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'insulated-glazing.savings_money',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -434,6 +488,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'insulated-glazing.cost_indication',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -441,6 +496,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'insulated-glazing.interest_comparable',
                 'unit_of_measure' => '% / jaar',
+                'data_type' => Caster::FLOAT,
             ],
             [
                 'name' => [
@@ -448,6 +504,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'insulated-glazing.paintwork.costs',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -455,6 +512,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'insulated-glazing.paintwork.year',
                 'unit_of_measure' => 'jaar',
+                'data_type' => Caster::INT,
             ],
             // Floor insulation
             [
@@ -463,6 +521,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'floor-insulation.savings_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -470,6 +529,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'floor-insulation.savings_co2',
                 'unit_of_measure' => 'kg / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -477,6 +537,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'floor-insulation.savings_money',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -484,6 +545,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'floor-insulation.cost_indication',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -491,6 +553,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'floor-insulation.interest_comparable',
                 'unit_of_measure' => '% / jaar',
+                'data_type' => Caster::FLOAT,
             ],
             // Roof insulation
             [
@@ -499,6 +562,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.flat.savings_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -506,6 +570,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.flat.savings_co2',
                 'unit_of_measure' => 'kg / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -513,6 +578,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.flat.savings_money',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -520,6 +586,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.flat.cost_indication',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -527,6 +594,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.flat.interest_comparable',
                 'unit_of_measure' => '% / jaar',
+                'data_type' => Caster::FLOAT,
             ],
             [
                 'name' => [
@@ -534,6 +602,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.flat.replace.costs',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -541,6 +610,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.flat.replace.year',
                 'unit_of_measure' => 'jaar',
+                'data_type' => Caster::INT,
             ],
             [
                 'name' => [
@@ -548,6 +618,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.pitched.savings_gas',
                 'unit_of_measure' => 'm<sup>3</sup> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -555,6 +626,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.pitched.savings_co2',
                 'unit_of_measure' => 'kg / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -562,6 +634,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.pitched.savings_money',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -569,6 +642,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.pitched.cost_indication',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -576,6 +650,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.pitched.interest_comparable',
                 'unit_of_measure' => '% / jaar',
+                'data_type' => Caster::FLOAT,
             ],
             [
                 'name' => [
@@ -583,6 +658,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.pitched.replace.costs',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -590,6 +666,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation.pitched.replace.year',
                 'unit_of_measure' => 'jaar',
+                'data_type' => Caster::INT,
             ],
             // Solar panels
             [
@@ -598,6 +675,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'solar-panels.yield_electricity',
                 'unit_of_measure' => 'kWh / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -605,6 +683,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'solar-panels.raise_own_consumption',
                 'unit_of_measure' => '%',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -612,6 +691,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'solar-panels.savings_co2',
                 'unit_of_measure' => 'kg / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -619,6 +699,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'solar-panels.savings_money',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag mr-1"></i> / jaar',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -626,6 +707,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'solar-panels.cost_indication',
                 'unit_of_measure' => '<i class="icon-sm icon-moneybag"></i>',
+                'data_type' => Caster::INT_5,
             ],
             [
                 'name' => [
@@ -633,6 +715,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                 ],
                 'short' => 'solar-panels.interest_comparable',
                 'unit_of_measure' => '% / jaar',
+                'data_type' => Caster::FLOAT,
             ],
         ];
 
@@ -645,6 +728,7 @@ class ToolCalculationResultsTableSeeder extends Seeder
                     'name' => json_encode($data['name']),
                     'help_text' => json_encode($data['help_text'] ?? []),
                     'unit_of_measure' => $data['unit_of_measure'],
+                    'data_type' => $data['data_type'],
                 ],
             );
         }

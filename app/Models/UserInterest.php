@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read Model|\Eloquent $interestedIn
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest allInputSources()
+ * @method static \Database\Factories\UserInterestFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forMe(?\App\Models\User $user = null)

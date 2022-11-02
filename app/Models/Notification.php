@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $input_source_id
  * @property string $type
  * @property bool $is_active
- * @property int $active_count
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
@@ -31,7 +30,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Notification newQuery()
  * @method static Builder|Notification query()
  * @method static Builder|Notification residentInput()
- * @method static Builder|Notification whereActiveCount($value)
  * @method static Builder|Notification whereBuildingId($value)
  * @method static Builder|Notification whereCreatedAt($value)
  * @method static Builder|Notification whereId($value)

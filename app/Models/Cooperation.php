@@ -32,6 +32,7 @@ use Plank\Mediable\Mediable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  * @property-read int|null $users_count
  * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
+ * @method static \Database\Factories\CooperationFactory factory(...$parameters)
  * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newQuery()

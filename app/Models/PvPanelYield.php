@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $yield
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\PvPanelOrientation $orientation
+ * @property-read \App\Models\PvPanelOrientation|null $orientation
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield query()

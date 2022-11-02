@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation allInputSources()
+ * @method static \Database\Factories\BuildingVentilationFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forMe(?\App\Models\User $user = null)

@@ -11,13 +11,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 /**
  * App\Models\ToolCalculationResult
  *
- * @property int $id
- * @property array $name
- * @property array|null $help_text
- * @property string $short
- * @property string|null $unit_of_measure
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
  * @property-read int|null $sub_steppables_count
@@ -26,13 +19,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult query()
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereHelpText($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereUnitOfMeasure($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ToolCalculationResult extends Model

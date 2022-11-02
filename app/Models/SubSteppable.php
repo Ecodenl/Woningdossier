@@ -10,16 +10,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * App\Models\SubSteppable
  *
- * @property int $id
- * @property int $order
- * @property int $sub_step_id
- * @property int $sub_steppable_id
- * @property string|null $sub_steppable_type
- * @property int|null $tool_question_type_id
- * @property array|null $conditions
- * @property string|null $size
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\SubStep $subStep
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subSteppable
  * @property-read \App\Models\ToolQuestionType|null $toolQuestionType
@@ -27,16 +17,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static Builder|SubSteppable newModelQuery()
  * @method static Builder|SubSteppable newQuery()
  * @method static Builder|SubSteppable query()
- * @method static Builder|SubSteppable whereConditions($value)
- * @method static Builder|SubSteppable whereCreatedAt($value)
- * @method static Builder|SubSteppable whereId($value)
- * @method static Builder|SubSteppable whereOrder($value)
- * @method static Builder|SubSteppable whereSize($value)
- * @method static Builder|SubSteppable whereSubStepId($value)
- * @method static Builder|SubSteppable whereSubSteppableId($value)
- * @method static Builder|SubSteppable whereSubSteppableType($value)
- * @method static Builder|SubSteppable whereToolQuestionTypeId($value)
- * @method static Builder|SubSteppable whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class SubSteppable extends MorphPivot

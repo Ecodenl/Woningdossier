@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionOption[] $questionOptions
  * @property-read int|null $question_options_count
  * @property-read \App\Models\Questionnaire $questionnaire
+ * @method static \Database\Factories\QuestionFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
  * @method static \Illuminate\Database\Query\Builder|Question onlyTrashed()

@@ -71,6 +71,7 @@ use Illuminate\Support\Str;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
  * @property-read int|null $tool_question_answers_count
  * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\BuildingFactory factory(...$parameters)
  * @method static Builder|Building newModelQuery()
  * @method static Builder|Building newQuery()
  * @method static \Illuminate\Database\Query\Builder|Building onlyTrashed()

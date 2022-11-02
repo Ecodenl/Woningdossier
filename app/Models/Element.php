@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\ServiceType $serviceType
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ElementValue[] $values
  * @property-read int|null $values_count
+ * @method static \Database\Factories\ElementFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Element newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Element newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Element query()

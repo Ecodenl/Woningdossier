@@ -67,20 +67,14 @@ class Handler extends ExceptionHandler
         return redirect()->route('cooperation.auth.login', compact('cooperation'));
     }
 
-    /**
-     * Report or log an exception.
-     *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @return void
-     */
-    public function report(Throwable $exception)
-    {
-        if (app()->bound('sentry') && $this->shouldReport($exception)) {
-            app('sentry')->captureException($exception);
-        }
 
-        parent::report($exception);
+    public function register()
+    {
+        $this->reportable(function (Throwable $e) {
+            if (app()->bound('sentry') && $this->shouldReport($e)) {
+                app('sentry')->captureException($e);
+            }
+        });
     }
 
     /**

@@ -21,6 +21,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property-read int|null $logs_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PersonalAccessToken[] $tokens
  * @property-read int|null $tokens_count
+ * @method static \Database\Factories\ClientFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Client newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Client newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Client query()

@@ -27,6 +27,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\ElementValue|null $elementValue
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement allInputSources()
+ * @method static \Database\Factories\BuildingElementFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forMe(?\App\Models\User $user = null)

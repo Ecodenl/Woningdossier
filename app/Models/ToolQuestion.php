@@ -21,10 +21,11 @@ use Illuminate\Support\Collection;
  * @property string|null $short
  * @property string|null $save_in
  * @property int|null $for_specific_input_source_id
+ * @property mixed|null $conditions
  * @property array $name
  * @property array $help_text
  * @property array|null $placeholder
- * @property string $data_type
+ * @property int $tool_question_type_id
  * @property bool $coach
  * @property bool $resident
  * @property array|null $options
@@ -44,12 +45,13 @@ use Illuminate\Support\Collection;
  * @property-read int|null $tool_question_custom_values_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionValuable[] $toolQuestionValuables
  * @property-read int|null $tool_question_valuables_count
+ * @method static \Database\Factories\ToolQuestionFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion query()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCoach($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereConditions($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereDataType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereForSpecificInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereHelpText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereId($value)
@@ -59,6 +61,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereResident($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereSaveIn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereToolQuestionTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereUnitOfMeasure($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereValidation($value)

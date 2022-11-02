@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  * @property-read int|null $users_count
+ * @method static \Database\Factories\InterestFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Interest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Interest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Interest query()

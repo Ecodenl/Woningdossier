@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $input_source_id
  * @property string $considerable_type
  * @property int $considerable_id
- * @property bool $is_considering
+ * @property mixed $is_considering
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource $inputSource

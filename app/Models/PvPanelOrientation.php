@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
+ * @method static \Database\Factories\PvPanelOrientationFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelOrientation query()

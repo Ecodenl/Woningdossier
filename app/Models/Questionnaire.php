@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $questions_count
  * @property-read \App\Models\Step|null $step
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire active()
+ * @method static \Database\Factories\QuestionnaireFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forAllCooperations()
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forMyCooperation($cooperationId)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire newModelQuery()

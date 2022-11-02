@@ -7,7 +7,6 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
-use App\Jobs\MapQuickScanToolQuestionToExpertVariant;
 use App\Models\Building;
 use App\Models\CompletedStep;
 use App\Models\CompletedSubStep;
@@ -60,8 +59,6 @@ class ToolQuestionService {
             // this *can't* handle a checkbox / multiselect answer.
             $this->saveToolQuestionValuables($givenAnswer);
         }
-
-        MapQuickScanToolQuestionToExpertVariant::dispatchNow($this->building, $this->currentInputSource, $this->toolQuestion, $givenAnswer);
     }
 
     public function saveToolQuestionCustomValues($givenAnswer)

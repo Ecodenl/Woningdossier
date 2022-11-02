@@ -6,6 +6,7 @@ use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
+use App\Services\ContentStructureService;
 use App\Services\DumpService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -53,8 +54,11 @@ class GenerateTotalReport implements ShouldQueue
             ->inputSource($inputSource)
             ->createHeaderStructure();
 
-        $cooperation = $this->cooperation;
+        $dumpService->setHeaderStructure(
+            ContentStructureService::init($dumpService->headerStructure)->applicableForTotalReport()
+        );
 
+        $cooperation = $this->cooperation;
 
         $rows[] = $dumpService->headerStructure;
 

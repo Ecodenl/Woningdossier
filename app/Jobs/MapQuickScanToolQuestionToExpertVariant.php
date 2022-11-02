@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Helpers\Conditions\Clause;
 use App\Models\Building;
+use App\Models\ComfortLevelTapWater;
 use App\Models\InputSource;
 use App\Models\Service;
 use App\Models\ToolQuestion;
@@ -89,6 +90,27 @@ class MapQuickScanToolQuestionToExpertVariant implements ShouldQueue
             ],
             'water-comfort' => [
                 'questions' => ['new-water-comfort'],
+                'answers' => [
+                    'model' => ComfortLevelTapWater::class,
+                    'column' => 'calculate_value',
+                    'clauses' => [
+                        [
+                            'value' => 1,
+                            'operator' => Clause::EQ,
+                            'result' => 'standard',
+                        ],
+                        [
+                            'value' => 2,
+                            'operator' => Clause::EQ,
+                            'result' => 'comfortable',
+                        ],
+                        [
+                            'value' => 3,
+                            'operator' => Clause::EQ,
+                            'result' => 'extra-comfortable',
+                        ],
+                    ],
+                ],
                 'steps' => ['heating'],
             ],
             'cook-type' => [
@@ -97,6 +119,7 @@ class MapQuickScanToolQuestionToExpertVariant implements ShouldQueue
             ],
             'interested-in-heat-pump-variant' => [
                 'questions' => ['custom'],
+                'steps' => ['heating'],
             ],
         ];
 
@@ -118,6 +141,8 @@ class MapQuickScanToolQuestionToExpertVariant implements ShouldQueue
                         // We now know we have a service value which we need
                         $service = Service::findByShort($answerStruct['service']);
                         $answer = $service->values()->where('id', $answer)->first();
+                    } elseif (array_key_exists('model', $answerStruct)) {
+                        $answer = (new $answerStruct['model'])->find($answer);
                     }
 
                     if (array_key_exists('column', $answerStruct)) {
@@ -208,7 +233,7 @@ class MapQuickScanToolQuestionToExpertVariant implements ShouldQueue
 
     protected function saveAnswer(ToolQuestion $question, $answer)
     {
-        Log::debug("Mapping " . is_array($answer) ? json_encode($answer) : $answer . " for question {$question->short}");
+        Log::debug("Mapping " . (is_array($answer) ? json_encode($answer) : $answer) . " for question {$question->short}");
 
         ToolQuestionService::init($question)
             ->building($this->building)

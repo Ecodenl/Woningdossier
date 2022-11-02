@@ -97,7 +97,7 @@ class RegisterControllerTest extends TestCase
 
         $this->assertDatabaseHas('users', ['allow_access' => 1]);
 
-        $userId = $response->decodeResponseJson('user_id');
+        $userId = $response->json('user_id');
         $user = User::find($userId);
 
         // These tool questions will most likely be saved in another table. However, because of testing purposes,

@@ -153,14 +153,14 @@ class Form extends Scannable
                         ->applyExampleBuilding()
                         ->save($givenAnswer);
 
-                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion) && $masterHasCompletedQuickScan) {
+                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource) && $masterHasCompletedQuickScan) {
                         Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
                         $shouldDoFullRecalculate = true;
                     }
 
                     // get the expert step equivalent
                     // we will filter out duplicates later on.
-                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion));
+                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                 }
             }
         }

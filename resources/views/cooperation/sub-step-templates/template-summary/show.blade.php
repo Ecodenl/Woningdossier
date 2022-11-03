@@ -88,7 +88,9 @@
 
                             if (! empty($toolQuestionToSummarize->pivot->conditions)) {
                                 $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
-                                ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
+                                    ->building($building)
+                                    ->inputSource($masterInputSource)
+                                    ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
                             }
 
                             // Comments come at the end, and have exceptional logic...

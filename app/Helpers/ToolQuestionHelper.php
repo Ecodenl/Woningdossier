@@ -2,14 +2,13 @@
 
 namespace App\Helpers;
 
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 
 class ToolQuestionHelper
 {
@@ -104,6 +103,44 @@ class ToolQuestionHelper
     ];
 
     /**
+     * Who would be surprised that some questions should trigger a recalculate but only in certain conditions?
+     */
+    const TOOL_RECALCULATE_CONDITIONS = [
+        'interested-in-heat-pump' => [
+            [
+                [
+                    'column' => 'fn',
+                    'operator' => 'HasCompletedStep',
+                    'value' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
+                            InputSource::RESIDENT_SHORT,
+                            InputSource::COACH_SHORT,
+                        ],
+                        'should_pass' => false,
+                    ],
+                ],
+            ],
+        ],
+        'interested-in-heat-pump-variant' => [
+            [
+                [
+                    'column' => 'fn',
+                    'operator' => 'HasCompletedStep',
+                    'value' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
+                            InputSource::RESIDENT_SHORT,
+                            InputSource::COACH_SHORT,
+                        ],
+                        'should_pass' => false,
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    /**
      * Array map from tool question to another tool question short, giving the data that should be replaced,
      * and which tool question to get the answer for, for the replaceable.
      */
@@ -117,10 +154,20 @@ class ToolQuestionHelper
         ],
     ];
 
-    public static function stepShortsForToolQuestion(ToolQuestion $toolQuestion): array
+    public static function stepShortsForToolQuestion(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource): array
     {
         if (isset(self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short])) {
-            return self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short];
+            $data = self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short];
+
+            // Only return if it passes the conditions (if there are any)
+            if (array_key_exists($toolQuestion->short, self::TOOL_RECALCULATE_CONDITIONS)) {
+                $pass = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
+                    ->evaluate(self::TOOL_RECALCULATE_CONDITIONS[$toolQuestion->short]);
+
+                $data = $pass ? $data : [];
+            }
+
+            return $data;
         }
         return [];
     }
@@ -129,9 +176,21 @@ class ToolQuestionHelper
      * Simple method to determine whether the given tool question should use the old advice on a recalculate
      *
      */
-    public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion): bool
+    public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource): bool
     {
-        return in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true);
+        if (in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true)) {
+            $pass = true;
+
+            // Only return if it passes the conditions (if there are any)
+            if (array_key_exists($toolQuestion->short, self::TOOL_RECALCULATE_CONDITIONS)) {
+                $pass = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
+                    ->evaluate(self::TOOL_RECALCULATE_CONDITIONS[$toolQuestion->short]);
+            }
+
+            return $pass;
+        }
+
+        return false;
     }
 
     /**

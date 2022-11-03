@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $show
  * @property int $order
  * @property array|null $extra
+ * @property array|null $conditions
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
@@ -27,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder|ToolQuestionCustomValue ordered()
  * @method static Builder|ToolQuestionCustomValue query()
  * @method static Builder|ToolQuestionCustomValue visible()
+ * @method static Builder|ToolQuestionCustomValue whereConditions($value)
  * @method static Builder|ToolQuestionCustomValue whereCreatedAt($value)
  * @method static Builder|ToolQuestionCustomValue whereExtra($value)
  * @method static Builder|ToolQuestionCustomValue whereId($value)

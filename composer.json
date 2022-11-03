@@ -39,8 +39,7 @@
         "mockery/mockery": "^1.4.4",
         "phpunit/phpunit": "^9.5.10",
         "nunomaduro/collision": "^5.10",
-        "fakerphp/faker": "^1.9.1",
-        "facade/ignition": "^2.5"
+        "fakerphp/faker": "^1.9.1"
     },
     "autoload": {
         "psr-4": {

@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $scan_id
  * @property-read \Illuminate\Database\Eloquent\Collection|Step[] $children
  * @property-read int|null $children_count
  * @property-read array $translations
@@ -46,6 +47,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|Step whereName($value)
  * @method static Builder|Step whereOrder($value)
  * @method static Builder|Step whereParentId($value)
+ * @method static Builder|Step whereScanId($value)
  * @method static Builder|Step whereShort($value)
  * @method static Builder|Step whereSlug($value)
  * @method static Builder|Step whereUpdatedAt($value)

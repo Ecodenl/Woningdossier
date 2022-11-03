@@ -16,13 +16,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $order
  * @property array|null $conditions
  * @property int $step_id
- * @property int $sub_step_template_id
+ * @property int|null $sub_step_template_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent $commentable
  * @property-read array $translations
  * @property-read \App\Models\Step $step
- * @property-read \App\Models\SubStepTemplate $subStepTemplate
+ * @property-read \App\Models\SubStepTemplate|null $subStepTemplate
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
  * @property-read int|null $sub_steppables_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestion[] $toolQuestions

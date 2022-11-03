@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $tool_question_valuable_id
  * @property string $tool_question_valuable_type
  * @property array|null $extra
+ * @property array|null $conditions
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ToolQuestion $toolQuestion
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static Builder|ToolQuestionValuable ordered()
  * @method static Builder|ToolQuestionValuable query()
  * @method static Builder|ToolQuestionValuable visible()
+ * @method static Builder|ToolQuestionValuable whereConditions($value)
  * @method static Builder|ToolQuestionValuable whereCreatedAt($value)
  * @method static Builder|ToolQuestionValuable whereExtra($value)
  * @method static Builder|ToolQuestionValuable whereId($value)

@@ -302,7 +302,7 @@ class DumpService
             if ($escape) {
                 // If we should escape, we add everything between double quotes and ensure any double quote
                 // is converted to single quote
-                $data[$key] = '"' . str_replace('"', "'", $data[$key]) . '"';
+                $data[$key] = '"' .  trim(preg_replace('/\s+/', ' ', str_replace('"', "'", $data[$key]))) . '"';
             }
         }
 

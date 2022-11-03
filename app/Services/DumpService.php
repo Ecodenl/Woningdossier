@@ -178,12 +178,13 @@ class DumpService
     /**
      * Create a dump for the set header structure.
      *
-     * @param  bool  $withConditionalLogic  If we should follow conditional logic. Answers won't be shown if conditions
+     * @param bool $withConditionalLogic If we should follow conditional logic. Answers won't be shown if conditions
      *     don't match
+     * @param bool $escape If we should safely escape results (e.g. so Excel doesn't cry)
      *
      * @return array
      */
-    public function generateDump(bool $withConditionalLogic = true): array
+    public function generateDump(bool $withConditionalLogic = true, bool $escape = false): array
     {
         $user = $this->user;
         $building = $user->building;
@@ -296,6 +297,12 @@ class DumpService
 
                     $data[$key] = $result;
                 }
+            }
+
+            if ($escape) {
+                // If we should escape, we add everything between double quotes and ensure any double quote
+                // is converted to single quote
+                $data[$key] = '"' . str_replace('"', "'", $data[$key]) . '"';
             }
         }
 

@@ -54,10 +54,6 @@ class GenerateTotalReport implements ShouldQueue
             ->inputSource($inputSource)
             ->createHeaderStructure();
 
-        $dumpService->setHeaderStructure(
-            ContentStructureService::init($dumpService->headerStructure)->applicableForTotalReport()
-        );
-
         $cooperation = $this->cooperation;
 
         $rows[] = $dumpService->headerStructure;
@@ -88,7 +84,7 @@ class GenerateTotalReport implements ShouldQueue
             }, 'energyHabit' => fn ($q) => $q->forInputSource($inputSource)])
             ->chunkById(100, function($users) use ($dumpService, &$rows) {
                 foreach ($users as $user) {
-                    $rows[$user->building->id] = $dumpService->user($user)->generateDump();
+                    $rows[$user->building->id] = $dumpService->user($user)->generateDump(true, true);
                 }
 
                 $handle = fopen(Storage::disk('downloads')->path($this->fileStorage->filename), 'a');

@@ -54,7 +54,7 @@ class ToolQuestionService {
     public function save($givenAnswer)
     {
         if (is_null($this->toolQuestion->save_in)) {
-//            $this->saveToolQuestionCustomValues($givenAnswer);
+            $this->saveToolQuestionCustomValues($givenAnswer);
         } else {
             // this *can't* handle a checkbox / multiselect answer.
             $this->saveToolQuestionValuables($givenAnswer);
@@ -192,11 +192,11 @@ class ToolQuestionService {
             foreach ($answerData as $targetColumn => $values) {
                 foreach ($values as $value) {
                     // Now save it
-//                    $modelName::allInputSources()
-//                        ->updateOrCreate(
-//                            $where,
-//                            [$targetColumn => $value]
-//                        );
+                    $modelName::allInputSources()
+                        ->updateOrCreate(
+                            $where,
+                            [$targetColumn => $value]
+                        );
                 }
             }
         } else {

@@ -54,7 +54,7 @@ class ToolQuestionService {
     public function save($givenAnswer)
     {
         if (is_null($this->toolQuestion->save_in)) {
-            $this->saveToolQuestionCustomValues($givenAnswer);
+//            $this->saveToolQuestionCustomValues($givenAnswer);
         } else {
             // this *can't* handle a checkbox / multiselect answer.
             $this->saveToolQuestionValuables($givenAnswer);
@@ -78,6 +78,7 @@ class ToolQuestionService {
             return;
         }
 
+        Log::debug($this->toolQuestion->short." not save in");
         // We can't do a update or create, we just have to delete the old answers and create the new one.
         if ($this->toolQuestion->data_type === Caster::ARRAY) {
             $this->toolQuestion->toolQuestionAnswers()
@@ -191,15 +192,16 @@ class ToolQuestionService {
             foreach ($answerData as $targetColumn => $values) {
                 foreach ($values as $value) {
                     // Now save it
-                    $modelName::allInputSources()
-                        ->updateOrCreate(
-                            $where,
-                            [$targetColumn => $value]
-                        );
+//                    $modelName::allInputSources()
+//                        ->updateOrCreate(
+//                            $where,
+//                            [$targetColumn => $value]
+//                        );
                 }
             }
         } else {
             // Now save it
+            Log::debug($modelName, compact('where', 'answerData'));
             $modelName::allInputSources()
                 ->updateOrCreate(
                     $where,

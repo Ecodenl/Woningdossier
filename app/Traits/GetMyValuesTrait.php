@@ -82,6 +82,7 @@ trait GetMyValuesTrait
         if (! in_array($this->getTable(), $tablesToIgnore)) {
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             $data = $this->attributesToArray();
+            dd('bier sf sdfsd sff'.mt_rand(3, 25));
 
             $data['input_source_id'] = $masterInputSource->id;
             unset($data['id']);

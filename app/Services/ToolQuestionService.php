@@ -78,7 +78,6 @@ class ToolQuestionService {
             return;
         }
 
-        Log::debug($this->toolQuestion->short." not save in");
         // We can't do a update or create, we just have to delete the old answers and create the new one.
         if ($this->toolQuestion->data_type === Caster::ARRAY) {
             $this->toolQuestion->toolQuestionAnswers()
@@ -201,7 +200,6 @@ class ToolQuestionService {
             }
         } else {
             // Now save it
-            Log::debug($modelName, compact('where', 'answerData'));
             $modelName::allInputSources()
                 ->updateOrCreate(
                     $where,

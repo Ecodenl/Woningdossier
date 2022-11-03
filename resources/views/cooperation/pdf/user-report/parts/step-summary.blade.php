@@ -25,7 +25,9 @@
 
                         if (! empty($toolQuestionToSummarize->pivot->conditions)) {
                             $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
-                            ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
+                                    ->building($building)
+                                    ->inputSource($inputSource)
+                                    ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
                         }
 
                         // Comments come at the end, and have exceptional logic...

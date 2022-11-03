@@ -18,6 +18,17 @@ class ContentStructureService
         $this->contentStructure = $contentStructure;
     }
 
+    public function applicableForTotalReport(): array
+    {
+        // This expects a header structure from the DumpService
+        $contentStructure = $this->contentStructure;
+
+        return Arr::where($contentStructure, function ($trans, $field) {
+            // Simply remove all comments
+            return ! Str::contains($field, 'comment');
+        });
+    }
+
     public function applicableForExampleBuildings(): array
     {
         // This expects a content structure from the ToolHelper

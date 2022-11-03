@@ -14,7 +14,7 @@ a.in-text {
 
 /* Buttons */
 .btn {
-    @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block;
+    @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block min-w-min;
 }
 .btn-sm {
     @apply p-2;

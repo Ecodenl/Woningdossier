@@ -178,7 +178,7 @@ class DumpService
     /**
      * Create a dump for the set header structure.
      *
-     * @param  bool  $withConditionalLogic  If we should follow conditional logic. Answers won't be shown if conditions
+     * @param bool $withConditionalLogic If we should follow conditional logic. Answers won't be shown if conditions
      *     don't match
      *
      * @return array

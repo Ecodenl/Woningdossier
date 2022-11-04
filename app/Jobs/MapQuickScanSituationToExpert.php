@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Calculations\HeatPump;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Models\Building;
@@ -126,6 +127,20 @@ class MapQuickScanSituationToExpert implements ShouldQueue
                 $this->saveAnswer($question, $answer);
             }
         }
+
+        // As last step, calculate required power to save as desired power...........
+        $answers['new-heat-pump-type'] = ToolQuestion::findByShort('new-heat-pump-type')
+            ->toolQuestionCustomValues()
+            ->where('extra->calculate_value', $calculateValue)
+            ->first()->short;
+
+        // If we're not in expert yet, we need the heating temp for the calculations
+        $heatingTemp = $this->building->getAnswer($this->masterInputSource, ToolQuestion::findByShort('boiler-setting-comfort-heat'));
+        // We assume the worst if the user doesn't know
+        $answers['new-boiler-setting-comfort-heat'] = $heatingTemp === 'unsure' ? 'temp-high' : $heatingTemp;
+
+        $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));
+        $this->saveAnswer(ToolQuestion::findByShort('heat-pump-preferred-power'), $results['advised_system']['required_power']);
     }
 
     protected function evaluateClause(array $clause, $answer): bool

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Helpers\Conditions\Clause;
 use App\Models\Element;
+use App\Models\InputSource;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
@@ -715,6 +716,18 @@ class SubSteppablesTableSeeder extends Seeder
                                         'column' => 'interested-in-heat-pump',
                                         'operator' => Clause::EQ,
                                         'value' => 'yes',
+                                    ],
+                                    [
+                                        'column' => 'fn',
+                                        'operator' => 'HasCompletedStep',
+                                        'value' => [
+                                            'steps' => ['heating'],
+                                            'input_source_shorts' => [
+                                                InputSource::RESIDENT_SHORT,
+                                                InputSource::COACH_SHORT,
+                                            ],
+                                            'should_pass' => false,
+                                        ],
                                     ],
                                 ],
                             ],

@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use App\Deprecation\ToolHelper;
 use App\Helpers\Arr;
-use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\StepHelper;
 use App\Models\Building;
@@ -13,16 +13,18 @@ use App\Models\MeasureApplication;
 use App\Models\RoofType;
 use App\Models\ServiceValue;
 use App\Models\Step;
-use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
+use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService
 {
+    use RetrievesAnswers;
+
     const CATEGORY_COMPLETE = 'complete';
     const CATEGORY_TO_DO = 'to-do';
     const CATEGORY_LATER = 'later';
@@ -227,23 +229,40 @@ class UserActionPlanAdviceService
             } elseif ($advisable->measure_type === MeasureApplication::ENERGY_SAVING) {
                 switch ($advisable->short) {
                     case 'high-efficiency-boiler-replace':
-                        $subStep = SubStep::bySlug('warmtepomp')->first();
-                        $evaluation = ConditionEvaluator::init()
+                        // We can't look at measures, because during recalculate they might not have been processed
+                        // yet... We'll have to follow the same logic as in the heat pump helper...
+                        $conditionService = ConditionService::init()
                             ->building($building)
-                            ->inputSource($masterInputSource)
-                            ->evaluate($subStep->conditions);
+                            ->inputSource($masterInputSource);
 
-                        if ($evaluation) {
-                            // We hide the HR-boiler if the user has a full heat pump
-                            $type = ServiceValue::find(
-                                $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type'))
+                        if ($conditionService->hasCompletedSteps(['heating'])) {
+                            $serviceValue = ToolHelper::getServiceValueByCustomValue('heat-pump',
+                                'new-heat-pump-type',
+                                static::getQuickAnswer('new-heat-pump-type', $building, $masterInputSource)
                             );
 
-                            if ($type instanceof ServiceValue && $type->calculate_value > 3) {
-                                $visible = false;
+                            $visible = ($serviceValue->calculate_value ?? 0) <= 3;
+                        } else {
+                            $interestQuestion = ToolQuestion::findByShort('interested-in-heat-pump-variant');
+
+                            if ($conditionService->forModel($interestQuestion)->isViewable()) {
+                                $interest = static::getQuickAnswer('interested-in-heat-pump-variant',
+                                    $building, $masterInputSource);
+                                $temp = static::getQuickAnswer('boiler-setting-comfort-heat',
+                                    $building, $masterInputSource);
+
+                                $visible = $interest === 'hybrid-heat-pump'
+                                    || ($interest === 'unsure' && $temp !== 'temp-low');
+                            } else {
+                                $heatPumpQuestion = ToolQuestion::findByShort('heat-pump-type');
+
+                                if ($conditionService->forModel($heatPumpQuestion)->isViewable()) {
+                                    $id = static::getQuickAnswer('heat-pump-type', $building, $masterInputSource);
+
+                                    $visible = (ServiceValue::find($id)->calculate_value ?? 0) <= 3;
+                                }
                             }
                         }
-                        break;
                 }
             }
         }

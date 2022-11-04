@@ -203,10 +203,10 @@ class HeatPump extends \App\Calculations\Calculator
         $result = [
             'amount_gas' => $amountGas,
             'amount_electricity' => $currentElectricityUsage,
-            'savings_gas' => NumberFormatter::format($savingsGas),
-            'extra_consumption_electricity' => NumberFormatter::format($extraConsumptionElectricity, 0, true),
-            'savings_co2' => NumberFormatter::format($savingsCo2),
-            'savings_money' => NumberFormatter::format($savingsMoney),
+            'savings_gas' => $savingsGas,
+            'extra_consumption_electricity' => $extraConsumptionElectricity,
+            'savings_co2' => $savingsCo2,
+            'savings_money' => $savingsMoney,
             'cost_indication' => $characteristics->costs ?? 0,
             'advised_system' => $advisedSystem,
             'advices' => $this->advices,
@@ -234,7 +234,20 @@ class HeatPump extends \App\Calculations\Calculator
 
     public function calculateShareHeating(): int
     {
+        // First check
+        // 1) if required power - desired power >= 1: 100;
+        // 2) if required power - desired power >= 0 AND required power - desired power < 1:
+        // 100 for low heating temperature, 95 for 50 degrees, 85 for high heating temperature;
+        // This equals using beta factor 1.
+
+        // scenario 1
+        if ($this->desiredPower - $this->requiredPower >= 1) {
+            return 100;
+        }
+
+        // Use database table
         if ($this->heatingTemperature instanceof ToolQuestionCustomValue) {
+            // scenario 2 (use of beta factor 1) is included in the beta factor method, so we can keep the code smaller
             $coverage = KeyFigureHeatPumpCoverage::forBetaFactor($this->betaFactor())
                 ->forHeatingTemperature($this->heatingTemperature)
                 ->first();
@@ -242,28 +255,6 @@ class HeatPump extends \App\Calculations\Calculator
             if ($coverage instanceof KeyFigureHeatPumpCoverage){
                 return $coverage->percentage;
             }
-
-            // if $coverage didn't result in anything -> fallback:
-            // 1) if required power - desired power >= 1: 100;
-            // 2) if required power - desired power >= 0 AND required power - desired power < 1:
-            // 100 for low heating temperature, 95 for 50 degrees, 85 for high heating temperature;
-
-            // scenario 1
-            if($this->requiredPower - $this->desiredPower >= 1){
-
-                return 100;
-            }
-            // scenario 2 (is basically the same as using betafactor 1.0)
-            if($this->requiredPower - $this->desiredPower >= 0 && $this->requiredPower - $this->desiredPower < 1){
-                $coverage = KeyFigureHeatPumpCoverage::forBetaFactor(1.0)
-                                                     ->forHeatingTemperature($this->heatingTemperature)
-                                                     ->first();
-
-                if ($coverage instanceof KeyFigureHeatPumpCoverage){
-                    return $coverage->percentage;
-                }
-            }
-
         }
 
         return 0;
@@ -286,6 +277,10 @@ class HeatPump extends \App\Calculations\Calculator
     // = C61
     public function betaFactor() : float
     {
+        if ($this->desiredPower - $this->requiredPower >= 0 && $this->desiredPower - $this->requiredPower < 1) {
+            return 1;
+        }
+
         return min(round($this->desiredPower / max($this->requiredPower, 1), 1), 1.0);
     }
 

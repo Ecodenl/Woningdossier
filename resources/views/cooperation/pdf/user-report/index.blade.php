@@ -53,7 +53,7 @@
             $inputSource
         );
     @endphp
-    @if (array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
+    @if(array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
         @foreach ($dataForStep as $subStepShort => $dataForSubStep)
             @php
                 $shortToUseAsMainSubject = $subStepShort == '-' ? $stepShort : $subStepShort
@@ -69,14 +69,30 @@
             \App\Models\Step::where('short', $stepShort)->first(),
             $inputSource
         );
+        $stepAnswerMap = [
+            'heater' => 'sun-boiler',
+            'high-efficiency-boiler' => 'hr-boiler',
+            'heat-pump' => 'heat-pump',
+        ];
     @endphp
-    @if (array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
+    @if(array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
         @php
             // We don't use this, however to not break code we will set it.
             $subStepShort = $stepShort;
             $shortToUseAsMainSubject = $stepShort;
+
+            $showPage = true;
+            if (array_key_exists($stepShort, $stepAnswerMap)) {
+                $newHeatSourceQuestion = \App\Models\ToolQuestion::findByShort('new-heat-source');
+                $newHeatSourceWaterQuestion = \App\Models\ToolQuestion::findByShort('new-heat-source-warm-tap-water');
+                $newSituation = array_merge($building->getAnswer($inputSource, $newHeatSourceQuestion), $building->getAnswer($inputSource, $newHeatSourceWaterQuestion));
+
+                $showPage = in_array($stepAnswerMap[$stepShort], $newSituation);
+            }
         @endphp
-        @include('cooperation.pdf.user-report.parts.measure-page')
+        @if($showPage)
+            @include('cooperation.pdf.user-report.parts.measure-page')
+        @endif
     @endif
 @endforeach
 

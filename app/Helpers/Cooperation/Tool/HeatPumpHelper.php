@@ -67,6 +67,7 @@ class HeatPumpHelper extends ToolHelper
         if ($this->considers($step)) {
             $heatPumpToCalculate = null;
             $currentCalculateValue = null;
+            $heatingTemp = null;
 
             $evaluator = ConditionEvaluator::init()
                 ->building($this->building)
@@ -87,6 +88,12 @@ class HeatPumpHelper extends ToolHelper
             } else {
                 // User has not yet finished the expert step. Let's check if they are interested, else fall back
                 // to a potential current
+
+                // If we're not in expert yet, we need the heating temp for the calculations
+                $heatingTemp = $this->getAnswer('boiler-setting-comfort-heat');
+                // We assume the worst if the user doesn't know
+                $heatingTemp = $heatingTemp === 'unsure' ? 'temp-high' : $heatingTemp;
+
                 $heatPumpInterestSubStep = SubStep::bySlug('warmtepomp-interesse')->first();
                 $interested = $this->getAnswer('interested-in-heat-pump') === 'yes';
 
@@ -99,28 +106,26 @@ class HeatPumpHelper extends ToolHelper
                     } elseif ($interest === 'hybrid-heat-pump') {
                         $heatPumpToCalculate = 'hybrid-heat-pump-outside-air';
                     } else {
-                        // If they want advise, we advise based on heating temperature
-                        $temp = $this->getAnswer('boiler-setting-comfort-heat');
-
                         // If they use low temp, we suggest a full heat pump. Otherwise we always suggest hybrid.
-                        // In the case the user is unsure about their temp usage, we assume the worst case and thus
-                        // also suggest hybrid
-                        $heatPumpToCalculate = $temp === 'temp-low' ? 'full-heat-pump-outside-air'
+                        // In the case the user is unsure about their temp usage, as mentioned above, we assume the
+                        // worst case and thus also suggest hybrid
+                        $heatPumpToCalculate = $heatingTemp === 'temp-low' ? 'full-heat-pump-outside-air'
                             : 'hybrid-heat-pump-outside-air';
                     }
                 }
+            }
 
-                // No heat pump to calculate, so we will fall back to the one they already have
-                if (is_null($heatPumpToCalculate)) {
-                    $heatPumpSubStep = SubStep::bySlug('warmtepomp')->first();
-                    if ($evaluator->evaluate($heatPumpSubStep->conditions)) {
-                        $type = ServiceValue::find($this->getAnswer('heat-pump-type'));
+            $heatPumpSubStep = SubStep::bySlug('warmtepomp')->first();
+            if ($evaluator->evaluate($heatPumpSubStep->conditions)) {
+                $type = ServiceValue::find($this->getAnswer('heat-pump-type'));
 
-                        if ($type instanceof ServiceValue) {
-                            $short = array_flip(static::MEASURE_SERVICE_LINK)[$type->calculate_value];
-                            $heatPumpToCalculate = $short;
-                            $currentCalculateValue = $type->calculate_value;
-                        }
+                if ($type instanceof ServiceValue) {
+                    $currentCalculateValue = $type->calculate_value;
+
+                    // No heat pump to calculate, so we will fall back to the one they already have
+                    if (is_null($heatPumpToCalculate) && ! $this->getValues('has_completed_expert')) {
+                        $short = array_flip(static::MEASURE_SERVICE_LINK)[$type->calculate_value];
+                        $heatPumpToCalculate = $short;
                     }
                 }
             }
@@ -128,11 +133,17 @@ class HeatPumpHelper extends ToolHelper
             if (! is_null($heatPumpToCalculate)) {
                 $calculateValue = static::MEASURE_SERVICE_LINK[$heatPumpToCalculate];
 
+                // Ensure we correctly "spoof" the calculator values
                 $answers = $this->getValues();
                 $answers['new-heat-pump-type'] = ToolQuestion::findByShort('new-heat-pump-type')
                     ->toolQuestionCustomValues()
                     ->where('extra->calculate_value', $calculateValue)
                     ->first()->short;
+
+                if (! is_null($heatingTemp)) {
+                    $answers['new-boiler-setting-comfort-heat'] = $heatingTemp;
+                }
+
                 $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));
 
                 $savingsMoney = null;

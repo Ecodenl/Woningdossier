@@ -12,6 +12,7 @@ use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Log;
 
 class SubStepPolicy
 {
@@ -28,13 +29,16 @@ class SubStepPolicy
 
     public function show(Account $account, SubStep $subStep, Building $building = null)
     {
-        $building = $building ?? HoomdossierSession::getBuilding(true);
+        if (! $building instanceof Building) {
+            Log::alert(__METHOD__ . " building is not set for URL " . request()->fullUrl());
+            $building = HoomdossierSession::getBuilding(true);
+        }
+
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         return ConditionEvaluator::init()
-                                 ->building($building)
-                                 ->inputSource($masterInputSource)
-                                 ->evaluate($subStep->conditions ?? []);
-
+            ->building($building)
+            ->inputSource($masterInputSource)
+            ->evaluate($subStep->conditions ?? []);
     }
 }

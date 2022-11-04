@@ -7,6 +7,28 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 
+/**
+ * App\Models\Scan
+ *
+ * @property int $id
+ * @property array $name
+ * @property array $slug
+ * @property string $short
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array $translations
+ * @method static Builder|Scan bySlug(string $slug, string $locale = 'nl')
+ * @method static Builder|Scan newModelQuery()
+ * @method static Builder|Scan newQuery()
+ * @method static Builder|Scan query()
+ * @method static Builder|Scan whereCreatedAt($value)
+ * @method static Builder|Scan whereId($value)
+ * @method static Builder|Scan whereName($value)
+ * @method static Builder|Scan whereShort($value)
+ * @method static Builder|Scan whereSlug($value)
+ * @method static Builder|Scan whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Scan extends Model
 {
     use HasTranslations;

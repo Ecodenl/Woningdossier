@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -74,6 +75,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Account::class,
         ],
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
@@ -116,4 +118,5 @@ return [
     */
 
     'password_timeout' => 10800,
+
 ];

@@ -76,7 +76,7 @@ class HeatPump extends \App\Calculations\Calculator
         if ($this->desiredPower <= 0 && $characteristics instanceof HeatPumpCharacteristic) {
             if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL){
                 // for full: required power
-                $this->desiredPower = (int) ceil($this->requiredPower);
+                $this->desiredPower = $this->requiredPower;
             }
             else {
                 // for hybrid: fixed value / standard from table
@@ -89,7 +89,7 @@ class HeatPump extends \App\Calculations\Calculator
         // return value affects other calculations.
 
         $advisedSystem = [
-            'required_power' => NumberFormatter::format($this->requiredPower), // C60
+            'required_power' => $this->requiredPower, // C60
             'desired_power' => $this->desiredPower, // C61
             'share_heating' => $shareHeating, // C62
             'share_tap_water' => $characteristics->share_percentage_tap_water ?? 0, // C63

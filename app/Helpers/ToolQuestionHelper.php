@@ -88,6 +88,7 @@ class ToolQuestionHelper
         'heater-pv-panel-angle' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'fifty-degree-test' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'boiler-setting-comfort-heat' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'new-boiler-setting-comfort-heat' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'new-heat-source' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'new-heat-source-warm-tap-water' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'hr-boiler-replace' => ['high-efficiency-boiler', 'heater', 'heat-pump'],

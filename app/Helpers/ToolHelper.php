@@ -85,7 +85,7 @@ class ToolHelper
         $structure = [];
 
         // Will hold shorts we already processed
-        // Some models / morphs (mostly tool questions),will be shown on multiple steps
+        // Some models / morphs (mostly tool questions), will be shown on multiple steps
         // We dont want to do that for the CSV tho.
         // this way we can keep track of that
         $processedShorts = [];
@@ -127,6 +127,15 @@ class ToolHelper
                         $modelName = $model->name;
                         if ($isToolQuestion && ! is_null($model->for_specific_input_source_id)) {
                             $modelName .= " ({$model->forSpecificInputSource->name})";
+                        }
+                        if ($stepShort === 'heating' && ! $isToolQuestion) {
+                            // Calculation fields have a repeated name, which can be confusing in only the heating
+                            // step (as of now). Might need to be expanded later on. We add the tool label matched
+                            // by the step short hidden in the result short
+                            // TODO: This solution _might_ not look good in the PDF once we switch from legacy
+                            $labelShort = explode('.', $model->short)[0];
+                            $label = ToolLabel::findByShort($labelShort);
+                            $modelName .= " ({$label->name})";
                         }
 
                         $structure[$stepShort][$shortToSave] = $modelName;

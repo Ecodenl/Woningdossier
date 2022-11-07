@@ -16,6 +16,9 @@
         "darkaonline/l5-swagger": "^8.0",
         "doctrine/dbal": "^2.13",
         "ecodenl/pico-wrapper": "dev-master",
+        "fruitcake/laravel-cors": "^2.0",
+        "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
+        "laravel/fortify": "^1.13",
         "laravel/framework": "^8.83",
         "laravel/sanctum": "^2.9",
         "laravel/tinker": "^2.5",
@@ -28,10 +31,7 @@
         "spatie/laravel-permission": "^3.17",
         "spatie/laravel-translatable": "^4.6",
         "spatie/laravel-translation-loader": "^2.6",
-        "wedesignit/laravel-translations-import": "^0.1.8",
-        "laravel/ui": "^3.0",
-        "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^6.3.1|^7.0.1"
+        "wedesignit/laravel-translations-import": "^0.1.8"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",

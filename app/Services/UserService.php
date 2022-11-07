@@ -192,7 +192,8 @@ class UserService
         );
 
         $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'] ?? '';
-        $data['extension'] = $data['house_number_extension'] ?? null;
+        // Force empty string
+        $data['extension'] = $data['house_number_extension'] ?? '';
 
         $features = new BuildingFeature([
             'surface' => $picoAddressData['surface'] ?? null,

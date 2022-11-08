@@ -730,7 +730,5 @@ class Form extends Component
     private function setField($field, $value)
     {
         $this->{$field} = $value;
-        // TODO: Deprecate this dispatch in Livewire V2 (IF POSSIBLE)
-        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
     }
 }

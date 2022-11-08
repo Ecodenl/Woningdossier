@@ -16,7 +16,11 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
     livewire: false,
 
     init() {
-        this.livewire = !! this.$wire;
+        try {
+            this.livewire = !! this.$wire;
+        } catch (e) {
+            this.livewire = false;
+        }
     },
     container: {
         ['x-on:drop.prevent']() {

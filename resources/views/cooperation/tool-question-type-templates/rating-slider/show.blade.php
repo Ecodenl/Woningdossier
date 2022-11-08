@@ -7,7 +7,6 @@
             $disabled = $disabled ?? false;
             $label = $option['name'];
 
-            $default = $filledInAnswers[$toolQuestion['short']][$option['short']] ?? 0;
             $livewireModel = "filledInAnswers.{$toolQuestion['short']}.{$option['short']}";
         @endphp
 

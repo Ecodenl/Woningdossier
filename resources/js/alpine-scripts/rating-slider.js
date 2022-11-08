@@ -7,7 +7,11 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false) =>
     livewire: false,
 
     init() {
-        this.livewire = !! this.$wire;
+        try {
+            this.livewire = !! this.$wire;
+        } catch (e) {
+            this.livewire = false;
+        }
 
         // Ensure the slider gets updated with the default value
         if (this.value > 0) {

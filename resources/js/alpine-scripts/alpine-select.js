@@ -1,16 +1,24 @@
 export default (initiallyOpen = false) => ({
     // Select element
     select: null,
-    // Current value(s) of the select
-    values: {},
+    // Current value(s) of the select (to by synced)
+    values: null,
     // If the select is disabled
     disabled: false,
     // Is the dropdown open?
     open: initiallyOpen,
     // Is the dropdown multiple supported?
     multiple: false,
+    livewire: false,
+    wireModel: null,
 
     init() {
+        try {
+            this.livewire = !! this.$wire;
+        } catch (e) {
+            this.livewire = false;
+        }
+
         let context = this;
         setTimeout(() => {
             context.constructSelect();
@@ -19,14 +27,44 @@ export default (initiallyOpen = false) => ({
                 let observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         context.constructSelect();
-                        window.triggerEvent(context.select, 'change');
+                        if (! context.livewire) {
+                            window.triggerEvent(context.select, 'change');
+                        }
                     });
                 });
 
-                observer.observe(this.select, { childList: true });
+                observer.observe(context.select, { childList: true });
+
+                // Bind event listener for change
+                context.select.addEventListener('change', (event) => {
+                    this.updateSelectedValues();
+                });
+            }
+
+            if (context.livewire && null !== context.select) {
+                this.wireModel = context.select.getAttribute('wire:model');
+                if (this.wireModel) {
+                    context.values = context.$wire.get(this.wireModel);
+                }
+            }
+
+            if (this.values === null && this.multiple) {
+                this.values = [];
             }
         });
+
+        if (this.multiple) {
+            // If it's multiple, we will add an event listener to rebuild the input on resizing
+            window.addEventListener('resize', (event) => {
+                this.setInputValue();
+            });
+        }
+
+        this.$watch('values', (value, oldValue) => {
+            this.setInputValue();
+        });
     },
+    // Construct a fresh custom select
     constructSelect() {
         let wrapper = this.$refs['select-wrapper'];
         // Get the select element
@@ -34,17 +72,6 @@ export default (initiallyOpen = false) => ({
         // Select is defined!
         if (null !== this.select) {
             this.multiple = this.select.hasAttribute('multiple');
-
-            // Bind event listener for change
-            this.select.addEventListener('change', (event) => {
-                this.updateSelectedValues();
-            });
-            if (this.multiple) {
-                // If it's multiple, we will add an event listener to rebuild the input on resizing
-                window.addEventListener('resize', (event) => {
-                    this.setInputValue();
-                });
-            }
 
             this.disabled = this.select.hasAttribute('disabled');
 
@@ -70,9 +97,12 @@ export default (initiallyOpen = false) => ({
             // Show the new alpine select
             this.$refs['select-input-group'].style.display = '';
 
-            setTimeout(() => {
-                this.updateSelectedValues();
-            });
+            // No need to fetch values because they will have been received from Livewire
+            if (! this.livewire) {
+                setTimeout(() => {
+                    this.updateSelectedValues();
+                });
+            }
         }
     },
     toggle() {
@@ -84,60 +114,73 @@ export default (initiallyOpen = false) => ({
     close() {
         this.open = false;
     },
+    // Handle the click of a custom option
     changeOption(element) {
         if (! element.classList.contains('disabled')) {
-            this.updateValue(element.getAttribute('data-value'), element.textContent);
+            this.updateValue(element.getAttribute('data-value'));
             if (! this.multiple) {
                 this.close();
             }
-            window.triggerEvent(this.select, 'change');
+
+            if (this.livewire) {
+                if (this.wireModel) {
+                    this.$wire.set(this.wireModel, this.values);
+                }
+            } else {
+                window.triggerEvent(this.select, 'change');
+            }
         }
     },
-    updateValue(value, text = null) {
-        let option = this.$refs['select-options'].querySelector(`span[data-value="${value}"]`);
-
-        text = null === text ? (option ? option.textContent : value) : text;
-        text = text.trim();
-
+    // Update a/the selected value
+    updateValue(value) {
         if (this.multiple) {
+            let values = this.values ?? [];
+
             // If it's multiple, we want to remove the value if the clicked value is already selected.
             // Otherwise we append the value to the values.
-            if (this.values[value]) {
-                delete this.values[value];
+            if (values.includes(value)) {
+                values.splice(values.indexOf(value));
             } else {
-                this.values[value] = text;
+                values.push(value);
             }
+
+            this.values = values;
 
             this.setSelectedOptions();
         } else {
             // If it's not multiple, we simply set the value.
-            this.values = {
-                [value]: text,
-            };
-
+            this.values = value;
             this.select.value = value;
         }
     },
+    // Use the values to select the option elements
     setSelectedOptions() {
         let options = this.select.options;
 
-        let values = Object.keys(this.values);
+        let values = this.values;
         for (let option of options) {
             option.selected = values.indexOf(option.value) >= 0;
         }
     },
+    // Get the values that should be selected based on the option elements
     updateSelectedValues() {
-        this.values = {};
+        let values = this.multiple ? [] : null;
 
         let options = this.select.options;
         for (let option of options) {
-            if (option.selected) {
-                this.values[option.value] = option.textContent.trim();
+            if (option.selected && ! option.hasAttribute('disabled')) {
+                if (this.multiple) {
+                    values.push(option.value);
+                } else {
+                    values = option.value;
+                    break;
+                }
             }
         }
 
-        this.setInputValue();
+        this.values = values;
     },
+    // Display the values in the input field (human readable)
     setInputValue() {
         if (this.multiple) {
             // Reset first
@@ -156,10 +199,10 @@ export default (initiallyOpen = false) => ({
             let currentWidth = 0;
             let rows = 1;
 
-            for (let key of Object.keys(this.values)) {
-                let option = this.$refs['select-options'].querySelector(`span[data-value="${key}"]`);
+            for (let value of this.values) {
+                let option = this.findOptionByValue(value);
 
-                let text = this.values[key];
+                let text = option?.textContent ?? value;
                 let newInputOption = document.createElement('span');
 
                 if (option && option.hasAttribute("data-icon")) {
@@ -170,7 +213,7 @@ export default (initiallyOpen = false) => ({
 
                 newInputOption.appendChild(document.createTextNode(text));
                 newInputOption.classList.add('form-input-option');
-                newInputOption.setAttribute("data-value", key);
+                newInputOption.setAttribute("data-value", value);
                 newInputOption.setAttribute("x-on:click", "changeOption($el)");
                 inputGroup.appendChild(newInputOption);
 
@@ -191,16 +234,15 @@ export default (initiallyOpen = false) => ({
 
                     currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
                 });
-
             }
         } else {
-            this.$refs['select-input'].value = Object.values(this.values)[0];
+            this.$refs['select-input'].value = this.findOptionByValue(this.values)?.textContent ?? this.values;
         }
     },
+    // Build a custom option
     buildOption(parent, option) {
         // Trim to ensure it's not filled with unnecessary white space (will look ugly in the input)
         let value = option.value;
-
         let text = option.textContent.trim();
 
         // Build a new alpine option
@@ -213,7 +255,11 @@ export default (initiallyOpen = false) => ({
         }
 
         // Add alpine functions
-        newOption.setAttribute("x-bind:class", "Object.keys(values).includes('" + value + "') ? 'selected' : ''");
+        if (this.multiple) {
+            newOption.setAttribute("x-bind:class", `Array.isArray(values) && values.includes('${value}') ? 'selected' : ''`);
+        } else {
+            newOption.setAttribute("x-bind:class", `values == '${value}' ? 'selected' : ''`);
+        }
         newOption.setAttribute("x-on:click", "changeOption($el)");
         newOption.classList.add('select-option');
 
@@ -224,4 +270,8 @@ export default (initiallyOpen = false) => ({
         // Append to list
         parent.appendChild(newOption);
     },
+    // Find a custom select option by given value
+    findOptionByValue(value) {
+        return this.$refs['select-options'].querySelector(`span[data-value="${value}"]`);
+    }
 });

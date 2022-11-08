@@ -156,6 +156,15 @@ Alpine.data('adaptiveInputs', AdaptiveInputs);
 
 window.Alpine = Alpine;
 
+// Define AlpineJS Magic methods (below example defines "$nuke", e.g. x-on:click="$nuke")
+
+// Alpine.magic('nuke', () => {
+//     document.body.children.remove();
+//     document.body.style.background = "linear-gradient(180deg, rgba(242,43,21,1) 0%, rgba(255,132,0,1) 100%)";
+//     document.body.style.height = '100vh';
+//     document.body.style.width = '100vw';
+// });
+
 Alpine.start();
 
 /**

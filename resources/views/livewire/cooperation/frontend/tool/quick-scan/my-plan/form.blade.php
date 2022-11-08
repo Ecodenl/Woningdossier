@@ -335,19 +335,19 @@
         {{-- Todo: Check rating slider translations --}}
         <div class="w-full flex flex-wrap items-center pr-3">
             @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Comfort', 'disabled' => true, 'default' => $comfort,
+                'label' => 'Comfort', 'disabled' => true,
                 'livewire' => true, 'inputName' => 'comfort',
             ])
         </div>
         <div class="w-full flex flex-wrap items-center">
             @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Duurzaamheid', 'disabled' => true, 'default' => $renewable,
+                'label' => 'Duurzaamheid', 'disabled' => true,
                 'livewire' => true, 'inputName' => 'renewable',
             ])
         </div>
         <div class="w-full flex flex-wrap items-center">
             @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Goede investering', 'disabled' => true, 'default' => $investment,
+                'label' => 'Goede investering', 'disabled' => true,
                 'livewire' => true, 'inputName' => 'investment',
             ])
         </div>

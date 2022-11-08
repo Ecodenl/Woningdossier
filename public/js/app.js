@@ -3165,22 +3165,28 @@ __webpack_require__.r(__webpack_exports__);
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (function () {
   var initiallyOpen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   return {
     // Select element
     select: null,
-    // Current value(s) of the select
-    values: {},
+    // Current value(s) of the select (to by synced)
+    values: null,
     // If the select is disabled
     disabled: false,
     // Is the dropdown open?
     open: initiallyOpen,
     // Is the dropdown multiple supported?
     multiple: false,
+    livewire: false,
+    wireModel: null,
     init: function init() {
       var _this = this;
+      try {
+        this.livewire = !!this.$wire;
+      } catch (e) {
+        this.livewire = false;
+      }
       var context = this;
       setTimeout(function () {
         context.constructSelect();
@@ -3188,15 +3194,41 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           var observer = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
               context.constructSelect();
-              window.triggerEvent(context.select, 'change');
+              if (!context.livewire) {
+                window.triggerEvent(context.select, 'change');
+              }
             });
           });
-          observer.observe(_this.select, {
+          observer.observe(context.select, {
             childList: true
           });
+
+          // Bind event listener for change
+          context.select.addEventListener('change', function (event) {
+            _this.updateSelectedValues();
+          });
+        }
+        if (context.livewire && null !== context.select) {
+          _this.wireModel = context.select.getAttribute('wire:model');
+          if (_this.wireModel) {
+            context.values = context.$wire.get(_this.wireModel);
+          }
+        }
+        if (_this.values === null && _this.multiple) {
+          _this.values = [];
         }
       });
+      if (this.multiple) {
+        // If it's multiple, we will add an event listener to rebuild the input on resizing
+        window.addEventListener('resize', function (event) {
+          _this.setInputValue();
+        });
+      }
+      this.$watch('values', function (value, oldValue) {
+        _this.setInputValue();
+      });
     },
+    // Construct a fresh custom select
     constructSelect: function constructSelect() {
       var _this2 = this;
       var wrapper = this.$refs['select-wrapper'];
@@ -3205,17 +3237,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       // Select is defined!
       if (null !== this.select) {
         this.multiple = this.select.hasAttribute('multiple');
-
-        // Bind event listener for change
-        this.select.addEventListener('change', function (event) {
-          _this2.updateSelectedValues();
-        });
-        if (this.multiple) {
-          // If it's multiple, we will add an event listener to rebuild the input on resizing
-          window.addEventListener('resize', function (event) {
-            _this2.setInputValue();
-          });
-        }
         this.disabled = this.select.hasAttribute('disabled');
 
         // Add class if disabled, so CSS can do magic
@@ -3239,9 +3260,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.select.style.display = 'none';
         // Show the new alpine select
         this.$refs['select-input-group'].style.display = '';
-        setTimeout(function () {
-          _this2.updateSelectedValues();
-        });
+
+        // No need to fetch values because they will have been received from Livewire
+        if (!this.livewire) {
+          setTimeout(function () {
+            _this2.updateSelectedValues();
+          });
+        }
       }
     },
     toggle: function toggle() {
@@ -3253,38 +3278,47 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     close: function close() {
       this.open = false;
     },
+    // Handle the click of a custom option
     changeOption: function changeOption(element) {
       if (!element.classList.contains('disabled')) {
-        this.updateValue(element.getAttribute('data-value'), element.textContent);
+        this.updateValue(element.getAttribute('data-value'));
         if (!this.multiple) {
           this.close();
         }
-        window.triggerEvent(this.select, 'change');
+        if (this.livewire) {
+          if (this.wireModel) {
+            this.$wire.set(this.wireModel, this.values);
+          }
+        } else {
+          window.triggerEvent(this.select, 'change');
+        }
       }
     },
+    // Update a/the selected value
     updateValue: function updateValue(value) {
-      var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      var option = this.$refs['select-options'].querySelector("span[data-value=\"".concat(value, "\"]"));
-      text = null === text ? option ? option.textContent : value : text;
-      text = text.trim();
       if (this.multiple) {
+        var _this$values;
+        var values = (_this$values = this.values) !== null && _this$values !== void 0 ? _this$values : [];
+
         // If it's multiple, we want to remove the value if the clicked value is already selected.
         // Otherwise we append the value to the values.
-        if (this.values[value]) {
-          delete this.values[value];
+        if (values.includes(value)) {
+          values.splice(values.indexOf(value));
         } else {
-          this.values[value] = text;
+          values.push(value);
         }
+        this.values = values;
         this.setSelectedOptions();
       } else {
         // If it's not multiple, we simply set the value.
-        this.values = _defineProperty({}, value, text);
+        this.values = value;
         this.select.value = value;
       }
     },
+    // Use the values to select the option elements
     setSelectedOptions: function setSelectedOptions() {
       var options = this.select.options;
-      var values = Object.keys(this.values);
+      var values = this.values;
       var _iterator = _createForOfIteratorHelper(options),
         _step;
       try {
@@ -3298,16 +3332,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _iterator.f();
       }
     },
+    // Get the values that should be selected based on the option elements
     updateSelectedValues: function updateSelectedValues() {
-      this.values = {};
+      var values = this.multiple ? [] : null;
       var options = this.select.options;
       var _iterator2 = _createForOfIteratorHelper(options),
         _step2;
       try {
         for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
           var option = _step2.value;
-          if (option.selected) {
-            this.values[option.value] = option.textContent.trim();
+          if (option.selected && !option.hasAttribute('disabled')) {
+            if (this.multiple) {
+              values.push(option.value);
+            } else {
+              values = option.value;
+              break;
+            }
           }
         }
       } catch (err) {
@@ -3315,8 +3355,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       } finally {
         _iterator2.f();
       }
-      this.setInputValue();
+      this.values = values;
     },
+    // Display the values in the input field (human readable)
     setInputValue: function setInputValue() {
       var _this3 = this;
       if (this.multiple) {
@@ -3335,45 +3376,56 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           var maxWidth = parseInt(getComputedStyle(input).width) - right;
           var currentWidth = 0;
           var rows = 1;
-          var _loop = function _loop() {
-            var key = _Object$keys[_i];
-            var option = _this3.$refs['select-options'].querySelector("span[data-value=\"".concat(key, "\"]"));
-            var text = _this3.values[key];
-            var newInputOption = document.createElement('span');
-            if (option && option.hasAttribute("data-icon")) {
-              var icon = document.createElement('i');
-              icon.classList.add('icon-sm', option.getAttribute("data-icon"), 'mr-2', 'static');
-              newInputOption.appendChild(icon);
-            }
-            newInputOption.appendChild(document.createTextNode(text));
-            newInputOption.classList.add('form-input-option');
-            newInputOption.setAttribute("data-value", key);
-            newInputOption.setAttribute("x-on:click", "changeOption($el)");
-            inputGroup.appendChild(newInputOption);
-
-            // Use timeout, so it processes after the current thread. Else, computedStyle will be 'auto'
-            setTimeout(function () {
-              var newWidth = currentWidth + leftMargin + parseInt(getComputedStyle(newInputOption).width);
-              if (newWidth > maxWidth) {
-                rows++;
-                currentWidth = 0;
+          var _iterator3 = _createForOfIteratorHelper(_this3.values),
+            _step3;
+          try {
+            var _loop = function _loop() {
+              var _option$textContent;
+              var value = _step3.value;
+              var option = _this3.findOptionByValue(value);
+              var text = (_option$textContent = option === null || option === void 0 ? void 0 : option.textContent) !== null && _option$textContent !== void 0 ? _option$textContent : value;
+              var newInputOption = document.createElement('span');
+              if (option && option.hasAttribute("data-icon")) {
+                var icon = document.createElement('i');
+                icon.classList.add('icon-sm', option.getAttribute("data-icon"), 'mr-2', 'static');
+                newInputOption.appendChild(icon);
               }
-              newInputOption.style.left = currentWidth + leftMargin + "px";
-              newInputOption.style.top = topMargin + (rows - 1) * inputHeight + 'px';
+              newInputOption.appendChild(document.createTextNode(text));
+              newInputOption.classList.add('form-input-option');
+              newInputOption.setAttribute("data-value", value);
+              newInputOption.setAttribute("x-on:click", "changeOption($el)");
+              inputGroup.appendChild(newInputOption);
 
-              // Always set height
-              input.style.height = rows * inputHeight + 'px';
-              currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
-            });
-          };
-          for (var _i = 0, _Object$keys = Object.keys(_this3.values); _i < _Object$keys.length; _i++) {
-            _loop();
+              // Use timeout, so it processes after the current thread. Else, computedStyle will be 'auto'
+              setTimeout(function () {
+                var newWidth = currentWidth + leftMargin + parseInt(getComputedStyle(newInputOption).width);
+                if (newWidth > maxWidth) {
+                  rows++;
+                  currentWidth = 0;
+                }
+                newInputOption.style.left = currentWidth + leftMargin + "px";
+                newInputOption.style.top = topMargin + (rows - 1) * inputHeight + 'px';
+
+                // Always set height
+                input.style.height = rows * inputHeight + 'px';
+                currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
+              });
+            };
+            for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+              _loop();
+            }
+          } catch (err) {
+            _iterator3.e(err);
+          } finally {
+            _iterator3.f();
           }
         })();
       } else {
-        this.$refs['select-input'].value = Object.values(this.values)[0];
+        var _this$findOptionByVal, _this$findOptionByVal2;
+        this.$refs['select-input'].value = (_this$findOptionByVal = (_this$findOptionByVal2 = this.findOptionByValue(this.values)) === null || _this$findOptionByVal2 === void 0 ? void 0 : _this$findOptionByVal2.textContent) !== null && _this$findOptionByVal !== void 0 ? _this$findOptionByVal : this.values;
       }
     },
+    // Build a custom option
     buildOption: function buildOption(parent, option) {
       // Trim to ensure it's not filled with unnecessary white space (will look ugly in the input)
       var value = option.value;
@@ -3388,7 +3440,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       // Add alpine functions
-      newOption.setAttribute("x-bind:class", "Object.keys(values).includes('" + value + "') ? 'selected' : ''");
+      if (this.multiple) {
+        newOption.setAttribute("x-bind:class", "Array.isArray(values) && values.includes('".concat(value, "') ? 'selected' : ''"));
+      } else {
+        newOption.setAttribute("x-bind:class", "values == '".concat(value, "' ? 'selected' : ''"));
+      }
       newOption.setAttribute("x-on:click", "changeOption($el)");
       newOption.classList.add('select-option');
       if (option.hasAttribute('disabled')) {
@@ -3397,6 +3453,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       // Append to list
       parent.appendChild(newOption);
+    },
+    // Find a custom select option by given value
+    findOptionByValue: function findOptionByValue(value) {
+      return this.$refs['select-options'].querySelector("span[data-value=\"".concat(value, "\"]"));
     }
   };
 });
@@ -3438,7 +3498,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     trashColor: 'rgba(228, 20, 64, 0.3)',
     livewire: false,
     init: function init() {
-      this.livewire = !!this.$wire;
+      try {
+        this.livewire = !!this.$wire;
+      } catch (e) {
+        this.livewire = false;
+      }
     },
     container: (_container = {}, _defineProperty(_container, 'x-on:drop.prevent', function xOnDropPrevent() {
       if (null !== this.dragged) {
@@ -4013,7 +4077,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     livewire: false,
     init: function init() {
       var _this = this;
-      this.livewire = !!this.$wire;
+      try {
+        this.livewire = !!this.$wire;
+      } catch (e) {
+        this.livewire = false;
+      }
 
       // Ensure the slider gets updated with the default value
       if (this.value > 0) {
@@ -4845,6 +4913,16 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('dropdown', _alpine_script
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('tabs', _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('adaptiveInputs', _alpine_scripts_adaptive_input_js__WEBPACK_IMPORTED_MODULE_11__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
+
+// Define AlpineJS Magic methods (below example defines "$nuke", e.g. x-on:click="$nuke")
+
+// Alpine.magic('nuke', () => {
+//     document.body.children.remove();
+//     document.body.style.background = "linear-gradient(180deg, rgba(242,43,21,1) 0%, rgba(255,132,0,1) 100%)";
+//     document.body.style.height = '100vh';
+//     document.body.style.width = '100vw';
+// });
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 
 /**

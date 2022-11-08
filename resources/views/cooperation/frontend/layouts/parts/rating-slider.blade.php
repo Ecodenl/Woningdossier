@@ -7,15 +7,18 @@
 
     $disabled = $disabled ?? false;
 
-    // TODO: Ensure still functional
+    $livewire ??= false;
+    $inputName ??= 'rating-slider';
+    // TODO: Make proper conversion, not relevant ATM
+    $htmlName = $inputName;
+
+    $default ??= 0;
 @endphp
-<div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', {{$disabled}})"
+<div x-data="ratingSlider(@if($livewire) @entangle($inputName) @else {{$default}} @endif, '{{$activeClass ?? 'bg-green'}}', {{$disabled}})"
      x-ref="rating-slider-wrapper" class="rating-slider-wrapper w-inherit">
-    <input type="hidden" x-bind="input"
-           @if(($livewire ?? false)) wire:model="{{$inputName ?? ''}}" @else name="{{$inputName ?? ''}}" @endif
-           @if(($livewire ?? false)) x-on:element:updated.window="if ($event.detail.field === $el.getAttribute('wire:model')) { selectOptionByValue($event.detail.value);}" @endif>
+    <input type="hidden" x-bind="input" name="{{$htmlName}}">
     <div class="flex justify-between mb-3">
-        <p>{{$label ?? ''}}</p>
+        <p class="@error($inputName) text-red @enderror">{{$label ?? ''}}</p>
         <p class="font-bold" wire:ignore x-text="value"></p>
     </div>
 

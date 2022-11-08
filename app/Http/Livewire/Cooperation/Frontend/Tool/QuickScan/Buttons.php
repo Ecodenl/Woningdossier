@@ -17,10 +17,10 @@ class Buttons extends Component
     public ?Step $previousStep;
 
     public ?SubStep $subStep;
-    public ?SubStep $previousSubStep;
+    public ?SubStep $previousSubStep = null;
 
     public ?Questionnaire $questionnaire;
-    public ?Questionnaire $previousQuestionnaire;
+    public ?Questionnaire $previousQuestionnaire = null;
 
     public string $previousUrl;
 
@@ -42,9 +42,8 @@ class Buttons extends Component
             abort_if(! $step->subSteps()->find($subStep->id) instanceof SubStep, 404);
 
             $this->subStep = $subStep;
-
         } elseif ($subStepOrQuestionnaire instanceof Questionnaire) {
-            $questionnaire = $subStepOrQuestionnaire;
+             $questionnaire = $subStepOrQuestionnaire;
 
             abort_if($questionnaire->isNotActive() || $questionnaire->step->id !== $step->id, 404);
 

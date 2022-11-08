@@ -3,14 +3,16 @@ export default () => ({
     value: 0,
 
     init() {
-        this.updateVisuals();
         this.initialized = true;
-
-        // Bind event listener for change
-        let context = this;
-        this.$refs['slider'].addEventListener('change', function (event) {
-            context.updateVisuals();
+        this.$watch('value', value => {
+            this.updateVisuals();
         });
+
+        if (this.$wire && this.$refs['slider'].hasAttribute('wire:model')) {
+            this.value = $wire.get(this.$refs['slider'].getAttribute('wire:model'));
+        }
+
+        this.updateVisuals();
     },
     updateVisuals() {
         this.value = this.$refs['slider'].value;

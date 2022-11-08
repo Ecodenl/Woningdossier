@@ -4167,14 +4167,15 @@ __webpack_require__.r(__webpack_exports__);
     initialized: false,
     value: 0,
     init: function init() {
-      this.updateVisuals();
+      var _this = this;
       this.initialized = true;
-
-      // Bind event listener for change
-      var context = this;
-      this.$refs['slider'].addEventListener('change', function (event) {
-        context.updateVisuals();
+      this.$watch('value', function (value) {
+        _this.updateVisuals();
       });
+      if (this.$wire && this.$refs['slider'].hasAttribute('wire:model')) {
+        this.value = $wire.get(this.$refs['slider'].getAttribute('wire:model'));
+      }
+      this.updateVisuals();
     },
     updateVisuals: function updateVisuals() {
       this.value = this.$refs['slider'].value;

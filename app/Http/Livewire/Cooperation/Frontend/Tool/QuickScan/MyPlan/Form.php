@@ -48,25 +48,24 @@ class Form extends Component
         ],
     ];
 
-    /** @var Building */
-    public $building;
+    public Building $building;
 
-    public $masterInputSource;
-    public $currentInputSource;
-    public $residentInputSource;
-    public $coachInputSource;
+    public InputSource $masterInputSource;
+    public InputSource $currentInputSource;
+    public InputSource $residentInputSource;
+    public InputSource $coachInputSource;
 
     public array $custom_measure_application = [];
 
     // Details
-    public $expectedInvestment = 0;
-    public $yearlySavings = 0;
-    public $availableSubsidy = 0;
+    public float $expectedInvestment = 0;
+    public float $yearlySavings = 0;
+    public float $availableSubsidy = 0;
 
     // Sliders
-    public $comfort = 0;
-    public $renewable = 0;
-    public $investment = 0;
+    public int $comfort = 0;
+    public int $renewable = 0;
+    public int $investment = 0;
 
     // TODO: Move this to a constant helper when this is retrieved from backend
     public string $SUBSIDY_AVAILABLE = 'available';

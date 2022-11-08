@@ -10,19 +10,16 @@ use Livewire\Component;
 
 class Comments extends Component
 {
-    /** @var Building */
-    public $building;
+    public Building $building;
 
-    public $masterInputSource;
-    public $currentInputSource;
-    public $residentInputSource;
-    public $coachInputSource;
+    public InputSource $masterInputSource;
+    public InputSource $currentInputSource;
+    public InputSource $residentInputSource;
+    public InputSource $coachInputSource;
 
-    /** @var null|UserActionPlanAdviceComments */
-    public $residentComment;
+    public ?UserActionPlanAdviceComments $residentComment;
     public string $residentCommentText = '';
-    /** @var null|UserActionPlanAdviceComments */
-    public $coachComment;
+    public ?UserActionPlanAdviceComments $coachComment;
     public string $coachCommentText = '';
 
     // holds the original comments and will not be editable in the frontend

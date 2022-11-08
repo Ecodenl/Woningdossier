@@ -42,7 +42,7 @@ abstract class Scannable extends Component
 
     public $dirty;
 
-    public function boot()
+    public function build()
     {
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);

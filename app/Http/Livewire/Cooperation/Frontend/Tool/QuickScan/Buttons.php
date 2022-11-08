@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Models\Account;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\SubStep;
@@ -10,25 +11,24 @@ use Livewire\Component;
 
 class Buttons extends Component
 {
-    private $account;
+    private Account $account;
 
-    public $step;
-    public $previousStep;
+    public Step $step;
+    public ?Step $previousStep;
 
-    public $subStep;
-    public $previousSubStep;
+    public ?SubStep $subStep;
+    public ?SubStep $previousSubStep;
 
-    public $questionnaire;
-    public $previousQuestionnaire;
+    public ?Questionnaire $questionnaire;
+    public ?Questionnaire $previousQuestionnaire;
 
-    public $previousUrl;
+    public string $previousUrl;
 
     public function mount(Request $request, Step $step, $subStepOrQuestionnaire)
     {
         $this->account = $request->user();
 
         // set default steps, the checks will come later on.
-        $this->step = $step;
         $this->previousStep = $step;
 
         // We can either have a sub step or questionnaire. The previous and next buttons

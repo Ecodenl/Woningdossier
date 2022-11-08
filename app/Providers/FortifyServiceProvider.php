@@ -6,6 +6,7 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Responses\LoginResponse;
 use App\Responses\LogoutResponse;
 use App\Responses\PasswordResetResponse;
 use App\Responses\RegisterResponse;
@@ -15,11 +16,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Http\Responses\LoginResponse as FortifyLoginResponse;
 use Laravel\Fortify\Http\Responses\LogoutResponse as FortifyLogoutResponse;
 use Laravel\Fortify\Http\Responses\PasswordResetResponse as FortifyPasswordResetResponse;
 use Laravel\Fortify\Http\Responses\RegisterResponse as FortifyRegisterResponse;
-
-use function Clue\StreamFilter\fun;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -39,6 +39,10 @@ class FortifyServiceProvider extends ServiceProvider
         $this->app->bind(
             FortifyPasswordResetResponse::class,
             PasswordResetResponse::class
+        );
+        $this->app->bind(
+            FortifyLoginResponse::class,
+            LoginResponse::class
         );
         $this->app->bind(
             FortifyLogoutResponse::class,

@@ -6,10 +6,12 @@
     $max = $max <= $min ? $min + 5 : $max;
 
     $disabled = $disabled ?? false;
+
+    // TODO: Ensure still functional
 @endphp
 <div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', {{$disabled}})"
      x-ref="rating-slider-wrapper" class="rating-slider-wrapper w-inherit">
-    <input type="hidden" x-ref="rating-slider-input"
+    <input type="hidden" x-bind="input"
            @if(($livewire ?? false)) wire:model="{{$inputName ?? ''}}" @else name="{{$inputName ?? ''}}" @endif
            @if(($livewire ?? false)) x-on:element:updated.window="if ($event.detail.field === $el.getAttribute('wire:model')) { selectOptionByValue($event.detail.value);}" @endif>
     <div class="flex justify-between mb-3">
@@ -22,8 +24,7 @@
          style="grid-template-columns: repeat({{ ($max - $min) + 1 }}, minmax(0, 1fr));">
         @for($i = $min; $i <= $max; $i++)
             <div class="w-full h-2 bg-gray @if($disabled) cursor-not-allowed @else cursor-pointer @endif"
-                 data-value="{{$i}}" x-on:mouseenter="mouseEnter($el)" x-on:mouseleave="mouseLeave($el)"
-                 x-on:click="selectOptionByElement($el)">
+                 data-value="{{$i}}" x-bind="block">
 
             </div>
         @endfor

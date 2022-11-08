@@ -3988,7 +3988,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (function () {
+  var _input, _block;
   var defaultValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   var activeClass = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'bg-green';
   var disabled = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -3998,22 +4000,25 @@ __webpack_require__.r(__webpack_exports__);
     inactiveClass: 'bg-gray',
     activeClass: activeClass,
     disabled: disabled,
+    livewire: false,
     init: function init() {
+      var _this = this;
+      this.livewire = !!this.$wire;
+
       // Ensure the slider gets updated with the default value
       if (this.value > 0) {
-        this.selectOptionByValue(this.value);
+        this.selectOptionByValue(this.value, false);
       } else if (isNaN(this.value)) {
         this.value = 0;
       }
-
-      // Bind event listener for change
-      var context = this;
-      this.$refs['rating-slider-input'].addEventListener('change', function (event) {
-        context.selectOptionByValue(event.target.value);
+      this.$watch('value', function (value) {
+        _this.selectOptionByValue(value);
       });
     },
-    mouseEnter: function mouseEnter(element) {
+    input: (_input = {}, _defineProperty(_input, 'x-ref', 'rating-slider-input'), _defineProperty(_input, 'x-model', 'value'), _input),
+    block: (_block = {}, _defineProperty(_block, 'x-on:mouseenter', function xOnMouseenter() {
       if (!this.disabled) {
+        var element = this.$el;
         this.setAllGray();
         // Set this and all previous as green
         this.setActive(element);
@@ -4021,52 +4026,56 @@ __webpack_require__.r(__webpack_exports__);
           this.setActive(element);
         }
       }
-    },
-    mouseLeave: function mouseLeave(element) {
+    }), _defineProperty(_block, 'x-on:mouseleave', function xOnMouseleave() {
       if (!this.disabled) {
         this.setIndexActive();
       }
-    },
+    }), _defineProperty(_block, 'x-on:click', function xOnClick() {
+      if (!this.disabled) {
+        this.selectOption(this.$el);
+        if (!this.livewire) {
+          // If we don't use Livewire, the value won't be entangled and as such we should trigger events
+          window.triggerEvent(this.$refs['rating-slider-input'], 'input');
+          window.triggerEvent(this.$refs['rating-slider-input'], 'change');
+        }
+      }
+    }), _block),
     selectOption: function selectOption(element) {
+      var update = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       var parent = this.$refs['rating-slider'];
       this.index = Array.from(parent.children).indexOf(element);
-      this.value = element.getAttribute('data-value');
-      this.$refs['rating-slider-input'].value = this.value;
+      if (update) {
+        this.value = element.getAttribute('data-value');
+      }
       this.setIndexActive();
     },
     selectOptionByValue: function selectOptionByValue(value) {
+      var update = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       var element = this.$refs['rating-slider'].querySelector("div[data-value=\"".concat(value, "\"]"));
       if (element) {
-        this.selectOption(element);
-      }
-    },
-    selectOptionByElement: function selectOptionByElement(element) {
-      if (!this.disabled) {
-        this.selectOption(element);
-        window.triggerEvent(this.$refs['rating-slider-input'], 'input');
-        window.triggerEvent(this.$refs['rating-slider-input'], 'change');
+        this.selectOption(element, update);
       }
     },
     setIndexActive: function setIndexActive() {
-      var _this = this;
+      var _this2 = this;
       this.setAllGray();
       var parent = this.$refs['rating-slider'];
       var children = Array.from(parent.children);
       children.forEach(function (element) {
-        if (children.indexOf(element) <= _this.index) {
-          _this.setActive(element);
+        if (children.indexOf(element) <= _this2.index) {
+          _this2.setActive(element);
         } else {
-          _this.setInactive(element);
+          _this2.setInactive(element);
         }
       });
     },
     setAllGray: function setAllGray() {
-      var _this2 = this;
+      var _this3 = this;
       var parent = this.$refs['rating-slider'];
       var children = Array.from(parent.children);
       // Set all elements as gray
       children.forEach(function (element) {
-        return _this2.setInactive(element);
+        return _this3.setInactive(element);
       });
     },
     setInactive: function setInactive(element) {

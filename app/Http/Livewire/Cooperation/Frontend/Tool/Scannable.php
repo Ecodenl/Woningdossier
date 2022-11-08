@@ -28,8 +28,8 @@ abstract class Scannable extends Component
 
     public Cooperation $cooperation;
 
-    public array $rules;
-    public array $attributes;
+    public array $rules = [];
+    public array $attributes = [];
 
     public Collection $toolQuestions;
     public array $originalAnswers = [];
@@ -112,8 +112,6 @@ abstract class Scannable extends Component
 
     public function updated($field, $value)
     {
-        // TODO: Deprecate this dispatch in Livewire V2
-        //$this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 \Log::debug("Field: {$field}, Value: {$value}");
         $this->rehydrateToolQuestions();
         $this->setValidationForToolQuestions();

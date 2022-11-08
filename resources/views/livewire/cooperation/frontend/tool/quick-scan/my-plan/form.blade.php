@@ -24,21 +24,14 @@
         </div>
     </div>
     <div class="w-full flex flex-wrap flex-row justify-center items-center"
-         @if(! \App\Helpers\HoomdossierSession::isUserObserving()) x-data="draggables()" @endif
-         x-on:draggable-dragged.window="livewire.emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id, $event.detail.order)"
-         x-on:draggable-trashed.window="livewire.emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'cardTrashed', $event.detail.from.getAttribute('data-category'), $event.detail.id)">
+         @if(! \App\Helpers\HoomdossierSession::isUserObserving()) x-data="draggables()" @endif>
         <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10">
             @foreach($cards as $cardCategory => $cardCollection)
                 <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
                     @foreach($cardCollection as $order => $card)
                         <div class="card @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled @endif"
                              id="{{ $card['id'] }}" wire:key="card-{{$card['id']}}"
-                             x-on:draggable-dragged.window="$el.classList.add('disabled');"
-                             x-on:draggable-trashed.window="$el.classList.add('disabled');"
-                             x-on:draggable-readded.window="$el.classList.add('disabled');"
-                             x-on:moved-card="$el.classList.remove('disabled');"
-                             x-on:trashed-card="$el.classList.remove('disabled');"
-                             x-on:readded-card="$el.classList.remove('disabled');"
+                             wire:loading.class="disabled" wire:target="cardMoved, cardTrashed, addHiddenCardToBoard"
                              {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
                              x-bind="draggable"
                              @if(\App\Helpers\HoomdossierSession::isUserObserving()) draggable="false" @else draggable="true" @endif>
@@ -148,14 +141,9 @@
                                             @foreach($cardCollection as $order => $card)
                                                 <div class="card clickable" id="{{ $card['id'] }}"
                                                      wire:key="hidden-card-{{$card['id']}}"
-                                                     x-on:click="window.triggerCustomEvent($el, 'draggable-readded');"
-                                                     wire:click="$emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'addHiddenCardToBoard', '{{$cardCategory}}', '{{$card['id']}}')"
-                                                     x-on:draggable-dragged.window="$el.classList.add('disabled');"
-                                                     x-on:draggable-trashed.window="$el.classList.add('disabled');"
-                                                     x-on:draggable-readded.window="$el.classList.add('disabled');"
-                                                     x-on:moved-card="$el.classList.remove('disabled');"
-                                                     x-on:trashed-card="$el.classList.remove('disabled');"
-                                                     x-on:readded-card="$el.classList.remove('disabled');">
+                                                     wire:click="addHiddenCardToBoard('{{$cardCategory}}', '{{$card['id']}}')"
+                                                     wire:loading.class="disabled"
+                                                     wire:target="cardMoved, cardTrashed, addHiddenCardToBoard">
                                                     <div class="icon-wrapper">
                                                         <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                                                     </div>
@@ -224,7 +212,7 @@
                                        'class' => 'w-full -mt-4 mb-4',
                                        'id' => 'custom-measure-application-name',
                                        'withInputSource' => false,
-                                   ])
+                                    ])
                                         <input class="form-input" wire:model="custom_measure_application.name" id="custom-measure-application-name"
                                                placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')">
                                     @endcomponent
@@ -239,7 +227,7 @@
                                        'class' => 'w-full mb-4',
                                        'id' => 'custom-measure-application-info',
                                        'withInputSource' => false,
-                                   ])
+                                    ])
                                         <textarea class="form-input" wire:model="custom_measure_application.info"
                                                   id="custom-measure-application-info"
                                                   placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"

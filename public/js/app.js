@@ -3436,6 +3436,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     ghost: null,
     hoverColor: hoverColor,
     trashColor: 'rgba(228, 20, 64, 0.3)',
+    livewire: false,
+    init: function init() {
+      this.livewire = !!this.$wire;
+    },
     container: (_container = {}, _defineProperty(_container, 'x-on:drop.prevent', function xOnDropPrevent() {
       if (null !== this.dragged) {
         var eventTarget = this.$event.target;
@@ -3462,14 +3466,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 // Swap ghost with moved card
                 ghostParentElement.replaceChild(this.dragged, ghost);
-
-                // Dispatch the dropped position
-                window.triggerCustomEvent(this.$el, 'draggable-dragged', {
-                  from: parentElement,
-                  to: target,
-                  id: this.dragged.id,
-                  order: order
-                });
+                if (this.livewire) {
+                  this.$wire.cardMoved(parentElement.getAttribute('data-category'), target.getAttribute('data-category'), this.dragged.id, order);
+                } else {
+                  // Dispatch the dropped position
+                  window.triggerCustomEvent(this.$el, 'draggable-dragged', {
+                    from: parentElement,
+                    to: target,
+                    id: this.dragged.id,
+                    order: order
+                  });
+                }
               }
             }
           }
@@ -3605,12 +3612,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           var parentElement = this.dragged.parentElement;
           // Remove dragged item from original parent
           parentElement.removeChild(this.dragged);
-
-          // Dispatch the item was removed position
-          window.triggerCustomEvent(this.$el, 'draggable-trashed', {
-            from: parentElement,
-            id: this.dragged.id
-          });
+          if (this.livewire) {
+            this.$wire.cardTrashed(parentElement.getAttribute('data-category'), this.dragged.id);
+          } else {
+            // Dispatch the item was removed position
+            window.triggerCustomEvent(this.$el, 'draggable-trashed', {
+              from: parentElement,
+              id: this.dragged.id
+            });
+          }
         }
       }
     }), _trash),

@@ -80,10 +80,6 @@ class Form extends Component
         'custom_measure_application.savings_money' => 'nullable|numeric|max:999999',
     ];
 
-    protected $listeners = [
-        'cardMoved', 'cardTrashed', 'addHiddenCardToBoard',
-    ];
-
     private $calculationMap = [
         'comfort' => [
             [
@@ -303,7 +299,7 @@ class Form extends Component
         $this->recalculate();
     }
 
-    public function cardMoved($fromCategory, $toCategory, $id, $newOrder)
+    public function cardMoved(string $fromCategory, string $toCategory, string $id, string $newOrder)
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
@@ -380,7 +376,7 @@ class Form extends Component
         $this->refreshAlerts();
     }
 
-    public function cardTrashed($fromCategory, $id)
+    public function cardTrashed(string $fromCategory, string $id)
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
@@ -587,7 +583,7 @@ class Form extends Component
         }
     }
 
-    public function addHiddenCardToBoard($category, $id)
+    public function addHiddenCardToBoard(string $category, string $id)
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 

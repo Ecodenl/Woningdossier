@@ -10,6 +10,15 @@
             $livewireModel = "filledInAnswers.{$toolQuestion['short']}.{$option['short']}";
         @endphp
 
+        {{-- TODO: In the future we just want to use the shared part; for now it's not a big deal and too much effort to get it functioning --}}
+{{--        @include('cooperation.frontend.layouts.parts.rating-slider', [--}}
+{{--            'inputName' => $livewireModel,--}}
+{{--            'min' => $min,--}}
+{{--            'max' => $max,--}}
+{{--            'disabled' => $disabled,--}}
+{{--            'label' => $label,--}}
+{{--        ])--}}
+
         <div x-data="ratingSlider(@entangle($livewireModel), '{{$activeClass ?? 'bg-green'}}', '{{$disabled}}')"
              x-ref="rating-slider-wrapper" class="rating-slider-wrapper w-inherit @error($livewireModel) form-error @enderror">
             <input type="hidden" x-bind="input" data-short="{{ $option['short'] }}">

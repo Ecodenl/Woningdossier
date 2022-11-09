@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Database\Factories\InputSourceFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|InputSource newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InputSource newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InputSource query()
@@ -27,6 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class InputSource extends Model
 {
+    use HasFactory;
+
     use HasShortTrait;
 
     const RESIDENT_SHORT = 'resident';

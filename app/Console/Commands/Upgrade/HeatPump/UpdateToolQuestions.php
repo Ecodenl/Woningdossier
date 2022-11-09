@@ -2,6 +2,13 @@
 
 namespace App\Console\Commands\Upgrade\HeatPump;
 
+use Database\Seeders\ToolQuestionsTableSeeder;
+use Database\Seeders\ToolQuestionTypesTableSeeder;
+use Database\Seeders\ToolLabelsTableSeeder;
+use Database\Seeders\ToolCalculationResultsTableSeeder;
+use Database\Seeders\SubSteppablesTableSeeder;
+use Database\Seeders\StepsTableSeeder;
+use Database\Seeders\ScansTableSeeder;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
@@ -55,16 +62,16 @@ class UpdateToolQuestions extends Command
         Artisan::call('cache:clear');
 
         $this->infoLog('Seeding scans, tool labels, and tool question types');
-        Artisan::call('db:seed', ['--class' => \ScansTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \ToolLabelsTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \ToolQuestionTypesTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ScansTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ToolLabelsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ToolQuestionTypesTableSeeder::class, '--force' => true]);
 
         $this->infoLog('Deleting all tool calculation results');
         DB::table('tool_calculation_results')->truncate();
 
         $this->infoLog('Seeding tool calculation results and steps');
-        Artisan::call('db:seed', ['--class' => \ToolCalculationResultsTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ToolCalculationResultsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => StepsTableSeeder::class, '--force' => true]);
 
         // Before we can update the ToolQuestions, we must update the values
         $this->handlePreQuestionMap();
@@ -80,7 +87,7 @@ class UpdateToolQuestions extends Command
         }
 
         $this->infoLog('Seeding tool questions');
-        Artisan::call('db:seed', ['--class' => \ToolQuestionsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ToolQuestionsTableSeeder::class, '--force' => true]);
 
         // Now the new questions are seeded, we need to map these as well
         $this->handlePostQuestionMap();
@@ -89,7 +96,7 @@ class UpdateToolQuestions extends Command
         DB::table('sub_steppables')->truncate();
 
         $this->infoLog('Seeding sub steppables');
-        Artisan::call('db:seed', ['--class' => \SubSteppablesTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => SubSteppablesTableSeeder::class, '--force' => true]);
 
         $this->infoLog('Deleting all alerts');
         DB::table('alerts')->truncate();

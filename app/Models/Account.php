@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -27,6 +28,7 @@ use Illuminate\Support\Collection;
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  * @property-read int|null $users_count
+ * @method static \Database\Factories\AccountFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Account newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Account newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Account query()
@@ -45,6 +47,8 @@ use Illuminate\Support\Collection;
  */
 class Account extends Authenticatable implements MustVerifyEmail
 {
+    use HasFactory;
+
     use Notifiable;
 
     protected $fillable = ['email', 'password', 'email_verified_at', 'old_email', 'old_email_token',

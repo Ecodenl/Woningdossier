@@ -1,12 +1,23 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(\App\Models\BuildingHeater::class, function (Faker $faker) {
-    return [
-        'building_id' => factory(\App\Models\Building::class),
-        'input_source_id' => factory(\App\Models\InputSource::class),
-        'pv_panel_orientation_id' => factory(\App\Models\PvPanelOrientation::class),
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class BuildingHeaterFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+        'building_id' => \App\Models\Building::factory(),
+        'input_source_id' => \App\Models\InputSource::factory(),
+        'pv_panel_orientation_id' => \App\Models\PvPanelOrientation::factory(),
         'angle' => 10 * mt_rand(1, 9),
     ];
-});
+    }
+}

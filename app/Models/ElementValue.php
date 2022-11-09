@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Element $element
  * @property-read int $insulation_factor
  * @property-read array $translations
+ * @method static \Database\Factories\ElementValueFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ElementValue query()
@@ -34,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ElementValue extends Model
 {
+    use HasFactory;
+
     use HasTranslations;
 
     protected $translatable = [

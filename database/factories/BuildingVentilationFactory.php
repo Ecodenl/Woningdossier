@@ -1,13 +1,24 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Model;
-use Faker\Generator as Faker;
 
-$factory->define(\App\Models\BuildingVentilation::class, function (Faker $faker) {
-    return [
-        'how' => $faker->randomElements(["windows", "windows-doors", "other"]),
-        'living_situation' => $faker->randomElements(["dry-laundry", "fireplace", "combustion-device"]),
+class BuildingVentilationFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+        'how' => $this->faker->randomElements(["windows", "windows-doors", "other"]),
+        'living_situation' => $this->faker->randomElements(["dry-laundry", "fireplace", "combustion-device"]),
     ];
-});
+    }
+}

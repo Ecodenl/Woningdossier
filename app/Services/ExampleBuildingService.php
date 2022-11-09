@@ -12,6 +12,7 @@ use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Models\User;
+use Doctrine\DBAL\Exception;
 use Illuminate\Support\Facades\Log;
 
 class ExampleBuildingService

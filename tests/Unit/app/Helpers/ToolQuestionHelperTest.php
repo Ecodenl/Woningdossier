@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\app\Helpers;
 
+use Database\Seeders\StatusesTableSeeder;
+use Database\Seeders\InputSourcesTableSeeder;
 use App\Helpers\Hoomdossier;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Account;
@@ -27,21 +29,21 @@ class ToolQuestionHelperTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\StatusesTableSeeder::class);
-        $this->seed(\InputSourcesTableSeeder::class);
+        $this->seed(StatusesTableSeeder::class);
+        $this->seed(InputSourcesTableSeeder::class);
     }
 
     public function testResolveSaveIn()
     {
-        $cooperation = factory(Cooperation::class)->create();
+        $cooperation = Cooperation::factory()->create();
 
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
-        $residentUser = factory(User::class)->create([
+        $residentUser = User::factory()->create([
             'cooperation_id' => $cooperation->id,
             'account_id' => $account->id,
         ]);
-        $building = factory(Building::class)->create(['user_id' => $residentUser->id]);
+        $building = Building::factory()->create(['user_id' => $residentUser->id]);
 
         $provider = [
             [

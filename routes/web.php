@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Cooperation;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
@@ -18,7 +19,7 @@ use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
 |
 */
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
-    Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
+    Route::middleware('cooperation')->name('cooperation.')->group(function () {
         if ('local' == app()->environment()) {
             Route::get('mail', function () {
 //            return new \App\Mail\UserCreatedEmail(\App\Models\Cooperation::find(1), \App\Models\User::find(1), 'sdfkhasgdfuiasdgfyu');
@@ -37,129 +38,127 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             return view('cooperation.welcome');
         })->name('welcome');
 
-        Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
+        Route::get('switch-language/{locale}', [Cooperation\UserLanguageController::class, 'switchLanguage'])->name('switch-language');
 
-        Route::group(['namespace' => 'Auth',], function () {
-            Route::get('check-existing-mail', 'RegisterController@checkExistingEmail')->name('check-existing-email');
-            Route::post('connect-existing-account', 'RegisterController@connectExistingAccount')->name('connect-existing-account');
+        Route::get('check-existing-mail', [Cooperation\Auth\RegisterController::class, 'checkExistingEmail'])->name('check-existing-email');
+        Route::post('connect-existing-account', [Cooperation\Auth\RegisterController::class, 'connectExistingAccount'])->name('connect-existing-account');
 
-            Route::get('register', 'RegisterController@showRegistrationForm')->name('register')->middleware('guest');
-            Route::post('register', 'RegisterController@register');
+        Route::get('register', [Cooperation\Auth\RegisterController::class, 'showRegistrationForm'])->name('register')->middleware('guest');
+        Route::post('register', [Cooperation\Auth\RegisterController::class, 'register']);
 
-            Route::group(['as' => 'auth.'], function () {
-                Route::get('email/verify', 'VerificationController@show')->name('verification.notice');
-                // for users that have some old verification url.
-                Route::get('email/verify/{id}', 'VerificationController@oldVerifyUrl');
-                Route::get('email/verify/{id}/{hash}', 'VerificationController@verify')->name('verification.verify');
-                Route::post('email/resend', 'VerificationController@resend')->name('verification.resend');
+        Route::name('auth.')->group(function () {
+            Route::get('email/verify', [Cooperation\Auth\VerificationController::class, 'show'])->name('verification.notice');
+            // for users that have some old verification url.
+            Route::get('email/verify/{id}', [Cooperation\Auth\VerificationController::class, 'oldVerifyUrl']);
+            Route::get('email/verify/{id}/{hash}', [Cooperation\Auth\VerificationController::class, 'verify'])->name('verification.verify');
+            Route::post('email/resend', [Cooperation\Auth\VerificationController::class, 'resend'])->name('verification.resend');
 
-                Route::get('login', 'LoginController@showLoginForm')->name('login')->middleware('guest');
-                Route::post('login', 'LoginController@login');
+            Route::get('login', [Cooperation\Auth\LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
+            Route::post('login', [Cooperation\Auth\LoginController::class, 'login']);
 //
-                Route::post('logout', 'LoginController@logout')->name('logout');
+            Route::post('logout', [Cooperation\Auth\LoginController::class, 'logout'])->name('logout');
 
-                Route::group(['prefix' => 'password', 'as' => 'password.'], function () {
-                    Route::get('request', 'ForgotPasswordController@index')->name('request.index');
-                    Route::post('request', 'ForgotPasswordController@store')->name('request.store');
+            Route::prefix('password')->name('password.')->group(function () {
+                Route::get('request', [Cooperation\Auth\ForgotPasswordController::class, 'index'])->name('request.index');
+                Route::post('request', [Cooperation\Auth\ForgotPasswordController::class, 'store'])->name('request.store');
 
-                    Route::get('reset/{token}/{email}', 'ResetPasswordController@show')->name('reset.show');
-                    Route::post('reset', 'ResetPasswordController@update')->name('reset.update');
-                });
+                Route::get('reset/{token}/{email}', [Cooperation\Auth\ResetPasswordController::class, 'show'])->name('reset.show');
+                Route::post('reset', [Cooperation\Auth\ResetPasswordController::class, 'update'])->name('reset.update');
             });
         });
 
-        Route::group(['prefix' => 'create-building', 'as' => 'create-building.'], function () {
-            Route::get('', 'CreateBuildingController@index')->name('index');
-            Route::post('', 'CreateBuildingController@store')->name('store');
+        Route::prefix('create-building')->name('create-building.')->group(function () {
+            Route::get('', [Cooperation\CreateBuildingController::class, 'index'])->name('index');
+            Route::post('', [Cooperation\CreateBuildingController::class, 'store'])->name('store');
         });
 
-        Route::group(['as' => 'recover-old-email.', 'prefix' => 'recover-old-email'], function () {
-            Route::get('{token}', 'RecoverOldEmailController@recover')->name('recover');
+        Route::name('recover-old-email.')->prefix('recover-old-email')->group(function () {
+            Route::get('{token}', [Cooperation\RecoverOldEmailController::class, 'recover'])->name('recover');
         });
 
-        Route::resource('privacy', 'PrivacyController')->only('index');
-        Route::resource('disclaimer', 'DisclaimController')->only('index');
+        Route::resource('privacy', Cooperation\PrivacyController::class)->only('index');
+        Route::resource('disclaimer', Cooperation\DisclaimController::class)->only('index');
 
         // group can be accessed by everyone that's authorized and has a role in its session
-        Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified']], function () {
-            Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
+        Route::middleware('auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified')->group(function () {
+            Route::get('messages/count', [Cooperation\MessagesController::class, 'getTotalUnreadMessageCount'])->name('message.get-total-unread-message-count');
 
             if ('local' == app()->environment()) {
                 // debug purpose only
-                Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
-                    Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
-                        Route::get('', 'UserReportController@index')->name('index');
+                Route::name('pdf.')->prefix('pdf')->group(function () {
+                    Route::name('user-report.')->prefix('user-report')->group(function () {
+                        Route::get('', [Cooperation\Pdf\UserReportController::class, 'index'])->name('index');
                     });
                 });
             }
-            Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
+            Route::get('home', [Cooperation\HomeController::class, 'index'])->name('home')->middleware('deny-if-filling-for-other-building');
 
-            Route::group(['prefix' => 'file-storage', 'as' => 'file-storage.'], function () {
-                Route::post('{fileType}', 'FileStorageController@store')
+            Route::prefix('file-storage')->name('file-storage.')->group(function () {
+                Route::post('{fileType}', [Cooperation\FileStorageController::class, 'store'])
                     ->name('store');
-                Route::get('is-being-processed/{fileType}', 'FileStorageController@checkIfFileIsBeingProcessed')->name('check-if-file-is-being-processed');
+                Route::get('is-being-processed/{fileType}', [Cooperation\FileStorageController::class, 'checkIfFileIsBeingProcessed'])->name('check-if-file-is-being-processed');
 
-                Route::get('download/{fileStorage}', 'FileStorageController@download')
+                Route::get('download/{fileStorage}', [Cooperation\FileStorageController::class, 'download'])
                     ->name('download');
             });
 
-            Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
+            Route::get('input-source/{input_source_value_id}', [Cooperation\InputSourceController::class, 'changeInputSourceValue'])->name('input-source.change-input-source-value');
 
-            Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
-                Route::group(['as' => 'participants.', 'prefix' => 'participants'], function () {
-                    Route::post('revoke-access', 'ParticipantController@revokeAccess')->name('revoke-access');
+            Route::name('messages.')->prefix('messages')->group(function () {
+                Route::name('participants.')->prefix('participants')->group(function () {
+                    Route::post('revoke-access', [Cooperation\Messages\ParticipantController::class, 'revokeAccess'])->name('revoke-access');
 
-                    Route::post('add-with-building-access', 'ParticipantController@addWithBuildingAccess')->name('add-with-building-access');
+                    Route::post('add-with-building-access', [Cooperation\Messages\ParticipantController::class, 'addWithBuildingAccess'])->name('add-with-building-access');
 
-                    Route::post('set-read', 'ParticipantController@setRead')->name('set-read');
+                    Route::post('set-read', [Cooperation\Messages\ParticipantController::class, 'setRead'])->name('set-read');
                 });
             });
 
             // my account
-            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount', 'middleware' => ['track-visited-url', 'deny-if-filling-for-other-building']], function () {
-                Route::get('', 'MyAccountController@index')->name('index');
+            Route::name('my-account.')->prefix('my-account')->middleware('track-visited-url', 'deny-if-filling-for-other-building')->group(function () {
+                Route::get('', [Cooperation\MyAccount\MyAccountController::class, 'index'])->name('index');
 
-                Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
-                    Route::put('', 'SettingsController@update')->name('update');
-                    Route::delete('destroy', 'SettingsController@destroy')->name('destroy');
-                    Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
+                Route::prefix('settings')->name('settings.')->group(function () {
+                    Route::put('', [Cooperation\MyAccount\SettingsController::class, 'update'])->name('update');
+                    Route::delete('destroy', [Cooperation\MyAccount\SettingsController::class, 'destroy'])->name('destroy');
+                    Route::post('reset-dossier', [Cooperation\MyAccount\SettingsController::class, 'resetFile'])->name('reset-file');
                 });
 
-                Route::resource('hoom-settings', 'HoomSettingsController');
+                Route::resource('hoom-settings', Cooperation\MyAccount\HoomSettingsController::class);
 
-                Route::group(['as' => 'import-center.', 'prefix' => 'import-centrum'], function () {
-                    Route::get('set-compare-session/{inputSourceShort}', 'ImportCenterController@setCompareSession')->name('set-compare-session');
-                    Route::post('dismiss-notification', 'ImportCenterController@dismissNotification')->name('dismiss-notification');
+                Route::name('import-center.')->prefix('import-centrum')->group(function () {
+                    Route::get('set-compare-session/{inputSourceShort}', [Cooperation\MyAccount\ImportCenterController::class, 'setCompareSession'])->name('set-compare-session');
+                    Route::post('dismiss-notification', [Cooperation\MyAccount\ImportCenterController::class, 'dismissNotification'])->name('dismiss-notification');
                 });
 
-                Route::resource('notification-settings', 'NotificationSettingsController')->only([
+                Route::resource('notification-settings', Cooperation\MyAccount\NotificationSettingsController::class)->only([
                     'index', 'show', 'update',
                 ]);
 
-                Route::group(['as' => 'messages.', 'prefix' => 'messages'], function () {
-                    Route::get('', 'MessagesController@index')->name('index');
-                    Route::get('edit', 'MessagesController@edit')->name('edit');
-                    Route::post('edit', 'MessagesController@store')->name('store');
+                Route::name('messages.')->prefix('messages')->group(function () {
+                    Route::get('', [Cooperation\MyAccount\MessagesController::class, 'index'])->name('index');
+                    Route::get('edit', [Cooperation\MyAccount\MessagesController::class, 'edit'])->name('edit');
+                    Route::post('edit', [Cooperation\MyAccount\MessagesController::class, 'store'])->name('store');
                 });
 
                 // the checkbox to deny the whole access for everyone.
-                Route::post('access/allow-access', 'AccessController@allowAccess')->name('access.allow-access');
+                Route::post('access/allow-access', [Cooperation\MyAccount\AccessController::class, 'allowAccess'])->name('access.allow-access');
             });
 
             // conversation requests
-            Route::group(['prefix' => 'conversation-request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
-                Route::get('{requestType}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
-                Route::post('', 'ConversationRequestController@store')->name('store');
+            Route::prefix('conversation-request')->name('conversation-requests.')->group(function () {
+                Route::get('{requestType}/{measureApplicationShort?}', [Cooperation\ConversationRequest\ConversationRequestController::class, 'index'])->name('index');
+                Route::post('', [Cooperation\ConversationRequest\ConversationRequestController::class, 'store'])->name('store');
             });
 
             // the tool
-            Route::group(['prefix' => 'import', 'as' => 'import.'], function () {
-                Route::post('', 'ImportController@copy')->name('copy');
+            Route::prefix('import')->name('import.')->group(function () {
+                Route::post('', [Cooperation\ImportController::class, 'copy'])->name('copy');
             });
 
-            Route::namespace('Frontend')->as('frontend.')->middleware(['track-visited-url'])->group(function () {
-                Route::resource('help', 'HelpController')->only('index');
-                Route::namespace('Tool')->as('tool.')->group(function () {
+            Route::as('frontend.')->middleware(['track-visited-url'])->group(function () {
+                Route::resource('help', Cooperation\Frontend\HelpController::class)->only('index');
+                Route::as('tool.')->group(function () {
                     $scans = \App\Helpers\Cache\Scan::allShorts();
                     // TODO: Deprecate to whereIn in L9
                     Route::get('{scan}', [ScanController::class, 'show'])
@@ -170,20 +169,20 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         );
 
                     Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
-                        Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
+                        Route::get('woonplan', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'index'])->name('my-plan.index');
 
-                        Route::get('{step}/vragenlijst/{questionnaire}', 'QuickScan\\QuestionnaireController@index')
+                        Route::get('{step}/vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\QuickScan\QuestionnaireController::class, 'index'])
                             ->name('questionnaires.index');
 
                         // Define this route as last to not match above routes as step/sub step combo
-                        Route::get('{step}/{subStep}', 'QuickScanController@index')
+                        Route::get('{step}/{subStep}', [Cooperation\Frontend\Tool\QuickScanController::class, 'index'])
                             ->name('index')
                             ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
                     });
 
                     Route::as('expert-scan.')->prefix('expert-scan')->group(function () {
                         // Define this route as last to not match above routes as step/sub step combo
-                        Route::get('{step}', 'ExpertScanController@index')
+                        Route::get('{step}', [Cooperation\Frontend\Tool\ExpertScanController::class, 'index'])
                         ->name('index')
                         ->middleware(['duplicate-data-for-user']);
                     });
@@ -192,17 +191,17 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             });
 
-            Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool', 'middleware' => ['ensure-quick-scan-completed', 'track-visited-url']], function () {
+            Route::prefix('tool')->name('tool.')->middleware('ensure-quick-scan-completed', 'track-visited-url')->group(function () {
                 Route::get('/', function () {
                     return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index');
                 })->name('index');
 
-                Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
-                    Route::post('', 'QuestionnaireController@store')->name('store');
+                Route::prefix('questionnaire')->name('questionnaire.')->group(function () {
+                    Route::post('', [Cooperation\Tool\QuestionnaireController::class, 'store'])->name('store');
                 });
 
-                Route::resource('example-building', 'ExampleBuildingController')->only('store');
-                Route::resource('building-type', 'BuildingTypeController')->only('store');
+                Route::resource('example-building', Cooperation\Tool\ExampleBuildingController::class)->only('store');
+                Route::resource('building-type', Cooperation\Tool\BuildingTypeController::class)->only('store');
 
                 Route::get('heat-pump', function () {
                     Log::debug('HeatPumpController::index redirecting to heating');
@@ -210,43 +209,43 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'verwarming']);
                 })->name('heat-pump.index');
 
-                Route::group(['prefix' => 'ventilation', 'as' => 'ventilation.'], function () {
-                    Route::resource('', 'VentilationController', ['only' => ['index', 'store']]);
-                    Route::post('calculate', 'VentilationController@calculate')->name('calculate');
+                Route::prefix('ventilation')->name('ventilation.')->group(function () {
+                    Route::resource('', Cooperation\Tool\VentilationController::class)->only('index', 'store');
+                    Route::post('calculate', [Cooperation\Tool\VentilationController::class, 'calculate'])->name('calculate');
                 });
 
                 // Wall Insulation
-                Route::group(['prefix' => '/wall-insulation', 'as' => 'wall-insulation.'], function () {
-                    Route::resource('', 'WallInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('calculate', 'WallInsulationController@calculate')->name('calculate');
+                Route::prefix('/wall-insulation')->name('wall-insulation.')->group(function () {
+                    Route::resource('', Cooperation\Tool\WallInsulationController::class)->only('index', 'store');
+                    Route::post('calculate', [Cooperation\Tool\WallInsulationController::class, 'calculate'])->name('calculate');
                 });
 
                 // Wall Insulation
                 Route::group(['prefix' => 'verwarming', 'as' => 'heating.'], function () {
-                    Route::resource('', 'WallInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('calculate', 'WallInsulationController@calculate')->name('calculate');
+                    Route::resource('', Cooperation\Tool\WallInsulationController::class)->only('index', 'store');
+                    Route::post('calculate', [Cooperation\Tool\WallInsulationController::class, 'calculate'])->name('calculate');
                 });
 
                 // Insulated glazing
-                Route::group(['prefix' => 'insulated-glazing', 'as' => 'insulated-glazing.'], function () {
-                    Route::resource('', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
-                    Route::post('calculate', 'InsulatedGlazingController@calculate')->name('calculate');
+                Route::prefix('insulated-glazing')->name('insulated-glazing.')->group(function () {
+                    Route::resource('', Cooperation\Tool\InsulatedGlazingController::class)->only('index', 'store');
+                    Route::post('calculate', [Cooperation\Tool\InsulatedGlazingController::class, 'calculate'])->name('calculate');
                 });
 
                 // Floor Insulation
-                Route::group(['prefix' => 'floor-insulation', 'as' => 'floor-insulation.'], function () {
-                    Route::resource('', 'FloorInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('calculate', 'FloorInsulationController@calculate')->name('calculate');
+                Route::prefix('floor-insulation')->name('floor-insulation.')->group(function () {
+                    Route::resource('', Cooperation\Tool\FloorInsulationController::class)->only('index', 'store');
+                    Route::post('calculate', [Cooperation\Tool\FloorInsulationController::class, 'calculate'])->name('calculate');
                 });
 
                 // Roof Insulation
-                Route::group(['prefix' => 'roof-insulation', 'as' => 'roof-insulation.'], function () {
-                    Route::resource('', 'RoofInsulationController');
-                    Route::post('calculate', 'RoofInsulationController@calculate')->name('calculate');
+                Route::prefix('roof-insulation')->name('roof-insulation.')->group(function () {
+                    Route::resource('', Cooperation\Tool\RoofInsulationController::class);
+                    Route::post('calculate', [Cooperation\Tool\RoofInsulationController::class, 'calculate'])->name('calculate');
                 });
 
                 // HR boiler
-                Route::group(['prefix' => 'high-efficiency-boiler', 'as' => 'high-efficiency-boiler.'], function () {
+                Route::prefix('high-efficiency-boiler')->name('high-efficiency-boiler.')->group(function () {
                     Route::get('', function () {
                         Log::debug('HighEfficiencyBoilerController::index redirecting to heating');
 
@@ -255,13 +254,13 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 // Solar panels
-                Route::group(['prefix' => 'solar-panels', 'as' => 'solar-panels.'], function () {
-                    Route::resource('', 'SolarPanelsController', ['only' => ['index', 'store']]);
-                    Route::post('calculate', 'SolarPanelsController@calculate')->name('calculate');
+                Route::prefix('solar-panels')->name('solar-panels.')->group(function () {
+                    Route::resource('', Cooperation\Tool\SolarPanelsController::class)->only('index', 'store');
+                    Route::post('calculate', [Cooperation\Tool\SolarPanelsController::class, 'calculate'])->name('calculate');
                 });
 
                 // Heater (solar boiler)
-                Route::group(['prefix' => 'heater', 'as' => 'heater.'], function () {
+                Route::prefix('heater')->name('heater.')->group(function () {
                     Route::get('', function () {
                         Log::debug('HeaterController::index redirecting to heating');
 
@@ -270,188 +269,182 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             });
 
-            Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin',
-                'middleware' => [
-                    'role:cooperation-admin|coordinator|coach|super-admin|superuser',
-                    'restore-building-session-if-filling-for-other-building',
-                ],
-            ], function () {
-                Route::get('/', 'AdminController@index')->name('index');
-                Route::get('stop-session', 'AdminController@stopSession')->name('stop-session');
-                Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
+            Route::prefix('admin')->name('admin.')->middleware('role:cooperation-admin|coordinator|coach|super-admin|superuser', 'restore-building-session-if-filling-for-other-building')->group(function () {
+                Route::get('/', [Cooperation\Admin\AdminController::class, 'index'])->name('index');
+                Route::get('stop-session', [Cooperation\Admin\AdminController::class, 'stopSession'])->name('stop-session');
+                Route::get('/switch-role/{role}', [Cooperation\Admin\SwitchRoleController::class, 'switchRole'])->name('switch-role');
 
-                Route::group(['prefix' => 'roles', 'as' => 'roles.'], function () {
-                    Route::post('assign-role', 'RoleController@assignRole')->name('assign-role');
-                    Route::post('remove-role', 'RoleController@removeRole')->name('remove-role');
+                Route::prefix('roles')->name('roles.')->group(function () {
+                    Route::post('assign-role', [Cooperation\Admin\RoleController::class, 'assignRole'])->name('assign-role');
+                    Route::post('remove-role', [Cooperation\Admin\RoleController::class, 'removeRole'])->name('remove-role');
                 });
 
-                Route::group(['middleware' => ['current-role:cooperation-admin|super-admin']], function () {
-                    Route::resource('example-buildings', 'ExampleBuildingController')->parameter('example-buildings', 'exampleBuilding');
-                    Route::get('example-buildings/{exampleBuilding}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+                Route::middleware('current-role:cooperation-admin|super-admin')->group(function () {
+                    Route::resource('example-buildings', Cooperation\Admin\ExampleBuildingController::class)->parameter('example-buildings', 'exampleBuilding');
+                    Route::get('example-buildings/{exampleBuilding}/copy', [Cooperation\Admin\ExampleBuildingController::class, 'copy'])->name('example-buildings.copy');
                 });
 
                 /* Section that a coach, coordinator and cooperation-admin can access */
-                Route::group(['middleware' => ['current-role:cooperation-admin|coach|coordinator']], function () {
-                    Route::resource('messages', 'MessagesController')->only('index');
+                Route::middleware('current-role:cooperation-admin|coach|coordinator')->group(function () {
+                    Route::resource('messages', Cooperation\Admin\MessagesController::class)->only('index');
 
-                    Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
-                        Route::get('fill-for-user/{building}', 'ToolController@fillForUser')->name('fill-for-user');
-                        Route::get('observe-tool-for-user/{building}', 'ToolController@observeToolForUser')
+                    Route::prefix('tool')->name('tool.')->group(function () {
+                        Route::get('fill-for-user/{building}', [Cooperation\Admin\ToolController::class, 'fillForUser'])->name('fill-for-user');
+                        Route::get('observe-tool-for-user/{building}', [Cooperation\Admin\ToolController::class, 'observeToolForUser'])
                             ->name('observe-tool-for-user');
                     });
 
-                    Route::post('message', 'MessagesController@sendMessage')->name('send-message');
+                    Route::post('message', [Cooperation\Admin\MessagesController::class, 'sendMessage'])->name('send-message');
 
-                    Route::resource('building-notes', 'BuildingNoteController')->only('store');
+                    Route::resource('building-notes', Cooperation\Admin\BuildingNoteController::class)->only('store');
 
-                    Route::group(['prefix' => 'building-status', 'as' => 'building-status.'], function () {
-                        Route::post('set-status', 'BuildingStatusController@setStatus')->name('set-status');
+                    Route::prefix('building-status')->name('building-status.')->group(function () {
+                        Route::post('set-status', [Cooperation\Admin\BuildingStatusController::class, 'setStatus'])->name('set-status');
                         Route::post('set-appointment-date',
-                            'BuildingStatusController@setAppointmentDate')->name('set-appointment-date');
+                            [Cooperation\Admin\BuildingStatusController::class, 'setAppointmentDate'])->name('set-appointment-date');
                     });
                 });
 
-                Route::group(['middleware' => ['current-role:cooperation-admin|coach|coordinator|super-admin']], function () {
-                    Route::group(['as' => 'buildings.', 'prefix' => 'buildings'], function () {
-                        Route::get('show/{buildingId}', 'BuildingController@show')->name('show');
+                Route::middleware('current-role:cooperation-admin|coach|coordinator|super-admin')->group(function () {
+                    Route::name('buildings.')->prefix('buildings')->group(function () {
+                        Route::get('show/{buildingId}', [Cooperation\Admin\BuildingController::class, 'show'])->name('show');
 
-                        Route::group(['middleware' => ['current-role:cooperation-admin|coordinator|super-admin']], function () {
-                            Route::get('{building}/edit', 'BuildingController@edit')->name('edit');
-                            Route::put('{building}', 'BuildingController@update')->name('update');
+                        Route::middleware('current-role:cooperation-admin|coordinator|super-admin')->group(function () {
+                            Route::get('{building}/edit', [Cooperation\Admin\BuildingController::class, 'edit'])->name('edit');
+                            Route::put('{building}', [Cooperation\Admin\BuildingController::class, 'update'])->name('update');
                         });
                     });
                 });
 
                 /* Section for the cooperation-admin and coordinator */
-                Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['current-role:cooperation-admin|coordinator']], function () {
-                    Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
-                        Route::get('', 'UserController@index')->name('index');
-                        Route::get('create', 'UserController@create')->name('create');
-                        Route::post('create', 'UserController@store')->name('store');
+                Route::prefix('cooperatie')->name('cooperation.')->middleware('current-role:cooperation-admin|coordinator')->group(function () {
+                    Route::prefix('users')->name('users.')->group(function () {
+                        Route::get('', [Cooperation\Admin\Cooperation\UserController::class, 'index'])->name('index');
+                        Route::get('create', [Cooperation\Admin\Cooperation\UserController::class, 'create'])->name('create');
+                        Route::post('create', [Cooperation\Admin\Cooperation\UserController::class, 'store'])->name('store');
 
-                        Route::group(['middleware' => 'current-role:cooperation-admin'], function () {
-                            Route::delete('delete', 'UserController@destroy')->name('destroy');
+                        Route::middleware('current-role:cooperation-admin')->group(function () {
+                            Route::delete('delete', [Cooperation\Admin\Cooperation\UserController::class, 'destroy'])->name('destroy');
                         });
                     });
 
-                    Route::resource('coaches', 'CoachController')->only(['index', 'show'])
+                    Route::resource('coaches', Cooperation\Admin\Cooperation\CoachController::class)->only(['index', 'show'])
                         ->parameter('coaches', 'user');
-                    Route::resource('residents', 'ResidentController')->only(['index'])
+                    Route::resource('residents', Cooperation\Admin\Cooperation\ResidentController::class)->only(['index'])
                         ->parameter('residents', 'user');
 
-                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
-                        Route::get('', 'ReportController@index')->name('index');
-                        Route::get('generate/{fileType}', 'ReportController@generate')->name('generate');
+                    Route::prefix('reports')->name('reports.')->group(function () {
+                        Route::get('', [Cooperation\Admin\Cooperation\ReportController::class, 'index'])->name('index');
+                        Route::get('generate/{fileType}', [Cooperation\Admin\Cooperation\ReportController::class, 'generate'])->name('generate');
                     });
 
-                    Route::resource('questionnaires', 'QuestionnaireController')
+                    Route::resource('questionnaires', Cooperation\Admin\Cooperation\QuestionnaireController::class)
                         ->middleware('current-role:cooperation-admin');
                     // not in the cooperation-admin group, probably need to be used for the coordinator as well.
-                    Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire', 'middleware' => ['current-role:cooperation-admin']], function () {
-                        Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
-                        Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
-                        Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
+                    Route::name('questionnaires.')->prefix('questionnaire')->middleware('current-role:cooperation-admin')->group(function () {
+                        Route::delete('delete-question/{questionId}', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'deleteQuestion'])->name('delete');
+                        Route::delete('delete-option/{questionId}/{optionId}', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'deleteQuestionOption'])->name('delete-question-option');
+                        Route::post('set-active', [Cooperation\Admin\Cooperation\QuestionnaireController::class, 'setActive'])->name('set-active');
                     });
 
                     /* Section for the coordinator */
-                    Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['current-role:coordinator']], function () {
+                    Route::prefix('coordinator')->name('coordinator.')->middleware('current-role:coordinator')->group(function () {
                         // needs to be the last route due to the param
-                        Route::get('home', 'CoordinatorController@index')->name('index');
+                        Route::get('home', [Cooperation\Admin\Cooperation\Coordinator\CoordinatorController::class, 'index'])->name('index');
                     });
 
 
                     /* section for the cooperation-admin */
-                    Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']], function () {
+                    Route::prefix('cooperation-admin')->name('cooperation-admin.')->middleware('current-role:cooperation-admin|super-admin')->group(function () {
                         // needs to be the last route due to the param
-                        Route::get('home', 'CooperationAdminController@index')->name('index');
+                        Route::get('home', [Cooperation\Admin\Cooperation\CooperationAdmin\CooperationAdminController::class, 'index'])->name('index');
 
                         Route::prefix('settings')->as('settings.')->group(function () {
-                            Route::get('', 'SettingsController@index')->name('index');
-                            Route::post('', 'SettingsController@store')->name('store');
+                            Route::get('', [Cooperation\Admin\Cooperation\CooperationAdmin\SettingsController::class, 'index'])->name('index');
+                            Route::post('', [Cooperation\Admin\Cooperation\CooperationAdmin\SettingsController::class, 'store'])->name('store');
                         });
 
-                        Route::resource('cooperation-measure-applications', 'CooperationMeasureApplicationController')
+                        Route::resource('cooperation-measure-applications', Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController::class)
                             ->except(['show'])
                             ->parameter('cooperation-measure-applications', 'cooperationMeasureApplication');
                     });
                 });
 
                 /* Section for the super admin */
-                Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'SuperAdmin', 'middleware' => ['current-role:super-admin']], function () {
+                Route::prefix('super-admin')->name('super-admin.')->middleware('current-role:super-admin')->group(function () {
 
-                    Route::resource('clients', 'ClientController');
+                    Route::resource('clients', Cooperation\Admin\SuperAdmin\ClientController::class);
 
-                    Route::resource('tool-questions', 'ToolQuestionController')
+                    Route::resource('tool-questions', Cooperation\Admin\SuperAdmin\ToolQuestionController::class)
                         ->parameter('tool-questions', 'toolQuestion')
                         ->only(['index', 'edit', 'update']);
 
-                    Route::resource('measure-applications', 'MeasureApplicationController')
+                    Route::resource('measure-applications', Cooperation\Admin\SuperAdmin\MeasureApplicationController::class)
                         ->parameter('measure-applications', 'measureApplication')
                         ->only(['index', 'edit', 'update']);
 
-                    Route::prefix('{client}/api')->namespace('Client')->as('clients.personal-access-tokens.')->group(function () {
-                        Route::get('', 'PersonalAccessTokenController@index')->name('index');
-                        Route::post('', 'PersonalAccessTokenController@store')->name('store');
-                        Route::get('create', 'PersonalAccessTokenController@create')->name('create');
-                        Route::delete('destroy/{personalAccessToken}', 'PersonalAccessTokenController@destroy')->name('destroy');
-                        Route::get('{personalAccessToken}/edit', 'PersonalAccessTokenController@edit')->name('edit');
-                        Route::put('{personalAccessToken}', 'PersonalAccessTokenController@update')->name('update');
+                    Route::prefix('{client}/api')->as('clients.personal-access-tokens.')->group(function () {
+                        Route::get('', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'index'])->name('index');
+                        Route::post('', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'store'])->name('store');
+                        Route::get('create', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'create'])->name('create');
+                        Route::delete('destroy/{personalAccessToken}', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'destroy'])->name('destroy');
+                        Route::get('{personalAccessToken}/edit', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'edit'])->name('edit');
+                        Route::put('{personalAccessToken}', [Cooperation\Admin\SuperAdmin\Client\PersonalAccessTokenController::class, 'update'])->name('update');
                     });
 
-                    Route::get('home', 'SuperAdminController@index')->name('index');
+                    Route::get('home', [Cooperation\Admin\SuperAdmin\SuperAdminController::class, 'index'])->name('index');
 
-                    Route::group(['as' => 'users.', 'prefix' => 'users'], function () {
-                        Route::get('', 'UserController@index')->name('index');
-                        Route::get('search', 'UserController@filter')->name('filter');
+                    Route::name('users.')->prefix('users')->group(function () {
+                        Route::get('', [Cooperation\Admin\SuperAdmin\UserController::class, 'index'])->name('index');
+                        Route::get('search', [Cooperation\Admin\SuperAdmin\UserController::class, 'filter'])->name('filter');
                     });
 
-                    Route::resource('questionnaires', 'QuestionnaireController')->parameter('questionnaires', 'questionnaire');
-                    Route::post('questionnaires/copy', 'QuestionnaireController@copy')->name('questionnaire.copy');
+                    Route::resource('questionnaires', Cooperation\Admin\SuperAdmin\QuestionnaireController::class)->parameter('questionnaires', 'questionnaire');
+                    Route::post('questionnaires/copy', [Cooperation\Admin\SuperAdmin\QuestionnaireController::class, 'copy'])->name('questionnaire.copy');
 //                    Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire'], function () {
 //                        Route::get('', 'QuestionnaireController@index')->name('index');
 //                        Route::get('show', 'QuestionnaireController@show')->name('show');
 //                    });
 
-                    Route::resource('key-figures', 'KeyFiguresController')->only('index');
-                    Route::resource('translations', 'TranslationController')
+                    Route::resource('key-figures', Cooperation\Admin\SuperAdmin\KeyFiguresController::class)->only('index');
+                    Route::resource('translations', Cooperation\Admin\SuperAdmin\TranslationController::class)
                         ->only(['index', 'edit', 'update'])
                         ->parameter('translations', 'group');
 
                     /* Section for the cooperations */
-                    Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
-                        Route::get('', 'CooperationController@index')->name('index');
-                        Route::delete('destroy/{cooperationToDestroy}', 'CooperationController@destroy')->name('destroy');
-                        Route::get('edit/{cooperationToEdit}', 'CooperationController@edit')->name('edit');
-                        Route::get('create', 'CooperationController@create')->name('create');
-                        Route::post('', 'CooperationController@store')->name('store');
-                        Route::post('edit', 'CooperationController@update')->name('update');
+                    Route::prefix('cooperations')->name('cooperations.')->group(function () {
+                        Route::get('', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'index'])->name('index');
+                        Route::delete('destroy/{cooperationToDestroy}', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'destroy'])->name('destroy');
+                        Route::get('edit/{cooperationToEdit}', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'edit'])->name('edit');
+                        Route::get('create', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'create'])->name('create');
+                        Route::post('', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'store'])->name('store');
+                        Route::post('edit', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'update'])->name('update');
 
                         /* Actions that will be done per cooperation */
-                        Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'],
-                            function () {
-                                Route::resource('home', 'HomeController')->only('index');
+                        Route::prefix('{cooperationToManage}/')->name('cooperation-to-manage.')->group(function () {
+                                Route::resource('home', Cooperation\Admin\SuperAdmin\Cooperation\HomeController::class)->only('index');
 
-                                Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
-                                Route::resource('coordinator', 'CoordinatorController')->only(['index']);
-                                Route::resource('users', 'UserController')->only(['index', 'show']);
-                                Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');
+                                Route::resource('cooperation-admin', Cooperation\Admin\SuperAdmin\Cooperation\CooperationAdminController::class)->only(['index']);
+                                Route::resource('coordinator', Cooperation\Admin\SuperAdmin\Cooperation\CoordinatorController::class)->only(['index']);
+                                Route::resource('users', Cooperation\Admin\SuperAdmin\Cooperation\UserController::class)->only(['index', 'show']);
+                                Route::post('users/{id}/confirm', [Cooperation\Admin\SuperAdmin\Cooperation\UserController::class, 'confirm'])->name('users.confirm');
                             });
                     });
                 });
 
                 /* Section for the coach */
-                Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['current-role:coach']], function () {
-                    Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
-                        Route::get('', 'BuildingController@index')->name('index');
-                        Route::get('edit/{id}', 'BuildingController@edit')->name('edit');
-                        Route::post('edit', 'BuildingController@update')->name('update');
-                        Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');
+                Route::prefix('coach')->name('coach.')->middleware('current-role:coach')->group(function () {
+                    Route::prefix('buildings')->name('buildings.')->group(function () {
+                        Route::get('', [Cooperation\Admin\Coach\BuildingController::class, 'index'])->name('index');
+                        Route::get('edit/{id}', [Cooperation\Admin\Coach\BuildingController::class, 'edit'])->name('edit');
+                        Route::post('edit', [Cooperation\Admin\Coach\BuildingController::class, 'update'])->name('update');
+                        Route::post('', [Cooperation\Admin\Coach\BuildingController::class, 'setBuildingStatus'])->name('set-building-status');
 
-                        Route::resource('details', 'BuildingDetailsController')->only('store');
+                        Route::resource('details', Cooperation\Admin\Coach\BuildingDetailsController::class)->only('store');
                     });
 
                     // needs to be the last route due to the param
-                    Route::get('home', 'CoachController@index')->name('index');
+                    Route::get('home', [Cooperation\Admin\Coach\CoachController::class, 'index'])->name('index');
                 });
             });
         });

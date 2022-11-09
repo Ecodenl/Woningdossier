@@ -2,6 +2,19 @@
 
 namespace App\Console\Commands\Upgrade\HeatPump;
 
+use Database\Seeders\ToolQuestionsTableSeeder;
+use Database\Seeders\ToolQuestionTypesTableSeeder;
+use Database\Seeders\ToolLabelsTableSeeder;
+use Database\Seeders\ToolCalculationResultsTableSeeder;
+use Database\Seeders\SubSteppablesTableSeeder;
+use Database\Seeders\StepsTableSeeder;
+use Database\Seeders\ScansTableSeeder;
+use Database\Seeders\MeasureApplicationsTableSeeder;
+use Database\Seeders\KeyFigureInsulationFactorsTableSeeder;
+use Database\Seeders\KeyFigureHeatPumpCoveragesTableSeeder;
+use Database\Seeders\ElementsValuesTableSeeder;
+use Database\Seeders\AlertsTableSeeder;
+use Database\Seeders\HeatPumpCharacteristicsTableSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -41,21 +54,21 @@ class SeedAll extends Command
     {
         Artisan::call('cache:clear');
 
-        Artisan::call('db:seed', ['--class' => \ScansTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \ToolLabelsTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \ToolQuestionTypesTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \StepsTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \ToolQuestionsTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \ToolCalculationResultsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ScansTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ToolLabelsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ToolQuestionTypesTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => StepsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ToolQuestionsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ToolCalculationResultsTableSeeder::class, '--force' => true]);
         DB::table('sub_steppables')->truncate();
-        Artisan::call('db:seed', ['--class' => \SubSteppablesTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => SubSteppablesTableSeeder::class, '--force' => true]);
 
-        Artisan::call('db:seed', ['--class' => \ElementsValuesTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \AlertsTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \KeyFigureHeatPumpCoveragesTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \KeyFigureInsulationFactorsTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \HeatPumpCharacteristicsTableSeeder::class, '--force' => true]);
-        Artisan::call('db:seed', ['--class' => \MeasureApplicationsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ElementsValuesTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => AlertsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => KeyFigureHeatPumpCoveragesTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => KeyFigureInsulationFactorsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => HeatPumpCharacteristicsTableSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => MeasureApplicationsTableSeeder::class, '--force' => true]);
 
         Artisan::call('cache:clear');
     }

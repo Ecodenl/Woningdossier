@@ -17,6 +17,7 @@ class MyPlanController extends Controller
 {
     public function index()
     {
+
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 

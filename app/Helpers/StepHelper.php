@@ -38,6 +38,12 @@ class StepHelper
         'residential-status',
     ];
 
+    const STEP_COMPLETION_MAP = [
+        'heating' => [
+            'high-efficiency-boiler', 'heat-pump', 'heater',
+        ],
+    ];
+
     /**
      * Get all the comments categorized under step and input source.
      *
@@ -121,6 +127,20 @@ class StepHelper
             'input_source_id' => $inputSource->id,
             'building_id' => $building->id,
         ]);
+
+        // Also complete related steps (this is the case for steps that used to be separate but are now included
+        // in a single step, but underlying code is still relying on them being completed separately)
+        if (array_key_exists($step->short, static::STEP_COMPLETION_MAP)) {
+            foreach (static::STEP_COMPLETION_MAP[$step->short] as $short) {
+                $stepToComplete = Step::findByShort($short);
+                CompletedStep::allInputSources()->firstOrCreate([
+                    'step_id' => $stepToComplete->id,
+                    'input_source_id' => $inputSource->id,
+                    'building_id' => $building->id,
+                ]);
+            }
+        }
+
     }
 
     /**
@@ -152,6 +172,7 @@ class StepHelper
      */
     public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate): bool
     {
+        \Log::debug("COMPLETE IF NEEDED {$step->short}");
         $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
             ->forBuilding($building)
             ->whereHas('subStep', function ($query) use ($step) {

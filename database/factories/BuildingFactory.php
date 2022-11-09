@@ -1,16 +1,27 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(\App\Models\Building::class, function (Faker $faker) {
-    return [
-        'street' => $faker->streetName,
-        'number' => $faker->numberBetween(3, 22),
-        'city' => $faker->city,
-        'postal_code' => $faker->postcode,
-        'country_code' => $faker->countryCode,
-        'owner' => $faker->boolean,
-        'primary' => $faker->boolean,
-        'user_id' => factory(\App\Models\User::class),
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class BuildingFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+        'street' => $this->faker->streetName,
+        'number' => $this->faker->numberBetween(3, 22),
+        'city' => $this->faker->city,
+        'postal_code' => $this->faker->postcode,
+        'country_code' => $this->faker->countryCode,
+        'owner' => $this->faker->boolean,
+        'primary' => $this->faker->boolean,
+        'user_id' => \App\Models\User::factory(),
     ];
-});
+    }
+}

@@ -126,8 +126,8 @@ class RecalculateForUser extends Command
                     Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
 
                     ProcessRecalculate::withChain($stepsToRecalculateChain)
-                        ->dispatch()
-                        ->onQueue(Queue::ASYNC);
+                        ->onQueue(Queue::ASYNC)
+                        ->dispatch();
                 } else {
                     Log::debug("User has not completed quick scan | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
                 }

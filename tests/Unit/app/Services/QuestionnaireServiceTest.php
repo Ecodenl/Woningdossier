@@ -41,8 +41,8 @@ class QuestionnaireServiceTest extends TestCase
 
     public function testCreateQuestionnaire()
     {
-        $cooperation = factory(Cooperation::class)->create();
-        $step = factory(Step::class)->create();
+        $cooperation = Cooperation::factory()->create();
+        $step = Step::factory()->create();
 
         $questionnaire = QuestionnaireService::createQuestionnaire(
             $cooperation, $step, ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling']
@@ -69,7 +69,7 @@ class QuestionnaireServiceTest extends TestCase
     public function testCreateQuestion($questionData)
     {
         // first we need to create a questionnaire with a question
-        $questionnaire = factory(Questionnaire::class)->create();
+        $questionnaire = Questionnaire::factory()->create();
 
         QuestionnaireService::createQuestion($questionnaire, $questionData, 'text', [], 0);
 
@@ -81,14 +81,14 @@ class QuestionnaireServiceTest extends TestCase
     public function testCopyQuestionnaireToCooperation()
     {
         // first we need to create a questionnaire with a question
-        $questionnaire = factory(Questionnaire::class)->create();
+        $questionnaire = Questionnaire::factory()->create();
         for ($i = 0; $i < 10; ++$i) {
             $questionnaire->questions()->save(
-                factory(Question::class)->make(['order' => $i])
+                Question::factory()->make(['order' => $i])
             );
         }
         // where we will copy the questionnaire to.
-        $cooperation = factory(Cooperation::class)->create();
+        $cooperation = Cooperation::factory()->create();
 
         // copy the questionnaire
         QuestionnaireService::copyQuestionnaireToCooperation($cooperation, $questionnaire);

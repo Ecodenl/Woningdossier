@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property array $name
  * @property array|null $help_text
  * @property string $short
+ * @property string $data_type
  * @property string|null $unit_of_measure
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -27,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult query()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereDataType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereHelpText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolCalculationResult whereName($value)

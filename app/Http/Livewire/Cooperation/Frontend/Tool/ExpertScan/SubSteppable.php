@@ -195,7 +195,7 @@ class SubSteppable extends Scannable
                 ]);
             }
 
-            Log::debug("Sub step {$this->subStep} ". $validator->fails() ? 'fails validation' : 'validatie goed');
+            Log::debug("Sub step {$this->subStep->name} " . ($validator->fails() ? 'fails validation' : 'passes validation'));
             foreach ($this->toolQuestions as $toolQuestion) {
                 if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                     $this->filledInAnswers[$toolQuestion->short] = Caster::init(

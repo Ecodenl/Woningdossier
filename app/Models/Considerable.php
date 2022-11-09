@@ -50,6 +50,6 @@ class Considerable extends Model
     ];
 
     protected $casts = [
-        'is_considering' => true,
+        'is_considering' => 'boolean',
     ];
 }

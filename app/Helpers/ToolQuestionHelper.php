@@ -2,14 +2,13 @@
 
 namespace App\Helpers;
 
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 
 class ToolQuestionHelper
 {
@@ -62,8 +61,8 @@ class ToolQuestionHelper
      */
     const TOOL_QUESTION_STEP_MAP = [
         'roof-type' => ['roof-insulation'],
-        'water-comfort' => ['heater'],
-        'cook-type' => ['high-efficiency-boiler'],
+        'water-comfort' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'cook-type' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'current-wall-insulation' => ['wall-insulation'],
         'current-floor-insulation' => ['floor-insulation'],
         'current-roof-insulation' => ['roof-insulation'],
@@ -71,12 +70,12 @@ class ToolQuestionHelper
         'current-sleeping-rooms-windows' => ['insulated-glazing'],
         'heat-source' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'heat-source-warm-tap-water' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
-        'boiler-type' => ['high-efficiency-boiler'],
-        'boiler-placed-date' => ['high-efficiency-boiler'],
-        'heat-pump-type' => ['heat-pump'],
-        'heat-pump-placed-date' => ['heat-pump'],
-        'interested-in-heat-pump' => ['heat-pump'],
-        'interested-in-heat-pump-variant' => ['heat-pump'],
+        'boiler-type' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'boiler-placed-date' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'heat-pump-type' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
+        'heat-pump-placed-date' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
+        'interested-in-heat-pump' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
+        'interested-in-heat-pump-variant' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
         'ventilation-type' => ['ventilation'],
         'ventilation-demand-driven' => ['ventilation'],
         'ventilation-heat-recovery' => ['ventilation'],
@@ -85,22 +84,60 @@ class ToolQuestionHelper
         'solar-panel-count' => ['solar-panels'],
         'total-installed-power' => ['solar-panels'],
         'solar-panels-placed-date' => ['solar-panels'],
-        'heater-pv-panel-orientation' => ['heater'],
-        'heater-pv-panel-angle' => ['heater'],
-        'fifty-degree-test' => ['heat-pump'],
-        'boiler-setting-comfort-heat' => ['heat-pump'],
+        'heater-pv-panel-orientation' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'heater-pv-panel-angle' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'fifty-degree-test' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'boiler-setting-comfort-heat' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'new-heat-source' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'new-heat-source-warm-tap-water' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
-        'hr-boiler-replace' => ['high-efficiency-boiler'],
-        'new-boiler-type' => ['high-efficiency-boiler'],
-        'heat-pump-replace' => ['heat-pump'],
-        'new-heat-pump-type' => ['heat-pump'],
-        'heat-pump-preferred-power' => ['heat-pump'],
-        'outside-unit-space' => ['heat-pump'],
-        'inside-unit-space' => ['heat-pump'],
-        'heat-pump-boiler-replace' => ['heat-pump'],
-        'sun-boiler-replace' => ['heater'],
-        'new-water-comfort' => ['heater'],
+        'hr-boiler-replace' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'new-boiler-type' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'heat-pump-replace' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
+        'new-heat-pump-type' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
+        'heat-pump-preferred-power' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
+        'outside-unit-space' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
+        'inside-unit-space' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
+        'heat-pump-boiler-replace' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
+        'sun-boiler-replace' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+        'new-water-comfort' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+    ];
+
+    /**
+     * Who would be surprised that some questions should trigger a recalculate but only in certain conditions?
+     */
+    const TOOL_RECALCULATE_CONDITIONS = [
+        'interested-in-heat-pump' => [
+            [
+                [
+                    'column' => 'fn',
+                    'operator' => 'HasCompletedStep',
+                    'value' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
+                            InputSource::RESIDENT_SHORT,
+                            InputSource::COACH_SHORT,
+                        ],
+                        'should_pass' => false,
+                    ],
+                ],
+            ],
+        ],
+        'interested-in-heat-pump-variant' => [
+            [
+                [
+                    'column' => 'fn',
+                    'operator' => 'HasCompletedStep',
+                    'value' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
+                            InputSource::RESIDENT_SHORT,
+                            InputSource::COACH_SHORT,
+                        ],
+                        'should_pass' => false,
+                    ],
+                ],
+            ],
+        ],
     ];
 
     /**
@@ -117,10 +154,20 @@ class ToolQuestionHelper
         ],
     ];
 
-    public static function stepShortsForToolQuestion(ToolQuestion $toolQuestion): array
+    public static function stepShortsForToolQuestion(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource): array
     {
         if (isset(self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short])) {
-            return self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short];
+            $data = self::TOOL_QUESTION_STEP_MAP[$toolQuestion->short];
+
+            // Only return if it passes the conditions (if there are any)
+            if (array_key_exists($toolQuestion->short, self::TOOL_RECALCULATE_CONDITIONS)) {
+                $pass = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
+                    ->evaluate(self::TOOL_RECALCULATE_CONDITIONS[$toolQuestion->short]);
+
+                $data = $pass ? $data : [];
+            }
+
+            return $data;
         }
         return [];
     }
@@ -129,9 +176,21 @@ class ToolQuestionHelper
      * Simple method to determine whether the given tool question should use the old advice on a recalculate
      *
      */
-    public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion): bool
+    public static function shouldToolQuestionDoFullRecalculate(ToolQuestion $toolQuestion, Building $building, InputSource $inputSource): bool
     {
-        return in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true);
+        if (in_array($toolQuestion->short, self::TOOL_QUESTION_FULL_RECALCULATE, true)) {
+            $pass = true;
+
+            // Only return if it passes the conditions (if there are any)
+            if (array_key_exists($toolQuestion->short, self::TOOL_RECALCULATE_CONDITIONS)) {
+                $pass = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
+                    ->evaluate(self::TOOL_RECALCULATE_CONDITIONS[$toolQuestion->short]);
+            }
+
+            return $pass;
+        }
+
+        return false;
     }
 
     /**

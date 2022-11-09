@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\StepHelper;
 use App\Scopes\NoGeneralDataScope;
 use App\Traits\HasShortTrait;
@@ -35,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $sub_steps_count
  * @method static Builder|Step childrenForStep(\App\Models\Step $step)
  * @method static Builder|Step expert()
+ * @method static \Database\Factories\StepFactory factory(...$parameters)
  * @method static Builder|Step newModelQuery()
  * @method static Builder|Step newQuery()
  * @method static Builder|Step ordered()
@@ -55,6 +57,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Step extends Model
 {
+    use HasFactory;
+
     use HasShortTrait,
         HasTranslations;
 

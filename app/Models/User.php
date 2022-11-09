@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\HoomdossierSession;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -64,6 +65,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $user_action_plan_advice_comments_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
  * @property-read int|null $user_interests_count
+ * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User forAllCooperations()
  * @method static Builder|User forMyCooperation($cooperationId)
  * @method static Builder|User newModelQuery()
@@ -86,6 +88,8 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Model implements AuthorizableContract
 {
+    use HasFactory;
+
     use HasRoles,
         HasCooperationTrait,
         Authorizable;

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -31,6 +32,7 @@ use Plank\Mediable\Mediable;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  * @property-read int|null $users_count
  * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
+ * @method static \Database\Factories\CooperationFactory factory(...$parameters)
  * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newQuery()
@@ -52,6 +54,8 @@ use Plank\Mediable\Mediable;
  */
 class Cooperation extends Model
 {
+    use HasFactory;
+
     use Mediable;
 
     public $fillable = [

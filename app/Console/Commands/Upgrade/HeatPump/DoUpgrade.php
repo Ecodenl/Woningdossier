@@ -2,6 +2,12 @@
 
 namespace App\Console\Commands\Upgrade\HeatPump;
 
+use Database\Seeders\MeasureApplicationsTableSeeder;
+use Database\Seeders\KeyFigureInsulationFactorsTableSeeder;
+use Database\Seeders\KeyFigureHeatPumpCoveragesTableSeeder;
+use Database\Seeders\ElementsValuesTableSeeder;
+use Database\Seeders\AlertsTableSeeder;
+use Database\Seeders\HeatPumpCharacteristicsTableSeeder;
 use App\Helpers\Arr;
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;

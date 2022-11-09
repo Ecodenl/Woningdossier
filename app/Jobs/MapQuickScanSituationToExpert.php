@@ -138,9 +138,11 @@ class MapQuickScanSituationToExpert implements ShouldQueue
         $heatingTemp = $this->building->getAnswer($this->masterInputSource, ToolQuestion::findByShort('boiler-setting-comfort-heat'));
         // We assume the worst if the user doesn't know
         $answers['new-boiler-setting-comfort-heat'] = $heatingTemp === 'unsure' ? 'temp-high' : $heatingTemp;
+        // Force 0 to have the desired power calculated
+        $answers['heat-pump-preferred-power'] = 0;
 
         $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));
-        $this->saveAnswer(ToolQuestion::findByShort('heat-pump-preferred-power'), $results['advised_system']['required_power']);
+        $this->saveAnswer(ToolQuestion::findByShort('heat-pump-preferred-power'), $results['advised_system']['desired_power']);
     }
 
     protected function evaluateClause(array $clause, $answer): bool

@@ -3187,13 +3187,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       } catch (e) {
         this.livewire = false;
       }
+
+      //TODO: README! For now, we will ALWAYS set Livewire as false, as it's causing unexpected behaviour
+      // simply caused by the page being too slow
+      this.livewire = false;
       var context = this;
       setTimeout(function () {
-        context.constructSelect();
+        context.constructSelect(true);
         if (null !== context.select) {
           var observer = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
-              context.constructSelect();
+              context.constructSelect(false);
               if (!context.livewire) {
                 window.triggerEvent(context.select, 'change');
               }
@@ -3211,11 +3215,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         }
         if (context.livewire && null !== context.select) {
           //TODO: This works for now, but the wire:model can have extra options such as .lazy, which will
-          // not be caught this way. Might require different resolving
+          // not be caught this way. Might require different resolving in the future
           _this.wireModel = context.select.getAttribute('wire:model');
-          if (_this.wireModel) {
-            context.values = context.$wire.get(_this.wireModel);
-          }
         }
         if (_this.values === null && _this.multiple) {
           _this.values = [];
@@ -3232,8 +3233,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
     },
     // Construct a fresh custom select
-    constructSelect: function constructSelect() {
+    constructSelect: function constructSelect(isFirstBoot) {
       var _this2 = this;
+      var before = this.values;
       var wrapper = this.$refs['select-wrapper'];
       // Get the select element
       this.select = wrapper.querySelector('select');
@@ -3263,13 +3265,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.select.style.display = 'none';
         // Show the new alpine select
         this.$refs['select-input-group'].style.display = '';
+        setTimeout(function () {
+          _this2.updateSelectedValues();
+          var after = _this2.values;
 
-        // No need to fetch values because they will have been received from Livewire
-        if (!this.livewire) {
-          setTimeout(function () {
-            _this2.updateSelectedValues();
-          });
-        }
+          // Ensure any potentially hidden values are no longer selected if the data changes after initial boot.
+          // We compare before and after because we don't want to unnecessarily cast multiple changes.
+          if (!isFirstBoot && JSON.stringify(before) !== JSON.stringify(after)) {
+            if (_this2.livewire) {
+              if (_this2.wireModel) {
+                _this2.$wire.set(_this2.wireModel, _this2.values);
+              }
+            } else {
+              window.triggerEvent(_this2.select, 'change');
+            }
+          }
+        });
       }
     },
     toggle: function toggle() {
@@ -3300,17 +3311,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     // Update a/the selected value
     updateValue: function updateValue(value) {
       if (this.multiple) {
-        var _this$values;
-        var values = (_this$values = this.values) !== null && _this$values !== void 0 ? _this$values : [];
-
         // If it's multiple, we want to remove the value if the clicked value is already selected.
         // Otherwise we append the value to the values.
-        if (values.includes(value)) {
-          values.splice(values.indexOf(value));
+        if (this.values.includes(value)) {
+          this.values.splice(this.values.indexOf(value), 1);
         } else {
-          values.push(value);
+          this.values.push(value);
         }
-        this.values = values;
         this.setSelectedOptions();
       } else {
         // If it's not multiple, we simply set the value.

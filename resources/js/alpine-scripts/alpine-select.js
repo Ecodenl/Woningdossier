@@ -19,14 +19,18 @@ export default (initiallyOpen = false) => ({
             this.livewire = false;
         }
 
+        //TODO: README! For now, we will ALWAYS set Livewire as false, as it's causing unexpected behaviour
+        // simply caused by the page being too slow
+        this.livewire = false;
+
         let context = this;
         setTimeout(() => {
-            context.constructSelect();
+            context.constructSelect(true);
 
             if (null !== context.select) {
                 let observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
-                        context.constructSelect();
+                        context.constructSelect(false);
                         if (! context.livewire) {
                             window.triggerEvent(context.select, 'change');
                         }
@@ -44,11 +48,8 @@ export default (initiallyOpen = false) => ({
 
             if (context.livewire && null !== context.select) {
                 //TODO: This works for now, but the wire:model can have extra options such as .lazy, which will
-                // not be caught this way. Might require different resolving
+                // not be caught this way. Might require different resolving in the future
                 this.wireModel = context.select.getAttribute('wire:model');
-                if (this.wireModel) {
-                    context.values = context.$wire.get(this.wireModel);
-                }
             }
 
             if (this.values === null && this.multiple) {
@@ -68,7 +69,9 @@ export default (initiallyOpen = false) => ({
         });
     },
     // Construct a fresh custom select
-    constructSelect() {
+    constructSelect(isFirstBoot) {
+        let before = this.values;
+
         let wrapper = this.$refs['select-wrapper'];
         // Get the select element
         this.select = wrapper.querySelector('select');
@@ -100,12 +103,22 @@ export default (initiallyOpen = false) => ({
             // Show the new alpine select
             this.$refs['select-input-group'].style.display = '';
 
-            // No need to fetch values because they will have been received from Livewire
-            if (! this.livewire) {
-                setTimeout(() => {
-                    this.updateSelectedValues();
-                });
-            }
+            setTimeout(() => {
+                this.updateSelectedValues();
+                let after = this.values;
+
+                // Ensure any potentially hidden values are no longer selected if the data changes after initial boot.
+                // We compare before and after because we don't want to unnecessarily cast multiple changes.
+                if (! isFirstBoot && JSON.stringify(before) !== JSON.stringify(after)) {
+                    if (this.livewire) {
+                        if (this.wireModel) {
+                            this.$wire.set(this.wireModel, this.values);
+                        }
+                    } else {
+                        window.triggerEvent(this.select, 'change');
+                    }
+                }
+            });
         }
     },
     toggle() {
@@ -137,17 +150,13 @@ export default (initiallyOpen = false) => ({
     // Update a/the selected value
     updateValue(value) {
         if (this.multiple) {
-            let values = this.values ?? [];
-
             // If it's multiple, we want to remove the value if the clicked value is already selected.
             // Otherwise we append the value to the values.
-            if (values.includes(value)) {
-                values.splice(values.indexOf(value));
+            if (this.values.includes(value)) {
+                this.values.splice(this.values.indexOf(value), 1);
             } else {
-                values.push(value);
+                this.values.push(value);
             }
-
-            this.values = values;
 
             this.setSelectedOptions();
         } else {

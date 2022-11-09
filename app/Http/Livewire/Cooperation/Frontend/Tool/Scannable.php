@@ -112,7 +112,6 @@ abstract class Scannable extends Component
 
     public function updated($field, $value)
     {
-\Log::debug("Field: {$field}, Value: {$value}");
         $this->rehydrateToolQuestions();
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();

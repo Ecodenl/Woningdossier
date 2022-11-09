@@ -10,7 +10,7 @@ class MediaHelper {
     const BACKGROUND = 'background';
     const GENERIC_FILE = 'generic-file';
     const GENERIC_IMAGE = 'generic-image';
-    const THERMAL_IMAGE = 'thermal-image';
+    const REPORT = 'report';
     const QUOTATION = 'quotation';
     const INVOICE = 'invoice';
     const BILL = 'bill';
@@ -28,7 +28,7 @@ class MediaHelper {
                 return [
                     self::GENERIC_FILE => self::GENERIC_FILE,
                     self::GENERIC_IMAGE => self::GENERIC_IMAGE,
-                    self::THERMAL_IMAGE => self::THERMAL_IMAGE,
+                    self::REPORT => self::REPORT,
                     self::QUOTATION => self::QUOTATION,
                     self::INVOICE => self::INVOICE,
                     self::BILL => self::BILL,

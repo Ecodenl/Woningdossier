@@ -1,24 +1,53 @@
-export default () => ({
+export default (defaultValue = 0) => ({
     initialized: false,
-    value: 0,
+    value: defaultValue,
+    visual: 0,
+    livewire: false,
 
     init() {
-        this.initialized = true;
+        try {
+            this.livewire = !! this.$wire;
+        } catch (e) {
+            this.livewire = false;
+        }
+
         this.$watch('value', value => {
+            // It could be that the slider value is not properly updated
+            // This is usually the case if we use Livewire.
+            let slider = this.$refs['slider'];
+            if (slider.value != this.value) {
+                slider.value = this.value;
+            }
+
             this.updateVisuals();
         });
 
-        if (this.$wire && this.$refs['slider'].hasAttribute('wire:model')) {
-            this.value = $wire.get(this.$refs['slider'].getAttribute('wire:model'));
-        }
-
-        this.updateVisuals();
+        // Use timeout to allow DOM to fully load
+        setTimeout(() => {
+            // Set slider value to match with default
+            this.$refs['slider'].value = this.value;
+            this.updateVisuals();
+            this.initialized = true;
+        });
+    },
+    slider: {
+        ['x-ref']: 'slider',
+        ['x-on:input']() {
+            this.updateVisuals();
+        },
+        ['x-on:change.debounce.500ms']() {
+            // We use a change event to not cause the slider to jump when it syncs with Livewire; input triggers
+            // each movement. We use a debounce, as arrow keys also trigger a change, but a user might not tap
+            // fast enough.
+            this.value = this.visual;
+        },
     },
     updateVisuals() {
-        this.value = this.$refs['slider'].value;
+        let slider = this.$refs['slider'];
+        this.visual = slider.value;
         let currentPosition = this.getThumbPosition();
         this.$refs['slider-bubble'].style.left = currentPosition + 'px';
-        this.$refs['slider'].style.background = `linear-gradient(90deg, var(--slider-before) ${currentPosition}px, var(--slider-after) ${currentPosition}px)`;
+        slider.style.background = `linear-gradient(90deg, var(--slider-before) ${currentPosition}px, var(--slider-after) ${currentPosition}px)`;
     },
     getThumbPosition() {
         let slider = this.$refs['slider'];

@@ -3204,11 +3204,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           });
 
           // Bind event listener for change
+          // TODO: Check if values update correctly when data is changed on Livewire side
           context.select.addEventListener('change', function (event) {
             _this.updateSelectedValues();
           });
         }
         if (context.livewire && null !== context.select) {
+          //TODO: This works for now, but the wire:model can have extra options such as .lazy, which will
+          // not be caught this way. Might require different resolving
           _this.wireModel = context.select.getAttribute('wire:model');
           if (_this.wireModel) {
             context.values = context.$wire.get(_this.wireModel);
@@ -4249,26 +4252,54 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (function () {
+  var _slider;
+  var defaultValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   return {
     initialized: false,
-    value: 0,
+    value: defaultValue,
+    visual: 0,
+    livewire: false,
     init: function init() {
       var _this = this;
-      this.initialized = true;
+      try {
+        this.livewire = !!this.$wire;
+      } catch (e) {
+        this.livewire = false;
+      }
       this.$watch('value', function (value) {
+        // It could be that the slider value is not properly updated
+        // This is usually the case if we use Livewire.
+        var slider = _this.$refs['slider'];
+        if (slider.value != _this.value) {
+          slider.value = _this.value;
+        }
         _this.updateVisuals();
       });
-      if (this.$wire && this.$refs['slider'].hasAttribute('wire:model')) {
-        this.value = $wire.get(this.$refs['slider'].getAttribute('wire:model'));
-      }
-      this.updateVisuals();
+
+      // Use timeout to allow DOM to fully load
+      setTimeout(function () {
+        // Set slider value to match with default
+        _this.$refs['slider'].value = _this.value;
+        _this.updateVisuals();
+        _this.initialized = true;
+      });
     },
+    slider: (_slider = {}, _defineProperty(_slider, 'x-ref', 'slider'), _defineProperty(_slider, 'x-on:input', function xOnInput() {
+      this.updateVisuals();
+    }), _defineProperty(_slider, 'x-on:change.debounce.500ms', function xOnChangeDebounce500ms() {
+      // We use a change event to not cause the slider to jump when it syncs with Livewire; input triggers
+      // each movement. We use a debounce, as arrow keys also trigger a change, but a user might not tap
+      // fast enough.
+      this.value = this.visual;
+    }), _slider),
     updateVisuals: function updateVisuals() {
-      this.value = this.$refs['slider'].value;
+      var slider = this.$refs['slider'];
+      this.visual = slider.value;
       var currentPosition = this.getThumbPosition();
       this.$refs['slider-bubble'].style.left = currentPosition + 'px';
-      this.$refs['slider'].style.background = "linear-gradient(90deg, var(--slider-before) ".concat(currentPosition, "px, var(--slider-after) ").concat(currentPosition, "px)");
+      slider.style.background = "linear-gradient(90deg, var(--slider-before) ".concat(currentPosition, "px, var(--slider-after) ").concat(currentPosition, "px)");
     },
     getThumbPosition: function getThumbPosition() {
       var slider = this.$refs['slider'];

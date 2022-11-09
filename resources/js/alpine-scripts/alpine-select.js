@@ -36,12 +36,15 @@ export default (initiallyOpen = false) => ({
                 observer.observe(context.select, { childList: true });
 
                 // Bind event listener for change
+                // TODO: Check if values update correctly when data is changed on Livewire side
                 context.select.addEventListener('change', (event) => {
                     this.updateSelectedValues();
                 });
             }
 
             if (context.livewire && null !== context.select) {
+                //TODO: This works for now, but the wire:model can have extra options such as .lazy, which will
+                // not be caught this way. Might require different resolving
                 this.wireModel = context.select.getAttribute('wire:model');
                 if (this.wireModel) {
                     context.values = context.$wire.get(this.wireModel);

@@ -71,6 +71,16 @@
                                 @lang('cooperation/frontend/tool.my-plan.uploader.info.title')
                             </h3>
                             <dl class="mt-2 divide-y divide-gray-200 border-t border-gray-200">
+                                @if(! empty($fileData[$file->id]['title']))
+                                    <div class="flex justify-between py-3 text-sm font-medium">
+                                        <dt class="text-gray-500">
+                                            @lang('cooperation/frontend/tool.my-plan.uploader.form.title.label')
+                                        </dt>
+                                        <dd class="whitespace-nowrap text-gray-900">
+                                            {{ $fileData[$file->id]['title'] }}
+                                        </dd>
+                                    </div>
+                                @endif
                                 <div class="flex justify-between py-3 text-sm font-medium">
                                     <dt class="text-gray-500">
                                         @lang('cooperation/frontend/tool.my-plan.uploader.info.uploaded-by')

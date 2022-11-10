@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Services\AddressService;
+use App\Services\DiscordNotifier;
 
 class PicoHelper
 {
@@ -18,6 +19,7 @@ class PicoHelper
      */
     public static function getAddressData($postalCode, $number, string $houseNumberExtension = ""): array
     {
+        DiscordNotifier::init()->notify("PicoHelper::getAddressData() has been called, args: {$postalCode}, {$number}, $houseNumberExtension");
         return AddressService::first($postalCode, $number, $houseNumberExtension);
     }
 }

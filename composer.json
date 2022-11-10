@@ -15,6 +15,7 @@
         "barryvdh/laravel-dompdf": "^0.8.4",
         "darkaonline/l5-swagger": "6.*",
         "doctrine/dbal": "^2.11",
+        "ecodenl/lvbag-php-wrapper": "^2.0",
         "ecodenl/pico-wrapper": "dev-master",
         "fideloper/proxy": "^4.4",
         "laravel/framework": "^6.20",

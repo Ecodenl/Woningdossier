@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ff35d706856d1a70d5dbdb25ffe6b89",
+    "content-hash": "0f42a998265b97eb9da371e109bbc5de",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -848,6 +848,49 @@
                 "schedule"
             ],
             "time": "2020-10-13T00:52:37+00:00"
+        },
+        {
+            "name": "ecodenl/lvbag-php-wrapper",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Ecodenl/lvbag-php-wrapper.git",
+                "reference": "f72a533e3074eb53cf0830f3c1d2d16035f82517"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Ecodenl/lvbag-php-wrapper/zipball/f72a533e3074eb53cf0830f3c1d2d16035f82517",
+                "reference": "f72a533e3074eb53cf0830f3c1d2d16035f82517",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.3.1|^7.4.5",
+                "php": "^7.4.0|^8.0",
+                "psr/log": "^1.1.4|^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ecodenl\\LvbagPhpWrapper\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Bodhi Looij",
+                    "email": "b.looij@wedesignit.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Wrapper for the LVBAG API ",
+            "support": {
+                "issues": "https://github.com/Ecodenl/lvbag-php-wrapper/issues",
+                "source": "https://github.com/Ecodenl/lvbag-php-wrapper/tree/v2.0.2"
+            },
+            "time": "2022-11-10T12:50:50+00:00"
         },
         {
             "name": "ecodenl/pico-wrapper",

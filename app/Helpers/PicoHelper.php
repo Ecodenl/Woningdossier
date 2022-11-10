@@ -18,6 +18,6 @@ class PicoHelper
      */
     public static function getAddressData($postalCode, $number, string $houseNumberExtension = ""): array
     {
-        return AddressService::list($postalCode, $number, $houseNumberExtension);
+        return AddressService::first($postalCode, $number, $houseNumberExtension);
     }
 }

@@ -7,7 +7,16 @@ use Illuminate\Support\Facades\Log;
 
 class AddressService {
 
-    public static function list($postalCode, $number, string $houseNumberExtension = ""): array
+    /**
+     * Returns the address data from the wrapper in the way we want
+     * Will always return the FIRST result
+     *
+     * @param $postalCode
+     * @param $number
+     * @param string $houseNumberExtension
+     * @return array
+     */
+    public static function first($postalCode, $number, string $houseNumberExtension = ""): array
     {
         $client = Client::init(config('hoomdossier.services.bag.secret'), 'epsg:28992');
 

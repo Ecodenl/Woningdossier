@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation;
 
-use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBuildingFormRequest;
 use App\Models\Account;
@@ -10,6 +9,7 @@ use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\User;
+use App\Services\AddressService;
 
 class CreateBuildingController extends Controller
 {
@@ -39,9 +39,7 @@ class CreateBuildingController extends Controller
         $data = $request->all();
 
         // now get the picoaddress data.
-        $picoAddressData = PicoHelper::getAddressData(
-            $data['postal_code'], $data['number']
-        );
+        AddressService::first($data['postal_code'], $data['number']);
 
         $data['bag_addressid'] = isset($picoAddressData['bag_adresid']) ? $picoAddressData['bag_adresid'] : '';
 

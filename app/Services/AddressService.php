@@ -48,7 +48,7 @@ class AddressService {
                 'build_year' => $address['bouwjaar'] ?? 1930,
                 'surface' => $address['oppervlakte'] ?? 0,
             ];
-            Log::debug($result);
+            Log::debug(__CLASS__, $result);
         }
 
         return $result;

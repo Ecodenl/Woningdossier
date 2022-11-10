@@ -118,18 +118,15 @@ class UserService
 
         if (!in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
             // re-query pico
-            $picoAddressData = PicoHelper::getAddressData(
-                $building->postal_code,
-                $building->number
-            );
+            $addressData = AddressService::first($building->postal_code, $building->number, $building->extension);
 
-            if ( ! empty(($picoAddressData['id'] ?? null))) {
-                $building->update(['bag_addressid' => $picoAddressData['id']]);
+            if ( ! empty(($addressData['id'] ?? null))) {
+                $building->update(['bag_addressid' => $addressData['id']]);
             }
 
             $features = new BuildingFeature([
-                'surface'         => $picoAddressData['surface'] ?? null,
-                'build_year'      => $picoAddressData['build_year'] ?? null,
+                'surface'         => $addressData['surface'] ?? null,
+                'build_year'      => $addressData['build_year'] ?? null,
                 'input_source_id' => $inputSource->id,
             ]);
             $features->building()->associate(
@@ -187,16 +184,16 @@ class UserService
         );
 
         // now get the picoaddress data.
-        $picoAddressData = PicoHelper::getAddressData(
-            $data['postal_code'], $data['number']
+        $addressData = AddressService::first(
+            $data['postal_code'], $data['number'], $data['house_number_extension']
         );
 
-        $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'] ?? '';
-        $data['extension'] = $data['house_number_extension'] ?? null;
+        $data['bag_addressid'] = $addressData['id'] ?? $data['addressid'] ?? '';
+        $data['extension'] = $addressData['huisletter'] ?? $data['house_number_extension'] ?? null;
 
         $features = new BuildingFeature([
-            'surface' => $picoAddressData['surface'] ?? null,
-            'build_year' => $picoAddressData['build_year'] ?? null,
+            'surface' => $addressData['surface'] ?? null,
+            'build_year' => $addressData['build_year'] ?? null,
         ]);
 
         // create the building for the user

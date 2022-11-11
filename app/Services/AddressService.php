@@ -15,10 +15,10 @@ class AddressService
      *
      * @param $postalCode
      * @param $number
-     * @param string $houseNumberExtension
+     * @param null|string $houseNumberExtension
      * @return array
      */
-    public static function first($postalCode, $number, string $houseNumberExtension = ""): array
+    public static function first($postalCode, $number, ?string $houseNumberExtension = ""): array
     {
         $addresses = [];
         $client = Client::init(config('hoomdossier.services.bag.secret'), 'epsg:28992');

@@ -1,11 +1,13 @@
 <?php
+
 namespace App\Services;
 
 use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
 use Illuminate\Support\Facades\Log;
 
-class AddressService {
+class AddressService
+{
 
     /**
      * Returns the address data from the wrapper in the way we want
@@ -18,6 +20,7 @@ class AddressService {
      */
     public static function first($postalCode, $number, string $houseNumberExtension = ""): array
     {
+        $addresses = [];
         $client = Client::init(config('hoomdossier.services.bag.secret'), 'epsg:28992');
 
         $attributes = [
@@ -29,12 +32,21 @@ class AddressService {
         if (!empty($houseNumberExtension)) {
             $attributes['huisletter'] = $houseNumberExtension;
         }
-        $addresses = Lvbag::init($client)
-            ->adresUitgebreid()
-            ->list($attributes);
+
+        try {
+            $addresses = Lvbag::init($client)
+                ->adresUitgebreid()
+                ->list($attributes);
+        } catch (\Exception $exception) {
+            if($exception->getCode() !== 400) {
+                app('sentry')->captureException($exception);
+            }
+        }
+
 
         $result = [];
 
+        // only when the address is not null, else we will take the user his input.
         if (!is_null($addresses)) {
             $address = array_shift($addresses);
             // best match

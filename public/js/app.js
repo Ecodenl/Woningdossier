@@ -4361,11 +4361,22 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
               switch (type) {
                 case 'text':
                 case 'date':
-                case 'select':
                 case 'textarea':
                 case 'range':
                   _input.value = value;
                   window.triggerEvent(_input, 'input');
+                  window.triggerEvent(_input, 'change');
+                  break;
+                case 'select':
+                  var multiple = _input.hasAttribute('multiple');
+                  if (multiple) {
+                    var option = _input.querySelector("option[value=\"".concat(value, "\"]"));
+                    if (option) {
+                      option.setAttribute('selected', 'selected');
+                    }
+                  } else {
+                    _input.value = value;
+                  }
                   window.triggerEvent(_input, 'change');
                   break;
                 case 'radio':

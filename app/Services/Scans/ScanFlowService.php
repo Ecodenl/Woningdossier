@@ -280,11 +280,14 @@ class ScanFlowService
             /** @var SubSteppable $subSteppable */
             $subSteppable = $toolQuestion->pivot;
             if ($evaluator->evaluate($subSteppable->conditions ?? [])) {
-                $visibleQuestions++;
+                // If it's visible, we will check if it's required. If it's not required, it doesn't matter after all
+                if (in_array('required', $toolQuestion->validation)) {
+                    $visibleQuestions++;
 
-                $answer = $this->getAnswer($toolQuestion->short, false);
-                if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
-                    $questionsWithAnswers++;
+                    $answer = $this->getAnswer($toolQuestion->short, false);
+                    if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
+                        $questionsWithAnswers++;
+                    }
                 }
             }
 

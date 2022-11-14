@@ -1090,7 +1090,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'integer', 'min:1', 'max:50'],
+                'validation' => ['required', 'numeric', 'integer', 'min:1', 'max:50'],
                 'save_in' => "building_services.{$solarPanels->id}.extra.value",
                 'short' => 'solar-panel-count',
                 // was current-state -> hoeveel zonnepanelen zijn er aanwezig
@@ -1098,7 +1098,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'integer', 'min:1'],
+                'validation' => ['required', 'numeric', 'integer', 'min:1'],
                 'save_in' => "building_pv_panels.total_installed_power",
                 'short' => 'total-installed-power',
                 // was current-state -> Geinstalleerd vermogen (totaal)

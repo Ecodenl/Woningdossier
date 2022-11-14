@@ -25,7 +25,7 @@ class Alerts extends Component
     public array $typeMap = [
         Alert::TYPE_INFO => 'text-blue-900',
         Alert::TYPE_SUCCESS => 'text-green',
-        Alert::TYPE_WARNING => 'text-yellow',
+        Alert::TYPE_WARNING => 'text-orange',
         Alert::TYPE_DANGER => 'text-red',
     ];
 

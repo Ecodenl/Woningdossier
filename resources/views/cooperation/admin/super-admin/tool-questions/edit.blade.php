@@ -8,6 +8,13 @@
 
         <div class="panel-body">
             <form action="{{route('cooperation.admin.super-admin.tool-questions.update', compact('toolQuestion'))}}" method="post">
+                <div class="form-group">
+                    <a href="{{route('cooperation.admin.super-admin.tool-questions.index')}}"
+                       class="btn btn-default">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                        @lang('woningdossier.cooperation.tool.back-to-overview')
+                    </a>
+                </div>
                 @csrf
                 @method('put')
                 <div class="row">

@@ -167,8 +167,7 @@ class ToolQuestionHelper {
         if (empty($answer)) {
             $answer = $building->getAnswer($inputSource, $toolQuestion);
         }
-        $answer = strip_tags($answer);
-//
+
         if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
             $questionValues = QuestionValue::getQuestionValues($toolQuestion, $building, $inputSource);
 
@@ -181,7 +180,7 @@ class ToolQuestionHelper {
                     $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
 
                     if (! empty($questionValue)) {
-                        $answerToAppend = $questionValue['name'];
+                        $answerToAppend = strip_tags($questionValue['name']);
 
                         if (! empty($questionValue['extra']['icon']) && $withIcons) {
                             $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';

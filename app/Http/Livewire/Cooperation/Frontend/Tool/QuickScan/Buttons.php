@@ -82,8 +82,6 @@ class Buttons extends Component
 
     private function setPreviousStep()
     {
-
-
         if ($this->subStep instanceof SubStep) {
             $this->previousSubStep = $this
                 ->step

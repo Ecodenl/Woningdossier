@@ -167,7 +167,8 @@ class ToolQuestionHelper {
         if (empty($answer)) {
             $answer = $building->getAnswer($inputSource, $toolQuestion);
         }
-
+        $answer = strip_tags($answer);
+//
         if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
             $questionValues = QuestionValue::getQuestionValues($toolQuestion, $building, $inputSource);
 

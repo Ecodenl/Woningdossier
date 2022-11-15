@@ -11,6 +11,7 @@ use Livewire\Component;
 class Buttons extends Component
 {
     private $account;
+    private $building;
 
     public $step;
     public $previousStep;
@@ -26,6 +27,7 @@ class Buttons extends Component
     public function mount(Request $request, Step $step, $subStepOrQuestionnaire)
     {
         $this->account = $request->user();
+        $this->building = $this->account->user()->building;
 
         // set default steps, the checks will come later on.
         $this->step = $step;
@@ -80,6 +82,8 @@ class Buttons extends Component
 
     private function setPreviousStep()
     {
+
+
         if ($this->subStep instanceof SubStep) {
             $this->previousSubStep = $this
                 ->step
@@ -105,7 +109,7 @@ class Buttons extends Component
                 }
             }
 
-            if (isset($this->previousStep) && $this->account->cannot('show', $this->previousSubStep)) {
+            if (isset($this->previousStep) && $this->account->cannot('show', [$this->previousSubStep, $this->building])) {
                 // so the user is not allowed to see this sub step
                 // now we also have to set the subStep so this won't do an infinite loop
                 $this->subStep = $this->previousSubStep;
@@ -124,7 +128,7 @@ class Buttons extends Component
                 // No more questionnaires, let's start the logic to get a previous sub step
                 $this->previousSubStep = $this->step->subSteps()->orderByDesc('order')->first();
 
-                if ($this->account->cannot('show', $this->previousSubStep)) {
+                if ($this->account->cannot('show', [$this->previousSubStep, $this->building])) {
                     // so the user is not allowed to see this sub step
                     // now we also have to set the subStep so this won't do an infinite loop
                     $this->subStep = $this->previousSubStep;

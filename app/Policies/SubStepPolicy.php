@@ -29,6 +29,8 @@ class SubStepPolicy
 
     public function show(Account $account, SubStep $subStep, Building $building = null)
     {
+        // We don't want session data in the policy. This is here to ensure we didn't forget anything.
+        // TODO: Remove this once alerts no longer trigger
         if (! $building instanceof Building) {
             Log::alert(__METHOD__ . " building is not set for URL " . request()->fullUrl());
             $building = HoomdossierSession::getBuilding(true);

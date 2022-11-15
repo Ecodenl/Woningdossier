@@ -25,6 +25,6 @@
     },
     "dependencies": {
         "alpinejs": "^3.2.1",
-        "mobile-drag-drop": "^2.3.0-rc.2"
+        "mobile-drag-drop": "^3.0.0-rc.0"
     }
 }

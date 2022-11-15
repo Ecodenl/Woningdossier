@@ -166,6 +166,26 @@ class Form extends Component
             }
         }
 
+        // since we are done saving all the filled in answers, we can safely mark the sub steps as completed
+        foreach ($this->subSteps as $subStep) {
+            // Now mark the sub step as complete
+            $completedSubStep = CompletedSubStep::firstOrCreate([
+                'sub_step_id' => $subStep->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->currentInputSource->id
+            ]);
+
+            $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+                ->forStep($this->step);
+
+            if ($completedSubStep->wasRecentlyCreated) {
+                // No need to check SubSteps that were recently created because they passed conditions
+                $flowService->skipSubstep($subStep);
+            }
+
+            $flowService->checkConditionals($dirtyToolQuestions);
+        }
+
         // the INITIAL calculation will be handled by the CompletedSubStepObserver
         if ($shouldDoFullRecalculate) {
             // We should do a full recalculate because some base value that has impact on every calculation is changed.
@@ -191,26 +211,6 @@ class Form extends Component
                 '--step-short' => $stepShortsToRecalculate,
                 '--with-old-advices' => false,
             ]);
-        }
-
-        // since we are done saving all the filled in answers, we can safely mark the sub steps as completed
-        foreach ($this->subSteps as $subStep) {
-            // Now mark the sub step as complete
-            $completedSubStep = CompletedSubStep::firstOrCreate([
-                'sub_step_id' => $subStep->id,
-                'building_id' => $this->building->id,
-                'input_source_id' => $this->currentInputSource->id
-            ]);
-
-            $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
-                ->forStep($this->step);
-
-            if ($completedSubStep->wasRecentlyCreated) {
-                // No need to check SubSteps that were recently created because they passed conditions
-                $flowService->skipSubstep($subStep);
-            }
-
-            $flowService->checkConditionals($dirtyToolQuestions);
         }
 
         // TODO: Make FlowService URL workable

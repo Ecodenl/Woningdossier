@@ -42,6 +42,8 @@ class AddressService
             'exacteMatch' => true,
         ];
 
+
+
         // since we do not have a separate input for the huisletter we treat the houseNumberExtension as one:
         // first try it as a extension
         // if not found as a houseletter
@@ -65,7 +67,14 @@ class AddressService
                 if (is_null($addresses)) {
                     $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
                 }
+                if (is_null($addresses)) {
+                    // and a call without the extension, this should always return a address but this is very inaccurate.
+                    $addresses = $this->listFromAttributes($attributes);
+                }
             }
+        } else {
+            // the easier case.. :)
+            $addresses = $this->listFromAttributes($attributes);
         }
 
         $result = [];

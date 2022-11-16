@@ -14,7 +14,7 @@ class GeoController extends Controller
         $number = trim(strip_tags($request->get('number', '')));
         $houseNumberExtension = trim(strip_tags($request->get('house_number_extension', '')));
 
-        $address = AddressService::first($postalCode, $number, $houseNumberExtension);
+        $address = AddressService::init()->first($postalCode, $number, $houseNumberExtension);
 
         if (empty($address)) {
             $address = $request->all();

@@ -851,16 +851,16 @@
         },
         {
             "name": "ecodenl/lvbag-php-wrapper",
-            "version": "v2.0.2",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ecodenl/lvbag-php-wrapper.git",
-                "reference": "f72a533e3074eb53cf0830f3c1d2d16035f82517"
+                "reference": "aac88fd70fcd1df67dd7a68005599718be8e5c6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ecodenl/lvbag-php-wrapper/zipball/f72a533e3074eb53cf0830f3c1d2d16035f82517",
-                "reference": "f72a533e3074eb53cf0830f3c1d2d16035f82517",
+                "url": "https://api.github.com/repos/Ecodenl/lvbag-php-wrapper/zipball/aac88fd70fcd1df67dd7a68005599718be8e5c6b",
+                "reference": "aac88fd70fcd1df67dd7a68005599718be8e5c6b",
                 "shasum": ""
             },
             "require": {
@@ -888,9 +888,9 @@
             "description": "PHP Wrapper for the LVBAG API ",
             "support": {
                 "issues": "https://github.com/Ecodenl/lvbag-php-wrapper/issues",
-                "source": "https://github.com/Ecodenl/lvbag-php-wrapper/tree/v2.0.2"
+                "source": "https://github.com/Ecodenl/lvbag-php-wrapper/tree/v2.0.3"
             },
-            "time": "2022-11-10T12:50:50+00:00"
+            "time": "2022-11-16T13:29:17+00:00"
         },
         {
             "name": "ecodenl/pico-wrapper",

@@ -172,6 +172,7 @@ class UserService
     public static function create(Cooperation $cooperation, array $roles, $account, $data)
     {
         Log::debug('account id for registration: ' . $account->id);
+
         // Create the user for an account
         $user = User::create(
             [
@@ -184,7 +185,7 @@ class UserService
         );
 
         // now get the picoaddress data.
-        $addressData = AddressService::first(
+        $addressData = AddressService::init()->first(
             $data['postal_code'], $data['number'], $data['house_number_extension']
         );
 

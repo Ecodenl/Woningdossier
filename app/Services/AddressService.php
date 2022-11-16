@@ -2,12 +2,27 @@
 
 namespace App\Services;
 
+use App\Traits\FluentCaller;
 use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AddressService
 {
+    public Client $client;
+
+    use FluentCaller;
+
+    public function __construct()
+    {
+        $this->client = Client::init(
+            config('hoomdossier.services.bag.secret'),
+            'epsg:28992',
+            App::isProduction(),
+        );
+    }
 
     /**
      * Returns the address data from the wrapper in the way we want
@@ -18,44 +33,54 @@ class AddressService
      * @param null|string $houseNumberExtension
      * @return array
      */
-    public static function first($postalCode, $number, ?string $houseNumberExtension = ""): array
+    public function first($postalCode, $number, ?string $houseNumberExtension = ""): array
     {
-        $addresses = [];
-        $client = Client::init(config('hoomdossier.services.bag.secret'), 'epsg:28992');
-
         $attributes = [
             'postcode' => $postalCode,
             'huisnummer' => $number,
             // we always want a exact match, rather no result than wrong one.
             'exacteMatch' => true,
         ];
-        if (!empty($houseNumberExtension)) {
-            $attributes['huisletter'] = $houseNumberExtension;
-        }
 
-        try {
-            $addresses = Lvbag::init($client)
-                ->adresUitgebreid()
-                ->list($attributes);
-        } catch (\Exception $exception) {
-            if($exception->getCode() !== 400) {
-                app('sentry')->captureException($exception);
+        // since we do not have a separate input for the huisletter we treat the houseNumberExtension as one:
+        // first try it as a extension
+        // if not found as a houseletter
+        // if that does not work we will do a last resort that may not be that accurate..
+        if (!empty($houseNumberExtension)) {
+            $addresses = $this->listFromAttributes($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
+            if (is_null($addresses)) {
+                // if that does not work we will try the huislett
+                $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
+            }
+            // a last resort..
+            if (is_null($addresses)) {
+                // the previous calls were all based on a exact match, to get the best match.
+                // this last resort turns that of to get the at least the build year accurate.
+                $attributes['exacteMatch'] = false;
+                // these 2 calls could both return multiple addresses
+                // it just depends on the given address, we will shift it later on to get only one result
+                // the surface is probably inaccurate however the build year will be spot on (i think :kek:)
+                $addresses = $this->listFromAttributes($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
+
+                if (is_null($addresses)) {
+                    $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
+                }
             }
         }
-
 
         $result = [];
 
         // only when the address is not null, else we will take the user his input.
         if (!is_null($addresses)) {
             $address = array_shift($addresses);
-            // best match
+
             $result = [
                 'id' => $address['nummeraanduidingIdentificatie'] ?? '',
                 'street' => $address['openbareRuimteNaam'] ?? '',
                 'number' => $address['huisnummer'] ?? '',
                 'postal_code' => $address['postcode'] ?? '',
-                'house_number_extension' => $address['huisletter'] ?? $houseNumberExtension,
+                // so this is incorrect, but ye
+                'house_number_extension' => $houseNumberExtension,
                 'city' => $address['woonplaatsNaam'] ?? '',
                 'build_year' => $address['bouwjaar'] ?? 1930,
                 'surface' => $address['oppervlakte'] ?? 0,
@@ -64,5 +89,23 @@ class AddressService
         }
 
         return $result;
+    }
+
+    public function listFromAttributes(array $attributes): ?array
+    {
+        $addresses = null;
+        try {
+            $addresses = Lvbag::init($this->client)
+                ->adresUitgebreid()
+                ->list($attributes);
+        } catch (\Exception $exception) {
+            if ($exception->getCode() !== 400) {
+                app('sentry')->captureException($exception);
+            }
+            if ($exception->getCode() === 400) {
+                return $addresses;
+            }
+        }
+        return $addresses;
     }
 }

@@ -12,7 +12,7 @@
     {{-- Loop all sub steps except for the current (summary) step --}}
     @foreach($subStepsToSummarize as $subStepToSummarize)
         {{-- Only display sub steps that are valid to the user --}}
-        @can('show', $subStepToSummarize)
+        @can('show', [$subStepToSummarize, $building])
             @php
                 $subStepRoute = route('cooperation.frontend.tool.quick-scan.index', [
                     'cooperation' => $cooperation, 'step' => $step, 'subStep' => $subStepToSummarize

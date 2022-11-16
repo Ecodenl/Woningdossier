@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Account;
 use App\Models\InputSource;
+use App\Services\AddressService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -32,8 +33,8 @@ class SettingsController extends Controller
         $userData = $data['user'];
 
         // now get the pico address data.
-        $picoAddressData = PicoHelper::getAddressData(
-            $buildingData['postal_code'], $buildingData['house_number']
+        $picoAddressData = AddressService::first(
+            $buildingData['postal_code'], $buildingData['house_number'], $buildingData['extension']
         );
 
         $userData['phone_number'] = $userData['phone_number'] ?? '';

@@ -7,6 +7,7 @@ use App\Helpers\QuestionValues\QuestionValue;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
+use App\Traits\HasMedia;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -96,7 +97,8 @@ use Illuminate\Support\Str;
 class Building extends Model
 {
     use SoftDeletes,
-        ToolSettingTrait;
+        ToolSettingTrait,
+        HasMedia;
 
     public $fillable = [
         'street',
@@ -113,6 +115,16 @@ class Building extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        // The mediable only _detaches_ the media. We want to DELETE the media if set.
+        static::deleting(function (Building $building) {
+            $building->media()->delete();
+        });
+    }
 
     public function toolQuestionAnswers(): HasMany
     {

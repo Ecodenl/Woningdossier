@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
-use Plank\Mediable\Mediable;
 
 /**
  * App\Models\Cooperation
@@ -52,7 +52,7 @@ use Plank\Mediable\Mediable;
  */
 class Cooperation extends Model
 {
-    use Mediable;
+    use HasMedia;
 
     public $fillable = [
         'name', 'website_url', 'slug', 'cooperation_email',

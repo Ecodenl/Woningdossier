@@ -33,6 +33,12 @@ return [
         ],
     ],
 
+    'services' => [
+        'bag' => [
+            'secret' => env('BAG_API_KEY', '')
+        ],
+    ],
+
     'webhooks' => [
         'discord' => env('DISCORD_WEBHOOK_URL')
     ]

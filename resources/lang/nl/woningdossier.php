@@ -85,7 +85,7 @@ return [
                     'questionnaires' => 'Vragenlijsten',
                     'key-figures' => 'Kengetallen',
                     'translations' => 'Vertalingen',
-                    'tool-questions' => 'Quick scan vertalingen',
+                    'tool-questions' => 'Vraag vertalingen',
                     'example-buildings' => 'Voorbeeldwoningen',
                 ],
                 'index' => [

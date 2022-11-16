@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Request;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $basename
+ * @property-read \App\Models\InputSource $inputSource
  * @property-read Media|null $originalMedia
  * @property-read \Illuminate\Database\Eloquent\Collection|Media[] $variants
  * @property-read int|null $variants_count

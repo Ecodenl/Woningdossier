@@ -43,7 +43,6 @@ class AddressService
         ];
 
 
-
         // since we do not have a separate input for the huisletter we treat the houseNumberExtension as one:
         // first try it as a extension
         // if not found as a houseletter
@@ -54,8 +53,24 @@ class AddressService
                 // if that does not work we will try the huislett
                 $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
             }
+
+            // the extension may contain a combination fo the huisletter and toevoeging
+            // we will handle that here
+            if (is_null($addresses)) {
+                $extensions = str_split($houseNumberExtension);
+                // huisletter should always have a length of 1
+                $huisletter = array_shift($extensions);
+                $huisnummertoevoeging = implode('', $extensions);
+
+                $addresses = $this->listFromAttributes($attributes + compact('huisletter', 'huisnummertoevoeging'));
+            }
+
             // a last resort..
             if (is_null($addresses)) {
+                // this is for the users that are not up to date on the huisletter and extension combi
+                // they might only enter a huisleter or extension even though it should be a combi.
+                DiscordNotifier::init()->notify("The last resort has been triggered {$postalCode}, {$number}, {$houseNumberExtension}");
+
                 // the previous calls were all based on a exact match, to get the best match.
                 // this last resort turns that of to get the at least the build year accurate.
                 $attributes['exacteMatch'] = false;
@@ -73,7 +88,7 @@ class AddressService
                 }
             }
         } else {
-            // the easier case.. :)
+            // the simple case.. :)
             $addresses = $this->listFromAttributes($attributes);
         }
 

@@ -7,6 +7,7 @@ use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AddressService
 {
@@ -44,7 +45,7 @@ class AddressService
         // since we do not have a separate input for the huisletter we treat the houseNumberExtension as one:
         // first try it as a extension
         // if not found as a houseletter
-        // if that does not work try to split it and treat is as extension + letter combi
+        // if that does not work we will do a last resort that may not be that accurate..
         if (!empty($houseNumberExtension)) {
             $addresses = $this->listFromAttributes($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
             if (is_null($addresses)) {
@@ -53,11 +54,25 @@ class AddressService
             }
             // a last resort..
             if (is_null($addresses)) {
-                // so its still null, we will do a bolt assumption that the extension contains a combination of the
+                // so its still null, we will do a boldt assumption that the extension contains a combination of the
                 // extension and letter, we will split it on "-" and send them both!
-                list($huisletter, $huisnummertoevoeging) = explode('-', $houseNumberExtension);
+                if (Str::contains($houseNumberExtension, '-')) {
+                    list($huisletter, $huisnummertoevoeging) = explode('-', $houseNumberExtension);
+                    $addresses = $this->listFromAttributes($attributes + compact('huisletter', 'huisnummertoevoeging'));
+                } else {
+                    // there is still a minor chance that the given housenumber extension is a huisletter or a huisnummertoevoeging
+                    // the previous calls were all based on a exact match, to get the best match.
+                    // this last resort turns that of to get the at least the build year accurate.
+                    $attributes['exacteMatch'] = false;
+                    // these 2 calls could both return multiple addresses
+                    // it just depends on the given address, we will shift it later on to get only one result
+                    // the surface is probably inaccurate however the build year will be spot on (i think :kek:)
+                    $addresses = $this->listFromAttributes($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
 
-                $addresses = $this->listFromAttributes($attributes + compact('huisletter', 'huisnummertoevoeging'));
+                    if (is_null($addresses)) {
+                        $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
+                    }
+                }
             }
         }
 

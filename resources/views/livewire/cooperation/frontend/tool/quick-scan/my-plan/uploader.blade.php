@@ -11,6 +11,20 @@
     </style>
 @endpush
 
+@php
+    // When the temporary upload from Livewire fails, an error is thrown for the upload input. When the input is
+    // multiple, one gets thrown for EVERY uploaded file. The error bag is shared with the view but not with
+    // the component for whatever reason. We need this to be able to set the correct error message.
+    if($errors->any()) {
+        foreach($errors->getBag('default')->getMessages() as $key => $error) {
+            if(Str::startsWith($key, 'documents')) {
+                $this->addError('documents', __('validation.custom.uploader.wrong-files'));
+                break;
+            }
+        }
+    }
+@endphp
+
 <div class="flex flex-wrap w-full flex pb-5" x-data>
     @can('create', [\App\Models\Media::class, $inputSource, $building])
         <div class="flex flex-wrap w-full">

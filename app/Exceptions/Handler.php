@@ -90,6 +90,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($request->query('test') == "1") {
+            Log::channel('single')->debug(get_class($exception));
+            Log::channel('single')->debug($exception->getMessage());
+        }
+
         // Handle the exception if the role in the session is not associated with the user itself.
         if ($exception instanceof RoleInSessionHasNoAssociationWithUser) {
             // try to obtain a role from the user.

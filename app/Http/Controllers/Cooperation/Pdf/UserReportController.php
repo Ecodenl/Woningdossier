@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Pdf;
 use App\Calculations\Heater;
 use App\Calculations\HeatPump;
 use App\Calculations\HighEfficiencyBoiler;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
@@ -179,6 +180,8 @@ class UserReportController extends Controller
         foreach ($newSituation as $step => $data) {
             foreach ($data as $label => $shorts) {
                 foreach ($shorts as $short) {
+                    // Technically this isn't something we should do, but since it's only for the given shorts
+                    // we know 100% there's no tool questions with a dot in the short
                     $class = Str::contains($short, '.') ? ToolCalculationResult::class : ToolQuestion::class;
 
                     $model = $class::findByShort($short);
@@ -197,6 +200,11 @@ class UserReportController extends Controller
                         $value = $humanReadableAnswer;
                     } else {
                         $value = data_get($calcs, $short);
+                    }
+
+                    // Format for user. Both models have a data type
+                    if (in_array($model->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
+                        $value = Caster::init($model->data_type, $value)->getFormatForUser();
                     }
 
                     $trans = $model->name;

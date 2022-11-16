@@ -54,24 +54,16 @@ class AddressService
             }
             // a last resort..
             if (is_null($addresses)) {
-                // so its still null, we will do a boldt assumption that the extension contains a combination of the
-                // extension and letter, we will split it on "-" and send them both!
-                if (Str::contains($houseNumberExtension, '-')) {
-                    list($huisletter, $huisnummertoevoeging) = explode('-', $houseNumberExtension);
-                    $addresses = $this->listFromAttributes($attributes + compact('huisletter', 'huisnummertoevoeging'));
-                } else {
-                    // there is still a minor chance that the given housenumber extension is a huisletter or a huisnummertoevoeging
-                    // the previous calls were all based on a exact match, to get the best match.
-                    // this last resort turns that of to get the at least the build year accurate.
-                    $attributes['exacteMatch'] = false;
-                    // these 2 calls could both return multiple addresses
-                    // it just depends on the given address, we will shift it later on to get only one result
-                    // the surface is probably inaccurate however the build year will be spot on (i think :kek:)
-                    $addresses = $this->listFromAttributes($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
+                // the previous calls were all based on a exact match, to get the best match.
+                // this last resort turns that of to get the at least the build year accurate.
+                $attributes['exacteMatch'] = false;
+                // these 2 calls could both return multiple addresses
+                // it just depends on the given address, we will shift it later on to get only one result
+                // the surface is probably inaccurate however the build year will be spot on (i think :kek:)
+                $addresses = $this->listFromAttributes($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
 
-                    if (is_null($addresses)) {
-                        $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
-                    }
+                if (is_null($addresses)) {
+                    $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
                 }
             }
         }
@@ -81,13 +73,14 @@ class AddressService
         // only when the address is not null, else we will take the user his input.
         if (!is_null($addresses)) {
             $address = array_shift($addresses);
-            // best match
+
             $result = [
                 'id' => $address['nummeraanduidingIdentificatie'] ?? '',
                 'street' => $address['openbareRuimteNaam'] ?? '',
                 'number' => $address['huisnummer'] ?? '',
                 'postal_code' => $address['postcode'] ?? '',
-                'house_number_extension' => $address['huisletter'] ?? $houseNumberExtension,
+                // so this is incorrect, but ye
+                'house_number_extension' => $houseNumberExtension,
                 'city' => $address['woonplaatsNaam'] ?? '',
                 'build_year' => $address['bouwjaar'] ?? 1930,
                 'surface' => $address['oppervlakte'] ?? 0,

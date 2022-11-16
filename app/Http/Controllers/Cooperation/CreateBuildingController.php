@@ -39,7 +39,7 @@ class CreateBuildingController extends Controller
         $data = $request->all();
 
         // now get the picoaddress data.
-        AddressService::first($data['postal_code'], $data['number']);
+        AddressService::init()->first($data['postal_code'], $data['number']);
 
         $data['bag_addressid'] = isset($picoAddressData['bag_adresid']) ? $picoAddressData['bag_adresid'] : '';
 

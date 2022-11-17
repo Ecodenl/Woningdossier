@@ -118,7 +118,6 @@ class HighEfficiencyBoilerCalculator
             }
         }
 
-        // todo use solar boiler gas usage here
         $result['tap_water']['bruto'] = $brutoTapWater ?? 0;
         $result['tap_water']['netto'] = $result['tap_water']['bruto'] * ($boilerEfficiency->wtw / 100);
 

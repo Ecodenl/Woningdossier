@@ -45,7 +45,7 @@ class HeatPump extends \App\Calculations\Calculator
      */
     protected int $desiredPower = 0;
 
-    protected $requiredPower = 0;
+    protected float $requiredPower = 0;
 
     protected array $advices = [];
 
@@ -66,28 +66,28 @@ class HeatPump extends \App\Calculations\Calculator
     {
         // First calculate the power of the heat pump (advised system)
         $this->requiredPower = $this->calculateAdvisedSystemRequiredPower();
-        // lookup the characteristics of the chosen heat pump (tool question answer).
+        // Lookup the characteristics of the chosen heat pump (tool question answer).
         $characteristics = $this->lookupHeatPumpCharacteristics();
-
+        // Get desired power, and set if not filled in.
         $this->desiredPower = $this->getAnswer('heat-pump-preferred-power');
-        // if it wasn't answered (by person in expert or example building)
+        // If it wasn't answered (by person in expert or example building)
         if ($this->desiredPower <= 0 && $characteristics instanceof HeatPumpCharacteristic) {
             if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL){
                 // for full: required power
-                $this->desiredPower = $this->requiredPower;
+                $this->desiredPower = round($this->requiredPower);
             }
             else {
                 // for hybrid: fixed value / standard from table
-                $this->desiredPower = $characteristics->standard_power_kw;
+                $this->desiredPower = round($characteristics->standard_power_kw);
             }
         }
 
-        // note what this will return: either 40% or 0.4 ??
+        // This will return the share of heating, in percentages (e.g. 85%)
         $shareHeating = $this->calculateShareHeating();
-        // return value affects other calculations.
 
+        // return value affects other calculations.
         $advisedSystem = [
-            'required_power' => $this->requiredPower, // C60
+            'required_power' => $this->format($this->requiredPower, 1), // C60
             'desired_power' => $this->desiredPower, // C61
             'share_heating' => $shareHeating, // C62
             'share_tap_water' => $characteristics->share_percentage_tap_water ?? 0, // C63
@@ -221,7 +221,7 @@ class HeatPump extends \App\Calculations\Calculator
         return $result;
     }
 
-    public function calculateAdvisedSystemRequiredPower()
+    public function calculateAdvisedSystemRequiredPower(): float
     {
         $kfInsulationFactor = KeyFigureInsulationFactor::forInsulationFactor($this->insulationScore())->first();
         $wattPerSquareMeter = $kfInsulationFactor->energy_consumption_per_m2 ?? 140;
@@ -239,7 +239,7 @@ class HeatPump extends \App\Calculations\Calculator
         // This equals using beta factor 1.
 
         // scenario 1
-        if ($this->desiredPower - $this->requiredPower >= 1) {
+        if ($this->desiredPower - round($this->requiredPower) >= 1) {
             return 100;
         }
 
@@ -275,7 +275,10 @@ class HeatPump extends \App\Calculations\Calculator
     // = C61
     public function betaFactor() : float
     {
-        if ($this->desiredPower - $this->requiredPower >= 0 && $this->desiredPower - $this->requiredPower < 1) {
+        // use round for this check
+        if ($this->desiredPower - round($this->requiredPower) >= 0 &&
+            $this->desiredPower - round($this->requiredPower < 1)
+        ) {
             return 1;
         }
 

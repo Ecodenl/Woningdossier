@@ -89,8 +89,8 @@ class HeatPump extends \App\Calculations\Calculator
         // return value affects other calculations.
 
         $advisedSystem = [
-            'required_power' => $this->requiredPower, // C60
-            'desired_power' => $this->desiredPower, // C61
+            'required_power' => $this->format($this->requiredPower,1), // C60
+            'desired_power' => $this->format($this->desiredPower, 1), // C61
             'share_heating' => $shareHeating, // C62
             'share_tap_water' => $characteristics->share_percentage_tap_water ?? 0, // C63
             'scop_heating' => $characteristics->scop ?? 0, // C64
@@ -277,7 +277,9 @@ class HeatPump extends \App\Calculations\Calculator
     // = C61
     public function betaFactor() : float
     {
-        if ($this->desiredPower - $this->requiredPower >= 0 && $this->desiredPower - $this->requiredPower < 1) {
+        // use round for this check
+        if (round($this->desiredPower) - round($this->requiredPower) >= 0 &&
+            round($this->desiredPower) - round($this->requiredPower < 1)) {
             return 1;
         }
 

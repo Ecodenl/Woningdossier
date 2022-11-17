@@ -118,7 +118,7 @@ class UserService
 
         if (!in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
             // re-query pico
-            $addressData = AddressService::first($building->postal_code, $building->number, $building->extension);
+            $addressData = AddressService::init()->first($building->postal_code, $building->number, $building->extension);
 
             if ( ! empty(($addressData['id'] ?? null))) {
                 $building->update(['bag_addressid' => $addressData['id']]);

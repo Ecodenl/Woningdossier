@@ -600,7 +600,7 @@ class ElementsValuesTableSeeder extends Seeder
             if ($serviceType instanceof \stdClass) {
                 $dbElement = DB::table('elements')->where('short', $element['short'])->first();
 
-                if (! $dbElement instanceof stdClass) {
+                if (! $dbElement instanceof \stdClass) {
                     $elementId = DB::table('elements')->insertGetId([
                         'name' => json_encode($element['name']),
                         'short' => $element['short'],

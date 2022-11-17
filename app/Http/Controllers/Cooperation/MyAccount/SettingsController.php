@@ -33,7 +33,7 @@ class SettingsController extends Controller
         $userData = $data['user'];
 
         // now get the pico address data.
-        $picoAddressData = AddressService::first(
+        $picoAddressData = AddressService::init()->first(
             $buildingData['postal_code'], $buildingData['house_number'], $buildingData['extension']
         );
 

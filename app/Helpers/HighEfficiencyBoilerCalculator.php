@@ -95,26 +95,48 @@ class HighEfficiencyBoilerCalculator
         if (! $boiler instanceof ServiceValue) {
             return $result;
         }
+
+        if (!$habit instanceof UserEnergyHabit){
+            return $result;
+        }
+
+        $building = $habit->user->building;
+
+        $cookType = $building->getAnswer($habit->inputSource, ToolQuestion::findByShort('cook-type'));
+        // From solar boiler / heater
+        $comfortLevel = $habit->comfortLevelTapWater;
+
+        $residentCount = $habit->resident_count;
+
+        return static::calculateHeatingAndTapWaterGasUsage($boiler, $amountGas, $residentCount, $cookType, $comfortLevel);
+    }
+
+    public static function calculateHeatingAndTapWaterGasUsage(ServiceValue $boiler, int $amountGas, int $residentCount, string $cookType = 'gas', ComfortLevelTapWater $comfortLevelTapWater = null) : array
+    {
+        $result = [
+            'heating' => [
+                'bruto' => 0,
+                'netto' => 0,
+            ],
+            'tap_water' => [
+                'bruto' => 0,
+                'netto' => 0,
+            ],
+            'cooking' => 0,
+        ];
         $boilerEfficiency = $boiler->keyFigureBoilerEfficiency;
 
         self::debug(__METHOD__.' boiler efficiencies of boiler: '.$boilerEfficiency->heating.'% (heating) and '.$boilerEfficiency->wtw.'% (tap water)');
 
-        if ($habit instanceof UserEnergyHabit) {
-            $building = $habit->user->building;
+        if ($cookType == 'gas') {
+            $result['cooking'] = Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS; // m3
+        }
 
-            $cookType = $building->getAnswer($habit->inputSource, ToolQuestion::findByShort('cook-type'));
-
-            if ($cookType == "gas") {
-                $result['cooking'] = Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS; // m3
-            }
-
-            // From solar boiler / heater
-            $comfortLevel = $habit->comfortLevelTapWater;
-            if ($comfortLevel instanceof ComfortLevelTapWater) {
-                $consumption = KeyFigures::getCurrentConsumption($habit->resident_count, $comfortLevel);
-                if ($consumption instanceof KeyFigureConsumptionTapWater) {
-                    $brutoTapWater = $consumption->energy_consumption;
-                }
+        // From solar boiler / heater
+        if ($comfortLevelTapWater instanceof ComfortLevelTapWater) {
+            $consumption = KeyFigures::getCurrentConsumption($residentCount, $comfortLevelTapWater);
+            if ($consumption instanceof KeyFigureConsumptionTapWater) {
+                $brutoTapWater = $consumption->energy_consumption;
             }
         }
 

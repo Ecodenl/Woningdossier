@@ -94,7 +94,8 @@ class HeatPump extends \App\Calculations\Calculator
             'share_heating' => $shareHeating, // C62
             'share_tap_water' => $characteristics->share_percentage_tap_water ?? 0, // C63
             'scop_heating' => $characteristics->scop ?? 0, // C64
-            'scop_tap_water' => $characteristics->scop_tap_water ?? 0, // C65
+            // if hybrid: show scop_tap_water as 0 (asked by coaches)
+            'scop_tap_water' => $characteristics->type == HeatPumpCharacteristic::TYPE_HYBRID ? 0 : ($characteristics->scop_tap_water ?? 0), // C65
         ];
 
         // D2

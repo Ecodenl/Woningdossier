@@ -92,11 +92,11 @@ class MapQuickScanSituationToExpert implements ShouldQueue
         $calculateValue = HeatPumpHelper::MEASURE_SERVICE_LINK[$this->measureApplication->short];
         // Due to high level intelligence we used the same shorts for the custom values as for the measure applications!
         $type = $this->measureApplication->short;
-        $source = $calculateValue <= 3 ? ['hr-boiler'] : ['heat-pump'];
+        $source = $calculateValue <= 3 ? ['hr-boiler', 'heat-pump'] : ['heat-pump'];
 
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-pump-type'), $type);
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-source'), $source);
-        $this->saveAnswer(ToolQuestion::findByShort('new-heat-source-warm-tap-water'), $source);
+        $this->saveAnswer(ToolQuestion::findByShort('new-heat-source-warm-tap-water'), (in_array('hr-boiler', $source) ? ['hr-boiler'] : ['heat-pump']));
 
         foreach ($mapping as $tqShort => $data) {
             $toolQuestion = ToolQuestion::findByShort($tqShort);

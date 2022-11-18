@@ -79,6 +79,7 @@ class SubSteppable extends Scannable
         // load (also known as the init or initialization). We need to pass the answers to the main component so it
         // can perform calculations
         $this->emit('updateFilledInAnswers', $this->filledInAnswers, $this->id);
+        $this->dispatchBrowserEvent('component-ready', ['id' => $this->id]);
     }
 
     public function hydrateToolQuestions()

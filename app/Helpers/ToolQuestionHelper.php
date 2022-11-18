@@ -287,6 +287,10 @@ class ToolQuestionHelper
             } else {
                 // If there are no question values, then it's user input
                 $humanReadableAnswer = $answer;
+
+                if ($toolQuestion->data_type == Caster::STRING ) {
+                    $humanReadableAnswer = strip_tags($answer);
+                }
             }
 
             // Format answers

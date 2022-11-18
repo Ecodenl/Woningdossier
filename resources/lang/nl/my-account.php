@@ -14,6 +14,24 @@ return [
         'my-requests' => 'Mijn aanvragen',
     ],
 
+    '2fa' => [
+        'index' => [
+            'title' => '2 Factor authenticatie instellingen',
+            'alert' => [
+                'inactive' => [
+                    'title' => 'Beveilig je account',
+                    'text' => 'Twee factor authenticatie voegt een extra laag beveiliging toe aan je account, om in te loggen zal je een extra code nodig hebben.',
+                    'button' => 'Inschakelen'
+                ],
+                'active' => [
+                    'title' => 'Beveilig je account',
+                    'text' => 'Twee factor authenticatie voegt een extra laag beveiliging toe aan je account, om in te loggen zal je een extra code nodig hebben.',
+                    'button' => 'Uitschakelen'
+                ],
+            ],
+        ],
+    ],
+
     'index'         => [
         'header' => 'Instellingen',
         'text'   => 'U kunt vanaf hier naar uw instellingen gaan om uw account te wijzigen, voortgang te resetten of om het account te verwijderen. Of u kunt naar uw berichten gaan om deze te zien.',

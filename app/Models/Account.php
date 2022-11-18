@@ -9,6 +9,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
 /**
  * App\Models\Account
@@ -47,9 +48,7 @@ use Illuminate\Support\Collection;
  */
 class Account extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory;
-
-    use Notifiable;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     protected $fillable = ['email', 'password', 'email_verified_at', 'old_email', 'old_email_token',
     ];

@@ -116,6 +116,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             // my account
             Route::name('my-account.')->prefix('my-account')->middleware('track-visited-url', 'deny-if-filling-for-other-building')->group(function () {
+                Route::resource('two-factor-authentication', Cooperation\MyAccount\TwoFactorAuthenticationController::class);
                 Route::get('', [Cooperation\MyAccount\MyAccountController::class, 'index'])->name('index');
 
                 Route::prefix('settings')->name('settings.')->group(function () {

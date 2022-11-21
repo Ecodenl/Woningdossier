@@ -88,6 +88,11 @@ class HeatPump extends \App\Calculations\Calculator
         $shareHeating = $this->calculateShareHeating();
         // return value affects other calculations.
 
+        $scopTw = 0;
+        if ($characteristics instanceof HeatPumpCharacteristic){
+            $scopTw = $characteristics->type == HeatPumpCharacteristic::TYPE_HYBRID ? 0 : ($characteristics->scop_tap_water ?? 0); // C65
+        }
+
         $advisedSystem = [
             'required_power' => $this->requiredPower, // C60
             'desired_power' => $this->desiredPower, // C61
@@ -95,7 +100,7 @@ class HeatPump extends \App\Calculations\Calculator
             'share_tap_water' => $characteristics->share_percentage_tap_water ?? 0, // C63
             'scop_heating' => $characteristics->scop ?? 0, // C64
             // if hybrid: show scop_tap_water as 0 (asked by coaches)
-            'scop_tap_water' => $characteristics->type == HeatPumpCharacteristic::TYPE_HYBRID ? 0 : ($characteristics->scop_tap_water ?? 0), // C65
+            'scop_tap_water' => $scopTw,
         ];
 
         // D2

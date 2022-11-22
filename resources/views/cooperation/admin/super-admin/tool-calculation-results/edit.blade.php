@@ -22,16 +22,18 @@
                         <div class="form-group">
                             <label for="tool-calculation-results">@lang('cooperation/admin/super-admin/tool-calculation-results.edit.form.name')</label>
                             @foreach($toolCalculationResult->getTranslations('name') as $locale => $translation)
-                                <input class="form-control" type="text" name="tool_questions[name][{{$locale}}]" value="{{old("tool_questions.name.{$locale}", $translation)}}">
+                                <input class="form-control" type="text" name="tool_calculation_results[name][{{$locale}}]" value="{{old("tool_calculation_results.name.{$locale}", $translation)}}">
                             @endforeach
                         </div>
                     </div>
                     <div class="col-sm-12">
                         <div class="form-group">
                             <label for="tool-calculation-results">@lang('cooperation/admin/super-admin/tool-calculation-results.edit.form.help-text')</label>
-                            @foreach($toolCalculationResult->getTranslations('help_text') as $locale => $translation)
-                                <textarea class="form-control"  name="tool_questions[help_text][{{$locale}}]">{{old("tool_questions.help_text.{$locale}", $translation)}}</textarea>
-                            @endforeach
+                            @forelse($toolCalculationResult->getTranslations('help_text') as $locale => $translation)
+                                <textarea class="form-control"  name="tool_calculation_results[help_text][{{$locale}}]">{{old("tool_calculation_results.help_text.{$locale}", $translation)}}</textarea>
+                            @empty
+                                <textarea class="form-control"  name="tool_calculation_results[help_text][nl]">{{old("tool_calculation_results.help_text.nl")}}</textarea>
+                            @endforelse
                         </div>
                     </div>
 

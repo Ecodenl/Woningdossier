@@ -29,9 +29,9 @@ class ToolCalculationResultController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function edit(Cooperation $cooperation, ToolCalculationResult $toolQuestion)
+    public function edit(Cooperation $cooperation, ToolCalculationResult $toolCalculationResult)
     {
-        return view('cooperation.admin.super-admin.tool-calculation-results.edit', compact('toolQuestion'));
+        return view('cooperation.admin.super-admin.tool-calculation-results.edit', compact('toolCalculationResult'));
     }
 
     /**
@@ -41,12 +41,12 @@ class ToolCalculationResultController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(ToolCalculationResultFormRequest $request, Cooperation $cooperation, ToolCalculationResult $toolQuestion)
+    public function update(ToolCalculationResultFormRequest $request, Cooperation $cooperation, ToolCalculationResult $toolCalculationResult)
     {
-        $toolQuestion->update($request->validated()['tool_questions']);
+        $toolCalculationResult->update($request->validated()['tool_calculation_results']);
 
         return redirect()
-            ->route('cooperation.admin.super-admin.tool-calculation-results.edit', compact('toolQuestion'))
+            ->route('cooperation.admin.super-admin.tool-calculation-results.edit', compact('toolCalculationResult'))
             ->with('success', __('cooperation/admin/super-admin/tool-calculation-results.update.success'));
     }
 }

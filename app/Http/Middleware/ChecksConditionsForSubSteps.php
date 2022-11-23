@@ -21,10 +21,12 @@ class ChecksConditionsForSubSteps
      */
     public function handle($request, Closure $next)
     {
+        $building = HoomdossierSession::getBuilding(true);
+
         /** @var SubStep $subStep */
         $subStep = $request->route('subStep');
 
-        $returnToNextStep = $request->user()->cannot('show', $subStep);
+        $returnToNextStep = $request->user()->cannot('show', [$subStep, $building]);
 
         if ($returnToNextStep) {
             // this indeed only covers the next step
@@ -36,11 +38,10 @@ class ChecksConditionsForSubSteps
             // Not an example building sub step, let's check...
 
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-            $building = HoomdossierSession::getBuilding(true);
             foreach (ExampleBuildingHelper::RELEVANT_SUB_STEPS as $subStepSlug) {
                 $subStep = SubStep::where('slug->nl', $subStepSlug)->first();
                 // If valid sub step and showable (could be unanswerable)
-                if ($subStep instanceof SubStep && $request->user()->can('show', $subStep)) {
+                if ($subStep instanceof SubStep && $request->user()->can('show', [$subStep, $building])) {
                     if (! $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStep->id)->first() instanceof CompletedSubStep) {
                         // Not answered, redirect back
                         return redirect()->route('cooperation.frontend.tool.quick-scan.index', [

@@ -1,20 +1,20 @@
 <div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row gap-4">
     @php
-        $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
-            $toolQuestion,
-            $building,
-            $masterInputSource,
-            $cooperation
-        );
+        $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
+            ->forBuilding($building)
+            ->forInputSource($masterInputSource)
+            ->answers(collect($this->prepareAnswersForEvaluation()))
+            ->withCustomEvaluation()
+            ->getQuestionValues();
     @endphp
     @foreach($questionValues as $toolQuestionValue)
         @php
-            $id = $toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value'] ?? $toolQuestionValue['value'];
+            $uuid = Str::uuid();
         @endphp
         <div class="checkbox-wrapper media-wrapper">
-            <input id="{{$id}}" type="checkbox" wire:model="filledInAnswers.{{$toolQuestion['id']}}" name="{{$id}}"
+            <input id="{{$uuid}}" type="checkbox" wire:model="filledInAnswers.{{$toolQuestion['short']}}"
                    value="{{$toolQuestionValue['value']}}" @if($disabled) disabled="disabled" @endif>
-            <label for="{{$id}}">
+            <label for="{{$uuid}}">
                 <span class="media-icon-wrapper">
                     <i class="{{$toolQuestionValue['extra']['icon'] ?? ''}}"></i>
                 </span>

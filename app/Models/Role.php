@@ -20,18 +20,19 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read int|null $permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Account[] $users
  * @property-read int|null $users_count
- * @method static \Illuminate\Database\Eloquent\Builder|Role newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Role newQuery()
+ * @method static Builder|Role byName(string $name)
+ * @method static Builder|Role newModelQuery()
+ * @method static Builder|Role newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Role permission($permissions)
- * @method static \Illuminate\Database\Eloquent\Builder|Role query()
- * @method static \Illuminate\Database\Eloquent\Builder|Role whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Role whereGuardName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Role whereHumanReadableName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Role whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Role whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Role whereLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Role whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Role whereUpdatedAt($value)
+ * @method static Builder|Role query()
+ * @method static Builder|Role whereCreatedAt($value)
+ * @method static Builder|Role whereGuardName($value)
+ * @method static Builder|Role whereHumanReadableName($value)
+ * @method static Builder|Role whereId($value)
+ * @method static Builder|Role whereInputSourceId($value)
+ * @method static Builder|Role whereLevel($value)
+ * @method static Builder|Role whereName($value)
+ * @method static Builder|Role whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Role extends \Spatie\Permission\Models\Role

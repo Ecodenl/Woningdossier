@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -18,10 +19,9 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
  * @property-read int|null $audits_count
+ * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\Step $step
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
- * @property-read int|null $steps_count
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forInputSource(\App\Models\InputSource $inputSource)
@@ -49,13 +49,18 @@ class CompletedStep extends Model implements Auditable
         'user_id', 'step_id', 'building_id', 'input_source_id',
     ];
 
-    public function steps()
+    # Relations
+    public function building(): BelongsTo
     {
-        // not sure if this is used, this cant work
-        return $this->hasMany(Step::class);
+        return $this->belongsTo(Building::class);
     }
 
-    public function step()
+    public function inputSource(): BelongsTo
+    {
+        return $this->belongsTo(InputSource::class);
+    }
+
+    public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
     }

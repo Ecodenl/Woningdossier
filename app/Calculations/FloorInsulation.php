@@ -74,7 +74,7 @@ class FloorInsulation
                 $advice = Temperature::FLOOR_INSULATION_RESEARCH;
             }
 
-            $insulationAdvice = MeasureApplication::byShort($advice);
+            $insulationAdvice = MeasureApplication::findByShort($advice);
             $result['insulation_advice'] = $insulationAdvice->measure_name;
 
             $floorInsulation = Element::where('short', 'floor-insulation')->first();

@@ -1,8 +1,9 @@
-<div x-data="alpineSelect(!!'{{$initiallyOpen ?? false}}')" x-ref="select-wrapper" class="select-wrapper">
+<div x-data="alpineSelect(!!'{{$initiallyOpen ?? false}}')" x-ref="select-wrapper" class="select-wrapper"
+     x-on:keyup.escape.window="close()">
     {{-- Expect at least a select with options --}}
     {{ $slot }}
 
-    <div class="input-group" x-ref="select-input-group" style="display: none" x-cloak>
+    <div class="input-group" x-ref="select-input-group" x-cloak wire:ignore>
         @if(! empty(($prepend ?? null)))
             <div class="input-group-prepend">
                 {!! $prepend !!}
@@ -12,7 +13,7 @@
             <i class="select-icon {{$icon}}"></i>
         @endif
         <input class="form-input @if(! empty(($append ?? null))) with-append @endif" readonly x-ref="select-input"
-               x-model="text" x-on:click="toggle()">
+               x-on:click="toggle()">
         @if(! empty(($append ?? null)))
             <div class="input-group-append">
                 {!! $append !!}
@@ -22,7 +23,7 @@
         <i x-show="open == true" class="icon-sm icon-arrow-up"></i>
     </div>
 
-    <div x-cloak x-ref="select-options" class="select-dropdown" x-show="open" x-on:click.outside="close()">
+    <div x-cloak x-ref="select-options" class="select-dropdown" x-show="open" x-on:click.outside="close()" wire:ignore>
         <!-- Will be populated by Alpine -->
     </div>
 </div>

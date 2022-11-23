@@ -43,6 +43,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read Model|\Eloquent $userActionPlanAdvisable
  * @method static Builder|UserActionPlanAdvice allInputSources()
  * @method static Builder|UserActionPlanAdvice category(string $category)
+ * @method static Builder|UserActionPlanAdvice forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
  * @method static Builder|UserActionPlanAdvice forBuilding($building)
  * @method static Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder|UserActionPlanAdvice forMe(?\App\Models\User $user = null)
@@ -131,6 +132,12 @@ class UserActionPlanAdvice extends Model implements Auditable
     public function scopeWithInvisible(Builder $query)
     {
         return $query->withoutGlobalScope(VisibleScope::class);
+    }
+
+    public function scopeForAdvisable(Builder $query, Model $advisable): Builder
+    {
+        return $query->where('user_action_plan_advisable_type', get_class($advisable))
+            ->where('user_action_plan_advisable_id', $advisable->id);
     }
 
     /**

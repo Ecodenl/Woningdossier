@@ -2,15 +2,18 @@
 
 namespace App\Traits;
 
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
-use App\Models\BuildingInsulatedGlazing;
 use App\Models\BuildingRoofType;
+use App\Models\CompletedStep;
+use App\Models\CompletedSubStep;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
+use App\Models\ToolQuestionAnswer;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
@@ -19,7 +22,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 trait GetMyValuesTrait
@@ -41,8 +43,15 @@ trait GetMyValuesTrait
         static::deleting(function (Model $model) {
             // might be handy to prevent getting into an infinite loop (-:>
             if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
-                // TODO: This needs to work for all models, but for now there's only time to make roof types work
-                if ($model instanceof BuildingRoofType) {
+                $supportedClasses = [
+                    BuildingRoofType::class,
+                    ToolQuestionAnswer::class,
+                    CompletedStep::class,
+                    CompletedSubStep::class,
+                ];
+
+                // TODO: This needs to work for all models
+                if (in_array(get_class($model), $supportedClasses)) {
                     $model->deleteForMasterInputSource();
                 }
             }
@@ -116,7 +125,7 @@ trait GetMyValuesTrait
                         // Conditional logic, tool_question_custom_value_id should only be evaluated if the
                         // question is a checkbox
                         if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
-                            $shouldAdd = $toolQuestion->toolQuestionType->short === 'checkbox-icon';
+                            $shouldAdd = $toolQuestion->data_type == Caster::ARRAY;
                         }
                     }
 
@@ -138,8 +147,7 @@ trait GetMyValuesTrait
 
     protected function deleteForMasterInputSource()
     {
-        // TODO: Since this is currently only for the building roof types, the full logic might not be complete!
-
+        // TODO: Logic might not be complete
         $tablesToIgnore = [
             'user_action_plan_advice_comments', 'step_comments',
         ];
@@ -164,7 +172,19 @@ trait GetMyValuesTrait
 
             foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
                 if ($this->hasAttribute($crucialRelationCombinationId)) {
-                    $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
+                    $shouldAdd = $crucialRelationCombinationId !== 'tool_question_custom_value_id';
+
+                    if (! $shouldAdd) {
+                        // Conditional logic, tool_question_custom_value_id should only be evaluated if the
+                        // question is a checkbox
+                        if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
+                            $shouldAdd = $toolQuestion->data_type = Caster::ARRAY;
+                        }
+                    }
+
+                    if ($shouldAdd) {
+                        $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
+                    }
                 }
             }
 

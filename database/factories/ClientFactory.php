@@ -1,15 +1,25 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Model;
-use Faker\Generator as Faker;
 
-
-$factory->define(\App\Models\Client::class, function (Faker $faker) {
-    $name = $faker->randomElement(['groenezang', 'meteropnull', 'greeni', 'neutraallicht', 'geenplastic', 'groenenergieentech']);
+class ClientFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $name = $this->faker->randomElement(['groenezang', 'meteropnull', 'greeni', 'neutraallicht', 'geenplastic', 'groenenergieentech']);
     return [
         'name' => $name,
         'short' => \Illuminate\Support\Str::slug($name),
     ];
-});
+    }
+}

@@ -74,17 +74,6 @@ class MeasureApplication extends Model
     ];
 
     /**
-     * @param string $short
-     *
-     * @return MeasureApplication|Model|object|null
-     */
-    public static function byShort($short)
-    {
-        // TODO: Convert to shortTrait
-        return self::where('short', '=', $short)->first();
-    }
-
-    /**
      * Returns all the interest levels given for the interest.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany

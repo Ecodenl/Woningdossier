@@ -127,7 +127,7 @@ build:
             DB_DATABASE: 'hoomdossier'
             DB_USERNAME: 'root'
             DB_PASSWORD: ''
-            MAIL_DRIVER: 'log'
+            MAIL_MAILER: 'log'
     cache:
         directories:
             - node_modules

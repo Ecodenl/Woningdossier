@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read Model|\Eloquent $interestedIn
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest allInputSources()
+ * @method static \Database\Factories\UserInterestFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forMe(?\App\Models\User $user = null)
@@ -43,6 +45,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserInterest extends Model
 {
+    use HasFactory;
+
     use GetValueTrait;
     use GetMyValuesTrait;
     use ToolSettingTrait;

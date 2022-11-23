@@ -45,9 +45,9 @@ class RegisterControllerTest extends TestCase
     public function test_valid_data_registers_new_account()
     {
         /** @var Cooperation $cooperation */
-        $cooperation = factory(Cooperation::class)->create();
+        $cooperation = Cooperation::factory()->create();
         /** @var Client $client */
-        $client = factory(Client::class)->create();
+        $client = Client::factory()->create();
 
         Sanctum::actingAs($client, ['*']);
 
@@ -65,16 +65,16 @@ class RegisterControllerTest extends TestCase
     public function test_valid_data_with_tool_question_answers_registers_new_account()
     {
         /** @var Cooperation $cooperation */
-        $cooperation = factory(Cooperation::class)->create();
+        $cooperation = Cooperation::factory()->create();
         /** @var Client $client */
-        $client = factory(Client::class)->create();
+        $client = Client::factory()->create();
 
         Sanctum::actingAs($client, ['*']);
 
         $answerShorts = [];
         $formData = $this->formData;
         foreach (ToolQuestionHelper::SUPPORTED_API_SHORTS as $short) {
-            $toolQuestion = factory(ToolQuestion::class)->create([
+            $toolQuestion = ToolQuestion::factory()->create([
                 'short' => $short,
                 'validation' => [
                     'required', 'string',
@@ -97,7 +97,7 @@ class RegisterControllerTest extends TestCase
 
         $this->assertDatabaseHas('users', ['allow_access' => 1]);
 
-        $userId = $response->decodeResponseJson('user_id');
+        $userId = $response->json('user_id');
         $user = User::find($userId);
 
         // These tool questions will most likely be saved in another table. However, because of testing purposes,
@@ -114,9 +114,9 @@ class RegisterControllerTest extends TestCase
     public function test_restricted_client_cannot_access_cooperation()
     {
         /** @var Cooperation $cooperation */
-        factory(Cooperation::class)->create(['slug' => 'groen-is-gras']);
+        Cooperation::factory()->create(['slug' => 'groen-is-gras']);
 
-        $client = factory(Client::class)->create();
+        $client = Client::factory()->create();
         // now create a token for the client with a cooperation that exists, but the client has no access to
         $client->createToken($client->name . '-token', ['access:groen-is-gras']);
 
@@ -124,7 +124,7 @@ class RegisterControllerTest extends TestCase
         Sanctum::actingAs($client);
 
         // now do a post request to the cooperation, the client should have no access to this cooperation.
-        $cooperation = factory(Cooperation::class)->create(['slug' => 'co2-neutraal']);
+        $cooperation = Cooperation::factory()->create(['slug' => 'co2-neutraal']);
         $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')));
         $response->assertForbidden();
 
@@ -133,12 +133,12 @@ class RegisterControllerTest extends TestCase
     public function test_restricted_client_can_access_cooperation()
     {
         /** @var Cooperation $cooperation */
-        factory(Cooperation::class)->create(['slug' => 'groen-is-gras']);
-        $cooperation = factory(Cooperation::class)->create(['slug' => 'co2-neutraal']);
+        Cooperation::factory()->create(['slug' => 'groen-is-gras']);
+        $cooperation = Cooperation::factory()->create(['slug' => 'co2-neutraal']);
 
         // now create a token for the client with a cooperation that exists, but the client has no access to
         /** @var Client $client */
-        $client = factory(Client::class)->create();
+        $client = Client::factory()->create();
         Sanctum::actingAs($client, ['access:co2-neutraal']);
 
         // now do a post request to the cooperation, the client should have no access to this cooperation.
@@ -150,17 +150,17 @@ class RegisterControllerTest extends TestCase
     public function test_existing_account_will_register_user_on_other_cooperation()
     {
         /** @var Client $client */
-        $client = factory(Client::class)->create();
+        $client = Client::factory()->create();
 
         Sanctum::actingAs($client, ['*']);
 
         // first create the initial account and user on the first cooperation.
-        $cooperation = factory(Cooperation::class)->create(['slug' => 'groen-is-gras']);
+        $cooperation = Cooperation::factory()->create(['slug' => 'groen-is-gras']);
         $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), $this->formData);
         $response->assertStatus(201);
 
         // now we do it again, this time it should create another user for the existing account. But for another cooperation.
-        $cooperation = factory(Cooperation::class)->create(['slug' => 'meteropnull']);
+        $cooperation = Cooperation::factory()->create(['slug' => 'meteropnull']);
         $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), $this->formData);
         $response->assertStatus(201);
 
@@ -180,9 +180,9 @@ class RegisterControllerTest extends TestCase
     public function test_invalid_data_returns_422()
     {
         /** @var Cooperation $cooperation */
-        $cooperation = factory(Cooperation::class)->create();
+        $cooperation = Cooperation::factory()->create();
         /** @var Client $client */
-        $client = factory(Client::class)->create();
+        $client = Client::factory()->create();
         Sanctum::actingAs($client, ['*']);
 
         $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), Arr::except($this->formData, ['first_name']));

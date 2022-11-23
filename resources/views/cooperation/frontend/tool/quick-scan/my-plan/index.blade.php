@@ -31,6 +31,5 @@
         </div>
 
         @livewire('cooperation.frontend.tool.quick-scan.my-plan.download-pdf', ['user' => $building->user])
-
     @endif
 @endsection

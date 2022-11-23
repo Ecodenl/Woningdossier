@@ -151,7 +151,7 @@
                     'inputName' => 'allow_access',
                     'attr' => 'x-show="! alreadyMember"',
                 ])
-                    <div class="checkbox-wrapper">
+                    <div class="checkbox-wrapper mb-1">
                         <input id="allow-access" name="allow_access" type="checkbox" value="1" x-model="allowAccess">
                         <label for="allow-access">
                             <span class="checkmark"></span>

@@ -37,7 +37,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $building_notes_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
  * @property-read int|null $building_permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @property-read \Plank\Mediable\MediableCollection|\App\Models\Building[] $buildings
  * @property-read int|null $buildings_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
  * @property-read int|null $completed_questionnaires_count

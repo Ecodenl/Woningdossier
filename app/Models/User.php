@@ -65,6 +65,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $user_action_plan_advice_comments_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
  * @property-read int|null $user_interests_count
+ * @method static Builder|User byContact($contact)
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User forAllCooperations()
  * @method static Builder|User forMyCooperation($cooperationId)

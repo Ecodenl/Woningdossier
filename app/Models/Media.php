@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Request;
 
 /**
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Request;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $basename
+ * @property-read \App\Models\InputSource $inputSource
  * @property-read Media|null $originalMedia
  * @property-read \Illuminate\Database\Eloquent\Collection|Media[] $variants
  * @property-read int|null $variants_count
@@ -49,6 +51,12 @@ use Illuminate\Support\Facades\Request;
  */
 class Media extends \Plank\Mediable\Media
 {
+    protected $casts = [
+        'size' => 'int',
+        'custom_properties' => 'array',
+    ];
+
+    # Model methods
     public function getUrl(): string
     {
         $url =  parent::getUrl();
@@ -67,5 +75,11 @@ class Media extends \Plank\Mediable\Media
     public function getPath(): string
     {
         return parse_url($this->getUrl())['path'] ?? '';
+    }
+
+    # Relations
+    public function inputSource(): BelongsTo
+    {
+        return $this->belongsTo(InputSource::class);
     }
 }

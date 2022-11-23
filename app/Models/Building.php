@@ -9,6 +9,7 @@ use App\Helpers\QuestionValues\QuestionValue;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
+use App\Traits\HasMedia;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -59,6 +60,8 @@ use Illuminate\Support\Str;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomMeasureApplication[] $customMeasureApplications
  * @property-read int|null $custom_measure_applications_count
  * @property-read \App\Models\BuildingHeater|null $heater
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
  * @property-read int|null $private_messages_count
  * @property-read \App\Models\BuildingPvPanel|null $pvPanels
@@ -72,6 +75,8 @@ use Illuminate\Support\Str;
  * @property-read int|null $tool_question_answers_count
  * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\BuildingFactory factory(...$parameters)
+ * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
+ * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
  * @method static Builder|Building newModelQuery()
  * @method static Builder|Building newQuery()
  * @method static \Illuminate\Database\Query\Builder|Building onlyTrashed()
@@ -82,6 +87,8 @@ use Illuminate\Support\Str;
  * @method static Builder|Building whereCreatedAt($value)
  * @method static Builder|Building whereDeletedAt($value)
  * @method static Builder|Building whereExtension($value)
+ * @method static Builder|Building whereHasMedia($tags = [], bool $matchAll = false)
+ * @method static Builder|Building whereHasMediaMatchAll(array $tags)
  * @method static Builder|Building whereId($value)
  * @method static Builder|Building whereNumber($value)
  * @method static Builder|Building whereOwner($value)
@@ -90,6 +97,10 @@ use Illuminate\Support\Str;
  * @method static Builder|Building whereStreet($value)
  * @method static Builder|Building whereUpdatedAt($value)
  * @method static Builder|Building whereUserId($value)
+ * @method static Builder|Building withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
+ * @method static Builder|Building withMediaAndVariants($tags = [], bool $matchAll = false)
+ * @method static Builder|Building withMediaAndVariantsMatchAll($tags = [])
+ * @method static Builder|Building withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @method static Builder|Building withRecentBuildingStatusInformation()
  * @method static \Illuminate\Database\Query\Builder|Building withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Building withoutTrashed()
@@ -100,7 +111,8 @@ class Building extends Model
     use HasFactory;
 
     use SoftDeletes,
-        ToolSettingTrait;
+        ToolSettingTrait,
+        HasMedia;
 
     public $fillable = [
         'street',
@@ -116,6 +128,16 @@ class Building extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        // The mediable only _detaches_ the media. We want to DELETE the media if set.
+        static::deleting(function (Building $building) {
+            $building->media()->delete();
+        });
+    }
 
     public function toolQuestionAnswers(): HasMany
     {

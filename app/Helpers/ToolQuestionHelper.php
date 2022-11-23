@@ -273,7 +273,7 @@ class ToolQuestionHelper
                     $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
 
                     if (! empty($questionValue)) {
-                        $answerToAppend = $questionValue['name'];
+                        $answerToAppend = strip_tags($questionValue['name']);
 
                         if (! empty($questionValue['extra']['icon']) && $withIcons) {
                             $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';

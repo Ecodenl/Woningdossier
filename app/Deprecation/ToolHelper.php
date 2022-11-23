@@ -12,6 +12,7 @@ use App\Models\ToolQuestion;
  */
 class ToolHelper
 {
+    // TODO: Caching / allow hard coded IDs for fixed models
     public static function getServiceValueByCustomValue(string $service, string $toolQuestion, $answer)
     {
         return static::getModelByCustomValue(Service::findByShort($service)->values(), $toolQuestion, $answer);

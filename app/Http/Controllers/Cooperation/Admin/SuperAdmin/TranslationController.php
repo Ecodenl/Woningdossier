@@ -18,7 +18,9 @@ class TranslationController extends Controller
      */
     public function index()
     {
-        $steps = Step::where('short', '!=', 'general-data')->get();
+        $steps = Step::whereNotIn('short', [
+            'heat-pump', 'heater', 'high-efficiency-boiler',
+        ])->get();
 
         $mailLangFiles = [
             'cooperation/mail/account-associated-with-cooperation' => '(mail) | Account gekoppeld met coöperatie',

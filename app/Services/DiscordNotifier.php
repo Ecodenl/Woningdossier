@@ -9,6 +9,8 @@ class DiscordNotifier
 {
     use FluentCaller;
 
+    use FluentCaller;
+
     public Client $client;
 
     public function __construct()

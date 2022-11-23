@@ -273,7 +273,7 @@ class ToolQuestionHelper
                     $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
 
                     if (! empty($questionValue)) {
-                        $answerToAppend = $questionValue['name'];
+                        $answerToAppend = strip_tags($questionValue['name']);
 
                         if (! empty($questionValue['extra']['icon']) && $withIcons) {
                             $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';
@@ -287,6 +287,10 @@ class ToolQuestionHelper
             } else {
                 // If there are no question values, then it's user input
                 $humanReadableAnswer = $answer;
+
+                if ($toolQuestion->data_type == Caster::STRING ) {
+                    $humanReadableAnswer = strip_tags($answer);
+                }
             }
 
             // Format answers

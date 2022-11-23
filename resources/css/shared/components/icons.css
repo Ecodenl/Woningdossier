@@ -446,6 +446,9 @@
 .icon-tools {
     content: url('/icons/tools.svg');
 }
+.icon-document {
+    content: url('/icons/document.svg');
+}
 .icon-trash-can {
     content: url('/icons/trash-can.svg');
 }

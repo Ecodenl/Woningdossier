@@ -192,7 +192,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         );
 
                     Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
-                        Route::get('woonplan', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'index'])->name('my-plan.index');
+
+                        Route::as('my-plan.')->prefix('woonplan')->group(function () {
+                            Route::get('', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'index'])->name('index');
+                            Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'media'])->name('media');
+                        });
 
                         Route::get('{step}/vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\QuickScan\QuestionnaireController::class, 'index'])
                             ->name('questionnaires.index');

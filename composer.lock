@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c750213c5e1315fe19b57d40cf0467b",
+    "content-hash": "5af8be51d06f41360d6662083082998d",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1220,52 +1220,47 @@
             "time": "2022-09-10T18:51:20+00:00"
         },
         {
-            "name": "ecodenl/pico-wrapper",
-            "version": "dev-master",
+            "name": "ecodenl/lvbag-php-wrapper",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Ecodenl/PicoWrapper.git",
-                "reference": "ab5fab8de68f83cdd08ed087bd8af2bbd6c2adf6"
+                "url": "https://github.com/Ecodenl/lvbag-php-wrapper.git",
+                "reference": "aac88fd70fcd1df67dd7a68005599718be8e5c6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ecodenl/PicoWrapper/zipball/ab5fab8de68f83cdd08ed087bd8af2bbd6c2adf6",
-                "reference": "ab5fab8de68f83cdd08ed087bd8af2bbd6c2adf6",
+                "url": "https://api.github.com/repos/Ecodenl/lvbag-php-wrapper/zipball/aac88fd70fcd1df67dd7a68005599718be8e5c6b",
+                "reference": "aac88fd70fcd1df67dd7a68005599718be8e5c6b",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.3.1|^7.4.5",
-                "php": "^7.2.5|^8.0"
+                "php": "^7.4.0|^8.0",
+                "psr/log": "^1.1.4|^3.0"
             },
             "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Ecodenl\\PicoWrapper\\PicoServiceProvider"
-                    ]
-                }
-            },
             "autoload": {
                 "psr-4": {
-                    "Ecodenl\\PicoWrapper\\": "src"
+                    "Ecodenl\\LvbagPhpWrapper\\": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "OSL-3.0"
             ],
             "authors": [
                 {
-                    "name": "Patrick van Kouteren",
-                    "email": "p.vankouteren@wedesignit.nl",
+                    "name": "Bodhi Looij",
+                    "email": "b.looij@wedesignit.nl",
                     "role": "Developer"
                 }
             ],
-            "description": "Wrapper for the PICO web service",
+            "description": "PHP Wrapper for the LVBAG API ",
             "support": {
-                "source": "https://github.com/Ecodenl/PicoWrapper/tree/develop",
-                "issues": "https://github.com/Ecodenl/PicoWrapper/issues"
+                "issues": "https://github.com/Ecodenl/lvbag-php-wrapper/issues",
+                "source": "https://github.com/Ecodenl/lvbag-php-wrapper/tree/v2.0.3"
             },
-            "time": "2022-08-10T09:02:30+00:00"
+            "time": "2022-11-16T13:29:17+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -11719,9 +11714,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "ecodenl/pico-wrapper": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -150,8 +150,6 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
     },
     draggable: {
         ['x-on:dragstart.self']() {
-            // We need this, else we can't drag/drop in Firefox...
-            this.$event.dataTransfer.setData('application/node type', this.$el);
             this.dragged = this.$el;
             this.draggedOrder = Array.from(this.dragged.parentElement.children).indexOf(this.dragged);
         },

@@ -1,5 +1,6 @@
 <?php
 
+use Database\Seeders\StatusesTableSeeder;
 use Illuminate\Database\Migrations\Migration;
 
 class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migration

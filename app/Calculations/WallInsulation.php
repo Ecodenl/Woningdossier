@@ -49,7 +49,7 @@ class WallInsulation
 
         $advice = $cavityWallAdvice[$cavityWall] ?? Temperature::WALL_INSULATION_JOINTS;
 
-        $insulationAdvice = MeasureApplication::byShort($advice);
+        $insulationAdvice = MeasureApplication::findByShort($advice);
 
         // alert the user that its not possible to insulate a painted / plastered wall.
         // important to do this after the insulation advice is set, otherwise it wil fail.

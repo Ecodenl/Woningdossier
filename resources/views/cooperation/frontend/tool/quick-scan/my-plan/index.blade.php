@@ -1,10 +1,10 @@
 @extends('cooperation.frontend.layouts.tool')
 
 @section('content')
-    @if($notification instanceof \App\Models\Notification)
+    @if($activeNotification)
         @livewire('cooperation.frontend.layouts.parts.notifications', [
             'nextUrl' => route('cooperation.frontend.tool.quick-scan.my-plan.index'),
-            'type' => 'recalculate'
+            'types' => [\App\Jobs\RecalculateStepForUser::class]
         ])
 
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
@@ -31,6 +31,5 @@
         </div>
 
         @livewire('cooperation.frontend.tool.quick-scan.my-plan.download-pdf', ['user' => $building->user])
-
     @endif
 @endsection

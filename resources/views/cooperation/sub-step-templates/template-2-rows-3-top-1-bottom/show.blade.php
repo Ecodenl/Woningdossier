@@ -1,14 +1,13 @@
 <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$toolQuestions->count() > 1 ? 10 : 5}} ">
 
-    <?php
-    // some necessary crap to display the toolQuestions in the right manor
-    $topLeft = $toolQuestions->where('pivot.order', 0)->first();
-    $topRightFirst = $toolQuestions->where('pivot.order', 1)->first();
-    $topRightSecond = $toolQuestions->where('pivot.order', 2)->first();
+    @php
+        // some necessary crap to display the toolQuestions in the right manor
+        $topLeft = $toolQuestions->where('pivot.order', 0)->first();
+        $topRightFirst = $toolQuestions->where('pivot.order', 1)->first();
+        $topRightSecond = $toolQuestions->where('pivot.order', 2)->first();
 
-    $bottomLeft = $toolQuestions->where('pivot.order', 3)->first();
-
-    ?>
+        $bottomLeft = $toolQuestions->where('pivot.order', 3)->first();
+    @endphp
     <div class="w-full flex flex-wrap">
         @if($topLeft instanceof \App\Models\ToolQuestion)
             @php
@@ -17,11 +16,11 @@
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full lg:w-1/2 lg:pr-3',
                 'label' => $topLeft->name,
-                'inputName' => "filledInAnswers.{$topLeft->id}",
+                'inputName' => "filledInAnswers.{$topLeft->short}",
              ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                        'values' => $filledInAnswersForAllInputSources[$topLeft->id],
+                        'values' => $filledInAnswersForAllInputSources[$topLeft->short],
                         'toolQuestion' => $topLeft,
                     ])
                 @endslot
@@ -32,7 +31,7 @@
                     </p>
                 @endslot
 
-                @include("cooperation.tool-question-type-templates.{$topLeft->toolQuestionType->short}.show", ['toolQuestion' => $topLeft])
+                @include("cooperation.tool-question-type-templates.{$topLeft->pivot->toolQuestionType->short}.show", ['toolQuestion' => $topLeft])
             @endcomponent
         @endif
 
@@ -44,11 +43,11 @@
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'class' => 'form-group-heading w-full',
                     'label' => $topRightFirst->name,
-                    'inputName' => "filledInAnswers.{$topRightFirst->id}",
+                    'inputName' => "filledInAnswers.{$topRightFirst->short}",
                  ])
                     @slot('sourceSlot')
                         @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                            'values' => $filledInAnswersForAllInputSources[$topRightFirst->id],
+                            'values' => $filledInAnswersForAllInputSources[$topRightFirst->short],
                             'toolQuestion' => $topRightFirst,
                         ])
                     @endslot
@@ -59,21 +58,21 @@
                         </p>
                     @endslot
 
-                    @include("cooperation.tool-question-type-templates.{$topRightFirst->toolQuestionType->short}.show", ['toolQuestion' => $topRightFirst])
+                    @include("cooperation.tool-question-type-templates.{$topRightFirst->pivot->toolQuestionType->short}.show", ['toolQuestion' => $topRightFirst])
                 @endcomponent
             @endif
             @if($topRightSecond instanceof \App\Models\ToolQuestion)
-                    @php
-                        $disabled = ! $building->user->account->can('answer', $topRightSecond);
-                    @endphp
-                    @component('cooperation.frontend.layouts.components.form-group', [
-                        'class' => 'form-group-heading w-full',
-                        'label' => $topRightSecond->name,
-                        'inputName' => "filledInAnswers.{$topRightSecond->id}",
-                    ])
+                @php
+                    $disabled = ! $building->user->account->can('answer', $topRightSecond);
+                @endphp
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'class' => 'form-group-heading w-full',
+                    'label' => $topRightSecond->name,
+                    'inputName' => "filledInAnswers.{$topRightSecond->short}",
+                ])
                     @slot('sourceSlot')
                         @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                            'values' => $filledInAnswersForAllInputSources[$topRightSecond->id],
+                            'values' => $filledInAnswersForAllInputSources[$topRightSecond->short],
                             'toolQuestion' => $topRightSecond,
                         ])
                     @endslot
@@ -84,25 +83,25 @@
                         </p>
                     @endslot
 
-                    @include("cooperation.tool-question-type-templates.{$topRightSecond->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
+                    @include("cooperation.tool-question-type-templates.{$topRightSecond->pivot->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
                 @endcomponent
             @endif
         </div>
     </div>
     @if($bottomLeft instanceof \App\Models\ToolQuestion)
-            @php
-                $disabled = ! $building->user->account->can('answer', $bottomLeft);
-            @endphp
+        @php
+            $disabled = ! $building->user->account->can('answer', $bottomLeft);
+        @endphp
         <div class="w-full pt-5">
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full',
                 'label' => $bottomLeft->name,
-                'inputName' => "filledInAnswers.{$bottomLeft->id}",
+                'inputName' => "filledInAnswers.{$bottomLeft->short}",
                 'inputGroupClass' => 'w-1/2',
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                        'values' => $filledInAnswersForAllInputSources[$bottomLeft->id],
+                        'values' => $filledInAnswersForAllInputSources[$bottomLeft->short],
                         'toolQuestion' => $bottomLeft,
                     ])
                 @endslot
@@ -113,7 +112,7 @@
                     </p>
                 @endslot
 
-                @include("cooperation.tool-question-type-templates.{$bottomLeft->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
+                @include("cooperation.tool-question-type-templates.{$bottomLeft->pivot->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
             @endcomponent
         </div>
     @endif

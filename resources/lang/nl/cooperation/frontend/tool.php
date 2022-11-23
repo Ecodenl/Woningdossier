@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\InputSource;
+
 return [
     'step-count' => 'Stap :current van :total',
     'no-answer-given' => 'Geen antwoord ingevuld',
@@ -62,12 +64,51 @@ return [
             'savings' => 'Besparing per jaar',
         ],
         'comments' => [
-            'resident' => 'Opmerkingen bewoner',
-            'coach' => 'Opmerkingen coach',
+            InputSource::RESIDENT_SHORT => 'Opmerkingen bewoner',
+            InputSource::COACH_SHORT => 'Opmerkingen coach',
         ],
         'file-is-processing' => 'Rapportage wordt gemaakt..',
         'download-report' => 'Download bestaande rapportage',
         'create-report' => 'Maak rapportage',
         'loading' => 'Woonplan wordt berekend...',
+
+        'uploader' => [
+            'add' => 'Bestanden toevoegen',
+            'view' => 'Bestanden bekijken',
+            'help' => 'Klik op een bestand om deze te bewerken.',
+            'info' => [
+                'title' => 'Informatie',
+                'uploaded-by' => 'Geüpload door',
+                'created-at' => 'Aangemaakt op',
+                'type' => 'Type bestand',
+            ],
+            'form' => [
+                'header' => 'Bestand bewerken',
+                'header-view' => 'Bestand bekijken',
+                'title' => [
+                    'label' => 'Titel',
+                ],
+                'description' => [
+                    'label' => 'Beschrijving',
+                ],
+                'tag' => [
+                    'label' => 'Type bestand',
+                ],
+                'share-with-cooperation' => [
+                    'label' => 'Met cooperatie delen',
+                    'options' => [
+                        'show' => 'Zichtbaar voor cooperatie',
+                        'hide' => 'Niet zichtbaar voor cooperatie',
+                    ],
+                ],
+                'download' => [
+                    'title' => 'Downloaden',
+                ],
+                'delete' => [
+                    'title' => 'Verwijderen',
+                    'confirm' => 'Weet je zeker dat je dit bestand wilt verwijderen?',
+                ],
+            ],
+        ],
     ],
 ];

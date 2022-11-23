@@ -83,7 +83,7 @@
                         </li>
                         @endif
                         <li>
-                            <a href="{{route('cooperation.tool.ventilation.index')}}">
+                            <a href="{{route('cooperation.frontend.tool.expert-scan.index', ['step' => 'ventilation'])}}">
                                 @lang('cooperation/frontend/layouts.navbar.advise')
                             </a>
                         </li>

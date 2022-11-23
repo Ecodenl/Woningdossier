@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
@@ -18,6 +19,9 @@ class UserLanguage
      */
     public function handle($request, Closure $next)
     {
+        if ($request->query('test') == "1") {
+            Log::channel('single')->debug(__METHOD__);
+        }
         if (app()->environment('local')) {
             // Set the language from the URL segment (this allows us to later on
             // add a language switcher via URL for better front-site indexing).

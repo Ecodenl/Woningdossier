@@ -8,7 +8,7 @@
 
 <br>
 <br>
-<a href="{{route('cooperation.auth.password.reset.show', ['cooperation' => $userCooperation, 'token' => $token, 'email' => $email])}}">
+<a href="{{route('cooperation.auth.password.reset', ['cooperation' => $userCooperation, 'token' => $token])}}">
     @lang('cooperation/mail/reset-password.button')
 </a>
 <br>

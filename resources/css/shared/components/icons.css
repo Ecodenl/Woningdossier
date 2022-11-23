@@ -20,6 +20,9 @@
 .icon-xxxl {
     @apply w-36 h-36;
 }
+.icon-placeholder {
+    content: url('/icons/placeholder.svg');
+}
 .icon-account-circle {
     content: url('/icons/account-circle.svg');
 }
@@ -208,6 +211,12 @@
 }
 .icon-heat-pump {
     content: url('/icons/heat-pump.svg');
+}
+.icon-heat-pump-hybrid {
+    content: url('/icons/heat-pump-hybrid.svg');
+}
+.icon-heat-pump-none {
+    content: url('/icons/heat-pump-none.svg');
 }
 .icon-hide {
     content: url('/icons/hide.svg');
@@ -436,6 +445,9 @@
 }
 .icon-tools {
     content: url('/icons/tools.svg');
+}
+.icon-document {
+    content: url('/icons/document.svg');
 }
 .icon-trash-can {
     content: url('/icons/trash-can.svg');

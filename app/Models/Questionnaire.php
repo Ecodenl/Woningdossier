@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasCooperationTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $questions_count
  * @property-read \App\Models\Step|null $step
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire active()
+ * @method static \Database\Factories\QuestionnaireFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forAllCooperations()
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forMyCooperation($cooperationId)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire newModelQuery()
@@ -40,6 +42,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Questionnaire extends Model
 {
+    use HasFactory;
+
     use HasCooperationTrait,
         HasTranslations;
 

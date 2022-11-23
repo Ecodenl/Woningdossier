@@ -29,7 +29,8 @@ class ImportCenterController extends Controller
         HoomdossierSession::setCompareInputSourceShort($inputSourceShort);
         HoomdossierSession::setIsUserComparingInputSources($compare);
 
-        return redirect()->route('cooperation.tool.ventilation.index');
+        return redirect()->route('cooperation.frontend.tool.expert-scan.index', ['step' => 'ventilation']);
+        //return redirect()->route('cooperation.tool.ventilation.index');
 //        return redirect()->route('cooperation.tool.general-data.index');
     }
 

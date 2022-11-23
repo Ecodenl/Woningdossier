@@ -3,17 +3,14 @@
 namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\HighEfficiencyBoiler;
-use App\Models\Building;
 use App\Models\BuildingService;
-use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\Step;
-use App\Models\ToolQuestion;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\GetValueScope;
-use App\Scopes\VisibleScope;
+use App\Services\ConditionService;
 use App\Services\UserActionPlanAdviceService;
 
 class HighEfficiencyBoilerHelper extends ToolHelper
@@ -66,13 +63,15 @@ class HighEfficiencyBoilerHelper extends ToolHelper
             ],
         ];
 
-
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step, $this->masterInputSource),
+                    'is_considering' => $this->considersByConditions(
+                        $this->getConditionConsiderable('hr-boiler')
+                    ),
                 ],
             ],
+            //'has_completed_expert' => ConditionService::init()->building($this->building)->inputSource($this->inputSource)->hasCompletedSteps(['heating']),
             'building_services' => $buildingBoilerArray,
             'user_energy_habits' => [
                 'amount_gas' => $userEnergyHabit->amount_gas ?? null,
@@ -88,36 +87,31 @@ class HighEfficiencyBoilerHelper extends ToolHelper
     {
         $updatedMeasureIds = $this->getValues('updated_measure_ids');
 
-        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
-        $results = HighEfficiencyBoiler::calculate($userEnergyHabit, $this->getValues());
+        $results = HighEfficiencyBoiler::calculate($this->building, $this->inputSource);
 
         $step = Step::findByShort('high-efficiency-boiler');
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        $heatSources = $this->building->getAnswer($this->masterInputSource, ToolQuestion::findByShort('heat-source'));
-
-        // make sure the user actually selected a hr-boiler as heat source
-        // considers the step
+        // make sure the user considers the step
         // and has a cost indication before creating a advice
-        if (in_array('hr-boiler', $heatSources) && $this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-            $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
-            if ($measureApplication instanceof MeasureApplication) {
-                $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
-                $actionPlanAdvice->year = $results['replace_year'];
-                $actionPlanAdvice->user()->associate($this->user);
-                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
-                $actionPlanAdvice->step()->associate($step);
+        if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+            $measureApplication = MeasureApplication::findByShort('high-efficiency-boiler-replace');
 
-                // We only want to check old advices if the updated attributes are not relevant to this measure
-                if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
-                }
+            $actionPlanAdvice = new UserActionPlanAdvice($results);
+            $actionPlanAdvice->input_source_id = $this->inputSource->id;
+            $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
+            $actionPlanAdvice->year = $results['replace_year'];
+            $actionPlanAdvice->user()->associate($this->user);
+            $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
+            $actionPlanAdvice->step()->associate($step);
 
-                $actionPlanAdvice->save();
+            // We only want to check old advices if the updated attributes are not relevant to this measure
+            if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
             }
+
+            $actionPlanAdvice->save();
         }
 
         return $this;

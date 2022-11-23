@@ -1,15 +1,26 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(\App\Models\Element::class, function (Faker $faker) {
-    $name = $faker->word;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class ElementFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $name = $this->faker->word;
     $short = \Illuminate\Support\Str::slug($name);
     return [
         'name' => json_encode(['nl' => $name]),
         'short' => $short,
-        'service_type_id' => factory(\App\Models\ServiceType::class),
-        'order' => $faker->randomNumber(2),
-        'info' => json_encode(['nl' => $faker->sentence]),
+        'service_type_id' => \App\Models\ServiceType::factory(),
+        'order' => $this->faker->randomNumber(2),
+        'info' => json_encode(['nl' => $this->faker->sentence]),
     ];
-});
+    }
+}

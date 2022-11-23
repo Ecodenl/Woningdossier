@@ -24,7 +24,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\Service $service
- * @property-read \App\Models\ServiceType $serviceType
+ * @property-read \App\Models\ServiceType|null $serviceType
  * @property-read \App\Models\ServiceValue|null $serviceValue
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forBuilding($building)

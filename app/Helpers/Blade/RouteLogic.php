@@ -32,7 +32,7 @@ class RouteLogic
     {
         $routeName = static::getRouteName($route);
 
-        return Str::startsWith($routeName, 'cooperation.tool');
+        return Str::startsWith($routeName, 'cooperation.tool') || Str::startsWith($routeName, 'cooperation.frontend.tool.expert-scan');
     }
 
     private static function getRouteName($route): ?string

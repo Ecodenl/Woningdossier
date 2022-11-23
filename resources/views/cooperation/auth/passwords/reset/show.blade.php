@@ -11,10 +11,9 @@
                 @component('cooperation.frontend.layouts.parts.alert', ['color' => 'red'])
                     {!! session('token_invalid') !!}
                 @endcomponent
-            @endif
-            @if(!session()->has('token_invalid'))
+            @else
                 <form class="w-full flex flex-wrap justify-center" method="POST"
-                      action="{{ route('cooperation.auth.password.reset.update') }}">
+                      action="{{ route('cooperation.auth.password.update') }}">
                     @csrf
                     <input type="hidden" name="token" value="{{ $token }}">
                     @component('cooperation.frontend.layouts.components.form-group', [
@@ -59,6 +58,10 @@
             <p>
                 <a href="{{ route('cooperation.auth.login') }}">
                     @lang('auth.login.form.header')
+                </a>
+                <br>
+                <a href="{{ route('cooperation.auth.password.request.index') }}">
+                    @lang('auth.reset.request-new-link')
                 </a>
                 <br><br>
                 @lang('auth.login.no-account')

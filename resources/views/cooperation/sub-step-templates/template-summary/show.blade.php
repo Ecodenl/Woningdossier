@@ -12,13 +12,21 @@
     {{-- Loop all sub steps except for the current (summary) step --}}
     @foreach($subStepsToSummarize as $subStepToSummarize)
         {{-- Only display sub steps that are valid to the user --}}
-        @can('show', $subStepToSummarize)
+        @can('show', [$subStepToSummarize, $building])
             @php
                 $subStepRoute = route('cooperation.frontend.tool.quick-scan.index', [
                     'cooperation' => $cooperation, 'step' => $step, 'subStep' => $subStepToSummarize
                 ]);
             @endphp
             <div class="flex flex-row flex-wrap w-full space-y-2">
+                @if(app()->environment() === 'local')
+                    @php
+                        $completed = $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStepToSummarize->id)->first();
+                    @endphp
+                    @if(is_null($completed))
+                        <h1>{{$subStepToSummarize->name}} is niet afgerond</h1>
+                    @endif
+                @endif
                 {{-- Custom changes has no tool questions, it's basically a whole other story --}}
                 @if($subStepToSummarize->slug === 'welke-zaken-vervangen')
                     <div class="flex flex-row flex-wrap w-full">
@@ -44,9 +52,9 @@
                                         }
 
                                         if ($advisable instanceof \App\Models\CustomMeasureApplication) {
-                                            $advisables[] = $advisable->name;
+                                            $advisables[] = strip_tags($advisable->name);
                                         } elseif($advisable instanceof \App\Models\CooperationMeasureApplication) {
-                                            $advisableToAppend = $advisable->name;
+                                            $advisableToAppend = strip_tags($advisable->name);
 
                                             if (! empty($advisable->extra['icon'])) {
                                                 $advisableToAppend .= '<i class="ml-1 w-8 h-8 '. $advisable->extra['icon'] . '"></i>';
@@ -78,9 +86,11 @@
                         @php
                             $showQuestion = true;
 
-                            if (! empty($toolQuestionToSummarize->conditions)) {
+                            if (! empty($toolQuestionToSummarize->pivot->conditions)) {
                                 $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
-                                ->evaluateCollection($toolQuestionToSummarize->conditions, collect($answers));
+                                    ->building($building)
+                                    ->inputSource($masterInputSource)
+                                    ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
                             }
 
                             // Comments come at the end, and have exceptional logic...
@@ -108,7 +118,7 @@
                             @endphp
 
                             <div class="flex flex-row flex-wrap w-full">
-                                <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
+                                <div class="@if($toolQuestionToSummarize->pivot->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
                                     <a href="{{ $subStepRoute }}" class="no-underline">
                                         <h6 class="as-text font-bold">
                                             {{ $toolQuestionToSummarize->name }}
@@ -151,33 +161,32 @@
             @php
                 $disabled = ! $building->user->account->can('answer', $toolQuestion);
             @endphp
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'label' => $toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"),
-                    'class' => 'w-full sm:w-1/2 ' . ($loop->iteration % 2 === 0 ? 'sm:pl-3' : 'sm:pr-3'),
-                    'withInputSource' => ! $disabled,
-                    'id' => "filledInAnswers-{$toolQuestion->id}",
-                    'inputName' => "filledInAnswers.{$toolQuestion->id}",
-                ])
-                    @slot('sourceSlot')
-                        @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                            'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
-                            'toolQuestion' => $toolQuestion,
-                        ])
-                    @endslot
-
-                    @slot('modalBodySlot')
-                        <p>
-                            {!! $toolQuestion->help_text !!}
-                        </p>
-                    @endslot
-
-
-                        @include("cooperation.tool-question-type-templates.{$toolQuestion->toolQuestionType->short}.show", [
-                                  'disabled' => $disabled,
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'label' => $toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"),
+                'class' => 'w-full sm:w-1/2 ' . ($loop->iteration % 2 === 0 ? 'sm:pl-3' : 'sm:pr-3'),
+                'withInputSource' => ! $disabled,
+                'id' => "filledInAnswers-{$toolQuestion->short}",
+                'inputName' => "filledInAnswers.{$toolQuestion->short}",
+            ])
+                @slot('sourceSlot')
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                        'values' => $filledInAnswersForAllInputSources[$toolQuestion->short],
+                        'toolQuestion' => $toolQuestion,
                     ])
+                @endslot
+
+                @slot('modalBodySlot')
+                    <p>
+                        {!! $toolQuestion->help_text !!}
+                    </p>
+                @endslot
 
 
-                @endcomponent
+                @include("cooperation.tool-question-type-templates.{$toolQuestion->pivot->toolQuestionType->short}.show", [
+                    'disabled' => $disabled,
+                ])
+
+            @endcomponent
         @endforeach
     </div>
 </div>

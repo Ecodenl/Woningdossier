@@ -9,7 +9,6 @@ use App\Models\BuildingType;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
-use App\Models\ToolQuestion;
 use App\Services\ExampleBuildingService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -48,13 +47,10 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
 
         if ($exampleBuilding instanceof ExampleBuilding) {
             Log::debug(__CLASS__." Example building should be (re)applied!");
-        } else {
-            Log::debug(__CLASS__." No change in example building contents");
-        }
-
-        if ($exampleBuilding instanceof ExampleBuilding) {
             // Apply the example building
             $this->retriggerExampleBuildingApplication($exampleBuilding);
+        } else {
+            Log::debug(__CLASS__." No change in example building contents");
         }
     }
 
@@ -62,18 +58,26 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
     {
         // objects for first checks
         $buildingFeature = $this->buildingFeature;
-
+        $currentExampleBuildingId = $buildingFeature->example_building_id;
 
         // Kinda obvious but still
         // if the user changed his example building in the frontend we will just apply that one.
         if (array_key_exists('example_building_id', $changes)) {
-            return ExampleBuilding::find($changes['example_building_id']);
+
+            // to prevent ANOTHER apply being executed, with 0 purpose.
+            if ($changes['example_building_id'] != $currentExampleBuildingId) {
+                return ExampleBuilding::find($changes['example_building_id']);
+            }
+            // since the example_building_id is passed on there is no need to check the logic further down
+            return null;
         }
 
+        $currentBuildYearValue = $buildingFeature->build_year;
+        $changedBuildYear = $changes['build_year'] ?? null;
+
         // We need this to do stuff
-        if ($buildingFeature instanceof BuildingFeature && !is_null($buildingFeature->build_year)) {
+        if (! is_null($currentBuildYearValue) || !is_null($changedBuildYear)) {
             // current values for comparison later on
-            $currentExampleBuildingId = $this->building->example_building_id;
             $currentBuildYearValue = (int)$buildingFeature->build_year;
 
             if (array_key_exists('building_type_id', $changes)) {
@@ -87,9 +91,10 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             }
 
             $exampleBuilding = ExampleBuilding::generic()->where(
-                'building_type_id',
+                    'building_type_id',
                 $buildingType->id
             )->first();
+
 
             if (!$exampleBuilding instanceof ExampleBuilding) {
                 // No example building, so can't change then.
@@ -102,8 +107,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             }
 
             if (array_key_exists('build_year', $changes)) {
-                $new = (int)$changes['build_year'];
-                if ($currentBuildYearValue === $new) {
+                if ($currentBuildYearValue === $changedBuildYear) {
                     return null;
                 }
 
@@ -111,7 +115,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
                 // check the combination of example_building_id with new build_year
                 // against the combination of example_building_id with old build_year
                 $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
-                $newContents = $exampleBuilding->getContentForYear($new);
+                $newContents = $exampleBuilding->getContentForYear($changedBuildYear);
 
                 if ($oldContents instanceof ExampleBuildingContent) {
                     if ($oldContents->id !== $newContents->id) {
@@ -123,7 +127,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
 
             }
         } else {
-            Log::debug(__CLASS__." Building feature undefined, or build year not set for building {$this->building->id}");
+            Log::debug(__CLASS__." Build year not set for building {$this->building->id}");
         }
 
         return null;
@@ -134,8 +138,8 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         Log::debug(__METHOD__);
         $buildingFeature =  $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
         if ($buildingFeature->example_building_id !== $exampleBuilding->id) {
+
             Log::debug(__CLASS__." Example building ID changes (" . $buildingFeature->example_building_id . " -> " . $exampleBuilding->id . ")");
-            // change example building, let the observer do the rest
             $buildingFeatureToUpdate = $this->building->buildingFeatures()->forInputSource($this->applyForInputSource)->first();
 
             if ($buildingFeatureToUpdate instanceof BuildingFeature) {
@@ -164,8 +168,10 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         ExampleBuildingService::apply(
             $exampleBuilding,
             $buildYear,
-            $this->building
+            $this->building,
+            InputSource::findByShort(InputSource::EXAMPLE_BUILDING),
         );
+
 
         // We apply the example building only if the user has not proceeded further than the example building
         // sub steps. We simply check if the user has completed any sub step _besides_ the example building sub steps
@@ -176,7 +182,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             ->count();
 
         if ($totalOtherCompletedSubSteps === 0) {
-            Log::debug(__CLASS__. ' Override user data with example building data.');
+            Log::debug(__CLASS__. ' Override user data with example building data. totalOtherCOmpletedSubSteps: '.$totalOtherCompletedSubSteps);
             ExampleBuildingService::apply(
                 $exampleBuilding,
                 $buildYear,

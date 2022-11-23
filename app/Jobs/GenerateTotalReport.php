@@ -6,6 +6,7 @@ use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
+use App\Services\ContentStructureService;
 use App\Services\DumpService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,6 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\App;
 
 class GenerateTotalReport implements ShouldQueue
 {
@@ -42,18 +44,23 @@ class GenerateTotalReport implements ShouldQueue
      */
     public function handle()
     {
-        if (\App::runningInConsole()) {
-            \Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
+        if (App::runningInConsole()) {
+            Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
         }
-
-        $anonymized = $this->anonymizeData;
-        $cooperation = $this->cooperation;
 
         $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $headers = DumpService::getStructureForTotalDumpService($anonymized);
+        $dumpService = DumpService::init()->anonymize($this->anonymizeData)
+            ->inputSource($inputSource)
+            ->createHeaderStructure();
 
-        $rows[] = $headers;
+        $dumpService->setHeaderStructure(
+            ContentStructureService::init($dumpService->headerStructure)->applicableForTotalReport()
+        );
+
+        $cooperation = $this->cooperation;
+
+        $rows[] = $dumpService->headerStructure;
 
         // Get all users with a building and who have completed the quick scan
         $cooperation->users()
@@ -68,38 +75,20 @@ class GenerateTotalReport implements ShouldQueue
                                     'contaminatedWallJoints', 'wallJoints',
                                 ]);
                         },
-                        'buildingVentilations' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'currentPaintworkStatus' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'heater' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'pvPanels' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'buildingServices' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'roofTypes' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'buildingElements' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'currentInsulatedGlazing' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
+                        'buildingVentilations' => fn ($q) => $q->forInputSource($inputSource),
+                        'currentPaintworkStatus' => fn ($q) => $q->forInputSource($inputSource),
+                        'heater' => fn ($q) => $q->forInputSource($inputSource),
+                        'pvPanels' => fn ($q) => $q->forInputSource($inputSource),
+                        'buildingServices' => fn ($q) => $q->forInputSource($inputSource),
+                        'roofTypes' => fn ($q) => $q->forInputSource($inputSource),
+                        'buildingElements' => fn ($q) => $q->forInputSource($inputSource),
+                        'currentInsulatedGlazing' => fn ($q) => $q->forInputSource($inputSource),
                     ]
                 );
-            }, 'energyHabit' => function ($query) use ($inputSource) {
-                $query->forInputSource($inputSource);
-            }])
-            ->chunkById(100, function($users) use ($headers, $cooperation, $inputSource, $anonymized, &$rows) {
+            }, 'energyHabit' => fn ($q) => $q->forInputSource($inputSource)])
+            ->chunkById(100, function($users) use ($dumpService, &$rows) {
                 foreach ($users as $user) {
-                    $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
+                    $rows[$user->building->id] = $dumpService->user($user)->generateDump();
                 }
 
                 $handle = fopen(Storage::disk('downloads')->path($this->fileStorage->filename), 'a');
@@ -118,7 +107,7 @@ class GenerateTotalReport implements ShouldQueue
 
     public function failed(\Exception $exception)
     {
-        Log::debug($exception->getMessage(). ' '.$exception->getTraceAsString());
+        Log::debug($exception->getMessage() . ' ' . $exception->getTraceAsString());
         Log::debug("GenerateTotalReport failed: {$this->cooperation->id}");
         $this->fileStorage->delete();
     }

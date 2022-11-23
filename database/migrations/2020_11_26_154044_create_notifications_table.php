@@ -25,6 +25,7 @@ class CreateNotificationsTable extends Migration
             $table->string('type');
 
             $table->boolean('is_active');
+            $table->unsignedInteger('active_count')->default(0);
             $table->timestamps();
         });
     }

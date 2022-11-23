@@ -74,8 +74,8 @@ use Illuminate\Support\Str;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
  * @property-read int|null $tool_question_answers_count
  * @property-read \App\Models\User|null $user
- * @method static \Database\Factories\BuildingFactory factory(...$parameters)
  * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
+ * @method static \Database\Factories\BuildingFactory factory(...$parameters)
  * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
  * @method static Builder|Building newModelQuery()
  * @method static Builder|Building newQuery()
@@ -108,9 +108,8 @@ use Illuminate\Support\Str;
  */
 class Building extends Model
 {
-    use HasFactory;
-
-    use SoftDeletes,
+    use HasFactory,
+        SoftDeletes,
         ToolSettingTrait,
         HasMedia;
 

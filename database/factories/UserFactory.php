@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Helpers\RoleHelper;
+use App\Models\Building;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /*
@@ -25,38 +28,42 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-        'account_id' => \App\Models\Account::factory(),
-        'cooperation_id' => \App\Models\Cooperation::factory(),
-        'first_name' => $this->faker->firstName,
-        'last_name' => $this->faker->lastName,
-        'phone_number' => $this->faker->phoneNumber,
-        'allow_access' => $this->faker->boolean,
-    ];
+            'account_id' => \App\Models\Account::factory(),
+            'cooperation_id' => \App\Models\Cooperation::factory(),
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'phone_number' => $this->faker->phoneNumber,
+            'allow_access' => $this->faker->boolean,
+        ];
+    }
+
+    public function asCoach()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                // We need this state for an after hook
+            ];
+        })->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COACH));
+    }
+
+    public function asResident()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                // We need this state for an after hook
+            ];
+        })->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_RESIDENT));
+    }
+
+
+    public function configure()
+    {
+        return $this->afterCreating(function (User $user) {
+            // Ensure we always have a building
+            $building = Building::factory()->create(['user_id' => $user]);
+        });
     }
 }
-$factory->afterCreating(User::class, function ($user, $faker) {
-    // Ensure we always have a building
-    $building = factory(Building::class)->create(['user_id' => $user]);
-});
 
-$factory->state(User::class, 'asCoach', function ($faker) {
-    return [
-        // We need this state for an after hook
-    ];
-});
 
-$factory->state(User::class, 'asResident', function ($faker) {
-    return [
-        // We need this state for an after hook
-    ];
-});
 
-$factory->afterCreatingState(User::class, 'asCoach', function ($user, $faker) {
-    // Find and attach the coach role
-    $user->assignRole(RoleHelper::ROLE_COACH);
-});
-
-$factory->afterCreatingState(User::class, 'asResident', function ($user, $faker) {
-    // Find and attach the resident role
-    $user->assignRole(RoleHelper::ROLE_RESIDENT);
-});

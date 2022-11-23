@@ -230,7 +230,7 @@ class DumpService
         }
 
 
-        $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
+        $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d H:i');
 
         // set the personal userinfo
         if ($anonymized) {

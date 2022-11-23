@@ -135,20 +135,20 @@ class HeatPump extends \App\Calculations\Calculator
         //$nettoGasUsageHeating = data_get($gasUsage, 'heating.netto', 0);
         // new
         $nettoGasUsageHeating = data_get($energyUsage, 'heating.current.gas', 0);
-        Log::debug("D8: " . $nettoGasUsageHeating . " (netto gasverbruik verwarming)");
+        Log::debug("D8: " . $nettoGasUsageHeating . " (huidig netto gasverbruik verwarming)");
         // D9
         //$nettoGasUsageTapWater = data_get($gasUsage, 'tap_water.netto', 0);
         // new
         $nettoGasUsageTapWater = data_get($energyUsage, 'tap_water.current.gas', 0);
-        Log::debug("D9: " . $nettoGasUsageTapWater . " (netto gasverbruik wtw)");
+        Log::debug("D9: " . $nettoGasUsageTapWater . " (huidig netto gasverbruik wtw)");
 
         // Now we can calculate the new energy usage
         // C68 = D8 - (D8 * C62)
         $gasUsageHeating = $nettoGasUsageHeating - ($nettoGasUsageHeating * ($advisedSystem['share_heating'] / 100));
-        Log::debug("C68: " . $gasUsageHeating . " (gasverbruik verwarming)");
+        Log::debug("C68: " . $gasUsageHeating . " (nieuw gasverbruik verwarming)");
         // C69 = D9 - (D9 * C63)
         $gasUsageTapWater = $nettoGasUsageTapWater - ($nettoGasUsageTapWater * ($advisedSystem['share_tap_water'] / 100));
-        Log::debug("C69: " . $gasUsageTapWater . " (gasverbruik wtw)");
+        Log::debug("C69: " . $gasUsageTapWater . " (nieuw gasverbruik wtw)");
         // C70
         // note cookingInSituation will be used later on as well
 //        $cookingInSituation = ToolQuestion::findByShort('new-cook-type')
@@ -158,8 +158,10 @@ class HeatPump extends \App\Calculations\Calculator
 
         //$gasUsageCooking = optional($cookingInSituation)->short == 'gas' ? Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS : 0;
         // new
-        $gasUsageCooking = data_get($energyUsage, 'cooking.current.gas', 0);
-        Log::debug("C70: " . $gasUsageCooking . " (gasverbruik koken)");
+        $nettoGasUsageCooking = data_get($energyUsage, 'cooking.current.gas', 0);
+        Log::debug("C70: " . $nettoGasUsageCooking . " (huidig gasverbruik koken)");
+        $gasUsageCooking = data_get($energyUsage, 'cooking.new.gas', 0);
+        Log::debug("C70: " . $gasUsageCooking . " (nieuw gasverbruik koken)");
 
         // E71
         // if volledige warmtepomp: C68 * KeyFigures::M3_GAS_TO_KWH
@@ -219,11 +221,19 @@ class HeatPump extends \App\Calculations\Calculator
 
         // if volledige warmtepomp: D2
         // else: D2 - (C68+C69+C70)
-        $savingsGas = $amountGas;
-        if (optional($characteristics)->type !== HeatPumpCharacteristic::TYPE_FULL) {
-            Log::debug("C76: not full heatpump: savingsGas = " . $amountGas . ' - (' . $gasUsageHeating . ' + ' . $gasUsageTapWater . ' + ' . $gasUsageCooking . ')');
-            $savingsGas = $amountGas - ($gasUsageHeating + $gasUsageTapWater + $gasUsageCooking);
-        }
+//        $savingsGas = $amountGas;
+//        if (optional($characteristics)->type !== HeatPumpCharacteristic::TYPE_FULL) {
+//            Log::debug("C76: not full heatpump: savingsGas = " . $amountGas . ' - (' . $gasUsageHeating . ' + ' . $gasUsageTapWater . ' + ' . $gasUsageCooking . ')');
+//            $savingsGas = $amountGas - ($gasUsageHeating + $gasUsageTapWater + $gasUsageCooking);
+//        }
+        // savings gas = amount gas -
+        //                 (current gas usage for heating - new gas usage for heating)
+        //                 (current gas usage for wtw - new gas usage for wtw)
+        //                 (current gas usage for cooking - new gas usage for cooking)
+        //
+        $savingsGas = $amountGas - ($gasUsageHeating - $nettoGasUsageHeating) -
+                      ($gasUsageTapWater - $nettoGasUsageTapWater) -
+                      ($gasUsageCooking - $nettoGasUsageCooking);
         Log::debug("C76: " . $savingsGas . " (gasbesparing)");
 
         // (C71+C72+C73) - (D12-D13-D14)

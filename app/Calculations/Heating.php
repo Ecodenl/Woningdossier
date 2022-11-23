@@ -7,6 +7,7 @@ use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\ComfortLevelTapWater;
 use App\Models\HeatPumpCharacteristic;
+use App\Models\KeyFigureBoilerEfficiency;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\Service;
 use App\Models\ServiceValue;
@@ -84,7 +85,7 @@ class Heating extends Calculator
         /** @var array $heatSources */
         foreach(['current' => 'heat-source', 'new' => 'new-heat-source'] as $situation => $heatSourceShort) {
             $heatSources = $this->getAnswer($heatSourceShort) ?? [];
-            // if $heatSources does not contain 'hr-boiler', we cannot calculate.
+
             if ( ! in_array('hr-boiler', $heatSources) && ! in_array(
                     'district-heating',
                     $heatSources
@@ -144,25 +145,14 @@ class Heating extends Calculator
             $primaryWtwHeatSourceShort,
             ['hr-boiler', 'kitchen-geyser', 'district-heating']
         )) {
-            // At the moment I'm not sure about this: there is a boiler
-            // efficiency, BUT if we apply this (for both wtw and heating) to the
-            // amount gas, we end up with two times netto gas usage which doesn't
-            // add up to the amount gas (obviously) and which could lead to less
-            // than 100% savings when you completely ditch the usage of gas.
-
-            /*
-            $boiler = ToolHelper::getServiceValueByCustomValue('boiler', $boilerTypeShort,
-                $this->getAnswer($boilerTypeShort));
-            if (!$boiler instanceof ServiceValue) {
-                // if even the current boiler wasn't present, the user probably already
-                // has a heat pump, so we will calculate with the most efficient boiler
-                $boiler = Service::findByShort('boiler')->values()->orderByDesc('calculate_value')->limit(1)->first();
-            }
-            */
-
             Log::debug(__METHOD__ . ' - hr-boiler/kitchen-geyser/district-heating is primary wtw');
             Log::debug('heatingGasUsage = ' . $heatingGasUsage . ' - ' . data_get($wtwUsage, 'gas', 0));
             $heatingGasUsage -= data_get($wtwUsage, 'gas', 0);
+
+            // default = 97% for HR-107.
+            $efficiency = $this->getBoilerKeyFigureEfficiency($boilerTypeShort) ?? 97;
+            Log::debug('heatingGasUsage = ' . $heatingGasUsage . ' * ' . $efficiency . ' %');
+            $heatingGasUsage *= ($efficiency->heating / 100);
         }
 
         data_set($result, 'gas', $heatingGasUsage);
@@ -258,22 +248,6 @@ class Heating extends Calculator
             $primaryWtwHeatSourceShort,
             ['hr-boiler', 'kitchen-geyser', 'district-heating']
         )) {
-            // At the moment I'm not sure about this: there is a boiler
-            // efficiency, BUT if we apply this (for both wtw and heating) to the
-            // amount gas, we end up with two times netto gas usage which doesn't
-            // add up to the amount gas (obviously) and which could lead to less
-            // than 100% savings when you completely ditch the usage of gas.
-
-            /*
-            $boiler = ToolHelper::getServiceValueByCustomValue('boiler', $boilerTypeShort,
-                $this->getAnswer($boilerTypeShort));
-            if (!$boiler instanceof ServiceValue) {
-                // if even the current boiler wasn't present, the user probably already
-                // has a heat pump, so we will calculate with the most efficient boiler
-                $boiler = Service::findByShort('boiler')->values()->orderByDesc('calculate_value')->limit(1)->first();
-            }
-            */
-
             Log::debug(__METHOD__ . ' - primary wtw hr-boiler/kitchen-geyser/district-heating');
 
             // step 1: Gas usage wtw from table
@@ -281,6 +255,11 @@ class Heating extends Calculator
 
             // step 2: Deduct solar boiler yield (gas)
             $energyConsumption -= data_get($solarBoilerYield, 'gas', 0);
+
+            // default = 89% for HR-107.
+            $efficiency = $this->getBoilerKeyFigureEfficiency($boilerTypeShort) ?? 89;
+            Log::debug('energyConsumption = ' . $energyConsumption . ' * ' . $efficiency . ' %');
+            $energyConsumption *= ($efficiency->wtw / 100);
 
             $result['gas'] = round($energyConsumption, 4);
         }
@@ -393,6 +372,17 @@ class Heating extends Calculator
                     'electricity' => 0,
                 ];
         }
+    }
+
+    protected function getBoilerKeyFigureEfficiency(string $boilerTypeShort) : ?KeyFigureBoilerEfficiency {
+        $boiler = ToolHelper::getServiceValueByCustomValue('boiler', $boilerTypeShort,
+            $this->getAnswer($boilerTypeShort));
+        if (!$boiler instanceof ServiceValue) {
+            // if even the current boiler wasn't present, the user probably already
+            // has a heat pump, so we will calculate with the most efficient boiler
+            $boiler = Service::findByShort('boiler')->values()->orderByDesc('calculate_value')->limit(1)->first();
+        }
+        return $boiler->keyFigureBoilerEfficiency;
     }
 
 }

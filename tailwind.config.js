@@ -59,6 +59,7 @@ module.exports = {
             'col-span-6',
             'w-full',
             'w-1/2',
+            'static'
         ],
     },
     darkMode: false, // or 'media' or 'class'

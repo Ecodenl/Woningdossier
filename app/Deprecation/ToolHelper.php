@@ -4,6 +4,7 @@ namespace App\Deprecation;
 
 use App\Models\Service;
 use App\Models\ToolQuestion;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * This class exists purely to perform code that in the long run should be refactored.
@@ -25,5 +26,12 @@ class ToolHelper
             ToolQuestion::findByShort($toolQuestion)->toolQuestionCustomValues()
                 ->whereShort($answer)->first()->extra['calculate_value'] ?? null
         )->first();
+    }
+
+    public static function getCustomValueByModel($query, string $toolQuestion, $answer)
+    {
+        return ToolQuestion::findByShort($toolQuestion)->toolQuestionCustomValues()
+            ->where('extra->calculate_value', $query->find($answer)->calculate_value ?? null)
+            ->first();
     }
 }

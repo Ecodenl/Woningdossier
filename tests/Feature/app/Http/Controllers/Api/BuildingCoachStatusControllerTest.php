@@ -52,12 +52,12 @@ class BuildingCoachStatusControllerTest extends TestCase
         $response = $this->post(route('api.v1.cooperation.building-coach-status.store', compact('cooperation')), $this->formData);
         $response->assertStatus(422);
 
-        $resident = factory(User::class)->create([
+        $resident = User::factory()->create([
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['resident_contact_id'],
             ],
         ]);
-        $coach = factory(User::class)->create([
+        $coach = User::factory()->create([
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['coach_contact_id'],
             ],
@@ -80,14 +80,14 @@ class BuildingCoachStatusControllerTest extends TestCase
         $coach->building->delete();
         $coach->delete();
 
-        $resident = factory(User::class)->state('asResident')->create([
+        $resident = User::factory()->asResident()->create([
             'cooperation_id' => $this->cooperation->id,
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['resident_contact_id'],
             ],
             'allow_access' => false,
         ]);
-        $coach = factory(User::class)->state('asCoach')->create([
+        $coach = User::factory()->asCoach()->create([
             'cooperation_id' => $this->cooperation->id,
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['coach_contact_id'],
@@ -114,14 +114,14 @@ class BuildingCoachStatusControllerTest extends TestCase
         // Just for this test
         config(['queue.default' => 'sync']);
 
-        $resident = factory(User::class)->state('asResident')->create([
+        $resident = User::factory()->asResident()->create([
             'cooperation_id' => $this->cooperation->id,
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['resident_contact_id'],
             ],
             'allow_access' => true,
         ]);
-        $coach = factory(User::class)->state('asCoach')->create([
+        $coach = User::factory()->asCoach()->create([
             'cooperation_id' => $this->cooperation->id,
             'extra' => [
                 'contact_id' => $this->formData['building_coach_statuses']['coach_contact_id'],

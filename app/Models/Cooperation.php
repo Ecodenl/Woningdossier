@@ -54,9 +54,7 @@ use Illuminate\Support\Collection;
  */
 class Cooperation extends Model
 {
-    use HasFactory;
-
-    use HasMedia;
+    use HasFactory, HasMedia;
 
     public $fillable = [
         'name', 'website_url', 'slug', 'cooperation_email',

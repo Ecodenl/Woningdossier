@@ -78,7 +78,7 @@ class HighEfficiencyBoilerCalculator
     public static function calculateGasUsage($boiler, $habit, $amountGas = 0)
     {
         // TODO: We don't want to pass a habit. We want to pass dedicated answers, a building and an input source
-        $amountGas = $habit->amount_gas ?? $amountGas;
+        $amountGas = $habit->amount_gas ?? $amountGas ?? 0;
 
         $result = [
             'heating' => [
@@ -106,12 +106,12 @@ class HighEfficiencyBoilerCalculator
         // From solar boiler / heater
         $comfortLevel = $habit->comfortLevelTapWater;
 
-        $residentCount = $habit->resident_count;
+        $residentCount = $habit->resident_count ?? 0;
 
         return static::calculateHeatingAndTapWaterGasUsage($boiler, $amountGas, $residentCount, $cookType, $comfortLevel);
     }
 
-    public static function calculateHeatingAndTapWaterGasUsage(ServiceValue $boiler, int $amountGas, int $residentCount, string $cookType = 'gas', ComfortLevelTapWater $comfortLevelTapWater = null) : array
+    public static function calculateHeatingAndTapWaterGasUsage(ServiceValue $boiler, int $amountGas, int $residentCount, string $cookType = 'gas', ?ComfortLevelTapWater $comfortLevelTapWater = null) : array
     {
         $result = [
             'heating' => [

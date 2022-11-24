@@ -12,6 +12,7 @@ use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class SubSteppable extends Scannable
 {
@@ -78,6 +79,7 @@ class SubSteppable extends Scannable
         // load (also known as the init or initialization). We need to pass the answers to the main component so it
         // can perform calculations
         $this->emit('updateFilledInAnswers', $this->filledInAnswers, $this->id);
+        $this->dispatchBrowserEvent('component-ready', ['id' => $this->id]);
     }
 
     public function hydrateToolQuestions()
@@ -95,6 +97,16 @@ class SubSteppable extends Scannable
 
     public function updated($field, $value)
     {
+        $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
+        $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+        if ($toolQuestion instanceof ToolQuestion) {
+            // If it's an INT, we want to ensure the value set is also an INT
+            if ($toolQuestion->data_type === Caster::INT) {
+                $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
+                $this->filledInAnswers[$toolQuestionShort] = $value;
+            }
+        }
+
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
         $this->refreshAlerts();

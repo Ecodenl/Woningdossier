@@ -110,7 +110,7 @@ class SuccessFullLoginListener
 
         // this boots before the router, so we check if the request contains deleted cooperations
         // and log them out and forget the remember me cookie
-        if (in_array(request()->route('cooperation'), ['vrijstadenergie', 'hnwr'])) {
+        if (in_array(request()->route('cooperation'), ['hnwr'])) {
             \Auth::logout();
             exit;
         }

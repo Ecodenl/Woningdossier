@@ -144,6 +144,11 @@ class HeatPumpHelper extends ToolHelper
                     $answers['new-boiler-setting-comfort-heat'] = $heatingTemp;
                 }
 
+                if (! $this->getValues('has_completed_expert')) {
+                    // Force 0 to have the desired power calculated
+                    $answers['heat-pump-preferred-power'] = 0;
+                }
+
                 $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));
 
                 $savingsMoney = null;

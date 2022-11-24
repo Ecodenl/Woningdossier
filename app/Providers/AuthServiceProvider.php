@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
+use App\Models\Media;
 use App\Models\PrivateMessage;
 use App\Models\Questionnaire;
 use App\Models\SubStep;
@@ -14,6 +15,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Policies\BuildingPolicy;
 use App\Policies\CooperationPolicy;
 use App\Policies\FileStoragePolicy;
+use App\Policies\MediaPolicy;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
 use App\Policies\SubStepPolicy;
@@ -40,6 +42,7 @@ class AuthServiceProvider extends ServiceProvider
         Building::class => BuildingPolicy::class,
         FileStorage::class => FileStoragePolicy::class,
         UserActionPlanAdvice::class => UserActionPlanAdvicePolicy::class,
+        Media::class => MediaPolicy::class,
     ];
 
     /**

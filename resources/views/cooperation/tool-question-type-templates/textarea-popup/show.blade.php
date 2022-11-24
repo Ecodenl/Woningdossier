@@ -20,11 +20,11 @@
             @lang("cooperation/frontend/tool.my-plan.comments.{$inputSource->short}")
         @endslot
         <div class="flex justify-end space-x-2">
-            <button class="btn btn-orange" wire:click="resetToOriginalAnswer({{$toolQuestion['short']}})"
+            <button class="btn btn-orange" wire:click="resetToOriginalAnswer('{{$toolQuestion['short']}}')"
                     x-on:click="close()">
                 Annuleren
             </button>
-            <button class="btn btn-purple" wire:click="saveSpecificToolQuestion({{$toolQuestion['short']}})"
+            <button class="btn btn-purple" wire:click="saveSpecificToolQuestion('{{$toolQuestion['short']}}')"
                     x-on:click="close()">
                 @lang('default.buttons.save')
             </button>

@@ -12,7 +12,7 @@
     {{-- Loop all sub steps except for the current (summary) step --}}
     @foreach($subStepsToSummarize as $subStepToSummarize)
         {{-- Only display sub steps that are valid to the user --}}
-        @can('show', $subStepToSummarize)
+        @can('show', [$subStepToSummarize, $building])
             @php
                 $subStepRoute = route('cooperation.frontend.tool.quick-scan.index', [
                     'cooperation' => $cooperation, 'step' => $step, 'subStep' => $subStepToSummarize
@@ -52,9 +52,9 @@
                                         }
 
                                         if ($advisable instanceof \App\Models\CustomMeasureApplication) {
-                                            $advisables[] = $advisable->name;
+                                            $advisables[] = strip_tags($advisable->name);
                                         } elseif($advisable instanceof \App\Models\CooperationMeasureApplication) {
-                                            $advisableToAppend = $advisable->name;
+                                            $advisableToAppend = strip_tags($advisable->name);
 
                                             if (! empty($advisable->extra['icon'])) {
                                                 $advisableToAppend .= '<i class="ml-1 w-8 h-8 '. $advisable->extra['icon'] . '"></i>';

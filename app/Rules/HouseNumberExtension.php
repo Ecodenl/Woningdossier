@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Rule;
 class HouseNumberExtension extends LocaleBasedRule implements Rule
 {
     protected $countryRegexes = [
-        'nl' => '/^(boven|beneden|onder|hs|bis|zw|rd|[\d]{,2}|[0-9]|[\da-z][\da-z]?)$/',
+        'nl' => '/^(boven|beneden|onder|hs|bis|zw|rd|[\d]{,2}|[0-9]|[\da-z][\da-z]?|[\s]{0})$/',
     ];
 
     /**
@@ -27,9 +27,7 @@ class HouseNumberExtension extends LocaleBasedRule implements Rule
             return false;
         }
 
-        // Move out the dashes. This is actually valid but can cause strange effects
-        $value = str_replace(' ', '', trim($value));
-
+        // Rule is dumb on purpose, entered value should be cleaned beforehand
         return false != preg_match($this->countryRegexes[$this->country], $value);
     }
 

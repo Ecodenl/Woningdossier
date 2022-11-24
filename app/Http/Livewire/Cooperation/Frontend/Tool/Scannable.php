@@ -112,6 +112,16 @@ abstract class Scannable extends Component
 
     public function updated($field, $value)
     {
+        $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
+        $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+        if ($toolQuestion instanceof ToolQuestion) {
+            // If it's an INT, we want to ensure the value set is also an INT
+            if ($toolQuestion->data_type === Caster::INT) {
+                $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
+                $this->filledInAnswers[$toolQuestionShort] = $value;
+            }
+        }
+
         $this->rehydrateToolQuestions();
         $this->setValidationForToolQuestions();
         $this->evaluateToolQuestions();

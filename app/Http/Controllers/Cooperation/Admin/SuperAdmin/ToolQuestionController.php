@@ -11,9 +11,7 @@ use Illuminate\Http\Request;
 class ToolQuestionController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -23,42 +21,10 @@ class ToolQuestionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * @param \App\Models\Cooperation $cooperation
+     * @param \App\Models\ToolQuestion $toolQuestion
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function edit(Cooperation $cooperation, ToolQuestion $toolQuestion)
     {
@@ -66,11 +32,11 @@ class ToolQuestionController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param \App\Http\Requests\Cooperation\Admin\SuperAdmin\ToolQuestionFormRequest $request
+     * @param \App\Models\Cooperation $cooperation
+     * @param \App\Models\ToolQuestion $toolQuestion
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(ToolQuestionFormRequest $request, Cooperation $cooperation, ToolQuestion $toolQuestion)
     {
@@ -79,16 +45,5 @@ class ToolQuestionController extends Controller
         return redirect()
             ->route('cooperation.admin.super-admin.tool-questions.edit', compact('toolQuestion'))
             ->with('success', __('cooperation/admin/super-admin/tool-questions.update.success'));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

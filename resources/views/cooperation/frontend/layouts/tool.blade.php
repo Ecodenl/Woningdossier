@@ -28,7 +28,8 @@
 @section('main_style', '')
 
 @section('main')
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20"
+         @if(request()->input('iframe', false)) style="padding-top: 0;" @endif>
         @if(RouteLogic::inExpertTool(Route::currentRouteName()))
             @php
                 $masterInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT);

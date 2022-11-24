@@ -243,8 +243,8 @@ class CustomChanges extends Component
                             'hash' => $masterCustomMeasureApplication->hash,
                         ],
                         [
-                            'name' => ['nl' => $measure['name']],
-                            'info' => ['nl' => $measure['info']],
+                            'name' => ['nl' => strip_tags($measure['name'])],
+                            'info' => ['nl' => strip_tags($measure['info'])],
                         ],
                     );
                 }
@@ -254,8 +254,8 @@ class CustomChanges extends Component
                 $customMeasureApplication = CustomMeasureApplication::create([
                     'building_id' => $this->building->id,
                     'input_source_id' => $this->currentInputSource->id,
-                    'name' => ['nl' => $measure['name']],
-                    'info' => ['nl' => $measure['info']],
+                    'name' => ['nl' => strip_tags($measure['name'])],
+                    'info' => ['nl' => strip_tags($measure['info'])],
                     'hash' => $hash,
                 ]);
 

@@ -26,8 +26,9 @@
 
 </head>
 <body id="app-body" style="overflow: auto;">
-
-@yield('header')
+@if(! request()->input('iframe', false))
+    @yield('header')
+@endif
 @php
     // So the cooperation should always be set but sometimes it is not? We are not sure how so we do some logging
     $background = null;

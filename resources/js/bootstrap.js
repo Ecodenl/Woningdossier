@@ -176,3 +176,90 @@ import {polyfill} from "mobile-drag-drop";
 polyfill({
 
 });
+
+/**
+ * Expand HTML object functionality
+ */
+
+/**
+ * Fade out an element.
+ *
+ * @param time (in milliseconds)
+ * @param callback
+ */
+Object.defineProperty(Object.prototype, 'fadeOut', {
+    value: function (time = 1000, callback = null) {
+        // Ensure time is a valid number
+        if (isNaN(time) || time === null || time === '' || time <= 0) {
+            time = 1000;
+        }
+
+        // Get current opacity, ensure that that is a valid number also
+        let currentOpacity = getComputedStyle(this).opacity;
+        if (isNaN(currentOpacity)) {
+            currentOpacity = 1;
+        }
+
+        // Set opacity in the style, to ensure the value is set
+        this.style.opacity = currentOpacity;
+        // We use a default timeout of 5 ms
+        let timeout = 5;
+        // Calculate how much of the opacity we decrease per 5 ms;
+        let steps = currentOpacity / (time / timeout);
+
+        // Each timeout, remove the calculated step from the opacity
+        let fade = setInterval(() => {
+            if (this.style.opacity <= 0) {
+                clearInterval(fade);
+                if (callback) {
+                    callback();
+                }
+            } else {
+                this.style.opacity = parseFloat(this.style.opacity) - steps;
+            }
+        }, timeout);
+    },
+    enumerable: false,
+    configurable: false,
+});
+
+/**
+ * Fade in an element.
+ *
+ * @param time (in milliseconds)
+ */
+Object.defineProperty(Object.prototype, 'fadeIn', {
+    value: function (time = 1000, callback = null) {
+        // Ensure time is a valid number
+        if (isNaN(time) || time === null || time === '' || time <= 0) {
+            time = 1000;
+        }
+
+        // Get current opacity, ensure that that is a valid number also
+        let currentOpacity = getComputedStyle(this).opacity;
+        if (isNaN(currentOpacity)) {
+            currentOpacity = 0;
+        }
+
+        // Set opacity in the style, to ensure the value is set
+        this.style.opacity = currentOpacity;
+        // We use a default timeout of 5 ms
+        let timeout = 5;
+        // Calculate how much of the opacity we increase per 5 ms
+        let steps = (1 - currentOpacity) / (time / timeout);
+
+        // Each timeout, add the calculated step to the opacity
+        let fade = setInterval(() => {
+            if (this.style.opacity >= 1) {
+                clearInterval(fade);
+                if (callback) {
+                    callback();
+                }
+            } else {
+                this.style.opacity = parseFloat(this.style.opacity) + steps;
+            }
+        }, timeout);
+    },
+    enumerable: false,
+    configurable: false,
+});

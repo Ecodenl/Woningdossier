@@ -7,7 +7,8 @@
         ->getQuestionValues();
 @endphp
 @component('cooperation.frontend.layouts.components.alpine-select')
-    <select multiple id="{{$toolQuestion->short}}" class="form-input hidden"
+    <select multiple id="{{$toolQuestion->short}}" class="form-input hidden" data-livewire-id="{{$this->id}}"
+            x-on:component-ready.window="if ($event.detail.id == $el.getAttribute('data-livewire-id')) { constructSelect(); }"
             wire:model="filledInAnswers.{{$toolQuestion->short}}">
         @foreach($questionValues as $toolQuestionValue)
             <option value="{{ $toolQuestionValue['value'] }}"

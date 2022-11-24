@@ -51,11 +51,11 @@ class Caster
                 break;
 
             case static::INT_5:
-                $this->value = (int) NumberFormatter::round((int) $this->value, 5);
+                $this->value = (int) NumberFormatter::round((float) $this->value, 5);
                 break;
 
             case static::INT:
-                $this->value = (int) $this->value;
+                $this->value = (int) round((float) $this->value);
                 break;
 
             case static::FLOAT:

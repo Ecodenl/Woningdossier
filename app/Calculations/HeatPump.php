@@ -129,7 +129,7 @@ class HeatPump extends \App\Calculations\Calculator
 //        );
         // new
         Log::debug("=== Heating calculate ===");
-        $energyUsage = Heating::calculate($this->building, $this->inputSource);
+        $energyUsage = Heating::calculate($this->building, $this->inputSource, $this->answers);
         Log::debug("=== Heating calculate done ===");
 
         // D8

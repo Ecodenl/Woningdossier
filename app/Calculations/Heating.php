@@ -379,7 +379,7 @@ class Heating extends Calculator
             );
             $scop = 1;
             if ($characteristics instanceof HeatPumpCharacteristic) {
-                $scop = max($characteristics, 1); // prevent divide by 0
+            $scop = max($characteristics->scop_tap_water, 1); // prevent divide by 0
             }
 
             Log::debug(__METHOD__.' - scop = '.$scop);

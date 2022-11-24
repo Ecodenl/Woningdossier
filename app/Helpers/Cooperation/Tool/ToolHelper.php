@@ -2,23 +2,25 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
+use App\Helpers\Conditions\Clause;
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\InputSource;
+use App\Models\SubStep;
 use App\Models\User;
+use App\Traits\FluentCaller;
+use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 abstract class ToolHelper
 {
+    use RetrievesAnswers,
+        FluentCaller;
+
     /** @var User */
     public $user;
 
-    /** @var InputSource */
-    public $inputSource;
-
     public InputSource $masterInputSource;
-
-    /** @var \App\Models\Building */
-    public $building;
 
     public bool $withOldAdvices = true;
 
@@ -85,11 +87,108 @@ abstract class ToolHelper
         $considers = $this->getValues("considerables.{$model->id}.is_considering");
 
         // when not set, it will be null. not set = not considering
-        // almost impossible to happen as the $user->considers() method already returns a default but a fallback is never bet.
+        // almost impossible to happen as the $user->considers() method already returns a default but a fallback is never bad.
         if (is_null($considers)) {
             $considers = true;
         }
         return $considers;
+    }
+
+    public function considersByConditions(array $conditions): bool
+    {
+        return ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->masterInputSource)
+            ->evaluate($conditions);
+    }
+
+    protected function getConditionConsiderable(string $short): array
+    {
+        $conditions =  [
+            [
+                [
+                    'column' => 'fn',
+                    'operator' => 'HasCompletedStep',
+                    'value' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
+                            InputSource::RESIDENT_SHORT,
+                            InputSource::COACH_SHORT,
+                        ],
+                    ],
+                ],
+                [
+                    [
+                        'column' => 'new-heat-source',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $short,
+                    ],
+                    [
+                        'column' => 'new-heat-source-warm-tap-water',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $short,
+                    ],
+                ],
+            ],
+            [
+                [
+                    'column' => 'fn',
+                    'operator' => 'HasCompletedStep',
+                    'value' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
+                            InputSource::RESIDENT_SHORT,
+                            InputSource::COACH_SHORT,
+                        ],
+                        'should_pass' => false,
+                    ],
+                ],
+                [
+                    [
+                        'column' => 'heat-source',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $short,
+                    ],
+                    [
+                        'column' => 'heat-source-warm-tap-water',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $short,
+                    ],
+                ],
+            ],
+        ];
+
+        // We can never have nice things
+        if ($short === 'heat-pump') {
+            $conditions[] = [
+                [
+                    'column' => 'fn',
+                    'operator' => 'HasCompletedStep',
+                    'value' => [
+                        'steps' => ['heating'],
+                        'input_source_shorts' => [
+                            InputSource::RESIDENT_SHORT,
+                            InputSource::COACH_SHORT,
+                        ],
+                        'should_pass' => false,
+                    ],
+                ],
+                [
+                    'column' => [
+                        'slug->nl' => 'warmtepomp-interesse',
+                    ],
+                    'operator' => Clause::PASSES,
+                    'value' => SubStep::class,
+                ],
+                [
+                    'column' => 'interested-in-heat-pump',
+                    'operator' => Clause::EQ,
+                    'value' => 'yes',
+                ],
+            ];
+        }
+
+        return $conditions;
     }
 
     /**

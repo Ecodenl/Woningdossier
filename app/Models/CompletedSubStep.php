@@ -50,6 +50,12 @@ class CompletedSubStep extends Model implements Auditable
 
     protected $fillable = ['sub_step_id', 'building_id', 'input_source_id'];
 
+    # Relations
+    public function inputSource(): BelongsTo
+    {
+        return $this->belongsTo(InputSource::class);
+    }
+
     public function subStep(): BelongsTo
     {
         return $this->belongsTo(SubStep::class);

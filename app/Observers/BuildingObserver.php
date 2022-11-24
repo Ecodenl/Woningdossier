@@ -13,51 +13,6 @@ class BuildingObserver
 {
     public function saved(Building $building)
     {
-        // Note that if you need to do other stuff here, put it ABOVE this method
-        // as a $building->syncOriginal() happens in this if statement which will
-        // wipe the dirty values.
-//        if ($building->isDirty('example_building_id')) {
-//
-//            // if example_building_id is dirty, change is true.
-//            Log::debug(__METHOD__." example_building_id was changed (from " . $building->getOriginal('example_building_id') . " to " . $building->example_building_id);
-//            $exampleBuilding = ExampleBuilding::find(
-//                $building->example_building_id
-//            );
-//            // Sync the original. We now know that the example building was dirty
-//            // that's all that was needed.
-//            // The ExampleBuildingService will be updating BuildingFeatures, so
-//            // to prevent an infinite loop
-//            // (BuildingFeaturesObserver -> BuildingObserver -> BuildingFeaturesObserver etc.)
-//            // we sync the original here.
-//            $building->syncOriginal();
-//
-//            if ($exampleBuilding instanceof ExampleBuilding) {
-//                // Note: dependent on the session for scoping input source id
-//                // No other way as building does not contain an input source id
-//                $buildingFeature = $building->buildingFeatures;
-//
-//                ExampleBuildingService::apply(
-//                    $exampleBuilding,
-//                    $buildingFeature->build_year,
-//                    $building
-//                );
-//                // if it's the first time, also fill the master input source.
-//                if ($this->isFirstTimeToolIsFilled($building)) {
-//                    ExampleBuildingService::apply(
-//                        $exampleBuilding,
-//                        $buildingFeature->build_year,
-//                        $buildingFeature->building,
-//                        InputSource::findByShort(InputSource::MASTER_SHORT)
-//                    );
-//                }
-//            } else {
-//                Log::debug(
-//                    __METHOD__." No example building was found. Clearing the example building for building ".$building->id
-//                );
-//                ExampleBuildingService::clearExampleBuilding($building);
-//            }
-//        }
-
         \App\Helpers\Cache\Building::wipe($building->id);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
+use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -11,18 +12,21 @@ use App\Models\Notification;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Http\Controllers\Controller;
+use App\Services\Models\NotificationService;
 use Illuminate\Http\Request;
 
 class MyPlanController extends Controller
 {
     public function index()
     {
+
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
         // For quick testing purposes, we really don't want to run through the tool each time
         if (! app()->environment('local')) {
-            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             $firstIncompleteStep = $building->getFirstIncompleteStep([], $masterInputSource);
 
             // There are incomplete steps left, set the sub step
@@ -38,10 +42,22 @@ class MyPlanController extends Controller
             }
         }
 
-        $notification = Notification::activeNotifications($building,
-            InputSource::findByShort(InputSource::MASTER_SHORT))->first();
+        $types = [\App\Jobs\RecalculateStepForUser::class];
 
-        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'notification'));
+        $service = NotificationService::init()
+            ->forInputSource($masterInputSource)
+            ->forBuilding($building);
+
+        $activeNotification = false;
+
+        foreach ($types as $type) {
+            if ($service->setType($type)->isActive()) {
+                $activeNotification = true;
+                break;
+            }
+        }
+
+        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'activeNotification'));
     }
 
     public function media(Request $request, Cooperation $cooperation, ?Building $building = null)

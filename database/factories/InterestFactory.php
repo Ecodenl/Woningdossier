@@ -1,11 +1,22 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(\App\Models\Interest::class, function (Faker $faker) {
-    return [
-        'name' => json_encode(['nl' => $faker->word]),
-        'calculate_value' => $faker->randomFloat(2, 0, 100),
-        'order' => $faker->randomNumber(2),
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class InterestFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+        'name' => json_encode(['nl' => $this->faker->word]),
+        'calculate_value' => $this->faker->randomFloat(2, 0, 100),
+        'order' => $this->faker->randomNumber(2),
     ];
-});
+    }
+}

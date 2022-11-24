@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Services;
 
+use Database\Seeders\StatusesTableSeeder;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -17,28 +18,28 @@ class BuildingCoachStatusServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\StatusesTableSeeder::class);
+        $this->seed(StatusesTableSeeder::class);
     }
 
     public function testGetConnectedBuildingsByUser()
     {
-        $cooperation = factory(Cooperation::class)->create();
+        $cooperation = Cooperation::factory()->create();
 
-        $accounts = factory(Account::class, 5)->create()->each(function (Account $account) use ($cooperation) {
-            $residentUser = factory(User::class)->create([
+        $accounts = Account::factory()->count(5)->create()->each(function (Account $account) use ($cooperation) {
+            $residentUser = User::factory()->create([
                 'cooperation_id' => $cooperation->id,
                 'account_id' => $account->id,
             ]);
-            factory(Building::class)->create(['user_id' => $residentUser->id]);
+            Building::factory()->create(['user_id' => $residentUser->id]);
         });
 
-        $cooperation = factory(Cooperation::class)->create();
-        $account = factory(Account::class)->create();
-        $coachUser = factory(User::class)->create([
+        $cooperation = Cooperation::factory()->create();
+        $account = Account::factory()->create();
+        $coachUser = User::factory()->create([
             'cooperation_id' => $cooperation->id,
             'account_id' => $account->id,
         ]);
-        factory(Building::class)->create(['user_id' => $coachUser->id]);
+        Building::factory()->create(['user_id' => $coachUser->id]);
 
         /** @var Account $account */
         foreach ($accounts as $i => $account) {
@@ -65,21 +66,21 @@ class BuildingCoachStatusServiceTest extends TestCase
 
     public function testGetConnectedCoachesByBuildingId()
     {
-        $cooperation = factory(Cooperation::class)->create();
-        $account = factory(Account::class)->create();
-        $residentUser = factory(User::class)->create([
+        $cooperation = Cooperation::factory()->create();
+        $account = Account::factory()->create();
+        $residentUser = User::factory()->create([
             'cooperation_id' => $cooperation->id,
             'account_id' => $account->id,
         ]);
-        factory(Building::class)->create(['user_id' => $residentUser->id]);
+        Building::factory()->create(['user_id' => $residentUser->id]);
 
         $i = 0;
-        factory(Account::class, 5)->create()->each(function (Account $account) use ($cooperation, $residentUser, &$i) {
-            $coachUser = factory(User::class)->create([
+        Account::factory()->count(5)->create()->each(function (Account $account) use ($cooperation, $residentUser, &$i) {
+            $coachUser = User::factory()->create([
                 'cooperation_id' => $cooperation->id,
                 'account_id' => $account->id,
             ]);
-            factory(Building::class)->create(['user_id' => $coachUser->id]);
+            Building::factory()->create(['user_id' => $coachUser->id]);
 
             // give the coach access to the resident his building
             BuildingCoachStatusService::giveAccess($coachUser, $residentUser->building);

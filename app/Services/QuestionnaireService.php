@@ -11,6 +11,8 @@ use App\Models\Step;
 
 class QuestionnaireService
 {
+    // TODO: This is not a service. Should be refactored
+
     public static function copyQuestionnaireToCooperation(Cooperation $cooperation, Questionnaire $questionnaire)
     {
         $cooperationId = $cooperation->id;

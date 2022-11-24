@@ -49,4 +49,20 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
 
         return false;
     }
+
+    /**
+     * Determine if the given user recently created a password reset token.
+     *
+     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
+     * @return bool
+     */
+    public function recentlyCreatedToken(CanResetPasswordContract $user)
+    {
+        $record = (array) $this->getTable()->where(
+            'email', $user->getEmailForPasswordReset()
+        )->first();
+
+        return $record && $this->tokenRecentlyCreated($record['created_at']);
+    }
+
 }

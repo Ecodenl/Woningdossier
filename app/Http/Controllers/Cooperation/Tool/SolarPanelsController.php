@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\SolarPanel;
+use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\SolarPanelHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\ToolQuestionHelper;
 use App\Http\Requests\Cooperation\Tool\SolarPanelFormRequest;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelOrientation;
@@ -103,7 +103,7 @@ class SolarPanelsController extends ToolController
                 ->toArray();
         }
 
-        // now attempt to save the "dynamic" quesitons.
+        // now attempt to save the "dynamic" questions.
         foreach ($request->validated()['filledInAnswers'] as $toolQuestionId => $givenAnswer) {
             ToolQuestionService::init(ToolQuestion::find($toolQuestionId))
                 ->building($building)
@@ -112,7 +112,18 @@ class SolarPanelsController extends ToolController
         }
 
         $values = $request->only('building_pv_panels', 'user_energy_habits', 'considerables', 'building_services');
+
+        // As of right now, values are not dynamically updated. Therefore, if the filled in answer for the solar panels
+        // is set to "no", we will nullify related questions.
+        $hasSolarPanelsToolQuestion = ToolQuestion::findByShort('has-solar-panels');
+        $answer = $request->validated()['filledInAnswers'][$hasSolarPanelsToolQuestion->id] ?? null;
+        if ($answer === 'no') {
+            Arr::set($values, 'building_services.7.extra.year', null);
+            Arr::set($values, 'building_services.7.extra.value', null);
+            Arr::set($values, 'building_pv_panels.total_installed_power', null);
+        }
         $values['updated_measure_ids'] = $updatedMeasureIds;
+
         (new SolarPanelHelper($user, $inputSource))
             ->setValues($values)
             ->saveValues()

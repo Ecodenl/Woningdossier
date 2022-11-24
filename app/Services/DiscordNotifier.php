@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Traits\FluentCaller;
 use GuzzleHttp\Client;
 
-class DiscordNotifier {
+class DiscordNotifier
+{
+    use FluentCaller;
 
     use FluentCaller;
 

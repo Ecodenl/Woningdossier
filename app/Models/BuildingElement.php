@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
@@ -26,6 +27,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\ElementValue|null $elementValue
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement allInputSources()
+ * @method static \Database\Factories\BuildingElementFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forMe(?\App\Models\User $user = null)
@@ -46,6 +48,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 class BuildingElement extends Model implements Auditable
 {
+    use HasFactory;
+
     use GetValueTrait,
         GetMyValuesTrait,
         ToolSettingTrait,

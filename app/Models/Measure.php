@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property array $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\BuildingElement $buildingElements
+ * @property-read \App\Models\BuildingElement|null $buildingElements
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
  * @property-read int|null $building_services_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureCategory[] $categories

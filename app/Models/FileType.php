@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $duration
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\FileTypeCategory $category
+ * @property-read \App\Models\FileTypeCategory|null $category
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FileStorage[] $files
  * @property-read int|null $files_count
  * @property-read array $translations

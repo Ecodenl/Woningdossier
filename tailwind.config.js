@@ -51,9 +51,17 @@ const fractionTwelve = {
 
 module.exports = {
     important: '#app-body',
-    purge: [
-        './resources/**/*.blade.php',
-    ],
+    purge: {
+        'content': ['./resources/**/*.blade.php'],
+        safelist: [
+            'col-span-2',
+            'col-span-3',
+            'col-span-6',
+            'w-full',
+            'w-1/2',
+            'static'
+        ],
+    },
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
@@ -102,7 +110,7 @@ module.exports = {
                 'center-lg-yellow-50': '0 25px 15px -10px rgba(255,189,90,0.5)',
                 'center-lg-yellow-75': '0 25px 15px -10px rgba(255,189,90,0.75)',
                 'center-lg-yellow': '0 25px 15px -10px rgba(255,189,90,1)',
-                
+
                 // Green
                 'center-green-25': '0 15px 15px -10px rgba(44,169,130,0.25)',
                 'center-green-50': '0 15px 15px -10px rgba(44,169,130,0.5)',
@@ -180,7 +188,19 @@ module.exports = {
             transparent: 'transparent',
             black: '#000000',
             white: '#FFFFFF',
-            gray: '#CDD2D7',
+            'gray': {
+                DEFAULT: '#CDD2D7',
+                '50': '#FFFFFF',
+                '100': '#FFFFFF',
+                '200': '#FFFFFF',
+                '300': '#FAFBFB',
+                '400': '#E4E6E9',
+                '500': '#CDD2D7',
+                '600': '#AEB6BE',
+                '700': '#8F9AA5',
+                '800': '#707E8C',
+                '900': '#57626D'
+            },
             green: '#2CA982',
             purple: {
                 DEFAULT: '#622191',
@@ -196,7 +216,19 @@ module.exports = {
 
             orange: '#FF7F4A',
             yellow: '#FFBD5A',
-            red: '#E41440',
+            red: {
+                DEFAULT: '#E41440',
+                '50': '#fef2f2',
+                '100': '#fee2e2',
+                '200': '#fecaca',
+                '300': '#fca5a5',
+                '400': '#f87171',
+                '500': '#E41440',
+                '600': '#dc2626',
+                '700': '#b91c1c',
+                '800': '#991b1b',
+                '900': '#7f1d1d'
+            },
         },
         fontSize: {
             'xs': ['10px', '10px'],
@@ -216,6 +248,7 @@ module.exports = {
             borderColor: ['active'],
             textColor: ['active'],
             boxShadow: ['active'],
+            cursor: ['hover', 'focus'],
         },
     },
     plugins: [

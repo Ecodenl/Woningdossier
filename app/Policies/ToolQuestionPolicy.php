@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Models\Account;
 use App\Models\ToolQuestion;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Log;
 
 class ToolQuestionPolicy
 {
@@ -18,6 +19,7 @@ class ToolQuestionPolicy
         if (HoomdossierSession::isUserObserving()) {
             return false;
         }
+
         return is_null($toolQuestion->forSpecificInputSource) || $currentInputSource->short === $toolQuestion->forSpecificInputSource->short;
     }
 }

@@ -1,0 +1,279 @@
+<?php
+
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
+
+use App\Calculations\Heater;
+use App\Calculations\HeatPump;
+use App\Calculations\HighEfficiencyBoiler;
+use App\Console\Commands\Tool\RecalculateForUser;
+use App\Helpers\Arr;
+use App\Helpers\Conditions\Clause;
+use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\DataTypes\Caster;
+use App\Helpers\HoomdossierSession;
+use App\Helpers\ToolQuestionHelper;
+use App\Models\CompletedSubStep;
+use App\Models\Cooperation;
+use App\Models\InputSource;
+use App\Models\Step;
+use App\Models\ToolCalculationResult;
+use App\Models\ToolQuestion;
+use App\Services\Scans\ScanFlowService;
+use App\Services\ToolQuestionService;
+use Artisan;
+use Illuminate\Support\Facades\Log;
+use Livewire\Component;
+
+class Form extends Component
+{
+    public $step;
+    public $subSteps;
+    public $locale;
+
+    public $filledInAnswers = [];
+    public $building;
+    public $masterInputSource;
+    public $currentInputSource;
+
+    public $succeededSubSteps = [];
+    public $failedValidationForSubSteps = [];
+
+    public $cooperation;
+
+    public $activeSubStep;
+
+    protected $listeners = [
+        'subStepValidationSucceeded' => 'subStepSucceeded',
+        'failedValidationForSubSteps',
+        'updateFilledInAnswers',
+    ];
+
+    public function mount(Step $step, Cooperation $cooperation)
+    {
+        $this->step = $step;
+        $this->subSteps = $step->subSteps;
+
+        $this->activeSubStep = $step->subSteps->first()->slug;
+        $this->cooperation = $cooperation;
+        $this->locale = app()->getLocale();
+        $this->building = HoomdossierSession::getBuilding(true);
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
+    }
+
+    public function render()
+    {
+        return view('livewire.cooperation.frontend.tool.expert-scan.form');
+    }
+
+    public function activeSubStep($subStepSlug)
+    {
+        $this->activeSubStep = $subStepSlug;
+    }
+
+
+    public function failedValidationForSubSteps(array $subStep)
+    {
+        // Unset succeeded sub step because it fails now
+        unset($this->succeededSubSteps[$subStep['slug'][$this->locale]]);
+
+        $this->failedValidationForSubSteps[$subStep['slug'][$this->locale]] = $subStep['name'][$this->locale];
+        $this->dispatchBrowserEvent('scroll-to-top');
+    }
+
+    // We will mark the given sub step as succeeded
+    public function subStepSucceeded(array $subStep, array $filledInAnswers)
+    {
+        // Unset failed sub step because it succeeds now
+        unset($this->failedValidationForSubSteps[$subStep['slug'][$this->locale]]);
+
+        $this->setFilledInAnswers($filledInAnswers);
+        $this->succeededSubSteps[$subStep['slug'][$this->locale]] = $subStep['slug'][$this->locale];
+
+        // Save answers if all sub steps have been successfully answered
+        if ($this->allSubStepsSucceeded()) {
+            $this->saveFilledInAnswers();
+        }
+    }
+
+    public function setFilledInAnswers($filledInAnswers)
+    {
+        // We can't directly set the answers because there will be more than one sub step that is passing
+        // answers. array_merge messes up the keys and addition (array + array) causes weird behaviour
+        foreach ($filledInAnswers as $toolQuestionShort => $answer) {
+            $this->filledInAnswers[$toolQuestionShort] = $answer;
+        }
+    }
+
+    public function updateFilledInAnswers($filledInAnswers)
+    {
+        $this->setFilledInAnswers($filledInAnswers);
+        $this->performCalculations();
+    }
+
+    public function allSubStepsSucceeded()
+    {
+        // Total amount of sub steps should match in both count and slugs
+        $allFinished = count($this->succeededSubSteps) == $this->subSteps->count();
+        $noDiff = empty(array_diff($this->subSteps->pluck('slug')->toArray(), $this->succeededSubSteps));
+
+        return $allFinished && $noDiff;
+    }
+
+    public function saveFilledInAnswers()
+    {
+        $stepShortsToRecalculate = [];
+        $shouldDoFullRecalculate = false;
+        $dirtyToolQuestions = [];
+
+        $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
+        // Answers have been updated, we save them and dispatch a recalculate
+        // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
+        foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
+            // Define if we should answer this question...
+            /** @var ToolQuestion $toolQuestion */
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+            if ($this->building->user->account->can('answer', $toolQuestion)) {
+
+                // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
+                // so when we actually start saving it we have to format it one more time
+                if ($toolQuestion->data_type === Caster::FLOAT) {
+                    $givenAnswer = Caster::init(
+                        $toolQuestion->data_type, $givenAnswer
+                    )->reverseFormatted();
+                }
+
+                // TODO: this is a horrible way to trace dirty answers
+                $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                if ($masterAnswer !== $givenAnswer) {
+                    $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                }
+
+                ToolQuestionService::init($toolQuestion)
+                    ->building($this->building)
+                    ->currentInputSource($this->currentInputSource)
+                    ->applyExampleBuilding()
+                    ->save($givenAnswer);
+
+                if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource) && $masterHasCompletedQuickScan) {
+                    Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
+                    $shouldDoFullRecalculate = true;
+                }
+
+                // get the expert step equivalent
+                // we will filter out duplicates later on.
+                $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
+            }
+        }
+
+        // since we are done saving all the filled in answers, we can safely mark the sub steps as completed
+        foreach ($this->subSteps as $subStep) {
+            // Now mark the sub step as complete
+            $completedSubStep = CompletedSubStep::firstOrCreate([
+                'sub_step_id' => $subStep->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->currentInputSource->id
+            ]);
+
+            $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+                ->forStep($this->step);
+
+            if ($completedSubStep->wasRecentlyCreated) {
+                // No need to check SubSteps that were recently created because they passed conditions
+                $flowService->skipSubstep($subStep);
+            }
+
+            $flowService->checkConditionals($dirtyToolQuestions);
+        }
+
+        // the INITIAL calculation will be handled by the CompletedSubStepObserver
+        if ($shouldDoFullRecalculate) {
+            // We should do a full recalculate because some base value that has impact on every calculation is changed.
+            Log::debug("Dispatching full recalculate..");
+
+            Artisan::call(RecalculateForUser::class, [
+                '--user' => [$this->building->user->id],
+                '--input-source' => [$this->currentInputSource->short],
+                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
+                '--with-old-advices' => true,
+            ]);
+
+            // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
+        } else if ($masterHasCompletedQuickScan && !empty($stepShortsToRecalculate)) {
+            // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
+            $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
+            // since we are just re-calculating specific parts of the tool we do it without the old advices
+            // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
+            // but it moves the re-calculated advices to the proper column.
+            Artisan::call(RecalculateForUser::class, [
+                '--user' => [$this->building->user->id],
+                '--input-source' => [$this->currentInputSource->short],
+                '--step-short' => $stepShortsToRecalculate,
+                '--with-old-advices' => false,
+            ]);
+        }
+
+        // TODO: Make FlowService URL workable
+        return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $this->cooperation]);
+    }
+
+    public function performCalculations()
+    {
+        $conditions = $this->getCalculatorConditions('hr-boiler');
+
+        $evaluator = ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->masterInputSource);
+
+        // We can reuse these answers because all below calculators use the same questions for their conditional logic
+        $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)->merge(collect($this->filledInAnswers));
+
+        $calculations = [];
+        $calculate = [
+            'hr-boiler' => HighEfficiencyBoiler::class,
+            'sun-boiler' => Heater::class,
+            'heat-pump' => HeatPump::class,
+        ];
+
+        foreach ($calculate as $short => $calculator) {
+            $performedCalculations = [];
+            $conditions = $this->getCalculatorConditions($short);
+            if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
+                $performedCalculations = $calculator::calculate($this->building, $this->masterInputSource, collect($this->filledInAnswers));
+            }
+
+            foreach (Arr::dot($performedCalculations) as $resultShort => $value) {
+                $result = ToolCalculationResult::findByShort("{$short}.{$resultShort}");
+
+                // Could be an unused result
+                if ($result instanceof ToolCalculationResult) {
+                    Arr::set($performedCalculations, $resultShort, Caster::init($result->data_type, $value)->getFormatForUser());
+                }
+            }
+
+            $calculations[$short] = $performedCalculations;
+        }
+
+        $this->emit('calculationsPerformed', $calculations);
+    }
+
+    private function getCalculatorConditions(string $short): array
+    {
+        return [
+            [
+                [
+                    'column' => 'new-heat-source',
+                    'operator' => Clause::CONTAINS,
+                    'value' => $short,
+                ],
+            ],
+            [
+                [
+                    'column' => 'new-heat-source-warm-tap-water',
+                    'operator' => Clause::CONTAINS,
+                    'value' => $short,
+                ],
+            ],
+        ];
+    }
+}

@@ -1,14 +1,25 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(\App\Models\Cooperation::class, function (Faker $faker) {
-    $name = $faker->randomElement(['Groen', 'CO2', 'Meter op null']);
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class CooperationFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $name = $this->faker->randomElement(['Groen', 'CO2', 'Meter op null']);
 
     return [
         'name' => $name,
         'slug' => \Illuminate\Support\Str::slug($name),
-        'website_url' => $faker->url,
-        'cooperation_email' => $faker->email,
+        'website_url' => $this->faker->url,
+        'cooperation_email' => $this->faker->email,
     ];
-});
+    }
+}

@@ -61,6 +61,9 @@ export default (inputSource = 'no-match') => ({
             this.open = ! this.open
         }
     },
+    close() {
+        this.open = false;
+    },
     changeOption(element) {
         if (! element.classList.contains('disabled')) {
             this.setSourceValue(element.getAttribute('data-input-source-short'));
@@ -119,11 +122,24 @@ export default (inputSource = 'no-match') => ({
                         switch (type) {
                             case 'text':
                             case 'date':
-                            case 'select':
                             case 'textarea':
                             case 'range':
                                 input.value = value;
                                 window.triggerEvent(input, 'input');
+                                window.triggerEvent(input, 'change');
+                                break;
+                            case 'select':
+                                let multiple = input.hasAttribute('multiple');
+
+                                if (multiple) {
+                                    let option = input.querySelector(`option[value="${value}"]`);
+                                    if (option) {
+                                        option.setAttribute('selected', 'selected');
+                                    }
+                                } else {
+                                    input.value = value;
+                                }
+
                                 window.triggerEvent(input, 'change');
                                 break;
                             case 'radio':

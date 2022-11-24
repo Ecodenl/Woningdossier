@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Scopes\VisibleScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -25,6 +26,7 @@ use Spatie\Translatable\HasTranslations;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|CustomMeasureApplication allInputSources()
+ * @method static \Database\Factories\CustomMeasureApplicationFactory factory(...$parameters)
  * @method static Builder|CustomMeasureApplication forBuilding($building)
  * @method static Builder|CustomMeasureApplication forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder|CustomMeasureApplication forMe(?\App\Models\User $user = null)
@@ -45,6 +47,8 @@ use Spatie\Translatable\HasTranslations;
  */
 class CustomMeasureApplication extends Model
 {
+    use HasFactory;
+
     use HasTranslations,
         GetMyValuesTrait,
         GetValueTrait;

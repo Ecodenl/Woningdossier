@@ -18,7 +18,9 @@ class TranslationController extends Controller
      */
     public function index()
     {
-        $steps = Step::where('short', '!=', 'general-data')->get();
+        $steps = Step::whereNotIn('short', [
+            'heat-pump', 'heater', 'high-efficiency-boiler',
+        ])->get();
 
         $mailLangFiles = [
             'cooperation/mail/account-associated-with-cooperation' => '(mail) | Account gekoppeld met coöperatie',
@@ -45,9 +47,9 @@ class TranslationController extends Controller
 
         $group = str_replace('_', '/', $group);
         // it is what it is, for the time being this will do. TODO: should be refactored
-        $step = Step::findByShort($group);
+        $step = Step::withGeneralData()->whereShort($group)->first();
 
-        if ($step instanceof Step && $step->isChild()) {
+        if ($step instanceof Step && ! is_null($step->parent_id)) {
             $group = "cooperation/tool/general-data/{$group}";
         }
         if ('ventilation' == $group) {

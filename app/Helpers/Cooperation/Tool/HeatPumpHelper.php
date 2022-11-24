@@ -145,8 +145,15 @@ class HeatPumpHelper extends ToolHelper
                 }
 
                 if (! $this->getValues('has_completed_expert')) {
-                    // Force 0 to have the desired power calculated
+                    // Force 0 to have the desired power calculated.
                     $answers['heat-pump-preferred-power'] = 0;
+                    // Set "new" situation values to current situation, we need those as well.
+                    $answers['new-cook-type'] = $this->getAnswer('cook-type');
+                    $answers['new-boiler-type'] = \App\Deprecation\ToolHelper::getCustomValueByModel(
+                        ServiceValue::query(),
+                        'new-boiler-type',
+                        $this->getAnswer('boiler-type')
+                    );
                 }
 
                 $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));

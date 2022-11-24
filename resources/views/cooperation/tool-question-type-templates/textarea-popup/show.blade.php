@@ -1,6 +1,6 @@
 <div x-data="modal()" class="w-full flex">
 
-    <textarea wire:model="filledInAnswers.{{$toolQuestion['short']}}"
+    <textarea wire:model.lazy="filledInAnswers.{{$toolQuestion['short']}}"
               id="{{$toolQuestion->short}}"
               class="form-input"
               wire:ignore x-on:click="toggle()"
@@ -9,7 +9,7 @@
     </textarea>
 
     @component('cooperation.frontend.layouts.components.modal', ['class' => 'w-full md:w-1/2'])
-        <textarea wire:model="filledInAnswers.{{$toolQuestion['short']}}"
+        <textarea wire:model.lazy="filledInAnswers.{{$toolQuestion['short']}}"
                   id="{{$toolQuestion->short}}"
                   class="form-input w-full"
                   placeholder="{{$toolQuestion->placeholder}}"

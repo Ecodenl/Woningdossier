@@ -24,55 +24,68 @@ export default (initiallyOpen = false) => ({
                 });
 
                 observer.observe(this.select, { childList: true });
+
+                let attributeObserver = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        context.constructSelect();
+                    });
+                });
+
+                attributeObserver.observe(this.select, { attributeFilter: ['disabled'] });
             }
         });
     },
     constructSelect() {
         let wrapper = this.$refs['select-wrapper'];
-        // Get the select element
-        this.select = wrapper.querySelector('select');
-        // Select is defined!
-        if (null !== this.select) {
-            this.multiple = this.select.hasAttribute('multiple');
 
-            // Bind event listener for change
-            this.select.addEventListener('change', (event) => {
-                this.updateSelectedValues();
-            });
-            if (this.multiple) {
-                // If it's multiple, we will add an event listener to rebuild the input on resizing
-                window.addEventListener('resize', (event) => {
-                    this.setInputValue();
+        if (wrapper) {
+            // Get the select element
+            this.select = wrapper.querySelector('select');
+            // Select is defined!
+            if (null !== this.select) {
+                this.multiple = this.select.hasAttribute('multiple');
+
+                // Bind event listener for change
+                this.select.addEventListener('change', (event) => {
+                    this.updateSelectedValues();
+                });
+                if (this.multiple) {
+                    // If it's multiple, we will add an event listener to rebuild the input on resizing
+                    window.addEventListener('resize', (event) => {
+                        this.setInputValue();
+                    });
+                }
+
+                this.disabled = this.select.hasAttribute('disabled');
+
+                // Add class if disabled, so CSS can do magic
+                if (this.disabled) {
+                    this.$refs['select-input'].classList.add('disabled');
+                    this.open = false;
+                } else {
+                    this.$refs['select-input'].classList.remove('disabled');
+                }
+
+                // Build the alpine select
+                let optionDropdown = this.$refs['select-options'];
+                // Clear any options there might be left
+                optionDropdown.children.remove();
+                let options = this.select.options;
+                // Loop options to build
+                // Note: we cannot use forEach, as options is a HTML collection, which is not an array
+                for (let i = 0; i < options.length; i++) {
+                    this.buildOption(optionDropdown, options[i]);
+                }
+
+                // Hide the original select
+                this.select.style.display = 'none';
+                // Show the new alpine select
+                this.$refs['select-input-group'].style.display = '';
+
+                setTimeout(() => {
+                    this.updateSelectedValues();
                 });
             }
-
-            this.disabled = this.select.hasAttribute('disabled');
-
-            // Add class if disabled, so CSS can do magic
-            if (this.disabled) {
-                this.$refs['select-input'].classList.add('disabled');
-                this.open = false;
-            }
-
-            // Build the alpine select
-            let optionDropdown = this.$refs['select-options'];
-            // Clear any options there might be left
-            optionDropdown.children.remove();
-            let options = this.select.options;
-            // Loop options to build
-            // Note: we cannot use forEach, as options is a HTML collection, which is not an array
-            for (let i = 0; i < options.length; i++) {
-                this.buildOption(optionDropdown, options[i]);
-            }
-
-            // Hide the original select
-            this.select.style.display = 'none';
-            // Show the new alpine select
-            this.$refs['select-input-group'].style.display = '';
-
-            setTimeout(() => {
-                this.updateSelectedValues();
-            });
         }
     },
     toggle() {
@@ -170,6 +183,11 @@ export default (initiallyOpen = false) => ({
 
                 newInputOption.appendChild(document.createTextNode(text));
                 newInputOption.classList.add('form-input-option');
+
+                if (this.disabled) {
+                    newInputOption.classList.add('disabled');
+                }
+
                 newInputOption.setAttribute("data-value", key);
                 newInputOption.setAttribute("x-on:click", "changeOption($el)");
                 inputGroup.appendChild(newInputOption);
@@ -219,6 +237,8 @@ export default (initiallyOpen = false) => ({
 
         if (option.hasAttribute('disabled')) {
             newOption.classList.add('disabled');
+        } else if (this.disabled) {
+            newOption.classList.add('disabled', 'readonly');
         }
 
         // Append to list

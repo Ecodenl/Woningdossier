@@ -44,3 +44,26 @@
          @endforeach
     </div>
 </div>
+
+@push('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.addEventListener('change', (event) => {
+                let target = event.target;
+
+                let hasWireModel = false;
+                for (const attr of target.attributes) {
+                    if (attr.name.startsWith('wire:model')) {
+                        hasWireModel = true;
+                        break;
+                    }
+                }
+
+                if (hasWireModel) {
+                    triggerCustomEvent(window, 'input-updated');
+                    livewire.emit('inputUpdated');
+                }
+            });
+        });
+    </script>
+@endpush

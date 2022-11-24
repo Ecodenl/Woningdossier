@@ -38,8 +38,8 @@ class HighEfficiencyBoiler extends \App\Calculations\Calculator
         if ($this->energyHabit instanceof UserEnergyHabit) {
             $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType,
                 $this->energyHabit);
-            $result['amount_gas'] = $this->energyHabit->amount_gas;
-            $result['amount_electricity'] = $this->energyHabit->amount_electricity;
+            $result['amount_gas'] = $this->getAnswer('amount-gas') ?? 0;
+            $result['amount_electricity'] = $this->getAnswer('amount-electricity') ?? 0;
         }
 
         $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);

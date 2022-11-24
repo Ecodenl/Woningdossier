@@ -25,7 +25,7 @@ class SettingsController extends Controller
         $cooperationSettings = $request->validated()['cooperation_settings'];
         CooperationSettingHelper::syncSettings($cooperation, $cooperationSettings);
 
-        $tags = MediaHelper::getTags();
+        $tags = MediaHelper::getFillableTagsForClass(Cooperation::class);
         foreach ($tags as $tag) {
             $file = $request->file('medias.' . $tag);
 

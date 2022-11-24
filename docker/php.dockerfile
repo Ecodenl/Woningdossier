@@ -45,3 +45,5 @@ RUN apk update && apk add git \
     && docker-php-ext-install redis
 
 CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
+
+ADD ./docker/php.ini /usr/local/etc/php/conf.d/php.ini

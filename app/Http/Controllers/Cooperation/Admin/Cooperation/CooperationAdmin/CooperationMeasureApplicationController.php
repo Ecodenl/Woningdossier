@@ -38,6 +38,9 @@ class CooperationMeasureApplicationController extends Controller
         $measureData = $request->validated()['cooperation_measure_applications'];
         $measureData['cooperation_id'] = $cooperation->id;
 
+        foreach ($measureData['name'] as $locale => $content) {
+            $measureData['name'][$locale] = strip_tags($content);
+        }
         CooperationMeasureApplication::create($measureData);
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index')
@@ -52,6 +55,9 @@ class CooperationMeasureApplicationController extends Controller
     public function update(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
         $measureData = $request->validated()['cooperation_measure_applications'];
+        foreach ($measureData['name'] as $locale => $content) {
+            $measureData['name'][$locale] = strip_tags($content);
+        }
 
         $cooperationMeasureApplication->update($measureData);
 

@@ -382,7 +382,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'min:10', 'max:30', 'gte:thermostat_low'],
+                'validation' => ['required', 'numeric', 'integer', 'min:10', 'max:30', 'gte:thermostat_low'],
                 'save_in' => 'user_energy_habits.thermostat_high',
                 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
                 'short' => 'thermostat-high',
@@ -391,7 +391,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'min:10', 'max:30'],
+                'validation' => ['required', 'numeric', 'integer', 'min:10', 'max:30'],
                 'save_in' => 'user_energy_habits.thermostat_low',
                 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
                 'short' => 'thermostat-low',
@@ -400,7 +400,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'between:1,24'],
+                'validation' => ['required', 'numeric', 'integer', 'between:1,24'],
                 'save_in' => 'user_energy_habits.hours_high',
                 'short' => 'hours-high',
                 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.hours-high',
@@ -511,7 +511,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'short' => 'remaining-living-years',
-                'validation' => ['required', 'numeric', 'min:1', 'max:10'],
+                'validation' => ['required', 'numeric', 'integer', 'min:1', 'max:10'],
                 'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen?',
                 'options' => [
                     'min' => 1, 'max' => 10,
@@ -1771,7 +1771,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ["required", 'numeric', 'min:1'],
+                'validation' => ["required", 'numeric', 'integer', 'min:1'],
                 'short' => 'heat-pump-preferred-power',
                 'translation' => "Gewenst vermogen van de warmtepomp",
                 'unit_of_measure' => 'KW',
@@ -2003,7 +2003,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required',
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => 'building_features.cavity_wall',
                 'translation' => 'Heeft deze woning een spouwmuur?',
@@ -2012,7 +2012,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required',
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => 'building_features.facade_plastered_painted',
                 'translation' => 'Is de gevel gestuct of geverfd?',
@@ -2061,7 +2061,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::FLOAT,
                 'validation' => [
-                    'required',
+                    'required', 'numeric',
                 ],
                 'save_in' => 'building_features.wall_surface',
                 'translation' => 'Geveloppervlakte van de woning',
@@ -2070,7 +2070,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::FLOAT,
                 'validation' => [
-                    'required',
+                    'required', 'numeric',
                 ],
                 'save_in' => 'building_features.insulation_wall_surface',
                 'translation' => 'Te isoleren oppervlakte',
@@ -2125,7 +2125,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::FLOAT,
                 'validation' => [
-                    'required',
+                    'required', 'numeric',
                 ],
                 'save_in' => "building_insulated_glazings.{$hrppGlassOnly->id}.m2",
                 'translation' => 'HR++ glas: m2 te vervangen glas',
@@ -2134,7 +2134,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required',
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => "building_insulated_glazings.{$hrppGlassOnly->id}.windows",
                 'translation' => 'HR++ glas: Het aantal te vervangen ruiten?',
@@ -2173,7 +2173,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 "data_type" => Caster::FLOAT,
                 "validation" => [
-                    "required",
+                    "required", 'numeric',
                 ],
                 "save_in" => "building_insulated_glazings.{$hrppGlassFrames->id}.m2",
                 "translation" => "HR++ glas + kozijn: m2 te vervangen glas",
@@ -2182,7 +2182,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 "data_type" => Caster::INT,
                 "validation" => [
-                    "required",
+                    "required", 'numeric', 'integer',
                 ],
                 "save_in" => "building_insulated_glazings.{$hrppGlassFrames->id}.windows",
                 "translation" => "HR++ glas + kozijn: Het aantal te vervangen ruiten?",
@@ -2221,7 +2221,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 "data_type" => Caster::FLOAT,
                 "validation" => [
-                    "required",
+                    "required", 'numeric',
                 ],
                 "save_in" => "building_insulated_glazings.{$hr3pFrames->id}.m2",
                 "translation" => "HR+++ glas + kozijn: m2 te vervangen glas",
@@ -2230,7 +2230,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 "data_type" => Caster::INT,
                 "validation" => [
-                    "required",
+                    "required", 'numeric', 'integer',
                 ],
                 "save_in" => "building_insulated_glazings.{$hr3pFrames->id}.windows",
                 "translation" => "HR+++ glas + kozijn: Het aantal te vervangen ruiten?",
@@ -2269,7 +2269,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 "data_type" => Caster::FLOAT,
                 "validation" => [
-                    "required",
+                    "required", 'numeric',
                 ],
                 "save_in" => "building_insulated_glazings.{$glassInLead->id}.m2",
                 "translation" => "Glas-in-lood vervangen: m2 te vervangen glas",
@@ -2278,7 +2278,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 "data_type" => Caster::INT,
                 "validation" => [
-                    "required",
+                    "required", 'numeric', 'integer',
                 ],
                 "save_in" => "building_insulated_glazings.{$glassInLead->id}.windows",
                 "translation" => "Glas-in-lood vervangen: Het aantal te vervangen ruiten?",
@@ -2287,7 +2287,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::FLOAT,
                 'validation' => [
-                    'required',
+                    'required', 'numeric',
                 ],
                 'save_in' => 'building_features.window_surface',
                 'translation' => 'Totale raamoppervlakte van de woning',
@@ -2314,9 +2314,9 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_values' => \App\Models\ElementValue::where('element_id', $woodElements->id)->get(),
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::INT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => 'building_paintwork_statuses.last_painted_year',
                 'translation' => 'Wanneer is het schilderwerk voor het laatst gedaan? (jaargetal)',
@@ -2371,7 +2371,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::STRING,
                 'validation' => [
-                    'required'
+                    'required',
                 ],
                 'save_in' => "building_elements.{$crawlspace->id}.extra.has_crawlspace",
                 'translation' => 'Heeft deze woning een kruipruimte',
@@ -2380,7 +2380,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::STRING,
                 'validation' => [
-                    'required'
+                    'required',
                 ],
                 'save_in' => "building_elements.{$crawlspace->id}.extra.access",
                 'translation' => 'Is de kruipruimte toegankelijk?',
@@ -2399,7 +2399,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::FLOAT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric',
                 ],
                 'save_in' => 'building_features.floor_surface',
                 'translation' => 'Vloeroppervlak van de woning',
@@ -2408,7 +2408,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::FLOAT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric',
                 ],
                 'save_in' => 'building_features.insulation_surface',
                 'translation' => 'Te isoleren oppervlakte',
@@ -2463,7 +2463,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::FLOAT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric',
                 ],
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.roof_surface",
                 'translation' => 'Dakoppervlak hellend dak',
@@ -2472,25 +2472,25 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::FLOAT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric',
                 ],
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.insulation_roof_surface",
                 'translation' => 'Te isoleren oppervlakte van het hellende dak',
                 'short' => 'pitched-roof-insulation-surface',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::INT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.extra.zinc_replaced_date",
                 'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
                 'short' => 'pitched-roof-zinc-replaced-date',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::INT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.zinc_surface",
                 'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
@@ -2539,7 +2539,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::FLOAT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric',
                 ],
                 'save_in' => "building_roof_types.{$flatRoof->id}.roof_surface",
                 'translation' => 'Dakoppervlak van platte dak',
@@ -2548,34 +2548,34 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::FLOAT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric',
                 ],
                 'save_in' => "building_roof_types.{$flatRoof->id}.insulation_roof_surface",
                 'translation' => 'Te isoleren oppervlakte van het platte dak',
                 'short' => 'flat-roof-insulation-surface',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::INT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => "building_roof_types.{$flatRoof->id}.extra.zinc_replaced_date",
                 'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
                 'short' => 'flat-roof-zinc-replaced-date',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::INT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => "building_roof_types.{$flatRoof->id}.zinc_surface",
                 'translation' => 'Oppervlak van het zinkwerk?',
                 'short' => 'flat-roof-zinc-surface',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::INT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => "building_roof_types.{$flatRoof->id}.extra.bitumen_replaced_date",
                 'translation' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
@@ -2630,7 +2630,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => 'building_pv_panels.peak_power',
                 'translation' => 'Piekvermogen per paneel',
@@ -2639,7 +2639,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => 'building_pv_panels.number',
                 'translation' => 'Hoeveel zonnepanelen moeten er komen?',
@@ -2658,7 +2658,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required'
+                    'required', 'numeric', 'integer',
                 ],
                 'save_in' => 'building_pv_panels.angle',
                 'translation' => 'Wat is de hellingshoek van de panelen?',

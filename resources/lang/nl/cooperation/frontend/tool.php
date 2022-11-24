@@ -71,5 +71,44 @@ return [
         'download-report' => 'Download bestaande rapportage',
         'create-report' => 'Maak rapportage',
         'loading' => 'Woonplan wordt berekend...',
+
+        'uploader' => [
+            'add' => 'Bestanden toevoegen',
+            'view' => 'Bestanden bekijken',
+            'help' => 'Klik op een bestand om deze te bewerken.',
+            'info' => [
+                'title' => 'Informatie',
+                'uploaded-by' => 'Geüpload door',
+                'created-at' => 'Aangemaakt op',
+                'type' => 'Type bestand',
+            ],
+            'form' => [
+                'header' => 'Bestand bewerken',
+                'header-view' => 'Bestand bekijken',
+                'title' => [
+                    'label' => 'Titel',
+                ],
+                'description' => [
+                    'label' => 'Beschrijving',
+                ],
+                'tag' => [
+                    'label' => 'Type bestand',
+                ],
+                'share-with-cooperation' => [
+                    'label' => 'Met cooperatie delen',
+                    'options' => [
+                        'show' => 'Zichtbaar voor cooperatie',
+                        'hide' => 'Niet zichtbaar voor cooperatie',
+                    ],
+                ],
+                'download' => [
+                    'title' => 'Downloaden',
+                ],
+                'delete' => [
+                    'title' => 'Verwijderen',
+                    'confirm' => 'Weet je zeker dat je dit bestand wilt verwijderen?',
+                ],
+            ],
+        ],
     ],
 ];

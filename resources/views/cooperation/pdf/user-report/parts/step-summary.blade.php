@@ -23,9 +23,11 @@
                     @php
                         $showQuestion = true;
 
-                        if (! empty($toolQuestionToSummarize->conditions)) {
+                        if (! empty($toolQuestionToSummarize->pivot->conditions)) {
                             $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
-                            ->evaluateCollection($toolQuestionToSummarize->conditions, collect($answers));
+                                    ->building($building)
+                                    ->inputSource($inputSource)
+                                    ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
                         }
 
                         // Comments come at the end, and have exceptional logic...
@@ -44,12 +46,9 @@
                                 ($answers[$toolQuestionToSummarize->short] ?? null)
                             );
 
-                            if ($toolQuestionToSummarize->toolQuestionType->short === 'text'
-                                && \App\Helpers\Str::arrContains($toolQuestionToSummarize->validation, 'numeric')) {
+                            if ($toolQuestionToSummarize->data_type === \App\Helpers\DataTypes\Caster::FLOAT && isset($answers[$toolQuestionToSummarize->short])) {
                                 // Apparently feedback said, no formatting for this, so we revert...
-                                if (isset($answers[$toolQuestionToSummarize->short])) {
-                                    $humanReadableAnswer = $answers[$toolQuestionToSummarize->short];
-                                }
+                                $humanReadableAnswer = $answers[$toolQuestionToSummarize->short];
                             }
 
                             // Handle replaceables

@@ -83,7 +83,7 @@
                 @component('cooperation.frontend.layouts.components.dropdown', [
                     'label' => __('cooperation/frontend/layouts.navbar.current-role') . \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name,
                     'class' => 'in-text',
-                ])
+                    ])
                     @foreach(Hoomdossier::user()->roles()->orderBy('level', 'DESC')->get() as $role)
                         <li>
                             <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}"
@@ -95,22 +95,26 @@
                 @endcomponent
             @endif
 
+
+            @livewire('cooperation.frontend.layouts.parts.alerts', ['building' => $building, 'inputSource' => $masterInputSource])
             @livewire('cooperation.frontend.layouts.parts.messages')
 
             {{-- Keep local for ease of use --}}
             @if(app()->isLocal())
-                @if($building instanceof \App\Models\Building && $building->hasCompletedQuickScan(\App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT)))
+                @if($building instanceof \App\Models\Building && $building->hasCompletedQuickScan($masterInputSource))
                     @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
                         {{-- Loaded in NavbarComposer --}}
                         @foreach($expertSteps as $expertStep)
-                            <li>
-                                <a href="{{ route("cooperation.tool.{$expertStep->short}.index", compact('cooperation')) }}"
-                                   class="in-text">
-                                    <img src="{{ asset("images/icons/{$expertStep->slug}.png") }}"
-                                         alt="{{ $expertStep->name }}" class="rounded-1/2 inline-block h-8 w-8">
-                                    {{ $expertStep->name }}
-                                </a>
-                            </li>
+                            @if(! in_array($expertStep->short, ['high-efficiency-boiler', 'heater', 'heat-pump']))
+                                <li>
+                                    <a href="{{ route("cooperation.frontend.tool.expert-scan.index", ['cooperation' => $cooperation, 'step' => $expertStep]) }}"
+                                       class="in-text">
+                                        <img src="{{ asset("images/icons/{$expertStep->slug}.png") }}"
+                                             alt="{{ $expertStep->name }}" class="rounded-1/2 inline-block h-8 w-8">
+                                        {{ $expertStep->name }}
+                                    </a>
+                                </li>
+                            @endif
                         @endforeach
                     @endcomponent
                 @endif

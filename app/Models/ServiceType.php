@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $measures
  * @property-read int|null $measures_count
+ * @method static \Database\Factories\ServiceTypeFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType query()
@@ -32,6 +34,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ServiceType extends Model
 {
+    use HasFactory;
+
     use HasTranslations;
 
     protected $translatable = [

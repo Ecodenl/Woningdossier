@@ -116,7 +116,7 @@ class UserController extends Controller
         $token = app('auth.password.broker')->createToken($account);
 
         // send a mail to the user
-        Mail::to($account->email)->sendNow(new UserCreatedEmail($cooperation, $account->user(), $token));
+        Mail::to($account->email)->send(new UserCreatedEmail($cooperation, $account->user(), $token));
     }
 
     /**

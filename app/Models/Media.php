@@ -18,10 +18,12 @@ use Illuminate\Support\Facades\Request;
  * @property int $size
  * @property string|null $variant_name
  * @property int|null $original_media_id
+ * @property int|null $input_source_id
+ * @property array|null $custom_properties
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $basename
- * @property-read \App\Models\InputSource $inputSource
+ * @property-read \App\Models\InputSource|null $inputSource
  * @property-read Media|null $originalMedia
  * @property-read \Illuminate\Database\Eloquent\Collection|Media[] $variants
  * @property-read int|null $variants_count
@@ -35,11 +37,13 @@ use Illuminate\Support\Facades\Request;
  * @method static \Illuminate\Database\Eloquent\Builder|Media whereAggregateType($value)
  * @method static Builder|Media whereBasename(string $basename)
  * @method static \Illuminate\Database\Eloquent\Builder|Media whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Media whereCustomProperties($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Media whereDirectory($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Media whereDisk($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Media whereExtension($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Media whereFilename($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Media whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Media whereInputSourceId($value)
  * @method static Builder|Media whereIsOriginal()
  * @method static Builder|Media whereIsVariant(?string $variant_name = null)
  * @method static \Illuminate\Database\Eloquent\Builder|Media whereMimeType($value)

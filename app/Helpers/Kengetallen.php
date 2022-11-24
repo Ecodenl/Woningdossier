@@ -25,6 +25,11 @@ class Kengetallen
     // D117 (Omrekenfactor MJ in kWh)
     const GAS_CONVERSION_FACTOR = 3.6; // MJ / kWh
 
+    // Energiegebruik voor koken
+    const ENERGY_USAGE_COOK_TYPE_GAS = 37; // m3
+    const ENERGY_USAGE_COOK_TYPE_ELECTRIC = 225; // kWh
+    const ENERGY_USAGE_COOK_TYPE_INDUCTION = 175; // kWh
+
     public static function gasKwhPerM3()
     {
         return self::GAS_CALORIFIC_VALUE / self::GAS_CONVERSION_FACTOR;

@@ -8,9 +8,9 @@ use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
-use App\Models\Notification;
 use App\Models\Step;
 use App\Models\User;
+use App\Services\Models\NotificationService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -102,17 +102,12 @@ class RecalculateForUser extends Command
                 // We can calculate / recalculate the advices when the user has completed the quick scan
                 // the quick scan provides the most basic information needed for calculations
                 if ($user->building->hasCompletedQuickScan($inputSource)) {
-
-                    Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
-
-                    Notification::setActive($user->building, $inputSource, RecalculateStepForUser::class, true);
-
                     $stepsToRecalculateChain = [];
 
-                    if (!empty($stepShorts)) {
+                    if (! empty($stepShorts)) {
                         $stepsToRecalculate = Step::expert()->whereIn('short', $stepShorts)->get();
                     } else {
-                        $stepsToRecalculate = Step::expert()->where('short', '!=', 'heat-pump')->get();
+                        $stepsToRecalculate = Step::expert()->get();
                     }
 
                     foreach ($stepsToRecalculate as $stepToRecalculate) {
@@ -120,11 +115,19 @@ class RecalculateForUser extends Command
                             ->onQueue(Queue::ASYNC);
                     }
 
+                    Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
+
+                    NotificationService::init()
+                        ->forBuilding($user->building)
+                        ->forInputSource($inputSource)
+                        ->setType(RecalculateStepForUser::class)
+                        ->setActive($stepsToRecalculate->count());
+
                     Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
 
                     ProcessRecalculate::withChain($stepsToRecalculateChain)
-                        ->dispatch()
-                        ->onQueue(Queue::ASYNC);
+                        ->onQueue(Queue::ASYNC)
+                        ->dispatch();
                 } else {
                     Log::debug("User has not completed quick scan | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
                 }

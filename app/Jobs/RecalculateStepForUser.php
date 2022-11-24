@@ -4,9 +4,9 @@ namespace App\Jobs;
 
 use App\Helpers\Cooperation\Tool\ToolHelper;
 use App\Models\InputSource;
-use App\Models\Notification;
 use App\Models\Step;
 use App\Models\User;
+use App\Services\Models\NotificationService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -60,6 +60,10 @@ class RecalculateStepForUser implements ShouldQueue
 
     public function failed(\Exception $exception)
     {
-        Notification::setActive($this->user->building, $this->inputSource, self::class, false);
+        NotificationService::init()
+            ->forBuilding($this->user->building)
+            ->forInputSource($this->inputSource)
+            ->setType(self::class)
+            ->deactivate(true);
     }
 }

@@ -16,14 +16,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $order
  * @property array|null $conditions
  * @property int $step_id
- * @property int $sub_step_template_id
+ * @property int|null $sub_step_template_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Model|\Eloquent $commentable
  * @property-read array $translations
  * @property-read \App\Models\Step $step
- * @property-read \App\Models\SubStepTemplate $subStepTemplate
+ * @property-read \App\Models\SubStepTemplate|null $subStepTemplate
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
+ * @property-read int|null $sub_steppables_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestion[] $toolQuestions
  * @property-read int|null $tool_questions_count
+ * @method static Builder|SubStep bySlug(string $slug, string $locale = 'nl')
+ * @method static Builder|SubStep forScan(\App\Models\Scan $scan)
  * @method static Builder|SubStep newModelQuery()
  * @method static Builder|SubStep newQuery()
  * @method static Builder|SubStep ordered()
@@ -60,6 +65,7 @@ class SubStep extends Model
         'conditions' => 'array',
     ];
 
+    # Model methods
     public function getRouteKeyName(): string
     {
         $locale = app()->getLocale();
@@ -71,6 +77,26 @@ class SubStep extends Model
         return $this->slug;
     }
 
+    # Scopes
+    public function scopeOrdered(Builder $query)
+    {
+        return $query->orderBy('order');
+    }
+
+    // TODO: Slug trait?
+    public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
+    {
+        return $query->where("slug->{$locale}", $slug);
+    }
+
+    public function scopeForScan(Builder $query, Scan $scan): Builder
+    {
+        return $query->whereHas('step', function ($query) use ($scan) {
+            $query->where('scan_id', $scan->id);
+        });
+    }
+
+    # Relations
     public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
@@ -83,13 +109,22 @@ class SubStep extends Model
 
     public function toolQuestions()
     {
-        return $this->belongsToMany(ToolQuestion::class, 'sub_step_tool_questions')
+        return $this->morphedByMany(ToolQuestion::class, 'sub_steppable')
+            ->using(SubSteppable::class)
             ->orderBy('order')
-            ->withPivot('order');
+            ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
 
-    public function scopeOrdered(Builder $query)
+    public function subSteppables()
     {
-        return $query->orderBy('order');
+        return $this->hasMany(SubSteppable::class);
+    }
+
+    /**
+     * Get the parent commentable model (post or video).
+     */
+    public function commentable()
+    {
+        return $this->morphTo();
     }
 }

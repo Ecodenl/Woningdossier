@@ -1,13 +1,24 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(\App\Models\PvPanelOrientation::class, function (Faker $faker) {
-    $name = $faker->word;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class PvPanelOrientationFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $name = $this->faker->word;
 
     return [
         'name' => json_encode(['nl' => $name]),
         'short' => strtolower($name[0]),
-        'order' => $faker->randomNumber(2),
+        'order' => $this->faker->randomNumber(2),
     ];
-});
+    }
+}

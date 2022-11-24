@@ -2,17 +2,15 @@
 
 namespace App\Helpers;
 
+use App\Events\StepDataHasBeenChanged;
 use App\Models\Building;
 use App\Models\CompletedStep;
-use App\Models\Cooperation;
+use App\Models\CompletedSubStep;
 use App\Models\InputSource;
-use App\Models\Interest;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\StepComment;
-use App\Models\User;
-use App\Models\UserInterest;
-use Illuminate\Database\Query\Builder;
+use App\Models\SubStep;
 
 class StepHelper
 {
@@ -24,6 +22,7 @@ class StepHelper
         'floor-insulation' => 'floor-insulation',
         'roof-insulation' => 'roof-insulation',
     ];
+
     const SERVICE_TO_SHORT = [
         'hr-boiler' => 'high-efficiency-boiler',
         'boiler' => 'high-efficiency-boiler',
@@ -39,27 +38,29 @@ class StepHelper
         'residential-status',
     ];
 
+    const STEP_COMPLETION_MAP = [
+        'heating' => [
+            'high-efficiency-boiler', 'heat-pump', 'heater',
+        ],
+    ];
+
     /**
      * Get all the comments categorized under step and input source.
      *
-     * @param bool $withEmptyComments
-     * @param null $specificInputSource
+     * @param  \App\Models\Building  $building
+     * @param $specificInputSource
+     *
+     * @return array
      */
-    public static function getAllCommentsByStep(Building $building, $withEmptyComments = false, $specificInputSource = null): array
+    public static function getAllCommentsByStep(Building $building, $specificInputSource = null): array
     {
         $commentsByStep = [];
 
-        if (! $building instanceof Building) {
-            return [];
-        }
-
-        $stepComments = StepComment::forMe($building->user)->with('step',
-            'inputSource')->get();
+        $stepComments = StepComment::forMe($building->user)->with('step', 'inputSource')->get();
 
         // when set, we will only return the comments for the given input source
         if ($specificInputSource instanceof InputSource) {
-            $stepComments = $stepComments->where('input_source_id',
-                $specificInputSource->id);
+            $stepComments = $stepComments->where('input_source_id', $specificInputSource->id);
         }
 
         foreach ($stepComments as $stepComment) {
@@ -74,70 +75,22 @@ class StepHelper
     }
 
     /**
-     * Method to retrieve the unfinished sub steps of a step for a building.
+     * Get the next expert step. By default it's a redirect to my plan. If there's a questionnaire, however, we'll
+     * go there first.
      *
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
-     */
-    public static function getUnfinishedChildrenForStep(
-        Step $step,
-        Building $building,
-        InputSource $inputSource
-    ) {
-        return $step->children()
-            ->whereNotExists(function (Builder $query) use (
-                $building,
-                $inputSource
-            ) {
-                $query->select('*')
-                    ->from('completed_steps')
-                    ->where('completed_steps.input_source_id',
-                        $inputSource->id)
-                    ->whereRaw('steps.id = completed_steps.step_id')
-                    ->where('building_id', $building->id);
-            })->get();
-    }
-
-    /**
-     * Get the next step for a user where the user shows interest in or the next questionnaire for a user.
-     *
-     * @param  \App\Models\Building  $building
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\Step  $current
+     * @param  \App\Models\Step  $currentStep
      * @param  \App\Models\Questionnaire|null  $currentQuestionnaire
      *
-     * @return array
+     * @return string
      */
-    public static function getNextStep(
-        Building $building,
-        InputSource $inputSource,
-        Step $current,
-        Questionnaire $currentQuestionnaire = null
-    ): array {
-        /**
-         * some default stuff set, so we don't get if else in this method all over the place.
-         *
-         * @var Step $parentStep
-         * @var Step $subStep
-         */
-        $parentStep = $current->isChild() ? $current->parentStep : $current;
-        $subStep = $current->isChild() ? $current : null;
+    public static function getNextExpertStep(Step $currentStep, Questionnaire $currentQuestionnaire = null): string
+    {
+        $url = route('cooperation.frontend.tool.expert-scan.index', ['step' => $currentStep]);
 
-        $url = static::buildStepUrl($parentStep, $subStep);
-
-        $user = $building->user;
-
-        $nonCompletedSteps = collect();
-        // when there is a sub step, try to redirect them to the next sub step
-        if ($subStep instanceof Step) {
-            $nonCompletedSteps = static::getUnfinishedChildrenForStep($parentStep,
-                $building, $inputSource);
-        }
-
-        // there are no uncompleted sub steps for the parent, try to redirect them to a questionnaire that may exist
-        // on the parent step (child steps cannot have questionnaires).
-        if ($nonCompletedSteps->isEmpty() && $parentStep->hasActiveQuestionnaires()) {
+        // try to redirect them to a questionnaire that may exist on the step.
+        if ($currentStep->hasActiveQuestionnaires()) {
             // There are active questionnaires. We just grab the first next questionnaire.
-            $query =  $parentStep->questionnaires()
+            $query = $currentStep->questionnaires()
                 ->active()
                 ->orderBy('order');
 
@@ -150,49 +103,22 @@ class StepHelper
 
             if ($nextQuestionnaire instanceof Questionnaire) {
                 // Next questionnaire exists, let's redirect to there
-                return [
-                    'url' => $url,
-                    'tab_id' => 'questionnaire-'.$nextQuestionnaire->id,
-                ];
+                return "{$url}#questionnaire-{$nextQuestionnaire->id}";
             }
         }
 
-        foreach ($nonCompletedSteps as $nonCompletedStep) {
-            // when the non completed step is a sub step, we can always return it.
-            // else we have to check whether the user has interest in the step
-            if ($nonCompletedStep instanceof Step && $nonCompletedStep->isChild()) {
-                // when it's a sub step we need to build it again for the sub step
-                if ($nonCompletedStep->isChild()) {
-                    $url = static::buildStepUrl($parentStep, $nonCompletedStep);
-                } else {
-                    $url = static::buildStepUrl($nonCompletedStep);
-                }
-
-                return ['url' => $url, 'tab_id' => ''];
-            }
-        }
-
-        // if the user has no steps left where they do not have any interest in, redirect them to their plan
-        return [
-            'url' => route('cooperation.frontend.tool.quick-scan.my-plan.index'),
-            'tab_id' => '',
-        ];
-    }
-
-    /**
-     * Return a step url.
-     *
-     * @param null $subStep
-     */
-    public static function buildStepUrl(Step $parentStep, $subStep = null): string
-    {
-        return route(
-            $subStep instanceof Step ? 'cooperation.tool.'.$parentStep->short.'.'.$subStep->short.'.index' : 'cooperation.tool.'.$parentStep->short.'.index'
-        );
+        // Redirect to my plan.
+        return route('cooperation.frontend.tool.quick-scan.my-plan.index');
     }
 
     /**
      * Complete a step for a building.
+     *
+     * @param  \App\Models\Step  $step
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     *
+     * @return void
      */
     public static function complete(Step $step, Building $building, InputSource $inputSource)
     {
@@ -202,27 +128,99 @@ class StepHelper
             'building_id' => $building->id,
         ]);
 
-        // check if all sub steps are completed, if so complete the parent step
-        if ($step->isChild()) {
-            $parentStep = $step->parentStep;
-            $uncompletedSubStepsForParentStep = $parentStep
-                ->children()
-                ->whereNotExists(function (Builder $query) use ($building, $inputSource) {
-                    $query->select('*')
-                        ->from('completed_steps')
-                        ->whereRaw('steps.id = completed_steps.step_id')
-                        ->where('building_id', $building->id)
-                        ->where('input_source_id', $inputSource->id);
-                })->get();
-
-            // when there are no uncompleted sub steps, we can complete the parent step.
-            if ($uncompletedSubStepsForParentStep->isEmpty()) {
-                CompletedStep::firstOrCreate([
-                    'step_id' => $parentStep->id,
+        // Also complete related steps (this is the case for steps that used to be separate but are now included
+        // in a single step, but underlying code is still relying on them being completed separately)
+        if (array_key_exists($step->short, static::STEP_COMPLETION_MAP)) {
+            foreach (static::STEP_COMPLETION_MAP[$step->short] as $short) {
+                $stepToComplete = Step::findByShort($short);
+                CompletedStep::allInputSources()->firstOrCreate([
+                    'step_id' => $stepToComplete->id,
                     'input_source_id' => $inputSource->id,
                     'building_id' => $building->id,
                 ]);
             }
         }
+
+    }
+
+    /**
+     * Incomplete a step for a building.
+     *
+     * @param  \App\Models\Step  $step
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public static function incomplete(Step $step, Building $building, InputSource $inputSource)
+    {
+        optional(CompletedStep::allInputSources()->where([
+            'step_id' => $step->id,
+            'input_source_id' => $inputSource->id,
+            'building_id' => $building->id,
+        ])->first())->delete();
+    }
+
+    /**
+     * @param \App\Models\Step $step
+     * @param \App\Models\Building $building
+     * @param \App\Models\InputSource $inputSource
+     * @param bool $triggerRecalculate
+     *
+     * @return bool True if the step can be completed, false if it can't be completed.
+     */
+    public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate): bool
+    {
+        \Log::debug("COMPLETE IF NEEDED {$step->short}");
+        $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
+            ->forBuilding($building)
+            ->whereHas('subStep', function ($query) use ($step) {
+                $query->where('step_id', $step->id);
+            })
+            ->pluck('sub_step_id')->toArray();
+
+        $allSubStepIds = $step->subSteps()->pluck('id')->toArray();
+
+        $diff = array_diff($allSubStepIds, $allCompletedSubStepIds);
+
+        if (empty($diff)) {
+            // The sub step that has been completed finished up the set, so we complete the main step
+            static::complete($step, $building, $inputSource);
+
+            // Trigger a recalculate if the tool is now complete
+            // TODO: Refactor this
+            if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
+                StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+            }
+
+            return true;
+        } else {
+            // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
+            // that we didn't get. Let's check
+            $leftoverSubSteps = SubStep::findMany($diff);
+
+            $cantSee = 0;
+            foreach ($leftoverSubSteps as $subStep) {
+                if (! $building->user->account->can('show', [$subStep, $building])) {
+                    ++$cantSee;
+                }
+            }
+
+            if ($cantSee === $leftoverSubSteps->count()) {
+                // Conditions "passed", so we complete!
+                static::complete($step, $building, $inputSource);
+
+                // Trigger a recalculate if the tool is now complete
+                // TODO: Refactor this
+                if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
+                    StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+                }
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

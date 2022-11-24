@@ -29,10 +29,16 @@
 @if(! request()->input('iframe', false))
     @yield('header')
 @endif
-<?php
-    $background = optional($cooperation->firstMedia(MediaHelper::BACKGROUND))->getUrl();
+@php
+    // So the cooperation should always be set but sometimes it is not? We are not sure how so we do some logging
+    $background = null;
+    if (isset($cooperation) && $cooperation instanceof \App\Models\Cooperation) {
+        $background = optional($cooperation->firstMedia(MediaHelper::BACKGROUND))->getUrl();
+    } else {
+        \App\Services\DiscordNotifier::init()->notify("Cooperation is not set! URL: " . request()->fullUrl() . "; Route: " . optional(request()->route())->getName() . "; Cooperation ID according to session: " . \App\Helpers\HoomdossierSession::getCooperation() . "; Running in console: " . app()->runningInConsole());
+    }
     $background = empty($background) ? asset('images/background.jpg') : $background;
-?>
+@endphp
 <main class="bg-cover bg-center bg-no-repeat bg-white"
       style="@yield('main_style', 'background-image: url(\''. $background .'\');')">
 {{--    @include('cooperation.frontend.layouts.parts.messages')--}}

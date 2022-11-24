@@ -6,32 +6,35 @@ use App\Http\Controllers\Controller as BaseController;
 use App\Models\Cooperation;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Info(
+ *      version="1.0.0",
+ *      title="Hoomdossier API documentation",
+ *      description="Bliep",
+ *      @OA\Contact(
+ *          email="info@wedesignit.nl"
+ *      ),
+ *      @OA\License(
+ *          name="Apache 2.0",
+ *          url="http://www.apache.org/licenses/LICENSE-2.0.html"
+ *      )
+ * )
+ *
+ * @OA\Server(
+ *      url=L5_SWAGGER_CONST_HOST,
+ *      description="API v1"
+ * )
+ *
+ * @OAS\SecurityScheme(
+ *      securityScheme="bearer_token",
+ *      type="http",
+ *      scheme="bearer"
+ * )
+ */
 class Controller extends BaseController
 {
+
     /**
-     * @OA\Info(
-     *      version="1.0.0",
-     *      title="Hoomdossier API documentation",
-     *      description="Bliep",
-     *      @OA\Contact(
-     *          email="info@wedesignit.nl"
-     *      ),
-     *      @OA\License(
-     *          name="Apache 2.0",
-     *          url="http://www.apache.org/licenses/LICENSE-2.0.html"
-     *      )
-     * )
-     *
-     * @OA\Server(
-     *      url=L5_SWAGGER_CONST_HOST,
-     *      description="API v1"
-     * )
-     *
-     * @OAS\SecurityScheme(
-     *      securityScheme="bearer_token",
-     *      type="http",
-     *      scheme="bearer"
-     * )
      *
      * @OA\Tag(
      *     name="Ping",
@@ -43,7 +46,6 @@ class Controller extends BaseController
      *     description="Endpoint to register a new user "
      * )
      */
-
 
     /**
      * @OA\Get(

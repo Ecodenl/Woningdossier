@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $input_source_id
  * @property string $type
  * @property bool $is_active
+ * @property int $active_count
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
@@ -30,6 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Notification newQuery()
  * @method static Builder|Notification query()
  * @method static Builder|Notification residentInput()
+ * @method static Builder|Notification whereActiveCount($value)
  * @method static Builder|Notification whereBuildingId($value)
  * @method static Builder|Notification whereCreatedAt($value)
  * @method static Builder|Notification whereId($value)
@@ -41,14 +43,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Notification extends Model
 {
-    use GetMyValuesTrait;
-    use GetValueTrait;
+    use GetMyValuesTrait,
+        GetValueTrait;
 
     protected $fillable = [
         'type',
         'building_id',
         'input_source_id',
         'is_active',
+        'active_count',
     ];
 
     protected $casts = [
@@ -71,15 +74,5 @@ class Notification extends Model
     public function scopeForType(Builder $query, string $type)
     {
         return $query->where('type', $type);
-    }
-
-    public static function setActive(Building $building, InputSource $inputSource, string $type, bool $active = false)
-    {
-        Notification::allInputSources()->updateOrCreate([
-            'input_source_id' => $inputSource->id,
-            'type' => $type,
-            // the building owner is always passed to the job.
-            'building_id' => $building->id,
-        ], ['is_active' => $active]);
     }
 }

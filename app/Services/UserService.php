@@ -190,7 +190,8 @@ class UserService
         );
 
         $data['bag_addressid'] = $addressData['id'] ?? $data['addressid'] ?? '';
-        $data['extension'] = $addressData['huisletter'] ?? $data['house_number_extension'] ?? null;
+        // Force empty string
+        $data['extension'] = $addressData['huisletter'] ?? $data['house_number_extension'] ?? '';
 
         $features = new BuildingFeature([
             'surface' => $addressData['surface'] ?? null,

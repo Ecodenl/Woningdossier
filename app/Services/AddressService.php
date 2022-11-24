@@ -106,7 +106,7 @@ class AddressService
                 // so this is incorrect, but ye
                 'house_number_extension' => $houseNumberExtension,
                 'city' => $address['woonplaatsNaam'] ?? '',
-                'build_year' => $address['bouwjaar'] ?? 1930,
+                'build_year' => $address['oorspronkelijkBouwjaar'][0] ?? 1930,
                 'surface' => $address['oppervlakte'] ?? 0,
             ];
             Log::debug(__CLASS__, $result);

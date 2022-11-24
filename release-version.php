@@ -2,7 +2,7 @@
 
 require __DIR__.'/vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::create(__DIR__, '.env');
+$dotenv = Dotenv\Dotenv::createMutable(__DIR__, '.env');
 $dotenv->load();
 
 $c = include_once dirname(__FILE__).'/config/app.php';

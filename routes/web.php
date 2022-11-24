@@ -5,6 +5,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
 use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
+use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
+use Laravel\Fortify\Http\Controllers\NewPasswordController;
+use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
+use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
+use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
 /** @noinspection PhpParamsInspection */
 
@@ -40,32 +47,48 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
         Route::get('switch-language/{locale}', [Cooperation\UserLanguageController::class, 'switchLanguage'])->name('switch-language');
 
-        Route::get('check-existing-mail', [Cooperation\Auth\RegisterController::class, 'checkExistingEmail'])->name('check-existing-email');
-        Route::post('connect-existing-account', [Cooperation\Auth\RegisterController::class, 'connectExistingAccount'])->name('connect-existing-account');
+        Route::get('check-existing-mail', [RegisteredUserController::class, 'checkExistingEmail'])->name('check-existing-email');
 
-        Route::get('register', [Cooperation\Auth\RegisterController::class, 'showRegistrationForm'])->name('register')->middleware('guest');
-        Route::post('register', [Cooperation\Auth\RegisterController::class, 'register']);
+        // Fortify auth routes start
+        Route::get('/register', [RegisteredUserController::class, 'index'])
+            ->middleware(['guest:'.config('fortify.guard')])
+            ->name('register');
+        Route::post('/register', [RegisteredUserController::class, 'store'])
+            ->middleware(['guest:'.config('fortify.guard')]);
 
-        Route::name('auth.')->group(function () {
-            Route::get('email/verify', [Cooperation\Auth\VerificationController::class, 'show'])->name('verification.notice');
-            // for users that have some old verification url.
-            Route::get('email/verify/{id}', [Cooperation\Auth\VerificationController::class, 'oldVerifyUrl']);
-            Route::get('email/verify/{id}/{hash}', [Cooperation\Auth\VerificationController::class, 'verify'])->name('verification.verify');
-            Route::post('email/resend', [Cooperation\Auth\VerificationController::class, 'resend'])->name('verification.resend');
+        Route::as('auth.')->group(function () {
+            $limiter = config('fortify.limiters.login');
+            $guard = config('fortify.guard');
+            $verificationLimiter = config('fortify.limiters.verification', '6,1');
 
-            Route::get('login', [Cooperation\Auth\LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
-            Route::post('login', [Cooperation\Auth\LoginController::class, 'login']);
-//
-            Route::post('logout', [Cooperation\Auth\LoginController::class, 'logout'])->name('logout');
+            Route::get('/email/verify', [EmailVerificationPromptController::class, '__invoke'])
+                ->middleware([config('fortify.auth_middleware', 'auth').':'.$guard])
+                ->name('verification.notice');
+            Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+                ->middleware([config('fortify.auth_middleware', 'auth').':'.$guard, 'signed', 'throttle:'.$verificationLimiter])
+                ->name('verification.verify');
+            Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+                ->middleware([config('fortify.auth_middleware', 'auth').':'.$guard, 'throttle:'.$verificationLimiter])
+                ->name('verification.send');
 
-            Route::prefix('password')->name('password.')->group(function () {
-                Route::get('request', [Cooperation\Auth\ForgotPasswordController::class, 'index'])->name('request.index');
-                Route::post('request', [Cooperation\Auth\ForgotPasswordController::class, 'store'])->name('request.store');
+            Route::get('login', [AuthenticatedSessionController::class, 'create'])->middleware(['guest:' . $guard])
+                ->name('login');
+            Route::post('login', [AuthenticatedSessionController::class, 'store'])->middleware(array_filter([
+                'guest:' . $guard, $limiter ? 'throttle:' . $limiter : null,
+            ]))->name('login.submit');
 
-                Route::get('reset/{token}/{email}', [Cooperation\Auth\ResetPasswordController::class, 'show'])->name('reset.show');
-                Route::post('reset', [Cooperation\Auth\ResetPasswordController::class, 'update'])->name('reset.update');
-            });
+            Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+            Route::get('password/request', [PasswordResetLinkController::class, 'create'])->middleware(['guest:' . $guard])
+                ->name('password.request.index');
+            Route::post('password/request', [PasswordResetLinkController::class, 'store'])->middleware(['guest:' . $guard])
+                ->name('password.request.store');
+            Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->middleware(['guest:' . $guard])
+                ->name('password.reset');
+            Route::post('reset-password', [NewPasswordController::class, 'store'])->middleware(['guest:' . $guard])
+                ->name('password.update');
         });
+        // Fortify auth routes end
 
         Route::prefix('create-building')->name('create-building.')->group(function () {
             Route::get('', [Cooperation\CreateBuildingController::class, 'index'])->name('index');
@@ -169,7 +192,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         );
 
                     Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
-                        Route::get('woonplan', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'index'])->name('my-plan.index');
+
+                        Route::as('my-plan.')->prefix('woonplan')->group(function () {
+                            Route::get('', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'index'])->name('index');
+                            Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'media'])->name('media');
+                        });
 
                         Route::get('{step}/vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\QuickScan\QuestionnaireController::class, 'index'])
                             ->name('questionnaires.index');

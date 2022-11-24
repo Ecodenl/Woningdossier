@@ -14,7 +14,7 @@
             @endif
             @if(session('status'))
                 @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
-                    {{ session('status') }}
+                    @lang(session('status'))
                 @endcomponent
             @endif
             <p>
@@ -44,7 +44,7 @@
         </div>
     </div>
     <form method="POST" class="hidden" id="resend-form"
-          action="{{ route('cooperation.auth.verification.resend') }}">
+          action="{{ route('cooperation.auth.verification.send') }}">
         @csrf
     </form>
 @endsection

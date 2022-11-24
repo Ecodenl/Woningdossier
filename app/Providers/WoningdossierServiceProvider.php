@@ -10,6 +10,7 @@ use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\CompletedSubStep;
+use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
 use App\Models\Translation;
@@ -89,6 +90,10 @@ class WoningdossierServiceProvider extends ServiceProvider
             if (Session::has('cooperation')) {
                 $c = Session::get('cooperation');
                 $cooperation = \App\Helpers\Cache\Cooperation::find($c);
+            }
+
+            if (! $cooperation instanceof Cooperation) {
+                \App\Services\DiscordNotifier::init()->notify("Cooperation is not set (Service provider/session)! URL: " . request()->fullUrl() . "; Route: " . optional(request()->route())->getName() . "; Cooperation ID according to session: " . \App\Helpers\HoomdossierSession::getCooperation() . "; Running in console: " . app()->runningInConsole());
             }
 
             return $cooperation;

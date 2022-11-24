@@ -353,21 +353,21 @@ class Heating extends Calculator
         )) {
             Log::debug(__METHOD__.' - primary wtw heat-pump/heat-pump-boiler');
             // step 1: Gas usage wtw from table * gasKwhPerM3 / SCOP (m3 -> kWh)
-            $heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue(
-                'heat-pump',
-                $heatPumpTypeShort,
-                $this->getAnswer($heatPumpTypeShort)
-            );
-            $heatingTemperature   = ToolQuestion::findByShort(
-                $boilerSettingComfortHeatShort
-            )
-                                                ->toolQuestionCustomValues()
-                                                ->whereShort(
-                                                    $this->getAnswer(
-                                                        $boilerSettingComfortHeatShort
-                                                    )
-                                                )
-                                                ->first();
+            if ($case === 'new') {
+                $heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue(
+                    'heat-pump',
+                    $heatPumpTypeShort,
+                    $this->getAnswer($heatPumpTypeShort)
+                );
+            } else {
+                $heatPumpConfigurable = ServiceValue::find($this->getAnswer($heatPumpTypeShort));
+            }
+
+            $heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
+                ->toolQuestionCustomValues()
+                ->whereShort($this->getAnswer($boilerSettingComfortHeatShort))
+                ->first();
+
             $characteristics      = $this->lookupHeatPumpCharacteristics(
                 $heatPumpConfigurable,
                 $heatingTemperature
@@ -379,13 +379,12 @@ class Heating extends Calculator
             );
             $scop = 1;
             if ($characteristics instanceof HeatPumpCharacteristic) {
-            $scop = max($characteristics->scop_tap_water, 1); // prevent divide by 0
+                $scop = max($characteristics->scop_tap_water, 1); // prevent divide by 0
             }
 
             Log::debug(__METHOD__.' - scop = '.$scop);
 
-            $energyConsumption = $gasUsageWtw * Kengetallen::gasKwhPerM3(
-                ) / $scop;
+            $energyConsumption = $gasUsageWtw * Kengetallen::gasKwhPerM3() / $scop;
             data_set($result, 'electricity.bruto', round($energyConsumption, 4));
 
             // step 2: Deduct solar boiler yield (electricity)

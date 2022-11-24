@@ -180,13 +180,15 @@ class HeatPump extends \App\Calculations\Calculator
                     $advisedSystem['scop_heating'],
                     1
                 )) + $electricalReheating;
+        //$electricityUsageHeating = data_get($energyUsage, 'heating.new.electricity.bruto', 0);
         Log::debug("C71: " . $electricityUsageHeating . " (elektraverbruik verwarmen)");
 
         // C72 = ((D9-C69) * KeyFigures::M3_GAS_TO_KWH) / scop_tap_water)
-        $electricityUsageTapWater = (($nettoGasUsageTapWater - $gasUsageTapWater) * KeyFigures::M3_GAS_TO_KWH) / max(
-                $advisedSystem['scop_tap_water'],
-                1
-            );
+        //$electricityUsageTapWater = (($nettoGasUsageTapWater - $gasUsageTapWater) * KeyFigures::M3_GAS_TO_KWH) / max(
+        //        $advisedSystem['scop_tap_water'],
+        //        1
+        //    );
+        $electricityUsageTapWater = data_get($energyUsage, 'tap_water.new.electricity.bruto', 0);
         Log::debug("C72: " . $electricityUsageTapWater . " (elektraverbruik wtw)");
 
         // C73 = from mapping Maatregelopties en kengetallen: B58:D60 icm future situation

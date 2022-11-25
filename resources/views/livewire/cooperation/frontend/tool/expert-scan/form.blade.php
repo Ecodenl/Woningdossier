@@ -39,7 +39,8 @@
 
         @foreach($step->subSteps as $subStep)
              <div x-show="active == '{{$subStep->slug}}'" wire:ignore.self>
-                @livewire('cooperation.frontend.tool.expert-scan.sub-steppable', ['step' => $step, 'subStep' => $subStep], key($subStep->id))
+                <livewire:cooperation.frontend.tool.expert-scan.sub-steppable :step="$step" :subStep="$subStep"
+                                                                              :wire:key="$subStep->id"/>
              </div>
          @endforeach
     </div>

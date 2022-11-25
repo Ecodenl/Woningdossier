@@ -30,7 +30,7 @@ export default (initiallyOpen = false) => ({
             if (null !== context.select) {
                 let observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
-                        context.constructSelect(false);
+                        context.constructSelect();
                         if (! context.livewire) {
                             window.triggerEvent(context.select, 'change');
                         }
@@ -39,21 +39,43 @@ export default (initiallyOpen = false) => ({
 
                 observer.observe(context.select, { childList: true });
 
+                let attributeObserver = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        context.constructSelect();
+                    });
+                });
+
+                attributeObserver.observe(context.select, { attributeFilter: ['disabled'] });
+
                 // Bind event listener for change
                 // TODO: Check if values update correctly when data is changed on Livewire side
                 context.select.addEventListener('change', (event) => {
-                    this.updateSelectedValues();
+                    context.updateSelectedValues();
                 });
+
+                if (context.multiple) {
+                    // If it's multiple, we will add an event listener to rebuild the input on resizing,
+                    // as well as on switching tabs.
+                    window.addEventListener('resize', (event) => {
+                        context.setInputValue();
+                    });
+
+                    window.addEventListener('tab-switched', (event) => {
+                        setTimeout(() => {
+                            context.setInputValue();
+                        });
+                    });
+                }
             }
 
             if (context.livewire && null !== context.select) {
                 //TODO: This works for now, but the wire:model can have extra options such as .lazy, which will
                 // not be caught this way. Might require different resolving in the future
-                this.wireModel = context.select.getAttribute('wire:model');
+                context.wireModel = context.select.getAttribute('wire:model');
             }
 
-            if (this.values === null && this.multiple) {
-                this.values = [];
+            if (context.values === null && context.multiple) {
+                context.values = [];
             }
         });
 
@@ -69,56 +91,61 @@ export default (initiallyOpen = false) => ({
         });
     },
     // Construct a fresh custom select
-    constructSelect(isFirstBoot) {
+    constructSelect(isFirstBoot = false) {
         let before = this.values;
 
         let wrapper = this.$refs['select-wrapper'];
-        // Get the select element
-        this.select = wrapper.querySelector('select');
-        // Select is defined!
-        if (null !== this.select) {
-            this.multiple = this.select.hasAttribute('multiple');
 
-            this.disabled = this.select.hasAttribute('disabled');
+        if (wrapper) {
+            // Get the select element
+            this.select = wrapper.querySelector('select');
+            // Select is defined!
+            if (null !== this.select) {
+                this.multiple = this.select.hasAttribute('multiple');
 
-            // Add class if disabled, so CSS can do magic
-            if (this.disabled) {
-                this.$refs['select-input'].classList.add('disabled');
-                this.open = false;
-            }
+                this.disabled = this.select.hasAttribute('disabled');
 
-            // Build the alpine select
-            let optionDropdown = this.$refs['select-options'];
-            // Clear any options there might be left
-            optionDropdown.children.remove();
-            let options = this.select.options;
-            // Loop options to build
-            // Note: we cannot use forEach, as options is a HTML collection, which is not an array
-            for (let i = 0; i < options.length; i++) {
-                this.buildOption(optionDropdown, options[i]);
-            }
-
-            // Hide the original select
-            this.select.style.display = 'none';
-            // Show the new alpine select
-            this.$refs['select-input-group'].style.display = '';
-
-            setTimeout(() => {
-                this.updateSelectedValues();
-                let after = this.values;
-
-                // Ensure any potentially hidden values are no longer selected if the data changes after initial boot.
-                // We compare before and after because we don't want to unnecessarily cast multiple changes.
-                if (! isFirstBoot && JSON.stringify(before) !== JSON.stringify(after)) {
-                    if (this.livewire) {
-                        if (this.wireModel) {
-                            this.$wire.set(this.wireModel, this.values);
-                        }
-                    } else {
-                        window.triggerEvent(this.select, 'change');
-                    }
+                // Add class if disabled, so CSS can do magic
+                if (this.disabled) {
+                    this.$refs['select-input'].classList.add('disabled');
+                    this.open = false;
+                } else {
+                    this.$refs['select-input'].classList.remove('disabled');
                 }
-            });
+
+                // Build the alpine select
+                let optionDropdown = this.$refs['select-options'];
+                // Clear any options there might be left
+                optionDropdown.children.remove();
+                let options = this.select.options;
+                // Loop options to build
+                // Note: we cannot use forEach, as options is a HTML collection, which is not an array
+                for (let i = 0; i < options.length; i++) {
+                    this.buildOption(optionDropdown, options[i]);
+                }
+
+                // Hide the original select
+                this.select.style.display = 'none';
+                // Show the new alpine select
+                this.$refs['select-input-group'].style.display = '';
+
+                setTimeout(() => {
+                    this.updateSelectedValues();
+                    let after = this.values;
+
+                    // Ensure any potentially hidden values are no longer selected if the data changes after initial boot.
+                    // We compare before and after because we don't want to unnecessarily cast multiple changes.
+                    if (! isFirstBoot && JSON.stringify(before) !== JSON.stringify(after)) {
+                        if (this.livewire) {
+                            if (this.wireModel) {
+                                this.$wire.set(this.wireModel, this.values);
+                            }
+                        } else {
+                            window.triggerEvent(this.select, 'change');
+                        }
+                    }
+                });
+            }
         }
     },
     toggle() {
@@ -225,6 +252,11 @@ export default (initiallyOpen = false) => ({
 
                 newInputOption.appendChild(document.createTextNode(text));
                 newInputOption.classList.add('form-input-option');
+
+                if (this.disabled) {
+                    newInputOption.classList.add('disabled');
+                }
+
                 newInputOption.setAttribute("data-value", value);
                 newInputOption.setAttribute("x-on:click", "changeOption($el)");
                 inputGroup.appendChild(newInputOption);
@@ -277,6 +309,8 @@ export default (initiallyOpen = false) => ({
 
         if (option.hasAttribute('disabled')) {
             newOption.classList.add('disabled');
+        } else if (this.disabled) {
+            newOption.classList.add('disabled', 'readonly');
         }
 
         // Append to list

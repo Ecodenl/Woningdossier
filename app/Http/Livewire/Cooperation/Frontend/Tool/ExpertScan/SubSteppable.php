@@ -23,10 +23,13 @@ class SubSteppable extends Scannable
 
     public $intercontinentalAnswers = [];
 
+    public $loading = false;
+
     protected $listeners = [
         'calculationsPerformed',
         'updateFilledInAnswers',
         'save',
+        'inputUpdated',
     ];
 
     public function mount(Step $step, SubStep $subStep)
@@ -65,6 +68,9 @@ class SubSteppable extends Scannable
     public function render()
     {
         $this->rehydrateToolQuestions();
+        if ($this->loading) {
+            $this->dispatchBrowserEvent('input-updated');
+        }
         return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
     }
 
@@ -75,6 +81,11 @@ class SubSteppable extends Scannable
         // can perform calculations
         $this->emit('updateFilledInAnswers', $this->filledInAnswers, $this->id);
         $this->dispatchBrowserEvent('component-ready', ['id' => $this->id]);
+    }
+
+    public function inputUpdated()
+    {
+        $this->loading = true;
     }
 
     public function hydrateToolQuestions()
@@ -112,6 +123,8 @@ class SubSteppable extends Scannable
     public function calculationsPerformed($calculationResults)
     {
         $this->calculationResults = $calculationResults;
+        $this->dispatchBrowserEvent('input-update-processed');
+        $this->loading = false;
     }
 
     protected function evaluateToolQuestions()

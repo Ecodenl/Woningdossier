@@ -107,11 +107,8 @@ class HeatPump extends \App\Calculations\Calculator
             $boiler = Service::findByShort('boiler')->values()->orderByDesc('calculate_value')->limit(1)->first();
         }
 
-        $gasUsage = HighEfficiencyBoilerCalculator::calculateGasUsage(
-            $boiler,
-            $this->energyHabit,
-            $amountGas
-        );
+        $gasUsage = HighEfficiencyBoilerCalculator::init($this->building, $this->inputSource, $this->answers)
+            ->calculateGasUsage();
 
         // D8
         $nettoGasUsageHeating = data_get($gasUsage, 'heating.netto', 0);

@@ -13,6 +13,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
 use App\Models\ServiceValue;
+use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
@@ -205,13 +206,13 @@ class Calculator
      */
     public static function maxGasSavings(Building $building, InputSource $inputSource, $energyHabit, Element $element)
     {
-        $boiler = $building->getServiceValue('boiler', $inputSource);
+        $boiler = ServiceValue::find($building->getAnswer($inputSource, ToolQuestion::findByShort('boiler-type')));
         $result = 0;
 
         if ($boiler instanceof ServiceValue) {
             $buildingType = $building->getBuildingType($inputSource);
             if ($buildingType instanceof BuildingType) {
-                $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
+                $usages = HighEfficiencyBoilerCalculator::init($building, $inputSource)->calculateGasUsage();
                 $usage = $usages['heating']['bruto'];
                 $saving = 0;
                 $maxSaving = BuildingTypeElementMaxSaving::where('building_type_id', $buildingType->id)

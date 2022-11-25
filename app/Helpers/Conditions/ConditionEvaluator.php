@@ -16,15 +16,8 @@ class ConditionEvaluator
 {
     use FluentCaller;
 
-    /**
-     * @var Building
-     */
-    protected $building;
-    /**
-     * @var InputSource
-     */
-    protected $inputSource;
-
+    protected Building $building;
+    protected InputSource $inputSource;
     protected bool $explain = false;
 
     /**
@@ -32,7 +25,7 @@ class ConditionEvaluator
      *
      * @return $this
      */
-    public function building(Building $building)
+    public function building(Building $building): self
     {
         $this->building = $building;
 
@@ -44,22 +37,26 @@ class ConditionEvaluator
      *
      * @return $this
      */
-    public function inputSource(InputSource $inputSource)
+    public function inputSource(InputSource $inputSource): self
     {
         $this->inputSource = $inputSource;
 
         return $this;
     }
 
-    public function explain()
+    public function explain(): self
     {
         $this->explain = true;
 
         return $this;
     }
 
-    public function getToolAnswersForConditions(array $conditions): Collection
+    public function getToolAnswersForConditions(array $conditions, ?Collection $answers = null): Collection
     {
+        $answers = $answers instanceof Collection ? $answers : collect();
+        $ignore = $answers->keys()->all();
+        if (! empty($answers))
+
         // Get answers for condition columns, but ensure we don't fetch PASS clause columns (as they don't have
         // any answers so they don't need checking, and they could be arrays which would cause issues), and also
         // don't fetch special evaluators, as they don't have answers either.
@@ -109,9 +106,6 @@ class ConditionEvaluator
                     $this->inputSource,
                     $toolQuestion
                 );
-                if (is_array($answer)) {
-                    $answer = collect($answer);
-                }
             }
             $answers[$questionKey] = $answer;
         }

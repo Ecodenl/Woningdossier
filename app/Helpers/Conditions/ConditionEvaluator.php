@@ -204,7 +204,7 @@ class ConditionEvaluator
 
             // Ensure we pass potential dynamic answers through
             $conditions = $model->conditions ?? [];
-            $answersForNewConditions = $this->getToolAnswersForConditions($conditions)->merge($collection);
+            $answersForNewConditions = $this->getToolAnswersForConditions($conditions, $collection);
 
             // Return result based on whether it should or should not pass
             $result = $this->evaluateCollection($conditions, $answersForNewConditions);

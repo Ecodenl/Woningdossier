@@ -56,17 +56,16 @@ class Alerts extends Component
             ->building($this->building)
             ->inputSource($this->inputSource);
 
-        $conditions = [];
-
         // First fetch all conditions, so we can retrieve any required related answers in one go
+        $conditionsForAllAlerts = [];
         foreach ($alerts as $alert) {
-            $conditions = array_merge($conditions, $alert->conditions ?? []);
+            $conditionsForAllAlerts = array_merge($conditionsForAllAlerts, $alert->conditions ?? []);
         }
-        $answers = $evaluator->getToolAnswersForConditions($conditions, collect($answers));
+        $answersForAlerts = $evaluator->getToolAnswersForConditions($conditionsForAllAlerts, collect($answers));
 
         foreach ($alerts as $index => $alert) {
             // Check if we should show this alert
-            if ($evaluator->evaluateCollection($alert->conditions, $answers)) {
+            if ($evaluator->evaluateCollection($alert->conditions, $answersForAlerts)) {
                 $oldAlert = null;
                 if ($oldAlerts instanceof Collection) {
                     $oldAlert = $oldAlerts->where('short', $alert->short)->first();

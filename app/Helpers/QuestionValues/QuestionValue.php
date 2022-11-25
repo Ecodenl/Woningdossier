@@ -93,14 +93,21 @@ class QuestionValue
                 ->inputSource($this->inputSource)
                 ->building($this->building);
 
+            // First fetch all conditions, so we can retrieve any required related answers in one go
+            $conditionsForAllValues = [];
+            foreach ($questionValues as $questionValue) {
+                $conditionsForAllValues = array_merge($conditionsForAllValues, $questionValue['conditions']);
+            }
+            $answersForQuestionValues = $evaluator->getToolAnswersForConditions($conditionsForAllValues)->merge($this->answers);
+
             foreach ($questionValues as $index => $questionValue) {
-                if (!empty($questionValue['conditions'])) {
+                if (! empty($questionValue['conditions'])) {
                     $passed = $evaluator->evaluateCollection(
                         $questionValue['conditions'],
-                        $evaluator->getToolAnswersForConditions($questionValue['conditions'])->merge($this->answers)
+                        $answersForQuestionValues,
                     );
 
-                    if (!$passed) {
+                    if (! $passed) {
                         $questionValues->forget($index);
                     }
                 }

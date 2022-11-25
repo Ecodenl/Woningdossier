@@ -139,18 +139,22 @@ abstract class Scannable extends Component
 
     protected function evaluateToolQuestions()
     {
+        $evaluator = ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->masterInputSource);
+
+        // First fetch all conditions, so we can retrieve any required related answers in one go
+        $conditionsForAllQuestions = [];
+        foreach (array_filter($this->toolQuestions->pluck('pivot.conditions')->all()) as $condition) {
+            $conditionsForAllQuestions = array_merge($conditionsForAllQuestions, $condition);
+        }
+        $answersForAllQuestions = $evaluator->getToolAnswersForConditions($conditionsForAllQuestions, collect($this->filledInAnswers));
+
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             if (! empty($toolQuestion->pivot->conditions)) {
                 $conditions = $toolQuestion->pivot->conditions;
 
-                $evaluator = ConditionEvaluator::init()
-                    ->building($this->building)
-                    ->inputSource($this->masterInputSource);
-
-                $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)
-                    ->merge(collect($this->filledInAnswers));
-
-                if (! $evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
+                if (! $evaluator->evaluateCollection($conditions, $answersForAllQuestions)) {
                     $this->toolQuestions = $this->toolQuestions->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they

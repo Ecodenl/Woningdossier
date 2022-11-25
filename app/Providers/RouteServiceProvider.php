@@ -32,7 +32,7 @@ class RouteServiceProvider extends ServiceProvider
 
             $this->mapWebRoutes();
         });
-Route::model('cooperation', Cooperation::class);
+        Route::model('cooperation', Cooperation::class);
 
         Route::bind('cooperation', function ($value) {
             if ($this->getCurrentRequest()->hasHeader('X-Cooperation-Slug')) {
@@ -40,9 +40,8 @@ Route::model('cooperation', Cooperation::class);
             }
 
             return Cooperation::whereSlug($value)->firstOrFail();
-        });    }
-
-
+        });
+    }
 
     /**
      * Define the "web" routes for the application.

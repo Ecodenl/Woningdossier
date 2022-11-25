@@ -122,6 +122,9 @@ class Form extends Component
             'exampleBuildingValues.order' => 'nullable|numeric|min:0',
             'contents.new.build_year' => 'nullable|numeric|min:0'
         ]);
+        if (empty($this->exampleBuildingValues['cooperation_id'])) {
+            $this->exampleBuildingValues['cooperation_id'] = null;
+        }
         // update or create
         if ($this->exampleBuilding instanceof ExampleBuilding) {
             $this->exampleBuilding->update($this->exampleBuildingValues);

@@ -24,13 +24,6 @@ use Illuminate\Support\Collection;
 class HeatPump extends \App\Calculations\Calculator
 {
     /**
-     * Answer for tool question 'new-boiler-type'
-     *
-     * @var \App\Models\ServiceValue|null
-     */
-    protected ?ServiceValue $boiler;
-
-    /**
      * Answer for tool question 'new-boiler-setting-comfort-heat'
      * ("Hoge temperatuur", "50 graden", "Lage temperatuur")
      *

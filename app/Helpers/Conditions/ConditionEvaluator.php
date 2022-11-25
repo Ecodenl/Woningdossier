@@ -55,7 +55,6 @@ class ConditionEvaluator
     {
         $answers = $answers instanceof Collection ? $answers : collect();
         $ignore = $answers->keys()->all();
-        if (! empty($answers))
 
         // Get answers for condition columns, but ensure we don't fetch PASS clause columns (as they don't have
         // any answers so they don't need checking, and they could be arrays which would cause issues), and also
@@ -64,6 +63,7 @@ class ConditionEvaluator
             ->merge(collect(Arr::flatten($conditions, 1)))
             ->whereNotIn('operator', [Clause::PASSES, Clause::NOT_PASSES])
             ->where('column', '!=', 'fn')
+            ->whereNotIn('column', $ignore)
             ->pluck('column')
             ->unique()
             ->filter()
@@ -72,9 +72,9 @@ class ConditionEvaluator
         // the structure of the questionKeys tells us how to retrieve the answer
         // if it contains a dot, it's in a table.column format
         // if not, it's a tool question short
-        $answers = [];
+        $collectedAnswers = [];
         foreach ($questionKeys as $questionKey) {
-            if (Str::contains($questionKey, '.',)) {
+            if (Str::contains($questionKey, '.')) {
                 // table.column
                 $dbParts = explode('.', $questionKey);
                 if (count($dbParts) <= 1) {
@@ -107,10 +107,10 @@ class ConditionEvaluator
                     $toolQuestion
                 );
             }
-            $answers[$questionKey] = $answer;
+            $collectedAnswers[$questionKey] = $answer;
         }
 
-        return collect($answers);
+        return collect($collectedAnswers)->merge($answers);
     }
 
     public function evaluate(array $conditions): bool

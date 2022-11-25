@@ -57,39 +57,30 @@ class Alerts extends Component
             ->inputSource($this->inputSource);
 
         $conditions = [];
-$answers = [
-    'new-heat-source' => ['hr-boiler'],
-];
-dd(collect($answers));
-        \DB::enableQueryLog();
+
         // First fetch all conditions, so we can retrieve any required related answers in one go
-        foreach ($alerts as $index => $alert) {
+        foreach ($alerts as $alert) {
             $conditions = array_merge($conditions, $alert->conditions ?? []);
         }
         $answers = $evaluator->getToolAnswersForConditions($conditions, collect($answers));
-dd($answers);
-        dd(\DB::getQueryLog());
 
         foreach ($alerts as $index => $alert) {
-            // Get answers and merge any potential new answers
-            $answersForAlert = $evaluator->getToolAnswersForConditions($alert->conditions)->merge(collect($answers));
-
             // Check if we should show this alert
-            //if ($evaluator->evaluateCollection($alert->conditions, $answersForAlert)) {
-            //    $oldAlert = null;
-            //    if ($oldAlerts instanceof Collection) {
-            //        $oldAlert = $oldAlerts->where('short', $alert->short)->first();
-            //    }
-            //    // if the current alert is not found in the oldAlerts, it will be considered "new"
-            //    // in that case we will open the alert for the user
-            //    if(! $oldAlert instanceof Alert) {
-            //        $shouldOpenAlert = true;
-            //    }
-            //} else  {
-            //    $alerts->forget($index);
-            //}
+            if ($evaluator->evaluateCollection($alert->conditions, $answers)) {
+                $oldAlert = null;
+                if ($oldAlerts instanceof Collection) {
+                    $oldAlert = $oldAlerts->where('short', $alert->short)->first();
+                }
+                // if the current alert is not found in the oldAlerts, it will be considered "new"
+                // in that case we will open the alert menu for the user
+                if(! $oldAlert instanceof Alert) {
+                    $shouldOpenAlert = true;
+                }
+            } else  {
+                $alerts->forget($index);
+            }
         }
-dd(\DB::getQueryLog());
+
         if ($alerts->isEmpty()) {
             $shouldOpenAlert = false;
         }

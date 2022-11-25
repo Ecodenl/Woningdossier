@@ -788,11 +788,43 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-central-heater-gas',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'hr-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'kitchen-geyser' => [
                         'name' => 'Bad/keukengeiser',
                         'extra' => [
                             'icon' => 'icon-placeholder',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'kitchen-geyser',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'electric-boiler' => [
@@ -800,11 +832,43 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-placeholder',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'electric-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'heat-pump-boiler' => [
                         'name' => 'Warmtepomp boiler',
                         'extra' => [
                             'icon' => 'icon-placeholder',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'heat-pump-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'heat-pump' => [
@@ -818,6 +882,18 @@ class ToolQuestionsTableSeeder extends Seeder
                                     'column' => 'heat-source',
                                     'operator' => Clause::CONTAINS,
                                     'value' => 'heat-pump',
+                                ],
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'heat-pump',
+                                            'sun-boiler',
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],
@@ -833,11 +909,43 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-district-heating',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'district-heating',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'none' => [
                         'name' => 'Anders...',
                         'extra' => [
                             'icon' => 'icon-other',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'none',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                 ],
@@ -1273,11 +1381,43 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-central-heater-gas',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'hr-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'kitchen-geyser' => [
                         'name' => 'Bad/keukengeiser',
                         'extra' => [
                             'icon' => 'icon-placeholder',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'kitchen-geyser',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'electric-boiler' => [
@@ -1285,11 +1425,43 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-placeholder',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'electric-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'heat-pump-boiler' => [
                         'name' => 'Warmtepomp boiler',
                         'extra' => [
                             'icon' => 'icon-placeholder',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'heat-pump-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'heat-pump' => [
@@ -1304,6 +1476,18 @@ class ToolQuestionsTableSeeder extends Seeder
                                     'operator' => Clause::CONTAINS,
                                     'value' => 'heat-pump',
                                 ],
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'heat-pump',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
                             ],
                         ],
                     ],
@@ -1317,6 +1501,22 @@ class ToolQuestionsTableSeeder extends Seeder
                         'name' => 'Stadsverwarming',
                         'extra' => [
                             'icon' => 'icon-district-heating',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'district-heating',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                 ],

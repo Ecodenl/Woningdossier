@@ -24,7 +24,7 @@ class AdviceCategory extends ShouldEvaluate
 
         $key = md5(json_encode(['measure_application' => $measureApplicationShort]));
 
-        if (! empty($this->override[$key])) {
+        if (array_key_exists($key, $this->override)) {
             $advice = $this->override[$key];
             return [
                 'results' => $advice,

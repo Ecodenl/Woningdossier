@@ -15,8 +15,8 @@ class BuildingType extends ShouldEvaluate
 
         $key = md5(json_encode([null]));
 
-        if (! empty($this->override[$key])) {
-            $totalCategories = $this->override;
+        if (array_key_exists($key, $this->override)) {
+            $totalCategories = $this->override[$key];
             return [
                 'results' => $totalCategories,
                 'bool' => $totalCategories > 1,

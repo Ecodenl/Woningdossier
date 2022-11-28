@@ -18,8 +18,8 @@ class InsulationAdvice extends ShouldEvaluate
 
         $key = md5(json_encode([null]));
 
-        if (! empty($this->override[$key])) {
-            $results = $this->override;
+        if (array_key_exists($key, $this->override)) {
+            $results = $this->override[$key];
             return [
                 'results' => $results,
                 'bool' => in_array($value, $results),

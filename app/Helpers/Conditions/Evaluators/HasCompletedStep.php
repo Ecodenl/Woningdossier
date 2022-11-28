@@ -29,8 +29,8 @@ class HasCompletedStep extends ShouldEvaluate
             'input_source_shorts' => $inputSourceShorts,
         ]));
 
-        if (! empty($this->override[$key])) {
-            $hasCompleted = $this->override;
+        if (array_key_exists($key, $this->override)) {
+            $hasCompleted = $this->override[$key];
             return [
                 'results' => $hasCompleted,
                 'bool' => $shouldPass ? $hasCompleted : ! $hasCompleted,

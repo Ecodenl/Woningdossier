@@ -15,11 +15,14 @@ class SunBoilerPerformance extends ShouldEvaluate
         // This evaluator checks the performance for the sun-boiler in the user's situation. The calculation
         // returns a given color which defines the performance.
 
-        if (! is_null($this->override)) {
+        $key = md5(json_encode([null]));
+
+        if (! empty($this->override[$key])) {
             $results = $this->override;
             return [
                 'results' => $results,
                 'bool' => data_get($results, 'performance.alert') === $value,
+                'key' => $key,
             ];
         }
 
@@ -32,6 +35,7 @@ class SunBoilerPerformance extends ShouldEvaluate
         return [
             'results' => $results,
             'bool' => data_get($results, 'performance.alert') === $value,
+            'key' => $key,
         ];
     }
 }

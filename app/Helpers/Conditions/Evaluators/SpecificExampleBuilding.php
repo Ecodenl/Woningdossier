@@ -13,11 +13,14 @@ class SpecificExampleBuilding extends ShouldEvaluate
         $building = $this->building;
         $inputSource = $this->inputSource;
 
-        if (! is_null($this->override)) {
+        $key = md5(json_encode([null]));
+
+        if (! empty($this->override[$key])) {
             $results = $this->override;
             return [
                 'results' => $results,
                 'bool' => $results['specific_exists'] || $results['generic_total'] > 1,
+                'key' => $key,
             ];
         }
 
@@ -44,6 +47,7 @@ class SpecificExampleBuilding extends ShouldEvaluate
         return [
             'results' => $results,
             'bool' => $results['specific_exists'] || $results['generic_total'] > 1,
+            'key' => $key,
         ];
     }
 }

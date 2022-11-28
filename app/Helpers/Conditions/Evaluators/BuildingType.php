@@ -13,11 +13,14 @@ class BuildingType extends ShouldEvaluate
         $building = $this->building;
         $inputSource = $this->inputSource;
 
-        if (! is_null($this->override)) {
+        $key = md5(json_encode([null]));
+
+        if (! empty($this->override[$key])) {
             $totalCategories = $this->override;
             return [
                 'results' => $totalCategories,
                 'bool' => $totalCategories > 1,
+                'key' => $key,
             ];
         }
 
@@ -34,6 +37,7 @@ class BuildingType extends ShouldEvaluate
         return [
             'results' => $totalCategories,
             'bool' => $totalCategories > 1,
+            'key' => $key,
         ];
     }
 }

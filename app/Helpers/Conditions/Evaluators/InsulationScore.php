@@ -15,11 +15,14 @@ class InsulationScore extends ShouldEvaluate
         // This evaluator checks if the user's insulation is good enough to install a heat pump.
         // $value is expected as float/int.
 
-        if (! is_null($this->override)) {
+        $key = md5(json_encode([null]));
+
+        if (! empty($this->override[$key])) {
             $results = $this->override;
             return [
                 'results' => $results,
                 'bool' => $results < $value,
+                'key' => $key,
             ];
         }
 
@@ -28,6 +31,7 @@ class InsulationScore extends ShouldEvaluate
         return [
             'results' => $results,
             'bool' => $results < $value,
+            'key' => $key,
         ];
     }
 }

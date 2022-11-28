@@ -15,11 +15,14 @@ class HrBoilerAdvice extends ShouldEvaluate
         // This evaluator checks if the boiler_advice is returned in the calculation. This advice tells the user
         // that they won't receive much efficiency improvement because they already have a high quality HR-boiler
 
-        if (! is_null($this->override)) {
+        $key = md5(json_encode([null]));
+
+        if (! empty($this->override[$key])) {
             $results = $this->override;
             return [
                 'results' => $results,
                 'bool' => array_key_exists('boiler_advice', $results),
+                'key' => $key,
             ];
         }
 
@@ -28,6 +31,7 @@ class HrBoilerAdvice extends ShouldEvaluate
         return [
             'results' => $results,
             'bool' => array_key_exists('boiler_advice', $results),
+            'key' => $key,
         ];
     }
 }

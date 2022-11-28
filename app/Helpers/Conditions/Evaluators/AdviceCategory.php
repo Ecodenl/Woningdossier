@@ -22,11 +22,14 @@ class AdviceCategory extends ShouldEvaluate
         $measureApplicationShort = $value['measure_application'];
         $category = $value['category'];
 
-        if (! is_null($this->override)) {
-            $advice = $this->override;
+        $key = md5(json_encode(['measure_application' => $measureApplicationShort]));
+
+        if (! empty($this->override[$key])) {
+            $advice = $this->override[$key];
             return [
                 'results' => $advice,
                 'bool' => $advice instanceof UserActionPlanAdvice && $advice->category === $category,
+                'key' => $key,
             ];
         }
 
@@ -40,6 +43,7 @@ class AdviceCategory extends ShouldEvaluate
         return [
             'results' => $advice,
             'bool' => $advice instanceof UserActionPlanAdvice && $advice->category === $category,
+            'key' => $key,
         ];
     }
 }

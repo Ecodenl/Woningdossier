@@ -268,13 +268,13 @@ class ConditionEvaluator
     {
         $operator = class_basename($customEvaluatorClass);
 
-        $override = $this->customResults[$operator] ?? null;
+        $override = $this->customResults[$operator] ?? [];
         /** @var \App\Helpers\Conditions\Evaluators\ShouldEvaluate $customEvaluatorClass */
         $evaluation = $customEvaluatorClass::init($this->building, $this->inputSource)
             ->override($override)
             ->evaluate($value, $collection);
 
-        $this->customResults[$operator] = $evaluation['results'];
+        $this->customResults[$operator][$evaluation['key']] = $evaluation['results'];
 
         return $evaluation['bool'];
     }

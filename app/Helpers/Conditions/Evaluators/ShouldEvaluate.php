@@ -13,7 +13,7 @@ abstract class ShouldEvaluate
 
     protected Building $building;
     protected InputSource $inputSource;
-    protected $override = null;
+    protected array $override = [];
 
     public function __construct(Building $building, InputSource $inputSource)
     {

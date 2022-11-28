@@ -16,11 +16,14 @@ class InsulationAdvice extends ShouldEvaluate
         // they should improve certain aspects of their home before considering a heat pump, because it might not
         // perform to ideal standards.
 
-        if (! is_null($this->override)) {
+        $key = md5(json_encode([null]));
+
+        if (! empty($this->override[$key])) {
             $results = $this->override;
             return [
                 'results' => $results,
                 'bool' => in_array($value, $results),
+                'key' => $key,
             ];
         }
 
@@ -34,6 +37,7 @@ class InsulationAdvice extends ShouldEvaluate
         return [
             'results' => $results,
             'bool' => in_array($value, $results),
+            'key' => $key,
         ];
     }
 }

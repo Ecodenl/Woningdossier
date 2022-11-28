@@ -20,18 +20,26 @@ class HasCompletedStep extends ShouldEvaluate
         // 'should_pass' => whether or not this should pass; if set to false, the evaluation will be true if no steps
         // are completed
 
+        $stepShorts = $value['steps'];
+        $inputSourceShorts = $value['input_source_shorts'];
         $shouldPass = $value['should_pass'] ?? true;
 
-        if (! is_null($this->override)) {
+        $key = md5(json_encode([
+            'step_shorts' => $stepShorts,
+            'input_source_shorts' => $inputSourceShorts,
+        ]));
+
+        if (! empty($this->override[$key])) {
             $hasCompleted = $this->override;
             return [
                 'results' => $hasCompleted,
                 'bool' => $shouldPass ? $hasCompleted : ! $hasCompleted,
+                'key' => $key,
             ];
         }
 
-        $steps = Step::findByShorts($value['steps']);
-        $inputSources = InputSource::findByShorts($value['input_source_shorts']);
+        $steps = Step::findByShorts($stepShorts);
+        $inputSources = InputSource::findByShorts($inputSourceShorts);
 
         $hasCompleted = $building->completedSteps()->allInputSources()
             ->whereIn('step_id', $steps->pluck('id')->toArray())
@@ -41,6 +49,7 @@ class HasCompletedStep extends ShouldEvaluate
         return [
             'results' => $hasCompleted,
             'bool' => $shouldPass ? $hasCompleted : ! $hasCompleted,
+            'key' => $key,
         ];
     }
 }

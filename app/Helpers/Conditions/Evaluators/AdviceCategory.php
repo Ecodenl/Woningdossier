@@ -2,16 +2,17 @@
 
 namespace App\Helpers\Conditions\Evaluators;
 
-use App\Models\Building;
-use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
 use Illuminate\Support\Collection;
 
-class AdviceCategory implements ShouldEvaluate
+class AdviceCategory extends ShouldEvaluate
 {
-    public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool
+    public function evaluate($value = null, ?Collection $answers = null): array
     {
+        $building = $this->building;
+        $inputSource = $this->inputSource;
+
         // Check if the user has the advice, and if so, if it's in the correct category.
         // This requires $value to be an array, where
         // 'measure_application' => the short of the measure application,
@@ -21,6 +22,14 @@ class AdviceCategory implements ShouldEvaluate
         $measureApplicationShort = $value['measure_application'];
         $category = $value['category'];
 
+        if (! is_null($this->override)) {
+            $advice = $this->override;
+            return [
+                'results' => $advice,
+                'bool' => $advice instanceof UserActionPlanAdvice && $advice->category === $category,
+            ];
+        }
+
         $measureApplication = MeasureApplication::findByShort($measureApplicationShort);
 
         $advice = $building->user->actionPlanAdvices()
@@ -28,6 +37,9 @@ class AdviceCategory implements ShouldEvaluate
             ->forAdvisable($measureApplication)
             ->first();
 
-        return $advice instanceof UserActionPlanAdvice && $advice->category === $category;
+        return [
+            'results' => $advice,
+            'bool' => $advice instanceof UserActionPlanAdvice && $advice->category === $category,
+        ];
     }
 }

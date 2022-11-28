@@ -3,17 +3,31 @@
 namespace App\Helpers\Conditions\Evaluators;
 
 use App\Calculations\HeatPump;
-use App\Models\Building;
-use App\Models\InputSource;
 use Illuminate\Support\Collection;
 
-class InsulationScore implements ShouldEvaluate
+class InsulationScore extends ShouldEvaluate
 {
-    public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool
+    public function evaluate($value = null, ?Collection $answers = null): array
     {
+        $building = $this->building;
+        $inputSource = $this->inputSource;
+
         // This evaluator checks if the user's insulation is good enough to install a heat pump.
         // $value is expected as float/int.
 
-        return HeatPump::init($building, $inputSource, $answers)->insulationScore() < $value;
+        if (! is_null($this->override)) {
+            $results = $this->override;
+            return [
+                'results' => $results,
+                'bool' => $results < $value,
+            ];
+        }
+
+        $results = HeatPump::init($building, $inputSource, $answers)->insulationScore();
+
+        return [
+            'results' => $results,
+            'bool' => $results < $value,
+        ];
     }
 }

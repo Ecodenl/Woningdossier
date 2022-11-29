@@ -106,6 +106,51 @@ class ToolQuestionsTableSeeder extends Seeder
         $pitchedRoof = RoofType::findByShort('pitched');
         $flatRoof = RoofType::findByShort('flat');
 
+        #######
+        #
+        # README:
+        # For consistency of small measure questions, these are tool question custom values that get re-used.
+        # - The "main" question will use the $smallMeasureApplyValues. Any tool question short can be used.
+        # - The "sub" question "Hoe wil je het uitvoeren" should use the $smallMeasureExecuteValues. The short should
+        # be the "main" short + '-how'.
+        # - The "sub" question "De energiecoach heeft voor deze maatregel" should use the $smallMeasureCoachHelpValues.
+        # The short should be the "main" short + '-coach-help'.
+        #
+        # Simple example: apply-led-light, apply-led-light-how, apply-led-light-coach-help
+        #
+        #######
+
+        $smallMeasureApplyValues = [
+            'already-do' => [
+                'name' => 'Dat doe ik al',
+            ],
+            'want-to' => [
+                'name' => 'Dat wil ik gaan doen',
+            ],
+            'not-interested' => [
+                'name' => 'Geen interesse'
+            ],
+            'not-applicable' => [
+                'name' => 'Niet van toepassing'
+            ],
+        ];
+        $smallMeasureExecuteValues = [
+            'do-self' => [
+                'name' => 'Dat ga ik zelf doen',
+            ],
+            'let-do' => [
+                'name' => 'Dat wil ik laten doen',
+            ],
+        ];
+        $smallMeasureCoachHelpValues = [
+            'explained' => [
+                'name' => 'Uitleg gegeven',
+            ],
+            'helped' => [
+                'name' => 'Geholpen bij uitvoering (zie omschrijving)',
+            ],
+        ];
+
         $questions = [
             #-------------------------
             # Quick-scan only / shared with expert-scan questions
@@ -177,6 +222,26 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                         11 => [
                             'icon' => 'icon-apartment-mid-floor-corner', // TODO: See below
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'building-contract-type',
+                'translation' => 'Is het een huur- of koopwoning?',
+                'tool_question_custom_values' => [
+                    'rented' => [
+                        'name' => 'Huurwoning',
+                        'extra' => [
+                            //'icon' => 'icon-central-heater-gas',
+                        ],
+                    ],
+                    'bought' => [
+                        'name' => 'Koopwoning',
+                        'extra' => [
+                            //'icon' => 'icon-central-heater-gas',
                         ],
                     ],
                 ],
@@ -1192,6 +1257,398 @@ class ToolQuestionsTableSeeder extends Seeder
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-service-comment-coach',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'apply-led-light',
+                'translation' => 'Aanbrengen van LED-verlichting',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'apply-led-light-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'apply-led-light-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'replace-old-equipment',
+                'translation' => 'Oude apparaten vervangen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'turn-off-unused-equipment',
+                'translation' => 'Uitzetten van apparaten die niet gebruikt worden',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'turn-off-standby-equipment',
+                'translation' => 'Stand by apparaten uitzetten',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'only-use-full-washing-machine',
+                'translation' => 'Wasmachine alleen aanzetten wanneer die vol is',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'only-use-full-tumble-dryer',
+                'translation' => 'Gebruik de wasdroger alleen wanneer nodig',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'pump-switch-floor-heating',
+                'translation' => 'Pompschakeling vloerverwarming',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'pump-switch-floor-heating-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'pump-switch-floor-heating-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'replace-alternating-current-fan',
+                'translation' => 'Oude wisselstroom ventilator vervangen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'replace-alternating-current-fan-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'replace-alternating-current-fan-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'crack-sealing-windows-doors',
+                'translation' => 'Tochtstrips bij ramen en deuren',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'crack-sealing-windows-doors-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'crack-sealing-windows-doors-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'mailbox-bristles',
+                'translation' => 'Borstels bij de brievenbus',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'mailbox-bristles-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'mailbox-bristles-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'radiator-foil',
+                'translation' => 'Radiatorfolie',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'radiator-foil-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'radiator-foil-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'no-curtains-for-the-radiator',
+                'translation' => 'Geen gordijnen voor radiatoren',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'apply-thermostat-knobs',
+                'translation' => 'Aanbrengen thermostaatknoppen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'apply-thermostat-knobs-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'apply-thermostat-knobs-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'apply-radiator-ventilation',
+                'translation' => 'Aanbrengen van ventilatoren op de radiatoren',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'apply-radiator-ventilation-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'apply-radiator-ventilation-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'vent-radiators-frequently',
+                'translation' => 'Radiatoren regelmatig ontluchten',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'vent-radiators-frequently-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'vent-radiators-frequently-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'lower-comfort-heat',
+                'translation' => 'Verlagen van de stooktemperatuur',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'lower-comfort-heat-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'lower-comfort-heat-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'insulate-hr-boiler-pipes',
+                'translation' => 'Isoleren van de cv-leidingen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'insulate-hr-boiler-pipes-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'insulate-hr-boiler-pipes-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'hydronic-balancing',
+                'translation' => 'Waterzijdig inregelen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'hydronic-balancing-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'hydronic-balancing-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'replace-gas-with-infrared-panels',
+                'translation' => 'Gas vervangen door infraroodpanelen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'replace-gas-with-infrared-panels-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'replace-gas-with-infrared-panels-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'water-saving-shower-head',
+                'translation' => 'Waterbesparende douchekop',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'water-saving-shower-head-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'water-saving-shower-head-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'shower-shorter',
+                'translation' => 'Korter douchen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'turn-off-boiler',
+                'translation' => 'Boiler uitzetten',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'only-heat-used-rooms',
+                'translation' => 'Verwam alleen ruimtes die gebruikt worden',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'use-insulating-curtains',
+                'translation' => 'Gebruik isolerende gordijnen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'keep-unheated-rooms-closed',
+                'translation' => 'Houd deuren naar onverwarme ruimtes dicht',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'use-door-closers',
+                'translation' => 'Gebruik deurdrangers',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'use-door-closers-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'use-door-closers-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
             ],
             #-------------------------
             # Expert scan questions only

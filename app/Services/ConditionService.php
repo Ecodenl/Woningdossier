@@ -95,23 +95,30 @@ class ConditionService
                 ->wherePivot('conditions', '!=', DB::raw("cast('[]' as json)"))
                 ->get();
 
-            // We sadly can't make one big array; consider the case that both a SubStep and SubSteppable have
-            // conditions; it might be that the SubSteppable passes, but the SubStep does not. It however does
+            // First fetch all conditions, so we can retrieve any required related answers in one go
+            $conditionsForAllEvaluatable = [];
+            foreach ($subSteps as $subStep) {
+                $conditionsForAllEvaluatable = array_merge($conditionsForAllEvaluatable, $subStep->conditions);
+            }
+            foreach ($subSteppables as $subSteppable) {
+                $conditionsForAllEvaluatable = array_merge($conditionsForAllEvaluatable, $subSteppable->pivot->conditions);
+            }
+            $answersForAllEvaluatable = $evaluator->getToolAnswersForConditions($conditionsForAllEvaluatable, $answers);
+
+            // We sadly can't use one big array for evaluation; consider the case that both a SubStep and SubSteppable
+            // have conditions; it might be that the SubSteppable passes, but the SubStep does not. It however does
             // create a truthy OR statement. We don't want that, so we will evaluate per SubStep(pable), and combine
             // if needed...
             $passes = false;
             foreach ($subSteps as $subStep) {
                 $conditions = $subStep->conditions;
-                $answers = $evaluator->getToolAnswersForConditions($conditions)->merge($answers);
-
-                $passes = $evaluator->evaluateCollection($conditions, $answers);
+                $passes = $evaluator->evaluateCollection($conditions, $answersForAllEvaluatable);
 
                 if ($passes) {
                     if (! empty($subStep->pivot->conditions)) {
                         $conditions = $subStep->pivot->conditions;
-                        $answers = $evaluator->getToolAnswersForConditions($conditions)->merge($answers);
+                        $passes = $evaluator->evaluateCollection($conditions, $answersForAllEvaluatable);
 
-                        $passes = $evaluator->evaluateCollection($conditions, $answers);
                         if ($passes) {
                             // We're done here
                             break;
@@ -127,16 +134,13 @@ class ConditionService
                 // We haven't passed yet, so we will check the SubSteppables
                 foreach ($subSteppables as $subSteppable) {
                     $conditions = $subSteppable->pivot->conditions;
-                    $answers = $evaluator->getToolAnswersForConditions($conditions)->merge($answers);
-
-                    $passes = $evaluator->evaluateCollection($conditions, $answers);
+                    $passes = $evaluator->evaluateCollection($conditions, $answersForAllEvaluatable);
 
                     if ($passes) {
                         if (! empty($subStep->conditions)) {
                             $conditions = $subStep->conditions;
-                            $answers = $evaluator->getToolAnswersForConditions($conditions)->merge($answers);
+                            $passes = $evaluator->evaluateCollection($conditions, $answersForAllEvaluatable);
 
-                            $passes = $evaluator->evaluateCollection($conditions, $answers);
                             if ($passes) {
                                 // We're done here
                                 break;
@@ -158,7 +162,7 @@ class ConditionService
             return $passes;
         }
 
-        $answers = $evaluator->getToolAnswersForConditions($conditions)->merge($answers);
+        $answers = $evaluator->getToolAnswersForConditions($conditions, $answers);
 
         return $evaluator->evaluateCollection($conditions, $answers);
     }

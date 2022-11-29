@@ -217,7 +217,7 @@ class Form extends Component
             ->inputSource($this->masterInputSource);
 
         // We can reuse these answers because all below calculators use the same questions for their conditional logic
-        $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)->merge(collect($this->filledInAnswers));
+        $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions, collect($this->filledInAnswers));
 
         $calculations = [];
         $calculate = [

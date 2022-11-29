@@ -81,6 +81,54 @@ class ToolLabelsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump-boiler',
             ],
+            [
+                'name' => [
+                    'nl' => 'Verlichting',
+                ],
+                'short' => 'light',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Energiezuinige apparatuur',
+                ],
+                'short' => 'energy-efficient-equipment',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Energiezuinige installaties',
+                ],
+                'short' => 'energy-efficient-installations',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Kierdichting',
+                ],
+                'short' => 'crack-sealing',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Verbeteren van de radiatoren',
+                ],
+                'short' => 'improve-radiators',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Verbeteren van de verwarminsinstallatie',
+                ],
+                'short' => 'improve-heating-installations',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparen op warm tapwater',
+                ],
+                'short' => 'save-warm-tap-water',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Algemeen',
+                ],
+                'short' => 'general',
+            ],
         ];
 
         foreach($labels as $data) {

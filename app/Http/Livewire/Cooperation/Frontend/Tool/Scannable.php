@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool;
 
+use App\Helpers\Arr;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
@@ -112,13 +113,15 @@ abstract class Scannable extends Component
 
     public function updated($field, $value)
     {
-        $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
-        $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-        if ($toolQuestion instanceof ToolQuestion) {
-            // If it's an INT, we want to ensure the value set is also an INT
-            if ($toolQuestion->data_type === Caster::INT) {
-                $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
-                $this->filledInAnswers[$toolQuestionShort] = $value;
+        if (Str::contains($field, 'filledInAnswers')) {
+            $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+            if ($toolQuestion instanceof ToolQuestion) {
+                // If it's an INT, we want to ensure the value set is also an INT
+                if ($toolQuestion->data_type === Caster::INT) {
+                    $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
+                    $this->filledInAnswers[$toolQuestionShort] = $value;
+                }
             }
         }
 
@@ -261,10 +264,25 @@ abstract class Scannable extends Component
         // base key where every answer is stored
         foreach ($this->toolQuestions as $index => $toolQuestion) {
 
-            $this->filledInAnswersForAllInputSources[$toolQuestion->short] = $this->building->getAnswerForAllInputSources($toolQuestion);
+            // We get all answers, including for the master. This way we reduce amount of queries needed.
+            $this->filledInAnswersForAllInputSources[$toolQuestion->short] = $this->building->getAnswerForAllInputSources($toolQuestion, true);
 
-            /** @var array|string $answerForInputSource */
-            $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);
+            // We pluck the answer from the master input (unless a specific is requested)
+            $answerForInputSource = null;
+            $source = $toolQuestion->forSpecificInputSource ?? $this->masterInputSource;
+            $answersForInputSource = $this->filledInAnswersForAllInputSources[$toolQuestion->short][$source->short] ?? null;
+            if (! is_null($answersForInputSource)) {
+                $values = Arr::pluck($answersForInputSource, 'value');
+
+                if ($toolQuestion->data_type !== Caster::ARRAY) {
+                    $values = Arr::first($values);
+                }
+
+                $answerForInputSource = $values;
+            }
+
+            // We unset the master so we don't show it in the source select dropdowns.
+            unset($this->filledInAnswersForAllInputSources[$toolQuestion->short][$this->masterInputSource->short]);
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
             switch ($toolQuestion->data_type) {

@@ -112,6 +112,10 @@ class User extends Model implements AuthorizableContract
         'extra' => 'array'
     ];
 
+    protected $with = [
+        'roles',
+    ];
+
 
     # Scopes
     public function scopeByContact(Builder $query, $contact): Builder

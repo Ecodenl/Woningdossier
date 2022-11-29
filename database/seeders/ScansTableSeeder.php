@@ -26,13 +26,22 @@ class ScansTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Quick scan'
+                    'nl' => 'Uitgebreide variant'
                 ],
                 'slug' => [
-                    'nl' => 'quick-scan',
+                    'nl' => 'uitgebreide-variant',
                 ],
                 'short' => 'quick-scan',
-            ]
+            ],
+            [
+                'name' => [
+                    'nl' => 'Eenvoudige variant'
+                ],
+                'slug' => [
+                    'nl' => 'eenvoudige-variant',
+                ],
+                'short' => 'lite-scan',
+            ],
         ];
 
         foreach ($scans as $scan) {

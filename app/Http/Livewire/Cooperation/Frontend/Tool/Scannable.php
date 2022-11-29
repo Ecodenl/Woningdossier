@@ -43,8 +43,8 @@ abstract class Scannable extends Component
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
-        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
-        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
+        $this->residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         // first we have to hydrate the tool questions
         $this->hydrateToolQuestions();
@@ -302,31 +302,9 @@ abstract class Scannable extends Component
 
     private function prepareValidationRule(array $validation): array
     {
-        // We need to check if the validation contains shorts to other tool questions, so we can set the ID
-
-        foreach ($validation as $index => $rule) {
-            // Short is always on the right side of a colon
-            if (Str::contains($rule, ':')) {
-                $ruleParams = explode(':', $rule);
-                // But can contain extra params
-
-                if (! empty($ruleParams[1])) {
-                    $short = Str::contains($ruleParams[1], ',') ? explode(',', $ruleParams[1])[0]
-                        : $ruleParams[1];
-
-                    if (! empty($short)) {
-                        $toolQuestion = ToolQuestion::findByShort($short);
-                        $toolQuestion = $toolQuestion instanceof ToolQuestion ? $toolQuestion : ToolQuestion::findByShort(Str::kebab(Str::camel($short)));
-
-                        if ($toolQuestion instanceof ToolQuestion) {
-                            $validation[$index] = $ruleParams[0] . ':' . str_replace($short,
-                                    "filledInAnswers.{$toolQuestion->short}", $ruleParams[1]);
-                        }
-                    }
-                }
-            }
-        }
-
+        // In the future we will make things such as dates dynamic in the ruleset, so we keep this function to
+        // minimize refactor/flow work. However, for now it won't do anything, as the old code which used to be
+        // present here is no longer relevant.
         return $validation;
     }
 

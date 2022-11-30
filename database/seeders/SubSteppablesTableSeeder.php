@@ -794,36 +794,34 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('energy-efficient-equipment'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('replace-old-equipment'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('turn-off-unused-equipment'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('turn-off-standby-equipment'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('only-use-full-washing-machine'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('only-use-full-tumble-dryer'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('energy-efficient-equipment'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('replace-old-equipment'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('turn-off-unused-equipment'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('turn-off-standby-equipment'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('only-use-full-washing-machine'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('only-use-full-tumble-dryer'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -832,21 +830,19 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('energy-efficient-installations'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('pump-switch-floor-heating'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('replace-alternating-current-fan'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('energy-efficient-installations'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pump-switch-floor-heating'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('replace-alternating-current-fan'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -855,21 +851,19 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('crack-sealing'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('mailbox-bristles'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('crack-sealing'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('mailbox-bristles'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -878,36 +872,34 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('improve-radiators'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('radiator-foil'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('no-curtains-for-the-radiator'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('apply-thermostat-knobs'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('apply-radiator-ventilation'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('vent-radiators-frequently'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('improve-radiators'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('radiator-foil'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('no-curtains-for-the-radiator'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-thermostat-knobs'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-radiator-ventilation'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('vent-radiators-frequently'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -916,31 +908,29 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('improve-heating-installations'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('lower-comfort-heat'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('hydronic-balancing'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('improve-heating-installations'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('lower-comfort-heat'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hydronic-balancing'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -949,26 +939,24 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('save-warm-tap-water'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('water-saving-shower-head'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('shower-shorter'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('turn-off-boiler'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('save-warm-tap-water'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('water-saving-shower-head'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('shower-shorter'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('turn-off-boiler'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -977,31 +965,29 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('general'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('only-heat-used-rooms'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('use-insulating-curtains'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('keep-unheated-rooms-closed'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('use-door-closers'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('general'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('only-heat-used-rooms'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('use-insulating-curtains'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('keep-unheated-rooms-closed'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('use-door-closers'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -1504,36 +1490,34 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('energy-efficient-equipment'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('replace-old-equipment'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('turn-off-unused-equipment'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('turn-off-standby-equipment'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('only-use-full-washing-machine'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('only-use-full-tumble-dryer'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('energy-efficient-equipment'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('replace-old-equipment'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('turn-off-unused-equipment'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('turn-off-standby-equipment'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('only-use-full-washing-machine'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('only-use-full-tumble-dryer'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -1542,41 +1526,39 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('energy-efficient-installations'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('pump-switch-floor-heating'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('pump-switch-floor-heating-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('pump-switch-floor-heating-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('replace-alternating-current-fan'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('replace-alternating-current-fan-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('replace-alternating-current-fan-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('energy-efficient-installations'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pump-switch-floor-heating'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pump-switch-floor-heating-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('pump-switch-floor-heating-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('replace-alternating-current-fan'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('replace-alternating-current-fan-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('replace-alternating-current-fan-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -1585,41 +1567,39 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('crack-sealing'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('mailbox-bristles'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('mailbox-bristles-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('mailbox-bristles-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('crack-sealing'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('mailbox-bristles'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('mailbox-bristles-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('mailbox-bristles-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -1628,76 +1608,74 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('improve-radiators'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('radiator-foil'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('radiator-foil-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('radiator-foil-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('no-curtains-for-the-radiator'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('apply-thermostat-knobs'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('apply-thermostat-knobs-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('apply-thermostat-knobs-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('apply-radiator-ventilation'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('apply-radiator-ventilation-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('apply-radiator-ventilation-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('vent-radiators-frequently'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('vent-radiators-frequently-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('vent-radiators-frequently-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('improve-radiators'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('radiator-foil'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('radiator-foil-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('radiator-foil-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('no-curtains-for-the-radiator'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-thermostat-knobs'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-thermostat-knobs-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-thermostat-knobs-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-radiator-ventilation'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-radiator-ventilation-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-radiator-ventilation-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('vent-radiators-frequently'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('vent-radiators-frequently-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('vent-radiators-frequently-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -1706,71 +1684,69 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('improve-heating-installations'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('lower-comfort-heat'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('lower-comfort-heat-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('lower-comfort-heat-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('hydronic-balancing'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('hydronic-balancing-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('hydronic-balancing-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('improve-heating-installations'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('lower-comfort-heat'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('lower-comfort-heat-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('lower-comfort-heat-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hydronic-balancing'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hydronic-balancing-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hydronic-balancing-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -1779,36 +1755,34 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('save-warm-tap-water'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('water-saving-shower-head'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('water-saving-shower-head-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('water-saving-shower-head-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('shower-shorter'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('turn-off-boiler'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('save-warm-tap-water'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('water-saving-shower-head'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('water-saving-shower-head-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('water-saving-shower-head-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('shower-shorter'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('turn-off-boiler'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],
@@ -1817,41 +1791,39 @@ class SubSteppablesTableSeeder extends Seeder
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
-                            [
-                                'morph' => ToolLabel::findByShort('general'),
-                                'tool_question_type_id' => null,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('only-heat-used-rooms'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('use-insulating-curtains'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('keep-unheated-rooms-closed'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('use-door-closers'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('use-door-closers-how'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
-                            [
-                                'morph' => ToolQuestion::findByShort('use-door-closers-coach-help'),
-                                'tool_question_type_id' => $radioType->id,
-                                'size' => 'w-full',
-                            ],
+                            'morph' => ToolLabel::findByShort('general'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('only-heat-used-rooms'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('use-insulating-curtains'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('keep-unheated-rooms-closed'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('use-door-closers'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('use-door-closers-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('use-door-closers-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
                         ],
                     ],
                 ],

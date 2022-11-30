@@ -7,10 +7,11 @@ use Illuminate\Support\Collection;
 
 class InsulationAdvice extends ShouldEvaluate
 {
-    public function evaluate($value = null, ?Collection $answers = null): array
+    public function evaluate($value = null): array
     {
         $building = $this->building;
         $inputSource = $this->inputSource;
+        $answers = $this->answers;
 
         // This evaluator checks if a given advice is returned by the insulation score. This tells the user
         // they should improve certain aspects of their home before considering a heat pump, because it might not

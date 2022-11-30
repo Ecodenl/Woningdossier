@@ -7,10 +7,11 @@ use Illuminate\Support\Collection;
 
 class SunBoilerPerformance extends ShouldEvaluate
 {
-    public function evaluate($value = null, ?Collection $answers = null): array
+    public function evaluate($value = null): array
     {
         $building = $this->building;
         $inputSource = $this->inputSource;
+        $answers = $this->answers;
 
         // This evaluator checks the performance for the sun-boiler in the user's situation. The calculation
         // returns a given color which defines the performance.

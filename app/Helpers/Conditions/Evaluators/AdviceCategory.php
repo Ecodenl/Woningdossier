@@ -8,10 +8,11 @@ use Illuminate\Support\Collection;
 
 class AdviceCategory extends ShouldEvaluate
 {
-    public function evaluate($value = null, ?Collection $answers = null): array
+    public function evaluate($value = null): array
     {
         $building = $this->building;
         $inputSource = $this->inputSource;
+        $answers = $this->answers;
 
         // Check if the user has the advice, and if so, if it's in the correct category.
         // This requires $value to be an array, where

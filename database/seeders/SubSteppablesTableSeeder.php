@@ -1472,11 +1472,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('apply-led-light-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('apply-led-light'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('apply-led-light-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('apply-led-light'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('turn-off-lights'),
@@ -1539,11 +1541,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('pump-switch-floor-heating-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('pump-switch-floor-heating'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('pump-switch-floor-heating-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('pump-switch-floor-heating'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('replace-alternating-current-fan'),
@@ -1554,11 +1558,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('replace-alternating-current-fan-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('replace-alternating-current-fan'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('replace-alternating-current-fan-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('replace-alternating-current-fan'),
                         ],
                     ],
                 ],
@@ -1580,11 +1586,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('crack-sealing-windows-doors'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('crack-sealing-windows-doors'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('mailbox-bristles'),
@@ -1595,11 +1603,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('mailbox-bristles-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('mailbox-bristles'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('mailbox-bristles-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('mailbox-bristles'),
                         ],
                     ],
                 ],
@@ -1621,11 +1631,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('radiator-foil-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('radiator-foil'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('radiator-foil-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('radiator-foil'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('no-curtains-for-the-radiator'),
@@ -1641,11 +1653,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('apply-thermostat-knobs-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('apply-thermostat-knobs'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('apply-thermostat-knobs-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('apply-thermostat-knobs'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('apply-radiator-ventilation'),
@@ -1656,11 +1670,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('apply-radiator-ventilation-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('apply-radiator-ventilation'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('apply-radiator-ventilation-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('apply-radiator-ventilation'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('vent-radiators-frequently'),
@@ -1671,11 +1687,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('vent-radiators-frequently-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('vent-radiators-frequently'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('vent-radiators-frequently-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('vent-radiators-frequently'),
                         ],
                     ],
                 ],
@@ -1697,11 +1715,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('lower-comfort-heat-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('lower-comfort-heat'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('lower-comfort-heat-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('lower-comfort-heat'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes'),
@@ -1712,11 +1732,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('insulate-hr-boiler-pipes'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('insulate-hr-boiler-pipes'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hydronic-balancing'),
@@ -1727,11 +1749,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('hydronic-balancing-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('hydronic-balancing'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hydronic-balancing-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('hydronic-balancing'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels'),
@@ -1742,11 +1766,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('replace-gas-with-infrared-panels'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('replace-gas-with-infrared-panels'),
                         ],
                     ],
                 ],
@@ -1768,11 +1794,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('water-saving-shower-head-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('water-saving-shower-head'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('water-saving-shower-head-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('water-saving-shower-head'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('shower-shorter'),
@@ -1819,11 +1847,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolQuestion::findByShort('use-door-closers-how'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('use-door-closers'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('use-door-closers-coach-help'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('use-door-closers'),
                         ],
                     ],
                 ],
@@ -4371,5 +4401,18 @@ class SubSteppablesTableSeeder extends Seeder
                 }
             }
         }
+    }
+
+    private function getSubQuestionConditions(string $short): array
+    {
+        return [
+            [
+                [
+                    'column' => $short,
+                    'operator' => Clause::EQ,
+                    'value' => 'want-to',
+                ],
+            ],
+        ];
     }
 }

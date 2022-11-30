@@ -91,6 +91,7 @@ class ToolQuestionsTableSeeder extends Seeder
         $stepUsageQuickScan = Step::findByShort('usage-quick-scan');
         $stepLivingRequirements = Step::findByShort('living-requirements');
         $stepResidentialStatus = Step::findByShort('residential-status');
+        $stepSmallMeasures = Step::findByShort('small-measures');
 
         // Expert scan steps
         $hrBoilerStep = Step::findByShort('high-efficiency-boiler');
@@ -1282,6 +1283,13 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                'short' => 'turn-off-lights',
+                'translation' => 'Licht uitdoen in ruimtes waar je niet bent',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,id'],
                 'short' => 'replace-old-equipment',
                 'translation' => 'Oude apparaten vervangen',
                 'tool_question_custom_values' => $smallMeasureApplyValues,
@@ -1649,6 +1657,22 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'use-door-closers-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$stepSmallMeasures->id}.comment",
+                'for_specific_input_source_id' => $residentInputSource->id,
+                'short' => 'small-measures-comment-resident',
+                'translation' => 'Toelichting op de kleine maatregelen',
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$stepSmallMeasures->id}.comment",
+                'for_specific_input_source_id' => $coachInputSource->id,
+                'short' => 'small-measures-comment-coach',
+                'translation' => 'Toelichting op de kleine maatregelen',
             ],
             #-------------------------
             # Expert scan questions only

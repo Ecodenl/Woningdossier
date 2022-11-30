@@ -33,7 +33,6 @@ class SubSteppablesTableSeeder extends Seeder
         $template2rows3top1bottom = SubStepTemplate::findByShort('template-2-rows-3-top-1-bottom');
         $templateCustomChanges = SubStepTemplate::findByShort('template-custom-changes');
         $templateSummary = SubStepTemplate::findByShort('template-summary');
-        $templateSpecificExampleBuilding = SubStepTemplate::findByShort('specific-example-building');
 
         // Some services for conditions
         $heatPump = Service::findByShort('heat-pump');
@@ -65,7 +64,7 @@ class SubSteppablesTableSeeder extends Seeder
         $flatRoof = RoofType::findByShort('flat');
 
         #-------------------------
-        # Quick Scan sub steppables
+        # Quick Scan SubSteppables
         #-------------------------
         $this->saveStructure([
             'building-data' => [
@@ -100,8 +99,19 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                     ]
                 ],
+                'Huur of koop' => [
+                    'order' => 2,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('building-contract-type'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
                 'Wat voor dak' => [
-                    'order' => 4,
+                    'order' => 5,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -112,7 +122,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Bouwjaar en oppervlak' => [
-                    'order' => 2,
+                    'order' => 3,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -128,7 +138,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Specifieke voorbeeld woning' => [
-                    'order' => 3,
+                    'order' => 4,
                     'conditions' => [
                         [
                             [
@@ -147,7 +157,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ],
                 ],
                 'Monument en energielabel' => [
-                    'order' => 5,
+                    'order' => 6,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -163,7 +173,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Gebruikersoppervlak en bijzonderheden' => [
-                    'order' => 6,
+                    'order' => 7,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -174,7 +184,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ],
                 ],
                 'Samenvatting woninggegevens' => [
-                    'order' => 7,
+                    'order' => 8,
                     'sub_step_template_id' => $templateSummary->id,
                     'morphs' => [
                         [
@@ -307,7 +317,7 @@ class SubSteppablesTableSeeder extends Seeder
                 ],
                 'Welke zaken vervangen' => [
                     'order' => 2,
-                    // note: dit is een custom vraag, zie slide 18
+                    // note: dit is een custom vraag, zie CustomChanges
                     'sub_step_template_id' => $templateCustomChanges->id,
                 ],
                 'Samenvatting woonwensen' => [
@@ -531,21 +541,16 @@ class SubSteppablesTableSeeder extends Seeder
                                         'value' => 'hr-boiler',
                                     ],
                                     [
-                                        'column' => 'building-heating-application',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'radiators',
-                                    ],
-                                ],
-                                [
-                                    [
-                                        'column' => 'heat-source',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'hr-boiler',
-                                    ],
-                                    [
-                                        'column' => 'building-heating-application',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'air-heating',
+                                        [
+                                            'column' => 'building-heating-application',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'radiators',
+                                        ],
+                                        [
+                                            'column' => 'building-heating-application',
+                                            'operator' => Clause::CONTAINS,
+                                            'value' => 'air-heating',
+                                        ],
                                     ],
                                 ],
                             ],
@@ -762,10 +767,1115 @@ class SubSteppablesTableSeeder extends Seeder
                     ],
                 ],
             ],
+            'small-measures' => [
+                'Verlichting' => [
+                    'order' => 0,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolLabel::findByShort('light'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-led-light'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('turn-off-lights'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Energiezuinige apparatuur' => [
+                    'order' => 1,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('energy-efficient-equipment'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('replace-old-equipment'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('turn-off-unused-equipment'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('turn-off-standby-equipment'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('only-use-full-washing-machine'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('only-use-full-tumble-dryer'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Energiezuinige installaties' => [
+                    'order' => 2,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('energy-efficient-installations'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('pump-switch-floor-heating'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('replace-alternating-current-fan'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Kierdichting' => [
+                    'order' => 3,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('crack-sealing'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('mailbox-bristles'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Verbeteren van de radiatoren' => [
+                    'order' => 4,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('improve-radiators'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('radiator-foil'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('no-curtains-for-the-radiator'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('apply-thermostat-knobs'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('apply-radiator-ventilation'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('vent-radiators-frequently'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Verbeteren van de verwarminsinstallatie' => [
+                    'order' => 5,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('improve-heating-installations'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('lower-comfort-heat'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('hydronic-balancing'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Besparen op warm tapwater' => [
+                    'order' => 6,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('save-warm-tap-water'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('water-saving-shower-head'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('shower-shorter'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('turn-off-boiler'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Algemeen' => [
+                    'order' => 7,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('general'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('only-heat-used-rooms'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('use-insulating-curtains'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('keep-unheated-rooms-closed'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('use-door-closers'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Samenvatting kleine maatregelen' => [
+                    'order' => 8,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('small-measures-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('small-measures-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                    ],
+                ],
+            ],
         ]);
 
         #-------------------------
-        # Expert sub steppables
+        # Lite Scan SubSteppables
+        #-------------------------
+        $this->saveStructure([
+            'building-data-lite' => [
+                // sub step name
+                'Woning type' => [
+                    'order' => 0,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('building-type-category'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Wat voor woning' => [
+                    'order' => 1,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'fn',
+                                'operator' => 'BuildingType',
+                            ],
+                        ],
+                    ],
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('building-type'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Huur of koop' => [
+                    'order' => 2,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('building-contract-type'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Bouwjaar en oppervlak' => [
+                    'order' => 3,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('build-year'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('building-layers'),
+                            'tool_question_type_id' => $sliderType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Specifieke voorbeeld woning' => [
+                    'order' => 4,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'fn',
+                                'operator' => 'SpecificExampleBuilding',
+                            ],
+                        ],
+                    ],
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('specific-example-building'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Monument en energielabel' => [
+                    'order' => 5,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('monument'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('energy-label'),
+                            'tool_question_type_id' => $radioIconSmallType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Gebruikersoppervlak en bijzonderheden' => [
+                    'order' => 6,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('surface'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Samenvatting woninggegevens' => [
+                    'order' => 7,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('building-data-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('building-data-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                    ],
+                ],
+            ],
+            'usage-lite-scan' => [
+                'Hoeveel bewoners' => [
+                    'order' => 0,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('resident-count'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Thermostaat gebruik' => [
+                    'order' => 1,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('thermostat-high'),
+                            'tool_question_type_id' => $sliderType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('thermostat-low'),
+                            'tool_question_type_id' => $sliderType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('hours-high'),
+                            'tool_question_type_id' => $sliderType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Gebruik warm tapwater' => [
+                    'order' => 2,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('heating-first-floor'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heating-second-floor'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('water-comfort'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Gas en elektra gebruik' => [
+                    'order' => 3,
+                    'sub_step_template_id' => $template2rows1top2bottom->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('cook-type'),
+                            'tool_question_type_id' => $radioIconType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('amount-gas'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('amount-electricity'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Samenvatting bewoners-gebruik' => [
+                    'order' => 4,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('usage-quick-scan-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('usage-quick-scan-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                    ],
+                ],
+            ],
+            'living-requirements-lite' => [
+                'Welke zaken vindt u belangrijk?' => [
+                    'order' => 0,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('comfort-priority'),
+                            'tool_question_type_id' => $measurePriorityType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Welke grote maatregegelen' => [
+                    'order' => 1,
+                    // note: dit is een custom vraag, zie CustomChanges
+                    'sub_step_template_id' => $templateCustomChanges->id,
+                ],
+                'Samenvatting woonwensen' => [
+                    'order' => 2,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('living-requirements-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('living-requirements-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                    ],
+                ],
+            ],
+            'residential-status-lite' => [
+                'Verwarming' => [
+                    'order' => 0,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source'),
+                            'tool_question_type_id' => $checkboxIconType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'Verwarming warm water' => [
+                    'order' => 1,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water'),
+                            'tool_question_type_id' => $checkboxIconType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('heat-source-warm-tap-water-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'Hoe is de verwarming' => [
+                    'order' => 2,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('building-heating-application'),
+                            'tool_question_type_id' => $checkboxIconType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('building-heating-application-other'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'building-heating-application',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'none',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
+                '50 graden test' => [
+                    'order' => 3,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'hr-boiler',
+                            ],
+                            [
+                                [
+                                    'column' => 'building-heating-application',
+                                    'operator' => Clause::CONTAINS,
+                                    'value' => 'radiators',
+                                ],
+                                [
+                                    'column' => 'building-heating-application',
+                                    'operator' => Clause::CONTAINS,
+                                    'value' => 'air-heating',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('fifty-degree-test'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Ventilatie' => [
+                    'order' => 4,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-type'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-demand-driven'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('ventilation-heat-recovery'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
+                                    ],
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 2)->first()->id, // Mechanische ventilatie
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
+                'Kierdichting' => [
+                    'order' => 5,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-sealing-type'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Samenvatting woningstatus' => [
+                    'slug' => 'samenvatting-woonstatus',
+                    'order' => 6,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('residential-status-element-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('residential-status-element-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('residential-status-service-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('residential-status-service-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                    ],
+                ],
+            ],
+            'small-measures-lite' => [
+                'Verlichting' => [
+                    'order' => 0,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolLabel::findByShort('light'),
+                            'tool_question_type_id' => null,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-led-light'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-led-light-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('apply-led-light-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('turn-off-lights'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                    ],
+                ],
+                'Energiezuinige apparatuur' => [
+                    'order' => 1,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('energy-efficient-equipment'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('replace-old-equipment'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('turn-off-unused-equipment'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('turn-off-standby-equipment'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('only-use-full-washing-machine'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('only-use-full-tumble-dryer'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Energiezuinige installaties' => [
+                    'order' => 2,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('energy-efficient-installations'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('pump-switch-floor-heating'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('pump-switch-floor-heating-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('pump-switch-floor-heating-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('replace-alternating-current-fan'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('replace-alternating-current-fan-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('replace-alternating-current-fan-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Kierdichting' => [
+                    'order' => 3,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('crack-sealing'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('crack-sealing-windows-doors-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('mailbox-bristles'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('mailbox-bristles-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('mailbox-bristles-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Verbeteren van de radiatoren' => [
+                    'order' => 4,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('improve-radiators'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('radiator-foil'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('radiator-foil-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('radiator-foil-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('no-curtains-for-the-radiator'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('apply-thermostat-knobs'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('apply-thermostat-knobs-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('apply-thermostat-knobs-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('apply-radiator-ventilation'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('apply-radiator-ventilation-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('apply-radiator-ventilation-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('vent-radiators-frequently'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('vent-radiators-frequently-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('vent-radiators-frequently-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Verbeteren van de verwarminsinstallatie' => [
+                    'order' => 5,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('improve-heating-installations'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('lower-comfort-heat'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('lower-comfort-heat-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('lower-comfort-heat-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('insulate-hr-boiler-pipes-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('hydronic-balancing'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('hydronic-balancing-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('hydronic-balancing-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('replace-gas-with-infrared-panels-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Besparen op warm tapwater' => [
+                    'order' => 6,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('save-warm-tap-water'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('water-saving-shower-head'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('water-saving-shower-head-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('water-saving-shower-head-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('shower-shorter'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('turn-off-boiler'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Algemeen' => [
+                    'order' => 7,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            [
+                                'morph' => ToolLabel::findByShort('general'),
+                                'tool_question_type_id' => null,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('only-heat-used-rooms'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('use-insulating-curtains'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('keep-unheated-rooms-closed'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('use-door-closers'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('use-door-closers-how'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                            [
+                                'morph' => ToolQuestion::findByShort('use-door-closers-coach-help'),
+                                'tool_question_type_id' => $radioType->id,
+                                'size' => 'w-full',
+                            ],
+                        ],
+                    ],
+                ],
+                'Samenvatting kleine maatregelen' => [
+                    'order' => 8,
+                    'sub_step_template_id' => $templateSummary->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolQuestion::findByShort('small-measures-comment-resident'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('small-measures-comment-coach'),
+                            'tool_question_type_id' => $textareaPopupType->id,
+                            'size' => 'w-1/2',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        #-------------------------
+        # Expert Scan SubSteppables
         #-------------------------
         $newHrBoilerCondition = [
             [

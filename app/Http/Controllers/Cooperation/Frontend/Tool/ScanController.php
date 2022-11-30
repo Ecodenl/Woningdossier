@@ -2,29 +2,53 @@
 
 namespace App\Http\Controllers\Cooperation\Frontend\Tool;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
+use App\Jobs\CloneOpposingInputSource;
 use App\Models\Cooperation;
+use App\Models\Notification;
 use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class ScanController extends Controller
 {
-    public function show(Cooperation $cooperation, Scan $scan)
+    public function index(Cooperation $cooperation, Scan $scan, Step $step, SubStep $subStep)
+    {
+        // the route will always be matched, however a sub step has to match the step.
+        abort_if(!$step->subSteps()->find($subStep->id) instanceof SubStep, 404);
+        $currentInputSource = HoomdossierSession::getInputSource(true);
+
+        $notification = Notification::active()
+            ->forBuilding(HoomdossierSession::getBuilding())
+            ->forType(CloneOpposingInputSource::class)
+            ->forInputSource($currentInputSource)->first();
+
+        return view("cooperation.frontend.tool.simple-scan.index", compact('scan', 'step', 'subStep', 'notification', 'currentInputSource'));
+    }
+
+    public function redirect(Cooperation $cooperation, Scan $scan, Step $step, SubStep $subStep)
     {
         Log::debug('ScanController::show');
-        if ($scan->short === 'quick-scan') {
-            $subStep = SubStep::ordered()->first();
-            $step = $subStep->step;
-            return redirect()->route('cooperation.frontend.tool.quick-scan.index', compact('scan', 'step', 'subStep'));
-        }
 
         if ($scan->short === 'expert-scan') {
             // check if quick-scan is completed before proceeding
             $step = Step::expert()->first();
             return redirect()->route('cooperation.frontend.tool.expert-scan.index', compact('scan', 'step'));
+        }
+        Log::debug("Quick lite scan redirect, should this be happening ?");
+        // not sure if relevant anymore
+        if ($scan->short === 'quick-scan') {
+            $subStep = SubStep::ordered()->first();
+            $step = $subStep->step;
+            return redirect()->route('cooperation.frontend.tool.scan.index', compact('scan', 'step', 'subStep'));
+        }
+
+        if ($scan->short === 'lite-scan') {
+            // check if quick-scan is completed before proceeding
+            $step = Step::expert()->first();
+            return redirect()->route('cooperation.frontend.tool.scan.index', compact('scan', 'step'));
         }
     }
 }

@@ -36,7 +36,15 @@ class StepHelper
         'usage-quick-scan',
         'living-requirements',
         'residential-status',
+        'small-measures'
     ];
+
+//    const LITE_SCAN_STEP_SHORTS = [
+//        'building-data',
+//        'usage-quick-scan',
+//        'living-requirements',
+//        'residential-status',
+//    ];
 
     const STEP_COMPLETION_MAP = [
         'heating' => [

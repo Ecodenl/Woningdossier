@@ -46,6 +46,11 @@ class Scan extends Model
         return $this->slug;
     }
 
+    public function steps()
+    {
+        return $this->hasMany(Step::class);
+    }
+
     // TODO: Slug trait?
     public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
     {

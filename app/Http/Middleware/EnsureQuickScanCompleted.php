@@ -39,7 +39,8 @@ class EnsureQuickScanCompleted
                     $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, [], $masterInputSource);
 
                     if ($firstIncompleteSubStep instanceof SubStep) {
-                        return redirect()->route('cooperation.frontend.tool.quick-scan.index', [
+                        return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
+                            'scan' => $request->route('scan'),
                             'step' => $firstIncompleteStep,
                             'subStep' => $firstIncompleteSubStep,
                         ]);

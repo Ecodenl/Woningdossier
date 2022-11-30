@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
@@ -61,7 +61,7 @@ class CustomChanges extends Component
 
     public function render()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.custom-changes');
+        return view('livewire.cooperation.frontend.tool.simple-scan.custom-changes');
     }
 
     public function updatedSelectedCooperationMeasureApplications($value)

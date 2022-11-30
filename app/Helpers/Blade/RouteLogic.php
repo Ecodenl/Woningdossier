@@ -7,11 +7,17 @@ use Illuminate\Support\Str;
 
 class RouteLogic
 {
-    public static function inQuickScanTool($route): bool
+    public static function inSimpleScan($route): bool
     {
         $routeName = static::getRouteName($route);
 
-        return Str::startsWith($routeName, 'cooperation.frontend.tool.quick-scan');
+        return Str::startsWith($routeName, 'cooperation.frontend.tool.simple-scan');
+    }
+
+    /** @deprecated use InScanTool instead. */
+    public static function inQuickScanTool($route): bool
+    {
+        return self::inScanTool($route);
     }
 
     public static function inMyPlan($route): bool

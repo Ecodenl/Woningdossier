@@ -3,7 +3,7 @@
 @section('header')
     <div class="w-full">
         @include('cooperation.frontend.layouts.parts.navbar')
-        @if(RouteLogic::inQuickScanTool(Route::currentRouteName()))
+        @if(RouteLogic::inSimpleScan(Route::currentRouteName()))
             {{-- Step progress --}}
             @include('cooperation.frontend.layouts.parts.sub-nav')
 

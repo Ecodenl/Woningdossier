@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
 use App\Jobs\PdfReport;

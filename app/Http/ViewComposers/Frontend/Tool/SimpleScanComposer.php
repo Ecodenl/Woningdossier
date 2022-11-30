@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
-class QuickScanComposer
+class SimpleScanComposer
 {
     private Request $request;
 
@@ -21,6 +21,7 @@ class QuickScanComposer
 
     public function create(View $view)
     {
+        $scan = $this->request->route('scan');
         $step = $this->request->route('step');
         $subStep = $this->request->route('subStep');
 
@@ -29,17 +30,15 @@ class QuickScanComposer
             $subStep = $step->subSteps()->orderByDesc('order')->first();
         }
 
-        $total = Step::quickScan()
+        $total = $scan
+            ->steps()
             ->leftJoin('sub_steps', 'steps.id', '=', 'sub_steps.step_id')
             ->count();
 
         // Get all the IDs of previous steps. Currently there are a total of 4 steps, so
         // we can have a maximum of 3 step IDs
-        $stepIds = DB::table('steps')
-            ->select('steps.id')
-            ->whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)
-            ->where('order', '<', $step->order)
-            ->pluck('id')->toArray();
+        $stepIds = $scan->steps()->where('order', '<', $step->order)->pluck('id')->toArray();
+
 
         // Now get the sub steps for the previous steps. This way we can sum the max sub step order.
         $summedOrder = DB::table('steps')

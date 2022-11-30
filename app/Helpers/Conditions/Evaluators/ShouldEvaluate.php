@@ -5,20 +5,21 @@ namespace App\Helpers\Conditions\Evaluators;
 use App\Models\InputSource;
 use App\Models\Building;
 use App\Traits\FluentCaller;
+use App\Traits\HasDynamicAnswers;
 use Illuminate\Support\Collection;
 
 abstract class ShouldEvaluate
 {
-    use FluentCaller;
+    use FluentCaller,
+        HasDynamicAnswers;
 
-    protected Building $building;
-    protected InputSource $inputSource;
     protected array $override = [];
 
-    public function __construct(Building $building, InputSource $inputSource)
+    public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         $this->building = $building;
         $this->inputSource = $inputSource;
+        $this->answers = $answers;
     }
 
     public function override($override): self
@@ -27,5 +28,5 @@ abstract class ShouldEvaluate
         return $this;
     }
 
-    abstract public function evaluate($value = null, ?Collection $answers = null): array;
+    abstract public function evaluate($value = null): array;
 }

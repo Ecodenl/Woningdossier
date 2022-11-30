@@ -4,14 +4,14 @@ namespace App\Helpers\Conditions\Evaluators;
 
 use App\Models\InputSource;
 use App\Models\Step;
-use Illuminate\Support\Collection;
 
 class HasCompletedStep extends ShouldEvaluate
 {
-    public function evaluate($value = null, ?Collection $answers = null): array
+    public function evaluate($value = null): array
     {
         $building = $this->building;
         $inputSource = $this->inputSource;
+        $answers = $this->answers;
 
         // This evaluator checks if the user has completed one or more steps, for one or more input sources.
         // $value must be an array, where

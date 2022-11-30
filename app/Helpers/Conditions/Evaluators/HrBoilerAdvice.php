@@ -3,14 +3,14 @@
 namespace App\Helpers\Conditions\Evaluators;
 
 use App\Calculations\HighEfficiencyBoiler;
-use Illuminate\Support\Collection;
 
 class HrBoilerAdvice extends ShouldEvaluate
 {
-    public function evaluate($value = null, ?Collection $answers = null): array
+    public function evaluate($value = null): array
     {
         $building = $this->building;
         $inputSource = $this->inputSource;
+        $answers = $this->answers;
 
         // This evaluator checks if the boiler_advice is returned in the calculation. This advice tells the user
         // that they won't receive much efficiency improvement because they already have a high quality HR-boiler

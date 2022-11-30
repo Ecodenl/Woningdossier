@@ -264,9 +264,9 @@ class ConditionEvaluator
 
         $override = $this->customResults[$operator] ?? [];
         /** @var \App\Helpers\Conditions\Evaluators\ShouldEvaluate $customEvaluatorClass */
-        $evaluation = $customEvaluatorClass::init($this->building, $this->inputSource)
+        $evaluation = $customEvaluatorClass::init($this->building, $this->inputSource, $collection)
             ->override($override)
-            ->evaluate($value, $collection);
+            ->evaluate($value);
 
         $this->customResults[$operator][$evaluation['key']] = $evaluation['results'];
 

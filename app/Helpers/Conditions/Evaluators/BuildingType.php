@@ -4,14 +4,14 @@ namespace App\Helpers\Conditions\Evaluators;
 
 use App\Models\ToolQuestion;
 use App\Models\BuildingType as BuildingTypeModel;
-use Illuminate\Support\Collection;
 
 class BuildingType extends ShouldEvaluate
 {
-    public function evaluate($value = null, ?Collection $answers = null): array
+    public function evaluate($value = null): array
     {
         $building = $this->building;
         $inputSource = $this->inputSource;
+        $answers = $this->answers;
 
         $key = md5(json_encode([null]));
 

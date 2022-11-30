@@ -2,21 +2,13 @@
 
 namespace App\Helpers\Conditions\Evaluators;
 
-use App\Models\Building;
-use App\Models\InputSource;
-use App\Traits\HasDynamicAnswers;
-use Illuminate\Support\Collection;
-
 class HasMaximumAnswers extends ShouldEvaluate
 {
-    use HasDynamicAnswers;
-
-    public function evaluate($value = null, ?Collection $answers = null): array
+    public function evaluate($value = null): array
     {
         $building = $this->building;
         $inputSource = $this->inputSource;
-        // TODO: make this universal for all evaluators
-        $this->answers = $answers;
+        $answers = $this->answers;
 
         // This evaluator checks if the given answers doesn't exceed maximum
         // $value must be an array, where

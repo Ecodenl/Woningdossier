@@ -4,7 +4,6 @@ namespace App\Helpers\Conditions\Evaluators;
 
 use App\Models\ExampleBuilding;
 use App\Models\ToolQuestion;
-use Illuminate\Support\Collection;
 
 class SpecificExampleBuilding extends ShouldEvaluate
 {

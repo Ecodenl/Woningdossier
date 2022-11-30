@@ -4,7 +4,6 @@ namespace App\Helpers\Conditions\Evaluators;
 
 use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
-use Illuminate\Support\Collection;
 
 class AdviceCategory extends ShouldEvaluate
 {

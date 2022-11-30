@@ -3,7 +3,6 @@
 namespace App\Helpers\Conditions\Evaluators;
 
 use App\Calculations\Heater;
-use Illuminate\Support\Collection;
 
 class SunBoilerPerformance extends ShouldEvaluate
 {

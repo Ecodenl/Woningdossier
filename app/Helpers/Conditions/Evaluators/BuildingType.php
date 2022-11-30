@@ -4,7 +4,6 @@ namespace App\Helpers\Conditions\Evaluators;
 
 use App\Models\ToolQuestion;
 use App\Models\BuildingType as BuildingTypeModel;
-use Illuminate\Support\Collection;
 
 class BuildingType extends ShouldEvaluate
 {

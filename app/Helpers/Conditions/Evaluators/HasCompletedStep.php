@@ -4,7 +4,6 @@ namespace App\Helpers\Conditions\Evaluators;
 
 use App\Models\InputSource;
 use App\Models\Step;
-use Illuminate\Support\Collection;
 
 class HasCompletedStep extends ShouldEvaluate
 {

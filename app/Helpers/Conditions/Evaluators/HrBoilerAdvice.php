@@ -3,7 +3,6 @@
 namespace App\Helpers\Conditions\Evaluators;
 
 use App\Calculations\HighEfficiencyBoiler;
-use Illuminate\Support\Collection;
 
 class HrBoilerAdvice extends ShouldEvaluate
 {

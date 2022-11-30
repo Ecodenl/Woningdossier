@@ -3,7 +3,6 @@
 namespace App\Helpers\Conditions\Evaluators;
 
 use App\Calculations\HeatPump;
-use Illuminate\Support\Collection;
 
 class InsulationAdvice extends ShouldEvaluate
 {

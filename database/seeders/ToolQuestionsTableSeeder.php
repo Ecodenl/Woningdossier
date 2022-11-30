@@ -233,14 +233,20 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'building-contract-type',
                 'translation' => 'Is het een huur- of koopwoning?',
                 'tool_question_custom_values' => [
-                    'rented' => [
-                        'name' => 'Huurwoning',
+                    'bought' => [
+                        'name' => 'Koopwoning',
                         'extra' => [
                             //'icon' => 'icon-central-heater-gas',
                         ],
                     ],
-                    'bought' => [
-                        'name' => 'Koopwoning',
+                    'rented' => [
+                        'name' => 'Huurwoning cooperatie',
+                        'extra' => [
+                            //'icon' => 'icon-central-heater-gas',
+                        ],
+                    ],
+                    'rented-private' => [
+                        'name' => 'Particuliere huur',
                         'extra' => [
                             //'icon' => 'icon-central-heater-gas',
                         ],

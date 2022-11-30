@@ -4,9 +4,28 @@ namespace App\Helpers\Conditions\Evaluators;
 
 use App\Models\InputSource;
 use App\Models\Building;
+use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 
-interface ShouldEvaluate
+abstract class ShouldEvaluate
 {
-    public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool;
+    use FluentCaller;
+
+    protected Building $building;
+    protected InputSource $inputSource;
+    protected array $override = [];
+
+    public function __construct(Building $building, InputSource $inputSource)
+    {
+        $this->building = $building;
+        $this->inputSource = $inputSource;
+    }
+
+    public function override($override): self
+    {
+        $this->override = $override;
+        return $this;
+    }
+
+    abstract public function evaluate($value = null, ?Collection $answers = null): array;
 }

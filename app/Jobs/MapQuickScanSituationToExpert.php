@@ -53,6 +53,15 @@ class MapQuickScanSituationToExpert implements ShouldQueue
         $mapping = [
             'building-heating-application' => [
                 'questions' => ['new-building-heating-application'],
+                'answers' => [
+                    'clauses' => [
+                        [
+                            'value' => 'none',
+                            'operator' => Clause::CONTAINS,
+                            'result' => null,
+                        ],
+                    ],
+                ],
             ],
             'boiler-setting-comfort-heat' => [
                 'questions' => ['new-boiler-setting-comfort-heat'],
@@ -156,7 +165,6 @@ class MapQuickScanSituationToExpert implements ShouldQueue
             $answer = $viewable ? $this->building->getAnswer($this->masterInputSource, $toolQuestion) : null;
 
             // Morph answer if needed
-            // TODO: This does not work with arrays yet but this is not relevant ATM
             if (array_key_exists('answers', $data)) {
                 $answerStruct = $data['answers'];
 
@@ -218,6 +226,11 @@ class MapQuickScanSituationToExpert implements ShouldQueue
                 return $answer > $value;
             case Clause::LTE:
                 return $answer <= $value;
+            case Clause::CONTAINS:
+                if (is_array($answer)) {
+                    return in_array($value, $answer);
+                }
+                return $answer == $value;
             default:
             case Clause::EQ:
                 return $answer == $value;
@@ -228,7 +241,13 @@ class MapQuickScanSituationToExpert implements ShouldQueue
     {
         foreach ($clauses as $clause) {
             if ($this->evaluateClause($clause, $answer)) {
-                $answer = $clause['result'];
+                if (is_array($answer)) {
+                    $index = array_search($clause['value'], $answer);
+                    $answer[$index] = $clause['result'];
+                    $answer = array_filter($answer);
+                } else {
+                    $answer = $clause['result'];
+                }
                 break;
             }
         }

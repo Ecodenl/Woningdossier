@@ -96,7 +96,7 @@ class QuestionValue
             // First fetch all conditions, so we can retrieve any required related answers in one go
             $conditionsForAllValues = [];
             foreach ($questionValues as $questionValue) {
-                $conditionsForAllValues = array_merge($conditionsForAllValues, $questionValue['conditions']);
+                $conditionsForAllValues = array_merge($conditionsForAllValues, $questionValue['conditions'] ?? []);
             }
             $answersForQuestionValues = $evaluator->getToolAnswersForConditions($conditionsForAllValues)->merge($this->answers);
 

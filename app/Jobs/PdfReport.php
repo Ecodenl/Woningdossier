@@ -285,8 +285,7 @@ class PdfReport implements ShouldQueue
 
         $noInterest = Interest::where('calculate_value', 4)->first();
 
-//        /** @var \Barryvdh\DomPDF\PDF $pdf */
-        $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
+        $pdf = Pdf::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
             'commentsByStep', 'reportTranslations', 'reportData', 'newReportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
             'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'

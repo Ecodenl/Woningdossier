@@ -61,13 +61,17 @@ class ExampleBuildingService
             $genericExampleBuilding = ExampleBuilding::generic()
                 ->where('building_type_id', $exampleBuilding->building_type_id)
                 ->first();
-            self::log("Example building is specific. Generic counterpart is " . $genericExampleBuilding->name);
 
-            $genericContent = $genericExampleBuilding->getContentForYear($buildYear);
+            // Some building types do not have a generic example building
+            if ($genericExampleBuilding instanceof ExampleBuilding) {
+                self::log("Example building is specific. Generic counterpart is " . $genericExampleBuilding->name);
 
-            if ($genericContent instanceof ExampleBuildingContent) {
-                self::log("We merge the contents");
-                $exampleData = array_replace_recursive($exampleData, $genericContent->content);
+                $genericContent = $genericExampleBuilding->getContentForYear($buildYear);
+
+                if ($genericContent instanceof ExampleBuildingContent) {
+                    self::log("We merge the contents");
+                    $exampleData = array_replace_recursive($exampleData, $genericContent->content);
+                }
             }
         }
 

@@ -11,6 +11,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ToolQuestion;
+use App\Services\ConditionService;
 use App\Services\ToolQuestionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -43,10 +44,24 @@ class MapQuickScanSituationToExpert implements ShouldQueue
      */
     public function handle()
     {
-        // Convert (heat-pump) measure application scenario to expert 
+        $boilerService = Service::findByShort('boiler');
+        $boilerValues = $boilerService->values;
+
+        // Convert (heat pump) measure application scenario to expert scan.
+        // Note: currently only triggered if a user gets a heat pump measure application in their action plan,
+        // before they have completed the heating step.
         $mapping = [
             'building-heating-application' => [
                 'questions' => ['new-building-heating-application'],
+                'answers' => [
+                    'clauses' => [
+                        [
+                            'value' => 'none',
+                            'operator' => Clause::CONTAINS,
+                            'result' => null,
+                        ],
+                    ],
+                ],
             ],
             'boiler-setting-comfort-heat' => [
                 'questions' => ['new-boiler-setting-comfort-heat'],
@@ -87,6 +102,45 @@ class MapQuickScanSituationToExpert implements ShouldQueue
             'cook-type' => [
                 'questions' => ['new-cook-type'],
             ],
+            'boiler-type' => [
+                'questions' => ['new-boiler-type'],
+                'answers' => [
+                    'service' => 'boiler',
+                    'column' => 'id',
+                    'clauses' => [
+                        [
+                            'value' => $boilerValues->where('calculate_value', 1)->first()->id,
+                            'operator' => Clause::EQ,
+                            'result' => 'conventional',
+                        ],
+                        [
+                            'value' => $boilerValues->where('calculate_value', 2)->first()->id,
+                            'operator' => Clause::EQ,
+                            'result' => 'improved-efficiency',
+                        ],
+                        [
+                            'value' => $boilerValues->where('calculate_value', 3)->first()->id,
+                            'operator' => Clause::EQ,
+                            'result' => 'hr100',
+                        ],
+                        [
+                            'value' => $boilerValues->where('calculate_value', 4)->first()->id,
+                            'operator' => Clause::EQ,
+                            'result' => 'hr104',
+                        ],
+                        [
+                            'value' => $boilerValues->where('calculate_value', 5)->first()->id,
+                            'operator' => Clause::EQ,
+                            'result' => 'hr107',
+                        ],
+                        [
+                            'value' => null,
+                            'operator' => Clause::EQ,
+                            'result' => 'hr107',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $calculateValue = HeatPumpHelper::MEASURE_SERVICE_LINK[$this->measureApplication->short];
@@ -96,26 +150,36 @@ class MapQuickScanSituationToExpert implements ShouldQueue
 
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-pump-type'), $type);
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-source'), $source);
-        $this->saveAnswer(ToolQuestion::findByShort('new-heat-source-warm-tap-water'), $source);
+        $this->saveAnswer(ToolQuestion::findByShort('new-heat-source-warm-tap-water'), (in_array('hr-boiler', $source) ? ['hr-boiler'] : ['heat-pump']));
+
+        // Force replace
+        $this->saveAnswer(ToolQuestion::findByShort('heat-pump-replace'), true);
+        $this->saveAnswer(ToolQuestion::findByShort('hr-boiler-replace'), true);
 
         foreach ($mapping as $tqShort => $data) {
             $toolQuestion = ToolQuestion::findByShort($tqShort);
-            $answer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+
+            $viewable = ConditionService::init()->building($this->building)->inputSource($this->masterInputSource)
+                ->forModel($toolQuestion)->isViewable();
+
+            $answer = $viewable ? $this->building->getAnswer($this->masterInputSource, $toolQuestion) : null;
 
             // Morph answer if needed
-            // TODO: This does not work with arrays yet but this is not relevant ATM
             if (array_key_exists('answers', $data)) {
                 $answerStruct = $data['answers'];
-                if (array_key_exists('service', $answerStruct)) {
-                    // We now know we have a service value which we need
-                    $service = Service::findByShort($answerStruct['service']);
-                    $answer = $service->values()->where('id', $answer)->first();
-                } elseif (array_key_exists('model', $answerStruct)) {
-                    $answer = (new $answerStruct['model'])->find($answer);
-                }
 
-                if (array_key_exists('column', $answerStruct)) {
-                    $answer = $answer->{$answerStruct['column']};
+                if (! is_null($answer)) {
+                    if (array_key_exists('service', $answerStruct)) {
+                        // We now know we have a service value which we need
+                        $service = Service::findByShort($answerStruct['service']);
+                        $answer = $service->values()->where('id', $answer)->first();
+                    } elseif (array_key_exists('model', $answerStruct)) {
+                        $answer = (new $answerStruct['model'])->find($answer);
+                    }
+
+                    if (array_key_exists('column', $answerStruct)) {
+                        $answer = $answer->{$answerStruct['column']};
+                    }
                 }
 
                 $clauses = $answerStruct['clauses'];
@@ -162,6 +226,11 @@ class MapQuickScanSituationToExpert implements ShouldQueue
                 return $answer > $value;
             case Clause::LTE:
                 return $answer <= $value;
+            case Clause::CONTAINS:
+                if (is_array($answer)) {
+                    return in_array($value, $answer);
+                }
+                return $answer == $value;
             default:
             case Clause::EQ:
                 return $answer == $value;
@@ -172,7 +241,13 @@ class MapQuickScanSituationToExpert implements ShouldQueue
     {
         foreach ($clauses as $clause) {
             if ($this->evaluateClause($clause, $answer)) {
-                $answer = $clause['result'];
+                if (is_array($answer)) {
+                    $index = array_search($clause['value'], $answer);
+                    $answer[$index] = $clause['result'];
+                    $answer = array_filter($answer);
+                } else {
+                    $answer = $clause['result'];
+                }
                 break;
             }
         }

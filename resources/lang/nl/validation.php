@@ -160,7 +160,10 @@ return [
             'min' => '"aantal te vervangen ruiten?" moet tenminste :min zijn.',
         ],
         'accounts.email' => [
-            'unique' => 'Dit e-mailadres is al geregistreerd.',
+            'unique' => 'Het e-mailadres is al geregistreerd.',
+        ],
+        'email' => [
+            'unique' => 'Het e-mailadres is al geregistreerd.',
         ],
 
         'password' => [

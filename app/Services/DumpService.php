@@ -32,6 +32,7 @@ use App\Models\BuildingPaintworkStatus;
 use App\Models\BuildingPvPanel;
 use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
+use App\Models\BuildingStatus;
 use App\Models\BuildingVentilation;
 use App\Models\Cooperation;
 use App\Models\ElementValue;
@@ -51,6 +52,7 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DumpService
@@ -191,6 +193,11 @@ class DumpService
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
+
+        if (! $mostRecentStatus instanceof BuildingStatus) {
+            Log::warning("Building status not set for building {$building->id}");
+            $mostRecentStatus = BuildingStatus::first();
+        }
         $buildingStatus = $mostRecentStatus->status->name;
 
         $city = $building->city;
@@ -525,6 +532,11 @@ class DumpService
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
+
+        if (! $mostRecentStatus instanceof BuildingStatus) {
+            Log::warning("Building status not set for building {$building->id}");
+            $mostRecentStatus = BuildingStatus::first();
+        }
         $buildingStatus = $mostRecentStatus->status->name;
 
         $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';

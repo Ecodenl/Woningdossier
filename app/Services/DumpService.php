@@ -196,6 +196,7 @@ class DumpService
 
         if (! $mostRecentStatus instanceof BuildingStatus) {
             Log::warning("Building status not set for building {$building->id}");
+            DiscordNotifier::init()->notify("Building status not set for building {$building->id}");
             $mostRecentStatus = BuildingStatus::first();
         }
         $buildingStatus = $mostRecentStatus->status->name;
@@ -535,6 +536,7 @@ class DumpService
 
         if (! $mostRecentStatus instanceof BuildingStatus) {
             Log::warning("Building status not set for building {$building->id}");
+            DiscordNotifier::init()->notify("Building status not set for building {$building->id}");
             $mostRecentStatus = BuildingStatus::first();
         }
         $buildingStatus = $mostRecentStatus->status->name;

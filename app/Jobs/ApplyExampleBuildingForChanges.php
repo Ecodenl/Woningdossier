@@ -50,7 +50,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             // Apply the example building
             $this->retriggerExampleBuildingApplication($exampleBuilding);
         } else {
-            Log::debug(__CLASS__." No change in example building contents");
+            Log::debug(__CLASS__." No change in example building contents, or no new contents found.");
         }
     }
 
@@ -117,14 +117,15 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
                 $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
                 $newContents = $exampleBuilding->getContentForYear($changedBuildYear);
 
-                if ($oldContents instanceof ExampleBuildingContent) {
-                    if ($oldContents->id !== $newContents->id) {
+                if ($newContents instanceof ExampleBuildingContent) {
+                    if ($oldContents instanceof ExampleBuildingContent) {
+                        if ($oldContents->id !== $newContents->id) {
+                            return $exampleBuilding;
+                        }
+                    } else {
                         return $exampleBuilding;
                     }
-                } else {
-                    return $exampleBuilding;
                 }
-
             }
         } else {
             Log::debug(__CLASS__." Build year not set for building {$this->building->id}");

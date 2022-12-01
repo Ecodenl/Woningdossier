@@ -296,7 +296,7 @@ class PdfReport implements ShouldQueue
         $this->fileStorage->isProcessed();
     }
 
-    public function failed(\Exception $exception)
+    public function Failed(\Throwable $exception)
     {
         $this->fileStorage->delete();
     }

@@ -58,7 +58,7 @@ class RecalculateStepForUser implements ShouldQueue
     }
 
 
-    public function failed(\Exception $exception)
+    public function Failed(\Throwable $exception)
     {
         NotificationService::init()
             ->forBuilding($this->user->building)

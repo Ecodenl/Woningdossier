@@ -105,7 +105,7 @@ class GenerateTotalReport implements ShouldQueue
         $this->fileStorage->isProcessed();
     }
 
-    public function failed(\Exception $exception)
+    public function Failed(\Throwable $exception)
     {
         Log::debug($exception->getMessage() . ' ' . $exception->getTraceAsString());
         Log::debug("GenerateTotalReport failed: {$this->cooperation->id}");

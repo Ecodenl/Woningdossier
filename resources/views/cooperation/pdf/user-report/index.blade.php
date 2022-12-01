@@ -20,7 +20,9 @@
 
 {{-- This is the frontpage of the pdf, after this a new page must be started with the component. --}}
 <body>
-    @include('cooperation.pdf.user-report.parts.footer-note')
+    <footer>
+        @include('cooperation.pdf.user-report.parts.footer-note')
+    </footer>
 
     @include('cooperation.pdf.user-report.parts.front-page')
 </body>

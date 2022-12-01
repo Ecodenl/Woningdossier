@@ -217,12 +217,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             ->all()
                         )
                         ->as('simple-scan.')
-                        ->scopeBindings()
                         ->group(function () {
 
-                            Route::get('{subStep}', function (\App\Models\Cooperation $cooperation, \App\Models\Scan $scan, \App\Models\Step $step, \App\Models\SubStep $subStep) {
+                            Route::get('{subStep}', function (\App\Models\Cooperation $cooperation, \App\Models\Scan $scan, \App\Models\Step $step, $subStep) {
                                dd($step, $scan, $subStep);
-                            })->scopeBindings(['cooperation']);
+                            });
                             // Define this route as last to not match above routes as step/sub step combo
 //                            Route::get('{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
 //                                ->name('index')

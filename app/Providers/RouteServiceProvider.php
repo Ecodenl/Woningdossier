@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Step;
 use App\Models\SubStep;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
@@ -46,11 +47,8 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('subStep', function ($value) {
             $subStep = (new SubStep());
 
-            dd(
-                (new SubStep())->resolveRouteBinding($value, $subStep->getRouteKeyName()),
-            );
-            dd($subStep->resolveRouteBinding());
-//            (new SubStep()->resolveChildRouteBinding('step', 'bier', 'step_id'))
+            $x = (new Step())->resolveChildRouteBinding('subStep', $value, $subStep->getRouteKeyName());
+            dd($x);
 //            return (new SubStep()->resolveChildRouteBinding('step', 'bier', 'step_id'))
         });
     }

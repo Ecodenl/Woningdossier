@@ -150,7 +150,7 @@ class MapQuickScanSituationToExpert implements ShouldQueue
 
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-pump-type'), $type);
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-source'), $source);
-        $this->saveAnswer(ToolQuestion::findByShort('new-heat-source-warm-tap-water'), $source);
+        $this->saveAnswer(ToolQuestion::findByShort('new-heat-source-warm-tap-water'), (in_array('hr-boiler', $source) ? ['hr-boiler'] : ['heat-pump']));
 
         // Force replace
         $this->saveAnswer(ToolQuestion::findByShort('heat-pump-replace'), true);

@@ -221,10 +221,10 @@ class ToolQuestionService {
      */
     private function checkConditionalAnswers($givenAnswer)
     {
-        // TODO: Check the format for rating-slider questions (also in the evaluator itself)
+        // TODO: See how to handle JSON answers in case it ever becomes a conditional (comes back as literal JSON)
         // We build the answers ourselves to make a few less queries
         $answers = collect([
-            $this->toolQuestion->short => is_array($givenAnswer) ? collect($givenAnswer) : $givenAnswer,
+            $this->toolQuestion->short => $givenAnswer,
         ]);
 
         // Now we need to find any conditional answers that might be related to this question

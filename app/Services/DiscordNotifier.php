@@ -23,10 +23,17 @@ class DiscordNotifier
         $key = config('hoomdossier.webhooks.discord');
 
         if (! empty($key)) {
-            $this->client->post($key, [
-                'form_params' => [
-                    'content' => $message
-                ]]);
+            try {
+                $this->client->post($key, [
+                    'form_params' => [
+                        'content' => $message
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                if (app()->bound('sentry')) {
+                    app('sentry')->captureException($e);
+                }
+            }
         }
 
     }

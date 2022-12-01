@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\app\Helpers;
 
+use Database\Seeders\StatusesTableSeeder;
+use Database\Seeders\InputSourcesTableSeeder;
 use App\Helpers\Hoomdossier;
 use App\Models\Account;
 use App\Models\Building;
@@ -25,25 +27,25 @@ class HoomdossierTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\StatusesTableSeeder::class);
-        $this->seed(\InputSourcesTableSeeder::class);
+        $this->seed(StatusesTableSeeder::class);
+        $this->seed(InputSourcesTableSeeder::class);
     }
 
     public function testGetMostCredibleValue()
     {
-        $cooperation = factory(Cooperation::class)->create();
+        $cooperation = Cooperation::factory()->create();
 
-        $account = factory(Account::class)->create();
+        $account = Account::factory()->create();
 
-        $residentUser = factory(User::class)->create([
+        $residentUser = User::factory()->create([
             'cooperation_id' => $cooperation->id,
             'account_id' => $account->id,
         ]);
-        $building = factory(Building::class)->create(['user_id' => $residentUser->id]);
+        $building = Building::factory()->create(['user_id' => $residentUser->id]);
 
         // just create some building ventilations for each input source
         foreach (InputSource::all() as $inputSource) {
-            factory(BuildingVentilation::class)->create([
+            BuildingVentilation::factory()->create([
                 'building_id' => $building->id,
                 'input_source_id' => $inputSource->id,
             ]);

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\HoomdossierSession;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -36,7 +37,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $building_notes_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
  * @property-read int|null $building_permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @property-read \Plank\Mediable\MediableCollection|\App\Models\Building[] $buildings
  * @property-read int|null $buildings_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
  * @property-read int|null $completed_questionnaires_count
@@ -64,6 +65,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $user_action_plan_advice_comments_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
  * @property-read int|null $user_interests_count
+ * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User forAllCooperations()
  * @method static Builder|User forMyCooperation($cooperationId)
  * @method static Builder|User newModelQuery()
@@ -86,6 +88,8 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Model implements AuthorizableContract
 {
+    use HasFactory;
+
     use HasRoles,
         HasCooperationTrait,
         Authorizable;
@@ -486,51 +490,20 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Retrieve the completed questionnaires from the user for a specific input source.
-     *
-     * @param  \App\Models\InputSource  $source
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function completedQuestionnairesForSource(InputSource $source)
-    {
-        return $this->completedQuestionnaires()->wherePivot('input_source_id', $source->id);
-    }
-
-    /**
      * Check whether a user completed a questionnaire.
      *
      * @return bool
      */
     public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null)
     {
+        $query = $this->completedQuestionnaires()
+            ->where('questionnaire_id', $questionnaire->id);
+
         if ($inputSource instanceof InputSource) {
-            return $this
-                ->completedQuestionnairesForSource($inputSource)
-                ->where('questionnaire_id', $questionnaire->id)
-                ->exists();
+            $query->wherePivot('input_source_id', $inputSource->id);
         }
 
-        return $this->completedQuestionnaires()
-            ->where('questionnaire_id', $questionnaire->id)
-            ->exists();
-    }
-
-    /**
-     * Complete a questionnaire for a user.
-     *
-     * @param  \App\Models\Questionnaire  $questionnaire
-     * @param  \App\Models\InputSource  $inputSource
-     */
-    public function completeQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource)
-    {
-        $this->completedQuestionnairesForSource($inputSource)->syncWithoutDetaching(/* @scrutinizer ignore-type, uses parseIds method. */
-            [
-                $questionnaire->id => [
-                    'input_source_id' => $inputSource->id,
-                ],
-            ]
-        );
+        return $query->exists();
     }
 
     /**

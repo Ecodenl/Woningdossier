@@ -1,14 +1,25 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Models\Questionnaire::class, function (Faker $faker) {
-    return [
-        'cooperation_id' => factory(\App\Models\Cooperation::class),
-        'step_id' => factory(\App\Models\Step::class),
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class QuestionnaireFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+        'cooperation_id' => \App\Models\Cooperation::factory(),
+        'step_id' => \App\Models\Step::factory(),
         'order' => 0,
         'name' => [
-            'nl' => $faker->text(80),
+            'nl' => $this->faker->text(80),
         ],
     ];
-});
+    }
+}

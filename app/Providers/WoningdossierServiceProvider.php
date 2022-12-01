@@ -10,6 +10,7 @@ use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\CompletedSubStep;
+use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
 use App\Models\Translation;
@@ -56,6 +57,8 @@ class WoningdossierServiceProvider extends ServiceProvider
 
 
         View::creator('cooperation.tool.*', ToolComposer::class);
+        View::creator('cooperation.frontend.tool.expert-scan.index', ToolComposer::class);
+
         View::creator('*', CooperationComposer::class);
         View::creator('cooperation.admin.*', AdminComposer::class);
         //View::creator('cooperation.my-account.*', MyAccountComposer::class);

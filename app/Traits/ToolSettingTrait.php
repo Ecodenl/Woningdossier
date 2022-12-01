@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 trait ToolSettingTrait
 {
+    // TODO: No longer relevant, should be removed
     /**
      * @var array of columns to check
      */
@@ -81,6 +82,7 @@ trait ToolSettingTrait
 
     public static function bootToolSettingTrait()
     {
+        // TODO: Just use the 'saved' event
         static::created(function (Model $model) {
             $hasChanged = static::hasChanged($model);
 

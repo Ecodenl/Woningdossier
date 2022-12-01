@@ -39,6 +39,6 @@ class SetOldEmailListener implements ShouldQueue
         $account->old_email_token = hash_hmac('sha256', Str::random(40), 10);
         $account->save();
 
-        \Mail::to($oldEmail)->sendNow(new UserChangedHisEmail($user, $account, $newMail, $oldEmail));
+        \Mail::to($oldEmail)->send(new UserChangedHisEmail($user, $account, $newMail, $oldEmail));
     }
 }

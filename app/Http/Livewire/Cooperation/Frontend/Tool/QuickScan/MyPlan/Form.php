@@ -6,7 +6,6 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
-use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
@@ -379,6 +378,7 @@ class Form extends Component
         }
 
         $this->dispatchBrowserEvent('moved-card');
+        $this->refreshAlerts();
     }
 
     public function cardTrashed($fromCategory, $id)
@@ -407,6 +407,7 @@ class Form extends Component
         }
 
         $this->dispatchBrowserEvent('trashed-card');
+        $this->refreshAlerts();
     }
 
     public function recalculate()
@@ -587,7 +588,6 @@ class Form extends Component
         }
     }
 
-
     public function addHiddenCardToBoard($category, $id)
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
@@ -621,6 +621,14 @@ class Form extends Component
 
             $this->recalculate();
         }
+
+        $this->dispatchBrowserEvent('readded-card');
+        $this->refreshAlerts();
+    }
+
+    protected function refreshAlerts()
+    {
+        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts');
     }
 
     private function loadHiddenCards()
@@ -655,7 +663,7 @@ class Form extends Component
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_AVAILABLE,
                     'info' => nl2br($advisable->measure_info),
-                    'route' => StepHelper::buildStepUrl($advisable->step),
+                    'route' => route('cooperation.frontend.tool.expert-scan.index', ['step' => $advisable->step]),
                     'comfort' => $advisable->configurations['comfort'] ?? 0,
                 ];
             } else {

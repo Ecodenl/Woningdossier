@@ -9,9 +9,9 @@ export default (initiallyOpen = false) => ({
             this.updatePosition();
         }
     },
-    toggle() {
+    toggle(open = null) {
         this.$event.preventDefault();
-        this.open = ! this.open
+        this.open = open === null ? (! this.open) : open;
 
         if (this.open) {
             this.updatePosition();

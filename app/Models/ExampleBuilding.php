@@ -57,7 +57,7 @@ class ExampleBuilding extends Model
     ];
 
     public $fillable = [
-        'building_type_id', 'cooperation_id', 'order', 'is_default',
+        'name', 'building_type_id', 'cooperation_id', 'order', 'is_default',
     ];
 
     /**
@@ -114,27 +114,6 @@ class ExampleBuilding extends Model
         return $this->contents()
             ->whereNull('build_year')
             ->first();
-    }
-
-    /**
-     * @param int    $year build year
-     * @param string $key  step->slug . form_element_name (dot notation)
-     *
-     * @return mixed|null
-     */
-    public function getExampleValueForYear($year, $key)
-    {
-        $content = $this->getContentForYear($year);
-
-        if (! $content instanceof ExampleBuildingContent) {
-            return null;
-        }
-        $content = $content->content;
-        if (array_key_exists($key, $content)) {
-            return $content[$key];
-        }
-
-        return null;
     }
 
     /**

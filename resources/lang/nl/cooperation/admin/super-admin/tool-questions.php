@@ -2,7 +2,7 @@
 
 return [
     'index' => [
-        'header' => 'Quick scan vertalingen',
+        'header' => 'Vraag vertalingen',
         'table' => [
             'columns' => [
                 'name' => 'Vraag',

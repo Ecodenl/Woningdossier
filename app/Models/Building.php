@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\Arr;
+use App\Helpers\DataTypes\Caster;
 use App\Helpers\QuestionValues\QuestionValue;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
+use App\Traits\HasMedia;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -56,8 +59,9 @@ use Illuminate\Support\Str;
  * @property-read \App\Models\BuildingPaintworkStatus|null $currentPaintworkStatus
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CustomMeasureApplication[] $customMeasureApplications
  * @property-read int|null $custom_measure_applications_count
- * @property-read \App\Models\ExampleBuilding $exampleBuilding
  * @property-read \App\Models\BuildingHeater|null $heater
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
  * @property-read int|null $private_messages_count
  * @property-read \App\Models\BuildingPvPanel|null $pvPanels
@@ -70,6 +74,9 @@ use Illuminate\Support\Str;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
  * @property-read int|null $tool_question_answers_count
  * @property-read \App\Models\User|null $user
+ * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
+ * @method static \Database\Factories\BuildingFactory factory(...$parameters)
+ * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
  * @method static Builder|Building newModelQuery()
  * @method static Builder|Building newQuery()
  * @method static \Illuminate\Database\Query\Builder|Building onlyTrashed()
@@ -80,6 +87,8 @@ use Illuminate\Support\Str;
  * @method static Builder|Building whereCreatedAt($value)
  * @method static Builder|Building whereDeletedAt($value)
  * @method static Builder|Building whereExtension($value)
+ * @method static Builder|Building whereHasMedia($tags = [], bool $matchAll = false)
+ * @method static Builder|Building whereHasMediaMatchAll(array $tags)
  * @method static Builder|Building whereId($value)
  * @method static Builder|Building whereNumber($value)
  * @method static Builder|Building whereOwner($value)
@@ -88,6 +97,10 @@ use Illuminate\Support\Str;
  * @method static Builder|Building whereStreet($value)
  * @method static Builder|Building whereUpdatedAt($value)
  * @method static Builder|Building whereUserId($value)
+ * @method static Builder|Building withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
+ * @method static Builder|Building withMediaAndVariants($tags = [], bool $matchAll = false)
+ * @method static Builder|Building withMediaAndVariantsMatchAll($tags = [])
+ * @method static Builder|Building withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @method static Builder|Building withRecentBuildingStatusInformation()
  * @method static \Illuminate\Database\Query\Builder|Building withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Building withoutTrashed()
@@ -95,8 +108,10 @@ use Illuminate\Support\Str;
  */
 class Building extends Model
 {
-    use SoftDeletes,
-        ToolSettingTrait;
+    use HasFactory,
+        SoftDeletes,
+        ToolSettingTrait,
+        HasMedia;
 
     public $fillable = [
         'street',
@@ -107,12 +122,21 @@ class Building extends Model
         'building_coach_status_id',
         'extension',
         'is_active',
-        'example_building_id',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        // The mediable only _detaches_ the media. We want to DELETE the media if set.
+        static::deleting(function (Building $building) {
+            $building->media()->delete();
+        });
+    }
 
     public function toolQuestionAnswers(): HasMany
     {
@@ -137,8 +161,8 @@ class Building extends Model
             ],
         ];
         // this means we should get the answer the "traditional way" , in another table (not from the tool_question_answers)
-        if ( ! is_null($toolQuestion->save_in)) {
-            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
+        if (! is_null($toolQuestion->save_in)) {
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table  = $saveIn['table'];
             $column = $saveIn['column'];
             $where  = array_merge($saveIn['where'], $where);
@@ -160,17 +184,35 @@ class Building extends Model
 
                 // these contain the human-readable answers, we need this because the answer for a yes, no, unknown
                 // could be a 1,2,3.
-                $questionValues = QuestionValue::getQuestionValues($toolQuestion, $this, $inputSource)->pluck(
-                    'name',
-                    'value'
-                );
+                $questionValues = QuestionValue::init($this->user->cooperation, $toolQuestion)
+                    ->forInputSource($inputSource)
+                    ->forBuilding($this)
+                    ->withCustomEvaluation()
+                    ->getQuestionValues()
+                    ->pluck(
+                        'name',
+                        'value'
+                    );
 
-                $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
+                // in case the saved value is actually a array, loop through them and select them one by one.
+                // in most cases this isnt neceserry, because the first $values at line 156 holds them all
+                // weird cases lijk building values.
+                if (is_array($value)) {
+                    foreach ($value as $definitiveValue) {
 
-                $answers[$inputSource->short][] = [
-                    'answer' => $answer,
-                    'value'  => $value,
-                ];
+                        $answer = $questionValues->isNotEmpty() && ! is_null($definitiveValue) && isset($questionValues[$definitiveValue]) ? $questionValues[$definitiveValue] : $definitiveValue;
+                        $answers[$inputSource->short][] = [
+                            'answer' => $answer,
+                            'value'  => $definitiveValue,
+                        ];
+                    }
+                } else {
+                    $answer = $questionValues->isNotEmpty() && ! is_null($value) && isset($questionValues[$value]) ? $questionValues[$value] : $value;
+                    $answers[$inputSource->short][] = [
+                        'answer' => $answer,
+                        'value'  => $value,
+                    ];
+                }
             }
         } else {
             $where['building_id'] = $this->id;
@@ -184,7 +226,7 @@ class Building extends Model
                 $answer = optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer;
                 $answers[$toolQuestionAnswer->inputSource->short][$index] = [
                     'answer' => $answer,
-                    'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? null,
+                    'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? $answer,
                 ];
             }
         }
@@ -206,31 +248,45 @@ class Building extends Model
      */
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
-        // TODO: Should this check `for_specific_input_source`?
+        if (! is_null($toolQuestion->for_specific_input_source_id)) {
+            // If a tool question has a specific input source, it won't be saved to master.
+            // We override to the only allowed input source, because otherwise the answer is _always_ null
+            $inputSource = $toolQuestion->forSpecificInputSource;
+        }
 
-        $answer  = null;
-        $where[] = ['input_source_id', '=', $inputSource->id];
+        $answer = null;
+        $where['input_source_id'] = $inputSource->id;
         // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
-        if ( ! is_null($toolQuestion->save_in)) {
-            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
+        if (! is_null($toolQuestion->save_in)) {
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table  = $saveIn['table'];
             $column = $saveIn['column'];
-            $where  = array_merge($saveIn['where'], $where);
+            $where = array_merge($saveIn['where'], $where);
 
             $modelName = "App\\Models\\".Str::studly(Str::singular($table));
 
             // we do a get, so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
+            $tempAnswer = $modelName::allInputSources()->where($where)->get()->pluck($column);
+
+            // Just like with saving, an exception to the rule as these work differently
+            if (in_array($toolQuestion->short, ['wood-elements', 'current-roof-types'])) {
+                $answer = $tempAnswer->toArray();
+            } else {
+                $answer = $tempAnswer->first();
+            }
         } else {
             $where['building_id'] = $this->id;
-            $toolQuestionAnswers  = $toolQuestion
+            $toolQuestionAnswers = $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->where($where)
                 ->get();
 
             // todo: refactor this to something sensible
-            if ($toolQuestion->toolQuestionType->short == 'checkbox-icon') {
+            // TODO: Should we still refactor?
+            if ($toolQuestion->data_type === Caster::ARRAY) {
+                $answer = [];
+
                 foreach ($toolQuestionAnswers as $toolQuestionAnswer) {
                     if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
                         if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
@@ -265,11 +321,6 @@ class Building extends Model
         $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == $inputSource->id;
 
         return $fileIsGeneratedByBuilding && $fileInputSourceIsCurrentInputSource;
-    }
-
-    public static function toolSettingColumnsToCheck()
-    {
-        return ['example_building_id'];
     }
 
     /**
@@ -431,79 +482,11 @@ class Building extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function exampleBuilding()
-    {
-        return $this->belongsTo(ExampleBuilding::class);
-    }
-
-    /**
      * @return HasMany
      */
     public function buildingVentilations()
     {
         return $this->hasMany(BuildingVentilation::class);
-    }
-
-    /**
-     * @return ExampleBuilding|null
-     */
-    public function getExampleBuilding()
-    {
-        $example = $this->exampleBuilding;
-        if ($example instanceof ExampleBuilding) {
-            return $example;
-        }
-
-        return $this->getFittingExampleBuilding();
-    }
-
-    /**
-     * @return ExampleBuilding|null
-     */
-    public function getFittingExampleBuilding()
-    {
-        // determine fitting example building based on year + house type
-        $features = $this->buildingFeatures;
-        if ( ! $features instanceof BuildingFeature) {
-            return null;
-        }
-        if ( ! $features->buildingType instanceof BuildingType) {
-            return null;
-        }
-        $example = ExampleBuilding::whereNull('cooperation_id')
-                                  ->where(
-                                      'buiding_type_id',
-                                      $features->buildingType->id
-                                  )
-                                  ->first();
-
-        return $example;
-    }
-
-    public function getExampleValueForStep(Step $step, $formKey)
-    {
-        return $this->getExampleValue($step->slug.'.'.$formKey);
-    }
-
-    public function getExampleValue($key)
-    {
-        $example = $this->getExampleBuilding();
-        if ( ! $example instanceof ExampleBuilding) {
-            return null;
-        }
-
-        return $example->getExampleValueForYear($this->getBuildYear(), $key);
-    }
-
-    public function getBuildYear()
-    {
-        if ( ! $this->buildingFeatures instanceof BuildingFeature) {
-            return null;
-        }
-
-        return $this->buildingFeatures->build_year;
     }
 
     /**

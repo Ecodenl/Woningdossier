@@ -8,15 +8,14 @@ use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingHeatingApplication;
-use App\Models\BuildingType;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
+use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
 use App\Models\InsulatingGlazing;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\PvPanelOrientation;
@@ -24,13 +23,11 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
-use App\Models\SubStepTemplate;
+use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
-use App\Models\ToolQuestionType;
-use App\Models\Ventilation;
 use App\Models\WoodRotStatus;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class ToolHelper
 {
@@ -39,7 +36,7 @@ class ToolHelper
         $value = 'name',
         $id = 'id',
         $nullPlaceholder = true
-    )
+    ): array
     {
         $options = [];
 
@@ -53,17 +50,106 @@ class ToolHelper
         return $options;
     }
 
-    protected static function considerationOptions($name){
+    protected static function considerationOptions($name): array
+    {
 
         return [
             'label' => $name . ': ' . __(
                     'cooperation/admin/example-buildings.form.is-considering'
                 ),
             'type' => 'select',
-            'options' => ConsiderableHelper::getConsiderableValues()
+            'options' => ConsiderableHelper::getConsiderableValues(),
         ];
     }
 
+    /**
+     * Create the tool structure, which returns a mapping of shorts with labels attached.
+     * These shorts could either be a save_in or a short to a model. If it's a model, a class
+     * will be defined.
+     *
+     * @return array
+     */
+    public static function getNewContentStructure(): array
+    {
+        $stepOrder = [
+            // Quick Scan
+            'building-data', 'usage-quick-scan', 'living-requirements', 'residential-status',
+            // Expert Scan
+            'ventilation', 'wall-insulation', 'insulated-glazing', 'floor-insulation', 'roof-insulation',
+            'solar-panels',
+            'heating' => [
+                'huidige-situatie', 'nieuwe-situatie',
+            ],
+        ];
+
+        $structure = [];
+
+        // Will hold shorts we already processed
+        // Some models / morphs (mostly tool questions), will be shown on multiple steps
+        // We dont want to do that for the CSV tho.
+        // this way we can keep track of that
+        $processedShorts = [];
+
+        foreach ($stepOrder as $stepShortOrIndex => $stepDataOrStepShort) {
+            $isSpecificOrder = false;
+            $stepShort = $stepDataOrStepShort;
+
+            if (is_string($stepShortOrIndex)) {
+                // If it's a string, we have a step short as index, and the array holds the sub step order
+                $stepShort = $stepShortOrIndex;
+                $isSpecificOrder = true;
+            }
+
+            $step = Step::findByShort($stepShort);
+            $query = $step->subSteps();
+            if ($isSpecificOrder) {
+                $locale = 'nl';
+
+                // Order by custom order (it's important to ensure every sub step is in the array, else the order might be weird)
+                $questionMarks = substr(str_repeat('?, ', count($stepDataOrStepShort)), 0, -2);
+                $query->orderByRaw("FIELD(slug->>'$.{$locale}', {$questionMarks})", $stepDataOrStepShort);
+            } else {
+                $query->orderBy('order');
+            }
+            $subSteps = $query->get();
+
+            foreach ($subSteps as $subStep) {
+                $subSteppables = $subStep->subSteppables()->whereNotIn('sub_steppable_type', [ToolLabel::class])->orderBy('order')->get();
+                foreach ($subSteppables as $subSteppable) {
+                    $model = $subSteppable->subSteppable;
+
+                    if (! array_key_exists($model->short, $processedShorts)
+                        || ! in_array($subSteppable->sub_steppable_type, $processedShorts[$model->short])) {
+                        $isToolQuestion = $subSteppable->sub_steppable_type === ToolQuestion::class;
+
+                        $shortToSave = ($isToolQuestion ? 'question_' : 'calculation_') . $model->short;
+
+                        $modelName = $model->name;
+                        if ($isToolQuestion && ! is_null($model->for_specific_input_source_id)) {
+                            $modelName .= " ({$model->forSpecificInputSource->name})";
+                        }
+                        if ($stepShort === 'heating' && ! $isToolQuestion) {
+                            // Calculation fields have a repeated name, which can be confusing in only the heating
+                            // step (as of now). Might need to be expanded later on. We add the tool label matched
+                            // by the step short hidden in the result short
+                            // TODO: This solution _might_ not look good in the PDF once we switch from legacy
+                            $labelShort = explode('.', $model->short)[0];
+                            $label = ToolLabel::findByShort($labelShort);
+                            $modelName .= " ({$label->name})";
+                        }
+
+                        $structure[$stepShort][$shortToSave] = $modelName;
+
+                        $processedShorts[$model->short][] = $subSteppable->sub_steppable_type;
+                    }
+                }
+            }
+        }
+
+        return $structure;
+    }
+
+    // TODO: Remove legacy
     /**
      * @param $contentKey
      *
@@ -152,6 +238,7 @@ class ToolHelper
         $solarPanelsOptionsAngle = ['' => '-']
             + SolarPanelsKeyFigures::getAngles();
 
+        // TODO: Ensure we get answers from the heat-source/-warm-tap-water questions instead of the services now!
         $heater = Service::findByShort('sun-boiler');
         $heaterOptionsAngle = ['' => '-'] + HeaterKeyFigures::getAngles();
 
@@ -269,7 +356,7 @@ class ToolHelper
                     'tool_question_answers.heat-source' => [
                         'label' => ToolQuestion::findByShort('heat-source')->name,
                         'type' => 'multiselect',
-                        'options' => ToolQuestion::findByShort('heat-source')->getQuestionValues()->pluck('name', 'short')->toArray()
+                        'options' => ToolQuestion::findByShort('heat-source')->getQuestionValues()->pluck('name', 'short')->toArray(),
                     ],
 
                     'service.' . $boiler->id . '.service_value_id' => [
@@ -285,7 +372,7 @@ class ToolHelper
                             'cooperation/tool/general-data/current-state.index.building-heating-applications.title'
                         ),
                         'type' => 'select',
-                        'options' => ToolQuestion::findByShort('building-heating-application')->getQuestionValues()->pluck('name', 'short')->toArray()
+                        'options' => ToolQuestion::findByShort('building-heating-application')->getQuestionValues()->pluck('name', 'short')->toArray(),
                     ],
 
                     'service.' . $solarPanels->id . '.extra.value' => [
@@ -371,7 +458,7 @@ class ToolHelper
                     'tool_question_answers.cook-type' => [
                         'label' => ToolQuestion::findByShort('cook-type')->name,
                         'type' => 'select',
-                        'options' => ToolQuestion::findByShort('cook-type')->getQuestionValues()->pluck('name', 'short')->toArray()
+                        'options' => ToolQuestion::findByShort('cook-type')->getQuestionValues()->pluck('name', 'short')->toArray(),
                     ],
                     'user_energy_habits.thermostat_high' => [
                         'label' => __(
@@ -665,7 +752,7 @@ class ToolHelper
 
             'floor-insulation' => [
                 '-' => [
-                    "{$stepConsiderableKey}.{$floorInsulationStep->id}.is_considering" => self::considerationOptions($floorInsulationStep->name),
+                        "{$stepConsiderableKey}.{$floorInsulationStep->id}.is_considering" => self::considerationOptions($floorInsulationStep->name),
                     'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
                         'label' => __(
                             'floor-insulation.has-crawlspace.title'
@@ -921,7 +1008,7 @@ class ToolHelper
                 ],
             ],
         ];
- 
+
         $steps = Step::withoutChildren()->expert()->get();
 
         $steps = $steps->keyBy('short')->forget('general-data');

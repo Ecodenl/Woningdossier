@@ -4,22 +4,20 @@ namespace App\Http\Livewire\Cooperation\Frontend\Layouts\Parts;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\InputSource;
-use App\Models\Notification;
+use App\Services\Models\NotificationService;
 use Livewire\Component;
 
 class Notifications extends Component
 {
-    public $notification;
-
     public $masterInputSource;
     public $building;
     public $nextUrl;
-    public $type;
+    public $types;
 
-    public function mount($nextUrl, string $type)
+    public function mount($nextUrl, $types)
     {
         $this->nextUrl = $nextUrl;
-        $this->type = $type;
+        $this->types = (array) $types;
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
     }
@@ -33,12 +31,20 @@ class Notifications extends Component
 
     public function checkNotification()
     {
-        $this->notification = \App\Models\Notification::active()
-            ->forBuilding($this->building)
-            ->forType($this->type)
-            ->forInputSource($this->masterInputSource)->first();
+        $service = NotificationService::init()
+            ->forInputSource($this->masterInputSource)
+            ->forBuilding($this->building);
 
-        if (! $this->notification instanceof Notification) {
+        $activeNotification = false;
+
+        foreach ($this->types as $type) {
+            if ($service->setType($type)->isActive()) {
+                $activeNotification = true;
+                break;
+            }
+        }
+
+        if (! $activeNotification) {
             return redirect()->to($this->nextUrl);
         }
     }

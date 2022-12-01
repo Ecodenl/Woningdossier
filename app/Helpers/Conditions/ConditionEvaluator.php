@@ -5,6 +5,7 @@ namespace App\Helpers\Conditions;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,7 @@ use Illuminate\Support\Str;
 
 class ConditionEvaluator
 {
+    use FluentCaller;
 
     /**
      * @var Building
@@ -26,16 +28,7 @@ class ConditionEvaluator
     protected bool $explain = false;
 
     /**
-     * For fluent setter
-     * @return static
-     */
-    public static function init(): self
-    {
-        return new self;
-    }
-
-    /**
-     * @param Building $building
+     * @param  Building  $building
      *
      * @return $this
      */
@@ -47,7 +40,7 @@ class ConditionEvaluator
     }
 
     /**
-     * @param InputSource $inputSource
+     * @param  InputSource  $inputSource
      *
      * @return $this
      */
@@ -67,10 +60,16 @@ class ConditionEvaluator
 
     public function getToolAnswersForConditions(array $conditions): Collection
     {
-        // get answers for condition columns:
-        $questionKeys = collect(Arr::flatten($conditions, 1))
+        // Get answers for condition columns, but ensure we don't fetch PASS clause columns (as they don't have
+        // any answers so they don't need checking, and they could be arrays which would cause issues), and also
+        // don't fetch special evaluators, as they don't have answers either.
+        $questionKeys = collect(Arr::flatten($conditions, 2))
+            ->merge(collect(Arr::flatten($conditions, 1)))
+            ->whereNotIn('operator', [Clause::PASSES, Clause::NOT_PASSES])
+            ->where('column', '!=', 'fn')
             ->pluck('column')
             ->unique()
+            ->filter()
             ->values();
 
         // the structure of the questionKeys tells us how to retrieve the answer
@@ -101,7 +100,7 @@ class ConditionEvaluator
             } else {
                 // tool question short
                 $toolQuestion = ToolQuestion::findByShort($questionKey);
-                if (!$toolQuestion instanceof ToolQuestion) {
+                if (! $toolQuestion instanceof ToolQuestion) {
                     continue; // just skip this.
                 }
                 // in case of checkbox $answer is array
@@ -146,7 +145,16 @@ class ConditionEvaluator
         }
 
         foreach ($clauses as $clause) {
-            $result = $result && $this->evaluateClause($clause, $collection);
+            $subResult = false;
+            if (array_key_exists('column', $clause)) {
+                $subResult = $this->evaluateClause($clause, $collection);
+            } else {
+                foreach ($clause as $subClause) {
+                    $subResult = $subResult || $this->evaluateClause($subClause, $collection);
+                }
+            }
+
+            $result = $result && $subResult;
             if ($this->explain) {
                 Log::debug("evaluateAnd EXPLAIN Between: Result is " . ($result ? "true" : "false"));
             }
@@ -170,33 +178,56 @@ class ConditionEvaluator
          */
 
         if ($this->explain) {
-            $v = $value;
+            $v = $value ?? "No value";
             if (is_array($v)) {
                 $v = json_encode($v);
             }
-            Log::debug(
-                "evaluateClause EXPLAIN: " . sprintf(
-                    '%s %s %s',
-                    $column,
-                    $operator,
-                    $v
-                )
-            );
-            Log::debug("evaluateClause EXPLAIN against");
-            Log::debug($collection);
+
+            if ($this->explain) {
+                Log::debug(
+                    "evaluateClause EXPLAIN: " . sprintf(
+                        '%s %s %s',
+                        is_string($column) ? $column : json_encode($column),
+                        $operator,
+                        $v
+                    )
+                );
+                Log::debug("evaluateClause EXPLAIN against");
+                Log::debug($collection);
+            }
         }
 
         // first check if its a custom evaluator
         if ($column == "fn") {
-            $customEvaluatorClass = "App\Helpers\Conditions\Evaluators\\{$value}";
-            return $customEvaluatorClass::evaluate($this->building, $this->inputSource);
+            $customEvaluatorClass = "App\Helpers\Conditions\Evaluators\\{$operator}";
+            return $customEvaluatorClass::evaluate($this->building, $this->inputSource, $value ?? null, $collection);
         }
 
-        if (!$collection->has($column)) {
+        // Else check if we should do sub-evaluation
+        if ($operator === Clause::PASSES || $operator === Clause::NOT_PASSES) {
+            $column = is_array($column) ? $column : ['short' => $column];
+            $model = (new $value)->newQuery()->where($column)->first();
+
+            // Ensure we pass potential dynamic answers through
+            $conditions = $model->conditions ?? [];
+            $answersForNewConditions = $this->getToolAnswersForConditions($conditions)->merge($collection);
+
+            // Return result based on whether it should or should not pass
+            $result = $this->evaluateCollection($conditions, $answersForNewConditions);
+            return $operator === Clause::PASSES ? $result : ! $result;
+        }
+
+        // Else fall through to other clauses
+        if (! $collection->has($column)) {
             return false;
         }
         $values = $collection->get($column);
-        if (empty($operator) || $operator == Clause::CONTAINS) {
+
+        if (empty($operator)) {
+            $operator = Clause::CONTAINS;
+        }
+
+        if ($operator == Clause::CONTAINS || $operator == Clause::NOT_CONTAINS) {
             if ($values instanceof Collection) {
                 // as this is just a list with integer indexes, we have to do
                 // array comparison. Therefore:
@@ -204,14 +235,16 @@ class ConditionEvaluator
                 // and fallthrough
             }
             if (is_array($values)) {
-                return in_array($value, $values);
+                $result = in_array($value, $values);
+                return $operator == Clause::CONTAINS ? $result : ! $result;
             }
 
             // values is plain value
-            return $values == $value;
+            $result = $values == $value;
+            return $operator == Clause::CONTAINS ? $result : ! $result;
         }
 
-        // values will *probably* (should..) be containing a single value
+        // values will *probably* (should...) be containing a single value
         switch ($operator) {
             case Clause::GT:
                 return $values > $value;

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Services\DiscordNotifier;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
@@ -19,11 +21,10 @@ use Illuminate\Support\Collection;
  * @property string|null $short
  * @property string|null $save_in
  * @property int|null $for_specific_input_source_id
- * @property array|null $conditions
  * @property array $name
  * @property array $help_text
  * @property array|null $placeholder
- * @property int $tool_question_type_id
+ * @property string $data_type
  * @property bool $coach
  * @property bool $resident
  * @property array|null $options
@@ -33,21 +34,23 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $forSpecificInputSource
  * @property-read array $translations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
+ * @property-read int|null $sub_steppables_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
  * @property-read int|null $sub_steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionAnswer[] $toolQuestionAnswers
  * @property-read int|null $tool_question_answers_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionCustomValue[] $toolQuestionCustomValues
  * @property-read int|null $tool_question_custom_values_count
- * @property-read \App\Models\ToolQuestionType $toolQuestionType
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionValuable[] $toolQuestionValuables
  * @property-read int|null $tool_question_valuables_count
+ * @method static \Database\Factories\ToolQuestionFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion query()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCoach($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereConditions($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereDataType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereForSpecificInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereHelpText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereId($value)
@@ -57,7 +60,6 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereResident($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereSaveIn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereToolQuestionTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereUnitOfMeasure($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion whereValidation($value)
@@ -65,6 +67,8 @@ use Illuminate\Support\Collection;
  */
 class ToolQuestion extends Model
 {
+    use HasFactory;
+
     use HasTranslations, HasShortTrait;
 
     protected $translatable = [
@@ -75,11 +79,10 @@ class ToolQuestion extends Model
 
     protected $fillable = [
         'short',
-        'conditions',
         'placeholder',
+        'data_type',
         'name',
         'help_text',
-        'tool_question_type_id',
         'save_in',
         'for_specific_input_source_id',
         'unit_of_measure',
@@ -90,50 +93,16 @@ class ToolQuestion extends Model
     ];
 
     protected $casts = [
-        'conditions' => 'array',
         'options' => 'array',
         'validation' => 'array',
         'coach' => 'boolean',
         'resident' => 'boolean',
     ];
 
+    # Model methods
     public function hasOptions(): bool
     {
-        return  !empty($this->options);
-    }
-
-    public function toolQuestionType(): BelongsTo
-    {
-        return $this->belongsTo(ToolQuestionType::class);
-    }
-
-    public function toolQuestionAnswers(): HasMany
-    {
-        return $this->hasMany(ToolQuestionAnswer::class);
-    }
-
-    public function subSteps(): BelongsToMany
-    {
-        return $this->belongsToMany(SubStep::class, 'sub_step_tool_questions');
-    }
-    /**
-     * Method to return the intermediary morph table
-     *
-     * @return HasMany
-     */
-    public function toolQuestionValuables(): HasMany
-    {
-        return $this->hasMany(ToolQuestionValuable::class);
-    }
-
-    public function toolQuestionCustomValues()
-    {
-        return $this->hasMany(ToolQuestionCustomValue::class);
-    }
-
-    public function forSpecificInputSource(): BelongsTo
-    {
-        return $this->belongsTo(InputSource::class);
+        return ! empty($this->options);
     }
 
     /**
@@ -159,8 +128,9 @@ class ToolQuestion extends Model
                         $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short', 'building_type_id', 'cooperation_id']);
                         $questionValue['extra'] = $toolQuestionValuable->extra;
                         // the humane readable name is either set in the name or value column.
-                        $questionValue['name'] = $valuable->name ?? $valuable->value;
+                        $questionValue['name'] = $valuable->name ?? $valuable->value ?? $valuable->measure_name;
                         $questionValue['value'] = $valuable->id;
+                        $questionValue['conditions'] = $toolQuestionValuable->conditions;
 
                         return $questionValue;
                     } else {
@@ -181,8 +151,47 @@ class ToolQuestion extends Model
                 $questionValue = $toolQuestionCustomValue->toArray();
                 $questionValue['name'] = $toolQuestionCustomValue->name;
                 $questionValue['value'] = $toolQuestionCustomValue->short;
+                $questionValue['conditions'] = $toolQuestionCustomValue->conditions;
 
                 return $questionValue;
             });
+    }
+
+    # Relations
+    public function toolQuestionAnswers(): HasMany
+    {
+        return $this->hasMany(ToolQuestionAnswer::class);
+    }
+
+    public function subSteppables(): MorphMany
+    {
+        return $this->morphMany(SubSteppable::class, 'sub_steppable');
+    }
+
+    public function subSteps(): BelongsToMany
+    {
+        return $this->morphToMany(SubStep::class, 'sub_steppable')
+            ->using(SubSteppable::class)
+            ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
+    }
+
+    /**
+     * Method to return the intermediary morph table
+     *
+     * @return HasMany
+     */
+    public function toolQuestionValuables(): HasMany
+    {
+        return $this->hasMany(ToolQuestionValuable::class);
+    }
+
+    public function toolQuestionCustomValues(): HasMany
+    {
+        return $this->hasMany(ToolQuestionCustomValue::class);
+    }
+
+    public function forSpecificInputSource(): BelongsTo
+    {
+        return $this->belongsTo(InputSource::class);
     }
 }

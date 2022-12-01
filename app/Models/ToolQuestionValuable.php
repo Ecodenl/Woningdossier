@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -16,14 +17,17 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $tool_question_valuable_id
  * @property string $tool_question_valuable_type
  * @property array|null $extra
+ * @property array|null $conditions
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ToolQuestion $toolQuestion
  * @property-read Model|\Eloquent $toolQuestionValuables
  * @method static Builder|ToolQuestionValuable newModelQuery()
  * @method static Builder|ToolQuestionValuable newQuery()
  * @method static Builder|ToolQuestionValuable ordered()
  * @method static Builder|ToolQuestionValuable query()
  * @method static Builder|ToolQuestionValuable visible()
+ * @method static Builder|ToolQuestionValuable whereConditions($value)
  * @method static Builder|ToolQuestionValuable whereCreatedAt($value)
  * @method static Builder|ToolQuestionValuable whereExtra($value)
  * @method static Builder|ToolQuestionValuable whereId($value)
@@ -49,18 +53,10 @@ class ToolQuestionValuable extends Model
     protected $casts = [
         'show' => 'boolean',
         'extra' => 'array',
+        'conditions' => 'array',
     ];
 
-    /**
-     * Method retrieves the morphed models.
-     *
-     * @return MorphTo
-     */
-    public function toolQuestionValuables(): MorphTo
-    {
-        return $this->morphTo('tool_question_valuable');
-    }
-
+    # Scopes
     public function scopeVisible(Builder $query): Builder
     {
         return $query->where('show', true);
@@ -71,4 +67,19 @@ class ToolQuestionValuable extends Model
         return $query->orderBy('order');
     }
 
+    # Relations
+    public function toolQuestion(): BelongsTo
+    {
+        return $this->belongsTo(ToolQuestion::class);
+    }
+
+    /**
+     * Method retrieves the morphed models.
+     *
+     * @return MorphTo
+     */
+    public function toolQuestionValuables(): MorphTo
+    {
+        return $this->morphTo('tool_question_valuable');
+    }
 }

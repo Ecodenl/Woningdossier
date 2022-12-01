@@ -1,4 +1,5 @@
-<div x-data="sourceSelect('{{$defaultInputSource ?? 'no-match'}}')" x-ref="source-select-wrapper" class="source-select-wrapper">
+<div x-data="sourceSelect('{{$defaultInputSource ?? 'no-match'}}')" x-ref="source-select-wrapper"
+     class="source-select-wrapper" x-on:keyup.escape.window="close()">
     <select class="source-select" x-ref="source-select" x-model="value"
             @if(($disabled ?? false)) disabled @endif style="display: none;">
         <option value="no-match">@lang('cooperation/frontend/shared.input-sources.view-answers')</option>

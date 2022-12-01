@@ -2,19 +2,15 @@
 
 namespace App\Helpers\QuestionValues;
 
-use App\Models\Building;
 use App\Models\ExampleBuilding;
-use App\Models\InputSource;
-use App\Models\ToolQuestion;
 use Illuminate\Support\Collection;
 
-class SpecificExampleBuilding implements ShouldReturnQuestionValues
+class SpecificExampleBuilding extends QuestionValuable
 {
-    public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource): Collection
+    public function getQuestionValues(): Collection
     {
-        $conditionalQuestion = ToolQuestion::findByShort('building-type');
-        $cooperationId = $building->user->cooperation_id;
-        $buildingTypeId = $building->getAnswer($inputSource, $conditionalQuestion);
+        $buildingTypeId = $this->getAnswer('building-type', false);
+        $cooperationId = $this->cooperation->id;
 
         // Building type ID can be null, for example if we use $building->getAnswerForAllInputSources, it can
         // end up with an input source that might not have answered this question yet. Since we only want
@@ -24,6 +20,9 @@ class SpecificExampleBuilding implements ShouldReturnQuestionValues
             $genericBuilding = ExampleBuilding::where('building_type_id', $buildingTypeId)
                 ->whereNull('cooperation_id')
                 ->first();
+
+            // TODO: use generic() scope
+            // TODO: use select(*)->addSelect(DB::RAW(trans as name)), this allows us to skip the boolean check on line 54
 
             // Get all available example buildings
             $exampleBuildings = ExampleBuilding::where('building_type_id', $buildingTypeId)

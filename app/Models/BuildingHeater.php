@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\PvPanelOrientation|null $orientation
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater allInputSources()
+ * @method static \Database\Factories\BuildingHeaterFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forBuilding($building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forMe(?\App\Models\User $user = null)
@@ -40,6 +42,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingHeater extends Model
 {
+    use HasFactory;
+
     use GetValueTrait;
     use GetMyValuesTrait;
     use ToolSettingTrait;

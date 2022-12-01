@@ -4,8 +4,8 @@ namespace App\Jobs;
 
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\Notification;
 use App\Services\Cloning\CloneDataService;
+use App\Services\Models\NotificationService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -40,6 +40,10 @@ class CloneOpposingInputSource implements ShouldQueue
 
     public function failed(\Exception $exception)
     {
-        Notification::setActive($this->building, $this->inputSource, CloneOpposingInputSource::class, false);
+        NotificationService::init()
+            ->forBuilding($this->building)
+            ->forInputSource($this->inputSource)
+            ->setType(CloneOpposingInputSource::class)
+            ->deactivate(true);
     }
 }

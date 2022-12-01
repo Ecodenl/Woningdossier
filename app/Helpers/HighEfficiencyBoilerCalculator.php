@@ -2,13 +2,16 @@
 
 namespace App\Helpers;
 
+use App\Deprecation\ToolHelper;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\ComfortLevelTapWater;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\MeasureApplication;
+use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
+use App\Services\ConditionService;
 use Carbon\Carbon;
 
 class HighEfficiencyBoilerCalculator
@@ -16,42 +19,51 @@ class HighEfficiencyBoilerCalculator
     /**
      * @param ServiceValue|null    $currentBoiler
      * @param UserEnergyHabit|null $habit
-     * @param null                 $amountGas
      *
      * @return float|int|mixed|null
      */
-    public static function calculateGasSavings($currentBoiler, $habit, $amountGas = null)
+    public static function calculateGasSavings(?ServiceValue $currentBoiler, UserEnergyHabit $habit)
     {
-        $result = 0;
+        $building = $habit->user->building;
+        $inputSource = $habit->inputSource;
+        $amountGas = $habit->amount_gas;
 
-        if ($currentBoiler && $habit instanceof UserEnergyHabit) {
-            $current = self::calculateGasUsage($currentBoiler, $habit, $amountGas);
-            $amountGas = is_null($amountGas) ? $habit->amount_gas : $amountGas;
+        // It is possible the user does not have a boiler currently!
+        $current = self::calculateGasUsage($currentBoiler, $habit, $amountGas);
 
-            // now for the new
-            $bestBoiler = ServiceValue::where('service_id', $currentBoiler->service_id)->orderBy('order', 'desc')->first();
-            $bestBoilerEfficiency = $bestBoiler->keyFigureBoilerEfficiency;
+        $newBoilerQuestion = ToolQuestion::findByShort('new-boiler-type');
+        $conditionService = ConditionService::init()->building($building)->inputSource($inputSource)
+            ->forModel($newBoilerQuestion);
 
-            $usage = [
-                'heating' => 0,
-                'tap_water' => 0,
-                'cooking' => 0,
-            ];
-            $usage['heating'] = $current['heating']['netto'] / ($bestBoilerEfficiency['heating'] / 100);
-            $usage['tap_water'] = $current['tap_water']['netto'] / ($bestBoilerEfficiency['wtw'] / 100);
-            $usage['cooking'] = $current['cooking'];
-
-            $usageNew = $usage['heating'] + $usage['tap_water'] + $usage['cooking'];
-            // yes, array_sum is a method, but this is easier to compare to the theory
-            $result = $amountGas - $usageNew;
-
-            self::debug('Gas usage ( '.$usageNew.' ) with best boiler: '.json_encode($usage));
-            self::debug('Results in saving of '.$result.' = '.$amountGas.' - '.$usageNew);
+        // We will see if the user has a new boiler, and otherwise we will grab the best boiler available.
+        $newBoilerType = null;
+        if ($conditionService->isViewable() && $conditionService->hasCompletedSteps(['heating'])) {
+            $newBoilerType = ToolHelper::getServiceValueByCustomValue(
+                'boiler',
+                'new-boiler-type',
+                $building->getAnswer($inputSource, $newBoilerQuestion)
+            );
         }
-        // we dont want to return negative values
-        if (Number::isNegative($result)) {
-            $result = 0;
+
+        if (! $newBoilerType instanceof ServiceValue) {
+            $newBoilerType = Service::findByShort('boiler')->values()->orderBy('order', 'desc')->first();
         }
+
+        // now for the new
+        $newBoilerEfficiency = $newBoilerType->keyFigureBoilerEfficiency;
+
+        $usage = [
+            'heating' => $current['heating']['netto'] / ($newBoilerEfficiency['heating'] / 100),
+            'tap_water' => $current['tap_water']['netto'] / ($newBoilerEfficiency['wtw'] / 100),
+            'cooking' => $current['cooking'],
+        ];
+
+        $usageNew = $usage['heating'] + $usage['tap_water'] + $usage['cooking'];
+        // yes, array_sum is a method, but this is easier to compare to the theory
+        $result = $amountGas - $usageNew;
+
+        self::debug('Gas usage ( '.$usageNew.' ) with new boiler: '.json_encode($usage));
+        self::debug('Results in saving of '.$result.' = '.$amountGas.' - '.$usageNew);
 
         return $result;
     }
@@ -65,6 +77,7 @@ class HighEfficiencyBoilerCalculator
      */
     public static function calculateGasUsage($boiler, $habit, $amountGas = 0)
     {
+        // TODO: We don't want to pass a habit. We want to pass dedicated answers, a building and an input source
         $amountGas = $habit->amount_gas ?? $amountGas;
 
         $result = [
@@ -87,20 +100,18 @@ class HighEfficiencyBoilerCalculator
         self::debug(__METHOD__.' boiler efficiencies of boiler: '.$boilerEfficiency->heating.'% (heating) and '.$boilerEfficiency->wtw.'% (tap water)');
 
         if ($habit instanceof UserEnergyHabit) {
-            // so ideally a building + input source should be passed instead of a habit, but that's just to much work for now
             $building = $habit->user->building;
 
             $cookType = $building->getAnswer($habit->inputSource, ToolQuestion::findByShort('cook-type'));
 
             if ($cookType == "gas") {
-                $result['cooking'] = 65; // m3
+                $result['cooking'] = Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS; // m3
             }
 
             // From solar boiler / heater
             $comfortLevel = $habit->comfortLevelTapWater;
             if ($comfortLevel instanceof ComfortLevelTapWater) {
-                $consumption = KeyFigures::getCurrentConsumption($habit,
-                    $comfortLevel);
+                $consumption = KeyFigures::getCurrentConsumption($habit->resident_count, $comfortLevel);
                 if ($consumption instanceof KeyFigureConsumptionTapWater) {
                     $brutoTapWater = $consumption->energy_consumption;
                 }
@@ -122,6 +133,10 @@ class HighEfficiencyBoilerCalculator
     public static function determineApplicationYear(MeasureApplication $measureApplication, $last)
     {
         self::debug(__METHOD__);
+
+        if (! is_numeric($last)) {
+            return Carbon::now()->year;
+        }
 
         if ($last + $measureApplication->maintenance_interval <= Carbon::now()->year) {
             self::debug('Last replace is longer than '.$measureApplication->maintenance_interval.' years ago.');

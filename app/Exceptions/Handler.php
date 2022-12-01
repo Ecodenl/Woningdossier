@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Throwable;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
@@ -32,6 +33,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontFlash = [
+        'current_password',
         'password',
         'password_confirmation',
     ];
@@ -41,7 +43,6 @@ class Handler extends ExceptionHandler
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
@@ -65,20 +66,14 @@ class Handler extends ExceptionHandler
         return redirect()->route('cooperation.auth.login', compact('cooperation'));
     }
 
-    /**
-     * Report or log an exception.
-     *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @return void
-     */
-    public function report(Exception $exception)
-    {
-        if (app()->bound('sentry') && $this->shouldReport($exception)) {
-            app('sentry')->captureException($exception);
-        }
 
-        parent::report($exception);
+    public function register()
+    {
+        $this->reportable(function (Throwable $e) {
+            if (app()->bound('sentry') && $this->shouldReport($e)) {
+                app('sentry')->captureException($e);
+            }
+        });
     }
 
     /**
@@ -88,8 +83,13 @@ class Handler extends ExceptionHandler
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Symfony\Component\HttpFoundation\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
+        if ($request->query('test') == "1") {
+            Log::channel('single')->debug(get_class($exception));
+            Log::channel('single')->debug($exception->getMessage());
+        }
+
         // Handle the exception if the role in the session is not associated with the user itself.
         if ($exception instanceof RoleInSessionHasNoAssociationWithUser) {
             // try to obtain a role from the user.

@@ -315,29 +315,30 @@ class Building extends Model
      * Get the answer for a set of questions including the input source that made that answer.
      *
      * @param \Illuminate\Support\Collection $toolQuestions
-     * @param \App\Models\InputSource $inputSource Any input source that's not the master
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
-    public function getSourcedAnswers(Collection $toolQuestions): array
+    public function getSourcedAnswers(Collection $toolQuestions): Collection
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $ids = $toolQuestions->whereNull('save_in')->pluck('id')->toArray();
 
+        // Get the tool question answers for custom values.
         $answersForTqa = collect();
         if (! empty($ids)) {
-            // This sub-query selects the latest input source that made changes on the tool question
+            // This sub-query selects the latest input source that made changes on the tool question.
             $selectQuery = DB::table('tool_question_answers')
                 ->select('input_source_id')
                 ->where('building_id', $this->id)
                 ->whereRaw('tool_question_id = tqa.tool_question_id')
+                ->whereRaw('answer = tqa.answer')
                 ->where('input_source_id', '!=', $masterInputSource->id)
                 ->orderByDesc('updated_at')
                 ->limit(1);
 
             // https://laravel.com/docs/9.x/queries#subquery-joins
-            // This sub-join retrieves all non-master answers
+            // This sub-join retrieves all non-master answers.
             $subQuery = DB::table('tool_question_answers')
                 ->select('building_id', 'input_source_id', 'tool_question_id', 'answer')
                 ->where('building_id', $this->id)
@@ -364,34 +365,68 @@ class Building extends Model
 
         $ids = $toolQuestions->whereNotNull('save_in')->pluck('id')->toArray();
 
+        // Get the tool question answers for save in questions.
         $answersForSaveIn = collect();
         if (! empty($ids)) {
-            $saveIns = $toolQuestions->whereNotNull('save_in')->pluck('save_in')->toArray();
-            foreach ($saveIns as $saveIn) {
+            $saveIns = $toolQuestions->whereNotNull('save_in')->pluck('save_in', 'id')->toArray();
+            foreach ($saveIns as $toolQuestionId => $saveIn) {
                 $resolved = ToolQuestionHelper::resolveSaveIn($saveIn, $this);
+                $table = $resolved['table'];
+                $answerColumn = $resolved['column'];
+                $whereColumn = array_key_exists('user_id', $resolved['where']) ? 'user_id' : 'building_id';
+                $value = data_get($resolved, "where.{$whereColumn}");
 
+                // This sub-query selects the latest input source that made changes on the tool question.
+                $selectQuery = DB::table($table)
+                    ->select('input_source_id')
+                    ->where($whereColumn, $value)
+                    ->whereRaw("{$answerColumn} = tbl.{$answerColumn}")
+                    ->where('input_source_id', '!=', $masterInputSource->id)
+                    ->orderByDesc('updated_at')
+                    ->limit(1);
 
+                // This sub-join retrieves all non-master answers.
+                $subQuery = DB::table($table)
+                    ->select($whereColumn, 'input_source_id', $answerColumn)
+                    ->where($whereColumn, $value)
+                    ->where('input_source_id', '!=', $masterInputSource->id)
+                    ->groupBy($whereColumn, 'input_source_id', $answerColumn);
+
+                // Finally, we select the relevant data, where the input source is the latest changed.
+                $answersForResolved = DB::table("{$table} as tbl")
+                    ->select("tbl.{$answerColumn} as answer", 'nma.input_source_id', 'is.name as input_source_name')
+                    ->selectSub($selectQuery, 'latest_source_id')
+                    ->where("tbl.{$whereColumn}", $value)
+                    ->where('tbl.input_source_id', $masterInputSource->id)
+                    ->leftJoinSub($subQuery, 'nma', function ($join) use ($whereColumn, $answerColumn) {
+                        $join->on("tbl.{$whereColumn}", '=', "nma.{$whereColumn}")
+                            ->on("tbl.{$answerColumn}", '=', "nma.{$answerColumn}");
+                    })
+                    ->leftJoin('input_sources as is', 'nma.input_source_id', '=', 'is.id')
+                    ->havingRaw('nma.input_source_id = latest_source_id')
+                    ->get();
+
+                $answersForSaveIn->put($toolQuestionId, $answersForResolved);
             }
 
 
         }
 
-        dd($answersForSaveIn, $answersForTqa);
-
+        return $answersForTqa->union($answersForSaveIn);
     }
 
     /**
      * Get the answer for a question including the input source that made that answer.
      *
-     * @param \Illuminate\Support\Collection $toolQuestions
-     * @return array
+     * @param \App\Models\ToolQuestion $toolQuestion
+     *
+     * @return \Illuminate\Support\Collection
      */
-    public function getSourcedAnswer(ToolQuestion $toolQuestion): array
+    public function getSourcedAnswer(ToolQuestion $toolQuestion): Collection
     {
         $answer = $this->getSourcedAnswers(collect([$toolQuestion]));
-        dd($answer);
 
-
+        return $answer->get($toolQuestion->id);
     }
 
     /**

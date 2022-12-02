@@ -74,6 +74,11 @@ return [
 
         'calculations' => [
             'title' => 'Uitleg berekeningen',
+            'table' => [
+                'question' => 'Vraag',
+                'value' => 'Waarde',
+                'source' => 'Oorsprong',
+            ],
         ],
 
         'uploader' => [

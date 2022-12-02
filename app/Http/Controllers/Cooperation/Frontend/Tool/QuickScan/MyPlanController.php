@@ -57,7 +57,9 @@ class MyPlanController extends Controller
             }
         }
 
-        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'activeNotification'));
+        $inputSource = HoomdossierSession::getInputSource(true);
+
+        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'inputSource', 'activeNotification'));
     }
 
     public function media(Request $request, Cooperation $cooperation, ?Building $building = null)

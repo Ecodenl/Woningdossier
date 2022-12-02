@@ -313,6 +313,7 @@ class Building extends Model
 
     /**
      * Get the answer for a set of questions including the input source that made that answer.
+     * Note that this method does not perform evaluation!
      *
      * @param \Illuminate\Support\Collection $toolQuestions
      *
@@ -346,6 +347,7 @@ class Building extends Model
                 ->groupBy('building_id', 'input_source_id', 'tool_question_id', 'answer');
 
             // Finally, we select the relevant data, where the input source is the latest changed.
+            // We convert all "under-the-hood" stdClasses to arrays.
             $answersForTqa = DB::table('tool_question_answers as tqa')
                 ->select('tqa.tool_question_id', 'tqa.answer', 'nma.input_source_id', 'is.name as input_source_name')
                 ->selectSub($selectQuery, 'latest_source_id')
@@ -360,7 +362,8 @@ class Building extends Model
                 ->leftJoin('input_sources as is', 'nma.input_source_id', '=', 'is.id')
                 ->havingRaw('nma.input_source_id = latest_source_id')
                 ->get()
-                ->groupBy('tool_question_id');
+                ->groupBy('tool_question_id')
+                ->map(fn ($val) => $val->map(fn ($subVal) => (array) $subVal)->toArray());
         }
 
         $ids = $toolQuestions->whereNotNull('save_in')->pluck('id')->toArray();
@@ -393,6 +396,7 @@ class Building extends Model
                     ->groupBy($whereColumn, 'input_source_id', $answerColumn);
 
                 // Finally, we select the relevant data, where the input source is the latest changed.
+                // We convert all "under-the-hood" stdClasses to arrays.
                 $answersForResolved = DB::table("{$table} as tbl")
                     ->select("tbl.{$answerColumn} as answer", 'nma.input_source_id', 'is.name as input_source_name')
                     ->selectSub($selectQuery, 'latest_source_id')
@@ -404,12 +408,12 @@ class Building extends Model
                     })
                     ->leftJoin('input_sources as is', 'nma.input_source_id', '=', 'is.id')
                     ->havingRaw('nma.input_source_id = latest_source_id')
-                    ->get();
+                    ->get()
+                    ->map(fn ($val) => (array) $val)
+                    ->toArray();
 
                 $answersForSaveIn->put($toolQuestionId, $answersForResolved);
             }
-
-
         }
 
         return $answersForTqa->union($answersForSaveIn);
@@ -417,6 +421,7 @@ class Building extends Model
 
     /**
      * Get the answer for a question including the input source that made that answer.
+     * Note that this method does not perform evaluation!
      *
      * @param \App\Models\ToolQuestion $toolQuestion
      *

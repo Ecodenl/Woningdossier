@@ -30,6 +30,17 @@
 
         </div>
 
-        @livewire('cooperation.frontend.tool.quick-scan.my-plan.download-pdf', ['user' => $building->user])
+        <div class="w-full flex pt-5 pb-5">
+            <div class="flex w-1/4">
+                @can('viewAny', [\App\Models\Media::class, $inputSource, $building])
+                    <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media', compact('cooperation')) }}"
+                       class="btn btn-outline-green">
+                        @lang('cooperation/frontend/tool.my-plan.uploader.view')
+                    </a>
+                @endcan
+            </div>
+            @livewire('cooperation.frontend.tool.quick-scan.my-plan.calculations-table', compact('building'))
+            @livewire('cooperation.frontend.tool.quick-scan.my-plan.download-pdf', ['user' => $building->user])
+        </div>
     @endif
 @endsection

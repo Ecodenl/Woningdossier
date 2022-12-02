@@ -93,10 +93,22 @@ class GenerateTotalReport implements ShouldQueue
                 }
 
                 Log::debug(__METHOD__ . ' Putting chunk ' . $chunkNo);
-                $handle = fopen(Storage::disk('downloads')->path($this->fileStorage->filename), 'a');
-                foreach ($rows as $row) {
-                    fputcsv($handle, $row);
+                $path = Storage::disk('downloads')->path($this->fileStorage->filename);
+                $handle = fopen($path, 'a');
+                if (!$handle){
+                    Log::error(__METHOD__ . " no handle");
                 }
+                Log::debug(__METHOD__ . ' ' . count($rows) .  ' rows');
+                foreach ($rows as $row) {
+                    $lines = fputcsv($handle, $row);
+                    if ($lines === false){
+                        Log::error(__METHOD__ . " no lines written to path " . $path);
+                    }
+                    else {
+                        Log::error(__METHOD__ . " " . $lines . " lines written to path " . $path);
+                    }
+                }
+                Log::debug(__METHOD__ . ' closing handle');
                 fclose($handle);
                 Log::debug(__METHOD__ . ' Chunk ' . $chunkNo . ' put');
                 $chunkNo++;
@@ -104,7 +116,6 @@ class GenerateTotalReport implements ShouldQueue
                 // empty the rows, to prevent it from becoming to big and potentially slow.
                 $rows = [];
             });
-
 
         $this->fileStorage->isProcessed();
     }

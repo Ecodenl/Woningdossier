@@ -222,7 +222,7 @@ class Form extends Component
 
     public function render()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.form');
+        return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.form');
     }
 
     public function updated($field)

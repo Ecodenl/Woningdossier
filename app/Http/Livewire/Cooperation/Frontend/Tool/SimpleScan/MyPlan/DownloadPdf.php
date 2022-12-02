@@ -56,7 +56,7 @@ class DownloadPdf extends Component
 
     public function render()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.download-pdf');
+        return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.download-pdf');
     }
 
     /**

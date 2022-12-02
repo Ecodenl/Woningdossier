@@ -39,13 +39,6 @@ class StepHelper
         'small-measures'
     ];
 
-//    const LITE_SCAN_STEP_SHORTS = [
-//        'building-data',
-//        'usage-quick-scan',
-//        'living-requirements',
-//        'residential-status',
-//    ];
-
     const STEP_COMPLETION_MAP = [
         'heating' => [
             'high-efficiency-boiler', 'heat-pump', 'heater',

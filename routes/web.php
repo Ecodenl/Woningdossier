@@ -184,32 +184,14 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::as('tool.')->group(function () {
 
 
-//                    Route::get('{scan}/{step}', function (\App\Models\Cooperation $cooperation, \App\Models\Scan $scan, \App\Models\Step $step, \App\Models\SubStep $subStep) {
-//                        dd($cooperation, $scan->name, $step->name, $subStep->name);
-//                    })->name('bier');
-//
-//                    Route::get('{scan}/{step:slug}', function (\App\Models\Cooperation $cooperation, \App\Models\Scan $scan, \App\Models\Step $step) {
-//                           dd($scan, $step);
-//                    });
-//                    Route::get('{scan}/{step:slug}/{subStep:slug}', function (
-//                        \App\Models\Cooperation $cooperation,
-//                        \App\Models\Scan $scan,
-//                        \App\Models\Step $step,
-//                         \App\Models\SubStep $subStep
-//                    ) {
-//                           dd($scan, $step, $subStep);
-//                    });
-
                     $scans = \App\Helpers\Cache\Scan::allShorts();
                     // TODO: Deprecate to whereIn in L9
-//                    Route::get('{scan}', [Cooperation\Frontend\Tool\ScanController::class, 'redirect'])
-//                        ->name('scan.redirect')
-//                        ->where(collect(['scan'])
-//                            ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $scans)])
-//                            ->all()
-//                        );
-
-
+                    Route::get('{scan}', [Cooperation\Frontend\Tool\ScanController::class, 'redirect'])
+                        ->name('scan.redirect')
+                        ->where(collect(['scan'])
+                            ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $scans)])
+                            ->all()
+                        );
 
                     Route::prefix('{scan}/{step:slug}')
                         ->where(collect(['scan'])

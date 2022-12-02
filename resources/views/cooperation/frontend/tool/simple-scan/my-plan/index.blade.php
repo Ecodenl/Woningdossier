@@ -25,11 +25,11 @@
                 ]) !!}
             </div>
 
-            @livewire('cooperation.frontend.tool.quick-scan.my-plan.form', compact('building'))
-            @livewire('cooperation.frontend.tool.quick-scan.my-plan.comments', compact('building'))
+            @livewire('cooperation.frontend.tool.simple-scan.my-plan.form', compact('building'))
+            @livewire('cooperation.frontend.tool.simple-scan.my-plan.comments', compact('building'))
 
         </div>
 
-        @livewire('cooperation.frontend.tool.quick-scan.my-plan.download-pdf', ['user' => $building->user])
+        @livewire('cooperation.frontend.tool.simple-scan.my-plan.download-pdf', ['user' => $building->user])
     @endif
 @endsection

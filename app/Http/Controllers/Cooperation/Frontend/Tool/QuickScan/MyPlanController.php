@@ -57,7 +57,7 @@ class MyPlanController extends Controller
             }
         }
 
-        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'activeNotification'));
+        return view('cooperation.frontend.tool.simple-scan.my-plan.index', compact('building', 'activeNotification'));
     }
 
     public function media(Request $request, Cooperation $cooperation, ?Building $building = null)

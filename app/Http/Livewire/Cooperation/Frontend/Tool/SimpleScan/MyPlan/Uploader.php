@@ -48,7 +48,7 @@ class Uploader extends Component
 
     public function render()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.uploader');
+        return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.uploader');
     }
 
     public function updated(string $field)

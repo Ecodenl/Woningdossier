@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Step;
 use App\Models\SubStep;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -42,14 +43,6 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             return Cooperation::whereSlug($value)->firstOrFail();
-        });
-
-        Route::bind('subStep', function ($value) {
-            $subStep = (new SubStep());
-
-            $x = (new Step())->resolveChildRouteBinding('subStep', $value, $subStep->getRouteKeyName());
-            dd($x);
-//            return (new SubStep()->resolveChildRouteBinding('step', 'bier', 'step_id'))
         });
     }
 

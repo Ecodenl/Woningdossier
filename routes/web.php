@@ -219,13 +219,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         ->as('simple-scan.')
                         ->group(function () {
 
-                            Route::get('{subStep}', function (\App\Models\Cooperation $cooperation, \App\Models\Scan $scan, \App\Models\Step $step, $subStep) {
-                               dd($step, $scan, $subStep);
-                            });
                             // Define this route as last to not match above routes as step/sub step combo
-//                            Route::get('{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
-//                                ->name('index')
-//                                ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
+                            Route::get('{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
+                                ->name('index')
+                                ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
 
                             Route::get('vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\QuickScan\QuestionnaireController::class, 'index'])
                                 ->name('questionnaires.index');

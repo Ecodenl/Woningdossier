@@ -236,19 +236,19 @@ class ToolQuestionsTableSeeder extends Seeder
                     'bought' => [
                         'name' => 'Koopwoning',
                         'extra' => [
-                            //'icon' => 'icon-central-heater-gas',
+                            'icon' => 'icon-placeholder',
                         ],
                     ],
                     'rented' => [
                         'name' => 'Huurwoning cooperatie',
                         'extra' => [
-                            //'icon' => 'icon-central-heater-gas',
+                            'icon' => 'icon-placeholder',
                         ],
                     ],
                     'rented-private' => [
                         'name' => 'Particuliere huur',
                         'extra' => [
-                            //'icon' => 'icon-central-heater-gas',
+                            'icon' => 'icon-placeholder',
                         ],
                     ],
                 ],

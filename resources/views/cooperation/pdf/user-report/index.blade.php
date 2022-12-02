@@ -11,7 +11,7 @@
         @endphp
     @else
         @php
-            $href = asset('css/pdf.css');
+            $href = mix('css/pdf.css');
         @endphp
     @endif
     <link rel="stylesheet" type="text/css" href="{{ $href }}">

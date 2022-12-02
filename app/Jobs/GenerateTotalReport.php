@@ -92,25 +92,25 @@ class GenerateTotalReport implements ShouldQueue
                     $rows[$user->building->id] = $dumpService->user($user)->generateDump();
                 }
 
-                Log::debug(__METHOD__ . ' Putting chunk ' . $chunkNo);
+                Log::debug('GenerateTotalReport - Putting chunk ' . $chunkNo);
                 $path = Storage::disk('downloads')->path($this->fileStorage->filename);
                 $handle = fopen($path, 'a');
                 if (!$handle){
-                    Log::error(__METHOD__ . " no handle");
+                    Log::error('GenerateTotalReport - no handle');
                 }
-                Log::debug(__METHOD__ . ' ' . count($rows) .  ' rows');
+                Log::debug('GenerateTotalReport - ' . count($rows) .  ' rows on chunk ' . $chunkNo);
                 foreach ($rows as $row) {
-                    $lines = fputcsv($handle, $row);
-                    if ($lines === false){
-                        Log::error(__METHOD__ . " no lines written to path " . $path);
+                    $strlen = fputcsv($handle, $row);
+                    if ($strlen === false){
+                        Log::error('GenerateTotalReport - no characters written to path ' . $path);
                     }
                     else {
-                        Log::error(__METHOD__ . " " . $lines . " lines written to path " . $path);
+                        Log::error('GenerateTotalReport - ' . $strlen . " characters written to path " . $path);
                     }
                 }
-                Log::debug(__METHOD__ . ' closing handle');
+                Log::debug('GenerateTotalReport - closing handle');
                 fclose($handle);
-                Log::debug(__METHOD__ . ' Chunk ' . $chunkNo . ' put');
+                Log::debug('GenerateTotalReport - Chunk ' . $chunkNo . ' put');
                 $chunkNo++;
 
                 // empty the rows, to prevent it from becoming to big and potentially slow.

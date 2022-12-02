@@ -65,7 +65,7 @@ class GenerateTotalReport implements ShouldQueue
 
         // Get all users with a building and who have completed the quick scan
         $cooperation->users()
-            ->whereHas('building')
+            ->whereHas('building.buildingStatuses')
             ->with(['building' => function ($query) use ($inputSource) {
                 $query->with(
                     [

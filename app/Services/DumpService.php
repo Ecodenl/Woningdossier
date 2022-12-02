@@ -44,6 +44,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
+use App\Models\Status;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
@@ -198,8 +199,10 @@ class DumpService
             Log::warning("Building status not set for building {$building->id}");
             DiscordNotifier::init()->notify("Building status not set for building {$building->id}");
             $mostRecentStatus = BuildingStatus::first();
+            $buildingStatus = Status::findByShort('active')->name;
+        } else {
+            $buildingStatus = $mostRecentStatus->status->name;
         }
-        $buildingStatus = $mostRecentStatus->status->name;
 
         $city = $building->city;
         $postalCode = $building->postal_code;
@@ -538,8 +541,10 @@ class DumpService
             Log::warning("Building status not set for building {$building->id}");
             DiscordNotifier::init()->notify("Building status not set for building {$building->id}");
             $mostRecentStatus = BuildingStatus::first();
+            $buildingStatus = Status::findByShort('active')->name;
+        } else {
+            $buildingStatus = $mostRecentStatus->status->name;
         }
-        $buildingStatus = $mostRecentStatus->status->name;
 
         $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
         $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);

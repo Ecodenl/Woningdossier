@@ -313,7 +313,14 @@ abstract class Scannable extends Component
                 $ruleParams = explode(':', $rule);
                 // But can contain extra params
 
-                if (! empty($ruleParams[1])) {
+                // All rules that support linking to another field. No point in making calls if it's not this
+                $supportedRules = [
+                    'gt', 'gte', 'lt', 'lte', 'required_if', 'different', 'same', 'lowercase', 'uppercase',
+                    'accepted_if', 'declined_if', 'exclude_if', 'exclude_unless', 'exclude_with', 'exclude_without',
+                    'in_array', 'prohibited_if', 'prohibited_unless', 'prohibits',
+                ];
+
+                if (! empty($ruleParams[1]) && in_array($ruleParams[0], $supportedRules)) {
                     // Even if it's not in the string, explode will always put the result as first in the array.
                     $short = explode(',', $ruleParams[1])[0];
 

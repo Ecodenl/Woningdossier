@@ -61,10 +61,11 @@ class GenerateTotalReport implements ShouldQueue
         $cooperation = $this->cooperation;
 
         $rows[] = $dumpService->headerStructure;
+        $chunkNo = 1;
 
         // Get all users with a building and who have completed the quick scan
         $cooperation->users()
-            ->whereHas('building')
+            ->whereHas('building.buildingStatuses')
             ->with(['building' => function ($query) use ($inputSource) {
                 $query->with(
                     [
@@ -86,16 +87,19 @@ class GenerateTotalReport implements ShouldQueue
                     ]
                 );
             }, 'energyHabit' => fn ($q) => $q->forInputSource($inputSource)])
-            ->chunkById(100, function($users) use ($dumpService, &$rows) {
+            ->chunkById(100, function($users) use ($dumpService, &$rows, &$chunkNo) {
                 foreach ($users as $user) {
                     $rows[$user->building->id] = $dumpService->user($user)->generateDump();
                 }
 
+                Log::debug(__METHOD__ . ' Putting chunk ' . $chunkNo);
                 $handle = fopen(Storage::disk('downloads')->path($this->fileStorage->filename), 'a');
                 foreach ($rows as $row) {
                     fputcsv($handle, $row);
                 }
                 fclose($handle);
+                Log::debug(__METHOD__ . ' Chunk ' . $chunkNo . ' put');
+                $chunkNo++;
 
                 // empty the rows, to prevent it from becoming to big and potentially slow.
                 $rows = [];

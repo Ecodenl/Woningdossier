@@ -11,7 +11,7 @@
                                 <td class="w-100">{{$inputSourceName}} (@lang("pdf/user-report.measure-pages.comments.short-translations.{$short}"))</td>
                             </tr>
                             <tr>
-                                <td style="word-wrap: break-word !important; white-space: pre;">{{ trim($answer) }}</td>
+                                <td style="word-wrap: break-word !important; white-space: pre-line;">{{ trim($answer) }}</td>
                             </tr>
                         @endif
                     @endforeach
@@ -20,7 +20,7 @@
                         <td class="w-100">{{$inputSourceName}}</td>
                     </tr>
                     <tr>
-                        <td style="word-wrap: break-word !important; white-space: pre;">{{ trim($comment) }}</td>
+                        <td style="word-wrap: break-word !important; white-space: pre-line;">{{ trim($comment) }}</td>
                     </tr>
                 @endif
             </tbody>

@@ -28,6 +28,7 @@ class EnsureQuickScanCompleted
             return $next($request);
         }
 
+
         if ($building instanceof Building) {
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             if ($building->hasCompletedQuickScan($masterInputSource)) {
@@ -39,8 +40,10 @@ class EnsureQuickScanCompleted
                     $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, [], $masterInputSource);
 
                     if ($firstIncompleteSubStep instanceof SubStep) {
+
                         return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
-                            'scan' => $request->route('scan'),
+                            // so this may need some rework to check from a scan standpoint.
+                            'scan' => $firstIncompleteStep->scan,
                             'step' => $firstIncompleteStep,
                             'subStep' => $firstIncompleteSubStep,
                         ]);
@@ -48,6 +51,7 @@ class EnsureQuickScanCompleted
                 }
             }
         }
+
 
         // Either the building is not relevant, or something funky has happened with the completed quick scan
         // steps. Either way, we cannot let the building go through to the expert tool. We redirect back home

@@ -408,6 +408,7 @@ class Building extends Model
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
+        dd('hoer');
         $query = $this->completedSteps()
             ->forInputSource($masterInputSource)
             ->whereHas('step', function ($query) {

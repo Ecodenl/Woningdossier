@@ -17,9 +17,9 @@ class Comments extends Component
     public InputSource $residentInputSource;
     public InputSource $coachInputSource;
 
-    public ?UserActionPlanAdviceComments $residentComment;
+    public ?UserActionPlanAdviceComments $residentComment = null;
     public string $residentCommentText = '';
-    public ?UserActionPlanAdviceComments $coachComment;
+    public ?UserActionPlanAdviceComments $coachComment = null;
     public string $coachCommentText = '';
 
     // holds the original comments and will not be editable in the frontend

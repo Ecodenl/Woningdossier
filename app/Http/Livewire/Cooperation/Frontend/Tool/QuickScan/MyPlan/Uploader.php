@@ -5,8 +5,10 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MediaHelper;
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\Media;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -19,10 +21,10 @@ class Uploader extends Component
     use WithFileUploads,
         AuthorizesRequests;
 
-    public $building;
-    public $inputSource;
-    public $documents;
-    public $files;
+    public Building $building;
+    public InputSource $inputSource;
+    public $documents; // The temporary uploaded files do some weird shenanigans so we can't type this
+    public Collection $files;
     public array $fileData = [];
 
     protected $listeners = [

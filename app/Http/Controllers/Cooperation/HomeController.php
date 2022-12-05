@@ -7,6 +7,7 @@ use App\Helpers\QuickScanHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 
@@ -27,7 +28,8 @@ class HomeController extends Controller
 
         // If the quick scan is complete, we just redirect to my plan
         if ($building->hasCompletedQuickScan($masterInputSource)) {
-            $url = route('cooperation.frontend.tool.simple-scan.my-plan.index');
+            $scan = Scan::findByShort('quick-scan');
+            $url = route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
         } else {
             $mostRecentCompletedSubStep = optional(
                 $building->completedSubSteps()

@@ -136,3 +136,9 @@ case, the columns are as follows:
 
 Just like the main evaluator, a building and input source are passed to these evaluators. However, these evaluators 
 also accept a nullable value, as well as a `Collection` of answers, to allow for dynamic and complex logic.
+
+##### Developer note
+The custom evaluators share their results with the condition evaluator so any next checks of the same custom evaluator 
+will allow the earlier result to be checked. This saves a ton of unnecessary duplicate processes. The custom evaluator 
+will return an `array` containing `results`, which are the results of the evaluation, `bool` which is whether the
+evaluation has passed and `key` which is an MD5 to differentiate between custom evaluators with different parameters.

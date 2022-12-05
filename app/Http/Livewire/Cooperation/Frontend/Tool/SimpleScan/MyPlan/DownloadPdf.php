@@ -18,14 +18,13 @@ class DownloadPdf extends Component
 {
     use AuthorizesRequests;
 
-    /** @var FileType $fileType */
-    public $fileType;
-    public $user;
-    public $inputSource;
-    public $masterInputSource;
+    public FileType $fileType;
+    public User $user;
+    public InputSource $inputSource;
+    public InputSource $masterInputSource;
 
-    public $isFileBeingProcessed = false;
-    public $fileStorage;
+    public bool $isFileBeingProcessed = false;
+    public ?FileStorage $fileStorage;
 
     public function mount(User $user)
     {
@@ -49,7 +48,7 @@ class DownloadPdf extends Component
     {
         $this->isFileBeingProcessed = $this->fileType->isBeingProcessed($this->user->building, $this->inputSource);
 
-        if (!$this->isFileBeingProcessed) {
+        if (! $this->isFileBeingProcessed) {
             $this->fileStorage = $this->fileType->files()->forBuilding($this->user->building)->forInputSource($this->inputSource)->first();
         }
     }

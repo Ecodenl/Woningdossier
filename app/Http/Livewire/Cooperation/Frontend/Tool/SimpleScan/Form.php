@@ -21,8 +21,8 @@ use Illuminate\Support\Facades\Validator;
 class Form extends Scannable
 {
     public $scan;
-    public $step;
-    public $subStep;
+    public Step $step;
+    public SubStep $subStep;
 
     public function mount(Scan $scan, Step $step, SubStep $subStep)
     {
@@ -41,12 +41,9 @@ class Form extends Scannable
             },
             'subStepTemplate',
         ]);
-        $this->step = $step;
-        $this->subStep = $subStep;
 
-        $this->boot();
+        $this->build();
     }
-
 
     public function hydrateToolQuestions()
     {

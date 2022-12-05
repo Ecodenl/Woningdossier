@@ -4,6 +4,8 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
+use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
@@ -16,17 +18,17 @@ use Livewire\Component;
 
 class CustomChanges extends Component
 {
-    public $customMeasureApplicationsFormData;
-    public $cooperationMeasureApplicationsFormData;
+    public array $customMeasureApplicationsFormData;
+    public array $cooperationMeasureApplicationsFormData;
     public array $selectedCustomMeasureApplications = [];
     public array $selectedCooperationMeasureApplications = [];
     public array $previousSelectedState = [];
 
-    public $masterInputSource;
-    public $currentInputSource;
+    public InputSource $masterInputSource;
+    public InputSource $currentInputSource;
 
-    public $cooperation;
-    public $building;
+    public Cooperation $cooperation;
+    public Building $building;
 
     protected array $rules = [
         'customMeasureApplicationsFormData.*.name' => 'required',

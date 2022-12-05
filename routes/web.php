@@ -235,7 +235,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         // Define this route as last to not match above routes as step/sub step combo
                         Route::get('{step}', [Cooperation\Frontend\Tool\ExpertScanController::class, 'index'])
                             ->name('index')
-                            ->middleware(['duplicate-data-for-user']);
+                            ->middleware(['ensure-quick-scan-completed', 'duplicate-data-for-user']);
                     });
 
 

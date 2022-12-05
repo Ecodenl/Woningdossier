@@ -25,8 +25,8 @@ class MyPlanController extends Controller
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        // For quick testing purposes, we really don't want to run through the tool each time
-        if (! app()->environment('local')) {
+        // Apparently the plan should be visible for observing users
+        if (! HoomdossierSession::isUserObserving()) {
             $firstIncompleteStep = $building->getFirstIncompleteStep([], $masterInputSource);
 
             // There are incomplete steps left, set the sub step

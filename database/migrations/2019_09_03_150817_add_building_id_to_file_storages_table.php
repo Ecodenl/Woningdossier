@@ -21,7 +21,7 @@ class AddBuildingIdToFileStoragesTable extends Migration
         $fileStorages = DB::table('file_storages')->get();
 
         foreach ($fileStorages as $fileStorage) {
-            if ($fileStorage instanceof stdClass && !empty($fileStorage->user_id)) {
+            if ($fileStorage instanceof \stdClass && !empty($fileStorage->user_id)) {
                 $buildingId = DB::table('buildings')->where('user_id', $fileStorage->user_id)->first()->id;
                 DB::table('file_storages')->where('user_id', $fileStorage->user_id)->update([
                     'building_id' => $buildingId
@@ -50,7 +50,7 @@ class AddBuildingIdToFileStoragesTable extends Migration
         $fileStorages = DB::table('file_storages')->get();
 
         foreach ($fileStorages as $fileStorage) {
-            if ($fileStorage instanceof stdClass && !empty($fileStorage->building_id)) {
+            if ($fileStorage instanceof \stdClass && !empty($fileStorage->building_id)) {
                 $userId = DB::table('buildings')->where('id', $fileStorage->building_id)->first()->user_id;
                 DB::table('file_storages')->where('building_id', $fileStorage->building_id)->update([
                     'user_id' => $userId

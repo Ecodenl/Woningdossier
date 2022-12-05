@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCooperationScansTable extends Migration
+class CreateCooperationScanTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCooperationScansTable extends Migration
      */
     public function up()
     {
-        Schema::create('cooperation_scans', function (Blueprint $table) {
+        Schema::create('cooperation_scan', function (Blueprint $table) {
             $table->id();
             
             $table->unsignedInteger('cooperation_id');
@@ -33,6 +33,6 @@ class CreateCooperationScansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cooperation_scans');
+        Schema::dropIfExists('cooperation_scan');
     }
 }

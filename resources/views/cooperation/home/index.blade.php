@@ -11,11 +11,13 @@
                 @endif
                 {!! __('home.start.description') !!}
 
-                <a class="btn btn-purple w-full xl:w-1/4 flex items-center justify-center mt-5"
+                @foreach($cooperation->scans as $scan)
+                    <a class="btn btn-purple w-full xl:w-1/4 flex items-center justify-center mt-5"
                     href="{{$url}}">
-                    @lang('default.start')
-                    <i class="icon-sm icon-arrow-right-circle ml-5"></i>
-                </a>
+                        {{$scan->name}}
+                        <i class="icon-sm icon-arrow-right-circle ml-5"></i>
+                    </a>
+                    @endforeach
             </div>
             <div class="text-center w-1/2 relative bg-center bg-no-repeat bg-cover"
                  style="background-image: url('{{ asset('images/family.png') }}')">

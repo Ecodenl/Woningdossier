@@ -27,7 +27,7 @@ class HomeController extends Controller
 
         // If the quick scan is complete, we just redirect to my plan
         if ($building->hasCompletedQuickScan($masterInputSource)) {
-            $url = route('cooperation.frontend.tool.quick-scan.my-plan.index');
+            $url = route('cooperation.frontend.tool.simple-scan.my-plan.index');
         } else {
             $mostRecentCompletedSubStep = optional(
                 $building->completedSubSteps()

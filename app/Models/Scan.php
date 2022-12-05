@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +32,7 @@ use Illuminate\Support\Facades\App;
  */
 class Scan extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasShortTrait;
 
     protected $translatable = ['name', 'slug'];
 
@@ -44,6 +45,11 @@ class Scan extends Model
     public function getRouteKey()
     {
         return $this->slug;
+    }
+
+    public function steps()
+    {
+        return $this->hasMany(Step::class);
     }
 
     // TODO: Slug trait?

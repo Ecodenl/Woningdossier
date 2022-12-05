@@ -30,7 +30,7 @@
 
                         <div class="w-full flex flex-row flex-wrap">
                             <div class="w-full flex flex-wrap">
-                                <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.index') }}"
+                                <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index') }}"
                                    class="btn btn-outline-orange flex items-center justify-center mr-2">
                                     @lang('default.buttons.cancel')
                                 </a>

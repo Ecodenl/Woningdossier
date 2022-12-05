@@ -29,7 +29,7 @@ class ToolController extends Controller
 
         $step = Step::findByShort('building-data');
 
-        return redirect()->route('cooperation.frontend.tool.quick-scan.index', [
+        return redirect()->route('cooperation.frontend.tool.scans.index', [
             'scan' => $step->scan,
             'step' => $step,
             'subStep' => $step->subSteps()->orderBy('order')->first(),

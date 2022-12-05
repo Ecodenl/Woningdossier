@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Questionnaire;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use Illuminate\Http\Request;
@@ -15,6 +17,7 @@ class Buttons extends Component
     private Account $account;
     private Building $building;
 
+    public $scan;
     public Step $step;
     public ?Step $previousStep;
 
@@ -26,8 +29,9 @@ class Buttons extends Component
 
     public string $previousUrl;
 
-    public function mount(Request $request, Step $step, $subStepOrQuestionnaire)
+    public function mount(Request $request, Scan $scan, Step $step, $subStepOrQuestionnaire)
     {
+        $this->scan = $scan;
         $this->account = $request->user();
         $this->building = $this->account->user()->building;
 
@@ -61,20 +65,27 @@ class Buttons extends Component
 
     public function render()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.buttons');
+        return view('livewire.cooperation.frontend.tool.simple-scan.buttons');
     }
 
     public function setUrl()
     {
         // TODO: See if we can integrate this with the ScanFlowService
+        $scan = $this->scan;
         $previousStep = $this->previousStep;
         $previousSubStep = $this->previousSubStep;
         $previousQuestionnaire = $this->previousQuestionnaire;
 
         if ($previousStep instanceof \App\Models\Step && $previousSubStep instanceof \App\Models\SubStep) {
-            $previousUrl = route('cooperation.frontend.tool.quick-scan.index', ['step' => $previousStep, 'subStep' => $previousSubStep]);
+            $previousUrl = route('cooperation.frontend.tool.simple-scan.index', [
+                'scan' => $scan,
+                'step' => $previousStep,
+                'subStep' => $previousSubStep
+            ]);
         } elseif ($previousStep instanceof \App\Models\Step && $previousQuestionnaire instanceof \App\Models\Questionnaire) {
-            $previousUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index', ['step' => $previousStep, 'questionnaire' => $previousQuestionnaire]);
+            $previousUrl = route('cooperation.frontend.tool.simple-scan.questionnaires.index', [
+                'scan' => $scan, 'step' => $previousStep, 'questionnaire' => $previousQuestionnaire
+            ]);
         }
 
         $this->previousUrl = $previousUrl ?? '';

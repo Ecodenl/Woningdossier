@@ -33,7 +33,7 @@ class Alerts extends Component
     {
         $this->fill(compact('building', 'inputSource'));
 
-        if ($request->route()->getName() === 'cooperation.frontend.tool.quick-scan.my-plan.index') {
+        if ($request->route()->getName() === 'cooperation.frontend.tool.simple-scan.my-plan.index') {
             $this->alertOpen = true;
         }
         $this->refreshAlerts();

@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Models\Cooperation;
 use App\Models\Questionnaire;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class QuestionnaireController extends Controller
 {
-    public function index(Cooperation $cooperation, Step $step, Questionnaire $questionnaire)
+    public function index(Cooperation $cooperation, Scan $scan, Step $step, Questionnaire $questionnaire)
     {
         // Ensure it's a valid questionnaire
         abort_if($questionnaire->isNotActive() || $questionnaire->step->id !== $step->id, 404);

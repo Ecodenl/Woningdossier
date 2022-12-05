@@ -6,6 +6,7 @@ use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\App;
 
 /**
  * App\Models\SubStep
@@ -65,10 +66,9 @@ class SubStep extends Model
         'conditions' => 'array',
     ];
 
-    # Model methods
-    public function getRouteKeyName(): string
+    public function getRouteKeyName()
     {
-        $locale = app()->getLocale();
+        $locale = App::getLocale();
         return "slug->{$locale}";
     }
 

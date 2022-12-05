@@ -205,7 +205,7 @@ class Form extends Component
         }
 
         // TODO: Make FlowService URL workable
-        return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $this->cooperation]);
+        return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', ['cooperation' => $this->cooperation]);
     }
 
     public function performCalculations()

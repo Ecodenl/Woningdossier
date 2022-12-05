@@ -251,8 +251,9 @@ class ScanFlowService
                 DiscordNotifier::init()->notify("Next sub step doesn't belong to next step! Step ID: {$nextStep->id}. Sub step ID: {$nextSubStep->id}.");
                 $nextUrl = '';
             } else {
-                $nextUrl = route('cooperation.frontend.tool.quick-scan.index',
-                    ['cooperation' => $cooperation, 'step' => $nextStep, 'subStep' => $nextSubStep]);
+                $nextUrl = route('cooperation.frontend.tool.simple-scan.index', [
+                    'cooperation' => $cooperation, 'scan' => $this->scan, 'step' => $nextStep, 'subStep' => $nextSubStep
+                ]);
             }
         } elseif ($nextStep instanceof Step && $nextQuestionnaire instanceof Questionnaire) {
             if ($nextQuestionnaire->step_id !== $nextStep->id) {
@@ -260,11 +261,12 @@ class ScanFlowService
                 DiscordNotifier::init()->notify("Next questionnaire doesn't belong to next step! Step ID: {$nextStep->id}. Questionnaire ID: {$nextQuestionnaire->id}.");
                 $nextUrl = '';
             } else {
-                $nextUrl = route('cooperation.frontend.tool.quick-scan.questionnaires.index',
-                    ['cooperation' => $cooperation, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire]);
+                $nextUrl = route('cooperation.frontend.tool.questionnaires.index', [
+                    'cooperation' => $cooperation, 'scan' => $this->scan, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire
+                ]);
             }
         } else {
-            $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $cooperation]);
+            $nextUrl = route('cooperation.frontend.tool.simple-scan.my-plan.index', ['cooperation' => $cooperation]);
         }
 
         Log::debug($nextUrl);

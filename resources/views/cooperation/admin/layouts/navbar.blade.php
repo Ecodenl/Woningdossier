@@ -38,7 +38,7 @@
 
             @if(\App\Helpers\HoomdossierSession::getRole())
                 @if(\App\Helpers\Hoomdossier::user()->hasRole('coach|coordinator|cooperation-admin|super-admin|superuser'))
-                    <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.index') }}" class="btn btn-warning navbar-btn">
+                    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index') }}" class="btn btn-warning navbar-btn">
                         Naar tool
                     </a>
                 @endif

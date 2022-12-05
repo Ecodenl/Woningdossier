@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Http\ViewComposers\Frontend\Layouts\Parts\SubNavComposer;
-use App\Http\ViewComposers\Frontend\Tool\QuickScanComposer;
+use App\Http\ViewComposers\Frontend\Tool\ScanComposer;
+use App\Http\ViewComposers\Frontend\Tool\LiteScanComposer;
 use App\Http\ViewComposers\Frontend\Tool\NavbarComposer;
+use App\Http\ViewComposers\Frontend\Tool\SimpleScanComposer;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -31,10 +33,10 @@ class ViewServiceProvider extends ServiceProvider
         View::creator('cooperation.frontend.layouts.parts.sub-nav', SubNavComposer::class);
         View::creator(
             [
-                'cooperation.frontend.tool.quick-scan.index',
+                'cooperation.frontend.tool.simple-scan.index',
                 'cooperation.frontend.tool.quick-scan.questionnaires.index',
             ],
-            QuickScanComposer::class
+            SimpleScanComposer::class
         );
         View::creator('cooperation.frontend.layouts.parts.navbar', NavbarComposer::class);
 

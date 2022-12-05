@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
 use App\Jobs\PdfReport;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\User;
 use App\Services\FileStorageService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -22,17 +23,19 @@ class DownloadPdf extends Component
     public User $user;
     public InputSource $inputSource;
     public InputSource $masterInputSource;
+    public Scan $scan;
 
     public bool $isFileBeingProcessed = false;
     public ?FileStorage $fileStorage;
 
-    public function mount(User $user)
+    public function mount(User $user, Scan $scan)
     {
+
         /** @var FileType $fileType */
         $fileType = FileType::findByShort('pdf-report');
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $inputSource = HoomdossierSession::getInputSource(true);
-        $this->fill(compact('user', 'fileType', 'inputSource', 'masterInputSource'));
+        $this->fill(compact('scan', 'user', 'fileType', 'inputSource', 'masterInputSource'));
 
         $this->isFileBeingProcessed = $fileType->isBeingProcessed($user->building, $inputSource);
         $this->fileStorage = $fileType->files()->forBuilding($user->building)->forInputSource($inputSource)->first();
@@ -55,7 +58,7 @@ class DownloadPdf extends Component
 
     public function render()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.download-pdf');
+        return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.download-pdf');
     }
 
     /**

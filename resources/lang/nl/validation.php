@@ -180,7 +180,7 @@ return [
         ],
 
         'uploader' => [
-            'wrong-files' => 'Een of meerdere bestanden zijn ongeldig of te groot',
+            'wrong-files' => 'Een of meerdere bestanden zijn ongeldig of te groot.',
         ],
         'contact-id' => [
             'not-found' => 'Opgegeven contact ID voor :attribute is niet bekend als gebruiker in het Hoomdossier.'
@@ -196,7 +196,8 @@ return [
         ],
     ],
     'custom-rules' => [
-        'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',
+        'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute.',
+        'max-filename-length' => 'De bestandsnaam van :attribute mag niet langer zijn dan :length karakters.',
         'rule-unique' => ':Attribute bestaat al.'
     ],
 
@@ -229,6 +230,7 @@ return [
         'en' => 'Engels',
 
         'documents' => 'bestanden',
+        'documents.*' => 'een bestand',
 
         'building_services.7.extra.value' => 'Het aantal zonnepanelen',
         'email' => 'E-mailadres',

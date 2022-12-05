@@ -7,15 +7,21 @@
             $disabled = $disabled ?? false;
             $label = $option['name'];
 
-            $default = $filledInAnswers[$toolQuestion['short']][$option['short']] ?? 0;
             $livewireModel = "filledInAnswers.{$toolQuestion['short']}.{$option['short']}";
         @endphp
 
-        <div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', '{{$disabled}}')"
+        {{-- TODO: In the future we just want to use the shared part; for now it's not a big deal and too much effort to get it functioning --}}
+{{--        @include('cooperation.frontend.layouts.parts.rating-slider', [--}}
+{{--            'inputName' => $livewireModel,--}}
+{{--            'min' => $min,--}}
+{{--            'max' => $max,--}}
+{{--            'disabled' => $disabled,--}}
+{{--            'label' => $label,--}}
+{{--        ])--}}
+
+        <div x-data="ratingSlider(@entangle($livewireModel), '{{$activeClass ?? 'bg-green'}}', '{{$disabled}}')"
              x-ref="rating-slider-wrapper" class="rating-slider-wrapper w-inherit @error($livewireModel) form-error @enderror">
-            <input type="hidden" x-ref="rating-slider-input" data-short="{{ $option['short'] }}"
-                   wire:model="{{$livewireModel}}"
-                   x-on:element:updated.window="if ($event.detail.field === $el.getAttribute('wire:model')) { selectOptionByValue($event.detail.value);}">
+            <input type="hidden" x-bind="input" data-short="{{ $option['short'] }}">
             <div class="flex justify-between mb-3">
                 <p class="@error($livewireModel) text-red @enderror">{{$label ?? ''}}</p>
                 <p class="font-bold" wire:ignore x-text="value"></p>
@@ -26,9 +32,7 @@
                  style="grid-template-columns: repeat({{ ($max - $min) + 1 }}, minmax(0, 1fr));">
                 @for($i = $min; $i <= $max; $i++)
                     <div class="w-full h-2 bg-gray @if($disabled) cursor-not-allowed @else cursor-pointer @endif"
-                         data-value="{{$i}}" x-on:mouseenter="mouseEnter($el)" x-on:mouseleave="mouseLeave($el)"
-                         x-on:click="selectOptionByElement($el)">
-
+                         data-value="{{$i}}" x-bind="block">
                     </div>
                 @endfor
             </div>

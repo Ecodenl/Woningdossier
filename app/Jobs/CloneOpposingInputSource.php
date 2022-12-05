@@ -38,12 +38,16 @@ class CloneOpposingInputSource implements ShouldQueue
             ->clone();
     }
 
-    public function failed(\Exception $exception)
+    public function Failed(\Throwable $exception)
     {
         NotificationService::init()
             ->forBuilding($this->building)
             ->forInputSource($this->inputSource)
             ->setType(CloneOpposingInputSource::class)
             ->deactivate(true);
+
+        if (app()->bound('sentry')) {
+            app('sentry')->captureException($exception);
+        }
     }
 }

@@ -32,6 +32,7 @@ use App\Models\BuildingPaintworkStatus;
 use App\Models\BuildingPvPanel;
 use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
+use App\Models\BuildingStatus;
 use App\Models\BuildingVentilation;
 use App\Models\Cooperation;
 use App\Models\ElementValue;
@@ -43,6 +44,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
+use App\Models\Status;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
@@ -51,6 +53,7 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DumpService
@@ -191,7 +194,15 @@ class DumpService
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
-        $buildingStatus = $mostRecentStatus->status->name;
+
+        if (! $mostRecentStatus instanceof BuildingStatus) {
+            Log::warning("Building status not set for building {$building->id}");
+            DiscordNotifier::init()->notify("Building status not set for building {$building->id}");
+            $mostRecentStatus = BuildingStatus::first();
+            $buildingStatus = Status::findByShort('active')->name;
+        } else {
+            $buildingStatus = $mostRecentStatus->status->name;
+        }
 
         $city = $building->city;
         $postalCode = $building->postal_code;
@@ -525,7 +536,15 @@ class DumpService
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
-        $buildingStatus = $mostRecentStatus->status->name;
+
+        if (! $mostRecentStatus instanceof BuildingStatus) {
+            Log::warning("Building status not set for building {$building->id}");
+            DiscordNotifier::init()->notify("Building status not set for building {$building->id}");
+            $mostRecentStatus = BuildingStatus::first();
+            $buildingStatus = Status::findByShort('active')->name;
+        } else {
+            $buildingStatus = $mostRecentStatus->status->name;
+        }
 
         $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
         $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
@@ -561,7 +580,7 @@ class DumpService
         }
 
 
-        $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
+        $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d H:i');
 
         // set the personal userinfo
         if ($anonymized) {

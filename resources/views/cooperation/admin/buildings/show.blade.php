@@ -89,7 +89,7 @@
                         <div class='input-group date' id="appointment-date">
                             <input autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]" type='text' class="form-control"
                                    @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate())
-                                       value=" {{$mostRecentStatus->appointment_date->format('d-m-Y')}}"
+                                       value=" {{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}"
                                    @endif
                             />
 
@@ -268,7 +268,7 @@
 @push('js')
     <script>
         // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
-        var originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y')}}' @else '' @endif;
+        var originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}' @else '' @endif;
 
         $(document).ready(function () {
 
@@ -305,7 +305,7 @@
                 showTodayButton: true,
                 allowInputToggle: true,
                 locale: 'nl',
-                format: 'L',
+                // format: 'L',
                 showClear: true,
             }).on('dp.hide', function (event) {
                 // this way the right events get triggerd so we will always get a nice formatted date

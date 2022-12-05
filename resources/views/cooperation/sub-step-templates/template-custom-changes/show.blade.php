@@ -10,6 +10,6 @@
             </p>
         @endslot
 
-        @livewire('cooperation.frontend.tool.quick-scan.custom-changes')
+        <livewire:cooperation.frontend.tool.quick-scan.custom-changes/>
     @endcomponent
 </div>

@@ -3,19 +3,28 @@
 namespace App\Helpers\Conditions\Evaluators;
 
 use App\Calculations\Heater;
-use App\Models\Building;
-use App\Models\InputSource;
-use App\Traits\HasDynamicAnswers;
-use Illuminate\Support\Collection;
 
-class SunBoilerPerformance implements ShouldEvaluate
+class SunBoilerPerformance extends ShouldEvaluate
 {
-    use HasDynamicAnswers;
-
-    public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool
+    public function evaluate($value = null): array
     {
+        $building = $this->building;
+        $inputSource = $this->inputSource;
+        $answers = $this->answers;
+
         // This evaluator checks the performance for the sun-boiler in the user's situation. The calculation
         // returns a given color which defines the performance.
+
+        $key = md5(json_encode([null]));
+
+        if (array_key_exists($key, $this->override)) {
+            $results = $this->override[$key];
+            return [
+                'results' => $results,
+                'bool' => data_get($results, 'performance.alert') === $value,
+                'key' => $key,
+            ];
+        }
 
         $results = Heater::calculate(
             $building,
@@ -23,6 +32,10 @@ class SunBoilerPerformance implements ShouldEvaluate
             $answers,
         );
 
-        return data_get($results, 'performance.alert') === $value;
+        return [
+            'results' => $results,
+            'bool' => data_get($results, 'performance.alert') === $value,
+            'key' => $key,
+        ];
     }
 }

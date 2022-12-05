@@ -56,18 +56,22 @@ class Alerts extends Component
             ->building($this->building)
             ->inputSource($this->inputSource);
 
-        foreach ($alerts as $index => $alert) {
-            // Get answers and merge any potential new answers
-            $answersForAlert = $evaluator->getToolAnswersForConditions($alert->conditions)->merge(collect($answers));
+        // First fetch all conditions, so we can retrieve any required related answers in one go
+        $conditionsForAllAlerts = [];
+        foreach ($alerts as $alert) {
+            $conditionsForAllAlerts = array_merge($conditionsForAllAlerts, $alert->conditions ?? []);
+        }
+        $answersForAlerts = $evaluator->getToolAnswersForConditions($conditionsForAllAlerts, collect($answers));
 
+        foreach ($alerts as $index => $alert) {
             // Check if we should show this alert
-            if ($evaluator->evaluateCollection($alert->conditions, $answersForAlert)) {
+            if ($evaluator->evaluateCollection($alert->conditions, $answersForAlerts)) {
                 $oldAlert = null;
                 if ($oldAlerts instanceof Collection) {
                     $oldAlert = $oldAlerts->where('short', $alert->short)->first();
                 }
                 // if the current alert is not found in the oldAlerts, it will be considered "new"
-                // in that case we will open the alert for the user
+                // in that case we will open the alert menu for the user
                 if(! $oldAlert instanceof Alert) {
                     $shouldOpenAlert = true;
                 }

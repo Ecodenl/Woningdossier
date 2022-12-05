@@ -58,12 +58,16 @@ class RecalculateStepForUser implements ShouldQueue
     }
 
 
-    public function failed(\Exception $exception)
+    public function Failed(\Throwable $exception)
     {
         NotificationService::init()
             ->forBuilding($this->user->building)
             ->forInputSource($this->inputSource)
             ->setType(self::class)
             ->deactivate(true);
+
+        if (app()->bound('sentry')) {
+            app('sentry')->captureException($exception);
+        }
     }
 }

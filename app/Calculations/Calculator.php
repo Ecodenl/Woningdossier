@@ -27,6 +27,7 @@ abstract class Calculator
         $this->inputSource = $inputSource;
         $this->answers = $answers;
 
+        // TODO: We probably don't need this anymore
         $this->setEnergyHabit();
     }
 

@@ -123,21 +123,25 @@ class SubSteppable extends Scannable
 
     protected function evaluateToolQuestions()
     {
+        $evaluator = ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->masterInputSource);
+
+        // First fetch all conditions, so we can retrieve any required related answers in one go
+        $conditionsForAllSubSteppables = [];
+        foreach (array_filter($this->subStep->subSteppables->pluck('conditions')->all()) as $condition) {
+            $conditionsForAllSubSteppables = array_merge($conditionsForAllSubSteppables, $condition);
+        }
+        $answersForAllSubSteppables = $evaluator->getToolAnswersForConditions($conditionsForAllSubSteppables,
+            collect($this->filledInAnswers)->merge(collect($this->intercontinentalAnswers)));
+
         foreach ($this->subStep->subSteppables as $index => $subSteppablePivot) {
             $toolQuestion = $subSteppablePivot->subSteppable;
 
             if (! empty($subSteppablePivot->conditions)) {
                 $conditions = $subSteppablePivot->conditions;
 
-                $evaluator = ConditionEvaluator::init()
-                    ->building($this->building)
-                    ->inputSource($this->masterInputSource);
-
-                $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)
-                    ->merge(collect($this->filledInAnswers))
-                    ->merge(collect($this->intercontinentalAnswers));
-
-                if (! $evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
+                if (! $evaluator->evaluateCollection($conditions, $answersForAllSubSteppables)) {
                     $this->subStep->subSteppables = $this->subStep->subSteppables->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they

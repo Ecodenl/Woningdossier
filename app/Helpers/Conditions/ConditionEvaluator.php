@@ -16,15 +16,8 @@ class ConditionEvaluator
 {
     use FluentCaller;
 
-    /**
-     * @var Building
-     */
-    protected $building;
-    /**
-     * @var InputSource
-     */
-    protected $inputSource;
-
+    protected Building $building;
+    protected InputSource $inputSource;
     protected bool $explain = false;
 
     /**
@@ -32,7 +25,7 @@ class ConditionEvaluator
      *
      * @return $this
      */
-    public function building(Building $building)
+    public function building(Building $building): self
     {
         $this->building = $building;
 
@@ -44,22 +37,25 @@ class ConditionEvaluator
      *
      * @return $this
      */
-    public function inputSource(InputSource $inputSource)
+    public function inputSource(InputSource $inputSource): self
     {
         $this->inputSource = $inputSource;
 
         return $this;
     }
 
-    public function explain()
+    public function explain(): self
     {
         $this->explain = true;
 
         return $this;
     }
 
-    public function getToolAnswersForConditions(array $conditions): Collection
+    public function getToolAnswersForConditions(array $conditions, ?Collection $answers = null): Collection
     {
+        $answers = $answers instanceof Collection ? $answers : collect();
+        $ignore = $answers->keys()->all();
+
         // Get answers for condition columns, but ensure we don't fetch PASS clause columns (as they don't have
         // any answers so they don't need checking, and they could be arrays which would cause issues), and also
         // don't fetch special evaluators, as they don't have answers either.
@@ -67,6 +63,7 @@ class ConditionEvaluator
             ->merge(collect(Arr::flatten($conditions, 1)))
             ->whereNotIn('operator', [Clause::PASSES, Clause::NOT_PASSES])
             ->where('column', '!=', 'fn')
+            ->whereNotIn('column', $ignore)
             ->pluck('column')
             ->unique()
             ->filter()
@@ -75,9 +72,9 @@ class ConditionEvaluator
         // the structure of the questionKeys tells us how to retrieve the answer
         // if it contains a dot, it's in a table.column format
         // if not, it's a tool question short
-        $answers = [];
+        $collectedAnswers = [];
         foreach ($questionKeys as $questionKey) {
-            if (Str::contains($questionKey, '.',)) {
+            if (Str::contains($questionKey, '.')) {
                 // table.column
                 $dbParts = explode('.', $questionKey);
                 if (count($dbParts) <= 1) {
@@ -109,14 +106,11 @@ class ConditionEvaluator
                     $this->inputSource,
                     $toolQuestion
                 );
-                if (is_array($answer)) {
-                    $answer = collect($answer);
-                }
             }
-            $answers[$questionKey] = $answer;
+            $collectedAnswers[$questionKey] = $answer;
         }
 
-        return collect($answers);
+        return collect($collectedAnswers)->merge($answers);
     }
 
     public function evaluate(array $conditions): bool
@@ -210,7 +204,7 @@ class ConditionEvaluator
 
             // Ensure we pass potential dynamic answers through
             $conditions = $model->conditions ?? [];
-            $answersForNewConditions = $this->getToolAnswersForConditions($conditions)->merge($collection);
+            $answersForNewConditions = $this->getToolAnswersForConditions($conditions, $collection);
 
             // Return result based on whether it should or should not pass
             $result = $this->evaluateCollection($conditions, $answersForNewConditions);

@@ -65,5 +65,9 @@ class RecalculateStepForUser implements ShouldQueue
             ->forInputSource($this->inputSource)
             ->setType(self::class)
             ->deactivate(true);
+
+        if (app()->bound('sentry')) {
+            app('sentry')->captureException($exception);
+        }
     }
 }

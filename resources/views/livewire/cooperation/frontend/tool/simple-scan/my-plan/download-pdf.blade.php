@@ -1,7 +1,7 @@
 <div class="w-full flex pt-5 pb-5">
     <div class="flex w-1/3">
         @can('viewAny', [\App\Models\Media::class, $inputSource, $user->building])
-            <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media', ['cooperation' => $cooperation]) }}"
+            <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', ['cooperation' => $cooperation, 'scan' => $scan]) }}"
                class="btn btn-outline-green">
                 @lang('cooperation/frontend/tool.my-plan.uploader.view')
             </a>

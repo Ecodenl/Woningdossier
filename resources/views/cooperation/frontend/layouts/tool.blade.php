@@ -109,7 +109,7 @@
                                     <div class="flex flex-row flex-wrap w-full">
                                         <div class="w-full sm:w-1/2">
                                             <a class="btn btn-green float-left"
-                                               href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.index') }}">
+                                               href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index') }}">
                                                 @lang('default.buttons.cancel')
                                             </a>
                                         </div>

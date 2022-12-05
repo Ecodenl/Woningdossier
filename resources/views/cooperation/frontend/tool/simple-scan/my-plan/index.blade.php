@@ -4,7 +4,7 @@
     @if($activeNotification)
         <livewire:cooperation.frontend.layouts.parts.notifications
                 :types="[\App\Jobs\RecalculateStepForUser::class]"
-                :nextUrl="route('cooperation.frontend.tool.quick-scan.my-plan.index')"/>
+                :nextUrl="route('cooperation.frontend.tool.simple-scan.my-plan.index')"/>
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
     @else
         <div class="w-full">
@@ -18,7 +18,7 @@
                 </p>
             </div>
             <div class="w-full flex flex-wrap mb-5">
-                {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", [
+                {!! __("cooperation/frontend/tool.simple-scan.my-plan.info.{$langShort}", [
                     'link' => route('cooperation.conversation-requests.index', ['cooperation' => $cooperation, 'requestType' => \App\Services\PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION])
                 ]) !!}
             </div>
@@ -27,6 +27,6 @@
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.comments :building="$building"/>
         </div>
 
-        <livewire:cooperation.frontend.tool.simple-scan.my-plan.download-pdf :user="$building->user"/>
+        <livewire:cooperation.frontend.tool.simple-scan.my-plan.download-pdf :user="$building->user" :scan="$scan"/>
     @endif
 @endsection

@@ -266,7 +266,7 @@ class ScanFlowService
                 ]);
             }
         } else {
-            $nextUrl = route('cooperation.frontend.tool.my-plan.index', ['cooperation' => $cooperation]);
+            $nextUrl = route('cooperation.frontend.tool.simple-scan.my-plan.index', ['cooperation' => $cooperation]);
         }
 
         Log::debug($nextUrl);

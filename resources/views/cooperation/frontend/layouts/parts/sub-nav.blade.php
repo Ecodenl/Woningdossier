@@ -64,7 +64,7 @@
     @endforeach
     @php $inMyPlan = RouteLogic::inMyPlan(Route::currentRouteName()); @endphp
     <div class="border border-blue-500 border-opacity-50 h-1/2"></div>
-    <a href="{{ route('cooperation.frontend.tool.my-plan.index') }}" class="no-underline">
+    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')) }}" class="no-underline">
         <div class="flex items-center justify-start">
             <i class="icon-sm {{ $inMyPlan ? 'icon-house-purple' : 'icon-house-dark' }} mr-1"></i>
             <span class="{{ $inMyPlan ? 'text-purple' : 'text-blue' }}">

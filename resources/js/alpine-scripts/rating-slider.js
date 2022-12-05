@@ -4,54 +4,70 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false) =>
     inactiveClass: 'bg-gray',
     activeClass: activeClass,
     disabled: disabled,
+    livewire: false,
 
     init() {
+        try {
+            this.livewire = !! this.$wire;
+        } catch (e) {
+            this.livewire = false;
+        }
+
         // Ensure the slider gets updated with the default value
         if (this.value > 0) {
-            this.selectOptionByValue(this.value);
-        } else if(isNaN(this.value)) {
+            this.selectOptionByValue(this.value, false);
+        } else if (isNaN(this.value)) {
             this.value = 0;
         }
 
-        // Bind event listener for change
-        let context = this;
-        this.$refs['rating-slider-input'].addEventListener('change', function (event) {
-            context.selectOptionByValue(event.target.value);
+        this.$watch('value', value => {
+            this.selectOptionByValue(value);
         });
     },
-    mouseEnter(element) {
-        if (!this.disabled) {
-            this.setAllGray();
-            // Set this and all previous as green
-            this.setActive(element);
-            while ((element = element.previousElementSibling) != null) {
+    input: {
+        ['x-ref']: 'rating-slider-input',
+        ['x-model']: 'value',
+    },
+    block: {
+        ['x-on:mouseenter']() {
+            if (! this.disabled) {
+                let element = this.$el;
+                this.setAllGray();
+                // Set this and all previous as green
                 this.setActive(element);
+                while ((element = element.previousElementSibling) != null) {
+                    this.setActive(element);
+                }
+            }
+        },
+        ['x-on:mouseleave']() {
+            if (! this.disabled) {
+                this.setIndexActive();
+            }
+        },
+        ['x-on:click']() {
+            if (! this.disabled) {
+                this.selectOption(this.$el);
+                if (! this.livewire) {
+                    // If we don't use Livewire, the value won't be entangled and as such we should trigger events
+                    window.triggerEvent(this.$refs['rating-slider-input'], 'input');
+                    window.triggerEvent(this.$refs['rating-slider-input'], 'change');
+                }
             }
         }
     },
-    mouseLeave(element) {
-        if (!this.disabled) {
-            this.setIndexActive();
-        }
-    },
-    selectOption(element) {
+    selectOption(element, update = true) {
         let parent = this.$refs['rating-slider'];
         this.index = Array.from(parent.children).indexOf(element);
-        this.value = element.getAttribute('data-value');
-        this.$refs['rating-slider-input'].value = this.value;
+        if (update) {
+            this.value = element.getAttribute('data-value');
+        }
         this.setIndexActive();
     },
-    selectOptionByValue(value) {
+    selectOptionByValue(value, update = true) {
         let element = this.$refs['rating-slider'].querySelector(`div[data-value="${value}"]`);
         if (element) {
-            this.selectOption(element);
-        }
-    },
-    selectOptionByElement(element) {
-        if (!this.disabled) {
-            this.selectOption(element);
-            window.triggerEvent(this.$refs['rating-slider-input'], 'input');
-            window.triggerEvent(this.$refs['rating-slider-input'], 'change');
+            this.selectOption(element, update);
         }
     },
     setIndexActive() {

@@ -48,25 +48,24 @@ class Form extends Component
         ],
     ];
 
-    /** @var Building */
-    public $building;
+    public Building $building;
 
-    public $masterInputSource;
-    public $currentInputSource;
-    public $residentInputSource;
-    public $coachInputSource;
+    public InputSource $masterInputSource;
+    public InputSource $currentInputSource;
+    public InputSource $residentInputSource;
+    public InputSource $coachInputSource;
 
     public array $custom_measure_application = [];
 
     // Details
-    public $expectedInvestment = 0;
-    public $yearlySavings = 0;
-    public $availableSubsidy = 0;
+    public float $expectedInvestment = 0;
+    public float $yearlySavings = 0;
+    public float $availableSubsidy = 0;
 
     // Sliders
-    public $comfort = 0;
-    public $renewable = 0;
-    public $investment = 0;
+    public int $comfort = 0;
+    public int $renewable = 0;
+    public int $investment = 0;
 
     // TODO: Move this to a constant helper when this is retrieved from backend
     public string $SUBSIDY_AVAILABLE = 'available';
@@ -79,10 +78,6 @@ class Form extends Component
         'custom_measure_application.costs.from' => 'required|numeric|min:0',
         'custom_measure_application.costs.to' => 'required|numeric|gte:custom_measure_application.costs.from',
         'custom_measure_application.savings_money' => 'nullable|numeric|max:999999',
-    ];
-
-    protected $listeners = [
-        'cardMoved', 'cardTrashed', 'addHiddenCardToBoard',
     ];
 
     private $calculationMap = [
@@ -304,7 +299,7 @@ class Form extends Component
         $this->recalculate();
     }
 
-    public function cardMoved($fromCategory, $toCategory, $id, $newOrder)
+    public function cardMoved(string $fromCategory, string $toCategory, string $id, string $newOrder)
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
@@ -381,7 +376,7 @@ class Form extends Component
         $this->refreshAlerts();
     }
 
-    public function cardTrashed($fromCategory, $id)
+    public function cardTrashed(string $fromCategory, string $id)
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
@@ -588,7 +583,7 @@ class Form extends Component
         }
     }
 
-    public function addHiddenCardToBoard($category, $id)
+    public function addHiddenCardToBoard(string $category, string $id)
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
@@ -735,7 +730,5 @@ class Form extends Component
     private function setField($field, $value)
     {
         $this->{$field} = $value;
-        // TODO: Deprecate this dispatch in Livewire V2 (IF POSSIBLE)
-        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
     }
 }

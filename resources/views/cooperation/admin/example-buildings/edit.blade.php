@@ -8,7 +8,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    @livewire('cooperation.admin.example-buildings.form', compact('exampleBuilding'))
+                    <livewire:cooperation.admin.example-buildings.form :exampleBuilding="$exampleBuilding"/>
                 </div>
             </div>
         </div>

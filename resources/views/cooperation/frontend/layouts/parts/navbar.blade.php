@@ -96,14 +96,15 @@
             @endif
 
 
-            @livewire('cooperation.frontend.layouts.parts.alerts', ['building' => $building, 'inputSource' => $masterInputSource])
+            <livewire:cooperation.frontend.layouts.parts.alerts :building="$building"
+                                                                :inputSource="$masterInputSource"/>
             @if(! Hoomdossier::user()->isFillingToolForOtherBuilding())
-                @livewire('cooperation.frontend.layouts.parts.messages')
+                <livewire:cooperation.frontend.layouts.parts.messages/>
             @endif
 
             {{-- Keep local for ease of use --}}
             @if(app()->isLocal())
-                @if($building instanceof \App\Models\Building && $building->hasCompletedQuickScan($masterInputSource))
+{{--                @if($building instanceof \App\Models\Building && $building->hasCompletedQuickScan($masterInputSource))--}}
                     @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
                         {{-- Loaded in NavbarComposer --}}
                         @foreach($expertSteps as $expertStep)
@@ -119,7 +120,7 @@
                             @endif
                         @endforeach
                     @endcomponent
-                @endif
+{{--                @endif--}}
             @endif
 
             @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])

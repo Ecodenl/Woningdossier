@@ -12,6 +12,7 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
+use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -21,26 +22,25 @@ use App\Models\ToolQuestion;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
 use Artisan;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class Form extends Component
 {
-    public $step;
-    public $subSteps;
-    public $locale;
+    public Step $step;
+    public Collection $subSteps;
+    public string $locale;
 
-    public $filledInAnswers = [];
-    public $building;
-    public $masterInputSource;
-    public $currentInputSource;
+    public array $filledInAnswers = [];
+    public Building $building;
+    public InputSource $masterInputSource;
+    public InputSource $currentInputSource;
 
-    public $succeededSubSteps = [];
-    public $failedValidationForSubSteps = [];
+    public array $succeededSubSteps = [];
+    public array $failedValidationForSubSteps = [];
 
-    public $cooperation;
-
-    public $activeSubStep;
+    public Cooperation $cooperation;
 
     protected $listeners = [
         'subStepValidationSucceeded' => 'subStepSucceeded',
@@ -50,11 +50,8 @@ class Form extends Component
 
     public function mount(Step $step, Cooperation $cooperation)
     {
-        $this->step = $step;
         $this->subSteps = $step->subSteps;
 
-        $this->activeSubStep = $step->subSteps->first()->slug;
-        $this->cooperation = $cooperation;
         $this->locale = app()->getLocale();
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -65,12 +62,6 @@ class Form extends Component
     {
         return view('livewire.cooperation.frontend.tool.expert-scan.form');
     }
-
-    public function activeSubStep($subStepSlug)
-    {
-        $this->activeSubStep = $subStepSlug;
-    }
-
 
     public function failedValidationForSubSteps(array $subStep)
     {

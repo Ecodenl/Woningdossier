@@ -2,7 +2,7 @@
 
 @section('content')
     @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin'))
-        @livewire('cooperation.admin.example-buildings.csv-export', ['cooperation' => $cooperation])
+        <livewire:cooperation.admin.example-buildings.csv-export :cooperation="$cooperation"/>
     @endif
 
     <div class="panel panel-default">
@@ -71,4 +71,3 @@
         });
     </script>
 @endpush
-

@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Models\Account;
+use App\Models\Building;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\SubStep;
@@ -10,19 +12,19 @@ use Livewire\Component;
 
 class Buttons extends Component
 {
-    private $account;
-    private $building;
+    private Account $account;
+    private Building $building;
 
-    public $step;
-    public $previousStep;
+    public Step $step;
+    public ?Step $previousStep;
 
-    public $subStep;
-    public $previousSubStep;
+    public ?SubStep $subStep;
+    public ?SubStep $previousSubStep = null;
 
-    public $questionnaire;
-    public $previousQuestionnaire;
+    public ?Questionnaire $questionnaire;
+    public ?Questionnaire $previousQuestionnaire = null;
 
-    public $previousUrl;
+    public string $previousUrl;
 
     public function mount(Request $request, Step $step, $subStepOrQuestionnaire)
     {
@@ -30,7 +32,6 @@ class Buttons extends Component
         $this->building = $this->account->user()->building;
 
         // set default steps, the checks will come later on.
-        $this->step = $step;
         $this->previousStep = $step;
 
         // We can either have a sub step or questionnaire. The previous and next buttons
@@ -44,9 +45,8 @@ class Buttons extends Component
             abort_if(! $step->subSteps()->find($subStep->id) instanceof SubStep, 404);
 
             $this->subStep = $subStep;
-
         } elseif ($subStepOrQuestionnaire instanceof Questionnaire) {
-            $questionnaire = $subStepOrQuestionnaire;
+             $questionnaire = $subStepOrQuestionnaire;
 
             abort_if($questionnaire->isNotActive() || $questionnaire->step->id !== $step->id, 404);
 

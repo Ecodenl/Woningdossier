@@ -16,9 +16,8 @@ use Illuminate\Support\Str;
 
 class SubSteppable extends Scannable
 {
-    public $step;
-    public $subStep;
-    public $nextUrl;
+    public Step $step;
+    public SubStep $subStep;
 
     public $calculationResults = [];
 
@@ -34,8 +33,6 @@ class SubSteppable extends Scannable
 
     public function mount(Step $step, SubStep $subStep)
     {
-        $this->step = $step;
-
         $subStep->load([
             'subSteppables' => function ($query) {
                 $query
@@ -48,12 +45,10 @@ class SubSteppable extends Scannable
             'subStepTemplate',
         ]);
 
-        $this->subStep = $subStep;
-        $this->nextUrl = route('cooperation.frontend.tool.expert-scan.index', compact('step'));
-        $this->boot();
+        $this->build();
     }
 
-    public function boot()
+    public function build()
     {
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -115,8 +110,6 @@ class SubSteppable extends Scannable
             }
         }
 
-        // TODO: Deprecate this dispatch in Livewire V2
-        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
         $this->refreshAlerts();
 
         $this->setDirty(true);

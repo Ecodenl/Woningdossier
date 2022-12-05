@@ -13,7 +13,15 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
     ghost: null,
     hoverColor: hoverColor,
     trashColor: 'rgba(228, 20, 64, 0.3)',
+    livewire: false,
 
+    init() {
+        try {
+            this.livewire = !! this.$wire;
+        } catch (e) {
+            this.livewire = false;
+        }
+    },
     container: {
         ['x-on:drop.prevent']() {
             if (null !== this.dragged) {
@@ -46,13 +54,22 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                                 // Swap ghost with moved card
                                 ghostParentElement.replaceChild(this.dragged, ghost);
 
-                                // Dispatch the dropped position
-                                window.triggerCustomEvent(this.$el, 'draggable-dragged', {
-                                    from: parentElement,
-                                    to: target,
-                                    id: this.dragged.id,
-                                    order: order,
-                                });
+                                if (this.livewire) {
+                                    this.$wire.cardMoved(
+                                        parentElement.getAttribute('data-category'),
+                                        target.getAttribute('data-category'),
+                                        this.dragged.id,
+                                        order,
+                                    );
+                                } else {
+                                    // Dispatch the dropped position
+                                    window.triggerCustomEvent(this.$el, 'draggable-dragged', {
+                                        from: parentElement,
+                                        to: target,
+                                        id: this.dragged.id,
+                                        order: order,
+                                    });
+                                }
                             }
                         }
                     }
@@ -107,8 +124,7 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
 
                                     // Insert new ghost on given position
                                     this.insertElement(ghost, hoveredChild, target, beforeOrAfter);
-                                }
-                                else {
+                                } else {
                                     this.clearGhost();
                                 }
                             }
@@ -213,11 +229,15 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                     // Remove dragged item from original parent
                     parentElement.removeChild(this.dragged);
 
-                    // Dispatch the item was removed position
-                    window.triggerCustomEvent(this.$el, 'draggable-trashed', {
-                        from: parentElement,
-                        id: this.dragged.id,
-                    });
+                    if (this.livewire) {
+                        this.$wire.cardTrashed(parentElement.getAttribute('data-category'), this.dragged.id);
+                    } else {
+                        // Dispatch the item was removed position
+                        window.triggerCustomEvent(this.$el, 'draggable-trashed', {
+                            from: parentElement,
+                            id: this.dragged.id,
+                        });
+                    }
                 }
             }
         },

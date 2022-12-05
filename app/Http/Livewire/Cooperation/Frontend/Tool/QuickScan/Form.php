@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\Validator;
 
 class Form extends Scannable
 {
-    public $step;
-    public $subStep;
+    public Step $step;
+    public SubStep $subStep;
 
     public function mount(Step $step, SubStep $subStep)
     {
@@ -29,12 +29,9 @@ class Form extends Scannable
             'toolQuestions' => function ($query) { $query->orderBy('order'); },
             'subStepTemplate',
         ]);
-        $this->step = $step;
-        $this->subStep = $subStep;
 
-        $this->boot();
+        $this->build();
     }
-
 
     public function hydrateToolQuestions()
     {

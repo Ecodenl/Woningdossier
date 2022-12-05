@@ -573,24 +573,6 @@ class Building extends Model
     }
 
     /**
-     * @param string $short
-     *
-     * @return ServiceValue|null
-     */
-    public function getServiceValue($short, InputSource $inputSource)
-    {
-        $serviceValue = null;
-        /** @var BuildingService $buildingService */
-        $buildingService = $this->getBuildingService($short, $inputSource);
-
-        if ($buildingService instanceof BuildingService) {
-            $serviceValue = $buildingService->serviceValue;
-        }
-
-        return $serviceValue;
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function buildingServices()

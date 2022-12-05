@@ -29,7 +29,7 @@ class ScansTableSeeder extends Seeder
                     'nl' => 'Uitgebreide variant'
                 ],
                 'slug' => [
-                    'nl' => 'uitgebreide-variant',
+                    'nl' => 'quick-scan',
                 ],
                 'short' => 'quick-scan',
             ],
@@ -38,7 +38,7 @@ class ScansTableSeeder extends Seeder
                     'nl' => 'Eenvoudige variant'
                 ],
                 'slug' => [
-                    'nl' => 'eenvoudige-variant',
+                    'nl' => 'lite-scan',
                 ],
                 'short' => 'lite-scan',
             ],

@@ -9,6 +9,7 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Media;
 use App\Models\Notification;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Http\Controllers\Controller;
@@ -17,7 +18,7 @@ use Illuminate\Http\Request;
 
 class MyPlanController extends Controller
 {
-    public function index()
+    public function index(Cooperation $cooperation, Scan $scan)
     {
 
         /** @var Building $building */
@@ -59,10 +60,10 @@ class MyPlanController extends Controller
 
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'inputSource', 'activeNotification'));
+        return view('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan', 'building', 'inputSource', 'activeNotification'));
     }
 
-    public function media(Request $request, Cooperation $cooperation, ?Building $building = null)
+    public function media(Request $request, Cooperation $cooperation, Scan $scan, ?Building $building = null)
     {
         $this->authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), HoomdossierSession::getBuilding(true)]);
 
@@ -70,6 +71,6 @@ class MyPlanController extends Controller
             $building = HoomdossierSession::getBuilding(true);
         }
 
-        return view('cooperation.frontend.tool.quick-scan.my-plan.media', compact('building'));
+        return view('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan', 'building'));
     }
 }

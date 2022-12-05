@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MediaHelper;
@@ -50,7 +50,7 @@ class Uploader extends Component
 
     public function render()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.uploader');
+        return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.uploader');
     }
 
     public function updated(string $field)

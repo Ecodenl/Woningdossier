@@ -35,8 +35,7 @@ class SimpleScanComposer
             ->leftJoin('sub_steps', 'steps.id', '=', 'sub_steps.step_id')
             ->count();
 
-        // Get all the IDs of previous steps. Currently there are a total of 4 steps, so
-        // we can have a maximum of 3 step IDs
+        // Get all the IDs of previous steps.
         $stepIds = $scan->steps()->where('order', '<', $step->order)->pluck('id')->toArray();
 
 

@@ -2,11 +2,9 @@
 
 @section('content')
     @if($activeNotification)
-        @livewire('cooperation.frontend.layouts.parts.notifications', [
-            'nextUrl' => route('cooperation.frontend.tool.quick-scan.my-plan.index'),
-            'types' => [\App\Jobs\RecalculateStepForUser::class]
-        ])
-
+        <livewire:cooperation.frontend.layouts.parts.notifications
+                :types="[\App\Jobs\RecalculateStepForUser::class]"
+                :nextUrl="route('cooperation.frontend.tool.quick-scan.my-plan.index')"/>
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
     @else
         <div class="w-full">
@@ -25,11 +23,10 @@
                 ]) !!}
             </div>
 
-            @livewire('cooperation.frontend.tool.quick-scan.my-plan.form', compact('building'))
-            @livewire('cooperation.frontend.tool.quick-scan.my-plan.comments', compact('building'))
-
+            <livewire:cooperation.frontend.tool.quick-scan.my-plan.form :building="$building"/>
+            <livewire:cooperation.frontend.tool.quick-scan.my-plan.comments :building="$building"/>
         </div>
 
-        @livewire('cooperation.frontend.tool.quick-scan.my-plan.download-pdf', ['user' => $building->user])
+        <livewire:cooperation.frontend.tool.quick-scan.my-plan.download-pdf :user="$building->user"/>
     @endif
 @endsection

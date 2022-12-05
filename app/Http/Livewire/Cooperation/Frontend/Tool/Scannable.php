@@ -7,43 +7,39 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
 abstract class Scannable extends Component
 {
-    /*
-     *
-     * NOTE: When programmatically updating variables, ensure the updated method is called! This triggers a browser
-     * event, which can be caught by the frontend and set visuals correct, e.g. with the sliders.
-     *
-     */
     protected $listeners = ['update', 'updated', 'save'];
-    /** @var Building */
-    public $building;
 
-    public $masterInputSource;
-    public $currentInputSource;
-    public $residentInputSource;
-    public $coachInputSource;
-    public $cooperation;
+    public Building $building;
 
+    public InputSource $masterInputSource;
+    public InputSource $currentInputSource;
+    public InputSource $residentInputSource;
+    public InputSource $coachInputSource;
 
-    public $rules;
-    public $attributes;
+    public Cooperation $cooperation;
 
-    public $toolQuestions;
-    public $originalAnswers = [];
-    public $filledInAnswers = [];
-    public $filledInAnswersForAllInputSources = [];
+    public array $rules = [];
+    public array $attributes = [];
 
-    public $dirty;
+    public Collection $toolQuestions;
+    public array $originalAnswers = [];
+    public array $filledInAnswers = [];
+    public array $filledInAnswersForAllInputSources = [];
 
-    public function boot()
+    public bool $dirty = false;
+
+    public function build()
     {
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -128,9 +124,6 @@ abstract class Scannable extends Component
                 }
             }
         }
-
-        // TODO: Deprecate this dispatch in Livewire V2
-        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
         $this->rehydrateToolQuestions();
         $this->setValidationForToolQuestions();

@@ -59,7 +59,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue
         }
     }
 
-    public function failed(\Exception $exception)
+    public function Failed(\Throwable $exception)
     {
         // this functionality is here for people which mistyped they're email address
         // this will set the messages to read for the user in its resident its input source.

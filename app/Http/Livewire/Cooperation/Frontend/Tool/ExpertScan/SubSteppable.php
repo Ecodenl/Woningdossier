@@ -19,9 +19,9 @@ class SubSteppable extends Scannable
     public Step $step;
     public SubStep $subStep;
 
-    public $calculationResults = [];
+    public array $calculationResults = [];
 
-    public $intercontinentalAnswers = [];
+    public array $intercontinentalAnswers = [];
 
     public bool $componentReady = false;
 

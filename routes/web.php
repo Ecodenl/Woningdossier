@@ -194,53 +194,35 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         );
 
 
-                        Route::prefix('{scan}')
-                            ->where(collect(['scan'])
-                                ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $scans)])
-                                ->all()
-                            )
-                            ->as('simple-scan.')
-                            ->group(function () {
+                    Route::prefix('{scan}')
+                        ->where(collect(['scan'])
+                            ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $scans)])
+                            ->all()
+                        )
+                        ->as('simple-scan.')
+                        ->group(function () {
 
-                                $steps = \App\Helpers\Cache\Step::allShorts();
+                            $steps = \App\Helpers\Cache\Step::allShorts();
 
-                                // Define this route as last to not match above routes as step/sub step combo
-                                Route::get('{step:slug}/{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
-                                    ->where(
-                                        collect(['step'])
-                                            ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $steps)])
+                            // Define this route as last to not match above routes as step/sub step combo
+                            Route::get('{step:slug}/{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
+                                ->where(
+                                    collect(['step'])
+                                        ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $steps)])
                                         ->all()
 
-                                    )
-                                    ->name('index')
-                                    ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
+                                )
+                                ->name('index')
+                                ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
 
-                                Route::get('vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\QuickScan\QuestionnaireController::class, 'index'])
-                                    ->name('questionnaires.index');
+                            Route::get('vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\QuickScan\QuestionnaireController::class, 'index'])
+                                ->name('questionnaires.index');
 
-                                Route::as('my-plan.')->prefix('woonplan')->group(function () {
-                                    Route::get('', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'index'])->name('index');
-                                    Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'media'])->name('media');
-                                });
+                            Route::as('my-plan.')->prefix('woonplan')->group(function () {
+                                Route::get('', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'index'])->name('index');
+                                Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'media'])->name('media');
                             });
-
-
-
-//
-////                    Route::permanentRedirect('quick-scan/woonplan', 'woonplan');
-//                    Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
-//
-//                        Route::as('my-plan.')->prefix('woonplan')->group(function () {
-//                            Route::get('', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'index'])->name('index');
-//                            Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'media'])->name('media');
-//                        });
-//
-//
-////                         Define this route as last to not match above routes as step/sub step combo
-////                        Route::get('{step}/{subStep}', [Cooperation\Frontend\Tool\QuickScanController::class, 'index'])
-////                            ->name('index')
-////                            ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
-//                    });
+                        });
 
                     Route::as('expert-scan.')->prefix('expert-scan')->group(function () {
                         // Define this route as last to not match above routes as step/sub step combo

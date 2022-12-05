@@ -17,7 +17,7 @@ class RouteLogic
     /** @deprecated use InScanTool instead. */
     public static function inQuickScanTool($route): bool
     {
-        return self::inScanTool($route);
+        return self::inSimpleScan($route);
     }
 
     public static function inMyPlan($route): bool

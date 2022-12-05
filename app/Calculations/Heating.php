@@ -21,9 +21,15 @@ use Illuminate\Support\Str;
 class Heating extends Calculator
 {
 
-
     public function performCalculations(): array
     {
+        $cooking = [
+            'current' => $this->energyUsageForCooking('cook-type'),
+            'new'     => $this->energyUsageForCooking('new-cook-type'),
+        ];
+
+        Log::debug(__METHOD__." - cooking calculated: ".json_encode($cooking));
+
         // calculate first as it might be a factor for heating later on.
         $wtwCurrent = $this->calculateTapWater(
             'heat-source',
@@ -31,7 +37,9 @@ class Heating extends Calculator
             'water-comfort',
             'heat-pump-type',
             'boiler-setting-comfort-heat',
-            'boiler-type'
+            'boiler-type',
+            $this->getAnswer('amount-gas') ?? 0,
+            data_get($cooking, 'current')
         );
         $wtwNew     = $this->calculateTapWater(
             'new-heat-source',
@@ -39,7 +47,9 @@ class Heating extends Calculator
             'new-water-comfort',
             'new-heat-pump-type',
             'new-boiler-setting-comfort-heat',
-            'new-boiler-type'
+            'new-boiler-type',
+            data_get($heatingCurrent, 'gas.netto', 0), // netto!
+            data_get($cooking, 'new')
         );
 
         $wtw = [
@@ -48,28 +58,25 @@ class Heating extends Calculator
         ];
         Log::debug(__METHOD__." - wtw calculated: ".json_encode($wtw));
 
-        $cooking = [
-            'current' => $this->energyUsageForCooking('cook-type'),
-            'new'     => $this->energyUsageForCooking('new-cook-type'),
-        ];
-
-        Log::debug(__METHOD__." - cooking calculated: ".json_encode($wtw));
-
         $heatingCurrent = $this->calculateHeating(
             'heat-source',
             'heat-source-warm-tap-water',
             'boiler-type',
             $amountGas = $this->getAnswer('amount-gas') ?? 0,
             $cooking['current'],
-            $wtw['current']
+            $wtw['current'],
+            'new-heat-pump-type',
+            'new-boiler-setting-comfort-heat'
         );
         $heatingNew     = $this->calculateHeating(
             'new-heat-source',
             'new-heat-source-warm-tap-water',
             'new-boiler-type',
-            data_get($heatingCurrent, 'gas.bruto', 0),
+            data_get($heatingCurrent, 'gas.netto', 0), // netto!
             $cooking['new'],
-            $wtw['new']
+            $wtw['new'],
+            'new-heat-pump-type',
+            'new-boiler-setting-comfort-heat'
         );
 
         $heating = [
@@ -118,14 +125,21 @@ class Heating extends Calculator
         ];
     }
 
+
     protected function calculateHeating(
         string $heatSourceShort,
         string $heatSourceWtwShort,
         string $boilerTypeShort,
         int $amountGas,
         array $cookingUsage,
-        array $wtwUsage
+        array $wtwUsage,
+        string $heatPumpTypeShort = '',
+        string $boilerSettingComfortHeatShort = ''
     ) {
+        // either 'new' or 'current'
+        $case = Str::contains($heatSourceShort, 'new-') ? 'new' : 'current';
+        Log::debug(__METHOD__.' - case: '.$case);
+
         // Note electricity will always be 0 at the current stage as we cannot
         // calculate that
         $result = [
@@ -139,25 +153,42 @@ class Heating extends Calculator
             ],
         ];
 
+        // ---------------------------------------------------------------------
+        // Some cases we can't cover yet
+        // ---------------------------------------------------------------------
+
         /** @var array $heatSources */
         $heatSources = $this->getAnswer($heatSourceShort) ?? [];
-        // if $heatSources does not contain 'hr-boiler', we cannot calculate.
-        if ( ! in_array('hr-boiler', $heatSources)) {
-            Log::debug(
-                __METHOD__.' - No HR boiler, returning'.json_encode($result)
-            );
 
-            return $result;
+        if ( ! in_array('hr-boiler', $heatSources) && ! in_array(
+                'district-heating',
+                $heatSources
+            )) {
+            Log::debug(__METHOD__.' - No HR boiler or district heating');
+            // we can only handle heat pump for 'new' case. We bail if 'current'
+            // in the other cases we can't calculate anything yet, so we bail
+            // always.
+            if ( ! in_array('heat-pump', $heatSources)) {
+                Log::debug(
+                    __METHOD__.' - no heat pump, no hr-boiler, no district-heating, cannot calculate, so all is 0.'
+                );
+
+                return $result;
+            }
+            // we can only handle heat pump for 'new' case. We bail if 'current'
+            if ($case === 'current') {
+                Log::debug(
+                    __METHOD__.' - heat pump for current situation. Cannot calculate, so all is 0.'
+                );
+
+                return $result;
+            }
         }
 
-        // Get the primary wtw heating, but: leave out the sun boiler as this is
-        // a helper and not the primary heating solution.
-        $heatSourcesWtw            = $this->getAnswer($heatSourceWtwShort);
-        $primaryWtwHeatSourceShort = Arr::first(
-            Arr::except($heatSourcesWtw, 'sun-boiler')
-        );
+        // ---------------------------------------------------------------------
+        // Some cases we can't cover yet (end)
+        // ---------------------------------------------------------------------
 
-        data_set($result, 'gas.bruto', $amountGas);
         $heatingGasUsage = $amountGas - data_get($cookingUsage, 'gas', 0);
         Log::debug(
             __METHOD__.' - heatingGasUsage = '.$heatingGasUsage.' = '.$amountGas.' - '.data_get(
@@ -167,45 +198,240 @@ class Heating extends Calculator
             )
         );
 
-        if (in_array(
-            $primaryWtwHeatSourceShort,
-            ['hr-boiler', 'kitchen-geyser', 'district-heating']
-        )) {
-            Log::debug(
-                __METHOD__.' - hr-boiler/kitchen-geyser/district-heating is primary wtw'
-            );
-            Log::debug(
-                'heatingGasUsage = '.$heatingGasUsage.' - '.data_get(
-                    $wtwUsage,
-                    'gas.bruto',
-                    0
-                )
-            );
-            $heatingGasUsage -= data_get($wtwUsage, 'gas.bruto', 0);
+        // district heating or HR boiler
+        if (in_array('district-heating', $heatSources) ||
+            (in_array('hr-boiler', $heatSources) && ! in_array(
+                    'heat-pump',
+                    $heatSources
+                ))) {
+            Log::debug(__METHOD__.' - district heating or HR boiler');
+            if ($case === 'current') {
+                Log::debug(__METHOD__.' - current situation');
+                $energyConsumption = $amountGas;
+                $energyConsumption -= data_get($cookingUsage, 'gas', 0);
+                $energyConsumption -= data_get($wtwUsage, 'gas.bruto', 0);
 
-            // default = 97% for HR-107.
-            $efficiency = $this->getBoilerKeyFigureEfficiency(
-                $boilerTypeShort
-            ) ?? 97;
-            Log::debug(
-                'heatingGasUsage = '.$heatingGasUsage.' * '.$efficiency.' %'
-            );
-            $heatingGasUsage *= ($efficiency->heating / 100);
+                data_set($result, 'gas.bruto', $energyConsumption);
+                // netto = bruto * efficiency
+                // default = 89% for HR-107.
+                $efficiency = $this->getBoilerKeyFigureEfficiency(
+                    $boilerTypeShort
+                ) ?? 89;
+                Log::debug(
+                    'energyConsumption = '.$energyConsumption.' * '.$efficiency.' %'
+                );
+                $energyConsumption *= ($efficiency->wtw / 100);
+
+                data_set($result, 'gas.netto', round($energyConsumption, 4));
+            } else {
+                Log::debug(__METHOD__.' - new situation');
+                $energyConsumption = $amountGas;
+                // bruto = energy consumption / efficiency
+                // default = 89% for HR-107.
+                $efficiency        = $this->getBoilerKeyFigureEfficiency(
+                    $boilerTypeShort
+                ) ?? 89;
+                $energyConsumption /= ($efficiency->heating / 100);
+
+                data_set($result, 'gas.bruto', $energyConsumption);
+
+                // netto = bruto * efficiency (basically the energy consumption..)
+                $energyConsumption *= ($efficiency->heating / 100);
+
+                data_set($result, 'gas.netto', round($energyConsumption, 4));
+            }
         }
 
-        data_set($result, 'gas.netto', $heatingGasUsage);
+        if (in_array('heat-pump', $heatSources)) {
+            // always needed:
+            if ($case === 'new') {
+                $heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue(
+                    'heat-pump',
+                    $heatPumpTypeShort,
+                    $this->getAnswer($heatPumpTypeShort)
+                );
+            } else {
+                $heatPumpConfigurable = ServiceValue::find(
+                    $this->getAnswer($heatPumpTypeShort)
+                );
+            }
+
+            $heatingTemperature = ToolQuestion::findByShort(
+                'new-boiler-setting-comfort-heat'
+            )
+                                              ->toolQuestionCustomValues()
+                                              ->whereShort(
+                                                  $this->getAnswer(
+                                                      $boilerSettingComfortHeatShort
+                                                  )
+                                              )
+                                              ->first();
+
+
+            if (in_array('hr-boiler', $heatSources)) {
+                Log::debug(__METHOD__.' - Hybrid heat pump');
+                // just (double) checking
+                if ($case === 'new') {
+                    // gas
+                    Log::debug(__METHOD__.' - new situation');
+                    $energyConsumption = $amountGas;
+                    // bruto = energy consumption / efficiency
+                    // default = 89% for HR-107.
+                    $efficiency        = $this->getBoilerKeyFigureEfficiency(
+                        $boilerTypeShort
+                    ) ?? 89;
+                    Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption / ($efficiency->heating / 100)");
+                    $energyConsumption /= ($efficiency->heating / 100);
+                    Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption");
+
+                    data_set($result, 'gas.bruto', $energyConsumption);
+
+                    Log::debug(__METHOD__ . " - Netto(gas) = $energyConsumption * ($efficiency->heating / 100)");
+                    // netto = bruto * efficiency (basically the energy consumption..)
+                    $energyConsumption *= ($efficiency->heating / 100);
+                    Log::debug(__METHOD__ . " - Netto(gas) = $energyConsumption");
+
+                    data_set(
+                        $result,
+                        'gas.netto',
+                        round($energyConsumption, 4)
+                    );
+
+                    // electricity
+                    // energy demand = gas usage - netto gas delivery
+                    $energyDemand = $amountGas - $energyConsumption;
+                    Log::debug(__METHOD__ . " - Bruto(electricity) Energy demand = $amountGas - $energyConsumption = " . $energyDemand . " m3");
+                    // energyDemand from m3 to kWh
+                    $energyDemand *= Kengetallen::gasKwhPerM3();
+                    Log::debug(__METHOD__ . " - Bruto(electricity) Energy demand = $energyDemand kWh");
+
+                    data_set($result, 'electricity.bruto', $energyDemand);
+
+                    // netto = bruto / scop
+                    $characteristics = $this->lookupHeatPumpCharacteristics(
+                        $heatPumpConfigurable,
+                        $heatingTemperature
+                    );
+                    Log::debug(
+                        __METHOD__.' - characteristic id = '.optional(
+                            $characteristics
+                        )->id
+                    );
+                    $scop = 1;
+                    if ($characteristics instanceof HeatPumpCharacteristic) {
+                        $scop = max(
+                            $characteristics->scop,
+                            1
+                        ); // prevent divide by 0
+                    }
+
+                    Log::debug(__METHOD__ . " - Netto(electricity) = $energyDemand / $scop");
+                    $energyDemand /= $scop;
+                    Log::debug(__METHOD__ . " - Netto(electricity) = $energyDemand kWh");
+
+                    data_set(
+                        $result,
+                        'electricity.netto',
+                        round($energyDemand, 4)
+                    );
+                }
+            } else {
+                Log::debug(__METHOD__.' - Full heat pump');
+                // just (double) checking
+                if ($case === 'new') {
+                    $energyDemand = $amountGas;
+                    Log::debug(__METHOD__ . " - Bruto(electricity) Energy demand = " . $energyDemand . " m3");
+                    // energyDemand from m3 to kWh
+                    $energyDemand *= Kengetallen::gasKwhPerM3();
+                    Log::debug(__METHOD__ . " - Bruto(electricity) Energy demand = $energyDemand kWh");
+
+                    data_set($result, 'electricity.bruto', $energyDemand);
+
+                    // netto = bruto / scop
+                    $characteristics = $this->lookupHeatPumpCharacteristics(
+                        $heatPumpConfigurable,
+                        $heatingTemperature
+                    );
+                    Log::debug(
+                        __METHOD__.' - characteristic id = '.optional(
+                            $characteristics
+                        )->id
+                    );
+                    $scop = 1;
+                    if ($characteristics instanceof HeatPumpCharacteristic) {
+                        $scop = max(
+                            $characteristics->scop,
+                            1
+                        ); // prevent divide by 0
+                    }
+
+                    Log::debug(__METHOD__ . " - Netto(electricity) = $energyDemand / $scop");
+                    $energyDemand /= $scop;
+                    Log::debug(__METHOD__ . " - Netto(electricity) = $energyDemand kWh");
+
+                    data_set(
+                        $result,
+                        'electricity.netto',
+                        round($energyDemand, 4)
+                    );
+                }
+            }
+        }
+
+
+        /*
+        // Get the primary wtw heating, but: leave out the sun boiler as this is
+        // a helper and not the primary heating solution.
+        $heatSourcesWtw            = $this->getAnswer($heatSourceWtwShort);
+        $primaryWtwHeatSourceShort = Arr::first(
+            Arr::except($heatSourcesWtw, 'sun-boiler')
+        );
+                if (in_array(
+                    $primaryWtwHeatSourceShort,
+                    ['hr-boiler', 'kitchen-geyser', 'district-heating']
+                )) {
+                    Log::debug(
+                        __METHOD__.' - hr-boiler/kitchen-geyser/district-heating is primary wtw'
+                    );
+                    Log::debug(
+                        'heatingGasUsage = '.$heatingGasUsage.' - '.data_get(
+                            $wtwUsage,
+                            'gas.bruto',
+                            0
+                        )
+                    );
+                    $heatingGasUsage -= data_get($wtwUsage, 'gas.bruto', 0);
+
+                    // default = 97% for HR-107.
+                    $efficiency = $this->getBoilerKeyFigureEfficiency(
+                        $boilerTypeShort
+                    ) ?? 97;
+                    Log::debug(
+                        'heatingGasUsage = '.$heatingGasUsage.' * '.$efficiency.' %'
+                    );
+                    $heatingGasUsage *= ($efficiency->heating / 100);
+                }
+                data_set($result, 'gas.bruto', $amountGas);
+
+
+                data_set($result, 'gas.netto', $heatingGasUsage);
+        */
 
         return $result;
     }
 
+    // CHECKED.
     protected function calculateTapWater(
         string $heatSourceShort,
         string $heatSourceWtwShort,
         string $waterComfortShort,
         string $heatPumpTypeShort = '',
         string $boilerSettingComfortHeatShort = '',
-        string $boilerTypeShort = ''
+        string $boilerTypeShort = '',
+        int $amountGas = 0,
+        array $cookingUsage = []
     ): array {
+        // either 'new' or 'current'
         $case = Str::contains($heatSourceShort, 'new-') ? 'new' : 'current';
         Log::debug(__METHOD__.' - case: '.$case);
 
@@ -222,17 +448,6 @@ class Heating extends Calculator
                 'netto' => 0,
             ],
         ];
-
-        /** @var array $heatSources */
-        $heatSources = $this->getAnswer($heatSourceShort) ?? [];
-        // if $heatSources does not contain 'hr-boiler', we cannot calculate.
-        if ( ! in_array('hr-boiler', $heatSources)) {
-            Log::debug(
-                __METHOD__.' - No HR boiler, returning'.json_encode($result)
-            );
-
-            return $result;
-        }
 
         // Get the primary wtw heating, but: leave out the sun boiler as this is
         // a helper and not the primary heating solution.
@@ -251,7 +466,11 @@ class Heating extends Calculator
             return $result;
         }
 
+
         // needed on every calculation: the gasUsageWtw.
+        // Note: When there's no gas-based heating source, but there is a gas-based
+        // heating source for tap water, the gasUsage will NOT be using this
+        // table-defined value later on!
         $residentCount         = $this->getAnswer('resident-count') ?? 1;
         $comfortLevelSomething = $this->getAnswer(
             $waterComfortShort
@@ -281,7 +500,7 @@ class Heating extends Calculator
             return $result;
         }
         $gasUsageWtw = $consumption->energy_consumption;
-        Log::debug(__METHOD__.' - gasUsageWtw: '.$gasUsageWtw);
+        Log::debug(__METHOD__.' - gasUsageWtw from tables: '.$gasUsageWtw);
 
         // solar boiler (deduction) amount comes into play: if there's a solar
         // boiler
@@ -307,7 +526,7 @@ class Heating extends Calculator
             );
         }
 
-        Log::debug("primaryWtwHeatSourceShort: " . $primaryWtwHeatSourceShort);
+        Log::debug("primaryWtwHeatSourceShort: ".$primaryWtwHeatSourceShort);
         // 8.972 = Kengetallen::gasKwhPerM3();
         if (in_array(
             $primaryWtwHeatSourceShort,
@@ -316,13 +535,31 @@ class Heating extends Calculator
             Log::debug(
                 __METHOD__.' - primary wtw hr-boiler/kitchen-geyser/district-heating'
             );
-            data_set($result, 'gas.bruto', $gasUsageWtw);
+            // Check the
+            /** @var array $heatSources */
+            $heatSources = $this->getAnswer($heatSourceShort) ?? [];
+
+            // if there's no gas-based heating source, but there is gas-based tap water
+            // we can only do this in the current situation as the new situation
+            // would contain a cyclic dependency.
+            if ($case === 'current' && ! in_array('hr-boiler', $heatSources) && ! in_array(
+                    'district-heating',
+                    $heatSources
+                ) && $amountGas > 0) {
+                Log::debug(__METHOD__.' - Gas based wtw, but no gas-based heating. We will use the amountGas - cooking(gas) instead of the table-values');
+                $gasUsageWtw = $amountGas - data_get($cookingUsage, 'gas', 0);
+
+            }
             // step 1: Gas usage wtw from table
             $energyConsumption = $gasUsageWtw;
 
             // step 2: Deduct solar boiler yield (gas)
             $energyConsumption -= data_get($solarBoilerYield, 'gas', 0);
 
+            // bruto = gas usage - solar boiler yield
+            data_set($result, 'gas.bruto', $energyConsumption);
+
+            // netto = bruto * efficiency
             // default = 89% for HR-107.
             $efficiency = $this->getBoilerKeyFigureEfficiency(
                 $boilerTypeShort
@@ -332,27 +569,41 @@ class Heating extends Calculator
             );
             $energyConsumption *= ($efficiency->wtw / 100);
 
-            //$result['gas'] = round($energyConsumption, 4);
             data_set($result, 'gas.netto', round($energyConsumption, 4));
         }
         if (in_array($primaryWtwHeatSourceShort, ['electric-boiler'])) {
             Log::debug(__METHOD__.' - primary wtw electric-boiler');
             // step 1: Gas usage wtw from table * gasKwhPerM3 (m3 -> kWh)
             $energyConsumption = $gasUsageWtw * Kengetallen::gasKwhPerM3();
-            data_set($result, 'electricity.bruto', round($energyConsumption, 4));
 
             // step 2: Deduct solar boiler yield (electricity)
             $energyConsumption -= data_get($solarBoilerYield, 'electricity', 0);
 
-            //$result['electricity'] = round($energyConsumption, 4);
-            data_set($result, 'electricity.netto', round($energyConsumption, 4));
+            // bruto = electricity usage - solar boiler yield
+            data_set(
+                $result,
+                'electricity.bruto',
+                round($energyConsumption, 4)
+            );
+
+            // netto = bruto * efficiency
+            // currently the efficiency for electri boiler is not defined / set to 100%.
+            $efficiency = 100;
+
+            $energyConsumption *= ($efficiency / 100);
+
+            data_set(
+                $result,
+                'electricity.netto',
+                round($energyConsumption, 4)
+            );
         }
         if (in_array(
             $primaryWtwHeatSourceShort,
             ['heat-pump', 'heat-pump-boiler']
         )) {
             Log::debug(__METHOD__.' - primary wtw heat-pump/heat-pump-boiler');
-            // step 1: Gas usage wtw from table * gasKwhPerM3 / SCOP (m3 -> kWh)
+
             if ($case === 'new') {
                 $heatPumpConfigurable = ToolHelper::getServiceValueByCustomValue(
                     'heat-pump',
@@ -360,15 +611,23 @@ class Heating extends Calculator
                     $this->getAnswer($heatPumpTypeShort)
                 );
             } else {
-                $heatPumpConfigurable = ServiceValue::find($this->getAnswer($heatPumpTypeShort));
+                $heatPumpConfigurable = ServiceValue::find(
+                    $this->getAnswer($heatPumpTypeShort)
+                );
             }
 
-            $heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
-                ->toolQuestionCustomValues()
-                ->whereShort($this->getAnswer($boilerSettingComfortHeatShort))
-                ->first();
+            $heatingTemperature = ToolQuestion::findByShort(
+                'new-boiler-setting-comfort-heat'
+            )
+                                              ->toolQuestionCustomValues()
+                                              ->whereShort(
+                                                  $this->getAnswer(
+                                                      $boilerSettingComfortHeatShort
+                                                  )
+                                              )
+                                              ->first();
 
-            $characteristics      = $this->lookupHeatPumpCharacteristics(
+            $characteristics = $this->lookupHeatPumpCharacteristics(
                 $heatPumpConfigurable,
                 $heatingTemperature
             );
@@ -379,19 +638,35 @@ class Heating extends Calculator
             );
             $scop = 1;
             if ($characteristics instanceof HeatPumpCharacteristic) {
-                $scop = max($characteristics->scop_tap_water, 1); // prevent divide by 0
+                $scop = max(
+                    $characteristics->scop_tap_water,
+                    1
+                ); // prevent divide by 0
             }
 
             Log::debug(__METHOD__.' - scop = '.$scop);
 
-            $energyConsumption = $gasUsageWtw * Kengetallen::gasKwhPerM3() / $scop;
-            data_set($result, 'electricity.bruto', round($energyConsumption, 4));
+            // step 1: Gas usage wtw from table * gasKwhPerM3 (m3 -> kWh)
+            $energyConsumption = $gasUsageWtw * Kengetallen::gasKwhPerM3();
 
             // step 2: Deduct solar boiler yield (electricity)
             $energyConsumption -= data_get($solarBoilerYield, 'electricity', 0);
 
-            //$result['electricity'] = round($energyConsumption, 4);
-            data_set($result, 'electricity.netto', round($energyConsumption, 4));
+            // bruto = gas usage * 8.972 - solar boiler yield
+            data_set(
+                $result,
+                'electricity.bruto',
+                round($energyConsumption, 4)
+            );
+
+            // netto = bruto / scop
+            $energyConsumption /= $scop;
+
+            data_set(
+                $result,
+                'electricity.netto',
+                round($energyConsumption, 4)
+            );
         }
 
         Log::debug(__METHOD__.' - end result: '.json_encode($result));
@@ -399,6 +674,7 @@ class Heating extends Calculator
         return $result;
     }
 
+    // CHECKED.
     public function lookupHeatPumpCharacteristics(
         ?Model $heatPumpConfigurable,
         ?ToolQuestionCustomValue $heatingTemperature
@@ -429,6 +705,7 @@ class Heating extends Calculator
         return null;
     }
 
+    // CHECKED.
     protected function energyUsageForCooking(string $toolQuestionShort): array
     {
         $cookType = $this->getAnswer($toolQuestionShort);
@@ -453,6 +730,7 @@ class Heating extends Calculator
         }
     }
 
+    // CHECKED.
     protected function getBoilerKeyFigureEfficiency(string $boilerTypeShort
     ): ?KeyFigureBoilerEfficiency {
         $boiler = ToolHelper::getServiceValueByCustomValue(

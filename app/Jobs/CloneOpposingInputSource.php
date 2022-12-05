@@ -45,5 +45,9 @@ class CloneOpposingInputSource implements ShouldQueue
             ->forInputSource($this->inputSource)
             ->setType(CloneOpposingInputSource::class)
             ->deactivate(true);
+
+        if (app()->bound('sentry')) {
+            app('sentry')->captureException($exception);
+        }
     }
 }

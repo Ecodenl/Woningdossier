@@ -93,5 +93,9 @@ class GenerateExampleBuildingCsv implements ShouldQueue
     public function Failed(\Throwable $exception)
     {
         $this->fileStorage->delete();
+
+        if (app()->bound('sentry')) {
+            app('sentry')->captureException($exception);
+        }
     }
 }

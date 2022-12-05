@@ -20,6 +20,8 @@ class ConditionEvaluator
     protected InputSource $inputSource;
     protected bool $explain = false;
 
+    protected array $customResults = [];
+
     /**
      * @param  Building  $building
      *
@@ -194,7 +196,7 @@ class ConditionEvaluator
         // first check if its a custom evaluator
         if ($column == "fn") {
             $customEvaluatorClass = "App\Helpers\Conditions\Evaluators\\{$operator}";
-            return $customEvaluatorClass::evaluate($this->building, $this->inputSource, $value ?? null, $collection);
+            return $this->handleCustomEvaluator($customEvaluatorClass, ($value ?? null), $collection);
         }
 
         // Else check if we should do sub-evaluation
@@ -256,4 +258,18 @@ class ConditionEvaluator
         }
     }
 
+    protected function handleCustomEvaluator(string $customEvaluatorClass, $value, Collection $collection): bool
+    {
+        $operator = class_basename($customEvaluatorClass);
+
+        $override = $this->customResults[$operator] ?? [];
+        /** @var \App\Helpers\Conditions\Evaluators\ShouldEvaluate $customEvaluatorClass */
+        $evaluation = $customEvaluatorClass::init($this->building, $this->inputSource, $collection)
+            ->override($override)
+            ->evaluate($value);
+
+        $this->customResults[$operator][$evaluation['key']] = $evaluation['results'];
+
+        return $evaluation['bool'];
+    }
 }

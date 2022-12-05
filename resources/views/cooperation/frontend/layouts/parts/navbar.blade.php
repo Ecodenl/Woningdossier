@@ -78,8 +78,8 @@
 {{--            </p>--}}
         @endif
 
-        @if (Auth::check() && ! Hoomdossier::user()->isFillingToolForOtherBuilding())
-            @if(Hoomdossier::user()->getRoleNames()->count() > 1 && \App\Helpers\HoomdossierSession::hasRole())
+        @if (Auth::check())
+            @if(! Hoomdossier::user()->isFillingToolForOtherBuilding() && Hoomdossier::user()->getRoleNames()->count() > 1 && \App\Helpers\HoomdossierSession::hasRole())
                 @component('cooperation.frontend.layouts.components.dropdown', [
                     'label' => __('cooperation/frontend/layouts.navbar.current-role') . \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name,
                     'class' => 'in-text',
@@ -98,7 +98,9 @@
 
             <livewire:cooperation.frontend.layouts.parts.alerts :building="$building"
                                                                 :inputSource="$masterInputSource"/>
-            <livewire:cooperation.frontend.layouts.parts.messages/>
+            @if(! Hoomdossier::user()->isFillingToolForOtherBuilding())
+                <livewire:cooperation.frontend.layouts.parts.messages/>
+            @endif
 
             {{-- Keep local for ease of use --}}
             @if(app()->isLocal())
@@ -130,48 +132,50 @@
                 </div>
             @endcan
 
-            @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-account-circle"></i>'])
-                <li>
-                    <a href="{{ route('cooperation.my-account.index', compact('cooperation')) }}"
-                       class="in-text">
-                        @lang('woningdossier.cooperation.navbar.my-account')
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('cooperation.privacy.index', compact('cooperation')) }}"
-                       class="in-text">
-                        @lang('woningdossier.cooperation.navbar.privacy')
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('cooperation.disclaimer.index', compact('cooperation')) }}"
-                       class="in-text">
-                        @lang('woningdossier.cooperation.navbar.disclaimer')
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('cooperation.frontend.help.index', compact('cooperation')) }}"
-                       class="in-text">
-                        @lang('woningdossier.cooperation.navbar.help')
-                    </a>
-                </li>
-{{--                <li>--}}
-{{--                    <a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}"--}}
-{{--                       class="in-text">--}}
-{{--                        @lang('my-account.cooperations.form.header')--}}
-{{--                    </a>--}}
-{{--                </li>--}}
-                <li>
-                    @include('cooperation.frontend.shared.parts.logout')
-                </li>
-                <li>
-                    <span class="float-right" style="padding-right:.5em;line-height:100%;">
-                        <small>
-                            v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif
-                        </small>
-                    </span>
-                </li>
-            @endcomponent
+            @if(! Hoomdossier::user()->isFillingToolForOtherBuilding())
+                @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-account-circle"></i>'])
+                    <li>
+                        <a href="{{ route('cooperation.my-account.index', compact('cooperation')) }}"
+                           class="in-text">
+                            @lang('woningdossier.cooperation.navbar.my-account')
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('cooperation.privacy.index', compact('cooperation')) }}"
+                           class="in-text">
+                            @lang('woningdossier.cooperation.navbar.privacy')
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('cooperation.disclaimer.index', compact('cooperation')) }}"
+                           class="in-text">
+                            @lang('woningdossier.cooperation.navbar.disclaimer')
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('cooperation.frontend.help.index', compact('cooperation')) }}"
+                           class="in-text">
+                            @lang('woningdossier.cooperation.navbar.help')
+                        </a>
+                    </li>
+{{--                    <li>--}}
+{{--                        <a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}"--}}
+{{--                           class="in-text">--}}
+{{--                            @lang('my-account.cooperations.form.header')--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+                    <li>
+                        @include('cooperation.frontend.shared.parts.logout')
+                    </li>
+                    <li>
+                        <span class="float-right" style="padding-right:.5em;line-height:100%;">
+                            <small>
+                                v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif
+                            </small>
+                        </span>
+                    </li>
+                @endcomponent
+            @endif
         @endif
     </div>
 </div>

@@ -24,6 +24,8 @@ class SubSteppable extends Scannable
 
     public $intercontinentalAnswers = [];
 
+    public bool $componentReady = false;
+
     protected $listeners = [
         'calculationsPerformed',
         'updateFilledInAnswers',
@@ -41,7 +43,7 @@ class SubSteppable extends Scannable
                     ->with(['subSteppable', 'toolQuestionType']);
             },
             'toolQuestions' => function ($query) {
-                $query->orderBy('order');
+                $query->orderBy('order')->with('forSpecificInputSource');
             },
             'subStepTemplate',
         ]);
@@ -62,6 +64,7 @@ class SubSteppable extends Scannable
         // first we have to hydrate the tool questions
         $this->hydrateToolQuestions();
         // after that we can fill up the user his given answers
+
         $this->setFilledInAnswers();
 
         $this->originalAnswers = $this->filledInAnswers;
@@ -69,7 +72,9 @@ class SubSteppable extends Scannable
 
     public function render()
     {
-        $this->rehydrateToolQuestions();
+        if ($this->componentReady) {
+            $this->rehydrateToolQuestions();
+        }
         return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
     }
 
@@ -80,6 +85,7 @@ class SubSteppable extends Scannable
         // can perform calculations
         $this->emit('updateFilledInAnswers', $this->filledInAnswers, $this->id);
         $this->dispatchBrowserEvent('component-ready', ['id' => $this->id]);
+        $this->componentReady = true;
     }
 
     public function hydrateToolQuestions()
@@ -97,13 +103,15 @@ class SubSteppable extends Scannable
 
     public function updated($field, $value)
     {
-        $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
-        $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-        if ($toolQuestion instanceof ToolQuestion) {
-            // If it's an INT, we want to ensure the value set is also an INT
-            if ($toolQuestion->data_type === Caster::INT) {
-                $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
-                $this->filledInAnswers[$toolQuestionShort] = $value;
+        if (Str::contains($field, 'filledInAnswers')) {
+            $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+            if ($toolQuestion instanceof ToolQuestion) {
+                // If it's an INT, we want to ensure the value set is also an INT
+                if ($toolQuestion->data_type === Caster::INT) {
+                    $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
+                    $this->filledInAnswers[$toolQuestionShort] = $value;
+                }
             }
         }
 

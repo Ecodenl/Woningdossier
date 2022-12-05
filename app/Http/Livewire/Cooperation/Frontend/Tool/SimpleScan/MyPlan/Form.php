@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
@@ -217,7 +217,7 @@ class Form extends Component
 
     public function render()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.form');
+        return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.form');
     }
 
     public function updated($field)

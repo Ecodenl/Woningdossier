@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
@@ -60,7 +60,7 @@ class Comments extends Component
 
     public function render()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.comments');
+        return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.comments');
     }
 
     public function save(string $sourceShort)

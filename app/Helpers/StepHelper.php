@@ -36,6 +36,7 @@ class StepHelper
         'usage-quick-scan',
         'living-requirements',
         'residential-status',
+        'small-measures'
     ];
 
     const STEP_COMPLETION_MAP = [
@@ -108,7 +109,7 @@ class StepHelper
         }
 
         // Redirect to my plan.
-        return route('cooperation.frontend.tool.quick-scan.my-plan.index');
+        return route('cooperation.frontend.tool.simple-scan.my-plan.index');
     }
 
     /**

@@ -21,7 +21,7 @@ class SubNavComposer
     public function create(View $view)
     {
         $view->with('steps',
-            Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)->get()
+            $this->request->route('scan')->steps
         );
 
         $view->with('scan', $this->request->route('scan'));

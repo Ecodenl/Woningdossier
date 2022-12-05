@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\DataTypes\Caster;
@@ -8,6 +8,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\CompletedSubStep;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
@@ -19,14 +20,25 @@ use Illuminate\Support\Facades\Validator;
 
 class Form extends Scannable
 {
+    public $scan;
     public Step $step;
     public SubStep $subStep;
 
-    public function mount(Step $step, SubStep $subStep)
+    public function mount(Scan $scan, Step $step, SubStep $subStep)
     {
+        $this->scan = $scan;
         Log::debug("mounting form [Step: {$step->id}] [SubStep: {$subStep->id}]");
+
+
         $subStep->load([
-            'toolQuestions' => function ($query) { $query->orderBy('order'); },
+            'subSteppables' => function ($query) {
+                $query
+                    ->orderBy('order')
+                    ->with(['subSteppable', 'toolQuestionType']);
+            },
+            'toolQuestions' => function ($query) {
+                $query->orderBy('order');
+            },
             'subStepTemplate',
         ]);
 
@@ -46,7 +58,7 @@ class Form extends Scannable
     public function render()
     {
         $this->rehydrateToolQuestions();
-        return view('livewire.cooperation.frontend.tool.quick-scan.form');
+        return view('livewire.cooperation.frontend.tool.simple-scan.form');
     }
 
     public function save()

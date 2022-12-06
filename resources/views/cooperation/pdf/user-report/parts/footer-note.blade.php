@@ -4,12 +4,12 @@
   --}}
 <script type="text/php">
     if ( isset($pdf) ) {
-        $cooperationFooterText = "{$GLOBALS['_inputSource']->name} - {$GLOBALS['_cooperation']->name} - Pagina";
+        $cooperationFooterText = "{$GLOBALS['_inputSource']->name} - {$GLOBALS['_cooperation']->name} - Pagina {PAGE_NUM}";
 
         {{-- 595.28 == $pdf->get_width() --}}
-        $xForCooperationFooterText = 595 - (strlen($cooperationFooterText) + 11) * 3;
-
-        $cooperationFooterText .= " {PAGE_NUM}";
+        $xForCooperationFooterText = 595 - strlen($cooperationFooterText) * 3;
+        \Log::debug($cooperationFooterText);
+        \Log::debug($xForCooperationFooterText);
 
         $font = $fontMetrics->getFont("Arial, Helvetica, sans-serif", "normal");
         $date = date('d-m-Y');

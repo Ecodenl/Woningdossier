@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
 use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
@@ -35,7 +35,7 @@ class CalculationsTable extends Component
 
     public function render()
     {
-        return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.calculations-table');
+        return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.calculations-table');
     }
 
     protected function setToolQuestions()

@@ -2,28 +2,35 @@
 
 namespace App\Helpers\Conditions\Evaluators;
 
-use App\Models\Building;
-use App\Models\InputSource;
-use App\Traits\HasDynamicAnswers;
-use Illuminate\Support\Collection;
-
-class HasMaximumAnswers implements ShouldEvaluate
+class HasMaximumAnswers extends ShouldEvaluate
 {
-    use HasDynamicAnswers;
-
-    public static function evaluate(Building $building, InputSource $inputSource, $value = null, ?Collection $answers = null): bool
+    public function evaluate($value = null): array
     {
+        $building = $this->building;
+        $inputSource = $this->inputSource;
+        $answers = $this->answers;
+
         // This evaluator checks if the given answers doesn't exceed maximum
         // $value must be an array, where
         // 'column' => The tool question short to check
         // 'max' => Max amount of answers
         // 'ignore' => Potential answers to ignore (applicable for array)
 
-        $answer = static::getQuickAnswer($value['column'], $building, $inputSource, $answers);
+        $answer = $this->getAnswer($value['column']);
+        $ignores = (array) ($value['ignore'] ?? []);
+        $key = md5(json_encode(['answer' => $answer, 'ignore' => $ignores]));
+
+        if (array_key_exists($key, $this->override)) {
+            $totalAnswers = $this->override[$key];
+            return [
+                'results' => $totalAnswers,
+                'bool' => $totalAnswers < $value['max'],
+                'key' => $key,
+            ];
+        }
 
         // TODO: Make this work with INT/STRING etc.
         if (is_array($answer)) {
-            $ignores = (array) ($value['ignore'] ?? []);
             foreach ($ignores as $ignore) {
                 $index = array_search($ignore, $answer);
 
@@ -32,9 +39,20 @@ class HasMaximumAnswers implements ShouldEvaluate
                 }
             }
 
-            return count($answer) < $value['max'];
+            $totalAnswers = count($answer);
+
+            return [
+                'results' => $totalAnswers,
+                'bool' => $totalAnswers < $value['max'],
+                'key' => $key,
+            ];
         }
 
-        return false;
+        // "Temporary" fallback
+        return [
+            'results' => 999,
+            'bool' => false,
+            'key' => $key,
+        ];
     }
 }

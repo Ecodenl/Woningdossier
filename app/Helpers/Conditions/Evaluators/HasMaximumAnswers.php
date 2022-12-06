@@ -48,6 +48,7 @@ class HasMaximumAnswers extends ShouldEvaluate
             ];
         }
 
+        // "Temporary" fallback
         return [
             'results' => 999,
             'bool' => false,

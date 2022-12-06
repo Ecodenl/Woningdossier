@@ -48,7 +48,8 @@ class Heating extends Calculator
             'new-heat-pump-type',
             'new-boiler-setting-comfort-heat',
             'new-boiler-type',
-            data_get($heatingCurrent, 'gas.netto', 0), // netto!
+//            data_get($heatingCurrent, 'gas.netto', 0), // netto!
+            0, // only used in current situation
             data_get($cooking, 'new')
         );
 
@@ -465,7 +466,6 @@ class Heating extends Calculator
 
             return $result;
         }
-
 
         // needed on every calculation: the gasUsageWtw.
         // Note: When there's no gas-based heating source, but there is a gas-based

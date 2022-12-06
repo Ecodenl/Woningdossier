@@ -99,11 +99,11 @@ class HeatPump extends \App\Calculations\Calculator
         $amountGas = $this->getAnswer('amount-gas') ?? 0;
         Log::debug("D2: " . $amountGas . " (huidig gasverbruik)");
 
-
         // new
         Log::debug("=== Heating calculate ===");
         $energyUsage = Heating::calculate($this->building, $this->inputSource, $this->answers);
         Log::debug("=== Heating calculate done ===");
+        dump($energyUsage);
 
         // D8
         $currentNettoGasUsageHeating = data_get($energyUsage, 'heating.current.gas.netto', 0);
@@ -187,7 +187,8 @@ class HeatPump extends \App\Calculations\Calculator
         //
 
         Log::debug('C76 (gasbesparing): savingsGas = amountGas - (newNettoGasUsageHeating + netNettoGasUsageTapWater + newNettoGasUsageCooking)');
-        $savingsGas = $amountGas - ($newNettoGasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking);
+        $savingsGas = $amountGas - data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage, 'cooking.gas.electricity', 0);
+        //$savingsGas = $amountGas - ($newNettoGasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking);
         Log::debug('C76 (gasbesparing): = ' . "$amountGas - ($newNettoGasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking) = $savingsGas");
 
         // (C71+C72+C73) - (D12-D13-D14)

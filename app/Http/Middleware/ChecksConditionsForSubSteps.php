@@ -8,6 +8,7 @@ use App\Helpers\QuickScanHelper;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\SubStep;
+use App\Services\Scans\ScanFlowService;
 use Closure;
 
 class ChecksConditionsForSubSteps
@@ -23,6 +24,7 @@ class ChecksConditionsForSubSteps
     {
         $building = HoomdossierSession::getBuilding(true);
 
+        $scan = $request->route('scan');
         /** @var SubStep $subStep */
         $subStep = $request->route('subStep');
         $step = $request->route('step');
@@ -30,8 +32,13 @@ class ChecksConditionsForSubSteps
         $returnToNextStep = $request->user()->cannot('show', [$subStep, $building]);
 
         if ($returnToNextStep) {
-            // this indeed only covers the next step
-            return redirect()->to(QuickScanHelper::getNextStepUrl($step, $subStep));
+            // the current sub step cant be showed, resolve the next url.
+            $url = ScanFlowService::init($scan, $building, HoomdossierSession::getInputSource(true))
+                ->forStep($step)
+                ->forSubStep($subStep)
+                ->resolveNextUrl();
+            return redirect()->to($url);
+
         }
 
         // We can show this step according to the sub step conditionals, but have we answered the example building yet?

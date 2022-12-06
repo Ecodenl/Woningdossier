@@ -4,10 +4,12 @@
   --}}
 <script type="text/php">
     if ( isset($pdf) ) {
-        $cooperationFooterText = "{$GLOBALS['_inputSource']->name} - {$GLOBALS['_cooperation']->name} - Pagina {PAGE_NUM}";
+        $cooperationFooterText = "{$GLOBALS['_inputSource']->name} - {$GLOBALS['_cooperation']->name} - Pagina";
 
         {{-- 595.28 == $pdf->get_width() --}}
-        $xForCooperationFooterText = 595 - strlen($cooperationFooterText) * 3;
+        $xForCooperationFooterText = 595 - (strlen($cooperationFooterText) + 11) * 3;
+
+        $cooperationFooterText .= " {PAGE_NUM}";
 
         $font = $fontMetrics->getFont("Arial, Helvetica, sans-serif", "normal");
         $date = date('d-m-Y');
@@ -18,8 +20,7 @@
         {{-- So due to how DomPdf renders fixed elements, the content will be overlapped if we do it like this. --}}
         {{-- For now we will use a fixed size for a single digit page. --}}
         {{--$xForDate = 533.5 + strlen($PAGE_NUM) * 3;--}}
-        $xForDate = 536.5;
-        \Log::debug($xForDate);
+        $xForDate = 534;
         $pdf->page_text($xForDate, ($y + 10), $date, $font, 6, array(0,0,0));
     }
 </script>

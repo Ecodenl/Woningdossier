@@ -148,18 +148,24 @@ class Building extends Model
         return $this->hasMany(CustomMeasureApplication::class);
     }
 
-    public function getAnswerForAllInputSources(ToolQuestion $toolQuestion)
+    public function getAnswerForAllInputSources(ToolQuestion $toolQuestion, bool $withMaster = false)
     {
+        // TODO: See if and how we can reduce query calls here
         $inputSources = InputSource::all();
 
         $answers = null;
-        $where   = [
-            [
-                'input_source_id',
-                '!=',
-                $inputSources->where('short', InputSource::MASTER_SHORT)->first()->id,
-            ],
-        ];
+        $where = [];
+
+        if (! $withMaster) {
+            $where = [
+                [
+                    'input_source_id',
+                    '!=',
+                    $inputSources->where('short', InputSource::MASTER_SHORT)->first()->id,
+                ],
+            ];
+        }
+
         // this means we should get the answer the "traditional way" , in another table (not from the tool_question_answers)
         if (! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
@@ -219,9 +225,10 @@ class Building extends Model
             $toolQuestionAnswers  = $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
-                ->with('inputSource')
+                ->with(['inputSource', 'toolQuestionCustomValue'])
                 ->where($where)
                 ->get();
+
             foreach ($toolQuestionAnswers as $index => $toolQuestionAnswer) {
                 $answer = optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer;
                 $answers[$toolQuestionAnswer->inputSource->short][$index] = [
@@ -232,7 +239,7 @@ class Building extends Model
         }
 
         // As last step, we want to clean up empty values
-        foreach ($answers ?? [] as $short => $answer) {
+        foreach (($answers ?? []) as $short => $answer) {
             if (empty($answer) || (is_array($answer) && Arr::isWholeArrayEmpty($answer))) {
                 unset($answers[$short]);
             }
@@ -558,24 +565,6 @@ class Building extends Model
                         's.id'
                     )
                     ->where('s.short', $short)->first(['building_services.*']);
-    }
-
-    /**
-     * @param  string  $short
-     *
-     * @return ServiceValue|null
-     */
-    public function getServiceValue($short, InputSource $inputSource)
-    {
-        $serviceValue = null;
-        /** @var BuildingService $buildingService */
-        $buildingService = $this->getBuildingService($short, $inputSource);
-
-        if ($buildingService instanceof BuildingService) {
-            $serviceValue = $buildingService->serviceValue;
-        }
-
-        return $serviceValue;
     }
 
     /**

@@ -19,13 +19,9 @@ trait HasShortTrait
         $cacheKey = 'HasShortTrait_find_by_short_%s_%s';
         $className = get_class(self::getModel());
 
-        // try to cache it so we get some medioker fast stuff
-        return Cache::remember(
+        return BaseCache::cacheModel(
             BaseCache::getCacheKey($cacheKey, $className, $short),
-            config('hoomdossier.cache.times.default'),
-            function () use ($short) {
-                return self::whereShort($short)->first();
-            }
+            self::whereShort($short)
         );
     }
 
@@ -38,6 +34,7 @@ trait HasShortTrait
      */
     public static function findByShorts(array $shorts)
     {
+        // TODO: Check if we can cache empty arrays, or if we should implement something like above
         $cacheKey = 'HasShortTrait_find_by_shorts_%s_%s';
         $className = get_class(self::getModel());
 

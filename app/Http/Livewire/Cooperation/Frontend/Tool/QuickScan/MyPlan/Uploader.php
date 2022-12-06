@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\MediaHelper;
 use App\Models\Building;
 use App\Models\Media;
+use App\Rules\MaxFilenameLength;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -70,6 +71,7 @@ class Uploader extends Component
                         'file',
                         'mimes:' . MediaHelper::getAllMimes(),
                         'max:' . MediaHelper::getMaxFileSize(),
+                        new MaxFilenameLength(),
                     ],
                 ]
             );

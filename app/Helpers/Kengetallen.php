@@ -30,6 +30,12 @@ class Kengetallen
     const ENERGY_USAGE_COOK_TYPE_ELECTRIC = 225; // kWh
     const ENERGY_USAGE_COOK_TYPE_INDUCTION = 175; // kWh
 
+    /**
+     * gas (m3) / gasKwhPerM3() = kWh
+     * kWh * gasKwhPerM3() = m3
+     *
+     * @return float
+     */
     public static function gasKwhPerM3()
     {
         return self::GAS_CALORIFIC_VALUE / self::GAS_CONVERSION_FACTOR;

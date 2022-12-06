@@ -10,6 +10,9 @@ use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
+use App\Services\Scans\ScanFlowService;
+use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -22,60 +25,9 @@ class HomeController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
-
         $building = HoomdossierSession::getBuilding(true);
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $inputSource = HoomdossierSession::getInputSource(true);
 
-
-
-        // If the quick scan is complete, we just redirect to my plan
-        if ($building->hasCompletedQuickScan($masterInputSource)) {
-            $scan = Scan::findByShort('quick-scan');
-            $url = route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
-        } else {
-            $mostRecentCompletedSubStep = optional(
-                $building->completedSubSteps()
-                    ->forInputSource($masterInputSource)
-                    ->orderByDesc('created_at')
-                    ->first()
-            )->subStep;
-
-            $quickScanStepIds = Step::quickScan()
-                ->pluck('id')
-                ->toArray();
-
-            // get all the completed steps
-            $mostRecentCompletedStep = optional(
-                $building->completedSteps()
-                    ->forInputSource($masterInputSource)
-                    ->whereIn('step_id', $quickScanStepIds)
-                    ->orderByDesc('created_at')
-                    ->first()
-            )->step;
-
-            // it could be that there is no completed step yet, in that case we just pick the first one.
-            if (! $mostRecentCompletedStep instanceof Step) {
-                $mostRecentCompletedStep = Step::quickScan()
-                    ->orderBy('order')
-                    ->first();
-            }
-
-            if ($mostRecentCompletedSubStep instanceof SubStep) {
-                // now give the user the uncompleted step, because this is probably where he left of
-                $url = QuickScanHelper::getNextStepUrl($mostRecentCompletedStep, $mostRecentCompletedSubStep);
-            }
-
-            // it could also be that there is no completed sub step, this will mean it's the user his first
-            // time using the tool (yay)
-            if (! $mostRecentCompletedSubStep instanceof SubStep) {
-                $mostRecentCompletedSubStep = $mostRecentCompletedStep->subSteps()->orderBy('order')->first();
-
-                $url = route('cooperation.frontend.tool.quick-scan.index', [
-                    'step' => $mostRecentCompletedStep, 'subStep' => $mostRecentCompletedSubStep
-                ]);
-            }
-        }
-
-        return view('cooperation.home.index', compact('url'));
+        return view('cooperation.home.index', compact('building', 'inputSource'));
     }
 }

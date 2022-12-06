@@ -459,6 +459,7 @@ class Building extends Model
         return $this->hasMany(CompletedSubStep::class);
     }
 
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

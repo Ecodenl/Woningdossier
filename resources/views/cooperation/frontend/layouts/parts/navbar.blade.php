@@ -126,6 +126,7 @@
             @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
                 <div>
                     {{-- todo: pass correct scan, need to resolve it --}}
+                    @php($scan = App\Models\Scan::first())
                     <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan')) }}"
                        class="flex flex-wrap justify-center items-center">
                         <i class="icon-md icon-document"></i>

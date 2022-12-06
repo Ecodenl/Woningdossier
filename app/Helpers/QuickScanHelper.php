@@ -2,8 +2,10 @@
 
 namespace App\Helpers;
 
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
+use App\Services\Scans\ScanFlowService;
 
 class QuickScanHelper
 {
@@ -51,8 +53,9 @@ class QuickScanHelper
             ));
         }
 
-        return route('cooperation.frontend.tool.quick-scan.index', [
-            'step' => $nextStep, 'subStep' => $nextSubStep,
+//        dd($nextStep, $nextSubStep);
+        return route('cooperation.frontend.tool.simple-scan.index', [
+            'scan' => Scan::find(2), 'step' => $nextStep, 'subStep' => $nextSubStep,
         ]);
     }
 }

@@ -207,7 +207,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             // Define this route as last to not match above routes as step/sub step combo
                             Route::get('{step:slug}/{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
                                 ->where(
-                                    collect(['step'])
+                                    collect(['step:slug'])
                                         ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $steps)])
                                         ->all()
 

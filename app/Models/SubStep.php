@@ -115,6 +115,11 @@ class SubStep extends Model
             ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
     }
 
+    public function completedSubSteps()
+    {
+        return $this->hasMany(CompletedSubStep::class);
+    }
+
     public function subSteppables()
     {
         return $this->hasMany(SubSteppable::class);

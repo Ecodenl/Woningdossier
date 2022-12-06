@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Upgrade\HeatPump;
+namespace App\Console\Commands\Upgrade\HeatPump\WaterCalc;
 
 use App\Helpers\Arr;
 use Illuminate\Console\Command;
@@ -13,14 +13,14 @@ class DoUpgrade extends Command
      *
      * @var string
      */
-    protected $signature = 'upgrade:heat-pump:do';
+    protected $signature = 'upgrade:heat-pump:water-calc:do';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Upgrade the application with all changes for the heat pump';
+    protected $description = 'Upgrade the application with all changes for the heat pump water calculation change';
 
     /**
      * Create a new command instance.
@@ -41,15 +41,7 @@ class DoUpgrade extends Command
     {
         $commands = [
             UpdateToolQuestions::class => [],
-            SeedCommand::class => [
-                ['--class' => 'ElementsValuesTableSeeder', '--force' => true],
-                ['--class' => 'AlertsTableSeeder', '--force' => true],
-                ['--class' => 'KeyFigureHeatPumpCoveragesTableSeeder', '--force' => true],
-                ['--class' => 'HeatPumpCharacteristicsTableSeeder', '--force' => true],
-                ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
-                ['--class' => 'KeyFigureInsulationFactorsTableSeeder', '--force' => true],
-            ],
-            ExampleBuildingContentRestructure::class => [],
+
         ];
 
         foreach ($commands as $command => $variants) {

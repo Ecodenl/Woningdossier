@@ -111,6 +111,10 @@ class User extends Model implements AuthorizableContract
         'extra' => 'array'
     ];
 
+    protected $with = [
+        'roles',
+    ];
+
     # Relations
     public function logs(): MorphMany
     {

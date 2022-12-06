@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,7 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Status extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasShortTrait;
 
     protected $translatable = [
         'name',

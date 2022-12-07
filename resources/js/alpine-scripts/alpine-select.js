@@ -159,67 +159,69 @@ export default (initiallyOpen = false) => ({
         this.setInputValue();
     },
     setInputValue() {
-        if (this.multiple) {
-            // Reset first
-            let input = this.$refs['select-input'];
-            input.value = '';
+        if (this.$refs['select-input']) {
+            if (this.multiple) {
+                // Reset first
+                let input = this.$refs['select-input'];
+                input.value = '';
 
-            let inputGroup = this.$refs['select-input-group'];
-            inputGroup.querySelectorAll('.form-input-option').remove();
+                let inputGroup = this.$refs['select-input-group'];
+                inputGroup.querySelectorAll('.form-input-option').remove();
 
-            // Space to keep from the right at all times to accommodate the icons
-            const inputHeight = 44; // px, same as 2.75rem
-            const right = 88; // px, same as 5.5rem
-            const topMargin = 2 // px, same as 0.125rem
-            const leftMargin = 4 // px, same as 0.25rem
-            const maxWidth = parseInt(getComputedStyle(input).width) - right;
-            let currentWidth = 0;
-            let rows = 1;
+                // Space to keep from the right at all times to accommodate the icons
+                const inputHeight = 44; // px, same as 2.75rem
+                const right = 88; // px, same as 5.5rem
+                const topMargin = 2 // px, same as 0.125rem
+                const leftMargin = 4 // px, same as 0.25rem
+                const maxWidth = parseInt(getComputedStyle(input).width) - right;
+                let currentWidth = 0;
+                let rows = 1;
 
-            for (let key of Object.keys(this.values)) {
-                let option = this.$refs['select-options'].querySelector(`span[data-value="${key}"]`);
+                for (let key of Object.keys(this.values)) {
+                    let option = this.$refs['select-options'].querySelector(`span[data-value="${key}"]`);
 
-                let text = this.values[key];
-                let newInputOption = document.createElement('span');
+                    let text = this.values[key];
+                    let newInputOption = document.createElement('span');
 
-                if (option && option.hasAttribute("data-icon")) {
-                    let icon = document.createElement('i');
-                    icon.classList.add('icon-sm', option.getAttribute("data-icon"), 'mr-2', 'static');
-                    newInputOption.appendChild(icon);
-                }
-
-                newInputOption.appendChild(document.createTextNode(text));
-                newInputOption.classList.add('form-input-option');
-
-                if (this.disabled) {
-                    newInputOption.classList.add('disabled');
-                }
-
-                newInputOption.setAttribute("data-value", key);
-                newInputOption.setAttribute("x-on:click", "changeOption($el)");
-                inputGroup.appendChild(newInputOption);
-
-                // Use timeout, so it processes after the current thread. Else, computedStyle will be 'auto'
-                setTimeout(() => {
-                    let newWidth = currentWidth + leftMargin + parseInt(getComputedStyle(newInputOption).width);
-
-                    if (newWidth > maxWidth) {
-                        rows++;
-                        currentWidth = 0;
+                    if (option && option.hasAttribute("data-icon")) {
+                        let icon = document.createElement('i');
+                        icon.classList.add('icon-sm', option.getAttribute("data-icon"), 'mr-2', 'static');
+                        newInputOption.appendChild(icon);
                     }
 
-                    newInputOption.style.left = currentWidth + leftMargin + "px";
-                    newInputOption.style.top = topMargin + (rows - 1) * inputHeight + 'px';
+                    newInputOption.appendChild(document.createTextNode(text));
+                    newInputOption.classList.add('form-input-option');
 
-                    // Always set height
-                    input.style.height = rows * inputHeight + 'px';
+                    if (this.disabled) {
+                        newInputOption.classList.add('disabled');
+                    }
 
-                    currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
-                });
+                    newInputOption.setAttribute("data-value", key);
+                    newInputOption.setAttribute("x-on:click", "changeOption($el)");
+                    inputGroup.appendChild(newInputOption);
 
+                    // Use timeout, so it processes after the current thread. Else, computedStyle will be 'auto'
+                    setTimeout(() => {
+                        let newWidth = currentWidth + leftMargin + parseInt(getComputedStyle(newInputOption).width);
+
+                        if (newWidth > maxWidth) {
+                            rows++;
+                            currentWidth = 0;
+                        }
+
+                        newInputOption.style.left = currentWidth + leftMargin + "px";
+                        newInputOption.style.top = topMargin + (rows - 1) * inputHeight + 'px';
+
+                        // Always set height
+                        input.style.height = rows * inputHeight + 'px';
+
+                        currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
+                    });
+
+                }
+            } else {
+                this.$refs['select-input'].value = Object.values(this.values)[0];
             }
-        } else {
-            this.$refs['select-input'].value = Object.values(this.values)[0];
         }
     },
     buildOption(parent, option) {

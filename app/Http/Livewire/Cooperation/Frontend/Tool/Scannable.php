@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool;
 
+use App\Helpers\Arr;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
@@ -47,8 +48,8 @@ abstract class Scannable extends Component
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
-        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
-        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
+        $this->residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         // first we have to hydrate the tool questions
         $this->hydrateToolQuestions();
@@ -116,13 +117,15 @@ abstract class Scannable extends Component
 
     public function updated($field, $value)
     {
-        $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
-        $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-        if ($toolQuestion instanceof ToolQuestion) {
-            // If it's an INT, we want to ensure the value set is also an INT
-            if ($toolQuestion->data_type === Caster::INT) {
-                $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
-                $this->filledInAnswers[$toolQuestionShort] = $value;
+        if (Str::contains($field, 'filledInAnswers')) {
+            $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+            if ($toolQuestion instanceof ToolQuestion) {
+                // If it's an INT, we want to ensure the value set is also an INT
+                if ($toolQuestion->data_type === Caster::INT) {
+                    $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
+                    $this->filledInAnswers[$toolQuestionShort] = $value;
+                }
             }
         }
 
@@ -139,18 +142,22 @@ abstract class Scannable extends Component
 
     protected function evaluateToolQuestions()
     {
+        $evaluator = ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->masterInputSource);
+
+        // First fetch all conditions, so we can retrieve any required related answers in one go
+        $conditionsForAllQuestions = [];
+        foreach (array_filter($this->toolQuestions->pluck('pivot.conditions')->all()) as $condition) {
+            $conditionsForAllQuestions = array_merge($conditionsForAllQuestions, $condition);
+        }
+        $answersForAllQuestions = $evaluator->getToolAnswersForConditions($conditionsForAllQuestions, collect($this->filledInAnswers));
+
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             if (! empty($toolQuestion->pivot->conditions)) {
                 $conditions = $toolQuestion->pivot->conditions;
 
-                $evaluator = ConditionEvaluator::init()
-                    ->building($this->building)
-                    ->inputSource($this->masterInputSource);
-
-                $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)
-                    ->merge(collect($this->filledInAnswers));
-
-                if (! $evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
+                if (! $evaluator->evaluateCollection($conditions, $answersForAllQuestions)) {
                     $this->toolQuestions = $this->toolQuestions->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they
@@ -264,10 +271,25 @@ abstract class Scannable extends Component
         // base key where every answer is stored
         foreach ($this->toolQuestions as $index => $toolQuestion) {
 
-            $this->filledInAnswersForAllInputSources[$toolQuestion->short] = $this->building->getAnswerForAllInputSources($toolQuestion);
+            // We get all answers, including for the master. This way we reduce amount of queries needed.
+            $this->filledInAnswersForAllInputSources[$toolQuestion->short] = $this->building->getAnswerForAllInputSources($toolQuestion, true);
 
-            /** @var array|string $answerForInputSource */
-            $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);
+            // We pluck the answer from the master input (unless a specific is requested)
+            $answerForInputSource = null;
+            $source = $toolQuestion->forSpecificInputSource ?? $this->masterInputSource;
+            $answersForInputSource = $this->filledInAnswersForAllInputSources[$toolQuestion->short][$source->short] ?? null;
+            if (! is_null($answersForInputSource)) {
+                $values = Arr::pluck($answersForInputSource, 'value');
+
+                if ($toolQuestion->data_type !== Caster::ARRAY) {
+                    $values = Arr::first($values);
+                }
+
+                $answerForInputSource = $values;
+            }
+
+            // We unset the master so we don't show it in the source select dropdowns.
+            unset($this->filledInAnswersForAllInputSources[$toolQuestion->short][$this->masterInputSource->short]);
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
             switch ($toolQuestion->data_type) {
@@ -305,7 +327,7 @@ abstract class Scannable extends Component
 
     private function prepareValidationRule(array $validation): array
     {
-        // We need to check if the validation contains shorts to other tool questions, so we can set the ID
+        // We need to check if the validation contains shorts to other tool questions, so we can set the short
 
         foreach ($validation as $index => $rule) {
             // Short is always on the right side of a colon
@@ -313,14 +335,21 @@ abstract class Scannable extends Component
                 $ruleParams = explode(':', $rule);
                 // But can contain extra params
 
-                if (! empty($ruleParams[1])) {
-                    $short = Str::contains($ruleParams[1], ',') ? explode(',', $ruleParams[1])[0]
-                        : $ruleParams[1];
+                // All rules that support linking to another field. No point in making calls if it's not this
+                $supportedRules = [
+                    'gt', 'gte', 'lt', 'lte', 'required_if', 'different', 'same', 'lowercase', 'uppercase',
+                    'accepted_if', 'declined_if', 'exclude_if', 'exclude_unless', 'exclude_with', 'exclude_without',
+                    'in_array', 'prohibited_if', 'prohibited_unless', 'prohibits',
+                ];
+
+                if (! empty($ruleParams[1]) && in_array($ruleParams[0], $supportedRules)) {
+                    // Even if it's not in the string, explode will always put the result as first in the array.
+                    $short = explode(',', $ruleParams[1])[0];
 
                     if (! empty($short)) {
                         $toolQuestion = ToolQuestion::findByShort($short);
-                        $toolQuestion = $toolQuestion instanceof ToolQuestion ? $toolQuestion : ToolQuestion::findByShort(Str::kebab(Str::camel($short)));
 
+                        // TODO: This doesn't take answers into account that aren't in the current FORM
                         if ($toolQuestion instanceof ToolQuestion) {
                             $validation[$index] = $ruleParams[0] . ':' . str_replace($short,
                                     "filledInAnswers.{$toolQuestion->short}", $ruleParams[1]);

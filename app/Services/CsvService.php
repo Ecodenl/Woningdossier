@@ -124,7 +124,7 @@ class CsvService
                 $exampleBuilding = optional($buildingFeatures->exampleBuilding)->isSpecific() ? $buildingFeatures->exampleBuilding->name : '';
             }
 
-            $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
+            $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d H:i');
 
             if ($anonymize) {
                 // set the personal userinfo

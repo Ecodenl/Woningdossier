@@ -163,9 +163,9 @@ class PdfReport implements ShouldQueue
                     'hr-boiler.amount_gas', 'hr-boiler.savings_gas', 'hr-boiler.savings_co2', 'hr-boiler.replace_year',
                     'hr-boiler.cost_indication', 'hr-boiler.interest_comparable',
                 ],
-                'Toelichting op de cv-ketel' => [
-                    'hr-boiler-comment-coach', 'hr-boiler-comment-resident',
-                ],
+                //'Toelichting op de cv-ketel' => [
+                //    'hr-boiler-comment-coach', 'hr-boiler-comment-resident',
+                //],
             ],
             'heat-pump' => [
                 'Gegevens van de nieuwe warmtepomp' => [
@@ -181,9 +181,9 @@ class PdfReport implements ShouldQueue
                     'heat-pump.extra_consumption_electricity', 'heat-pump.cost_indication',
                     'heat-pump.interest_comparable',
                 ],
-                'Toelichting op de warmtepomp' => [
-                    'heat-pump-comment-coach', 'heat-pump-comment-resident',
-                ],
+                //'Toelichting op de warmtepomp' => [
+                //    'heat-pump-comment-coach', 'heat-pump-comment-resident',
+                //],
             ],
             'heater' => [
                 'Geschat huidig verbruik' => [
@@ -198,9 +198,9 @@ class PdfReport implements ShouldQueue
                     'sun-boiler.savings_co2', 'sun-boiler.savings_money', 'sun-boiler.cost_indication',
                     'sun-boiler.interest_comparable',
                 ],
-                'Toelichting op de zonneboiler' => [
-                    'sun-boiler-comment-coach', 'sun-boiler-comment-resident',
-                ],
+                //'Toelichting op de zonneboiler' => [
+                //    'sun-boiler-comment-coach', 'sun-boiler-comment-resident',
+                //],
             ],
         ];
 
@@ -296,8 +296,12 @@ class PdfReport implements ShouldQueue
         $this->fileStorage->isProcessed();
     }
 
-    public function failed(\Exception $exception)
+    public function Failed(\Throwable $exception)
     {
         $this->fileStorage->delete();
+
+        if (app()->bound('sentry')) {
+            app('sentry')->captureException($exception);
+        }
     }
 }

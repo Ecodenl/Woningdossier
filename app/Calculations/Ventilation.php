@@ -173,8 +173,7 @@ class Ventilation
                 if ($currentCrackSealing instanceof BuildingElement && $currentCrackSealingCalculateValue > 1) {
                     $gas = 0;
                     if ($energyHabit instanceof UserEnergyHabit) {
-                        $boiler = $building->getServiceValue('boiler', $inputSource);
-                        $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
+                        $usages = HighEfficiencyBoilerCalculator::init($building, $inputSource)->calculateGasUsage();
                         $gas = $usages['heating']['bruto'];
                     }
 

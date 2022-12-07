@@ -39,10 +39,11 @@
             @if(\App\Helpers\HoomdossierSession::getRole())
                 @if(\App\Helpers\Hoomdossier::user()->hasRole('coach|coordinator|cooperation-admin|super-admin|superuser'))
                     {{-- todo: pass correct scan, need to resolve it --}}
-                    @php($scan = App\Models\Scan::first())
+                    @foreach($scans as $scan)
                     <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')) }}" class="btn btn-warning navbar-btn">
-                        Naar tool
+                        Naar {{$scan->name}}
                     </a>
+                    @endforeach
                 @endif
             @endif
         @endif

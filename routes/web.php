@@ -201,12 +201,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         ->as('simple-scan.')
                         ->group(function () {
 
-                            $steps = \App\Helpers\Cache\Step::allShorts();
+                            $steps = \App\Helpers\Cache\Step::allSlugs();
 
                             // Define this route as last to not match above routes as step/sub step combo
-                            Route::get('{step:slug}/{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
+                            Route::get('{step:slug}/{subStep}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
                                 ->where(
-                                    collect(['step:slug'])
+                                    collect(['step'])
                                         ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $steps)])
                                         ->all()
 

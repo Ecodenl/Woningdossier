@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Scans\ScanFlowService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
@@ -396,13 +397,18 @@ class Building extends Model
      */
     public function hasCompletedQuickScan(InputSource $inputSource): bool
     {
-        $quickScanSteps = Step::quickScan()->get();
-        foreach ($quickScanSteps as $quickScanStep) {
-            if (!$this->hasCompleted($quickScanStep, $inputSource)) {
+        $scan = Scan::findByShort('quick-scan');
+        return $this->hasCompletedScan($scan, $inputSource);
+    }
+
+    public function hasCompletedScan(Scan $scan, InputSource $inputSource): bool
+    {
+        $steps = $scan->steps;
+        foreach ($steps as $step) {
+            if (!$this->hasCompleted($step, $inputSource)) {
                 return false;
             }
         }
-
         return true;
     }
 

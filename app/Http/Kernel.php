@@ -74,7 +74,7 @@ class Kernel extends HttpKernel
         'deny-if-observing-building' => \App\Http\Middleware\RedirectIfIsObservingBuilding::class,
         'restore-building-session-if-filling-for-other-building' => \App\Http\Middleware\RestoreBuildingSessionIfFillingForOtherBuilding::class,
 
-        // quick scan
+        // simple scan
         'checks-conditions-for-sub-steps' => \App\Http\Middleware\ChecksConditionsForSubSteps::class,
 
         'track-visited-url' => \App\Http\Middleware\TrackVisitedUrl::class,

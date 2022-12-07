@@ -11,12 +11,12 @@
         ])
     @else
         <div class="w-full">
-            <livewire:cooperation.frontend.tool.simple-scan.form :step="$step" :subStep="$subStep"/>
+            <livewire:cooperation.frontend.tool.simple-scan.form :scan="$scan" :step="$step" :subStep="$subStep"/>
         </div>
 
         <div class="w-full flex flex-wrap items-center">
             <div class="w-1/4 flex flex-wrap justify-start"></div>
-            <livewire:cooperation.frontend.tool.simple-scan.buttons :step="$step" :subStepOrQuestionnaire="$subStep"/>
+            <livewire:cooperation.frontend.tool.simple-scan.buttons :scan="$scan" :step="$step" :subStepOrQuestionnaire="$subStep"/>
             <div class="w-1/4 flex flex-wrap justify-end">
                 <p>
                     {!! __('cooperation/frontend/tool.step-count', ['current' => '<span class="font-bold">' . $current .'</span>', 'total' => $total]) !!}

@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Frontend\Tool\QuickScan;
+namespace App\Http\Controllers\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Helpers\HoomdossierSession;
-use App\Jobs\RecalculateStepForUser;
+use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Media;
-use App\Models\Notification;
 use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
-use App\Http\Controllers\Controller;
 use App\Services\Models\NotificationService;
 use Illuminate\Http\Request;
 

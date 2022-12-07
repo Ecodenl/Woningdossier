@@ -1,16 +1,15 @@
 <?php
 
 use App\Http\Controllers\Cooperation;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
-use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
 use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
-use Laravel\Fortify\Http\Controllers\NewPasswordController;
+use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
+use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
 /** @noinspection PhpParamsInspection */
@@ -215,12 +214,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                                 ->name('index')
                                 ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
 
-                            Route::get('vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\QuickScan\QuestionnaireController::class, 'index'])
+                            Route::get('vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\SimpleScan\QuestionnaireController::class, 'index'])
                                 ->name('questionnaires.index');
 
                             Route::as('my-plan.')->prefix('woonplan')->group(function () {
-                                Route::get('', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'index'])->name('index');
-                                Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'media'])->name('media');
+                                Route::get('', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'index'])->name('index');
+                                Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'media'])->name('media');
                             });
                         });
 

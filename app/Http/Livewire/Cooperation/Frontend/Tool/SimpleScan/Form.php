@@ -6,7 +6,6 @@ use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
-use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\CompletedSubStep;
 use App\Models\Scan;
 use App\Models\Step;
@@ -17,6 +16,7 @@ use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 
 class Form extends Scannable
 {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Scopes\VisibleScope;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
@@ -56,7 +57,7 @@ class CooperationMeasureApplication extends Model
     protected $translatable = ['name', 'info'];
 
     protected $fillable = [
-        'name', 'info', 'costs', 'savings_money', 'extra', 'cooperation_id',
+        'name', 'info', 'costs', 'savings_money', 'extra', 'cooperation_id', 'is_extensive_measure', 'is_deletable',
     ];
 
     protected $casts = [
@@ -65,6 +66,14 @@ class CooperationMeasureApplication extends Model
         'is_extensive_measure' => 'boolean',
         'is_deletable' => 'boolean',
     ];
+
+    # Model Methods
+    public function getType(): string
+    {
+        return $this->is_extensive_measure
+            ? CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE
+            : CooperationMeasureApplicationHelper::SMALL_MEASURE;
+    }
 
     # Scopes
     public function scopeExtensiveMeasures(Builder $query): Builder

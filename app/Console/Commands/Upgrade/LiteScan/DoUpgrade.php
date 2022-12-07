@@ -40,6 +40,7 @@ class DoUpgrade extends Command
     public function handle()
     {
         $commands = [
+            // TODO: Set all Cooperation measures deletable, then add new extensive measures
             SeedCommand::class => [
                 ['--class' => 'ScansTableSeeder', '--force' => true],
                 ['--class' => 'StepsTableSeeder', '--force' => true],

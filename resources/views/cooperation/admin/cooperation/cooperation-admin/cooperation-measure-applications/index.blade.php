@@ -4,7 +4,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.index.title')
-            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create')}}"
+            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create', compact('type'))}}"
                class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
 
@@ -24,8 +24,7 @@
                             <tr>
                                 <td>{{$cooperationMeasureApplication->name}}</td>
                                 <td>
-                                    <i class="{{$cooperationMeasureApplication->extra['icon'] ?? 'icon-tools'}}"
-                                       style="width: 5rem; height: 5rem;"></i>
+                                    <i class="icon-xl {{$cooperationMeasureApplication->extra['icon'] ?? 'icon-tools'}}"></i>
                                 </td>
                                 <td>
                                     <a class="btn btn-success" style="display: table-cell;"
@@ -33,15 +32,17 @@
                                         @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.edit.label')
                                     </a>
 
-                                    <form action="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.destroy', compact('cooperationMeasureApplication'))}}"
-                                          method="post" class="pl-10" style="display: table-cell;">
-                                        @csrf
-                                        @method('DELETE')
+                                    @can('delete', $cooperationMeasureApplication)
+                                        <form action="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.destroy', compact('cooperationMeasureApplication'))}}"
+                                              method="post" class="pl-10" style="display: table-cell;">
+                                            @csrf
+                                            @method('DELETE')
 
-                                        <button class="destroy btn btn-danger" type="submit">
-                                            @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.destroy.label')
-                                        </button>
-                                    </form>
+                                            <button class="destroy btn btn-danger" type="submit">
+                                                @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.destroy.label')
+                                            </button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

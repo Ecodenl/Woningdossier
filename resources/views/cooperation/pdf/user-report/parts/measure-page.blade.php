@@ -42,6 +42,12 @@ $calculationsForStep = $calculations[$stepShort][$subStepShort] ?? [];
                 @include('cooperation.pdf.user-report.parts.measure-page.step-intro')
 
                 @include('cooperation.pdf.user-report.parts.measure-page.filled-in-data-new')
+
+                @if(isset($commentsByStep[$stepShort][$subStepShort]) && ! \App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort]))
+                    @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+                        'comments' => $commentsByStep[$stepShort][$subStepShort],
+                    ])
+                @endif
             </div>
         @endcomponent
     @break

@@ -35,18 +35,17 @@ class HighEfficiencyBoiler extends \App\Calculations\Calculator
 
         $measure = MeasureApplication::findByShort('high-efficiency-boiler-replace');
 
-        if ($this->energyHabit instanceof UserEnergyHabit) {
-            $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType,
-                $this->energyHabit);
-            $result['amount_gas'] = $this->energyHabit->amount_gas;
-            $result['amount_electricity'] = $this->energyHabit->amount_electricity;
-        }
+        $hrBoilerCalculator = HighEfficiencyBoilerCalculator::init($this->building, $this->inputSource, $this->answers);
+
+        $result['savings_gas'] = $hrBoilerCalculator->calculateGasSavings();
+        $result['amount_gas'] = $this->getAnswer('amount-gas');
+        $result['amount_electricity'] = $this->getAnswer('amount-electricity');
 
         $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
         $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
 
         $year = $this->getAnswer('boiler-placed-date');
-        $result['replace_year'] = HighEfficiencyBoilerCalculator::determineApplicationYear($measure, $year);
+        $result['replace_year'] = $hrBoilerCalculator->determineApplicationYear($measure, $year);
         $result['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'],
             false);
         $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'],

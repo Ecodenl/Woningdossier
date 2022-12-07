@@ -229,7 +229,7 @@ class ScanFlowService
         }
 
         // There are incomplete steps left, set the sub step
-        if ($nextStep instanceof Step) {
+        if (! $nextSubStep instanceof SubStep && $nextStep instanceof Step) {
             // retrieve all incomplete sub steps for the building
             $incompleteSubSteps = SubStepHelper::getIncompleteSubSteps($this->building, $nextStep,
                 $this->inputSource);

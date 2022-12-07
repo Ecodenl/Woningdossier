@@ -79,8 +79,7 @@
     @endphp
     @if(array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
         @php
-            // We don't use this, however to not break code we will set it.
-            $subStepShort = $stepShort;
+            $subStepShort = '-';
             $shortToUseAsMainSubject = $stepShort;
 
             $showPage = true;

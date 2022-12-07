@@ -44,6 +44,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use OwenIt\Auditing\Events\Audited;
 use OwenIt\Auditing\Events\Auditing;
+use Sentry\State\Scope;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -127,5 +128,8 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        \Sentry\configureScope(function (Scope $scope) {
+            $scope->setTag('APP_URL', config("app.url"));
+        });
     }
 }

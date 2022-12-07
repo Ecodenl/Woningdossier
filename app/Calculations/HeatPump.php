@@ -132,6 +132,7 @@ class HeatPump extends \App\Calculations\Calculator
         $electricalReheating = 0;
         if (optional($characteristics)->type === HeatPumpCharacteristic::TYPE_FULL) {
             $electricalReheating = $newNettoGasUsageHeating * KeyFigures::M3_GAS_TO_KWH;
+            $newNettoGasUsageHeating = 0;
         }
         Log::debug("E71: " . $electricalReheating . " (elektrisch bijverwarmen)");
 

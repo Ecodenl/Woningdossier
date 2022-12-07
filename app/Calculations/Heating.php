@@ -28,7 +28,9 @@ class Heating extends Calculator
             'new'     => $this->energyUsageForCooking('new-cook-type'),
         ];
 
-        Log::debug(__METHOD__." - cooking calculated: ".json_encode($cooking));
+        Log::debug(str_repeat('-', 80));
+        Log::debug(__METHOD__ . ' - CURRENT SITUATION');
+        Log::debug(str_repeat('-', 80));
 
         // calculate first as it might be a factor for heating later on.
         $wtwCurrent = $this->calculateTapWater(
@@ -41,6 +43,22 @@ class Heating extends Calculator
             $this->getAnswer('amount-gas') ?? 0,
             data_get($cooking, 'current')
         );
+
+        $heatingCurrent = $this->calculateHeating(
+            'heat-source',
+            'heat-source-warm-tap-water',
+            'boiler-type',
+            $amountGas = $this->getAnswer('amount-gas') ?? 0,
+            $cooking['current'],
+            $wtwCurrent,
+            'new-heat-pump-type',
+            'new-boiler-setting-comfort-heat'
+        );
+
+        Log::debug(str_repeat('-', 80));
+        Log::debug(__METHOD__ . ' - NEW SITUATION');
+        Log::debug(str_repeat('-', 80));
+
         $wtwNew     = $this->calculateTapWater(
             'new-heat-source',
             'new-heat-source-warm-tap-water',
@@ -57,18 +75,7 @@ class Heating extends Calculator
             'current' => $wtwCurrent,
             'new'     => $wtwNew,
         ];
-        Log::debug(__METHOD__." - wtw calculated: ".json_encode($wtw));
 
-        $heatingCurrent = $this->calculateHeating(
-            'heat-source',
-            'heat-source-warm-tap-water',
-            'boiler-type',
-            $amountGas = $this->getAnswer('amount-gas') ?? 0,
-            $cooking['current'],
-            $wtw['current'],
-            'new-heat-pump-type',
-            'new-boiler-setting-comfort-heat'
-        );
         $heatingNew     = $this->calculateHeating(
             'new-heat-source',
             'new-heat-source-warm-tap-water',
@@ -85,17 +92,16 @@ class Heating extends Calculator
             'new'     => $heatingNew,
         ];
 
-        Log::debug(__METHOD__." - heating calculated: ".json_encode($heating));
-
         // correct wtw heating in the case the heat-source is not hr-boiler or
         // district-heating: gas for heating is 0. wtw = amount gas - cooking
         // because cooking is fairly stable / always around 37, the wtw gas
         // usage should be the leftover of the amount gas - cooking.
+        // correction should only be done on the current situation.
         /** @var array $heatSources */
         foreach (
             [
                 'current' => 'heat-source',
-                'new'     => 'new-heat-source',
+                //'new'     => 'new-heat-source',
             ] as $situation => $heatSourceShort
         ) {
             $heatSources = $this->getAnswer($heatSourceShort) ?? [];
@@ -111,6 +117,10 @@ class Heating extends Calculator
             }
         }
 
+        Log::debug(str_repeat('-', 80));
+        Log::debug(__METHOD__ . ' - END RESULT');
+        Log::debug(str_repeat('-', 80));
+
         Log::debug(
             "End result: ".json_encode([
                 'heating'   => $heating,
@@ -118,6 +128,8 @@ class Heating extends Calculator
                 'cooking'   => $cooking,
             ])
         );
+
+        Log::debug(str_repeat('-', 80));
 
         return [
             'heating'   => $heating,
@@ -207,31 +219,28 @@ class Heating extends Calculator
                 ))) {
             Log::debug(__METHOD__.' - district heating or HR boiler');
             if ($case === 'current') {
-                Log::debug(__METHOD__.' - current situation');
                 $energyConsumption = $amountGas;
                 $energyConsumption -= data_get($cookingUsage, 'gas', 0);
                 $energyConsumption -= data_get($wtwUsage, 'gas.bruto', 0);
 
                 data_set($result, 'gas.bruto', $energyConsumption);
                 // netto = bruto * efficiency
-                // default = 89% for HR-107.
+                // default = 97% for HR-107.
                 $efficiency = $this->getBoilerKeyFigureEfficiency(
                     $boilerTypeShort
-                ) ?? 89;
-                Log::debug(
-                    'energyConsumption = '.$energyConsumption.' * '.$efficiency.' %'
+                ) ?? 97;
+                Log::debug(__METHOD__ . ' - energyConsumption = '.$energyConsumption.' * '.$efficiency->heating.' %'
                 );
-                $energyConsumption *= ($efficiency->wtw / 100);
+                $energyConsumption *= ($efficiency->heating / 100);
 
                 data_set($result, 'gas.netto', round($energyConsumption, 4));
             } else {
-                Log::debug(__METHOD__.' - new situation');
                 $energyConsumption = $amountGas;
                 // bruto = energy consumption / efficiency
-                // default = 89% for HR-107.
+                // default = 97% for HR-107.
                 $efficiency        = $this->getBoilerKeyFigureEfficiency(
                     $boilerTypeShort
-                ) ?? 89;
+                ) ?? 97;
                 $energyConsumption /= ($efficiency->heating / 100);
 
                 data_set($result, 'gas.bruto', $energyConsumption);
@@ -277,10 +286,10 @@ class Heating extends Calculator
                     Log::debug(__METHOD__.' - new situation');
                     $energyConsumption = $amountGas;
                     // bruto = energy consumption / efficiency
-                    // default = 89% for HR-107.
+                    // default = 97% for HR-107.
                     $efficiency        = $this->getBoilerKeyFigureEfficiency(
                         $boilerTypeShort
-                    ) ?? 89;
+                    ) ?? 97;
                     Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption / ($efficiency->heating / 100)");
                     $energyConsumption /= ($efficiency->heating / 100);
                     Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption");
@@ -458,11 +467,7 @@ class Heating extends Calculator
         );
 
         if (empty($primaryWtwHeatSourceShort) || $primaryWtwHeatSourceShort == 'none') {
-            Log::debug(
-                __METHOD__.' - No primary wtw heat source, returning'.json_encode(
-                    $result
-                )
-            );
+            Log::debug(__METHOD__.' - No primary wtw heat source, returning 0\'s');
 
             return $result;
         }
@@ -526,14 +531,13 @@ class Heating extends Calculator
             );
         }
 
-        Log::debug("primaryWtwHeatSourceShort: ".$primaryWtwHeatSourceShort);
         // 8.972 = Kengetallen::gasKwhPerM3();
         if (in_array(
             $primaryWtwHeatSourceShort,
             ['hr-boiler', 'kitchen-geyser', 'district-heating']
         )) {
             Log::debug(
-                __METHOD__.' - primary wtw hr-boiler/kitchen-geyser/district-heating'
+                __METHOD__.' - primary wtw: hr-boiler/kitchen-geyser/district-heating'
             );
             // Check the
             /** @var array $heatSources */
@@ -565,7 +569,7 @@ class Heating extends Calculator
                 $boilerTypeShort
             ) ?? 89;
             Log::debug(
-                'energyConsumption = '.$energyConsumption.' * '.$efficiency.' %'
+                'energyConsumption = '.$energyConsumption.' * '.$efficiency->wtw.' %'
             );
             $energyConsumption *= ($efficiency->wtw / 100);
 
@@ -668,8 +672,6 @@ class Heating extends Calculator
                 round($energyConsumption, 4)
             );
         }
-
-        Log::debug(__METHOD__.' - end result: '.json_encode($result));
 
         return $result;
     }

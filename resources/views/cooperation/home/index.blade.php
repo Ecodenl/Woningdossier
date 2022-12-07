@@ -13,7 +13,7 @@
 
 
                 <div class="flex justify-between space-x-2">
-                    @foreach($cooperation->scans as $scan)
+                    @foreach($scans as $scan)
                         <a class="btn btn-purple"
                            href="{{\App\Services\Scans\ScanFlowService::init($scan, $building, $inputSource)->resolveInitialUrl()}}">
                             {{$scan->name}} {{$scan->short}}

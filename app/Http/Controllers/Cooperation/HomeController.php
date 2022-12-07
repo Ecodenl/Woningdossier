@@ -28,6 +28,8 @@ class HomeController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        return view('cooperation.home.index', compact('building', 'inputSource'));
+        $scans = $cooperation->load(['scans' => fn($q) => $q->where('short', '!=', 'expert-scan')])->scans;
+
+        return view('cooperation.home.index', compact('building', 'inputSource', 'scans'));
     }
 }

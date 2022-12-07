@@ -71,7 +71,15 @@ return [
 
     'temporary_file_upload' => [
         'disk' => null,        // Example: 'local', 's3'              Default: 'default'
-        'rules' => ['max:' . env('MEDIA_MAX_SIZE', 16384)],       // Example: ['file', 'mimes:png,jpg']  Default: ['required', 'file', 'max:12288'] (12MB)
+        // Let me explain the 150 char length; Livewire adds a 30 char hash, 2 dashes, a "meta" string
+        // and finally base64 encodes the filename (including extension). base64 is always 4 chars for 1 to 3 chars.
+        // This means that encoding a string of 162 creates 216 characters, but one of 263 creates 220. We can have
+        // max 219 chars to not go over the max limit of fopen (255 chars), so due to the encode we can only have 162.
+        // However, Livewire also adds the extension on top of that. Since the extension is usually 4 chars (including
+        // dot), in most cases we'd be safe with 158 chars. However, some extensions are absurdly long, so for safety
+        // we keep it at 150.
+        'rules' => ['max:' . env('MEDIA_MAX_SIZE', 16384), 'max_filename_length:150'],
+        // Example: ['file', 'mimes:png,jpg']  Default: ['required', 'file', 'max:12288'] (12MB)
         'directory' => null,   // Example: 'tmp'                      Default  'livewire-tmp'
         'middleware' => null,  // Example: 'throttle:5,1'             Default: 'throttle:60,1'
         'preview_mimes' => [   // Supported file types for temporary pre-signed file URLs.

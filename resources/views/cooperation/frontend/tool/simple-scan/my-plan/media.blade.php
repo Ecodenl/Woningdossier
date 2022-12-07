@@ -1,5 +1,5 @@
 @extends('cooperation.frontend.layouts.tool')
 
 @section('content')
-    <livewire:cooperation.frontend.tool.quick-scan.my-plan.uploader :building="$building"/>
+    <livewire:cooperation.frontend.tool.simple-scan.my-plan.uploader :building="$building"/>
 @endsection

@@ -47,6 +47,7 @@ class DoUpgrade extends Command
                 ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
                 ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
             ],
+            GiveCooperationDefaultScans::class => [],
         ];
 
         foreach ($commands as $command => $variants) {

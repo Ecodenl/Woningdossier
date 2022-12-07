@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Scans\ScanFlowService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
@@ -392,17 +393,24 @@ class Building extends Model
     /**
      * Check if all quick scan steps have been completed
      *
+     * @deprecated
+     * @depends-annotations(use hasCompletedScan instead)
      * @return bool
      */
     public function hasCompletedQuickScan(InputSource $inputSource): bool
     {
-        $quickScanSteps = Step::quickScan()->get();
-        foreach ($quickScanSteps as $quickScanStep) {
-            if (!$this->hasCompleted($quickScanStep, $inputSource)) {
+        $scan = Scan::findByShort('quick-scan');
+        return $this->hasCompletedScan($scan, $inputSource);
+    }
+
+    public function hasCompletedScan(Scan $scan, InputSource $inputSource): bool
+    {
+        $steps = $scan->steps;
+        foreach ($steps as $step) {
+            if (!$this->hasCompleted($step, $inputSource)) {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -458,6 +466,7 @@ class Building extends Model
     {
         return $this->hasMany(CompletedSubStep::class);
     }
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -749,29 +758,34 @@ class Building extends Model
         return optional($this->getMostRecentBuildingStatus())->appointment_date;
     }
 
-    public function getFirstIncompleteStep(array $extraStepsToIgnore = [], InputSource $inputSource): ?Step
+    public function getFirstIncompleteStep(Scan $scan, InputSource $inputSource): ?Step
     {
-        $irrelevantSteps = $this->completedSteps()->forInputSource($inputSource)->pluck('step_id')->toArray();
-        $irrelevantSteps = array_merge($irrelevantSteps, $extraStepsToIgnore);
+        $completedStepIds = $scan
+            ->completedSteps()
+            ->forInputSource($inputSource)
+            ->forBuilding($this)
+            ->pluck('step_id');
 
-        return Step::quickScan()
-            ->whereNotIn('id', $irrelevantSteps)
+        return $scan
+            ->steps()
+            ->whereNotIn('id', $completedStepIds)
             ->orderBy('order')
             ->first();
     }
 
-    public function getFirstIncompleteSubStep(Step $step, array $extraSubStepsToIgnore = [], InputSource $inputSource): ?SubStep
+    public function getFirstIncompleteSubStep(Step $step, InputSource $inputSource): ?SubStep
     {
-        $irrelevantSubSteps = $this->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
-        $irrelevantSubSteps = array_merge($irrelevantSubSteps, $extraSubStepsToIgnore);
+        $completedSubStepIds = $this->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
 
-        $firstIncompleteSubStep = $step->subSteps()
-            ->whereNotIn('id', $irrelevantSubSteps)
+        $firstIncompleteSubStep = $step
+            ->subSteps()
+            ->whereNotIn('id', $completedSubStepIds)
             ->orderBy('order')
             ->first();
 
         if (!$firstIncompleteSubStep instanceof SubStep) {
-            $firstIncompleteSubStep = $step->subSteps()
+            $firstIncompleteSubStep = $step
+                ->subSteps()
                 ->orderBy('order')
                 ->first();
         }

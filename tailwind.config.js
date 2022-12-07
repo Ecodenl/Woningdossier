@@ -59,7 +59,11 @@ module.exports = {
             'col-span-6',
             'w-full',
             'w-1/2',
-            'static'
+            'static',
+            'text-blue-900',
+            'text-green',
+            'text-orange',
+            'text-red',
         ],
     },
     darkMode: false, // or 'media' or 'class'

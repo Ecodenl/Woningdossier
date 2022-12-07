@@ -7,6 +7,7 @@ use App\Helpers\MediaHelper;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Media;
+use App\Rules\MaxFilenameLength;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -72,6 +73,7 @@ class Uploader extends Component
                         'file',
                         'mimes:' . MediaHelper::getAllMimes(),
                         'max:' . MediaHelper::getMaxFileSize(),
+                        new MaxFilenameLength(),
                     ],
                 ]
             );

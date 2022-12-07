@@ -30,20 +30,21 @@ class EnsureQuickScanCompleted
 
 
         if ($building instanceof Building) {
+            $scan = $request->route('scan');
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-            if ($building->hasCompletedQuickScan($masterInputSource) || app()->isLocal()) {
+            if ($building->hasCompletedScan($scan, $masterInputSource) || app()->isLocal()) {
                 return $next($request);
             } else {
-                $firstIncompleteStep = $building->getFirstIncompleteStep([], $masterInputSource);
+                $firstIncompleteStep = $building->getFirstIncompleteStep($scan, $masterInputSource);
 
                 if ($firstIncompleteStep instanceof Step) {
-                    $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, [], $masterInputSource);
+                    $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, $masterInputSource);
 
                     if ($firstIncompleteSubStep instanceof SubStep) {
 
                         return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
                             // so this may need some rework to check from a scan standpoint.
-                            'scan' => $firstIncompleteStep->scan,
+                            'scan' => $scan,
                             'step' => $firstIncompleteStep,
                             'subStep' => $firstIncompleteSubStep,
                         ]);

@@ -18,7 +18,22 @@
     if($errors->any()) {
         foreach($errors->getBag('default')->getMessages() as $key => $error) {
             if(Str::startsWith($key, 'documents')) {
-                $this->addError('documents', __('validation.custom.uploader.wrong-files'));
+                $errorToReport = __('validation.custom.uploader.wrong-files');
+
+                if (is_array($error)) {
+                    $error = Arr::first($error);
+                }
+
+                // So we know the temporary upload char limit is 150; if the error is equal to the translation,
+                // we should add this error to inform the user.
+                if (preg_replace('/documents\.[\d]*/i', ':attribute', $error) === __('validation.custom-rules.max-filename-length', ['length' => 150])) {
+                    $errorToReport .= ' ' . __('validation.custom-rules.max-filename-length', [
+                        'attribute' => __('validation.attributes')['documents.*'],
+                        'length' => 150,
+                    ]);
+                }
+
+                $this->addError('documents', $errorToReport);
                 break;
             }
         }

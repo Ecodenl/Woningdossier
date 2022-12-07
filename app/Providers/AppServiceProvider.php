@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Jobs\CloneOpposingInputSource;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\PersonalAccessToken;
+use App\Rules\MaxFilenameLength;
 use App\Services\Models\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,8 +21,6 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\Sanctum;
 
-//use Laravel\Dusk\DuskServiceProvider;
-
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -31,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // After L7 it is no longer in the docs, albeit still present
+        // https://laravel.com/docs/7.x/validation#using-extensions
+
         Validator::extend('needs_to_be_lower_or_same_as', function ($attribute, $value, $parameters, $validator) {
             $formData = Arr::dot($validator->getData());
             $compareFieldValue = $formData[$parameters[0]];
@@ -48,6 +50,14 @@ class AppServiceProvider extends ServiceProvider
             return __('validation.custom')[$attribute][$rule] ?? __('validation.custom.needs_to_be_lower_or_same_as', [
                     'attribute' => __('validation.attributes')[$compareFieldName],
                 ]);
+        });
+
+        Validator::extend('max_filename_length', function ($attribute, $value, $parameters, $validator) {
+            return (new MaxFilenameLength(...$parameters))->passes($attribute, $value);
+        });
+
+        Validator::replacer('max_filename_length', function ($message, $attribute, $rule, $parameters) {
+            return (new MaxFilenameLength(...$parameters))->message();
         });
 
         Builder::macro('whereLike', function (string $attribute, string $searchTerm) {

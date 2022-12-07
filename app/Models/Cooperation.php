@@ -68,6 +68,11 @@ class Cooperation extends Model
         return $this->hasMany(User::class);
     }
 
+    public function scans()
+    {
+        return $this->belongsToMany(Scan::class)->using(CooperationScan::class);
+    }
+
 
     public function cooperationMeasureApplications(): HasMany
     {

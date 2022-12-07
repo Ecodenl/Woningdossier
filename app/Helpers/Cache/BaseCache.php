@@ -36,7 +36,6 @@ class BaseCache
             config('hoomdossier.cache.times.default'),
             function () use ($query) {
                 $result = $query->first();
-                \Log::debug('CACHE??');
                 return is_null($result) ? false : $result;
             }
         );

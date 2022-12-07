@@ -8,6 +8,7 @@ use App\Helpers\QuickScanHelper;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\SubStep;
+use App\Services\Scans\ScanFlowService;
 use Closure;
 
 class ChecksConditionsForSubSteps
@@ -23,14 +24,21 @@ class ChecksConditionsForSubSteps
     {
         $building = HoomdossierSession::getBuilding(true);
 
+        $scan = $request->route('scan');
         /** @var SubStep $subStep */
         $subStep = $request->route('subStep');
+        $step = $request->route('step');
 
         $returnToNextStep = $request->user()->cannot('show', [$subStep, $building]);
 
         if ($returnToNextStep) {
-            // this indeed only covers the next step
-            return redirect()->to(QuickScanHelper::getNextStepUrl($request->route('step'), $subStep));
+            // the current sub step cant be showed, resolve the next url.
+            $url = ScanFlowService::init($scan, $building, HoomdossierSession::getInputSource(true))
+                ->forStep($step)
+                ->forSubStep($subStep)
+                ->resolveNextUrl();
+            return redirect()->to($url);
+
         }
 
         // We can show this step according to the sub step conditionals, but have we answered the example building yet?
@@ -39,13 +47,14 @@ class ChecksConditionsForSubSteps
 
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             foreach (ExampleBuildingHelper::RELEVANT_SUB_STEPS as $subStepSlug) {
-                $subStep = SubStep::where('slug->nl', $subStepSlug)->first();
+                $subStep = $step->subSteps()->where('slug->nl', $subStepSlug)->first();
                 // If valid sub step and showable (could be unanswerable)
                 if ($subStep instanceof SubStep && $request->user()->can('show', [$subStep, $building])) {
                     if (! $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStep->id)->first() instanceof CompletedSubStep) {
                         // Not answered, redirect back
-                        return redirect()->route('cooperation.frontend.tool.quick-scan.index', [
-                            'step' => $subStep->step,
+                        return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
+                            'scan' => $request->route('scan'),
+                            'step' => $step,
                             'subStep' => $subStep,
                         ]);
                     }

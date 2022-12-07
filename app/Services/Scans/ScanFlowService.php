@@ -270,7 +270,7 @@ class ScanFlowService
                 ]);
             }
         } else {
-            $nextUrl = route('cooperation.frontend.tool.simple-scan.my-plan.index', ['cooperation' => $cooperation]);
+            $nextUrl = route('cooperation.frontend.tool.simple-scan.my-plan.index', ['cooperation' => $cooperation, 'scan' => $this->scan]);
         }
 
         Log::debug($nextUrl);
@@ -286,7 +286,6 @@ class ScanFlowService
 
         // If the quick scan is complete, we just redirect to my plan
         if ($building->hasCompletedQuickScan($masterInputSource)) {
-            $scan = Scan::findByShort('quick-scan');
             $url = route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
         } else {
             $mostRecentCompletedSubStep = $scan->subSteps()

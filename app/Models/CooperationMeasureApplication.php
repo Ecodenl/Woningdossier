@@ -72,9 +72,9 @@ class CooperationMeasureApplication extends Model
         return $query->where('is_extensive_measure', true);
     }
 
-    public function scopeSimpleMeasures(Builder $query): Builder
+    public function scopeSmallMeasures(Builder $query): Builder
     {
-        return $query->where('is_extensive_measure', true);
+        return $query->where('is_extensive_measure', false);
     }
 
     # Relations

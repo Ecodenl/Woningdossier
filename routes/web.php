@@ -409,8 +409,17 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         });
 
                         Route::resource('cooperation-measure-applications', Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController::class)
-                            ->except(['show'])
+                            ->except(['index', 'show'])
                             ->parameter('cooperation-measure-applications', 'cooperationMeasureApplication');
+                        Route::prefix('cooperation-measure-applications')->as('cooperation-measure-applications.')->group(function () {
+                            // TODO: Deprecate to whereIn in L9
+                            Route::get('{type}', [Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController::class, 'index'])
+                                ->name('index')
+                                ->where(collect(['type'])
+                                    ->mapWithKeys(fn($parameter) => [$parameter => implode('|', \App\Helpers\Models\CooperationMeasureApplicationHelper::getMeasureTypes())])
+                                    ->all()
+                                );
+                        });
                     });
                 });
 

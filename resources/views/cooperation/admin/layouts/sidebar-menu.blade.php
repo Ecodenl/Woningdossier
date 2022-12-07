@@ -51,9 +51,14 @@
                                 @lang('woningdossier.cooperation.admin.super-admin.side-nav.example-buildings')
                             </a>
                         </li>
-                        <li class="list-group-item @if(\Illuminate\Support\Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications')) active @endif">
-                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index')}}">
-                                @lang('cooperation/admin/shared.sidebar.cooperation-measure-applications')
+                        <li class="list-group-item @if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications') && optional(Route::current())->parameter('type') === \App\Helpers\Models\CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE) active @endif">
+                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => \App\Helpers\Models\CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE])}}">
+                                @lang('cooperation/admin/shared.sidebar.cooperation-measure-applications.extensive')
+                            </a>
+                        </li>
+                        <li class="list-group-item @if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications') && optional(Route::current())->parameter('type') === \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE) active @endif">
+                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE])}}">
+                                @lang('cooperation/admin/shared.sidebar.cooperation-measure-applications.small')
                             </a>
                         </li>
                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.settings.index'])) active @endif">

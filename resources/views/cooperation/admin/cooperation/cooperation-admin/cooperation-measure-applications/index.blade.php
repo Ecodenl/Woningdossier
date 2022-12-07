@@ -24,7 +24,8 @@
                             <tr>
                                 <td>{{$cooperationMeasureApplication->name}}</td>
                                 <td>
-                                    <i class="icon-lg {{$cooperationMeasureApplication->extra['icon'] ?? 'icon-tools'}}"></i>
+                                    <i class="{{$cooperationMeasureApplication->extra['icon'] ?? 'icon-tools'}}"
+                                       style="width: 5rem; height: 5rem;"></i>
                                 </td>
                                 <td>
                                     <a class="btn btn-success" style="display: table-cell;"

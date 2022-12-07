@@ -25,8 +25,9 @@ abstract class Calculator
     {
         $this->building = $building;
         $this->inputSource = $inputSource;
-        $this->answers = $answers;
+        $this->answers = $answers instanceof Collection ? $answers : collect();
 
+        // TODO: We probably don't need this anymore
         $this->setEnergyHabit();
     }
 

@@ -5,19 +5,23 @@
         <table class="full-width">
             <tbody>
                 @if(is_array($comment))
-                    @foreach($comment as $short => $comment)
-                        @if(!empty($comment))
+                    @foreach($comment as $short => $answer)
+                        @if(! empty($answer))
                             <tr class="h-20">
                                 <td class="w-100">{{$inputSourceName}} (@lang("pdf/user-report.measure-pages.comments.short-translations.{$short}"))</td>
-                                <td>{!!  nl2br($comment, '<br>')!!}</td>
+                            </tr>
+                            <tr>
+                                <td style="word-wrap: break-word !important; white-space: pre-line;">{{ trim($answer) }}</td>
                             </tr>
                         @endif
                     @endforeach
                 @else
-                <tr class="h-20">
-                    <td class="w-100">{{$inputSourceName}}</td>
-                    <td style="word-wrap: break-word !important;">{!!  nl2br($comment, '<br>')!!}</td>
-                </tr>
+                    <tr class="h-20">
+                        <td class="w-100">{{$inputSourceName}}</td>
+                    </tr>
+                    <tr>
+                        <td style="word-wrap: break-word !important; white-space: pre-line;">{{ trim($comment) }}</td>
+                    </tr>
                 @endif
             </tbody>
         </table>

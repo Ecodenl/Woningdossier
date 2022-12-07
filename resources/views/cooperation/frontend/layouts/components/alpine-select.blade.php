@@ -12,7 +12,7 @@
         @if(! empty(($icon ?? null)))
             <i class="select-icon {{$icon}}"></i>
         @endif
-        <input class="form-input @if(! empty(($append ?? null))) with-append @endif" readonly x-ref="select-input"
+        <input wire:loading.attr="disabled" class="form-input @if(! empty(($append ?? null))) with-append @endif" readonly x-ref="select-input"
                x-on:click="toggle()">
         @if(! empty(($append ?? null)))
             <div class="input-group-append">

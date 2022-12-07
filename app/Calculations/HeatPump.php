@@ -103,7 +103,6 @@ class HeatPump extends \App\Calculations\Calculator
         Log::debug("=== Heating calculate ===");
         $energyUsage = Heating::calculate($this->building, $this->inputSource, $this->answers);
         Log::debug("=== Heating calculate done ===");
-        dump($energyUsage);
 
         // D8
         $currentNettoGasUsageHeating = data_get($energyUsage, 'heating.current.gas.netto', 0);

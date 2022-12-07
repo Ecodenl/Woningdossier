@@ -35,18 +35,8 @@ class ScanController extends Controller
             $step = Step::expert()->first();
             return redirect()->route('cooperation.frontend.tool.expert-scan.index', compact('scan', 'step'));
         }
-        Log::debug("Quick lite scan redirect, should this be happening ?");
-        // not sure if relevant anymore
-        if ($scan->short === 'quick-scan') {
-            $subStep = SubStep::ordered()->first();
-            $step = $subStep->step;
-            return redirect()->route('cooperation.frontend.tool.scan.index', compact('scan', 'step', 'subStep'));
-        }
+        Log::debug("Simple scan redirect, should this be happening ?");
 
-        if ($scan->short === 'lite-scan') {
-            // check if quick-scan is completed before proceeding
-            $step = Step::expert()->first();
-            return redirect()->route('cooperation.frontend.tool.scan.index', compact('scan', 'step'));
-        }
+        return redirect()->route('cooperation.home');
     }
 }

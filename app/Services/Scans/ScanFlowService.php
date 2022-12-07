@@ -17,6 +17,7 @@ use App\Models\ToolQuestion;
 use App\Services\DiscordNotifier;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\Log;
 
 class ScanFlowService
@@ -178,6 +179,7 @@ class ScanFlowService
         }
     }
 
+    /** Resolve the next url based on the current step and sub step */
     public function resolveNextUrl(): string
     {
         $nextStep = $this->step;
@@ -185,8 +187,10 @@ class ScanFlowService
         $nextQuestionnaire = null;
 
         if ($this->subStep instanceof SubStep) {
-            $nextSubStep = $this->step->subSteps()->where('order', '>',
-                $this->subStep->order)->orderBy('order')->first();
+            $nextSubStep = $this->step->subSteps()
+                ->where('order', '>', $this->subStep->order)
+                ->orderBy('order')
+                ->first();
             // we will check if the current sub step is the last one, that way we know we have to go to the next one.
             $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
 
@@ -225,7 +229,7 @@ class ScanFlowService
         if (! $nextStep instanceof Step) {
             Log::debug("No next step, fetching first in complete step..");
             // No next step set, let's see if there are any steps left incomplete
-            $nextStep = $this->building->getFirstIncompleteStep([], $this->inputSource);
+            $nextStep = $this->building->getFirstIncompleteStep($this->scan, $this->inputSource);
         }
 
         // There are incomplete steps left, set the sub step
@@ -266,11 +270,70 @@ class ScanFlowService
                 ]);
             }
         } else {
-            $nextUrl = route('cooperation.frontend.tool.simple-scan.my-plan.index', ['cooperation' => $cooperation]);
+            $nextUrl = route('cooperation.frontend.tool.simple-scan.my-plan.index', ['cooperation' => $cooperation, 'scan' => $this->scan]);
         }
 
         Log::debug($nextUrl);
         return $nextUrl;
+    }
+
+    /** Resolve the first url, based on the user his current progression */
+    public function resolveInitialUrl(): string
+    {
+        $building = $this->building;
+        $masterInputSource = $this->inputSource;
+        $scan = $this->scan;
+
+        // If the quick scan is complete, we just redirect to my plan
+        if ($building->hasCompletedScan($scan, $masterInputSource)) {
+            $url = route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
+        } else {
+            $mostRecentCompletedSubStep = $scan->subSteps()
+                ->join('completed_sub_steps', function (JoinClause $join) use ($building, $masterInputSource) {
+                    $join
+                        ->on('sub_steps.id', '=', 'completed_sub_steps.sub_step_id')
+                        ->where('completed_sub_steps.input_source_id', $masterInputSource->id)
+                        ->where('building_id', $building->id);
+
+                })
+                ->orderByDesc('completed_sub_steps.created_at')
+                ->first();
+
+            // get all the completed steps
+            $mostRecentCompletedStep = optional(
+                $scan
+                    ->completedSteps()
+                    ->forInputSource($masterInputSource)
+                    ->forBuilding($building)
+                    ->orderByDesc('created_at')
+                    ->first()
+            )->step;
+
+            // it could be that there is no completed step yet, in that case we just pick the first one.
+            if (! $mostRecentCompletedStep instanceof Step) {
+                $mostRecentCompletedStep = Step::quickScan()
+                    ->orderBy('order')
+                    ->first();
+            }
+
+            if ($mostRecentCompletedSubStep instanceof SubStep) {
+                $url = ScanFlowService::init($scan, $building, $masterInputSource)
+                    ->forStep($mostRecentCompletedStep)
+                    ->forSubStep($mostRecentCompletedSubStep)
+                    ->resolveNextUrl();
+            }
+
+            // it could also be that there is no completed sub step, this will mean it's the user his first
+            // time using the tool (yay)
+            if (! $mostRecentCompletedSubStep instanceof SubStep) {
+                $mostRecentCompletedSubStep = $mostRecentCompletedStep->subSteps()->orderBy('order')->first();
+
+                $url = route('cooperation.frontend.tool.simple-scan.index', [
+                    'scan' => $scan, 'step' => $mostRecentCompletedStep, 'subStep' => $mostRecentCompletedSubStep
+                ]);
+            }
+        }
+        return $url;
     }
 
     private function hasAnsweredSubStep(SubStep $subStep, ConditionEvaluator $evaluator): bool

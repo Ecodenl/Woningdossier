@@ -229,7 +229,7 @@ class ScanFlowService
         if (! $nextStep instanceof Step) {
             Log::debug("No next step, fetching first in complete step..");
             // No next step set, let's see if there are any steps left incomplete
-            $nextStep = $this->building->getFirstIncompleteStep([], $this->inputSource);
+            $nextStep = $this->building->getFirstIncompleteStep($this->scan, $this->inputSource);
         }
 
         // There are incomplete steps left, set the sub step
@@ -285,7 +285,7 @@ class ScanFlowService
         $scan = $this->scan;
 
         // If the quick scan is complete, we just redirect to my plan
-        if ($building->hasCompletedQuickScan($masterInputSource)) {
+        if ($building->hasCompletedScan($scan, $masterInputSource)) {
             $url = route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
         } else {
             $mostRecentCompletedSubStep = $scan->subSteps()

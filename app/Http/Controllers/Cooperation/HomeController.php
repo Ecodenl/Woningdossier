@@ -3,16 +3,8 @@
 namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\QuickScanHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
-use App\Models\InputSource;
-use App\Models\Scan;
-use App\Models\Step;
-use App\Models\SubStep;
-use App\Services\Scans\ScanFlowService;
-use Illuminate\Database\Query\JoinClause;
-use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {

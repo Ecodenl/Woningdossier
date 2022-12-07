@@ -758,29 +758,34 @@ class Building extends Model
         return optional($this->getMostRecentBuildingStatus())->appointment_date;
     }
 
-    public function getFirstIncompleteStep(array $extraStepsToIgnore = [], InputSource $inputSource): ?Step
+    public function getFirstIncompleteStep(Scan $scan, InputSource $inputSource): ?Step
     {
-        $irrelevantSteps = $this->completedSteps()->forInputSource($inputSource)->pluck('step_id')->toArray();
-        $irrelevantSteps = array_merge($irrelevantSteps, $extraStepsToIgnore);
+        $completedStepIds = $scan
+            ->completedSteps()
+            ->forInputSource($inputSource)
+            ->forBuilding($this)
+            ->pluck('step_id');
 
-        return Step::quickScan()
-            ->whereNotIn('id', $irrelevantSteps)
+        return $scan
+            ->steps()
+            ->whereNotIn('id', $completedStepIds)
             ->orderBy('order')
             ->first();
     }
 
-    public function getFirstIncompleteSubStep(Step $step, array $extraSubStepsToIgnore = [], InputSource $inputSource): ?SubStep
+    public function getFirstIncompleteSubStep(Step $step, InputSource $inputSource): ?SubStep
     {
-        $irrelevantSubSteps = $this->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
-        $irrelevantSubSteps = array_merge($irrelevantSubSteps, $extraSubStepsToIgnore);
+        $completedSubStepIds = $this->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
 
-        $firstIncompleteSubStep = $step->subSteps()
-            ->whereNotIn('id', $irrelevantSubSteps)
+        $firstIncompleteSubStep = $step
+            ->subSteps()
+            ->whereNotIn('id', $completedSubStepIds)
             ->orderBy('order')
             ->first();
 
         if (!$firstIncompleteSubStep instanceof SubStep) {
-            $firstIncompleteSubStep = $step->subSteps()
+            $firstIncompleteSubStep = $step
+                ->subSteps()
                 ->orderBy('order')
                 ->first();
         }

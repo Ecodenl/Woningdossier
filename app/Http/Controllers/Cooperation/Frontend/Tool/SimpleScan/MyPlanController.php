@@ -26,14 +26,15 @@ class MyPlanController extends Controller
 
         // Apparently the plan should be visible for observing users
         if (! HoomdossierSession::isUserObserving()) {
-            $firstIncompleteStep = $building->getFirstIncompleteStep([], $masterInputSource);
+            $firstIncompleteStep = $building->getFirstIncompleteStep($scan, $masterInputSource);
 
             // There are incomplete steps left, set the sub step
             if ($firstIncompleteStep instanceof Step) {
-                $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, [], $masterInputSource);
+                $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, $masterInputSource);
 
                 if ($firstIncompleteSubStep instanceof SubStep) {
                     // TODO check if this is correct because of the scan car.
+
                     return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
                         'scan' => $scan,
                         'step' => $firstIncompleteStep,

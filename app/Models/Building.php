@@ -393,6 +393,8 @@ class Building extends Model
     /**
      * Check if all quick scan steps have been completed
      *
+     * @deprecated
+     * @depends-annotations(use hasCompletedScan instead)
      * @return bool
      */
     public function hasCompletedQuickScan(InputSource $inputSource): bool

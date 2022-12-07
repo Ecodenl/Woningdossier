@@ -23,8 +23,7 @@ class SubSteppable extends Scannable
 
     public $intercontinentalAnswers = [];
 
-    public $loading = false;
-
+    public bool $loading = false;
     public bool $componentReady = false;
 
     protected $listeners = [
@@ -70,11 +69,11 @@ class SubSteppable extends Scannable
 
     public function render()
     {
-        if ($this->loading) {
-            $this->dispatchBrowserEvent('input-updated');
-        }
         if ($this->componentReady) {
             $this->rehydrateToolQuestions();
+        }
+        if ($this->loading) {
+            $this->dispatchBrowserEvent('input-updated');
         }
         return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
     }

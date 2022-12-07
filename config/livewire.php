@@ -78,7 +78,7 @@ return [
         // However, Livewire also adds the extension on top of that. Since the extension is usually 4 chars (including
         // dot), in most cases we'd be safe with 158 chars. However, some extensions are absurdly long, so for safety
         // we keep it at 150.
-        'rules' => ['max:' . env('MEDIA_MAX_SIZE', 16384), new \App\Rules\MaxFilenameLength(150)],
+        'rules' => ['max:' . env('MEDIA_MAX_SIZE', 16384), 'max_filename_length:150'],
         // Example: ['file', 'mimes:png,jpg']  Default: ['required', 'file', 'max:12288'] (12MB)
         'directory' => null,   // Example: 'tmp'                      Default  'livewire-tmp'
         'middleware' => null,  // Example: 'throttle:5,1'             Default: 'throttle:60,1'

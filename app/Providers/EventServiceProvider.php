@@ -129,7 +129,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         \Sentry\configureScope(function (Scope $scope) {
-            $scope->setTag('APP_URL', env("APP_URL"));
+            $scope->setTag('APP_URL', config("app.url"));
         });
     }
 }

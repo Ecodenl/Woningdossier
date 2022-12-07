@@ -55,12 +55,6 @@ class WoningdossierServiceProvider extends ServiceProvider
         CompletedSubStep::observe(CompletedSubStepObserver::class);
         ToolQuestionAnswer::observe(ToolQuestionAnswerObserver::class);
 
-
-        View::creator('cooperation.tool.*', ToolComposer::class);
-        View::creator('cooperation.frontend.tool.expert-scan.index', ToolComposer::class);
-
-        View::creator('*', CooperationComposer::class);
-        View::creator('cooperation.admin.*', AdminComposer::class);
         //View::creator('cooperation.my-account.*', MyAccountComposer::class);
 
         SessionGuard::macro('account', function () {
@@ -82,9 +76,6 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(ToolComposer::class);
-        $this->app->singleton(CooperationComposer::class);
-
         $this->app->bind('Cooperation', function () {
             $cooperation = null;
             if (Session::has('cooperation')) {

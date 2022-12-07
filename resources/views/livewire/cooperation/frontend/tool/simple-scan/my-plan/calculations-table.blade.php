@@ -1,4 +1,4 @@
-<div class="flex w-1/4 justify-center" x-data="modal()">
+<div class="flex w-1/3 justify-center" x-data="modal()">
     <button class="btn btn-outline-purple" x-on:click="toggle()">
         @lang('cooperation/frontend/tool.my-plan.calculations.title')
     </button>

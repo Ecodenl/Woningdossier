@@ -137,14 +137,4 @@ class RecalculateForUser extends Command
 
         $this->output->newLine();
     }
-
-    private function isFirstTimeToolIsFilled(Building $building)
-    {
-        return true;
-
-//        $inputSource      = InputSource::findByShort(InputSource::MASTER_SHORT);
-//        $cookTypeQuestion = ToolQuestion::findByShort('cook-type');
-//
-//        return is_null($building->getAnswer($inputSource, $cookTypeQuestion));
-    }
 }

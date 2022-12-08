@@ -16,7 +16,7 @@
         }
 @endphp
 
-<div class="w-full @if($loop->iteration > 1) pt-10 @endif">
+<div class="w-full @if($loop->iteration > 1) pt-10 @endif" wire:key="question-{{$toolQuestion->short}}">
     @component('cooperation.frontend.layouts.components.form-group', [
         'class' => 'form-group-heading',
         // 'defaultInputSource' => 'resident',

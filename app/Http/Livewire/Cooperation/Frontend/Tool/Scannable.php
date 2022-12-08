@@ -141,6 +141,7 @@ abstract class Scannable extends Component
             ->building($this->building)
             ->inputSource($this->masterInputSource);
 
+        \DB::enableQueryLog();
         // First fetch all conditions, so we can retrieve any required related answers in one go
         $conditionsForAllSubSteppables = [];
         foreach (array_filter($this->subStep->subSteppables->pluck('conditions')->all()) as $condition) {

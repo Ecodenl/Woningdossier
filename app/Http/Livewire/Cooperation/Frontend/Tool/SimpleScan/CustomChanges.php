@@ -47,9 +47,7 @@ class CustomChanges extends Component
 
     public function mount()
     {
-        $this->type = $this->scan->short === 'quick-scan'
-            ? CooperationMeasureApplicationHelper::SMALL_MEASURE
-            : CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
+        $this->type = CooperationMeasureApplicationHelper::getTypeForScan($this->scan);
 
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);

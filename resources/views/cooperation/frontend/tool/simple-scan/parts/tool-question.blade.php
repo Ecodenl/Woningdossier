@@ -21,7 +21,7 @@
         'class' => 'form-group-heading',
         // 'defaultInputSource' => 'resident',
         // so we give the option to replace something in the question title
-        'label' => __($toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"), ['name' => $humanReadableAnswer]),
+        'label' => __($toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"), ['name' => $humanReadableAnswer]) .' ' .$toolQuestion->short,
         'inputName' => "filledInAnswers.{$toolQuestion->short}",
         'withInputSource' => ! $disabled,
     ])

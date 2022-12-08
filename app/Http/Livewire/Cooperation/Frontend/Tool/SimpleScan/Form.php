@@ -20,7 +20,7 @@ use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 
 class Form extends Scannable
 {
-    public $scan;
+    public Scan $scan;
     public Step $step;
     public SubStep $subStep;
 

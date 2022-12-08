@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder|CooperationMeasureApplication newQuery()
  * @method static \Illuminate\Database\Query\Builder|CooperationMeasureApplication onlyTrashed()
  * @method static Builder|CooperationMeasureApplication query()
- * @method static Builder|CooperationMeasureApplication simpleMeasures()
+ * @method static Builder|CooperationMeasureApplication smallMeasures()
  * @method static Builder|CooperationMeasureApplication whereCooperationId($value)
  * @method static Builder|CooperationMeasureApplication whereCosts($value)
  * @method static Builder|CooperationMeasureApplication whereCreatedAt($value)

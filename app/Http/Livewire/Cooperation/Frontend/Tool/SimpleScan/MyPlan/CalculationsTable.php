@@ -8,6 +8,7 @@ use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Services\BuildingService;
 use App\Services\ConditionService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
@@ -18,7 +19,7 @@ class CalculationsTable extends Component
 
     public $toolQuestions;
     public $answers;
-    public $building;
+    public Building $building;
     public $masterInputSource;
 
     private $toolQuestionShorts = [
@@ -55,7 +56,7 @@ class CalculationsTable extends Component
 
     protected function setAnswers()
     {
-        $answers = $this->building->getSourcedAnswers($this->toolQuestions)->toArray();
+        $answers = BuildingService::init($this->building)->getSourcedAnswers($this->toolQuestions)->toArray();
 
         foreach ($this->toolQuestions as $toolQuestion) {
             if (array_key_exists($toolQuestion->id, $answers)) {

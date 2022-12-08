@@ -72,6 +72,15 @@ return [
         'create-report' => 'Maak rapportage',
         'loading' => 'Woonplan wordt berekend...',
 
+        'calculations' => [
+            'title' => 'Uitleg berekeningen',
+            'table' => [
+                'question' => 'Vraag',
+                'value' => 'Waarde',
+                'source' => 'Oorsprong',
+            ],
+        ],
+
         'uploader' => [
             'add' => 'Bestanden toevoegen',
             'view' => 'Bestanden bekijken',

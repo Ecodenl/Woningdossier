@@ -21,7 +21,7 @@ use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
-use Artisan;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;

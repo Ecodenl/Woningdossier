@@ -21,6 +21,7 @@ use App\Observers\BuildingFeatureObserver;
 use App\Observers\BuildingElementObserver;
 use App\Observers\BuildingObserver;
 use App\Observers\CompletedSubStepObserver;
+use App\Observers\CooperationObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
 use App\Observers\ToolQuestionAnswerObserver;
@@ -43,6 +44,7 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Cooperation::observe(CooperationObserver::class);
         PrivateMessage::observe(PrivateMessageObserver::class);
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
         PrivateMessageView::observe(PrivateMessageViewObserver::class);

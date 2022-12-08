@@ -20,9 +20,9 @@ use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 
 class Form extends Scannable
 {
-    public $scan;
-    public Step $step;
-    public SubStep $subStep;
+    public  $scan;
+    public  $step;
+    public $subStep;
 
     public function mount(Scan $scan, Step $step, SubStep $subStep)
     {
@@ -37,7 +37,7 @@ class Form extends Scannable
                     ->with(['subSteppable', 'toolQuestionType']);
             },
             'toolQuestions' => function ($query) {
-                $query->orderBy('order');
+                $query->orderBy('order')->with('forSpecificInputSource');
             },
             'subStepTemplate',
         ]);

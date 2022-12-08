@@ -98,6 +98,7 @@ class ScanFlowService
             ->whereNotIn('sub_step_id', $subStepsRelated->pluck('id')->toArray())
             ->get();
 
+
         $evaluator = ConditionEvaluator::init()
             ->building($building)
             ->inputSource($masterInputSource);

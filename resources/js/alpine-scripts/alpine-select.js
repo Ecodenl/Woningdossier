@@ -31,9 +31,6 @@ export default (initiallyOpen = false) => ({
                 let observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         context.constructSelect(false);
-                        if (! context.livewire) {
-                            window.triggerEvent(context.select, 'change');
-                        }
                     });
                 });
 

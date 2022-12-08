@@ -58,7 +58,6 @@ class Form extends Scannable
     public function render()
     {
         $this->rehydrateToolQuestions();
-        Log::debug(\DB::getQueryLog());
         return view('livewire.cooperation.frontend.tool.simple-scan.form');
     }
 

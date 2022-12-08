@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationFormRequest;
-use App\Jobs\MoveCooperationMeasureApplicationToCustomMeasureApplications;
+use App\Jobs\HandleCooperationMeasureApplicationDeletion;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
 
@@ -68,8 +68,7 @@ class CooperationMeasureApplicationController extends Controller
         // first we soft delete it, this makes it! impossible for users to add it.
         $cooperationMeasureApplication->delete();
 
-        // TODO: Check how we should handle extensive measures
-        MoveCooperationMeasureApplicationToCustomMeasureApplications::dispatch($cooperationMeasureApplication);
+        HandleCooperationMeasureApplicationDeletion::dispatch($cooperationMeasureApplication);
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => $cooperationMeasureApplication->getType()])
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.destroy.success'));

@@ -171,19 +171,35 @@ class Step extends Model
         return $this->questionnaires()->active()->count() > 0;
     }
 
-    public function scopeOrdered(Builder $query)
+    public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('order', 'asc');
     }
 
-    public function scopeQuickScan(Builder $query)
+    /** @deprecated Use scopeForScan instead */
+    public function scopeQuickScan(Builder $query): Builder
     {
-        return $query->whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
+        $quickScan = Scan::findByShort(Scan::QUICK);
+        return $this->scopeForScan($query, $quickScan);
     }
 
-    public function scopeExpert(Builder $query)
+    /** @deprecated Use scopeForScan instead */
+    public function scopeExpert(Builder $query): Builder
     {
-        return $query->whereNotIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
+        $expertScan = Scan::findByShort(Scan::EXPERT);
+        return $this->scopeForScan($query, $expertScan);
+    }
+
+    public function scopeForScan(Builder $query, Scan $scan): Builder
+    {
+        return $query->where('scan_id', $scan->id);
+    }
+
+    public function scopeRecalculable(Builder $query): Builder
+    {
+        return $query->where(
+            fn (Builder $q) => $q->expert()->orWhere('short', 'small-measures')
+        );
     }
 
     public function scan()

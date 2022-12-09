@@ -125,7 +125,10 @@
 
             @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
                 <div>
-                    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan')) }}"
+                    @if(!isset($scan) || !$scan instanceof \App\Models\Scan)
+                        @php $scan = $cooperation->scans()->where('short', '!=', 'expert-scan')->first(); @endphp
+                    @endif
+                    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', ['scan']) }}"
                        class="flex flex-wrap justify-center items-center">
                         <i class="icon-md icon-document"></i>
                     </a>

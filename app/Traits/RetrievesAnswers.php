@@ -16,7 +16,7 @@ trait RetrievesAnswers
     /**
      * Get the answer from the given building (if allowed).
      *
-     * @param  string  $toolQuestionShort
+     * @param string $toolQuestionShort
      * @param bool $withEvaluation Because sometimes, but ONLY sometimes we don't want validation
      *
      * @return array|mixed
@@ -36,6 +36,35 @@ trait RetrievesAnswers
             $this->inputSource,
             $toolQuestion
         ) : null;
+    }
+
+    /**
+     * @param array $toolQuestionShorts
+     * @param bool $withEvaluation
+     *
+     * @return array
+     */
+    protected function getManyAnswers(array $toolQuestionShorts, bool $withEvaluation = true): array
+    {
+        $toolQuestions = ToolQuestion::findByShorts($toolQuestionShorts);
+
+        $service = ConditionService::init()
+            ->building($this->building)->inputSource($this->inputSource);
+
+        $toolQuestionAnswers = [];
+        foreach ($toolQuestions as $toolQuestion) {
+            $evaluation = true;
+            if ($withEvaluation) {
+                $evaluation = $service->forModel($toolQuestion)->isViewable();
+            }
+
+            $toolQuestionAnswers[$toolQuestion->short] = $evaluation ? $this->building->getAnswer(
+                $this->inputSource,
+                $toolQuestion
+            ) : null;
+        }
+
+        return $toolQuestionAnswers;
     }
 
     /**

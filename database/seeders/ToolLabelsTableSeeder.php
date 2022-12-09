@@ -113,7 +113,7 @@ class ToolLabelsTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Verbeteren van de verwarminsinstallatie',
+                    'nl' => 'Verbeteren van de verwarmingsinstallatie',
                 ],
                 'short' => 'improve-heating-installations',
             ],

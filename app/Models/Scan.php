@@ -41,6 +41,8 @@ class Scan extends Model
     use HasTranslations, HasShortTrait;
 
     const EXPERT = 'expert-scan';
+    const QUICK = 'quick-scan';
+    const LITE = 'lite-scan';
 
     protected $translatable = ['name', 'slug'];
 

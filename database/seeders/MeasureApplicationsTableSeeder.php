@@ -728,6 +728,206 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'icon' => 'icon-placeholder',
                 ],
             ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Besparen met verlichting',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'save-energy-with-light',
+                'application' => 'place',
+                'costs' => 45, // euro
+                'cost_unit' => [
+                    'nl' => 'per maatregel',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'kleine-maatregelen',
+                'configurations' => [
+                    'comfort' => 0,
+                    'icon' => 'icon-tools',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Energiezuinige apparatuur',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'energy-efficient-equipment',
+                'application' => 'place',
+                'costs' => 45, // euro
+                'cost_unit' => [
+                    'nl' => 'per maatregel',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'kleine-maatregelen',
+                'configurations' => [
+                    'comfort' => 0,
+                    'icon' => 'icon-tools',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Energiezuinige installaties',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'energy-efficient-installations',
+                'application' => 'place',
+                'costs' => 45, // euro
+                'cost_unit' => [
+                    'nl' => 'per maatregel',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'kleine-maatregelen',
+                'configurations' => [
+                    'comfort' => 0,
+                    'icon' => 'icon-tools',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Besparen door kierdichting',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'save-energy-with-crack-sealing',
+                'application' => 'place',
+                'costs' => 45, // euro
+                'cost_unit' => [
+                    'nl' => 'per maatregel',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'kleine-maatregelen',
+                'configurations' => [
+                    'comfort' => 0,
+                    'icon' => 'icon-tools',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Verbeteren van de radiatoren',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'improve-radiators',
+                'application' => 'place',
+                'costs' => 45, // euro
+                'cost_unit' => [
+                    'nl' => 'per maatregel',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'kleine-maatregelen',
+                'configurations' => [
+                    'comfort' => 0,
+                    'icon' => 'icon-tools',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Verbeteren van de verwarmingsinstallatie',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'improve-heating-installations',
+                'application' => 'place',
+                'costs' => 45, // euro
+                'cost_unit' => [
+                    'nl' => 'per maatregel',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'kleine-maatregelen',
+                'configurations' => [
+                    'comfort' => 0,
+                    'icon' => 'icon-tools',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Besparen op warm tapwater',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'save-energy-with-warm-tap-water',
+                'application' => 'place',
+                'costs' => 45, // euro
+                'cost_unit' => [
+                    'nl' => 'per maatregel',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'kleine-maatregelen',
+                'configurations' => [
+                    'comfort' => 0,
+                    'icon' => 'icon-tools',
+                ],
+            ],
+            [
+                'measure_type' => MeasureApplication::ENERGY_SAVING,
+                'measure_name' => [
+                    'nl' => 'Algemeen',
+                ],
+                'measure_info' => [
+                    'nl' => '',
+                ],
+                'short' => 'general',
+                'application' => 'place',
+                'costs' => 45, // euro
+                'cost_unit' => [
+                    'nl' => 'per maatregel',
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'kleine-maatregelen',
+                'configurations' => [
+                    'comfort' => 0,
+                    'icon' => 'icon-tools',
+                ],
+            ],
             // add more energiebesparende maatregelen here!
 
             // Onderhoudsmaatregelen
@@ -986,16 +1186,19 @@ class MeasureApplicationsTableSeeder extends Seeder
         ];
 
         foreach ($measureApplications as $measureApplication) {
+            // Some steps exist more than once but in that case it doesn't matter as we won't link to them
+            // based on step.
             $step = DB::table('steps')->where('slug', $measureApplication['step'])->first();
 
             $existingMeasureApplication = DB::table('measure_applications')
-                ->where('short',$measureApplication['short'])->first();
+                ->where('short', $measureApplication['short'])->first();
 
             $name = $measureApplication['measure_name'];
             $info = $measureApplication['measure_info'];
             $configurations = $measureApplication['configurations'];
 
-            if ($existingMeasureApplication instanceof stdClass) {
+            // Ensure we don't override
+            if ($existingMeasureApplication instanceof \stdClass) {
                 $name = json_decode($existingMeasureApplication->measure_name, true);
                 $info = json_decode($existingMeasureApplication->measure_info, true);
 

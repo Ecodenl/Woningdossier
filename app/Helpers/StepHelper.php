@@ -23,20 +23,13 @@ class StepHelper
         'roof-insulation' => 'roof-insulation',
     ];
 
+    // TODO: Unused?
     const SERVICE_TO_SHORT = [
         'hr-boiler' => 'high-efficiency-boiler',
         'boiler' => 'high-efficiency-boiler',
         'total-sun-panels' => 'solar-panels',
         'sun-boiler' => 'heater',
         'house-ventilation' => 'ventilation',
-    ];
-
-    const QUICK_SCAN_STEP_SHORTS = [
-        'building-data',
-        'usage-quick-scan',
-        'living-requirements',
-        'residential-status',
-        'small-measures'
     ];
 
     const STEP_COMPLETION_MAP = [

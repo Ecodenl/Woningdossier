@@ -28,7 +28,7 @@
                     @endif
                 @endif
                 {{-- Custom changes has no tool questions, it's basically a whole other story --}}
-                @if(in_array($subStepToSummarize->slug, \App\Helpers\SubStepHelper::CUSTOM_CHANGES))
+                @if($subStepToSummarize->subStepTemplate->short === 'template-custom-changes')
                     <div class="flex flex-row flex-wrap w-full">
                         <div class="w-1/2">
                             <a href="{{ $subStepRoute }}" class="no-underline">

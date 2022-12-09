@@ -11,11 +11,6 @@ use Illuminate\Support\Collection;
 
 class SubStepHelper
 {
-    // Which slugs have a custom changes question
-    const CUSTOM_CHANGES = [
-        'welke-zaken-vervangen', 'welke-grote-maatregelen',
-    ];
-
     /**
      * Complete a sub step for a building.
      *

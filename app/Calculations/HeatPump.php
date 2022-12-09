@@ -192,14 +192,14 @@ class HeatPump extends \App\Calculations\Calculator
 
         $savingsGas = (data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage, 'heating.current.gas.bruto', 0)) +
                       (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage, 'tap_water.current.gas.bruto', 0)) +
-                      (data_get($energyUsage, 'cooking.new.gas.bruto', 0) - data_get($energyUsage, 'cooking.current.gas.bruto', 0));
+                      (data_get($energyUsage, 'cooking.new.gas', 0) - data_get($energyUsage, 'cooking.current.gas', 0));
         Log::debug('C76 (gasbesparing): = ' . sprintf('(%s - %s) + (%s - %s) + (%s - %s) = %s',
                 data_get($energyUsage, 'heating.new.gas.bruto', 0),
                 data_get($energyUsage, 'heating.current.gas.bruto', 0),
                 data_get($energyUsage, 'tap_water.new.gas.bruto', 0),
                 data_get($energyUsage, 'tap_water.current.gas.bruto', 0),
-                data_get($energyUsage, 'cooking.new.gas.bruto', 0),
-                data_get($energyUsage, 'cooking.current.gas.bruto', 0),
+                data_get($energyUsage, 'cooking.new.gas', 0),
+                data_get($energyUsage, 'cooking.current.gas', 0),
                 $savingsGas));
 
         // (C71+C72+C73) - (D12-D13-D14)

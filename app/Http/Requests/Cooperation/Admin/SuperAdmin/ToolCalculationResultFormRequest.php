@@ -27,7 +27,7 @@ class ToolCalculationResultFormRequest extends FormRequest
         return [
             'tool_calculation_results.name.nl' => 'required',
             'tool_calculation_results.help_text.nl' => 'required',
-            'tool_calculation_results.unit_of_measure' => 'nullable|string|max:256',
+            //'tool_calculation_results.unit_of_measure' => 'nullable|string|max:256',
         ];
     }
 }

@@ -44,7 +44,7 @@
                     'class' => 'form-group-heading w-full',
                     'label' => $topRightFirst->name,
                     'inputName' => "filledInAnswers.{$topRightFirst->short}",
-                 ])
+                ])
                     @slot('sourceSlot')
                         @include('cooperation.sub-step-templates.parts.source-slot-values', [
                             'values' => $filledInAnswersForAllInputSources[$topRightFirst->short],

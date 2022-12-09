@@ -40,6 +40,8 @@ class Scan extends Model
 {
     use HasTranslations, HasShortTrait;
 
+    const EXPERT = 'expert-scan';
+
     protected $translatable = ['name', 'slug'];
 
     public function getRouteKeyName()

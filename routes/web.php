@@ -408,6 +408,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             Route::post('', [Cooperation\Admin\Cooperation\CooperationAdmin\SettingsController::class, 'store'])->name('store');
                         });
 
+                            Route::resource('scans', Cooperation\Admin\Cooperation\CooperationAdmin\ScanController::class)
+                                ->only(['index', 'store']);
+
                         Route::resource('cooperation-measure-applications', CooperationMeasureApplicationController::class)
                             ->except(['index', 'create', 'store', 'show'])
                             ->parameter('cooperation-measure-applications', 'cooperationMeasureApplication');

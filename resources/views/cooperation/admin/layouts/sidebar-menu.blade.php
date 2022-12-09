@@ -66,6 +66,11 @@
                                 @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.settings')
                             </a>
                         </li>
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.scans.index'])) active @endif">
+                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.scans.index')}}">
+                                @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.scans')
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>

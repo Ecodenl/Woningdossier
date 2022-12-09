@@ -193,7 +193,10 @@ class HeatPump extends \App\Calculations\Calculator
         $savingsGas = (data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage, 'heating.current.gas.bruto', 0)) +
                       (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage, 'tap_water.current.gas.bruto', 0)) +
                       (data_get($energyUsage, 'cooking.new.gas', 0) - data_get($energyUsage, 'cooking.current.gas', 0));
-        Log::debug('C76 (gasbesparing): = ' . sprintf('(%s - %s) + (%s - %s) + (%s - %s) = %s',
+        // New gas usage will probably (ideally) be less than new. Savings is the difference, but * -1!
+        $savingsGas = $savingsGas * -1;
+
+        Log::debug('C76 (gasbesparing): = ' . sprintf('((%s - %s) + (%s - %s) + (%s - %s)) * -1 = %s',
                 data_get($energyUsage, 'heating.new.gas.bruto', 0),
                 data_get($energyUsage, 'heating.current.gas.bruto', 0),
                 data_get($energyUsage, 'tap_water.new.gas.bruto', 0),

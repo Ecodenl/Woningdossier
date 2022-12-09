@@ -243,7 +243,7 @@ class Heating extends Calculator
                 ) ?? 97;
                 $energyConsumption /= ($efficiency->heating / 100);
 
-                data_set($result, 'gas.bruto', $energyConsumption);
+                data_set($result, 'gas.bruto', round($energyConsumption));
 
                 // netto = bruto * efficiency (basically the energy consumption..)
                 $energyConsumption *= ($efficiency->heating / 100);
@@ -294,7 +294,7 @@ class Heating extends Calculator
                     $energyConsumption /= ($efficiency->heating / 100);
                     Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption");
 
-                    data_set($result, 'gas.bruto', $energyConsumption);
+                    data_set($result, 'gas.bruto', round($energyConsumption));
 
                     Log::debug(__METHOD__ . " - Netto(gas) = $energyConsumption * ($efficiency->heating / 100)");
                     // netto = bruto * efficiency (basically the energy consumption..)

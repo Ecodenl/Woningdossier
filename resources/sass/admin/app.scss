@@ -55,3 +55,33 @@
 
 // Icons from frontend
 @import '../../css/shared/components/icons.css';
+
+// Temporary override until we move to Tailwind...
+.icon-xs {
+  height: 0.5rem;
+  width: 0.5rem;
+}
+.icon-sm {
+  height: 1rem;
+  width: 1rem;
+}
+.icon-md {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+.icon-lg {
+  height: 3rem;
+  width: 3rem;
+}
+.icon-xl {
+  height: 6rem;
+  width: 6rem;
+}
+.icon-xxl {
+  height: 8rem;
+  width: 8rem;
+}
+.icon-xxxl {
+  height: 9rem;
+  width: 9rem;
+}

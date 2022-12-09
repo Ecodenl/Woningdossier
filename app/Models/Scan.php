@@ -17,7 +17,13 @@ use Illuminate\Support\Facades\App;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $completedSteps
+ * @property-read int|null $completed_steps_count
  * @property-read array $translations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read int|null $steps_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
+ * @property-read int|null $sub_steps_count
  * @method static Builder|Scan bySlug(string $slug, string $locale = 'nl')
  * @method static Builder|Scan newModelQuery()
  * @method static Builder|Scan newQuery()

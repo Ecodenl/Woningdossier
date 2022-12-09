@@ -40,6 +40,7 @@ class DoUpgrade extends Command
     public function handle()
     {
         $commands = [
+            UpdateCooperationMeasures::class => [],
             SeedCommand::class => [
                 ['--class' => 'ScansTableSeeder', '--force' => true],
                 ['--class' => 'StepsTableSeeder', '--force' => true],

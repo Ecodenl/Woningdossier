@@ -21,6 +21,18 @@ use Illuminate\Support\Str;
 class Heating extends Calculator
 {
 
+    protected array $boilerShares = [
+        'current' => 100,
+        'new' => 100,
+    ];
+
+    public function useBoilerShares(array $boilerShares): self
+    {
+        $this->boilerShares = $boilerShares;
+
+        return $this;
+    }
+
     public function performCalculations(): array
     {
         $cooking = [
@@ -293,6 +305,11 @@ class Heating extends Calculator
                     Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption / ($efficiency->heating / 100)");
                     $energyConsumption /= ($efficiency->heating / 100);
                     Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption");
+
+                    // use the boiler share here
+                    $shareHeating = data_get($this->boilerShares, $case, 100);
+
+                    $energyConsumption = $energyConsumption * ((100 - $shareHeating) / 100);
 
                     data_set($result, 'gas.bruto', round($energyConsumption));
 

@@ -101,7 +101,9 @@ class HeatPump extends \App\Calculations\Calculator
 
         // new
         Log::debug("=== Heating calculate ===");
-        $energyUsage = Heating::calculate($this->building, $this->inputSource, $this->answers);
+        $calculator = new Heating($this->building, $this->inputSource, $this->answers);
+        $energyUsage = $calculator->useBoilerShares(['current' => 100, 'new' => $shareHeating])->performCalculations();
+        //$energyUsage = Heating::calculate($this->building, $this->inputSource, $this->answers);
         Log::debug("=== Heating calculate done ===");
 
         // D8
@@ -316,22 +318,6 @@ class HeatPump extends \App\Calculations\Calculator
         }
 
         return min(round($this->desiredPower / max($this->requiredPower, 1), 1), 1.0);
-    }
-
-    protected function energyUsageForCooking()
-    {
-        $cookType = $this->getAnswer('cook-type');
-
-        switch ($cookType) {
-            case 'gas':
-                return Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS;
-            case 'electric':
-                return Kengetallen::ENERGY_USAGE_COOK_TYPE_ELECTRIC;
-            case 'induction':
-                return Kengetallen::ENERGY_USAGE_COOK_TYPE_INDUCTION;
-        }
-
-        return Kengetallen::ENERGY_USAGE_COOK_TYPE_GAS;
     }
 
     public function insulationScore(): float

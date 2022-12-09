@@ -2,11 +2,15 @@
 
     @php
         // some necessary crap to display the toolQuestions in the right manor
-        $topLeft = $toolQuestions->where('pivot.order', 0)->first();
-        $topRightFirst = $toolQuestions->where('pivot.order', 1)->first();
-        $topRightSecond = $toolQuestions->where('pivot.order', 2)->first();
+        $topLeftPivot = $subStep->subSteppables->where('order', 0)->first();
+        $topLeft = $topLeftPivot->subSteppable;
+        $topRightFirstPivot = $subStep->subSteppables->where('order', 1)->first();
+        $topRightFirst = $topRightFirstPivot->subSteppable;
+        $topRightSecondPivot = $subStep->subSteppables->where('order', 2)->first();
+        $topRightSecond = $topRightSecondPivot->subSteppable;
 
-        $bottomLeft = $toolQuestions->where('pivot.order', 3)->first();
+        $bottomLeftPivot = $subStep->subSteppables->where('order', 3)->first();
+        $bottomLeft = $bottomLeftPivot->subSteppable;
     @endphp
     <div class="w-full flex flex-wrap">
         @if($topLeft instanceof \App\Models\ToolQuestion)
@@ -17,7 +21,7 @@
                 'class' => 'form-group-heading w-full lg:w-1/2 lg:pr-3',
                 'label' => $topLeft->name,
                 'inputName' => "filledInAnswers.{$topLeft->short}",
-             ])
+            ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
                         'values' => $filledInAnswersForAllInputSources[$topLeft->short],
@@ -31,7 +35,7 @@
                     </p>
                 @endslot
 
-                @include("cooperation.tool-question-type-templates.{$topLeft->pivot->toolQuestionType->short}.show", ['toolQuestion' => $topLeft])
+                @include("cooperation.tool-question-type-templates.{$topLeftPivot->toolQuestionType->short}.show", ['toolQuestion' => $topLeft])
             @endcomponent
         @endif
 
@@ -58,7 +62,7 @@
                         </p>
                     @endslot
 
-                    @include("cooperation.tool-question-type-templates.{$topRightFirst->pivot->toolQuestionType->short}.show", ['toolQuestion' => $topRightFirst])
+                    @include("cooperation.tool-question-type-templates.{$topRightFirstPivot->toolQuestionType->short}.show", ['toolQuestion' => $topRightFirst])
                 @endcomponent
             @endif
             @if($topRightSecond instanceof \App\Models\ToolQuestion)
@@ -83,7 +87,7 @@
                         </p>
                     @endslot
 
-                    @include("cooperation.tool-question-type-templates.{$topRightSecond->pivot->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
+                    @include("cooperation.tool-question-type-templates.{$topRightSecondPivot->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
                 @endcomponent
             @endif
         </div>
@@ -112,7 +116,7 @@
                     </p>
                 @endslot
 
-                @include("cooperation.tool-question-type-templates.{$bottomLeft->pivot->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
+                @include("cooperation.tool-question-type-templates.{$bottomLeftPivot->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
             @endcomponent
         </div>
     @endif

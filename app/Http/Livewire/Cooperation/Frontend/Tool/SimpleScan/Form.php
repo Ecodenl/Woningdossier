@@ -37,7 +37,7 @@ class Form extends Scannable
                     ->with(['subSteppable', 'toolQuestionType']);
             },
             'toolQuestions' => function ($query) {
-                $query->orderBy('order');
+                $query->orderBy('order')->with('forSpecificInputSource');
             },
             'subStepTemplate',
         ]);

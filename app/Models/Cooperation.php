@@ -28,6 +28,8 @@ use Illuminate\Support\Collection;
  * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
  * @property-read int|null $questionnaires_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Scan[] $scans
+ * @property-read int|null $scans_count
  * @property-read \App\Models\CooperationStyle|null $style
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  * @property-read int|null $users_count

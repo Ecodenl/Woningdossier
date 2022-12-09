@@ -5,6 +5,7 @@ use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
 use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
+use App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
@@ -407,9 +408,28 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             Route::post('', [Cooperation\Admin\Cooperation\CooperationAdmin\SettingsController::class, 'store'])->name('store');
                         });
 
-                        Route::resource('cooperation-measure-applications', Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController::class)
-                            ->except(['show'])
+                        Route::resource('cooperation-measure-applications', CooperationMeasureApplicationController::class)
+                            ->except(['index', 'create', 'store', 'show'])
                             ->parameter('cooperation-measure-applications', 'cooperationMeasureApplication');
+                        Route::prefix('cooperation-measure-applications')->as('cooperation-measure-applications.')->group(function () {
+                            // TODO: Deprecate to whereIn in L9
+                            Route::prefix('{type}')
+                                ->where(collect(['type'])
+                                    ->mapWithKeys(fn ($parameter) => [
+                                        $parameter => implode('|',
+                                            \App\Helpers\Models\CooperationMeasureApplicationHelper::getMeasureTypes()),
+                                    ])
+                                    ->all()
+                                )->group(function () {
+                                    Route::get('', [CooperationMeasureApplicationController::class, 'index'])
+                                        ->name('index');
+                                    Route::get('create', [CooperationMeasureApplicationController::class, 'create'])
+                                        ->name('create');
+                                    Route::post('create', [CooperationMeasureApplicationController::class, 'store'])
+                                        ->name('store');
+                                });
+
+                        });
                     });
                 });
 

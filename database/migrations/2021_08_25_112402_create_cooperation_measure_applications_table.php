@@ -23,6 +23,8 @@ class CreateCooperationMeasureApplicationsTable extends Migration
             $table->decimal('savings_money');
 
             $table->json('extra');
+            $table->boolean('is_extensive_measure')->default(false);
+            $table->boolean('is_deletable')->default(false);
 
             $table->unsignedInteger('cooperation_id');
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');

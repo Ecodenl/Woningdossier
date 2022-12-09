@@ -186,10 +186,21 @@ class HeatPump extends \App\Calculations\Calculator
         //                 (current gas usage for cooking - new gas usage for cooking)
         //
 
-        Log::debug('C76 (gasbesparing): savingsGas = amountGas - (newNettoGasUsageHeating + netNettoGasUsageTapWater + newNettoGasUsageCooking)');
-        $savingsGas = $amountGas - data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage, 'cooking.gas.electricity', 0);
-        //$savingsGas = $amountGas - ($newNettoGasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking);
-        Log::debug('C76 (gasbesparing): = ' . "$amountGas - ($newNettoGasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking) = $savingsGas");
+        //Log::debug('C76 (gasbesparing): savingsGas = amountGas - (newNettoGasUsageHeating + netNettoGasUsageTapWater + newNettoGasUsageCooking)');
+        //$savingsGas = $amountGas - data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage, 'cooking.gas.electricity', 0);
+        //Log::debug('C76 (gasbesparing): = ' . "$amountGas - ($newNettoGasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking) = $savingsGas");
+
+        $savingsGas = (data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage, 'heating.current.gas.bruto', 0)) +
+                      (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage, 'tap_water.current.gas.bruto', 0)) +
+                      (data_get($energyUsage, 'cooking.new.gas.bruto', 0) - data_get($energyUsage, 'cooking.current.gas.bruto', 0));
+        Log::debug('C76 (gasbesparing): = ' . sprintf('(%s - %s) + (%s - %s) + (%s - %s) = %s',
+                data_get($energyUsage, 'heating.new.gas.bruto', 0),
+                data_get($energyUsage, 'heating.current.gas.bruto', 0),
+                data_get($energyUsage, 'tap_water.new.gas.bruto', 0),
+                data_get($energyUsage, 'tap_water.current.gas.bruto', 0),
+                data_get($energyUsage, 'cooking.new.gas.bruto', 0),
+                data_get($energyUsage, 'cooking.current.gas.bruto', 0),
+                $savingsGas));
 
         // (C71+C72+C73) - (D12-D13-D14)
 

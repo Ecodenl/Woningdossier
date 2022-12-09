@@ -308,9 +308,9 @@ class Heating extends Calculator
 
                     // use the boiler share here
                     $shareHeating = data_get($this->boilerShares, $case, 100);
-
+                    Log::debug(__METHOD__ . " - Factoring in a heating share of $shareHeating %");
                     $energyConsumption = $energyConsumption * ((100 - $shareHeating) / 100);
-
+                    Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption = $energyConsumption * ((100 - $shareHeating) / 100)");
                     data_set($result, 'gas.bruto', round($energyConsumption));
 
                     Log::debug(__METHOD__ . " - Netto(gas) = $energyConsumption * ($efficiency->heating / 100)");

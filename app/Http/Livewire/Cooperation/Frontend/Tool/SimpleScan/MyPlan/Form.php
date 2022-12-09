@@ -10,6 +10,7 @@ use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
@@ -652,13 +653,19 @@ class Form extends Component
             $advisable = $advice->userActionPlanAdvisable;
 
             if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
+                // We only want expert scan steps to be linkable
+                $route = null;
+                if ($advisable->step->scan->short === Scan::EXPERT) {
+                    $route = route('cooperation.frontend.tool.expert-scan.index', ['step' => $advisable->step]);
+                }
+
                 $cards[$category][$order] = [
                     'name' => Str::limit($advisable->measure_name, 57),
                     'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_AVAILABLE,
                     'info' => nl2br($advisable->measure_info),
-                    'route' => route('cooperation.frontend.tool.expert-scan.index', ['step' => $advisable->step]),
+                    'route' => $route,
                     'comfort' => $advisable->configurations['comfort'] ?? 0,
                 ];
             } else {

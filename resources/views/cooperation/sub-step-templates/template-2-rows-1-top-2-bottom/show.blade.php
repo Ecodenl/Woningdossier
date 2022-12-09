@@ -3,11 +3,11 @@
     @php
         // some necessary crap to display the toolQuestions in the right manor
         $topPivot = $subStep->subSteppables->where('order', 0)->first();
-        $top = $topPivot->subSteppable;
+        $top = optional($topPivot)->subSteppable;
         $bottomLeftPivot = $subStep->subSteppables->where('order', 1)->first();
-        $bottomLeft = $bottomLeftPivot->subSteppable;
+        $bottomLeft = optional($bottomLeftPivot)->subSteppable;
         $bottomRightPivot = $subStep->subSteppables->where('order', 2)->first();
-        $bottomRight = $bottomRightPivot->subSteppable;
+        $bottomRight = optional($bottomRightPivot)->subSteppable;
     @endphp
     <div class="w-full">
         @component('cooperation.frontend.layouts.components.form-group', [

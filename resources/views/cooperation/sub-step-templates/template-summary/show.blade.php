@@ -96,11 +96,11 @@
 
                             $showQuestion = true;
 
-                            if (! empty($toolQuestionToSummarize->pivot->conditions)) {
+                            if (! empty($subSteppablePivot->conditions)) {
                                 $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
                                     ->building($building)
                                     ->inputSource($masterInputSource)
-                                    ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
+                                    ->evaluateCollection($subSteppablePivot->conditions, collect($answers));
                             }
 
                             // Comments come at the end, and have exceptional logic...

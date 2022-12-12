@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use Closure;
@@ -28,9 +29,8 @@ class EnsureQuickScanCompleted
             return $next($request);
         }
 
-
         if ($building instanceof Building) {
-            $scan = $request->route('scan');
+            $scan = Scan::findByShort('quick-scan');
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             if ($building->hasCompletedScan($scan, $masterInputSource) || app()->isLocal()) {
                 return $next($request);

@@ -30,7 +30,7 @@ class Buttons extends Component
     public ?Questionnaire $questionnaire = null;
     public ?Questionnaire $previousQuestionnaire = null;
 
-    public string $previousUrl;
+    public string $previousUrl = '';
 
     public function mount(Request $request, Scan $scan, Step $step, $subStepOrQuestionnaire)
     {

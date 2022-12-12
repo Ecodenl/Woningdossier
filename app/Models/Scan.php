@@ -40,6 +40,7 @@ class Scan extends Model
 {
     use HasTranslations, HasShortTrait;
 
+    const LITE = 'lite-scan';
     const QUICK = 'quick-scan';
     const EXPERT = 'expert-scan';
 
@@ -69,6 +70,16 @@ class Scan extends Model
     public function completedSteps()
     {
         return $this->hasManyThrough(CompletedStep::class, Step::class);
+    }
+
+    public function scopeSimple(Builder $query)
+    {
+        return $query->whereIn('short', [static::LITE, static::QUICK]);
+    }
+
+    public function scopeExpert(Builder $query)
+    {
+        return $query->whereIn('short', [static::EXPERT]);
     }
 
     // TODO: Slug trait?

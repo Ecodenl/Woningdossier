@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Frontend\Tool\SimpleScan;
+namespace App\Http\Controllers\Cooperation\Frontend\Tool\ExpertScan;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
@@ -15,6 +15,6 @@ class QuestionnaireController extends Controller
         // Ensure it's a valid questionnaire
         abort_if($questionnaire->isNotActive() || $questionnaire->steps()->where('steps.id', $step->id)->doesntExist(), 404);
 
-        return view("cooperation.frontend.tool.simple-scan.questionnaires.index", compact('scan', 'step', 'questionnaire'));
+        return view("cooperation.frontend.tool.expert-scan.questionnaires.index", compact('scan', 'step', 'questionnaire'));
     }
 }

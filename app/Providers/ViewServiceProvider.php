@@ -36,6 +36,7 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::creator('cooperation.tool.*', ToolComposer::class);
         View::creator('cooperation.frontend.tool.expert-scan.index', ToolComposer::class);
+        View::creator('cooperation.frontend.tool.expert-scan.questionnaires.index', ToolComposer::class);
         View::creator('cooperation.frontend.layouts.tool', LayoutComposer::class);
         View::creator('cooperation.frontend.layouts.parts.sub-nav', SubNavComposer::class);
 

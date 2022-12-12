@@ -30,8 +30,7 @@ class ScanController extends Controller
     {
         Log::debug('ScanController::show');
 
-        if ($scan->short === 'expert-scan') {
-            // check if quick-scan is completed before proceeding
+        if ($scan->short === Scan::EXPERT) {
             $step = Step::expert()->first();
             return redirect()->route('cooperation.frontend.tool.expert-scan.index', compact('scan', 'step'));
         }

@@ -1,5 +1,5 @@
 <div class="w-1/2 flex flex-wrap justify-center">
-    @if($previousStep instanceof \App\Models\Step || $previousSubStep instanceof \App\Models\SubStep)
+    @if(! empty($previousUrl))
         <a href="{{$previousUrl}}" class="btn btn-outline-purple flex items-center mr-1">
             <i class="icon-xs icon-arrow-left-bold-purple mr-5"></i>
             @lang('default.buttons.previous')

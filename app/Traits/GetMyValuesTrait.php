@@ -93,7 +93,7 @@ trait GetMyValuesTrait
             $crucialRelationCombinationIds = [
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
                 'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
-                'considerable_id', 'considerable_type', 'question_id',
+                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id',
             ];
             $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
 

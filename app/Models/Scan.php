@@ -75,4 +75,9 @@ class Scan extends Model
     {
         return $query->where("slug->{$locale}", $slug);
     }
+
+    public function isLiteScan(): bool
+    {
+        return $this->short === 'lite-scan';
+    }
 }

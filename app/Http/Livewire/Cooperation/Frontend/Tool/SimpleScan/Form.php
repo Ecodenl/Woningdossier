@@ -174,6 +174,10 @@ class Form extends Scannable
             }
         }
 
+        $quickScan = Scan::findByShort('quick-scan');
+        if ($this->scan->isLiteScan() && $this->building->hasCompletedScan($quickScan) === false) {
+
+        }
 
         // the INITIAL calculation will be handled by the CompletedSubStepObserver
         if ($shouldDoFullRecalculate) {

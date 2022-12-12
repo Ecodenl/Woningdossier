@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Hoomdossier;
-use App\Helpers\StepHelper;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;

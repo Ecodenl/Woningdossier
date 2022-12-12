@@ -101,7 +101,7 @@ class RecalculateForUser extends Command
 
                 // We can calculate / recalculate the advices when the user has completed the quick scan
                 // the quick scan provides the most basic information needed for calculations
-                if ($user->building->hasCompletedQuickScan($inputSource)) {
+                if ($user->building->hasCompletedScan($step)) {
                     $stepsToRecalculateChain = [];
 
                     if (! empty($stepShorts)) {

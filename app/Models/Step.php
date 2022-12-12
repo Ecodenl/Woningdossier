@@ -9,6 +9,7 @@ use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -156,9 +157,9 @@ class Step extends Model
         return $query->where('parent_id', null);
     }
 
-    public function questionnaires(): HasMany
+    public function questionnaires(): BelongsToMany
     {
-        return $this->hasMany(Questionnaire::class);
+        return $this->belongsToMany(Questionnaire::class)->withPivot('order');
     }
 
     public function hasQuestionnaires(): bool

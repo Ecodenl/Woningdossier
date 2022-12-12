@@ -22,6 +22,8 @@ class CreateQuestionnaireStepTable extends Migration
             $table->unsignedInteger('step_id');
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('cascade');
 
+            $table->unsignedInteger('order')->default(0);
+
             $table->timestamps();
         });
     }

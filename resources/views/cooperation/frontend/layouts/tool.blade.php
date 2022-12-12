@@ -58,7 +58,8 @@
                         @if($hasQuestionnaires)
                             @foreach($currentStep->questionnaires as $questionnaire)
                                 @include('cooperation.frontend.layouts.parts.custom-questionnaire', [
-                                    'questionnaire' => $questionnaire, 'isTab' => true
+                                    'questionnaire' => $questionnaire, 'isTab' => true,
+                                    'step' => $currentStep,
                                 ])
                             @endforeach
                         @endif
@@ -87,10 +88,15 @@
 
                             <div class="px-4 py-8">
                                 @if(! \App\helpers\HoomdossierSession::isUserObserving())
+                                    @php
+                                        // This only shows in expert, and since lite can't go to expert, we just
+                                        // fetch the quick scan.
+                                        $quickScan = \App\Models\Scan::findByShort(\App\Models\Scan::QUICK);
+                                    @endphp
                                     <div class="flex flex-row flex-wrap w-full">
                                         <div class="w-full sm:w-1/2">
                                             <a class="btn btn-green float-left"
-                                               href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index') }}">
+                                               href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index', ['scan' => $quickScan]) }}">
                                                 @lang('default.buttons.cancel')
                                             </a>
                                         </div>

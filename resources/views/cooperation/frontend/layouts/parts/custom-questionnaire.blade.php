@@ -24,6 +24,7 @@
             @csrf
             <input type="hidden" name="tab_id" value="#questionnaire-{{$questionnaire->id}}">
             <input type="hidden" name="questionnaire_id" value="{{$questionnaire->id}}">
+            <input type="hidden" name="step_short" value="{{$step->short}}">
             @foreach($questionnaire->questions as $question)
                 @include("cooperation.tool.questionnaires.{$question->type}", ['question' => $question])
             @endforeach

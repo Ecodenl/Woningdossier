@@ -26,6 +26,7 @@ class QuestionnaireService
         foreach ($questionnaire->questionnaireSteps as $questionnaireStep) {
             $questionnaireStepReplicate = $questionnaireStep->replicate();
             $questionnaireStepReplicate->questionnaire_id = $questionnaireToReplicate->id;
+            // TODO: Simple order for now, should we be more complex?
             $questionnaireStepReplicate->order = ++$questionnaireStep->order;
             $questionnaireStepReplicate->save();
         }

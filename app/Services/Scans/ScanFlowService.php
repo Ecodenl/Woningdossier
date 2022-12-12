@@ -7,6 +7,7 @@ use App\Helpers\StepHelper;
 use App\Helpers\SubStepHelper;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Scan;
@@ -15,6 +16,7 @@ use App\Models\SubStep;
 use App\Models\SubSteppable;
 use App\Models\ToolQuestion;
 use App\Services\DiscordNotifier;
+use App\Services\Models\QuestionnaireService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Query\JoinClause;
@@ -30,12 +32,14 @@ class ScanFlowService
     public InputSource $currentInputSource;
     public ?SubStep $subStep = null;
     public ?Questionnaire $questionnaire = null;
+    public Cooperation $cooperation;
 
     protected array $skipSubSteps = [];
 
     public function __construct(Scan $scan, Building $building, InputSource $inputSource)
     {
         $this->building = $building;
+        $this->cooperation = $building->user->cooperation;
         $this->currentInputSource = $inputSource;
         $this->scan = $scan;
         $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -187,6 +191,10 @@ class ScanFlowService
         $nextSubStep = null;
         $nextQuestionnaire = null;
 
+        $questionnaireService = QuestionnaireService::init()
+            ->cooperation($this->cooperation)
+            ->step($this->step);
+
         if ($this->subStep instanceof SubStep) {
             $nextSubStep = $this->step->subSteps()
                 ->where('order', '>', $this->subStep->order)
@@ -197,8 +205,9 @@ class ScanFlowService
 
             if ($lastSubStepForStep->id === $this->subStep->id) {
                 // Let's check if there's questionnaires left
-                if ($this->step->hasActiveQuestionnaires()) {
-                    $nextQuestionnaire = $this->step->questionnaires()->active()->orderBy('order')->first();
+                if ($questionnaireService->hasActiveQuestionnaires()) {
+                    $nextQuestionnaire = $questionnaireService
+                        ->resolveQuestionnaire(true);
                 } else {
                     $nextStep = $this->step->nextQuickScan();
                     // the last can't have a next one
@@ -210,9 +219,9 @@ class ScanFlowService
             }
         } elseif ($this->questionnaire instanceof Questionnaire) {
             // We're currently in a questionnaire. We need to check if the next button will be another questionnaire
-            $potentialQuestionnaire = $this->step->questionnaires()->active()
-                ->where('order', '>', $this->questionnaire->order)
-                ->orderBy('order')->first();
+            $potentialQuestionnaire = $questionnaireService
+                ->questionnaire($this->questionnaire)
+                ->resolveQuestionnaire(true);
 
             if ($potentialQuestionnaire instanceof Questionnaire) {
                 $nextQuestionnaire = $potentialQuestionnaire;
@@ -246,9 +255,7 @@ class ScanFlowService
             }
         }
 
-        // For some reason the cooperation isn't automatically bound, probably because of Livewire.
-        // For now, this has to stay.
-        $cooperation = $this->building->user->cooperation;
+        $cooperation = $this->cooperation;
 
         if ($nextStep instanceof Step && $nextSubStep instanceof SubStep) {
             if ($nextSubStep->step_id !== $nextStep->id) {
@@ -261,12 +268,12 @@ class ScanFlowService
                 ]);
             }
         } elseif ($nextStep instanceof Step && $nextQuestionnaire instanceof Questionnaire) {
-            if ($nextQuestionnaire->step_id !== $nextStep->id) {
+            if ($nextQuestionnaire->steps()->where('steps.id', $nextStep->id)->doesntExist()) {
                 // TODO: Temporary, remove if when no issues arise
                 DiscordNotifier::init()->notify("Next questionnaire doesn't belong to next step! Step ID: {$nextStep->id}. Questionnaire ID: {$nextQuestionnaire->id}.");
                 $nextUrl = '';
             } else {
-                $nextUrl = route('cooperation.frontend.tool.questionnaires.index', [
+                $nextUrl = route('cooperation.frontend.tool.simple-scan.questionnaires.index', [
                     'cooperation' => $cooperation, 'scan' => $this->scan, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire
                 ]);
             }

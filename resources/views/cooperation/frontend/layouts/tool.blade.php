@@ -11,7 +11,7 @@
                 {{-- Progress bar --}}
                 <div class="w-full bg-gray h-2 relative z-40 -mt-1">
                     @php
-                        // $total and $current get injected in the QuickScanController via the ViewServiceProvider
+                        // $total and $current get injected via the SimpleScanComposer in the ViewServiceProvider
                         $total = $total ?? 100;
                         $current = $current ?? 100;
                         $width = 100 / $total * $current;
@@ -33,52 +33,33 @@
         @if(RouteLogic::inExpertTool(Route::currentRouteName()))
             @php
                 $masterInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT);
+                $hasQuestionnaires = $currentStep->questionnaires->count() > 0;
             @endphp
 
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
                 <div class="flex flex-row flex-wrap w-full" x-data="tabs()">
-{{--                    @if($currentSubStep instanceof \App\Models\Step)--}}
-{{--                        <h2 class="heading-2">--}}
-{{--                            {{$currentStep->name}}--}}
-{{--                        </h2>--}}
-{{--                    @endif--}}
+{{--                    <h2 class="heading-2">--}}
+{{--                        {{$currentStep->name}}--}}
+{{--                    </h2>--}}
                     <ul class="nav-tabs mt-5 hidden" x-ref="nav-tabs">
-                        @if(isset($step))
-                            @php
-                                $subStepsForStep = $currentStep->children;
-                            @endphp
-                            @if($subStepsForStep->isEmpty())
-                                <li class="active @if($building->hasCompleted($currentStep, $masterInputSource)) completed @endif">
-                                    <a href="{{route("cooperation.frontend.tool.expert-scan.index", ['step' => $currentStep])}}">
-                                        {{$currentStep->name}}
+                        @if($hasQuestionnaires)
+                            @foreach($currentStep->questionnaires as $questionnaire)
+                                <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire, $masterInputSource)) completed @endif">
+                                    <a href="#questionnaire-{{$questionnaire->id}}" x-bind="tab">
+                                        {{$questionnaire->name}}
                                     </a>
                                 </li>
-                            @endif
-                        @endif
-
-                        @if(isset($currentStep) && $currentStep->hasQuestionnaires())
-                            @foreach($currentStep->questionnaires as $questionnaire)
-
-                                @if($questionnaire->isActive())
-                                    <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire, $masterInputSource)) completed @endif">
-                                        <a href="#questionnaire-{{$questionnaire->id}}" x-bind="tab">
-                                            {{$questionnaire->name}}
-                                        </a>
-                                    </li>
-                                @endif
                             @endforeach
                         @endif
                     </ul>
 
                     <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-t-lg tab-content"
                          x-ref="tab-content">
-                        @if(isset($currentStep) && $currentStep->hasQuestionnaires())
+                        @if($hasQuestionnaires)
                             @foreach($currentStep->questionnaires as $questionnaire)
-                                @if($questionnaire->isActive())
-                                    @include('cooperation.frontend.layouts.parts.custom-questionnaire', [
-                                        'questionnaire' => $questionnaire, 'isTab' => true
-                                    ])
-                                @endif
+                                @include('cooperation.frontend.layouts.parts.custom-questionnaire', [
+                                    'questionnaire' => $questionnaire, 'isTab' => true
+                                ])
                             @endforeach
                         @endif
 

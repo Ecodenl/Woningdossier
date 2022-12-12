@@ -123,16 +123,6 @@ class Step extends Model
     }
 
     /**
-     * Return the children or so called "sub steps" of a step.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function children()
-    {
-        return $this->hasMany(Step::class, 'parent_id', 'id');
-    }
-
-    /**
      * Return the parent of the step.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -162,16 +152,6 @@ class Step extends Model
         return $this->belongsToMany(Questionnaire::class)
             ->using(QuestionnaireStep::class)
             ->withPivot('order');
-    }
-
-    public function hasQuestionnaires(): bool
-    {
-        return $this->questionnaires()->count() > 0;
-    }
-
-    public function hasActiveQuestionnaires(): bool
-    {
-        return $this->questionnaires()->active()->count() > 0;
     }
 
     public function scopeOrdered(Builder $query)

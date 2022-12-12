@@ -19,7 +19,7 @@ class CreateQuestionnaireStepTable extends Migration
             $table->unsignedInteger('questionnaire_id');
             $table->foreign('questionnaire_id')->references('id')->on('questionnaires')->onDelete('cascade');
 
-            $table->unsignedBigInteger('step_id');
+            $table->unsignedInteger('step_id');
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('cascade');
 
             $table->timestamps();

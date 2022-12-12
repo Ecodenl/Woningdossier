@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Step;
+use App\Services\Scans\ScanFlowService;
 use Illuminate\Http\Request;
 
 class ToolController extends Controller
@@ -42,8 +43,10 @@ class ToolController extends Controller
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
-        $url = StepHelper::getNextExpertStep($this->step);
-
-        return redirect($url);
+        return redirect()->to(
+            ScanFlowService::init($step->scan, $building, $inputSource)
+                ->forStep($step)
+                ->resolveNextUrl()
+        );
     }
 }

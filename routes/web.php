@@ -196,27 +196,28 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::prefix('{scan}')
                         ->where(collect(['scan'])
-                            ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $scans)])
+                            ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $scans)])
                             ->all()
                         )
                         ->as('simple-scan.')
                         ->group(function () {
-
                             $steps = \App\Helpers\Cache\Step::allSlugs();
 
-                            // Define this route as last to not match above routes as step/sub step combo
-                            Route::get('{step:slug}/{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
+                            Route::prefix('{step:slug}')
                                 ->where(
                                     collect(['step'])
-                                        ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $steps)])
+                                        ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $steps)])
                                         ->all()
-
                                 )
-                                ->name('index')
-                                ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
+                                ->group(function () {
+                                    // Define this route as last to not match above routes as step/sub step combo
+                                    Route::get('{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
+                                        ->name('index')
+                                        ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
 
-                            Route::get('vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\SimpleScan\QuestionnaireController::class, 'index'])
-                                ->name('questionnaires.index');
+                                    Route::get('vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\SimpleScan\QuestionnaireController::class, 'index'])
+                                        ->name('questionnaires.index');
+                                });
 
                             Route::as('my-plan.')->prefix('woonplan')->group(function () {
                                 Route::get('', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'index'])->name('index');

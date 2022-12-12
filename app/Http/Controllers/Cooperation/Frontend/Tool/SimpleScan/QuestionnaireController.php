@@ -13,8 +13,8 @@ class QuestionnaireController extends Controller
     public function index(Cooperation $cooperation, Scan $scan, Step $step, Questionnaire $questionnaire)
     {
         // Ensure it's a valid questionnaire
-        abort_if($questionnaire->isNotActive() || $questionnaire->step->id !== $step->id, 404);
+        abort_if($questionnaire->isNotActive() || $questionnaire->steps()->where('steps.id', $step->id)->doesntExist(), 404);
 
-        return view('cooperation.frontend.tool.simple-scan.questionnaires.index', compact('step', 'questionnaire'));
+        return view('cooperation.frontend.tool.simple-scan.questionnaires.index', compact('scan', 'step', 'questionnaire'));
     }
 }

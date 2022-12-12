@@ -44,9 +44,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Questionnaire extends Model
 {
-    use HasFactory;
-
-    use HasCooperationTrait,
+    use HasFactory,
+        HasCooperationTrait,
         HasTranslations;
 
     protected $translatable = [

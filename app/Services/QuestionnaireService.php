@@ -23,6 +23,13 @@ class QuestionnaireService
         $questionnaireToReplicate->is_active = false;
         $questionnaireToReplicate->save();
 
+        foreach ($questionnaire->questionnaireSteps as $questionnaireStep) {
+            $questionnaireStepReplicate = $questionnaireStep->replicate();
+            $questionnaireStepReplicate->questionnaire_id = $questionnaireToReplicate->id;
+            $questionnaireStepReplicate->order = ++$questionnaireStep->order;
+            $questionnaireStepReplicate->save();
+        }
+
         // here we will replicate all the questions with the new questionnaire id and question options.
         foreach ($questionnaire->questions as $question) {
             /** @var Question $questionToReplicate */

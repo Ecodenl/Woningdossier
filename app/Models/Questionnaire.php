@@ -7,6 +7,7 @@ use App\Traits\HasCooperationTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Questionnaire
@@ -70,6 +71,11 @@ class Questionnaire extends Model
         return $this->belongsToMany(Step::class)
             ->using(QuestionnaireStep::class)
             ->withPivot('order');
+    }
+
+    public function questionnaireSteps(): HasMany
+    {
+        return $this->hasMany(QuestionnaireStep::class);
     }
 
     /**

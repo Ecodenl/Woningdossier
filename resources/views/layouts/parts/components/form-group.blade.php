@@ -1,4 +1,4 @@
-<div class="form-group{{ $errors->has($input_name) ? ' has-error' : '' }}">
+<div class="form-group {{ $errors->has($input_name) ? 'has-error' : '' }}">
 
     {{$slot}}
 

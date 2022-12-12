@@ -83,31 +83,6 @@ class QuestionnaireService
     }
 
     /**
-     * Method to create a new questionnaire.
-     *
-     * @param  \App\Models\Cooperation  $cooperation
-     * @param  \App\Models\Step  $step
-     * @param  array  $questionnaireNameTranslations
-     *
-     * @return \App\Models\Questionnaire
-     * @throws \Exception
-     */
-    public static function createQuestionnaire(Cooperation $cooperation, Step $step, array $questionnaireNameTranslations): Questionnaire
-    {
-        $maxOrderForQuestionnairesInSelectedSteps = $step->questionnaires()->max('order');
-
-        $questionnaire = Questionnaire::create([
-            'name' => $questionnaireNameTranslations,
-            'step_id' => $step->id,
-            'order' => ++$maxOrderForQuestionnairesInSelectedSteps,
-            'cooperation_id' => $cooperation->id,
-            'is_active' => false,
-        ]);
-
-        return $questionnaire;
-    }
-
-    /**
      * Determine whether a question has options based on the type.
      *
      * @param $questionType

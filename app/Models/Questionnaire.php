@@ -67,7 +67,9 @@ class Questionnaire extends Model
      */
     public function steps(): BelongsToMany
     {
-        return $this->belongsToMany(Step::class)->withPivot('order');
+        return $this->belongsToMany(Step::class)
+            ->using(QuestionnaireStep::class)
+            ->withPivot('order');
     }
 
     /**

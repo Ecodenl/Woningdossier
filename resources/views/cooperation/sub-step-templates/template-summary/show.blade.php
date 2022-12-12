@@ -80,17 +80,20 @@
                         $answers = [];
                     @endphp
                     {{-- We loop twice to first get all answers. We need the answers to ensure whether or not the tool question should be shown --}}
-                    @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
+                    @foreach($subStepToSummarize->subSteppables->where('sub_steppable_type', \App\Models\ToolQuestion::class) as $subSteppablePivot)
                         @php
+                            $toolQuestionToSummarize = $subSteppablePivot->subSteppable;
                             // Answers will contain an array of arrays of all answers for the tool question in this sub step,
                             // in which the nested array will be short => answer based
                             $answers[$toolQuestionToSummarize->short] = $building->getAnswer(($toolQuestionToSummarize->forSpecificInputSource ?? $masterInputSource), $toolQuestionToSummarize);
                         @endphp
                     @endforeach
 
-                    @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
+                    @foreach($subStepToSummarize->subSteppables->where('sub_steppable_type', \App\Models\ToolQuestion::class) as $subSteppablePivot)
                         {{-- Only display questions that are valid to the user --}}
                         @php
+                            $toolQuestionToSummarize = $subSteppablePivot->subSteppable;
+
                             $showQuestion = true;
 
                             if (! empty($toolQuestionToSummarize->pivot->conditions)) {
@@ -125,7 +128,7 @@
                             @endphp
 
                             <div class="flex flex-row flex-wrap w-full">
-                                <div class="@if($toolQuestionToSummarize->pivot->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
+                                <div class="@if($subSteppablePivot->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
                                     <a href="{{ $subStepRoute }}" class="no-underline">
                                         <h6 class="as-text font-bold">
                                             {{ $toolQuestionToSummarize->name }}
@@ -164,8 +167,9 @@
     @endforeach
 
     <div class="flex flex-row flex-wrap w-full">
-        @foreach($toolQuestions as $toolQuestion)
+        @foreach($subStep->substeppables as $subSteppablePivot)
             @php
+                $toolQuestion = $subSteppablePivot->subSteppable;
                 $disabled = ! $building->user->account->can('answer', $toolQuestion);
             @endphp
             @component('cooperation.frontend.layouts.components.form-group', [
@@ -189,7 +193,7 @@
                 @endslot
 
 
-                @include("cooperation.tool-question-type-templates.{$toolQuestion->pivot->toolQuestionType->short}.show", [
+                @include("cooperation.tool-question-type-templates.{$subSteppablePivot->toolQuestionType->short}.show", [
                     'disabled' => $disabled,
                 ])
 

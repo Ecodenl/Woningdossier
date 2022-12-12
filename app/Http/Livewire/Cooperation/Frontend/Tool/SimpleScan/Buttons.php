@@ -101,7 +101,7 @@ class Buttons extends Component
 
             $firstSubStepForStep = $this->step->subSteps()->orderBy('order')->first();
             if ($firstSubStepForStep->id === $this->subStep->id) {
-                $this->previousStep = $this->step->previousQuickScan();
+                $this->previousStep = $this->step->previousStepForScan();
 
                 // the first one can't have a previous one
                 if ($this->previousStep instanceof Step) {

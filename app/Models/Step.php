@@ -106,21 +106,27 @@ class Step extends Model
     {
         return $this->hasMany(SubStep::class);
     }
-    public function nextQuickScan(): ?Step
+
+    public function nextStepForScan()
     {
-        return Step::quickScan()
+        return $this
+            ->scan
+            ->steps()
             ->where('order', '>', $this->order)
             ->orderBy('order')
             ->first();
     }
 
-    public function previousQuickScan(): ?Step
+    public function previousStepForScan()
     {
-        return Step::quickScan()
+        return $this
+            ->scan
+            ->steps()
             ->where('order', '<', $this->order)
             ->orderByDesc('order')
             ->first();
     }
+
 
     /**
      * Return the parent of the step.

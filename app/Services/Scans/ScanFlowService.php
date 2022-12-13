@@ -3,10 +3,12 @@
 namespace App\Services\Scans;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\Models\ScanHelper;
 use App\Helpers\StepHelper;
 use App\Helpers\SubStepHelper;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Scan;
@@ -14,7 +16,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubSteppable;
 use App\Models\ToolQuestion;
-use App\Services\DiscordNotifier;
+use App\Services\Models\QuestionnaireService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Query\JoinClause;
@@ -30,12 +32,14 @@ class ScanFlowService
     public InputSource $currentInputSource;
     public ?SubStep $subStep = null;
     public ?Questionnaire $questionnaire = null;
+    public Cooperation $cooperation;
 
     protected array $skipSubSteps = [];
 
     public function __construct(Scan $scan, Building $building, InputSource $inputSource)
     {
         $this->building = $building;
+        $this->cooperation = $building->user->cooperation;
         $this->currentInputSource = $inputSource;
         $this->scan = $scan;
         $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -187,43 +191,55 @@ class ScanFlowService
         $nextSubStep = null;
         $nextQuestionnaire = null;
 
+        $questionnaireService = QuestionnaireService::init()
+            ->cooperation($this->cooperation)
+            ->step($this->step);
 
         if ($this->subStep instanceof SubStep) {
             $nextSubStep = $this->step->subSteps()
                 ->where('order', '>', $this->subStep->order)
                 ->orderBy('order')
                 ->first();
+
             // we will check if the current sub step is the last one, that way we know we have to go to the next one.
             $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
 
             if ($lastSubStepForStep->id === $this->subStep->id) {
                 // Let's check if there's questionnaires left
-                if ($this->step->hasActiveQuestionnaires()) {
-                    $nextQuestionnaire = $this->step->questionnaires()->active()->orderBy('order')->first();
+                if ($questionnaireService->hasActiveQuestionnaires()) {
+                    $nextQuestionnaire = $questionnaireService
+                        ->resolveQuestionnaire(true);
                 } else {
+                    // Unwanted behaviour for expert
+                    if ($this->scan->short !== Scan::EXPERT) {
+                        $nextStep = $this->step->nextStepForScan();
+
+                        // the last can't have a next one
+                        if ($nextStep instanceof Step) {
+                            // the previous step is a different one, so we should get the first sub step of the previous step
+                            $nextSubStep = $nextStep->subSteps()->orderBy('order')->first();
+                        }
+                    }
+                }
+            }
+        } elseif ($this->questionnaire instanceof Questionnaire) {
+            // We're currently in a questionnaire. We need to check if the next button will be another questionnaire
+            $potentialQuestionnaire = $questionnaireService
+                ->questionnaire($this->questionnaire)
+                ->resolveQuestionnaire(true);
+
+            if ($potentialQuestionnaire instanceof Questionnaire) {
+                $nextQuestionnaire = $potentialQuestionnaire;
+            } else {
+                // Unwanted behaviour for expert
+                if ($this->scan->short !== Scan::EXPERT) {
+                    // No more questionnaires, let's start the logic to get the next sub step
                     $nextStep = $this->step->nextStepForScan();
                     // the last can't have a next one
                     if ($nextStep instanceof Step) {
                         // the previous step is a different one, so we should get the first sub step of the previous step
                         $nextSubStep = $nextStep->subSteps()->orderBy('order')->first();
                     }
-                }
-            }
-        } elseif ($this->questionnaire instanceof Questionnaire) {
-            // We're currently in a questionnaire. We need to check if the next button will be another questionnaire
-            $potentialQuestionnaire = $this->step->questionnaires()->active()
-                ->where('order', '>', $this->questionnaire->order)
-                ->orderBy('order')->first();
-
-            if ($potentialQuestionnaire instanceof Questionnaire) {
-                $nextQuestionnaire = $potentialQuestionnaire;
-            } else {
-                // No more questionnaires, let's start the logic to get the next sub step
-                $nextStep = $this->step->nextStepForScan();
-                // the last can't have a next one
-                if ($nextStep instanceof Step) {
-                    // the previous step is a different one, so we should get the first sub step of the previous step
-                    $nextSubStep = $nextStep->subSteps()->orderBy('order')->first();
                 }
             }
         }
@@ -247,41 +263,42 @@ class ScanFlowService
             }
         }
 
-        // For some reason the cooperation isn't automatically bound, probably because of Livewire.
-        // For now, this has to stay.
-        $cooperation = $this->building->user->cooperation;
+        $cooperation = $this->cooperation;
 
         if ($nextStep instanceof Step && $nextSubStep instanceof SubStep) {
-            if ($nextSubStep->step_id !== $nextStep->id) {
-                // TODO: Temporary, remove if when no issues arise
-                DiscordNotifier::init()->notify("Next sub step doesn't belong to next step! Step ID: {$nextStep->id}. Sub step ID: {$nextSubStep->id}.");
-                $nextUrl = '';
-            } else {
-                $nextUrl = route('cooperation.frontend.tool.simple-scan.index', [
-                    'cooperation' => $cooperation, 'scan' => $this->scan, 'step' => $nextStep, 'subStep' => $nextSubStep
-                ]);
-            }
+            // TODO: This can't happen for Expert, should we build safety?
+            $nextUrl = route("cooperation.frontend.tool.simple-scan.index", [
+                'cooperation' => $cooperation, 'scan' => $this->scan, 'step' => $nextStep, 'subStep' => $nextSubStep
+            ]);
         } elseif ($nextStep instanceof Step && $nextQuestionnaire instanceof Questionnaire) {
-            if ($nextQuestionnaire->step_id !== $nextStep->id) {
-                // TODO: Temporary, remove if when no issues arise
-                DiscordNotifier::init()->notify("Next questionnaire doesn't belong to next step! Step ID: {$nextStep->id}. Questionnaire ID: {$nextQuestionnaire->id}.");
-                $nextUrl = '';
+            if ($this->scan->short === Scan::EXPERT) {
+                $nextUrl = route('cooperation.frontend.tool.expert-scan.questionnaires.index', [
+                    'cooperation' => $cooperation, /*'scan' => $this->scan,*/ 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire
+                ]);
             } else {
-                $nextUrl = route('cooperation.frontend.tool.questionnaires.index', [
+                $nextUrl = route('cooperation.frontend.tool.simple-scan.questionnaires.index', [
                     'cooperation' => $cooperation, 'scan' => $this->scan, 'step' => $nextStep, 'questionnaire' => $nextQuestionnaire
                 ]);
             }
         } else {
-            $nextUrl = route('cooperation.frontend.tool.simple-scan.my-plan.index', ['cooperation' => $cooperation, 'scan' => $this->scan]);
+            $scan = $this->scan;
+            if ($this->scan->short === Scan::EXPERT) {
+                $scan = Scan::findByShort(Scan::QUICK);
+            }
+
+            $nextUrl = route('cooperation.frontend.tool.simple-scan.my-plan.index', [
+                'cooperation' => $cooperation, 'scan' => $scan
+            ]);
         }
 
-        Log::debug($nextUrl);
         return $nextUrl;
     }
 
     /** Resolve the first url, based on the user his current progression */
     public function resolveInitialUrl(): string
     {
+        // Initial URL is only for lite and quick scan
+
         $building = $this->building;
         $masterInputSource = $this->inputSource;
         $scan = $this->scan;

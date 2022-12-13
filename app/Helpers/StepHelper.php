@@ -69,43 +69,6 @@ class StepHelper
     }
 
     /**
-     * Get the next expert step. By default it's a redirect to my plan. If there's a questionnaire, however, we'll
-     * go there first.
-     *
-     * @param  \App\Models\Step  $currentStep
-     * @param  \App\Models\Questionnaire|null  $currentQuestionnaire
-     *
-     * @return string
-     */
-    public static function getNextExpertStep(Step $currentStep, Questionnaire $currentQuestionnaire = null): string
-    {
-        $url = route('cooperation.frontend.tool.expert-scan.index', ['step' => $currentStep]);
-
-        // try to redirect them to a questionnaire that may exist on the step.
-        if ($currentStep->hasActiveQuestionnaires()) {
-            // There are active questionnaires. We just grab the first next questionnaire.
-            $query = $currentStep->questionnaires()
-                ->active()
-                ->orderBy('order');
-
-            if ($currentQuestionnaire instanceof Questionnaire) {
-                // If we're currently on a questionnaire, we grab the next one
-                $query->where('order', '>', $currentQuestionnaire->order);
-            }
-
-            $nextQuestionnaire = $query->first();
-
-            if ($nextQuestionnaire instanceof Questionnaire) {
-                // Next questionnaire exists, let's redirect to there
-                return "{$url}#questionnaire-{$nextQuestionnaire->id}";
-            }
-        }
-
-        // Redirect to my plan.
-        return route('cooperation.frontend.tool.simple-scan.my-plan.index');
-    }
-
-    /**
      * Complete a step for a building.
      *
      * @param  \App\Models\Step  $step

@@ -9,6 +9,7 @@ use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -128,16 +129,6 @@ class Step extends Model
 
 
     /**
-     * Return the children or so called "sub steps" of a step.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function children()
-    {
-        return $this->hasMany(Step::class, 'parent_id', 'id');
-    }
-
-    /**
      * Return the parent of the step.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -162,19 +153,11 @@ class Step extends Model
         return $query->where('parent_id', null);
     }
 
-    public function questionnaires(): HasMany
+    public function questionnaires(): BelongsToMany
     {
-        return $this->hasMany(Questionnaire::class);
-    }
-
-    public function hasQuestionnaires(): bool
-    {
-        return $this->questionnaires()->count() > 0;
-    }
-
-    public function hasActiveQuestionnaires(): bool
-    {
-        return $this->questionnaires()->active()->count() > 0;
+        return $this->belongsToMany(Questionnaire::class)
+            ->using(QuestionnaireStep::class)
+            ->withPivot('order');
     }
 
     public function scopeOrdered(Builder $query): Builder

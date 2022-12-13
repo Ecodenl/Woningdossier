@@ -23,6 +23,14 @@ class QuestionnaireService
         $questionnaireToReplicate->is_active = false;
         $questionnaireToReplicate->save();
 
+        foreach ($questionnaire->questionnaireSteps as $questionnaireStep) {
+            $questionnaireStepReplicate = $questionnaireStep->replicate();
+            $questionnaireStepReplicate->questionnaire_id = $questionnaireToReplicate->id;
+            // TODO: Simple order for now, should we be more complex?
+            $questionnaireStepReplicate->order = ++$questionnaireStep->order;
+            $questionnaireStepReplicate->save();
+        }
+
         // here we will replicate all the questions with the new questionnaire id and question options.
         foreach ($questionnaire->questions as $question) {
             /** @var Question $questionToReplicate */
@@ -80,31 +88,6 @@ class QuestionnaireService
         }
 
         return $rule;
-    }
-
-    /**
-     * Method to create a new questionnaire.
-     *
-     * @param  \App\Models\Cooperation  $cooperation
-     * @param  \App\Models\Step  $step
-     * @param  array  $questionnaireNameTranslations
-     *
-     * @return \App\Models\Questionnaire
-     * @throws \Exception
-     */
-    public static function createQuestionnaire(Cooperation $cooperation, Step $step, array $questionnaireNameTranslations): Questionnaire
-    {
-        $maxOrderForQuestionnairesInSelectedSteps = $step->questionnaires()->max('order');
-
-        $questionnaire = Questionnaire::create([
-            'name' => $questionnaireNameTranslations,
-            'step_id' => $step->id,
-            'order' => ++$maxOrderForQuestionnairesInSelectedSteps,
-            'cooperation_id' => $cooperation->id,
-            'is_active' => false,
-        ]);
-
-        return $questionnaire;
     }
 
     /**

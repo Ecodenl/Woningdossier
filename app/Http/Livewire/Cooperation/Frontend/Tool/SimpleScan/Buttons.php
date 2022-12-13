@@ -5,10 +5,12 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\Questionnaire;
 use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
+use App\Services\Models\QuestionnaireService;
 use Illuminate\Http\Request;
 use Livewire\Component;
 
@@ -16,24 +18,25 @@ class Buttons extends Component
 {
     private Account $account;
     private Building $building;
+    private Cooperation $cooperation;
 
-    public $scan;
+    public Scan $scan;
     public Step $step;
-    public ?Step $previousStep;
+    public ?Step $previousStep = null;
 
-    public ?SubStep $subStep;
+    public ?SubStep $subStep = null;
     public ?SubStep $previousSubStep = null;
 
-    public ?Questionnaire $questionnaire;
+    public ?Questionnaire $questionnaire = null;
     public ?Questionnaire $previousQuestionnaire = null;
 
-    public string $previousUrl;
+    public string $previousUrl = '';
 
     public function mount(Request $request, Scan $scan, Step $step, $subStepOrQuestionnaire)
     {
-        $this->scan = $scan;
         $this->account = $request->user();
         $this->building = $this->account->user()->building;
+        $this->cooperation = HoomdossierSession::getCooperation(true);
 
         // set default steps, the checks will come later on.
         $this->previousStep = $step;
@@ -41,20 +44,11 @@ class Buttons extends Component
         // We can either have a sub step or questionnaire. The previous and next buttons
         // will have to adapt to specific situations...
         if ($subStepOrQuestionnaire instanceof SubStep) {
-            $subStep = $subStepOrQuestionnaire;
-
-            $subStep->load(['toolQuestions', 'subStepTemplate']);
-
-            // the route will always be matched, however a sub step has to match the step.
-            abort_if(! $step->subSteps()->find($subStep->id) instanceof SubStep, 404);
-
-            $this->subStep = $subStep;
+            $subStepOrQuestionnaire->load(['toolQuestions', 'subStepTemplate']);
+            $this->subStep = $subStepOrQuestionnaire;
         } elseif ($subStepOrQuestionnaire instanceof Questionnaire) {
-             $questionnaire = $subStepOrQuestionnaire;
-
-            abort_if($questionnaire->isNotActive() || $questionnaire->step->id !== $step->id, 404);
-
-            $this->questionnaire = $questionnaire;
+            $subStepOrQuestionnaire->load(['questions', 'questions.questionOptions', 'steps']);
+            $this->questionnaire = $subStepOrQuestionnaire;
         } else {
             abort(404);
         }
@@ -93,6 +87,10 @@ class Buttons extends Component
 
     private function setPreviousStep()
     {
+        $questionnaireService = QuestionnaireService::init()
+            ->cooperation($this->cooperation)
+            ->step($this->previousStep);
+
         if ($this->subStep instanceof SubStep) {
             $this->previousSubStep = $this
                 ->step
@@ -107,10 +105,9 @@ class Buttons extends Component
 
                 // the first one can't have a previous one
                 if ($this->previousStep instanceof Step) {
-                    if ($this->previousStep->hasActiveQuestionnaires()) {
+                    if ($questionnaireService->hasActiveQuestionnaires()) {
                         // There are questionnaires we need to look at
-                        $this->previousQuestionnaire = $this->previousStep->questionnaires()->active()
-                            ->orderByDesc('order')->first();
+                        $this->previousQuestionnaire = $questionnaireService->resolveQuestionnaire(false);
                     } else {
                         // the previous step is a different one, so we should get the last sub step of the previous step
                         $this->previousSubStep = $this->previousStep->subSteps()->orderByDesc('order')->first();
@@ -127,9 +124,9 @@ class Buttons extends Component
         } elseif ($this->questionnaire instanceof Questionnaire) {
             // We're currently in a questionnaire. We need to check if the previous button will be another questionnaire
             // or a quick scan step
-            $potentialQuestionnaire = $this->step->questionnaires()->active()
-                ->where('order', '<', $this->questionnaire->order)
-                ->orderByDesc('order')->first();
+            $potentialQuestionnaire = $questionnaireService
+                ->questionnaire($this->questionnaire)
+                ->resolveQuestionnaire(false);
 
             if ($potentialQuestionnaire instanceof Questionnaire) {
                 $this->previousQuestionnaire = $potentialQuestionnaire;

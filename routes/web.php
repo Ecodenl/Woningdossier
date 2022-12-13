@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\Cooperation;
+use App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController;
 use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
 use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
-use App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
@@ -182,9 +182,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::as('frontend.')->middleware(['track-visited-url'])->group(function () {
                 Route::resource('help', Cooperation\Frontend\HelpController::class)->only('index');
                 Route::as('tool.')->group(function () {
-
-
                     $scans = \App\Helpers\Cache\Scan::allShorts();
+                    $simpleScans = \App\Helpers\Cache\Scan::simpleShorts();
+
                     // TODO: Deprecate to whereIn in L9
                     Route::get('{scan}', [Cooperation\Frontend\Tool\ScanController::class, 'redirect'])
                         ->name('scan.redirect')
@@ -196,27 +196,28 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::prefix('{scan}')
                         ->where(collect(['scan'])
-                            ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $scans)])
+                            ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $simpleScans)])
                             ->all()
                         )
                         ->as('simple-scan.')
                         ->group(function () {
-
                             $steps = \App\Helpers\Cache\Step::allSlugs();
 
-                            // Define this route as last to not match above routes as step/sub step combo
-                            Route::get('{step:slug}/{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
+                            Route::prefix('{step:slug}')
                                 ->where(
                                     collect(['step'])
-                                        ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $steps)])
+                                        ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $steps)])
                                         ->all()
-
                                 )
-                                ->name('index')
-                                ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
+                                ->group(function () {
+                                    // Define this route as last to not match above routes as step/sub step combo
+                                    Route::get('{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
+                                        ->name('index')
+                                        ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
 
-                            Route::get('vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\SimpleScan\QuestionnaireController::class, 'index'])
-                                ->name('questionnaires.index');
+                                    Route::get('vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\SimpleScan\QuestionnaireController::class, 'index'])
+                                        ->name('questionnaires.index');
+                                });
 
                             Route::as('my-plan.')->prefix('woonplan')->group(function () {
                                 Route::get('', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'index'])->name('index');
@@ -224,14 +225,21 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             });
                         });
 
+                    //TODO: Bind by expert shorts and route bind steps also (perhaps we can merge with above code to
+                    // minify route code...)
                     Route::as('expert-scan.')->prefix('expert-scan')->group(function () {
                         // Define this route as last to not match above routes as step/sub step combo
-                        Route::get('{step}', [Cooperation\Frontend\Tool\ExpertScanController::class, 'index'])
-                            ->name('index')
-                            ->middleware(['ensure-quick-scan-completed', 'duplicate-data-for-user']);
+                        Route::prefix('{step}')
+                            ->group(function () {
+                                Route::get('', [Cooperation\Frontend\Tool\ExpertScanController::class, 'index'])
+                                    ->name('index')
+                                    ->middleware(['ensure-quick-scan-completed', 'duplicate-data-for-user']);
+
+                                Route::get('vragenlijst/{questionnaire}',
+                                    [Cooperation\Frontend\Tool\ExpertScan\QuestionnaireController::class, 'index'])
+                                    ->name('questionnaires.index');
+                            });
                     });
-
-
                 });
             });
 

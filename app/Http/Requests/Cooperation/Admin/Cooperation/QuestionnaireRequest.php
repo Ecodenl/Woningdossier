@@ -25,8 +25,9 @@ class QuestionnaireRequest extends FormRequest
     public function rules()
     {
         return [
-            'questionnaire.step_id' => ['required', Rule::exists('steps', 'id')],
-            'questionnaire.name.*' => 'required',
+            'questionnaires.steps' => ['required', 'array', 'min:1'],
+            'questionnaires.steps.*' => [Rule::exists('steps', 'id')],
+            'questionnaires.name.*' => 'required',
             'validation.*.main-rule' => 'required',
             'validation.*.sub-rule' => 'required',
             'validation.*.sub-rule-check-value.*' => 'required',

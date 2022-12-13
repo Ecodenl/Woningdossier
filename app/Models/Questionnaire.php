@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasCooperationTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Questionnaire
@@ -42,9 +44,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Questionnaire extends Model
 {
-    use HasFactory;
-
-    use HasCooperationTrait,
+    use HasFactory,
+        HasCooperationTrait,
         HasTranslations;
 
     protected $translatable = [
@@ -62,11 +63,18 @@ class Questionnaire extends Model
     /**
      * Return the step that belongs to this questionnaire.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function step()
+    public function steps(): BelongsToMany
     {
-        return $this->belongsTo(Step::class);
+        return $this->belongsToMany(Step::class)
+            ->using(QuestionnaireStep::class)
+            ->withPivot('order');
+    }
+
+    public function questionnaireSteps(): HasMany
+    {
+        return $this->hasMany(QuestionnaireStep::class);
     }
 
     /**

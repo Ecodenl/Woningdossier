@@ -49,6 +49,7 @@ class DoUpgrade extends Command
                 ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
             ],
             GiveCooperationDefaultScans::class => [],
+            ConvertQuestionnaireStepsToPivot::class => [],
         ];
 
         foreach ($commands as $command => $variants) {

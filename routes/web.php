@@ -184,7 +184,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::as('tool.')->group(function () {
                     $scans = \App\Helpers\Cache\Scan::allShorts();
                     $simpleScans = \App\Helpers\Cache\Scan::simpleShorts();
-                    $expertScans = \App\Helpers\Cache\Scan::expertShorts();
 
                     // TODO: Deprecate to whereIn in L9
                     Route::get('{scan}', [Cooperation\Frontend\Tool\ScanController::class, 'redirect'])

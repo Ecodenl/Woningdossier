@@ -41,6 +41,11 @@ class ToolCalculationResult extends Model
 {
     use HasTranslations, HasShortTrait;
 
+    protected $fillable = [
+        'name',
+        'help_text',
+    ];
+
     protected $translatable = [
         'name',
         'help_text'

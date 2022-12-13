@@ -445,6 +445,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         ->parameter('tool-questions', 'toolQuestion')
                         ->only(['index', 'edit', 'update']);
 
+                    Route::resource('tool-calculation-results', Cooperation\Admin\SuperAdmin\ToolCalculationResultController::class)
+                        ->parameter('tool-calculation-results', 'toolCalculationResult')
+                        ->only(['index', 'edit', 'update']);
+
                     Route::resource('measure-applications', Cooperation\Admin\SuperAdmin\MeasureApplicationController::class)
                         ->parameter('measure-applications', 'measureApplication')
                         ->only(['index', 'edit', 'update']);

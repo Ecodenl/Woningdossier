@@ -116,7 +116,7 @@ export default (inputSource = 'no-match') => ({
                         type = input.tagName;
                     }
 
-                    if (typeof type !== 'undefined') {
+                    if (typeof type !== 'undefined' && ! input.hasAttribute('disabled')) {
                         type = type.toLowerCase();
 
                         switch (type) {

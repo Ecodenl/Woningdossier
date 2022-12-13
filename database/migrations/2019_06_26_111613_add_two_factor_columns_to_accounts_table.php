@@ -13,20 +13,22 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('accounts', function (Blueprint $table) {
-            $table->text('two_factor_secret')
-                ->after('password')
-                ->nullable();
+        if (! Schema::hasColumn('accounts', 'two_factor-secret')) {
+            Schema::table('accounts', function (Blueprint $table) {
+                $table->text('two_factor_secret')
+                    ->after('password')
+                    ->nullable();
 
-            $table->text('two_factor_recovery_codes')
-                ->after('two_factor_secret')
-                ->nullable();
+                $table->text('two_factor_recovery_codes')
+                    ->after('two_factor_secret')
+                    ->nullable();
 
-            // We want this even if not enabled, we might need it in the future
-            $table->timestamp('two_factor_confirmed_at')
-                ->after('two_factor_recovery_codes')
-                ->nullable();
-        });
+                // We want this even if not enabled, we might need it in the future
+                $table->timestamp('two_factor_confirmed_at')
+                    ->after('two_factor_recovery_codes')
+                    ->nullable();
+            });
+        }
     }
 
     /**
@@ -36,12 +38,14 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('accounts', function (Blueprint $table) {
-            $table->dropColumn([
-                'two_factor_secret',
-                'two_factor_recovery_codes',
-                'two_factor_confirmed_at',
-            ]);
-        });
+        if (Schema::hasColumn('accounts', 'two_factor-secret')) {
+            Schema::table('accounts', function (Blueprint $table) {
+                $table->dropColumn([
+                    'two_factor_secret',
+                    'two_factor_recovery_codes',
+                    'two_factor_confirmed_at',
+                ]);
+            });
+        }
     }
 };

@@ -29,17 +29,13 @@ export default (initiallyOpen = false) => ({
 
             if (null !== context.select) {
                 let observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        context.constructSelect();
-                    });
+                    context.constructSelect();
                 });
 
                 observer.observe(context.select, { childList: true });
 
                 let attributeObserver = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        context.constructSelect();
-                    });
+                    context.setDisabledState();
                 });
 
                 attributeObserver.observe(context.select, { attributeFilter: ['disabled'] });
@@ -314,6 +310,44 @@ export default (initiallyOpen = false) => ({
 
         // Append to list
         parent.appendChild(newOption);
+    },
+    setDisabledState() {
+        let disabled = !! this.select.getAttribute('disabled')
+        this.disabled = disabled;
+
+        if (disabled) {
+            this.open = false;
+        }
+
+        if (disabled) {
+            this.$refs['select-input'].classList.add('disabled');
+        } else {
+            this.$refs['select-input'].classList.remove('disabled');
+        }
+
+        let groupOptions = this.$refs['select-input-group'].querySelectorAll('.form-input-option');
+        for (let i = 0; i < groupOptions.length; i++) {
+            let groupOption = groupOptions[i];
+            if (disabled) {
+                groupOption.classList.add('disabled');
+            } else {
+                groupOption.classList.remove('disabled');
+            }
+        }
+
+        let options = this.$refs['select-options'].children;
+        for (let i = 0; i < options.length; i++) {
+            let option = options[i];
+            if (disabled) {
+                if (! option.classList.contains('disabled')) {
+                    option.classList.add('disabled', 'readonly');
+                }
+            } else {
+                if (option.classList.contains('readonly')) {
+                    option.classList.remove('disabled', 'readonly');
+                }
+            }
+        }
     },
     // Find a custom select option by given value
     findOptionByValue(value) {

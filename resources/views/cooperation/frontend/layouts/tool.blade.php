@@ -36,7 +36,7 @@
             @endphp
 
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
-                <div class="flex flex-row flex-wrap w-full">
+                <div class="flex flex-row flex-wrap w-full" x-data>
 {{--                    <h2 class="heading-2">--}}
 {{--                        {{$currentStep->name}}--}}
 {{--                    </h2>--}}

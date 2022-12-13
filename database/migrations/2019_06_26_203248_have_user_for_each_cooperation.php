@@ -25,7 +25,7 @@ class HaveUserForEachCooperation extends Migration
             foreach ($combinations as $combination) {
                 $user = DB::table('users')->where('id', '=',
                     $combination->user_id)->whereNull('cooperation_id')->first();
-                if ($user instanceof stdClass) {
+                if ($user instanceof \stdClass) {
                     // update the user
                     DB::table('users')->where('id', '=',
                         $combination->user_id)->update(['cooperation_id' => $combination->cooperation_id]);
@@ -33,7 +33,7 @@ class HaveUserForEachCooperation extends Migration
                     // find the user (for the account ID)
                     $user = DB::table('users')->where('id', '=',
                         $combination->user_id)->first();
-                    if ($user instanceof stdClass) {
+                    if ($user instanceof \stdClass) {
                         DB::table('users')->insert([
                             'first_name'     => $user->first_name,
                             'last_name'      => $user->last_name,
@@ -63,7 +63,7 @@ class HaveUserForEachCooperation extends Migration
             // get related user
             $user = DB::table('users')->find($modelWithRoles->model_id);
 
-            if ($user instanceof stdClass) {
+            if ($user instanceof \stdClass) {
                 // get actual user by account_id and cooperation_id
                 $sibling = DB::table('users')
                              ->where('account_id', '=', $user->account_id)
@@ -71,7 +71,7 @@ class HaveUserForEachCooperation extends Migration
                                  $modelWithRoles->cooperation_id)
                              ->first();
 
-                if ($sibling instanceof stdClass && $sibling->id != $user->id) {
+                if ($sibling instanceof \stdClass && $sibling->id != $user->id) {
                     DB::table('model_has_roles')
                       ->where('model_type', '=', \App\Models\User::class)
                       ->where('model_id', '=', $modelWithRoles->model_id)
@@ -110,12 +110,12 @@ class HaveUserForEachCooperation extends Migration
         $completedQuestionnaires = DB::table('completed_questionnaires')->get();
         foreach ($completedQuestionnaires as $completedQuestionnaire) {
             $questionnaire = DB::table('questionnaires')->find($completedQuestionnaire->questionnaire_id);
-            if ($questionnaire instanceof stdClass) {
+            if ($questionnaire instanceof \stdClass) {
                 $user = DB::table('users')
                           ->where('id', '=', $completedQuestionnaire->user_id)
                           ->where('cooperation_id', '=', $questionnaire->cooperation_id)
                         ->first();
-                if ($user instanceof stdClass) {
+                if ($user instanceof \stdClass) {
                     DB::table('completed_questionnaires')
                       ->where('id', '=', $completedQuestionnaire->id)
                       ->where('questionnaire_id', '=',
@@ -143,7 +143,7 @@ class HaveUserForEachCooperation extends Migration
         foreach ($rows as $row) {
             // get current attached user
             $current = DB::table('users')->find($row->$userColumn);
-            if ($current instanceof stdClass) {
+            if ($current instanceof \stdClass) {
                 // get all siblings for the current attached user
                 $siblings = DB::table('users')
                               ->where('account_id', '=', $current->account_id)

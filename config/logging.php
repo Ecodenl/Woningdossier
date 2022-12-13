@@ -60,6 +60,12 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
+        'api' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/api.log'),
+            'days' => 14
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

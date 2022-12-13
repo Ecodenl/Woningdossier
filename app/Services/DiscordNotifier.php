@@ -16,7 +16,7 @@ class DiscordNotifier
     public function __construct()
     {
         $this->client = new Client();
-        $this->key = config('hoomdossier.webhooks.discord', '');
+        $this->key = config('hoomdossier.webhooks.discord', '') ?? '';
     }
 
     public function notify(string $message)

@@ -85,6 +85,7 @@ return [
                     'questionnaires' => 'Vragenlijsten',
                     'key-figures' => 'Kengetallen',
                     'translations' => 'Vertalingen',
+                    'tool-calculation-results' => 'Rekenresultaat vertalingen',
                     'tool-questions' => 'Vraag vertalingen',
                     'example-buildings' => 'Voorbeeldwoningen',
                 ],

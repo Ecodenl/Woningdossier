@@ -29,12 +29,16 @@ export default (initiallyOpen = false) => ({
 
             if (null !== context.select) {
                 let observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        context.constructSelect(false);
-                    });
+                    context.constructSelect(false);
                 });
 
                 observer.observe(context.select, { childList: true });
+
+                let attributeObserver = new MutationObserver(function(mutations) {
+                    context.setDisabledState();
+                });
+
+                attributeObserver.observe(this.select, { attributeFilter: ['disabled'] });
 
                 // Bind event listener for change
                 // TODO: Check if values update correctly when data is changed on Livewire side
@@ -55,9 +59,16 @@ export default (initiallyOpen = false) => ({
         });
 
         if (this.multiple) {
-            // If it's multiple, we will add an event listener to rebuild the input on resizing
+            // If it's multiple, we will add an event listener to rebuild the input on resizing,
+            // as well as on switching tabs.
             window.addEventListener('resize', (event) => {
                 this.setInputValue();
+            });
+
+            window.addEventListener('tab-switched', (event) => {
+                setTimeout(() => {
+                    this.setInputValue();
+                });
             });
         }
 
@@ -70,52 +81,57 @@ export default (initiallyOpen = false) => ({
         let before = this.values;
 
         let wrapper = this.$refs['select-wrapper'];
-        // Get the select element
-        this.select = wrapper.querySelector('select');
-        // Select is defined!
-        if (null !== this.select) {
-            this.multiple = this.select.hasAttribute('multiple');
 
-            this.disabled = this.select.hasAttribute('disabled');
+        if (wrapper) {
+            // Get the select element
+            this.select = wrapper.querySelector('select');
+            // Select is defined!
+            if (null !== this.select) {
+                this.multiple = this.select.hasAttribute('multiple');
 
-            // Add class if disabled, so CSS can do magic
-            if (this.disabled) {
-                this.$refs['select-input'].classList.add('disabled');
-                this.open = false;
-            }
+                this.disabled = this.select.hasAttribute('disabled');
 
-            // Build the alpine select
-            let optionDropdown = this.$refs['select-options'];
-            // Clear any options there might be left
-            optionDropdown.children.remove();
-            let options = this.select.options;
-            // Loop options to build
-            // Note: we cannot use forEach, as options is a HTML collection, which is not an array
-            for (let i = 0; i < options.length; i++) {
-                this.buildOption(optionDropdown, options[i]);
-            }
-
-            // Hide the original select
-            this.select.style.display = 'none';
-            // Show the new alpine select
-            this.$refs['select-input-group'].style.display = '';
-
-            setTimeout(() => {
-                this.updateSelectedValues();
-                let after = this.values;
-
-                // Ensure any potentially hidden values are no longer selected if the data changes after initial boot.
-                // We compare before and after because we don't want to unnecessarily cast multiple changes.
-                if (! isFirstBoot && JSON.stringify(before) !== JSON.stringify(after)) {
-                    if (this.livewire) {
-                        if (this.wireModel) {
-                            this.$wire.set(this.wireModel, this.values);
-                        }
-                    } else {
-                        window.triggerEvent(this.select, 'change');
-                    }
+                // Add class if disabled, so CSS can do magic
+                if (this.disabled) {
+                    this.$refs['select-input'].classList.add('disabled');
+                    this.open = false;
+                } else {
+                    this.$refs['select-input'].classList.remove('disabled');
                 }
-            });
+
+                // Build the alpine select
+                let optionDropdown = this.$refs['select-options'];
+                // Clear any options there might be left
+                optionDropdown.children.remove();
+                let options = this.select.options;
+                // Loop options to build
+                // Note: we cannot use forEach, as options is a HTML collection, which is not an array
+                for (let i = 0; i < options.length; i++) {
+                    this.buildOption(optionDropdown, options[i]);
+                }
+
+                // Hide the original select
+                this.select.style.display = 'none';
+                // Show the new alpine select
+                this.$refs['select-input-group'].style.display = '';
+
+                setTimeout(() => {
+                    this.updateSelectedValues();
+                    let after = this.values;
+
+                    // Ensure any potentially hidden values are no longer selected if the data changes after initial boot.
+                    // We compare before and after because we don't want to unnecessarily cast multiple changes.
+                    if (! isFirstBoot && JSON.stringify(before) !== JSON.stringify(after)) {
+                        if (this.livewire) {
+                            if (this.wireModel) {
+                                this.$wire.set(this.wireModel, this.values);
+                            }
+                        } else {
+                            window.triggerEvent(this.select, 'change');
+                        }
+                    }
+                });
+            }
         }
     },
     toggle() {
@@ -191,61 +207,69 @@ export default (initiallyOpen = false) => ({
     },
     // Display the values in the input field (human readable)
     setInputValue() {
-        if (this.multiple) {
-            // Reset first
-            let input = this.$refs['select-input'];
-            input.value = '';
+        if (this.$refs['select-input']) {
+            if (this.multiple) {
+                // Reset first
+                let input = this.$refs['select-input'];
+                input.value = '';
 
-            let inputGroup = this.$refs['select-input-group'];
-            inputGroup.querySelectorAll('.form-input-option').remove();
+                let inputGroup = this.$refs['select-input-group'];
+                inputGroup.querySelectorAll('.form-input-option').remove();
 
-            // Space to keep from the right at all times to accommodate the icons
-            const inputHeight = 44; // px, same as 2.75rem
-            const right = 88; // px, same as 5.5rem
-            const topMargin = 2 // px, same as 0.125rem
-            const leftMargin = 4 // px, same as 0.25rem
-            const maxWidth = parseInt(getComputedStyle(input).width) - right;
-            let currentWidth = 0;
-            let rows = 1;
+                // Space to keep from the right at all times to accommodate the icons
+                const inputHeight = 44; // px, same as 2.75rem
+                const right = 88; // px, same as 5.5rem
+                const topMargin = 2 // px, same as 0.125rem
+                const leftMargin = 4 // px, same as 0.25rem
+                const maxWidth = parseInt(getComputedStyle(input).width) - right;
+                let currentWidth = 0;
+                let rows = 1;
 
-            for (let value of this.values) {
-                let option = this.findOptionByValue(value);
+                for (let value of this.values) {
+                    let option = this.findOptionByValue(value);
 
-                let text = option?.textContent ?? value;
-                let newInputOption = document.createElement('span');
+                    let text = option?.textContent ?? value;
+                    let newInputOption = document.createElement('span');
 
-                if (option && option.hasAttribute("data-icon")) {
-                    let icon = document.createElement('i');
-                    icon.classList.add('icon-sm', option.getAttribute("data-icon"), 'mr-2', 'static');
-                    newInputOption.appendChild(icon);
-                }
-
-                newInputOption.appendChild(document.createTextNode(text));
-                newInputOption.classList.add('form-input-option');
-                newInputOption.setAttribute("data-value", value);
-                newInputOption.setAttribute("x-on:click", "changeOption($el)");
-                inputGroup.appendChild(newInputOption);
-
-                // Use timeout, so it processes after the current thread. Else, computedStyle will be 'auto'
-                setTimeout(() => {
-                    let newWidth = currentWidth + leftMargin + parseInt(getComputedStyle(newInputOption).width);
-
-                    if (newWidth > maxWidth) {
-                        rows++;
-                        currentWidth = 0;
+                    if (option && option.hasAttribute("data-icon")) {
+                        let icon = document.createElement('i');
+                        icon.classList.add('icon-sm', option.getAttribute("data-icon"), 'mr-2', 'static');
+                        newInputOption.appendChild(icon);
                     }
 
-                    newInputOption.style.left = currentWidth + leftMargin + "px";
-                    newInputOption.style.top = topMargin + (rows - 1) * inputHeight + 'px';
+                    newInputOption.appendChild(document.createTextNode(text));
+                    newInputOption.classList.add('form-input-option');
 
-                    // Always set height
-                    input.style.height = rows * inputHeight + 'px';
+                    if (this.disabled) {
+                        newInputOption.classList.add('disabled');
+                    }
 
-                    currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
-                });
+                    newInputOption.setAttribute("data-value", value);
+                    newInputOption.setAttribute("x-on:click", "changeOption($el)");
+                    inputGroup.appendChild(newInputOption);
+
+                    // Use timeout, so it processes after the current thread. Else, computedStyle will be 'auto'
+                    setTimeout(() => {
+                        let newWidth = currentWidth + leftMargin + parseInt(getComputedStyle(newInputOption).width);
+
+                        if (newWidth > maxWidth) {
+                            rows++;
+                            currentWidth = 0;
+                        }
+
+                        newInputOption.style.left = currentWidth + leftMargin + "px";
+                        newInputOption.style.top = topMargin + (rows - 1) * inputHeight + 'px';
+
+                        // Always set height
+                        input.style.height = rows * inputHeight + 'px';
+
+                        currentWidth += leftMargin + parseInt(getComputedStyle(newInputOption).width);
+                    });
+
+                }
+            } else {
+                this.$refs['select-input'].value = this.findOptionByValue(this.values)?.textContent ?? this.values;
             }
-        } else {
-            this.$refs['select-input'].value = this.findOptionByValue(this.values)?.textContent ?? this.values;
         }
     },
     // Build a custom option
@@ -274,10 +298,50 @@ export default (initiallyOpen = false) => ({
 
         if (option.hasAttribute('disabled')) {
             newOption.classList.add('disabled');
+        } else if (this.disabled) {
+            newOption.classList.add('disabled', 'readonly');
         }
 
         // Append to list
         parent.appendChild(newOption);
+    },
+    setDisabledState() {
+        let disabled = !! this.select.getAttribute('disabled')
+        this.disabled = disabled;
+
+        if (disabled) {
+            this.open = false;
+        }
+
+        if (disabled) {
+            this.$refs['select-input'].classList.add('disabled');
+        } else {
+            this.$refs['select-input'].classList.remove('disabled');
+        }
+
+        let groupOptions = this.$refs['select-input-group'].querySelectorAll('.form-input-option');
+        for (let i = 0; i < groupOptions.length; i++) {
+            let groupOption = groupOptions[i];
+            if (disabled) {
+                groupOption.classList.add('disabled');
+            } else {
+                groupOption.classList.remove('disabled');
+            }
+        }
+
+        let options = this.$refs['select-options'].children;
+        for (let i = 0; i < options.length; i++) {
+            let option = options[i];
+            if (disabled) {
+                if (! option.classList.contains('disabled')) {
+                    option.classList.add('disabled', 'readonly');
+                }
+            } else {
+                if (option.classList.contains('readonly')) {
+                    option.classList.remove('disabled', 'readonly');
+                }
+            }
+        }
     },
     // Find a custom select option by given value
     findOptionByValue(value) {

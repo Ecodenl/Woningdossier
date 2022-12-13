@@ -2,6 +2,7 @@
 
 namespace App\Http\ViewComposers;
 
+use App\Models\Scan;
 use App\Models\Step;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -18,8 +19,6 @@ class LayoutComposer
 
     public function create(View $view)
     {
-        $cooperation = $this->request->route('cooperation');
-
         $currentStep = $this->request->route('step');
 
         if (! $currentStep instanceof Step && Str::startsWith($this->request->route()->getName(), 'cooperation.tool.')) {
@@ -28,13 +27,14 @@ class LayoutComposer
             $currentStep = Step::where('slug', $slug)->first();
         }
 
-        // TODO: Legacy support but perhaps ready for deprecation?
-        //if ($currentStep instanceof Step) {
-        //    $currentStep->load(['questionnaires' => function ($query) use ($cooperation) {
-        //        $query->active()->where('cooperation_id', $cooperation->id)->orderByPivot('order');
-        //    }]);
-        //}
-
         $view->with(compact('currentStep'));
+
+        $scan = $this->request->route('scan');
+        if (! $scan instanceof Scan && $currentStep instanceof Step) {
+            // This currently happens in the expert since the expert doesn't have the scan as parametable in the route
+            $scan = $currentStep->scan;
+        }
+
+        $view->with(compact('scan'));
     }
 }

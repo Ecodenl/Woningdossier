@@ -16,7 +16,7 @@
                     @foreach($scans as $scan)
                         <a class="btn btn-purple"
                            href="{{\App\Services\Scans\ScanFlowService::init($scan, $building, $inputSource)->resolveInitialUrl()}}">
-                            {{$scan->name}} {{$scan->short}}
+                            {{$scan->name}}
                         </a>
                     @endforeach
                 </div>

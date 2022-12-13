@@ -10,6 +10,8 @@ use App\Rules\HouseNumber;
 use App\Rules\Api\V1\HouseNumberExtension;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class RegisterFormRequest extends ApiRequest
 {

@@ -45,7 +45,7 @@ class SpecificExampleBuilding extends QuestionValuable
                     'extra' => [
                         'icon' => 'icon-not-relevant',
                     ],
-                    'name' => optional($genericBuilding)->id === $exampleBuilding->id ? __('cooperation/frontend/tool/quick-scan/question-values.specific-example-building.no-option') : $exampleBuilding->name,
+                    'name' => optional($genericBuilding)->id === $exampleBuilding->id ? __('cooperation/frontend/tool/simple-scan/question-values.specific-example-building.no-option') : $exampleBuilding->name,
                     'value' => $exampleBuilding->id,
                 ];
             });

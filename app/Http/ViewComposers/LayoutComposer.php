@@ -2,6 +2,7 @@
 
 namespace App\Http\ViewComposers;
 
+use App\Models\Scan;
 use App\Models\Step;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -29,6 +30,11 @@ class LayoutComposer
         $view->with(compact('currentStep'));
 
         $scan = $this->request->route('scan');
+        if (! $scan instanceof Scan && $currentStep instanceof Step) {
+            // This currently happens in the expert since the expert doesn't have the scan as parametable in the route
+            $scan = $currentStep->scan;
+        }
+
         $view->with(compact('scan'));
     }
 }

@@ -3,13 +3,14 @@
 @section('content')
     <section class="section">
         <div class="container">
-            <form action="{{ route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.store') }}"
+            <form action="{{ route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.store', compact('type')) }}"
                   method="post">
                 @csrf
 
                 <div class="row">
                     <div class="col-sm-6">
-                        <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index')}}" class="btn btn-warning">
+                        <a id="leave-creation-tool" class="btn btn-warning"
+                           href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('type'))}}">
                             @lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool')
                         </a>
                     </div>
@@ -64,7 +65,7 @@
                                                 @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-from.label')
                                             </label>
                                             <div class="input-group">
-                                                <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
+                                                <span class="input-group-addon"><i class="icon-md icon-moneybag"></i></span>
                                                 <input type="text" class="form-control" id="costs-from"
                                                        name="cooperation_measure_applications[costs][from]"
                                                        value="{{ old("cooperation_measure_applications.costs.from")}}"
@@ -78,7 +79,7 @@
                                                 @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-to.label')
                                             </label>
                                             <div class="input-group">
-                                                <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
+                                                <span class="input-group-addon"><i class="icon-md icon-moneybag"></i></span>
                                                 <input type="text" class="form-control" id="costs-to"
                                                        name="cooperation_measure_applications[costs][to]"
                                                        value="{{ old("cooperation_measure_applications.costs.to")}}"
@@ -94,7 +95,7 @@
                                                 @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.savings.label')
                                             </label>
                                             <div class="input-group">
-                                                <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
+                                                <span class="input-group-addon"><i class="icon-md icon-moneybag"></i></span>
                                                 <input type="text" class="form-control" id="savings-money"
                                                        name="cooperation_measure_applications[savings_money]"
                                                        value="{{ old("cooperation_measure_applications.savings_money")}}"

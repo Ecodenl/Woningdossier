@@ -12,6 +12,7 @@ use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -133,49 +134,60 @@ abstract class Scannable extends Component
         $this->setDirty(true);
     }
 
+
     protected function evaluateToolQuestions()
     {
         $evaluator = ConditionEvaluator::init()
             ->building($this->building)
             ->inputSource($this->masterInputSource);
 
+        \DB::enableQueryLog();
         // First fetch all conditions, so we can retrieve any required related answers in one go
-        $conditionsForAllQuestions = [];
-        foreach (array_filter($this->toolQuestions->pluck('pivot.conditions')->all()) as $condition) {
-            $conditionsForAllQuestions = array_merge($conditionsForAllQuestions, $condition);
+        $conditionsForAllSubSteppables = [];
+        foreach (array_filter($this->subStep->subSteppables->pluck('conditions')->all()) as $condition) {
+            $conditionsForAllSubSteppables = array_merge($conditionsForAllSubSteppables, $condition);
         }
-        $answersForAllQuestions = $evaluator->getToolAnswersForConditions($conditionsForAllQuestions, collect($this->filledInAnswers));
+        $answersForAllSubSteppables = $evaluator->getToolAnswersForConditions(
+            $conditionsForAllSubSteppables,
+            collect($this->filledInAnswers)
+        );
 
-        foreach ($this->toolQuestions as $index => $toolQuestion) {
-            if (! empty($toolQuestion->pivot->conditions)) {
-                $conditions = $toolQuestion->pivot->conditions;
+        foreach ($this->subStep->subSteppables as $index => $subSteppablePivot) {
+            $toolQuestion = $subSteppablePivot->subSteppable;
 
-                if (! $evaluator->evaluateCollection($conditions, $answersForAllQuestions)) {
-                    $this->toolQuestions = $this->toolQuestions->forget($index);
+            if (! empty($subSteppablePivot->conditions)) {
+                $conditions = $subSteppablePivot->conditions;
+
+                if (! $evaluator->evaluateCollection($conditions, $answersForAllSubSteppables)) {
+                    $this->subStep->subSteppables = $this->subStep->subSteppables->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they
                     // will have to fill in the data again. We don't want to save values to the database
                     // that are unvalidated (or not relevant).
 
                     // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
-                    $this->filledInAnswers[$toolQuestion->short] = null;
 
-                    // and unset the validation for the question based on type.
-                    switch ($toolQuestion->data_type) {
-                        case Caster::JSON:
-                            foreach ($toolQuestion->options as $option) {
-                                unset($this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"]);
-                            }
-                            break;
+                    // we will only unset the rules if its a tool question, not relevant for other sub steppables.
+                    if ($subSteppablePivot->isToolQuestion()) {
+                        $this->filledInAnswers[$toolQuestion->short] = null;
 
-                        case Caster::ARRAY:
-                            unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
-                            unset($this->rules["filledInAnswers.{$toolQuestion->short}.*"]);
-                            break;
+                        // and unset the validation for the question based on type.
+                        switch ($toolQuestion->data_type) {
+                            case Caster::JSON:
+                                foreach ($toolQuestion->options as $option) {
+                                    unset($this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"]);
+                                }
+                                break;
 
-                        default:
-                            unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
-                            break;
+                            case Caster::ARRAY:
+                                unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
+                                unset($this->rules["filledInAnswers.{$toolQuestion->short}.*"]);
+                                break;
+
+                            default:
+                                unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
+                                break;
+                        }
                     }
                 }
             }

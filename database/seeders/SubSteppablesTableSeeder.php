@@ -1240,7 +1240,7 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                     ],
                 ],
-                'Welke grote maatregegelen' => [
+                'Welke grote maatregelen' => [
                     'order' => 1,
                     // note: dit is een custom vraag, zie CustomChanges
                     'sub_step_template_id' => $templateCustomChanges->id,

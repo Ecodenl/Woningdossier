@@ -98,6 +98,7 @@ class ScanFlowService
             ->whereNotIn('sub_step_id', $subStepsRelated->pluck('id')->toArray())
             ->get();
 
+
         $evaluator = ConditionEvaluator::init()
             ->building($building)
             ->inputSource($masterInputSource);
@@ -186,6 +187,7 @@ class ScanFlowService
         $nextSubStep = null;
         $nextQuestionnaire = null;
 
+
         if ($this->subStep instanceof SubStep) {
             $nextSubStep = $this->step->subSteps()
                 ->where('order', '>', $this->subStep->order)
@@ -199,7 +201,7 @@ class ScanFlowService
                 if ($this->step->hasActiveQuestionnaires()) {
                     $nextQuestionnaire = $this->step->questionnaires()->active()->orderBy('order')->first();
                 } else {
-                    $nextStep = $this->step->nextQuickScan();
+                    $nextStep = $this->step->nextStepForScan();
                     // the last can't have a next one
                     if ($nextStep instanceof Step) {
                         // the previous step is a different one, so we should get the first sub step of the previous step
@@ -217,7 +219,7 @@ class ScanFlowService
                 $nextQuestionnaire = $potentialQuestionnaire;
             } else {
                 // No more questionnaires, let's start the logic to get the next sub step
-                $nextStep = $this->step->nextQuickScan();
+                $nextStep = $this->step->nextStepForScan();
                 // the last can't have a next one
                 if ($nextStep instanceof Step) {
                     // the previous step is a different one, so we should get the first sub step of the previous step
@@ -311,11 +313,8 @@ class ScanFlowService
 
             // it could be that there is no completed step yet, in that case we just pick the first one.
             if (! $mostRecentCompletedStep instanceof Step) {
-                $mostRecentCompletedStep = Step::quickScan()
-                    ->orderBy('order')
-                    ->first();
+                $mostRecentCompletedStep = $scan->steps()->orderBy('order')->first();
             }
-
             if ($mostRecentCompletedSubStep instanceof SubStep) {
                 $url = ScanFlowService::init($scan, $building, $masterInputSource)
                     ->forStep($mostRecentCompletedStep)

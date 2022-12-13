@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
+use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
@@ -200,18 +201,7 @@ class Form extends Component
         $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
 
         // Set cards
-        foreach (UserActionPlanAdviceService::getCategories() as $category) {
-            $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
-                ->where('user_id', $this->building->user->id)
-                ->withoutDeletedCooperationMeasureApplications($this->masterInputSource)
-                ->category($category)
-                ->orderBy('order')
-                ->get();
-
-
-            $this->cards = array_merge($this->cards, $this->convertAdvicesToCards($advices, $category));
-        }
-
+        $this->loadVisibleCards();
         $this->loadHiddenCards();
         $this->recalculate();
     }
@@ -627,12 +617,29 @@ class Form extends Component
         $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts');
     }
 
+    private function loadVisibleCards()
+    {
+        foreach (UserActionPlanAdviceService::getCategories() as $category) {
+            $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
+                ->where('user_id', $this->building->user->id)
+                ->withoutDeletedCooperationMeasureApplications($this->masterInputSource)
+                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE)
+                ->category($category)
+                ->orderBy('order')
+                ->get();
+
+
+            $this->cards = array_merge($this->cards, $this->convertAdvicesToCards($advices, $category));
+        }
+    }
+
     private function loadHiddenCards()
     {
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->invisible()
                 ->withoutDeletedCooperationMeasureApplications($this->masterInputSource)
+                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE)
                 ->where('user_id', $this->building->user->id)
                 ->category($category)
                 ->orderBy('order')

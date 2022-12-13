@@ -3,12 +3,14 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\VisibleScope;
 use Illuminate\Support\Arr;
@@ -18,8 +20,8 @@ use Livewire\Component;
 
 class CustomChanges extends Component
 {
-    public array $customMeasureApplicationsFormData;
-    public array $cooperationMeasureApplicationsFormData;
+    public array $customMeasureApplicationsFormData = [];
+    public array $cooperationMeasureApplicationsFormData = [];
     public array $selectedCustomMeasureApplications = [];
     public array $selectedCooperationMeasureApplications = [];
     public array $previousSelectedState = [];
@@ -27,8 +29,11 @@ class CustomChanges extends Component
     public InputSource $masterInputSource;
     public InputSource $currentInputSource;
 
+    public Scan $scan;
     public Cooperation $cooperation;
     public Building $building;
+
+    public string $type;
 
     protected array $rules = [
         'customMeasureApplicationsFormData.*.name' => 'required',
@@ -42,6 +47,8 @@ class CustomChanges extends Component
 
     public function mount()
     {
+        $this->type = CooperationMeasureApplicationHelper::getTypeForScan($this->scan);
+
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
@@ -58,7 +65,7 @@ class CustomChanges extends Component
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
         ];
 
-        $this->setCustomMeasureApplications();
+        $this->setMeasureApplications();
     }
 
     public function render()
@@ -281,10 +288,10 @@ class CustomChanges extends Component
 
         $this->dispatchBrowserEvent('close-modal');
 
-        $this->setCustomMeasureApplications();
+        $this->setMeasureApplications();
     }
 
-    private function setCustomMeasureApplications()
+    private function setMeasureApplications()
     {
         $this->customMeasureApplicationsFormData = [];
         // Retrieve the user's custom measures
@@ -292,8 +299,10 @@ class CustomChanges extends Component
             ->forInputSource($this->masterInputSource)->get();
 
         $this->cooperationMeasureApplicationsFormData = [];
+
         // Retrieve the cooperation's custom measures
-        $cooperationMeasureApplications = $this->cooperation->cooperationMeasureApplications;
+        $scope = "{$this->type}Measures";
+        $cooperationMeasureApplications = $this->cooperation->cooperationMeasureApplications()->{$scope}()->get();
 
         // Set the cooperation measures
         /** @var \App\Models\CooperationMeasureApplication $cooperationMeasureApplication */
@@ -319,45 +328,48 @@ class CustomChanges extends Component
             }
         }
 
-        // Set the custom measures
-        /** @var CustomMeasureApplication $customMeasureApplication */
-        foreach ($customMeasureApplications as $index => $customMeasureApplication) {
-            $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name', 'info',]);
-            $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
+        // Only set custom measures if we're setting small types
+        if ($this->type === CooperationMeasureApplicationHelper::SMALL_MEASURE) {
+            // Set the custom measures
+            /** @var CustomMeasureApplication $customMeasureApplication */
+            foreach ($customMeasureApplications as $index => $customMeasureApplication) {
+                $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name', 'info',]);
+                $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
 
-            $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices()
-                ->forInputSource($this->masterInputSource)
-                ->first();
+                $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices()
+                    ->forInputSource($this->masterInputSource)
+                    ->first();
 
-            if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
-                $costs = $userActionPlanAdvice->costs;
+                if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
+                    $costs = $userActionPlanAdvice->costs;
 
-                $this->customMeasureApplicationsFormData[$index]['costs'] = [
-                    'from' => NumberFormatter::format($costs['from'] ?? '', 1),
-                    'to' => NumberFormatter::format($costs['to'] ?? '', 1),
-                ];
+                    $this->customMeasureApplicationsFormData[$index]['costs'] = [
+                        'from' => NumberFormatter::format($costs['from'] ?? '', 1),
+                        'to' => NumberFormatter::format($costs['to'] ?? '', 1),
+                    ];
 
-                $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
+                    $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
 
-                if ($userActionPlanAdvice->visible) {
-                    $this->selectedCustomMeasureApplications[] = (string)$index;
+                    if ($userActionPlanAdvice->visible) {
+                        $this->selectedCustomMeasureApplications[] = (string)$index;
+                    }
                 }
             }
-        }
 
-        // Append the option to add a new application
-        $this->customMeasureApplicationsFormData[] = [
-            'id' => null,
-            'hash' => null,
-            'name' => null,
-            'info' => null,
-            'costs' => [
-                'from' => null,
-                'to' => null,
-            ],
-            'savings_money' => null,
-            'extra' => ['icon' => 'icon-tools'],
-        ];
+            // Append the option to add a new application
+            $this->customMeasureApplicationsFormData[] = [
+                'id' => null,
+                'hash' => null,
+                'name' => null,
+                'info' => null,
+                'costs' => [
+                    'from' => null,
+                    'to' => null,
+                ],
+                'savings_money' => null,
+                'extra' => ['icon' => 'icon-tools'],
+            ];
+        }
 
         // We're done, let's define our selected state
         $this->previousSelectedState = [

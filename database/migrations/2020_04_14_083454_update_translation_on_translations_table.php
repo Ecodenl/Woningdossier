@@ -13,7 +13,7 @@ class UpdateTranslationOnTranslationsTable extends Migration
     {
         $step = DB::table('steps')->where('short', 'ventilation')->first();
 
-        if ($step instanceof stdClass) {
+        if ($step instanceof \stdClass) {
             DB::table('translations')
                 ->where('key', $step->name)
                 ->where('language', 'nl')
@@ -39,7 +39,7 @@ class UpdateTranslationOnTranslationsTable extends Migration
     {
         $step = DB::table('steps')->where('short', 'ventilation')->first();
 
-        if ($step instanceof stdClass) {
+        if ($step instanceof \stdClass) {
             DB::table('translations')
                 ->where('key', $step->name)
                 ->where('language', 'nl')

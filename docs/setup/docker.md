@@ -8,7 +8,7 @@ We will assume you have aliased `./vendor/bin/sail` to `sail`.
 
 ## Set up
 ```
-composer install --no-platform-reqs
+composer install --ignore-platform-reqs
 sail build --no-cache
 sail up -d
 sail composer install

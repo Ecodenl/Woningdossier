@@ -19,7 +19,7 @@ class RemoveInsulatedGlazingIndicationForCostsGasTranslationFromLanguageLines ex
                    ->where('group', 'insulated-glazing')
                    ->where('key', 'indication-for-costs.gas-savings.title')->first();
 
-        if ($title instanceof stdClass && $help instanceof stdClass) {
+        if ($title instanceof \stdClass && $help instanceof \stdClass) {
             DB::table('language_lines')
               ->where('group', 'insulated-glazing')
               ->where('key', 'indication-for-costs.gas-savings.title')
@@ -40,7 +40,7 @@ class RemoveInsulatedGlazingIndicationForCostsGasTranslationFromLanguageLines ex
     public function down()
     {
         $step = DB::table('steps')->where('slug', 'insulated-glazing')->first();
-        if ($step instanceof stdClass) {
+        if ($step instanceof \stdClass) {
             DB::table('language_lines')
               ->insert([
                   'group'   => 'insulated-glazing',

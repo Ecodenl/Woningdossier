@@ -43,10 +43,10 @@ class AddNewTranslationsToLanguageLinesTable extends Migration
             $stepId = null;
             if ('boiler' == $group) {
                 $step = DB::table('steps')->where('slug', 'high-efficiency-boiler')->first();
-                if ($step instanceof stdClass) {
+                if ($step instanceof \stdClass) {
                     $stepId = $step->id;
                 }
-            } elseif (DB::table('steps')->where('slug', $group)->first() instanceof stdClass) {
+            } elseif (DB::table('steps')->where('slug', $group)->first() instanceof \stdClass) {
                 $stepId = DB::table('steps')->where('slug', $group)->first()->id;
             }
 
@@ -59,9 +59,9 @@ class AddNewTranslationsToLanguageLinesTable extends Migration
                         // check if the title and help key does not exists.
                         if (! DB::table('language_lines')->where('group',
                                     $group)->where('key',
-                                    $fullHelpKey)->first() instanceof stdClass && ! DB::table('language_lines')->where('group',
+                                    $fullHelpKey)->first() instanceof \stdClass && ! DB::table('language_lines')->where('group',
                                     $group)->where('key',
-                                    $fullTitleKey)->first() instanceof stdClass) {
+                                    $fullTitleKey)->first() instanceof \stdClass) {
                             $helpLanguageLine = App\Models\LanguageLine::create([
                                 'group'   => $group,
                                 'key'     => $fullHelpKey,
@@ -81,7 +81,7 @@ class AddNewTranslationsToLanguageLinesTable extends Migration
                     } else {
                         if (! DB::table('language_lines')->where('group',
                                 $group)->where('key',
-                                $key)->first() instanceof stdClass) {
+                                $key)->first() instanceof \stdClass) {
                             App\Models\LanguageLine::create([
                                 'group'   => $group,
                                 'key'     => $key,

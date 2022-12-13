@@ -44,7 +44,7 @@ class AddInputSourceIdsToExistingPrivateMessageViews extends Migration
                                             ->where('user_id', $groupParticipant->id)
                                             ->first();
 
-                    if ($privateMessageView instanceof stdClass) {
+                    if ($privateMessageView instanceof \stdClass) {
                         DB::table('private_message_views')
                             ->where('private_message_id', $privateMessage->id)
                             ->where('user_id', $groupParticipant->id)

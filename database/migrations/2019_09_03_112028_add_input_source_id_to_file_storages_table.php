@@ -22,7 +22,7 @@ class AddInputSourceIdToFileStoragesTable extends Migration
 
         $cooperationInputSource = DB::table('input_sources')->where('short', 'cooperation')->first();
 
-        if ($cooperationInputSource instanceof stdClass) {
+        if ($cooperationInputSource instanceof \stdClass) {
 
             $cooperationInputSourceId = $cooperationInputSource->id;
             foreach ($fileStorages as $fileStorage) {

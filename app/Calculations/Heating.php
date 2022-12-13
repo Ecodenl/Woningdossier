@@ -508,11 +508,13 @@ class Heating extends Calculator
             $comfortLevelId = $map[$comfortLevelSomething] ?? 0;
         }
         $comfortLevelTapWater = ComfortLevelTapWater::find($comfortLevelId);
-        $consumption          = KeyFigures::getCurrentConsumption(
-            $residentCount,
-            $comfortLevelTapWater
-        );
-        if ( ! $consumption instanceof KeyFigureConsumptionTapWater) {
+
+        $consumption = null;
+        if ($comfortLevelTapWater instanceof ComfortLevelTapWater) {
+            $consumption = KeyFigures::getCurrentConsumption($residentCount, $comfortLevelTapWater);
+        }
+
+        if (! $consumption instanceof KeyFigureConsumptionTapWater) {
             Log::debug(
                 __METHOD__.' - No key figure for tap water consumption, returning'.json_encode(
                     $result

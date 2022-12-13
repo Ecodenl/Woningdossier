@@ -376,7 +376,7 @@ textarea.form-input {
 }
 
 .select-wrapper .select-dropdown .select-option.disabled.readonly {
-    @apply block;
+    @apply flex;
 }
 
 .select-wrapper i:not(.select-icon) {

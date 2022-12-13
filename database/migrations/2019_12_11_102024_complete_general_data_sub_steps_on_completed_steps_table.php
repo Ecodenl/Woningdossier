@@ -17,7 +17,7 @@ class CompleteGeneralDataSubStepsOnCompletedStepsTable extends Migration
 
         $generalData = DB::table('steps')->where('short', 'general-data')->first();
 
-        if ($generalData instanceof stdClass) {
+        if ($generalData instanceof \stdClass) {
             $generalDataSubSteps = DB::table('steps')->where('parent_id', $generalData->id)->get();
 
             $completedGeneralDataSteps = DB::table('completed_steps')

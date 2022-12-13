@@ -13,7 +13,7 @@ class AddWallInsulationMeasureNameToLanguageLines extends Migration
     public function up()
     {
         $stepId = null;
-        if (DB::table('steps')->where('slug', 'wall-insulation')->first() instanceof stdClass) {
+        if (DB::table('steps')->where('slug', 'wall-insulation')->first() instanceof \stdClass) {
             $stepId = DB::table('steps')->where('slug', 'wall-insulation')->first()->id;
         }
 

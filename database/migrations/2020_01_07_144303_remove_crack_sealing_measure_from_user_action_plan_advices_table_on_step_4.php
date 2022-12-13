@@ -18,7 +18,7 @@ class RemoveCrackSealingMeasureFromUserActionPlanAdvicesTableOnStep4 extends Mig
 
         $crackSealing = DB::table('measure_applications')->where('short', 'crack-sealing')->first();
 
-        if ($insulatedGlazing instanceof stdClass && $crackSealing instanceof stdClass) {
+        if ($insulatedGlazing instanceof \stdClass && $crackSealing instanceof \stdClass) {
             $userActionPlanAdvices = DB::table('user_action_plan_advices')
                 ->where('step_id', $insulatedGlazing->id)
                 ->where('measure_application_id', $crackSealing->id)
@@ -32,7 +32,7 @@ class RemoveCrackSealingMeasureFromUserActionPlanAdvicesTableOnStep4 extends Mig
                 $crackSealingFinishedOnVentilation = DB::table('user_action_plan_advices')
                         ->where('user_id', $actionPlanAdvice->user_id)
                         ->where('measure_application_id', $crackSealing->id)
-                        ->where('step_id', $ventilation->id)->first() instanceof stdClass;
+                        ->where('step_id', $ventilation->id)->first() instanceof \stdClass;
 
                 // check if the crack sealing is already finished on the ventilation page
                 // if so, delete the crack sealing from the insulated glazing

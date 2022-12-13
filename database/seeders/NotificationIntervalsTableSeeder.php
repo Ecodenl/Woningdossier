@@ -40,7 +40,7 @@ class NotificationIntervalsTableSeeder extends Seeder
 
         foreach ($notificationIntervals as $notificationInterval) {
             // only create it when there is no interval.
-            if (! DB::table('notification_intervals')->where('short', $notificationInterval['short'])->first() instanceof stdClass) {
+            if (! DB::table('notification_intervals')->where('short', $notificationInterval['short'])->first() instanceof \stdClass) {
                 DB::table('notification_intervals')->insert([
                     'name'  => json_encode($notificationInterval['name']),
                     'short' => $notificationInterval['short'],

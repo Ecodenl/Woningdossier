@@ -38,7 +38,6 @@ class ChecksConditionsForSubSteps
                 ->forSubStep($subStep)
                 ->resolveNextUrl();
             return redirect()->to($url);
-
         }
 
         // We can show this step according to the sub step conditionals, but have we answered the example building yet?

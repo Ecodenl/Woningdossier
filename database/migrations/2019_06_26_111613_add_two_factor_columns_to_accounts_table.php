@@ -13,7 +13,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        if (! Schema::hasColumn('accounts', 'two_factor-secret')) {
+        if (! Schema::hasColumn('accounts', 'two_factor_secret')) {
             Schema::table('accounts', function (Blueprint $table) {
                 $table->text('two_factor_secret')
                     ->after('password')
@@ -38,7 +38,7 @@ return new class extends Migration {
      */
     public function down()
     {
-        if (Schema::hasColumn('accounts', 'two_factor-secret')) {
+        if (Schema::hasColumn('accounts', 'two_factor_secret')) {
             Schema::table('accounts', function (Blueprint $table) {
                 $table->dropColumn([
                     'two_factor_secret',

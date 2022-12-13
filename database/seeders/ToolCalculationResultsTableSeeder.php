@@ -723,13 +723,24 @@ class ToolCalculationResultsTableSeeder extends Seeder
         ];
 
         foreach ($calculationResults as $data) {
+            $existingCalcResult = DB::table('tool_calculation_results')
+                ->where('short', $data['short'])->first();
+
+            $name = $data['name'];
+            $helpText = $data['help_text'] ?? [];
+
+            if ($existingCalcResult instanceof \stdClass) {
+                $name = json_decode($existingCalcResult->name, true);
+                $helpText = json_decode($existingCalcResult->help_text, true);
+            }
+
             DB::table('tool_calculation_results')->updateOrInsert(
                 [
                     'short' => $data['short'],
                 ],
                 [
-                    'name' => json_encode($data['name']),
-                    'help_text' => json_encode($data['help_text'] ?? []),
+                    'name' => json_encode($name),
+                    'help_text' => json_encode($helpText),
                     'unit_of_measure' => $data['unit_of_measure'],
                     'data_type' => $data['data_type'],
                 ],

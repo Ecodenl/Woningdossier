@@ -45,7 +45,7 @@ class UsersTableSeeder extends Seeder
 
             foreach ($users as $user) {
                 $user['cooperation_id'] = null;
-                if ($cooperation instanceof stdClass) {
+                if ($cooperation instanceof \stdClass) {
                     $user['cooperation_id'] = $cooperation->id;
                 }
                 $user['account_id'] = $accountId;

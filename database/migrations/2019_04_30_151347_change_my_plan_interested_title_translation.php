@@ -13,7 +13,7 @@ class ChangeMyPlanInterestedTitleTranslation extends Migration
     {
         $interestTranslationQuery = DB::table('language_lines')->where('group', 'my-plan')->where('key',
             'columns.interest.title');
-        if ($interestTranslationQuery->first() instanceof stdClass) {
+        if ($interestTranslationQuery->first() instanceof \stdClass) {
             $interestTranslationQuery->update(['text' => json_encode(['nl' => 'Inplannen'])]);
         }
     }
@@ -27,7 +27,7 @@ class ChangeMyPlanInterestedTitleTranslation extends Migration
     {
         $interestTranslationQuery = DB::table('language_lines')->where('group', 'my-plan')->where('key',
             'columns.interest.title');
-        if ($interestTranslationQuery->first() instanceof stdClass) {
+        if ($interestTranslationQuery->first() instanceof \stdClass) {
             $interestTranslationQuery->update(['text' => json_encode(['nl' => 'Interesse'])]);
         }
     }

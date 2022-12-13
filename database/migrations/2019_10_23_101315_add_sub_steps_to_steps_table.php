@@ -13,7 +13,7 @@ class AddSubStepsToStepsTable extends Migration
     {
         $generalData = DB::table('steps')->where('short', 'general-data')->first();
 
-        if ($generalData instanceof stdClass) {
+        if ($generalData instanceof \stdClass) {
             $subSteps = [
                 [
                     'names' => [
@@ -63,7 +63,7 @@ class AddSubStepsToStepsTable extends Migration
                     ]);
                 }
 
-                if (! DB::table('steps')->where('short', $subStep['slug'])->first() instanceof stdClass) {
+                if (! DB::table('steps')->where('short', $subStep['slug'])->first() instanceof \stdClass) {
                     \DB::table('steps')->insert([
                         'name' => $uuid,
                         'parent_id' => $subStep['parent_id'],

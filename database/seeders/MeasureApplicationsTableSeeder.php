@@ -995,7 +995,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             $info = $measureApplication['measure_info'];
             $configurations = $measureApplication['configurations'];
 
-            if ($existingMeasureApplication instanceof stdClass) {
+            if ($existingMeasureApplication instanceof \stdClass) {
                 $name = json_decode($existingMeasureApplication->measure_name, true);
                 $info = json_decode($existingMeasureApplication->measure_info, true);
 

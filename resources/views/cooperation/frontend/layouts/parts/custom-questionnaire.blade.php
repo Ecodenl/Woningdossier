@@ -9,7 +9,8 @@
                 {{$questionnaire->name}}
             </h3>
 
-            @if(!\App\helpers\HoomdossierSession::isUserObserving())
+            {{-- TODO: ShowSave as legacy support, but perhaps ready for deprecation anyway? --}}
+            @if(!\App\helpers\HoomdossierSession::isUserObserving() && ($showSave ?? false))
                 <button id="submit-custom-questionnaire-{{$questionnaire->id}}"
                         data-questionnaire-id="{{$questionnaire->id}}" class="float-right btn btn-purple">
                     @lang('default.buttons.save')
@@ -24,10 +25,11 @@
             @csrf
             <input type="hidden" name="tab_id" value="#questionnaire-{{$questionnaire->id}}">
             <input type="hidden" name="questionnaire_id" value="{{$questionnaire->id}}">
+            <input type="hidden" name="step_short" value="{{$step->short}}">
             @foreach($questionnaire->questions as $question)
                 @include("cooperation.tool.questionnaires.{$question->type}", ['question' => $question])
             @endforeach
-            @if(! \App\helpers\HoomdossierSession::isUserObserving() && $isInExpertTool)
+            @if(! \App\helpers\HoomdossierSession::isUserObserving() && $isInExpertTool && ($showSave ?? false))
                 <div class="flex flex-row flex-wrap w-full">
                     <div class="w-full">
                         <div class="my-4 px-2">

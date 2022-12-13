@@ -204,8 +204,12 @@ class Form extends Component
             ]);
         }
 
-        // TODO: Make FlowService URL workable
-        return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', ['cooperation' => $this->cooperation]);
+        return redirect()->to(
+            ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+                ->forStep($this->step)
+                ->forSubStep($this->subSteps->sortByDesc('order')->first()) // Always last, as expert can't have a next SubStep
+                ->resolveNextUrl()
+        );
     }
 
     public function performCalculations()

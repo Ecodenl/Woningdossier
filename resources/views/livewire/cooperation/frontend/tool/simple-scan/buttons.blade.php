@@ -1,5 +1,5 @@
 <div class="w-1/2 flex flex-wrap justify-center">
-    @if($previousStep instanceof \App\Models\Step || $previousSubStep instanceof \App\Models\SubStep)
+    @if(! empty($previousUrl))
         <a href="{{$previousUrl}}" class="btn btn-outline-purple flex items-center mr-1">
             <i class="icon-xs icon-arrow-left-bold-purple mr-5"></i>
             @lang('default.buttons.previous')
@@ -10,7 +10,7 @@
             {{-- Because a questionnaire is simply saved using an old school controller, we update the action, which
             will handle redirecting us correctly to the questionnaire... TODO: Refactor this, no time for it now --}}
             @if(RouteLogic::inQuestionnaire(Route::currentRouteName()))
-            x-on:click="$el.setAttribute('disabled', true); let form = document.querySelector('#questionnaire-form-{{$questionnaire->id}}'); form.submit();"
+            x-on:click="$el.setAttribute('disabled', true); document.querySelector('#questionnaire-form-{{$questionnaire->id}}').submit();"
             @else
             wire:click="$emitTo('cooperation.frontend.tool.simple-scan.form', 'save')"
             x-on:click="$el.setAttribute('disabled', true);"

@@ -11,7 +11,7 @@
                 {{-- Progress bar --}}
                 <div class="w-full bg-gray h-2 relative z-40 -mt-1">
                     @php
-                        // $total and $current get injected in the QuickScanController via the ViewServiceProvider
+                        // $total and $current get injected via the SimpleScanComposer in the ViewServiceProvider
                         $total = $total ?? 100;
                         $current = $current ?? 100;
                         $width = 100 / $total * $current;
@@ -36,61 +36,21 @@
             @endphp
 
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
-                <div class="flex flex-row flex-wrap w-full" x-data="tabs()">
-{{--                    @if($currentSubStep instanceof \App\Models\Step)--}}
-{{--                        <h2 class="heading-2">--}}
-{{--                            {{$currentStep->name}}--}}
-{{--                        </h2>--}}
-{{--                    @endif--}}
-                    <ul class="nav-tabs mt-5 hidden" x-ref="nav-tabs">
-                        @if(isset($step))
-                            @php
-                                $subStepsForStep = $currentStep->children;
-                            @endphp
-                            @if($subStepsForStep->isEmpty())
-                                <li class="active @if($building->hasCompleted($currentStep, $masterInputSource)) completed @endif">
-                                    <a href="{{route("cooperation.frontend.tool.expert-scan.index", ['step' => $currentStep])}}">
-                                        {{$currentStep->name}}
-                                    </a>
-                                </li>
-                            @endif
-                        @endif
+                <div class="flex flex-row flex-wrap w-full">
+{{--                    <h2 class="heading-2">--}}
+{{--                        {{$currentStep->name}}--}}
+{{--                    </h2>--}}
 
-                        @if(isset($currentStep) && $currentStep->hasQuestionnaires())
-                            @foreach($currentStep->questionnaires as $questionnaire)
-
-                                @if($questionnaire->isActive())
-                                    <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire, $masterInputSource)) completed @endif">
-                                        <a href="#questionnaire-{{$questionnaire->id}}" x-bind="tab">
-                                            {{$questionnaire->name}}
-                                        </a>
-                                    </li>
-                                @endif
-                            @endforeach
-                        @endif
-                    </ul>
-
-                    <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-t-lg tab-content"
-                         x-ref="tab-content">
-                        @if(isset($currentStep) && $currentStep->hasQuestionnaires())
-                            @foreach($currentStep->questionnaires as $questionnaire)
-                                @if($questionnaire->isActive())
-                                    @include('cooperation.frontend.layouts.parts.custom-questionnaire', [
-                                        'questionnaire' => $questionnaire, 'isTab' => true
-                                    ])
-                                @endif
-                            @endforeach
-                        @endif
-
-
-                        <div class="w-full divide-y divide-blue-500 divide-opacity-50" id="main-tab" x-ref="main-tab"
-                             x-show="currentTab === $el">
+                    <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-t-lg tab-content">
+                        <div class="w-full divide-y divide-blue-500 divide-opacity-50" id="main-tab">
                             <div class="px-4 py-8 flex justify-between">
                                 <h3 class="heading-3 inline-block">
                                     @yield('step_title', $currentSubStep->name ?? $currentStep->name ?? '')
                                 </h3>
-                                @if($currentStep->isDynamic())
-                                    <livewire:cooperation.frontend.tool.expert-scan.buttons/>
+                                @if($currentStep->isDynamic() || RouteLogic::inQuestionnaire(Route::currentRouteName()))
+                                    <livewire:cooperation.frontend.tool.expert-scan.buttons :scan="$scan"
+                                                                                            :step="$currentStep"
+                                                                                            :questionnaire="$questionnaire ?? null"/>
                                 @else
                                     @if(! \App\helpers\HoomdossierSession::isUserObserving())
                                         <button class="float-right btn btn-purple submit-main-form">
@@ -106,16 +66,23 @@
 
                             <div class="px-4 py-8">
                                 @if(! \App\helpers\HoomdossierSession::isUserObserving())
+                                    @php
+                                        // This only shows in expert, and since lite can't go to expert, we just
+                                        // fetch the quick scan.
+                                        $quickScan = \App\Models\Scan::findByShort(\App\Models\Scan::QUICK);
+                                    @endphp
                                     <div class="flex flex-row flex-wrap w-full">
                                         <div class="w-full sm:w-1/2">
                                             <a class="btn btn-green float-left"
-                                               href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index') }}">
+                                               href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index', ['scan' => $quickScan]) }}">
                                                 @lang('default.buttons.cancel')
                                             </a>
                                         </div>
                                         <div class="w-full sm:w-1/2">
-                                            @if($currentStep->isDynamic())
-                                                <livewire:cooperation.frontend.tool.expert-scan.buttons/>
+                                            @if($currentStep->isDynamic() || RouteLogic::inQuestionnaire(Route::currentRouteName()))
+                                                <livewire:cooperation.frontend.tool.expert-scan.buttons :scan="$scan ?? $currentStep->scan"
+                                                                                                        :step="$currentStep"
+                                                                                                        :questionnaire="$questionnaire ?? null"/>
                                             @else
                                                 <button class="float-right btn btn-purple submit-main-form">
                                                     @lang('default.buttons.save')

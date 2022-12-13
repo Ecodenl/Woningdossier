@@ -3,30 +3,33 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\QuestionnaireRequest;
 use App\Models\Cooperation;
 use App\Models\Questionnaire;
 use App\Models\QuestionsAnswer;
+use App\Models\Step;
 use App\Services\Models\QuestionnaireService;
-use App\Models\Scan;
 use App\Services\Scans\ScanFlowService;
+use Illuminate\Http\RedirectResponse;
 
 class QuestionnaireController extends Controller
 {
     /**
      * Save or update the user his answers for the custom questionnaire.
      *
+     * @param \App\Models\Cooperation $cooperation
+     * @param \App\Http\Requests\Cooperation\Tool\QuestionnaireRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Cooperation $cooperation, QuestionnaireRequest $request)
+    public function store(Cooperation $cooperation, QuestionnaireRequest $request): RedirectResponse
     {
         $building = HoomdossierSession::getBuilding(true);
-        $questions = $request->input('questions');
+        $currentInputSource = HoomdossierSession::getInputSource(true);
+        $questions = $request->validated()['questions'];
 
-        $questionnaireId = $request->get('questionnaire_id');
-        $questionnaire = Questionnaire::find($questionnaireId);
+        $questionnaire = Questionnaire::find($request->input('questionnaire_id'));
 
         if (is_array($questions) && ! empty($questions)) {
             // the question answer can be a string or int.
@@ -43,8 +46,8 @@ class QuestionnaireController extends Controller
                     QuestionsAnswer::updateOrCreate(
                         [
                             'question_id' => $questionId,
-                            'building_id' => HoomdossierSession::getBuilding(),
-                            'input_source_id' => HoomdossierSession::getInputSource(),
+                            'building_id' => $building->id,
+                            'input_source_id' => $currentInputSource->id,
                         ],
                         [
                             'answer' => $answer,
@@ -54,27 +57,19 @@ class QuestionnaireController extends Controller
             }
         }
 
-        $currentInputSource = HoomdossierSession::getInputSource(true);
-
         QuestionnaireService::init()
             ->user($building->user)
             ->questionnaire($questionnaire)
             ->forInputSource($currentInputSource)
             ->completeQuestionnaire();
 
-        $step = $questionnaire->step;
-        $quickScan = Scan::bySlug('quick-scan')->first();
+        $step = Step::findByShort($request->input('step_short'));
 
-        // TODO: For now only use scan flow service for quick scan
-        if ($step->scan_id === $quickScan->id) {
-            return redirect()->to(ScanFlowService::init($quickScan, $building, $currentInputSource)
-                ->forStep($step)
-                ->forQuestionnaire($questionnaire)
-                ->resolveNextUrl());
-        }
-
-        $url = StepHelper::getNextExpertStep($questionnaire->step, $questionnaire);
-
-        return redirect($url);
+        return redirect()->to(
+            ScanFlowService::init($step->scan, $building, $currentInputSource)
+            ->forStep($step)
+            ->forQuestionnaire($questionnaire)
+            ->resolveNextUrl()
+        );
     }
 }

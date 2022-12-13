@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\StepHelper;
 use App\Helpers\Hoomdossier;
+use App\Helpers\SubStepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Step;
+use App\Services\Scans\ScanFlowService;
 use Illuminate\Http\Request;
 
 class ToolController extends Controller
@@ -39,11 +41,17 @@ class ToolController extends Controller
      */
     public function completeStore(Step $step, Building $building, InputSource $inputSource)
     {
+        $subStep = $step->subSteps()->first();
+
         StepHelper::complete($step, $building, $inputSource);
+        SubStepHelper::complete($subStep, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
-        $url = StepHelper::getNextExpertStep($this->step);
-
-        return redirect($url);
+        return redirect()->to(
+            ScanFlowService::init($step->scan, $building, $inputSource)
+                ->forStep($step)
+                ->forSubStep($subStep) // Always first as legacy steps only have one, else we get weird URLs
+                ->resolveNextUrl()
+        );
     }
 }

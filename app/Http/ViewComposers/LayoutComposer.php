@@ -18,8 +18,6 @@ class LayoutComposer
 
     public function create(View $view)
     {
-        $cooperation = $this->request->route('cooperation');
-
         $currentStep = $this->request->route('step');
 
         if (! $currentStep instanceof Step && Str::startsWith($this->request->route()->getName(), 'cooperation.tool.')) {
@@ -27,13 +25,6 @@ class LayoutComposer
             $slug = str_replace('/tool/', '', $this->request->getRequestUri());
             $currentStep = Step::where('slug', $slug)->first();
         }
-
-        // TODO: Legacy support but perhaps ready for deprecation?
-        //if ($currentStep instanceof Step) {
-        //    $currentStep->load(['questionnaires' => function ($query) use ($cooperation) {
-        //        $query->active()->where('cooperation_id', $cooperation->id)->orderByPivot('order');
-        //    }]);
-        //}
 
         $view->with(compact('currentStep'));
     }

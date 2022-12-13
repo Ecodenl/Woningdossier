@@ -33,41 +33,16 @@
         @if(RouteLogic::inExpertTool(Route::currentRouteName()))
             @php
                 $masterInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT);
-                //$hasQuestionnaires = $currentStep->questionnaires->count() > 0;
             @endphp
 
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
-                <div class="flex flex-row flex-wrap w-full" x-data="tabs()">
+                <div class="flex flex-row flex-wrap w-full">
 {{--                    <h2 class="heading-2">--}}
 {{--                        {{$currentStep->name}}--}}
 {{--                    </h2>--}}
 
-                        {{--TODO: Disabled tabs for now, load via separate page to decrease page load (maybe ready for deprecation anyway)--}}
-{{--                    <ul class="nav-tabs mt-5 hidden" x-ref="nav-tabs">--}}
-{{--                        @if($hasQuestionnaires)--}}
-{{--                            @foreach($currentStep->questionnaires as $questionnaire)--}}
-{{--                                <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire, $masterInputSource)) completed @endif">--}}
-{{--                                    <a href="#questionnaire-{{$questionnaire->id}}" x-bind="tab">--}}
-{{--                                        {{$questionnaire->name}}--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
-{{--                            @endforeach--}}
-{{--                        @endif--}}
-{{--                    </ul>--}}
-
-                    <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-t-lg tab-content"
-                         x-ref="tab-content">
-{{--                        @if($hasQuestionnaires)--}}
-{{--                            @foreach($currentStep->questionnaires as $questionnaire)--}}
-{{--                                @include('cooperation.frontend.layouts.parts.custom-questionnaire', [--}}
-{{--                                    'questionnaire' => $questionnaire, 'isTab' => true,--}}
-{{--                                    'step' => $currentStep, 'showSave' => true,--}}
-{{--                                ])--}}
-{{--                            @endforeach--}}
-{{--                        @endif--}}
-
-                        <div class="w-full divide-y divide-blue-500 divide-opacity-50" id="main-tab" x-ref="main-tab"
-                             x-show="currentTab === $el">
+                    <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-t-lg tab-content">
+                        <div class="w-full divide-y divide-blue-500 divide-opacity-50" id="main-tab">
                             <div class="px-4 py-8 flex justify-between">
                                 <h3 class="heading-3 inline-block">
                                     @yield('step_title', $currentSubStep->name ?? $currentStep->name ?? '')

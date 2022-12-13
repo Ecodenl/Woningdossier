@@ -27,5 +27,8 @@ class LayoutComposer
         }
 
         $view->with(compact('currentStep'));
+
+        $scan = $this->request->route('scan');
+        $view->with(compact('scan'));
     }
 }

@@ -48,7 +48,7 @@
                                     @yield('step_title', $currentSubStep->name ?? $currentStep->name ?? '')
                                 </h3>
                                 @if($currentStep->isDynamic() || RouteLogic::inQuestionnaire(Route::currentRouteName()))
-                                    <livewire:cooperation.frontend.tool.expert-scan.buttons :scan="$scan ?? $currentStep->scan"
+                                    <livewire:cooperation.frontend.tool.expert-scan.buttons :scan="$scan"
                                                                                             :step="$currentStep"
                                                                                             :questionnaire="$questionnaire ?? null"/>
                                 @else

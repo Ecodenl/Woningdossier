@@ -121,7 +121,7 @@ class UpdateToolQuestions extends Command
                                     'building_id' => $building->building_id,
                                     'input_source_id' => $building->input_source_id,
                                     'tool_question_id' => $heatSourceWaterQuestionOther->id,
-                                ], ['answer' => $otherAnswer]);
+                                ], ['answer' => $otherAnswer, 'created_at' => now(), 'updated_at' => now()]);
                         }
                     }
 
@@ -151,7 +151,7 @@ class UpdateToolQuestions extends Command
                                 'input_source_id' => $building->input_source_id,
                                 'tool_question_id' => $heatSourceWaterQuestion->id,
                                 'tool_question_custom_value_id' => $customValueId,
-                            ], ['answer' => $newAnswer]);
+                            ], ['answer' => $newAnswer, 'created_at' => now(), 'updated_at' => now()]);
                     }
 
                     $buildingsToRecalculate[] = $building->building_id;
@@ -213,7 +213,7 @@ class UpdateToolQuestions extends Command
                                 'input_source_id' => $building->input_source_id,
                                 'tool_question_id' => $newHeatSourceWaterQuestion->id,
                                 'tool_question_custom_value_id' => $customValueId,
-                            ], ['answer' => $newAnswer]);
+                            ], ['answer' => $newAnswer, 'created_at' => now(), 'updated_at' => now()]);
                     }
 
                     $buildingsToRecalculate[] = $building->building_id;

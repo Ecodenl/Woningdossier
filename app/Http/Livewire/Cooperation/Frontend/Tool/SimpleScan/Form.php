@@ -27,6 +27,7 @@ class Form extends Scannable
     public function mount(Scan $scan, Step $step, SubStep $subStep)
     {
         $this->scan = $scan;
+        $this->subStep = $subStep;
         Log::debug("mounting form [Step: {$step->id}] [SubStep: {$subStep->id}]");
 
 

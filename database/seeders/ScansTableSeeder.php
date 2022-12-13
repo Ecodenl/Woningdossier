@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Scan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
@@ -22,7 +23,7 @@ class ScansTableSeeder extends Seeder
                 'slug' => [
                     'nl' => 'expert-scan',
                 ],
-                'short' => 'expert-scan',
+                'short' => Scan::EXPERT,
             ],
             [
                 'name' => [
@@ -31,7 +32,7 @@ class ScansTableSeeder extends Seeder
                 'slug' => [
                     'nl' => 'quick-scan',
                 ],
-                'short' => 'quick-scan',
+                'short' => Scan::QUICK,
             ],
             [
                 'name' => [
@@ -40,7 +41,7 @@ class ScansTableSeeder extends Seeder
                 'slug' => [
                     'nl' => 'lite-scan',
                 ],
-                'short' => 'lite-scan',
+                'short' => Scan::LITE,
             ],
         ];
 

@@ -43,8 +43,6 @@ class Scan extends Model
     const LITE = 'lite-scan';
     const QUICK = 'quick-scan';
     const EXPERT = 'expert-scan';
-    const QUICK = 'quick-scan';
-    const LITE = 'lite-scan';
 
     protected $translatable = ['name', 'slug'];
 

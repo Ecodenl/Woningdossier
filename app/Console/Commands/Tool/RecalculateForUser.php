@@ -105,9 +105,9 @@ class RecalculateForUser extends Command
                     $stepsToRecalculateChain = [];
 
                     if (! empty($stepShorts)) {
-                        $stepsToRecalculate = Step::expert()->whereIn('short', $stepShorts)->get();
+                        $stepsToRecalculate = Step::recalculable()->whereIn('short', $stepShorts)->get();
                     } else {
-                        $stepsToRecalculate = Step::expert()->get();
+                        $stepsToRecalculate = Step::recalculable()->get();
                     }
 
                     foreach ($stepsToRecalculate as $stepToRecalculate) {
@@ -136,15 +136,5 @@ class RecalculateForUser extends Command
         $bar->finish();
 
         $this->output->newLine();
-    }
-
-    private function isFirstTimeToolIsFilled(Building $building)
-    {
-        return true;
-
-//        $inputSource      = InputSource::findByShort(InputSource::MASTER_SHORT);
-//        $cookTypeQuestion = ToolQuestion::findByShort('cook-type');
-//
-//        return is_null($building->getAnswer($inputSource, $cookTypeQuestion));
     }
 }

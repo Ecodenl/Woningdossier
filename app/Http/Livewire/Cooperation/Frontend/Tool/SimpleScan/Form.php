@@ -177,6 +177,9 @@ class Form extends Scannable
                     // this is done so when the user only uses the lite-scan the woonplan only gets small-measure, measureApplications.
                     // else we will just do the regular recalculate/
                     if ($this->scan->isLiteScan() && $this->building->hasCompletedScan($quickScan, $this->masterInputSource) === false) {
+                        // so the full recalculate may be turned on due to the question
+                        // however, the quick scan is not completed. A full recalculate is not correct at this time.
+                        $shouldDoFullRecalculate = false;
                         $stepShortsToRecalculate = ['small-measures'];
                     } else {
                         // get the expert step equivalent
@@ -186,7 +189,6 @@ class Form extends Scannable
                 }
             }
         }
-
 
         // the INITIAL calculation will be handled by the CompletedSubStepObserver
         if ($shouldDoFullRecalculate && $masterHasCompletedScan) {

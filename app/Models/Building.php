@@ -404,6 +404,11 @@ class Building extends Model
         return $this->hasCompletedScan($scan, $inputSource);
     }
 
+    public function hasNotCompletedScan(Scan $scan, InputSource $inputSource): bool
+    {
+        return !$this->hasCompletedScan($scan, $inputSource);
+    }
+
     public function hasCompletedScan(Scan $scan, InputSource $inputSource): bool
     {
         $steps = $scan->steps;

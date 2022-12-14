@@ -47,10 +47,12 @@ class DoUpgrade extends Command
                 ['--class' => 'ToolLabelsTableSeeder', '--force' => true],
                 ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
                 ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
+                ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
             GiveCooperationDefaultScans::class => [],
             ConvertQuestionnaireStepsToPivot::class => [],
         ];
+
 
         foreach ($commands as $command => $variants) {
             if (! is_array(Arr::first($variants))) {

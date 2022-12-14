@@ -7,7 +7,6 @@ use App\Models\Building;
 use App\Models\CompletedStep;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
-use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\StepComment;
 use App\Models\SubStep;
@@ -129,6 +128,7 @@ class StepHelper
      */
     public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate): bool
     {
+        $scan = $step->scan;
         \Log::debug("COMPLETE IF NEEDED {$step->short}");
         $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
             ->forBuilding($building)
@@ -145,11 +145,7 @@ class StepHelper
             // The sub step that has been completed finished up the set, so we complete the main step
             static::complete($step, $building, $inputSource);
 
-            // Trigger a recalculate if the tool is now complete
-            // TODO: Refactor this
-            if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
-                StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
-            }
+            StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user(), $inputSource);
 
             return true;
         } else {
@@ -168,11 +164,7 @@ class StepHelper
                 // Conditions "passed", so we complete!
                 static::complete($step, $building, $inputSource);
 
-                // Trigger a recalculate if the tool is now complete
-                // TODO: Refactor this
-                if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
-                    StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
-                }
+                StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user(), $inputSource);
 
                 return true;
             }

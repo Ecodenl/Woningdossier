@@ -102,6 +102,7 @@ class ToolQuestionHelper
         'sun-boiler-replace' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'new-water-comfort' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
 
+        // todo: not sure is this is actually needed..
         'apply-led-light' => ['small-measures'],
         'turn-off-lights' => ['small-measures'],
         'replace-old-equipment' => ['small-measures'],
@@ -190,7 +191,9 @@ class ToolQuestionHelper
 
             // Only return if it passes the conditions (if there are any)
             if (array_key_exists($toolQuestion->short, self::TOOL_RECALCULATE_CONDITIONS)) {
-                $pass = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
+                $pass = ConditionEvaluator::init()
+                    ->building($building)
+                    ->inputSource($inputSource)
                     ->evaluate(self::TOOL_RECALCULATE_CONDITIONS[$toolQuestion->short]);
 
                 $data = $pass ? $data : [];
@@ -212,7 +215,9 @@ class ToolQuestionHelper
 
             // Only return if it passes the conditions (if there are any)
             if (array_key_exists($toolQuestion->short, self::TOOL_RECALCULATE_CONDITIONS)) {
-                $pass = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
+                $pass = ConditionEvaluator::init()
+                    ->building($building)
+                    ->inputSource($inputSource)
                     ->evaluate(self::TOOL_RECALCULATE_CONDITIONS[$toolQuestion->short]);
             }
 

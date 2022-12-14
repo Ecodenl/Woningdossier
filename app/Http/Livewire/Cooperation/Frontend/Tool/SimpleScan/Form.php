@@ -27,6 +27,7 @@ class Form extends Scannable
     public function mount(Scan $scan, Step $step, SubStep $subStep)
     {
         $this->scan = $scan;
+        $this->subStep = $subStep;
         Log::debug("mounting form [Step: {$step->id}] [SubStep: {$subStep->id}]");
 
 
@@ -143,7 +144,6 @@ class Form extends Scannable
         $stepShortsToRecalculate = [];
         $shouldDoFullRecalculate = false;
 
-        $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
@@ -163,44 +163,15 @@ class Form extends Scannable
                         ->applyExampleBuilding()
                         ->save($givenAnswer);
 
-                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource) && $masterHasCompletedQuickScan) {
+
+                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
                         Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
                         $shouldDoFullRecalculate = true;
                     }
 
-                    // get the expert step equivalent
-                    // we will filter out duplicates later on.
                     $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                 }
             }
-        }
-
-
-        // the INITIAL calculation will be handled by the CompletedSubStepObserver
-        if ($shouldDoFullRecalculate) {
-            // We should do a full recalculate because some base value that has impact on every calculation is changed.
-            Log::debug("Dispatching full recalculate..");
-
-            Artisan::call(RecalculateForUser::class, [
-                '--user' => [$this->building->user->id],
-                '--input-source' => [$this->currentInputSource->short],
-                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
-                '--with-old-advices' => true,
-            ]);
-
-            // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
-        } else if ($masterHasCompletedQuickScan && ! empty($stepShortsToRecalculate)) {
-            // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
-            $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
-            // since we are just re-calculating specific parts of the tool we do it without the old advices
-            // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
-            // but it moves the re-calculated advices to the proper column.
-            Artisan::call(RecalculateForUser::class, [
-                '--user' => [$this->building->user->id],
-                '--input-source' => [$this->currentInputSource->short],
-                '--step-short' => $stepShortsToRecalculate,
-                '--with-old-advices' => false,
-            ]);
         }
 
         // Now mark the sub step as complete
@@ -220,6 +191,71 @@ class Form extends Scannable
         }
 
         $flowService->checkConditionals($dirtyToolQuestions);
+
+
+        $quickScan = Scan::findByShort(Scan::QUICK);
+        $masterHasCompletedScan = $this->building->hasCompletedScan($this->scan, $this->masterInputSource);
+
+        // so this is another exception to the rule which needs some explaination..
+        // we will only calculate the small measure when the user is currently on the lite scan and did not complete the quick-scan
+        // this is done so when the user only uses the lite-scan the woonplan only gets small-measure, measureApplications.
+        // else we will just do the regular recalculate/
+        if ($masterHasCompletedScan) {
+            if ($this->scan->isLiteScan()) {
+                // so the full recalculate may be turned on due to the question (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate)
+                // however, the quick scan is not completed. A full recalculate is not correct at this time.
+                // when the user is on the lite scan and its uncomplete
+                // we are only allowed to recalculate the small measures
+                // however, when the user complete the quick scan we CAN recalculate other steps.
+                if ($this->building->hasNotCompletedScan($quickScan, $this->masterInputSource)) {
+                    $shouldDoFullRecalculate = false;
+
+                    // this if is KEY!
+                    // the last sub step would be (for the current state of the application) the samenvatting page
+                    // no question on that page would do a full recalculate, nor would and should i trigger a tool question map
+
+                    if ($completedSubStep->wasRecentlyCreated) {
+                        // at this point the master has completed the scan
+                        // and we know that the sub step was recently created
+                        // this way we wont recalculate the small measures on every save, but just once. When the scan in completed initially
+                        // ofcourse it will still calculate when a relevant question gets changed.
+                        $stepShortsToRecalculate = ['small-measures'];
+                    }
+                }
+            } else {
+                // could be any scan, only the quick-scan is actualy possible atm.
+                // also the quick scan is the only scan that is allowed to peform a full recalculate.
+                if ($completedSubStep->wasRecentlyCreated) {
+                    $shouldDoFullRecalculate = true;
+                }
+            }
+
+            if ($shouldDoFullRecalculate) {
+                // We should do a full recalculate because some base value that has impact on every calculation is changed.
+                Log::debug("Dispatching full recalculate..");
+
+                Artisan::call(RecalculateForUser::class, [
+                    '--user' => [$this->building->user->id],
+                    '--input-source' => [$this->currentInputSource->short],
+                    // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
+                    '--with-old-advices' => true,
+                ]);
+
+                // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
+            } else if (!empty($stepShortsToRecalculate)) {
+                // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
+                $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
+                // since we are just re-calculating specific parts of the tool we do it without the old advices
+                // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
+                // but it moves the re-calculated advices to the proper column.
+                Artisan::call(RecalculateForUser::class, [
+                    '--user' => [$this->building->user->id],
+                    '--input-source' => [$this->currentInputSource->short],
+                    '--step-short' => $stepShortsToRecalculate,
+                    '--with-old-advices' => false,
+                ]);
+            }
+        }
 
         // TODO: We might have to generate the $nextUrl in real time if conditional steps follow a related question
         return redirect()->to($flowService->resolveNextUrl());

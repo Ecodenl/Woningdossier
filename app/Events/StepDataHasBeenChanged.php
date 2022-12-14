@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -29,16 +30,19 @@ class StepDataHasBeenChanged
      */
     public $user;
 
+    public $inputSource;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Step $step, Building $building, User $user)
+    public function __construct(Step $step, Building $building, User $user, InputSource $inputSource)
     {
         $this->step = $step;
         $this->building = $building;
         $this->user = $user;
+        $this->inputSource = $inputSource;
     }
 
     /**

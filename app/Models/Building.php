@@ -411,13 +411,6 @@ class Building extends Model
 
     public function hasCompletedScan(Scan $scan, InputSource $inputSource): bool
     {
-        $completed = $this->shit($scan, $inputSource);
-        \Illuminate\Support\Facades\Log::debug("SCAN {$scan->short} IS ", compact('completed'));
-        return $completed;
-    }
-
-    public function shit(Scan $scan, InputSource $inputSource): bool
-    {
         $steps = $scan->steps;
         foreach ($steps as $step) {
             if (!$this->hasCompleted($step, $inputSource)) {

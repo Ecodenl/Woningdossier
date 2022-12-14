@@ -149,7 +149,7 @@ class StepHelper
             // Trigger a recalculate if the tool is now complete
             // TODO: Refactor this
             if ($triggerRecalculate && $building->hasCompletedScan($scan, $inputSource)) {
-                StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+                StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user(), $inputSource);
             }
 
             return true;
@@ -172,7 +172,7 @@ class StepHelper
                 // Trigger a recalculate if the tool is now complete
                 // TODO: Refactor this
                 if ($triggerRecalculate && $building->hasCompletedScan($scan, $inputSource)) {
-                    StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+                    StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user(), $inputSource);
                 }
 
                 return true;

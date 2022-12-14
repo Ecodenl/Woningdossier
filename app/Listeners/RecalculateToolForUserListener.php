@@ -21,7 +21,7 @@ class RecalculateToolForUserListener
     /**
      * Handle the event.
      *
-     * @param object $event
+     * @param  object  $event
      *
      * @return void
      */
@@ -38,16 +38,12 @@ class RecalculateToolForUserListener
         }
 
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {
-            $inputSource = HoomdossierSession::getInputSource(true);
-            // Theres nothing to recalculate if the user did not complete the main step.
-
-            if ($event->building->hasCompletedQuickScan(InputSource::findByShort(InputSource::MASTER_SHORT))) {
-                $userId = $event->building->user->id;
-                // default for recalculate it set at resident
-                // yes we check for the master, but recalculate the resident.
-                // we always insert / update to resident and retrieve the master.
-                Artisan::call(RecalculateForUser::class, ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
-            }
+            // default for recalculate it set at resident
+            // yes we check for the master, but recalculate the resident.
+            // we always insert / update to resident and retrieve the master.
+            Artisan::call(RecalculateForUser::class, [
+                '--user' => [$event->building->user->id], '--input-source' => [$event->inputSource->short]
+            ]);
         }
     }
 }

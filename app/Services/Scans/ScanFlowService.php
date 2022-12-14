@@ -15,6 +15,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubSteppable;
 use App\Models\ToolQuestion;
+use App\Models\User;
 use App\Services\Models\QuestionnaireService;
 use App\Services\Models\SubStepService;
 use App\Traits\FluentCaller;
@@ -75,7 +76,7 @@ class ScanFlowService
      * Check if we should incomplete steps because conditional steps have come free, or if we need to
      * incomplete sub steps because they are hidden now.
      */
-    public function checkConditionals(array $filledInAnswers)
+    public function checkConditionals(array $filledInAnswers, User $authUser)
     {
         Log::debug("Checking conditionals..");
         $building = $this->building;
@@ -152,7 +153,7 @@ class ScanFlowService
         foreach ($stepsToCheck as $stepShort) {
             $step = Step::findByShort($stepShort);
             Log::debug("Completing Step {$step->name} if possible");
-            $completed = StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, false);
+            $completed = StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, $authUser, false);
             if (! $completed) {
                 Log::debug("Step {$step->name} could not be completed, so we incomplete it.");
                 StepHelper::incomplete($step, $building, $currentInputSource);

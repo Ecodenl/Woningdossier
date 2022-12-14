@@ -231,7 +231,7 @@ class Form extends Scannable
             $flowService->skipSubstep($completedSubStep->subStep);
         }
 
-        $flowService->checkConditionals($dirtyToolQuestions);
+        $flowService->checkConditionals($dirtyToolQuestions, Hoomdossier::user());
 
         // TODO: We might have to generate the $nextUrl in real time if conditional steps follow a related question
         return redirect()->to($flowService->resolveNextUrl());

@@ -16,6 +16,7 @@ use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
@@ -117,7 +118,8 @@ class Form extends Component
         $shouldDoFullRecalculate = false;
         $dirtyToolQuestions = [];
 
-        $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
+        $quickScan = Scan::findByShort(Scan::QUICK);
+        $masterHasCompletedQuickScan = $this->building->hasCompletedScan($quickScan, $this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
         foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {

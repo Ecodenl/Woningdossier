@@ -11,16 +11,17 @@ use App\Models\ToolQuestion;
 use App\Services\BuildingService;
 use App\Services\ConditionService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class CalculationsTable extends Component
 {
     use AuthorizesRequests;
 
-    public $toolQuestions;
-    public $answers;
+    public Collection $toolQuestions;
+    public array $answers;
     public Building $building;
-    public $masterInputSource;
+    public InputSource $masterInputSource;
 
     private $toolQuestionShorts = [
         'amount-gas', 'amount-electricity', 'resident-count', 'water-comfort',

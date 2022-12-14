@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Helpers\Queue;
+use App\Jobs\CompleteRelatedSubStep;
 use App\Models\CompletedSubStep;
 use App\Helpers\StepHelper;
 use App\Models\Building;
@@ -23,6 +25,10 @@ class CompletedSubStepObserver
 
             if ($step instanceof Step && $inputSource instanceof InputSource && $building instanceof Building) {
                 StepHelper::completeStepIfNeeded($step, $building, $inputSource, true);
+
+                if ($inputSource->short !== InputSource::MASTER_SHORT) {
+                    CompleteRelatedSubStep::dispatch($subStep, $building, $inputSource)->onQueue(Queue::ASYNC);
+                }
             }
         }
     }

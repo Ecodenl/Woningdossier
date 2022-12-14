@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Step;
+use App\Services\Models\SubStepService;
 use App\Services\Scans\ScanFlowService;
 use Illuminate\Http\Request;
 
@@ -44,7 +45,7 @@ class ToolController extends Controller
         $subStep = $step->subSteps()->first();
 
         StepHelper::complete($step, $building, $inputSource);
-        SubStepHelper::complete($subStep, $building, $inputSource);
+        SubStepService::init()->building($building)->inputSource($inputSource)->subStep($subStep)->complete();
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
         return redirect()->to(

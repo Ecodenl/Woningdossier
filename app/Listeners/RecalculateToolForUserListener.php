@@ -33,8 +33,8 @@ class RecalculateToolForUserListener
         ];
 
         // the lite-scan and quick-scan should always recalculate
-        if (in_array($event->step->short, ['lite-scan', 'quick-scan'])) {
-            $stepsWhichNeedRecalculation = $event->step->scan->steps->pluck('short');
+        if (in_array($event->step->scan->short, ['lite-scan', 'quick-scan'])) {
+            $stepsWhichNeedRecalculation = $event->step->scan->steps->pluck('short')->toArray();
         }
 
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {

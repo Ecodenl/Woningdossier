@@ -27,6 +27,9 @@ class TriggerSaveForAllCompletedSubSteps extends Command
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
+        //TODO: Just this command, without any of the related queue work will take over 600 hours, partially due to
+        // the sleep, but also due to simply having TOO MUCH DATA. We need an alternative.
+
         CompletedSubStep::allInputSources()->where('input_source_id', '!=', $masterInputSource->id)
             ->orderBy('id')->chunkById(100, function ($css) {
                 foreach ($css as $step) {
@@ -36,7 +39,7 @@ class TriggerSaveForAllCompletedSubSteps extends Command
 
                     // Doing this will inevitably fill the queue... We sleep to allow the database to breathe.
                     // Who at PHP Corp decided to NOT create any sleep function that supports milliseconds!?
-                    usleep(500000);
+                    sleep(2);
                 }
         });
     }

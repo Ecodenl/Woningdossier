@@ -101,7 +101,8 @@ class ToolQuestionHelper
         'heat-pump-boiler-replace' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
         'sun-boiler-replace' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'new-water-comfort' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
-        
+
+        // todo: not sure is this is actually needed..
         'apply-led-light' => ['small-measures'],
         'turn-off-lights' => ['small-measures'],
         'replace-old-equipment' => ['small-measures'],

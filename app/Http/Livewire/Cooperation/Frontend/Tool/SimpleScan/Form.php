@@ -8,6 +8,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\CompletedSubStep;
+use App\Helpers\Hoomdossier;
 use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;

@@ -170,24 +170,26 @@ class Form extends Scannable
                         $shouldDoFullRecalculate = true;
                     }
 
-                    // get the expert step equivalent
-                    // we will filter out duplicates later on.
+
                     $quickScan = Scan::findByShort(Scan::QUICK);
 
                     // so this is another uitzondering on the rule which needs some expaination..
                     // we will only calculate the small measure when the user is currently on the lite scan and did not complete the quick-scan
                     // this is done so when the user only uses the lite-scan the woonplan only gets small-measure, measureApplications.
                     // else we will just do the regular recalculate/
-
                     if ($this->scan->isLiteScan() && $this->building->hasCompletedScan($quickScan, $this->masterInputSource) === false) {
+                        // so the full recalculate may be turned on due to the question
+                        // however, the quick scan is not completed. A full recalculate is not correct at this time.
+                        $shouldDoFullRecalculate = false;
                         $stepShortsToRecalculate = ['small-measures'];
                     } else {
+                        // get the expert step equivalent
+                        // we will filter out duplicates later on.
                         $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                     }
                 }
             }
         }
-
 
         // the INITIAL calculation will be handled by the CompletedSubStepObserver
         if ($shouldDoFullRecalculate && $masterHasCompletedScan) {

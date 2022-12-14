@@ -90,6 +90,6 @@ class Scan extends Model
 
     public function isLiteScan(): bool
     {
-        return $this->short === 'lite-scan';
+        return $this->short === self::LITE;
     }
 }

@@ -46,7 +46,7 @@ class ToolController extends Controller
 
         StepHelper::complete($step, $building, $inputSource);
         SubStepService::init()->building($building)->inputSource($inputSource)->subStep($subStep)->complete();
-        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user(), $inputSource);
 
         return redirect()->to(
             ScanFlowService::init($step->scan, $building, $inputSource)

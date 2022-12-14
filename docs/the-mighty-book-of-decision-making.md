@@ -79,3 +79,10 @@ The logic is simple: We check if there are coach rows. If so, we take those. Els
 the resident. This is because the `user_action_plan_advices` are too complex to map
 via the `AddMasterInputSource` command.
 
+## Measure applications
+### Cooperation measure applications
+As of the Lite scan, we got so called "extensive" measures, such as heat pump or floor insulation.
+This is basically what happens in the Quick scan, but since the Lite scan can't answer those questions, they are 
+added as such. In the code we refer to these measures as "extensive". The old, non-extensive measures are referred 
+to as "small", but technically that's not correct. They are actually the cooperation's "own" measures, however in 
+the code we use "small" as that makes more sense, as to being the opposite of "extensive".

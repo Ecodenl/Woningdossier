@@ -50,33 +50,29 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         @foreach(config('hoomdossier.supported_locales') as $locale)
-                                        <div class="form-group {{ $errors->has('questionnaire.name.*') ? ' has-error' : '' }}">
+                                        <div class="form-group {{ $errors->has('questionnaire.name.*') ? 'has-error' : '' }}">
                                             <label for="name">Naam:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon">{{$locale}}</span>
-                                                <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]"
+                                                <input type="text" class="form-control" name="questionnaires[name][{{$locale}}]"
                                                        value="{{ old("questionnaire.name.{$locale}", $questionnaire->getTranslation('name', $locale))}}"
                                                        placeholder="Nieuwe vragenlijst">
                                             </div>
                                         </div>
                                         @endforeach
-                                        <div class="form-group">
+                                        <div class="form-group {{ $errors->has('questionnaire.steps') || $errors->has('questionnaire.steps.*') ? 'has-error' : '' }}">
                                             <label for="step-id">Na stap:</label>
-                                            <select name="questionnaire[step_id]" class="form-control" id="step-id">
-                                                @php $order = 1; @endphp
-                                                @foreach($quickScanSteps as $step)
-                                                    <option value="{{ $step->id }}"
-                                                            @if(old('questionnaire.step_id', $questionnaire->step_id) == $step->id) selected="selected" @endif>
-                                                        {{ $order }}: {{ $step->name }} (quick-scan)
-                                                    </option>
-                                                    @php ++$order; @endphp
-                                                @endforeach
-                                                @foreach($expertSteps as $step)
-                                                    <option value="{{ $step->id }}"
-                                                            @if(old('questionnaire.step_id', $questionnaire->step_id) == $step->id) selected="selected" @endif>
-                                                        {{ $order }}: {{ $step->name }} (expert)
-                                                    </option>
-                                                    @php ++$order; @endphp
+                                            <select name="questionnaires[steps][]" class="form-control" id="step-id" multiple>
+                                                @php $questionnaireSteps = $questionnaire->steps()->pluck('steps.id')->toArray(); @endphp
+                                                @foreach($scans as $scan)
+                                                    <optgroup label="{{ $scan->name }}">
+                                                        @foreach($scan->steps as $step)
+                                                            <option value="{{ $step->id }}"
+                                                                    @if(in_array($step->id, old('questionnaire.steps', $questionnaireSteps))) selected="selected" @endif>
+                                                                {{ $step->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </optgroup>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -87,13 +83,11 @@
                         <div class="panel">
                             <div class="panel-body" >
                                 <div id="sortable">
-                                    @forelse($questionnaire->questions()->orderBy('order')->get() as $question)
+                                    @foreach($questionnaire->questions()->orderBy('order')->get() as $question)
                                         @component('cooperation.admin.cooperation.questionnaires.layouts.form-build-panel', ['question' => $question])
 
                                         @endcomponent
-                                    @empty
-
-                                    @endforelse
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -580,7 +574,7 @@
         {
             if (question.find('input.question_id').length > 0) {
                 return true;
-            } 
+            }
             return false
         }
 

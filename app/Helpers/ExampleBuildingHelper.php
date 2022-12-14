@@ -18,6 +18,7 @@ class ExampleBuildingHelper
     const RELEVANT_SUB_STEPS = [
         'wat-voor-woning',
         'woning-type',
+        'huur-of-koop', // Is this one relevant? No. Is it mixed in between and could otherwise cause weird behaviour? Yes. Surprise!
         'bouwjaar-en-oppervlak',
         'specifieke-voorbeeld-woning'
     ];

@@ -317,6 +317,11 @@ return [
 
         // Cooperation settings
         'cooperation_settings.' . \App\Helpers\Models\CooperationSettingHelper::SHORT_REGISTER_URL => 'register URL',
+
+        // Questionnaires
+        'questionnaires.steps' => 'na stap',
+        'questionnaires.steps.*' => 'na stap',
+        'questionnaires.name.*' => 'naam',
     ],
 
     'values' => [

@@ -25,8 +25,8 @@
         </a>
 
         @php
-            $questionnaires = $step->questionnaires()->orderBy('order')->active()->get();
-            $hasQuestionnaires = $questionnaires->count() > 0;
+            // Eager loaded in SubNavComposer
+            $hasQuestionnaires = $step->questionnaires->count() > 0;
         @endphp
 
         @if(! $loop->last || $hasQuestionnaires)
@@ -38,7 +38,7 @@
                 // also be at the end. We check this later
                 $isLastStep = $loop->last;
             @endphp
-            @foreach($questionnaires as $questionnaire)
+            @foreach($step->questionnaires as $questionnaire)
                 <a href="{{ route('cooperation.frontend.tool.simple-scan.questionnaires.index', compact('scan', 'step', 'questionnaire')) }}"
                    class="no-underline">
                     <div class="flex items-center">

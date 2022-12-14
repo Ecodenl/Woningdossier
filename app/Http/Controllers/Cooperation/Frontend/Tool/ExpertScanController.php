@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Cooperation\Frontend\Tool;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Cooperation\Tool\ToolController;
 use App\Models\Cooperation;
+use App\Models\Scan;
 use App\Models\Step;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -14,6 +14,10 @@ class ExpertScanController extends ToolController
 {
     public function index(Request $request, Cooperation $cooperation, Step $step)
     {
+        $scan = Scan::findByShort(Scan::EXPERT);
+        // Abort if not an expert step; no route binding here yet
+        abort_if($step->scan->id !== $scan->id, 404);
+
         Log::debug('ExpertScanController::index');
 
         // here we will have to decide whether we will show a dynamic page or a "static" expert page.

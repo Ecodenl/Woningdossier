@@ -50,6 +50,7 @@ class DoUpgrade extends Command
                 ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
             GiveCooperationDefaultScans::class => [],
+            ConvertQuestionnaireStepsToPivot::class => [],
         ];
 
 

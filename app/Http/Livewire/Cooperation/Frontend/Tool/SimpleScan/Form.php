@@ -42,6 +42,7 @@ class Form extends Scannable
             },
             'subStepTemplate',
         ]);
+        $this->subStep = $subStep;
 
         $this->build();
     }

@@ -129,6 +129,7 @@ class StepHelper
      */
     public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate): bool
     {
+        $scan = $step->scan;
         \Log::debug("COMPLETE IF NEEDED {$step->short}");
         $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
             ->forBuilding($building)
@@ -147,7 +148,7 @@ class StepHelper
 
             // Trigger a recalculate if the tool is now complete
             // TODO: Refactor this
-            if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
+            if ($triggerRecalculate && $building->hasCompletedScan($scan, $inputSource)) {
                 StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
             }
 
@@ -170,7 +171,7 @@ class StepHelper
 
                 // Trigger a recalculate if the tool is now complete
                 // TODO: Refactor this
-                if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
+                if ($triggerRecalculate && $building->hasCompletedScan($scan, $inputSource)) {
                     StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
                 }
 

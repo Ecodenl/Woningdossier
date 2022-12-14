@@ -27,26 +27,15 @@ class RecalculateToolForUserListener
      */
     public function handle($event)
     {
+        // only the solar panel step has input that may effect every measure (such as the amount_electricity)
         $stepsWhichNeedRecalculation = [
-            // Algemene gegevens
-            'building-characteristics',
-            'current-state',
-            'usage',
-            'interest',
-
-            // Quick scan (Replaces algemene gegevens so must trigger a recalculate!)
-            'building-data',
-            'usage-quick-scan',
-            'living-requirements',
-            'residential-status',
-
-            // Expert tool relevant steps
-            'high-efficiency-boiler',
             'solar-panels',
-            'heater',
-            // 'heat-pump', // Not relevant as the heat-pump is not a "completable" step
-            // TODO: In the future we would want to map boiler, heater and heat-pump to just heating instead
         ];
+
+        // the lite-scan and quick-scan should always recalculate
+        if (in_array($event->step->short, ['lite-scan', 'quick-scan'])) {
+            $stepsWhichNeedRecalculation = $event->step->scan->steps->pluck('short');
+        }
 
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {
             $inputSource = HoomdossierSession::getInputSource(true);

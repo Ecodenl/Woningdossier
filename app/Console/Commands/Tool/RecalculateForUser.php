@@ -101,7 +101,8 @@ class RecalculateForUser extends Command
 
                 // We can calculate / recalculate the advices when the user has completed the quick scan
                 // the quick scan provides the most basic information needed for calculations
-                if ($user->building->hasCompletedQuickScan($inputSource)) {
+                // todo: check if this should be present here.
+//                if ($user->building->hasCompletedScan($step)) {
                     $stepsToRecalculateChain = [];
 
                     if (! empty($stepShorts)) {
@@ -128,9 +129,9 @@ class RecalculateForUser extends Command
                     ProcessRecalculate::withChain($stepsToRecalculateChain)
                         ->onQueue(Queue::ASYNC)
                         ->dispatch();
-                } else {
-                    Log::debug("User has not completed quick scan | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
-                }
+//                } else {
+//                    Log::debug("User has not completed quick scan | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
+//                }
             }
         }
         $bar->finish();

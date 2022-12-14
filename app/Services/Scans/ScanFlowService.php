@@ -107,15 +107,23 @@ class ScanFlowService
             ->whereNotIn('sub_step_id', $subStepsRelated->pluck('id')->toArray())
             ->get();
 
+        // Get all conditions to get answers for
+        $allConditions = [];
+        foreach ($subStepsRelated as $subStep) {
+            $allConditions = array_merge($allConditions, $subStep->conditions ?? []);
+        }
+        foreach ($subSteppableRelated as $subSteppable) {
+            $allConditions = array_merge($allConditions, $subSteppable->conditions ?? []);
+        }
 
         $evaluator = ConditionEvaluator::init()
             ->building($building)
             ->inputSource($masterInputSource);
 
+        $evaluator->setAnswers($evaluator->getToolAnswersForConditions($allConditions));
+
         $stepsToCheck = [];
-        $processedSubSteps = [];
-
-
+        $processedSubSteps = $this->evaluateSubSteps($subStepsRelated, $evaluator);
 
         // The logic is as follows:
         // We will simply check if the related SubStep has answers or not.
@@ -320,8 +328,16 @@ class ScanFlowService
         return $url;
     }
 
-    public function evaluateSubSteps(Collection $subSteps)
+    public function evaluateSubSteps(Collection $subSteps, ConditionEvaluator $evaluator): array
     {
+        $building = $this->building;
+        $currentInputSource = $this->currentInputSource;
+        $masterInputSource = $this->inputSource;
+
+        $subStepService = SubStepService::init()
+            ->building($building)
+            ->inputSource($currentInputSource);
+
         // The logic is as follows:
         // If a SubStep can be seen, and has all answers answered, we will complete it/keep it complete, and we will
         // check the Step because it might now be completable.
@@ -329,8 +345,10 @@ class ScanFlowService
         // If a SubStep cannot be seen, and it's complete, we incomplete it, and we will check the Step because it
         // might be now completable.
 
+        $processedSubSteps = [];
+
         foreach ($subSteps as $subStep) {
-            if ($evaluator->evaluate($subStep->conditions)) {
+            if ($evaluator->evaluate($subStep->conditions ?? [])) {
                 // The SubStep is visible
                 if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
                     Log::debug("Completing SubStep {$subStep->name} because it has answers.");
@@ -360,6 +378,8 @@ class ScanFlowService
 
             $processedSubSteps[] = $subStep->id;
         }
+
+        return $processedSubSteps;
     }
 
     private function hasAnsweredSubStep(SubStep $subStep, ConditionEvaluator $evaluator): bool

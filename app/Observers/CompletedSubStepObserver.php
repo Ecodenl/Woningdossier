@@ -24,9 +24,9 @@ class CompletedSubStepObserver
             $building = $completedSubStep->building;
 
             if ($step instanceof Step && $inputSource instanceof InputSource && $building instanceof Building) {
-                StepHelper::completeStepIfNeeded($step, $building, $inputSource, true);
-
+                // Master is handled by GetMyValuesTrait
                 if ($inputSource->short !== InputSource::MASTER_SHORT) {
+                    StepHelper::completeStepIfNeeded($step, $building, $inputSource, true);
                     CompleteRelatedSubStep::dispatch($subStep, $building, $inputSource)->onQueue(Queue::ASYNC);
                 }
             }

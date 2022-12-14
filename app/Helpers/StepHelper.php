@@ -7,10 +7,10 @@ use App\Models\Building;
 use App\Models\CompletedStep;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
-use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\StepComment;
 use App\Models\SubStep;
+use Illuminate\Support\Facades\Log;
 
 class StepHelper
 {
@@ -129,8 +129,8 @@ class StepHelper
      */
     public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate): bool
     {
+        Log::debug("Complete step {$step->short} if needed");
         $scan = $step->scan;
-        \Log::debug("COMPLETE IF NEEDED {$step->short}");
         $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
             ->forBuilding($building)
             ->whereHas('subStep', function ($query) use ($step) {
@@ -144,6 +144,7 @@ class StepHelper
 
         if (empty($diff)) {
             // The sub step that has been completed finished up the set, so we complete the main step
+            Log::debug("Completing step {$step->short}");
             static::complete($step, $building, $inputSource);
 
             // Trigger a recalculate if the tool is now complete
@@ -167,6 +168,7 @@ class StepHelper
 
             if ($cantSee === $leftoverSubSteps->count()) {
                 // Conditions "passed", so we complete!
+                Log::debug("Completing step {$step->short}");
                 static::complete($step, $building, $inputSource);
 
                 // Trigger a recalculate if the tool is now complete

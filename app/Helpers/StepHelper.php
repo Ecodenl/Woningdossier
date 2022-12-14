@@ -149,11 +149,7 @@ class StepHelper
             Log::debug("Completing step {$step->short}");
             static::complete($step, $building, $inputSource);
 
-            // Trigger a recalculate if the tool is now complete
-            // TODO: Refactor this
-            if ($triggerRecalculate && $building->hasCompletedScan($scan, $inputSource)) {
-                StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
-            }
+            StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
 
             return true;
         } else {
@@ -173,11 +169,7 @@ class StepHelper
                 Log::debug("Completing step {$step->short}");
                 static::complete($step, $building, $inputSource);
 
-                // Trigger a recalculate if the tool is now complete
-                // TODO: Refactor this
-                if ($triggerRecalculate && $building->hasCompletedScan($scan, $inputSource)) {
-                    StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
-                }
+                StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
 
                 return true;
             }

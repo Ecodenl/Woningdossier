@@ -222,6 +222,12 @@ class Form extends Scannable
                         $stepShortsToRecalculate = ['small-measures'];
                     }
                 }
+            } else {
+                // could be any scan, only the quick-scan is actualy possible atm.
+                // also the quick scan is the only scan that is allowed to peform a full recalculate.
+                if ($completedSubStep->wasRecentlyCreated) {
+                    $shouldDoFullRecalculate = true;
+                }
             }
 
             if ($shouldDoFullRecalculate) {

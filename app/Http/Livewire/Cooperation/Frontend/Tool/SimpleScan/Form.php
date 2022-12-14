@@ -144,7 +144,7 @@ class Form extends Scannable
         $stepShortsToRecalculate = [];
         $shouldDoFullRecalculate = false;
 
-        $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
+        $masterHasCompletedScan = $this->building->hasCompletedScan($this->scan, $this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
@@ -164,19 +164,20 @@ class Form extends Scannable
                         ->applyExampleBuilding()
                         ->save($givenAnswer);
 
-                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource) && $masterHasCompletedQuickScan) {
+                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
                         Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
                         $shouldDoFullRecalculate = true;
                     }
 
                     // get the expert step equivalent
                     // we will filter out duplicates later on.
-                    $quickScan = Scan::findByShort('quick-scan');
+                    $quickScan = Scan::findByShort(Scan::QUICK);
 
                     // so this is another uitzondering on the rule which needs some expaination..
                     // we will only calculate the small measure when the user is currently on the lite scan and did not complete the quick-scan
                     // this is done so when the user only uses the lite-scan the woonplan only gets small-measure, measureApplications.
                     // else we will just do the regular recalculate/
+
                     if ($this->scan->isLiteScan() && $this->building->hasCompletedScan($quickScan, $this->masterInputSource) === false) {
                         $stepShortsToRecalculate = ['small-measures'];
                     } else {
@@ -188,7 +189,7 @@ class Form extends Scannable
 
 
         // the INITIAL calculation will be handled by the CompletedSubStepObserver
-        if ($shouldDoFullRecalculate) {
+        if ($shouldDoFullRecalculate && $masterHasCompletedScan) {
             // We should do a full recalculate because some base value that has impact on every calculation is changed.
             Log::debug("Dispatching full recalculate..");
 
@@ -200,7 +201,7 @@ class Form extends Scannable
             ]);
 
             // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
-        } else if ($masterHasCompletedQuickScan && ! empty($stepShortsToRecalculate)) {
+        } else if ($masterHasCompletedScan && ! empty($stepShortsToRecalculate)) {
             // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
             $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
             // since we are just re-calculating specific parts of the tool we do it without the old advices

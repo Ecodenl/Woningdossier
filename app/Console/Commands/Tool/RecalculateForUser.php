@@ -52,18 +52,17 @@ class RecalculateForUser extends Command
      */
     public function handle()
     {
-
-        $userIds = $this->option('user');
+        $userIds           = $this->option('user');
         $inputSourceShorts = $this->option('input-source');
         // default to resident.
         $inputSourcesToRecalculate = empty($inputSourceShorts) ? [InputSource::RESIDENT_SHORT] : $inputSourceShorts;
-        $withOldAdvices = $this->option('with-old-advices');
-        $stepShorts = $this->option('step-short');
-        $cooperationId = $this->option('cooperation');
+        $withOldAdvices            = $this->option('with-old-advices');
+        $stepShorts                = $this->option('step-short');
+        $cooperationId             = $this->option('cooperation');
 
-        if (!is_null($cooperationId)) {
+        if (! is_null($cooperationId)) {
             $cooperation = Cooperation::find($cooperationId);
-            if (!$cooperation instanceof Cooperation) {
+            if (! $cooperation instanceof Cooperation) {
                 $this->error("No cooperation found for ID {$cooperationId}");
                 return 0;
             } else {
@@ -98,39 +97,33 @@ class RecalculateForUser extends Command
             $bar->advance(1);
 
             foreach ($inputSources as $inputSource) {
+                $stepsToRecalculateChain = [];
 
-                // We can calculate / recalculate the advices when the user has completed the quick scan
-                // the quick scan provides the most basic information needed for calculations
-                if ($user->building->hasCompletedQuickScan($inputSource)) {
-                    $stepsToRecalculateChain = [];
-
-                    if (! empty($stepShorts)) {
-                        $stepsToRecalculate = Step::recalculable()->whereIn('short', $stepShorts)->get();
-                    } else {
-                        $stepsToRecalculate = Step::recalculable()->get();
-                    }
-
-                    foreach ($stepsToRecalculate as $stepToRecalculate) {
-                        $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $stepToRecalculate, $withOldAdvices))
-                            ->onQueue(Queue::ASYNC);
-                    }
-
-                    Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
-
-                    NotificationService::init()
-                        ->forBuilding($user->building)
-                        ->forInputSource($inputSource)
-                        ->setType(RecalculateStepForUser::class)
-                        ->setActive($stepsToRecalculate->count());
-
-                    Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
-
-                    ProcessRecalculate::withChain($stepsToRecalculateChain)
-                        ->onQueue(Queue::ASYNC)
-                        ->dispatch();
+                if (! empty($stepShorts)) {
+                    $stepsToRecalculate = Step::recalculable()->whereIn('short', $stepShorts)->get();
                 } else {
-                    Log::debug("User has not completed quick scan | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
+                    $stepsToRecalculate = Step::recalculable()->get();
                 }
+
+                foreach ($stepsToRecalculate as $stepToRecalculate) {
+                    $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $stepToRecalculate,
+                        $withOldAdvices))
+                        ->onQueue(Queue::ASYNC);
+                }
+
+                Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
+
+                NotificationService::init()
+                    ->forBuilding($user->building)
+                    ->forInputSource($inputSource)
+                    ->setType(RecalculateStepForUser::class)
+                    ->setActive($stepsToRecalculate->count());
+
+                Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
+
+                ProcessRecalculate::withChain($stepsToRecalculateChain)
+                    ->onQueue(Queue::ASYNC)
+                    ->dispatch();
             }
         }
         $bar->finish();

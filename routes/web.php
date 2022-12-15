@@ -200,6 +200,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             ->all()
                         )
                         ->as('simple-scan.')
+                        ->middleware('cooperation-has-scan')
                         ->group(function () {
                             $steps = \App\Helpers\Cache\Step::allSlugs();
 

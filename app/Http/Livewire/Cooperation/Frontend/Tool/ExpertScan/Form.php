@@ -10,12 +10,14 @@ use App\Helpers\Arr;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
@@ -117,7 +119,8 @@ class Form extends Component
         $shouldDoFullRecalculate = false;
         $dirtyToolQuestions = [];
 
-        $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
+        $quickScan = Scan::findByShort(Scan::QUICK);
+        $masterHasCompletedQuickScan = $this->building->hasCompletedScan($quickScan, $this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
         foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
@@ -174,7 +177,7 @@ class Form extends Component
                 $flowService->skipSubstep($subStep);
             }
 
-            $flowService->checkConditionals($dirtyToolQuestions);
+            $flowService->checkConditionals($dirtyToolQuestions, Hoomdossier::user());
         }
 
         // the INITIAL calculation will be handled by the CompletedSubStepObserver

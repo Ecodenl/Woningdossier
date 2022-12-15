@@ -47,10 +47,15 @@ class DoUpgrade extends Command
                 ['--class' => 'ToolLabelsTableSeeder', '--force' => true],
                 ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
                 ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
+                ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
             GiveCooperationDefaultScans::class => [],
             ConvertQuestionnaireStepsToPivot::class => [],
+
+            // We don't really wanna run this more than once...
+            //TriggerSaveForAllCompletedSubSteps::class => [],
         ];
+
 
         foreach ($commands as $command => $variants) {
             if (! is_array(Arr::first($variants))) {

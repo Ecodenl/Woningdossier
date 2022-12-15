@@ -10,6 +10,7 @@ use App\Helpers\Arr;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
@@ -176,7 +177,7 @@ class Form extends Component
                 $flowService->skipSubstep($subStep);
             }
 
-            $flowService->checkConditionals($dirtyToolQuestions);
+            $flowService->checkConditionals($dirtyToolQuestions, Hoomdossier::user());
         }
 
         // the INITIAL calculation will be handled by the CompletedSubStepObserver

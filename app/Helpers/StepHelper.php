@@ -10,6 +10,8 @@ use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\StepComment;
 use App\Models\SubStep;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class StepHelper
 {
@@ -122,14 +124,15 @@ class StepHelper
      * @param \App\Models\Step $step
      * @param \App\Models\Building $building
      * @param \App\Models\InputSource $inputSource
+     * @param \App\Models\User $authUser
      * @param bool $triggerRecalculate
      *
      * @return bool True if the step can be completed, false if it can't be completed.
      */
-    public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate): bool
+    public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, User $authUser, bool $triggerRecalculate): bool
     {
+        Log::debug("Complete step {$step->short} if needed");
         $scan = $step->scan;
-        \Log::debug("COMPLETE IF NEEDED {$step->short}");
         $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
             ->forBuilding($building)
             ->whereHas('subStep', function ($query) use ($step) {
@@ -143,9 +146,10 @@ class StepHelper
 
         if (empty($diff)) {
             // The sub step that has been completed finished up the set, so we complete the main step
+            Log::debug("Completing step {$step->short}");
             static::complete($step, $building, $inputSource);
 
-            StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user(), $inputSource);
+            StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
 
             return true;
         } else {
@@ -162,9 +166,10 @@ class StepHelper
 
             if ($cantSee === $leftoverSubSteps->count()) {
                 // Conditions "passed", so we complete!
+                Log::debug("Completing step {$step->short}");
                 static::complete($step, $building, $inputSource);
 
-                StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user(), $inputSource);
+                StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
 
                 return true;
             }

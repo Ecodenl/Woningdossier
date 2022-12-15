@@ -40,6 +40,7 @@ class ScanService
             ->leftJoin('steps', 'sub_steps.step_id', '=', 'steps.id')
             ->where('steps.scan_id', $this->scan->id)
             ->where('css.building_id', $this->building->id)
+            ->where('css.input_source_id', $this->masterInputSource->id)
             ->count() > 0;
     }
 }

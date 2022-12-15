@@ -149,6 +149,8 @@ class MapQuickScanSituationToExpert implements ShouldQueue
         $source = $calculateValue <= 3 ? ['hr-boiler', 'heat-pump'] : ['heat-pump'];
 
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-pump-type'), $type);
+        // It is important to first map the new-heat-source, else the potential answer for new-heat-source-warm-tap-water
+        // might be removed due to conditionals.
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-source'), $source);
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-source-warm-tap-water'), (in_array('hr-boiler', $source) ? ['hr-boiler'] : ['heat-pump']));
 

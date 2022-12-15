@@ -183,7 +183,7 @@ class ToolQuestionService {
                 $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
                 // apply the example building for the given changes.
                 // we give him the old building features, otherwise we cant verify the changes
-                ApplyExampleBuildingForChanges::dispatchNow($oldBuildingFeature, $answerData, $this->currentInputSource);
+                ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
             }
         }
 
@@ -235,9 +235,17 @@ class ToolQuestionService {
         //$toolQuestionValuables = ToolQuestionValuable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$this->toolQuestion->short}\""])
         //    ->get();
 
+        $allConditions = [];
+        foreach ($conditionalCustomValues as $conditionalCustomValue) {
+            $allConditions = array_merge($allConditions, $conditionalCustomValue->conditions ?? []);
+        }
+
         $evaluator = ConditionEvaluator::init()
             ->inputSource($this->currentInputSource)
             ->building($this->building);
+
+        // Retrieve all answers because conditions might be based on more than just this tool question.
+        $answers = $evaluator->getToolAnswersForConditions($allConditions, $answers);
 
         $toolQuestionsToUnset = [];
         foreach ($conditionalCustomValues as $conditionalCustomValue) {

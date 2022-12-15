@@ -91,8 +91,9 @@ class ToolQuestionService {
                     ->whereShort($answer)->first();
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                 $data['answer'] = $answer;
-                Log::debug($data);
-                $this->toolQuestion->toolQuestionAnswers()->create($data);
+
+                $instance = $this->toolQuestion->toolQuestionAnswers()->create($data);
+                Log::debug($instance);
             }
         } else {
             if (is_array($givenAnswer)) {

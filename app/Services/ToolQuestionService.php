@@ -53,6 +53,7 @@ class ToolQuestionService {
 
     public function save($givenAnswer)
     {
+        Log::debug("Saving " . json_encode($givenAnswer) . " for TQ {$this->toolQuestion->short} for Building {$this->building->id} and InputSource {$this->currentInputSource->id}");
         if (is_null($this->toolQuestion->save_in)) {
             $this->saveToolQuestionCustomValues($givenAnswer);
         } else {

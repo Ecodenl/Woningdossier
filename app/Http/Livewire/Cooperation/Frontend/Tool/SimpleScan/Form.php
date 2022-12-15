@@ -240,7 +240,7 @@ class Form extends Scannable
                 ]);
 
                 // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
-            } else if (!empty($stepShortsToRecalculate)) {
+            } elseif (! empty($stepShortsToRecalculate)) {
                 // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
                 $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
                 // since we are just re-calculating specific parts of the tool we do it without the old advices

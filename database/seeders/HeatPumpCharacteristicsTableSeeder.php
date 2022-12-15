@@ -132,7 +132,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 0.0,
                 'share_percentage_tap_water'    => 0,
                 'costs'                         => 18000,
-                'standard_power_kw'              => 4,
+                'standard_power_kw'              => 5,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_HYBRID,
             ],
             [
@@ -146,7 +146,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 0.0,
                 'share_percentage_tap_water'    => 0,
                 'costs'                         => 18000,
-                'standard_power_kw'              => 4,
+                'standard_power_kw'              => 5,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_HYBRID,
             ],
             [
@@ -160,7 +160,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 0.0,
                 'share_percentage_tap_water'    => 0,
                 'costs'                         => 18000,
-                'standard_power_kw'              => 4,
+                'standard_power_kw'              => 5,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_HYBRID,
             ],
             // 'Volledige warmtepomp buitenlucht'
@@ -174,7 +174,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 2.56,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 16000,
-                'standard_power_kw'              => 12,
+                'standard_power_kw'              => 21,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_FULL,
             ],
             [
@@ -187,7 +187,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 2.56,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 16000,
-                'standard_power_kw'              => 12,
+                'standard_power_kw'              => 21,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_FULL,
             ],
             [
@@ -200,7 +200,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 2.56,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 16000,
-                'standard_power_kw'              => 12,
+                'standard_power_kw'              => 21,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_FULL,
             ],
             // 'Volledige warmtepomp bodemwarmte'
@@ -214,7 +214,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 2.7,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 27500,
-                'standard_power_kw'              => 12,
+                'standard_power_kw'              => 21,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_FULL,
             ],
             [
@@ -227,7 +227,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 2.7,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 27500,
-                'standard_power_kw'              => 12,
+                'standard_power_kw'              => 21,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_FULL,
             ],
             [
@@ -240,7 +240,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 2.7,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 27500,
-                'standard_power_kw'              => 12,
+                'standard_power_kw'              => 21,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_FULL,
             ],
             // 'Volledige warmtepomp met pvt panelen'
@@ -254,7 +254,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 2.7,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 26500,
-                'standard_power_kw'              => 12,
+                'standard_power_kw'              => 21,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_FULL,
             ],
             [
@@ -267,7 +267,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 2.7,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 26500,
-                'standard_power_kw'              => 12,
+                'standard_power_kw'              => 21,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_FULL,
             ],
             [
@@ -280,7 +280,7 @@ class HeatPumpCharacteristicsTableSeeder extends Seeder
                 'scop_tap_water'                => 2.7,
                 'share_percentage_tap_water'    => 100,
                 'costs'                         => 26500,
-                'standard_power_kw'              => 12,
+                'standard_power_kw'              => 21,
                 'type'                          => \App\Models\HeatPumpCharacteristic::TYPE_FULL,
             ],
             // warmtepompboiler

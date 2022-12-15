@@ -20,5 +20,9 @@ Beantwoord de vragen over uw huis, kies welke verbeteringen gewenst zijn en ontd
 Hoe specifieker uw antwoorden, hoe beter het advies. Bij (bijna) iedere vraag staat ook een <i class="icon-sm icon-info"></i>, door hierop te klikken krijgt u extra informatie over wat er bedoeld wordt en hoe u het antwoord kunt vinden.
 <br><br>
 Komt u er toch niet uit, neem dan via de chat-knop in het menu contact met ons op.</p>',
+        'buttons' => [
+            'start' => 'Start de :scan',
+            'continue' => 'Ga verder met de :scan',
+        ],
     ],
 ];

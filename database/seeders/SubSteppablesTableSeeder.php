@@ -741,7 +741,7 @@ class SubSteppablesTableSeeder extends Seeder
                 ],
                 'Samenvatting woningstatus' => [
                     'slug' => 'samenvatting-woonstatus',
-                    'order' => 16,
+                    'order' => 15,
                     'sub_step_template_id' => $templateSummary->id,
                     'morphs' => [
                         [

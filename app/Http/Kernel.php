@@ -76,6 +76,7 @@ class Kernel extends HttpKernel
 
         // simple scan
         'checks-conditions-for-sub-steps' => \App\Http\Middleware\ChecksConditionsForSubSteps::class,
+        'cooperation-has-scan' => \App\Http\Middleware\CooperationHasScan::class,
 
         'track-visited-url' => \App\Http\Middleware\TrackVisitedUrl::class,
         // Expert tool

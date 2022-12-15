@@ -14,9 +14,14 @@
 
                 <div class="flex justify-between space-x-2">
                     @foreach($scans as $scan)
+                        @php
+                            $transShort = \App\Services\Models\ScanService::init()
+                                ->scan($scan)->building($building)->hasMadeScanProgress()
+                                ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                        @endphp
                         <a class="btn btn-purple"
                            href="{{\App\Services\Scans\ScanFlowService::init($scan, $building, $inputSource)->resolveInitialUrl()}}">
-                            {{$scan->name}}
+                            @lang($transShort, ['scan' => $scan->name])
                         </a>
                     @endforeach
                 </div>

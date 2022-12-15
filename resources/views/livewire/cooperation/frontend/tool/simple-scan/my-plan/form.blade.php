@@ -95,33 +95,37 @@
                 {{-- White space --}}
             </div>
             <div class="w-full flex flex-row flex-wrap justify-center items-center space-x-5">
-                <div x-data="modal()" class="">
-                    <i class="icon-md icon-plus-purple clickable mt-3" x-on:click="toggle()"></i>
-                    @component('cooperation.frontend.layouts.components.modal', [
-                        'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.header'),
-                    ])
-                        <div class="w-full h-full">
-                            <div class="w-full h-full space-y-2">
-                                @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
-                                    <button class="btn btn-green flex w-full items-center justify-center" wire:key="trashed-button"
-                                            x-on:click="window.triggerEvent(document.querySelector('#trashed'), 'open-modal'); close();">
-                                        @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
-                                    </button>
-                                @endif
-                                <button class="btn btn-green flex w-full items-center justify-center" wire:key="expert-button"
-                                        x-on:click="window.triggerEvent(document.querySelector('#expert'), 'open-modal'); close();">
-                                    @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.button')
-                                </button>
-                                @if(! \App\Helpers\HoomdossierSession::isUserObserving())
-                                    <button class="btn btn-green flex w-full items-center justify-center" wire:key="custom-button"
-                                            x-on:click="window.triggerEvent(document.querySelector('#add'), 'open-modal'); close();">
-                                        @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.add.button')
-                                    </button>
-                                @endif
+                @if(! $scan->isLiteScan() || ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+                    <div x-data="modal()" class="">
+                        <i class="icon-md icon-plus-purple clickable mt-3" x-on:click="toggle()"></i>
+                        @component('cooperation.frontend.layouts.components.modal', [
+                            'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.header'),
+                        ])
+                            <div class="w-full h-full">
+                                <div class="w-full h-full space-y-2">
+                                    @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+                                        <button class="btn btn-green flex w-full items-center justify-center" wire:key="trashed-button"
+                                                x-on:click="window.triggerEvent(document.querySelector('#trashed'), 'open-modal'); close();">
+                                            @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
+                                        </button>
+                                    @endif
+                                    @if(! $scan->isLiteScan())
+                                        <button class="btn btn-green flex w-full items-center justify-center" wire:key="expert-button"
+                                                x-on:click="window.triggerEvent(document.querySelector('#expert'), 'open-modal'); close();">
+                                            @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.button')
+                                        </button>
+                                    @endif
+                                    @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! $scan->isLiteScan())
+                                        <button class="btn btn-green flex w-full items-center justify-center" wire:key="custom-button"
+                                                x-on:click="window.triggerEvent(document.querySelector('#add'), 'open-modal'); close();">
+                                            @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.add.button')
+                                        </button>
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                    @endcomponent
-                </div>
+                        @endcomponent
+                    </div>
+                @endif
 
                 {{-- Modal for invisible measures --}}
                 @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
@@ -173,33 +177,35 @@
                     </div>
                 @endif
                 {{-- Modal for expert steps --}}
-                <div x-data="modal()" class="" wire:key="expert-modal">
-                    @component('cooperation.frontend.layouts.components.modal', [
-                        'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.title'),
-                        'id' => 'expert',
-                    ])
-                        <p>
-                            @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.help')
-                        </p>
+                @if(! $scan->isLiteScan())
+                    <div x-data="modal()" class="" wire:key="expert-modal">
+                        @component('cooperation.frontend.layouts.components.modal', [
+                            'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.title'),
+                            'id' => 'expert',
+                        ])
+                            <p>
+                                @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.help')
+                            </p>
 
-                        <ul class="mt-4 w-full text-blue-500 text-sm bg-white rounded-lg border border-blue-500 border-opacity-50 divide-y divide-blue-500 py-2 list-none pl-0">
-                            @foreach(\App\Models\Step::expert()->get() as $step)
-                                @if(! in_array($step->short, ['high-efficiency-boiler', 'heater', 'heat-pump']))
-                                    <li class="py-1 px-3">
-                                        <a href="{{ route("cooperation.frontend.tool.expert-scan.index", compact('cooperation', 'step')) }}"
-                                           class="in-text">
-                                            <img src="{{ asset("images/icons/{$step->slug}.png") }}"
-                                                 alt="{{ $step->name }}" class="rounded-1/2 inline-block h-8 w-8">
-                                            {{ $step->name }}
-                                        </a>
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
-                    @endcomponent
-                </div>
+                            <ul class="mt-4 w-full text-blue-500 text-sm bg-white rounded-lg border border-blue-500 border-opacity-50 divide-y divide-blue-500 py-2 list-none pl-0">
+                                @foreach(\App\Models\Step::expert()->get() as $step)
+                                    @if(! in_array($step->short, ['high-efficiency-boiler', 'heater', 'heat-pump']))
+                                        <li class="py-1 px-3">
+                                            <a href="{{ route("cooperation.frontend.tool.expert-scan.index", compact('cooperation', 'step')) }}"
+                                               class="in-text">
+                                                <img src="{{ asset("images/icons/{$step->slug}.png") }}"
+                                                     alt="{{ $step->name }}" class="rounded-1/2 inline-block h-8 w-8">
+                                                {{ $step->name }}
+                                            </a>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        @endcomponent
+                    </div>
+                @endif
                 {{-- Modal for custom measures --}}
-                @if(! \App\Helpers\HoomdossierSession::isUserObserving())
+                @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! $scan->isLiteScan())
                     <div x-data="modal()" class="" wire:key="custom-modal">
                         @component('cooperation.frontend.layouts.components.modal', [
                             'header' => __('cooperation/frontend/tool.form.subject'),

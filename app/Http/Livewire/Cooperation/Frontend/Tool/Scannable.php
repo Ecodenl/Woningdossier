@@ -42,6 +42,7 @@ abstract class Scannable extends Component
 
     public function build()
     {
+        $this->cooperation = HoomdossierSession::getCooperation(true);
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);

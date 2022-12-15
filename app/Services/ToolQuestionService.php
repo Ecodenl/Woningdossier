@@ -182,7 +182,7 @@ class ToolQuestionService {
                 $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
                 // apply the example building for the given changes.
                 // we give him the old building features, otherwise we cant verify the changes
-                ApplyExampleBuildingForChanges::dispatchNow($oldBuildingFeature, $answerData, $this->currentInputSource);
+                ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
             }
         }
 

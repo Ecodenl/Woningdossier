@@ -37,7 +37,7 @@ class UserActionPlanAdviceObserver
             if ($advisable instanceof MeasureApplication && in_array($advisable->short, array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
                 $building = $userActionPlanAdvice->user->building;
                 if (! ConditionService::init()->building($building)->inputSource($userActionPlanAdvice->inputSource)->hasCompletedSteps(['heating'])) {
-                    MapQuickScanSituationToExpert::dispatchNow($building, $userActionPlanAdvice->inputSource, $advisable);
+                    MapQuickScanSituationToExpert::dispatchSync($building, $userActionPlanAdvice->inputSource, $advisable);
                 }
             }
         }

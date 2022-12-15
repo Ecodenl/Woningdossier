@@ -114,7 +114,7 @@ class ToolQuestionService {
                 ->updateOrCreate($where, $data);
         }
 
-       $this->checkConditionalAnswers($givenAnswer);
+        $this->checkConditionalAnswers($givenAnswer);
     }
 
     public function saveToolQuestionValuables($givenAnswer)
@@ -234,9 +234,17 @@ class ToolQuestionService {
         //$toolQuestionValuables = ToolQuestionValuable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$this->toolQuestion->short}\""])
         //    ->get();
 
+        $allConditions = [];
+        foreach ($conditionalCustomValues as $conditionalCustomValue) {
+            $allConditions = array_merge($allConditions, $conditionalCustomValue->conditions ?? []);
+        }
+
         $evaluator = ConditionEvaluator::init()
             ->inputSource($this->currentInputSource)
             ->building($this->building);
+
+        // Retrieve all answers because conditions might be based on more than just this tool question.
+        $answers = $evaluator->getToolAnswersForConditions($allConditions, $answers);
 
         $toolQuestionsToUnset = [];
         foreach ($conditionalCustomValues as $conditionalCustomValue) {

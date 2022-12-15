@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Console\Commands\Fixes\CorrectHasSolarPanelsToolQuestionAnswer;
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;
+use Illuminate\Support\Facades\DB;
 
 class RunDeploy extends Command
 {
@@ -41,6 +42,19 @@ class RunDeploy extends Command
      */
     public function handle()
     {
+
+        // can be removed after one deploy cycle.
+        if (!DB::table('measure_applications')
+               ->where('short', '=', 'floor-insulation')
+               ->where('costs', '=', 42)
+               ->exists()) {
+            // seeder has not been run yet.
+            $this->call(SeedCommand::class,  ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true]);
+        }
+        else {
+            $this->info("You can remove the seed call for MeasureApplicationsTableSeeder from RunDeploy.php now.");
+        }
+
 
 //        $this->call(SeedCommand::class,  ['--class' => 'ToolQuestionTypesTableSeeder', '--force' => true]);
 //

@@ -57,6 +57,7 @@ class Form extends Component
     public InputSource $residentInputSource;
     public InputSource $coachInputSource;
 
+    public Scan $scan;
     public array $custom_measure_application = [];
 
     // Details

@@ -92,8 +92,7 @@ class ToolQuestionService {
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                 $data['answer'] = $answer;
 
-                $instance = $this->toolQuestion->toolQuestionAnswers()->create($data);
-                Log::debug($instance);
+                $this->toolQuestion->toolQuestionAnswers()->create($data);
             }
         } else {
             if (is_array($givenAnswer)) {
@@ -116,7 +115,7 @@ class ToolQuestionService {
                 ->updateOrCreate($where, $data);
         }
 
-       $this->checkConditionalAnswers($givenAnswer);
+        $this->checkConditionalAnswers($givenAnswer);
     }
 
     public function saveToolQuestionValuables($givenAnswer)
@@ -256,6 +255,7 @@ class ToolQuestionService {
                         'tool_question_id' => $conditionalCustomValue->toolQuestion->id,
                         'tool_question_custom_value_id' => $conditionalCustomValue->id,
                     ];
+                    Log::debug("Clearing answer for TQ {$conditionalCustomValue->toolQuestion->short}");
                     $this->clearAnswer($conditionalCustomValue->toolQuestion, $where);
                 }
             }

@@ -207,14 +207,17 @@ class Form extends Scannable
                 // when the user is on the lite scan and its uncomplete
                 // we are only allowed to recalculate the small measures
                 // however, when the user complete the quick scan we CAN recalculate other steps.
-                if ($this->building->hasNotCompletedScan($quickScan,  $this->masterInputSource)
-                    || $this->cooperation->scans()->where('scans.id', $quickScan->id)->doesntExist()
-                ) {
+                $userHasUncompletedQuickScan = $this->building->hasNotCompletedScan($quickScan,  $this->masterInputSource);
+                $cooperationDoesntHaveQuickScan = $this->cooperation->scans()->where('scans.id', $quickScan->id)->doesntExist();
+                if ($userHasUncompletedQuickScan || $cooperationDoesntHaveQuickScan) {
                     $shouldDoFullRecalculate = false;
                     // A non-full recalculate moves advices. If we shouldn't recalculate this step, we won't do anything.
                     // However, in the case the user completes the steps in a different order, we will force the calculation.
-                    $stepShortsToRecalculate = in_array('small-measures',
-                        $stepShortsToRecalculate) || $completedSubStep->wasRecentlyCreated ? ['small-measures'] : [];
+                    if (in_array('small-measures', $stepShortsToRecalculate) || $completedSubStep->wasRecentlyCreated) {
+                        $stepShortsToRecalculate = ['small-measures'];
+                    } else {
+                        $stepShortsToRecalculate = [];
+                    }
                 }
             } else {
                 // could be any scan, only the quick-scan is actualy possible atm.

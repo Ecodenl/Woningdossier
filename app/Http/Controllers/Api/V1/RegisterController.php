@@ -15,7 +15,9 @@ use App\Models\Cooperation;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
 use App\Services\UserService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
@@ -115,6 +117,21 @@ class RegisterController extends Controller
                 }
             }
         }
+
+        $client = $request->user();
+
+        $logContext = [
+            'users' => [
+                ['account_id' => $account->id, 'user_id' => $user->id]
+            ],
+            'client' => Arr::only($client->attributesToArray(), ['id', 'name']),
+        ];
+
+        if (!app()->runningUnitTests()) {
+            // the access token in mocked in a broken way.
+            $logContext['personal_access_token'] = Arr::only($client->currentAccessToken()->attributesToArray(), ['id', 'name']);
+        }
+        Log::channel('api')->info('User registered', $logContext);
 
         return response(['account_id' => $account->id, 'user_id' => $user->id], 201);
     }

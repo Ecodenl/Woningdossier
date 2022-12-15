@@ -66,7 +66,7 @@ if (token) {
  * @param eventName
  */
 window.triggerEvent = function (element, eventName) {
-    if (element && element.nodeType === Node.ELEMENT_NODE && eventName) {
+    if (((element && [Node.ELEMENT_NODE, Node.DOCUMENT_NODE].includes(element.nodeType)) || element === window) && eventName) {
         let event = new Event(eventName, {bubbles: true});
         element.dispatchEvent(event);
     }
@@ -85,7 +85,7 @@ window.triggerCustomEvent = function (element, eventName, params = {}) {
         params = {};
     }
 
-    if (element && element.nodeType === Node.ELEMENT_NODE && eventName) {
+    if (((element && [Node.ELEMENT_NODE, Node.DOCUMENT_NODE].includes(element.nodeType)) || element === window) && eventName) {
         let event = new CustomEvent(eventName, {bubbles: true, detail: params });
         element.dispatchEvent(event);
     }

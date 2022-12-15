@@ -1,0 +1,49 @@
+@extends('cooperation.admin.layouts.app')
+
+@section('content')
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            @lang('cooperation/admin/super-admin/tool-calculation-results.edit.header')
+        </div>
+
+        <div class="panel-body">
+            <form action="{{route('cooperation.admin.super-admin.tool-calculation-results.update', compact('toolCalculationResult'))}}" method="post">
+                <div class="form-group">
+                    <a href="{{route('cooperation.admin.super-admin.tool-calculation-results.index')}}"
+                       class="btn btn-default">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                        @lang('woningdossier.cooperation.tool.back-to-overview')
+                    </a>
+                </div>
+                @csrf
+                @method('put')
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="tool-calculation-results">@lang('cooperation/admin/super-admin/tool-calculation-results.edit.form.name')</label>
+                            @foreach($toolCalculationResult->getTranslations('name') as $locale => $translation)
+                                <input class="form-control" type="text" name="tool_calculation_results[name][{{$locale}}]" value="{{old("tool_calculation_results.name.{$locale}", $translation)}}">
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="tool-calculation-results">@lang('cooperation/admin/super-admin/tool-calculation-results.edit.form.help-text')</label>
+                            @forelse($toolCalculationResult->getTranslations('help_text') as $locale => $translation)
+                                <textarea class="form-control"  name="tool_calculation_results[help_text][{{$locale}}]">{{old("tool_calculation_results.help_text.{$locale}", $translation)}}</textarea>
+                            @empty
+                                <textarea class="form-control"  name="tool_calculation_results[help_text][nl]">{{old("tool_calculation_results.help_text.nl")}}</textarea>
+                            @endforelse
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button class="btn btn-primary">@lang('cooperation/admin/super-admin/tool-calculation-results.edit.form.submit')</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection

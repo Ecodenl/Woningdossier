@@ -209,18 +209,10 @@ class Form extends Scannable
                 // however, when the user complete the quick scan we CAN recalculate other steps.
                 if ($this->building->hasNotCompletedScan($quickScan, $this->masterInputSource)) {
                     $shouldDoFullRecalculate = false;
-
-                    // this if is KEY!
-                    // the last sub step would be (for the current state of the application) the samenvatting page
-                    // no question on that page would do a full recalculate, nor would and should i trigger a tool question map
-
-                    if ($completedSubStep->wasRecentlyCreated) {
-                        // at this point the master has completed the scan
-                        // and we know that the sub step was recently created
-                        // this way we wont recalculate the small measures on every save, but just once. When the scan in completed initially
-                        // ofcourse it will still calculate when a relevant question gets changed.
-                        $stepShortsToRecalculate = ['small-measures'];
-                    }
+                    // A non-full recalculate moves advices. If we shouldn't recalculate this step, we won't do anything.
+                    // However, in the case the user completes the steps in a different order, we will force the calculation.
+                    $stepShortsToRecalculate = in_array('small-measures', $stepShortsToRecalculate) || $completedSubStep->wasRecentlyCreated
+                         ? ['small-measures'] : [];
                 }
             } else {
                 // could be any scan, only the quick-scan is actualy possible atm.

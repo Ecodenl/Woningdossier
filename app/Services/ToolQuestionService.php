@@ -255,7 +255,7 @@ class ToolQuestionService {
                         'tool_question_id' => $conditionalCustomValue->toolQuestion->id,
                         'tool_question_custom_value_id' => $conditionalCustomValue->id,
                     ];
-                    Log::debug("Clearing answer for TQ {$conditionalCustomValue->toolQuestion->short}");
+
                     $this->clearAnswer($conditionalCustomValue->toolQuestion, $where);
                 }
             }

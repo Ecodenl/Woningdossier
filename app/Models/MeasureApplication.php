@@ -66,7 +66,7 @@ class MeasureApplication extends Model
     ];
 
     protected $fillable = [
-        'measure_name', 'measure_info',
+        'measure_name', 'measure_info', 'configurations',
     ];
 
     protected $casts = [

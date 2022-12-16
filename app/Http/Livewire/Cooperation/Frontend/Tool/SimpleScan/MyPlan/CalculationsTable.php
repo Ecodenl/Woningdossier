@@ -41,7 +41,7 @@ class CalculationsTable extends Component
     ];
 
     private array $toolQuestionShorts = [
-        'amount-gas', 'amount-electricity', 'resident-count', 'water-comfort', 'build-year', 'specific-example-building',
+        'amount-gas', 'amount-electricity', 'resident-count', 'water-comfort', 'build-year',
         'insulation-wall-surface', 'insulation-floor-surface', 'total-window-surface',
         'pitched-roof-surface', 'flat-roof-surface', 'desired-solar-panel-count',
         'new-heat-source', 'new-heat-source-warm-tap-water', 'new-cook-type', 'boiler-type', 'heat-pump-type',
@@ -95,22 +95,25 @@ class CalculationsTable extends Component
             if (array_key_exists($toolQuestion->id, $answers)) {
                 $answerToMakeReadable = $toolQuestion->data_type === Caster::ARRAY
                     ? Arr::pluck($answers[$toolQuestion->id], 'answer')
-                    : Arr::first($answers[$toolQuestion->id])['answer'];
+                    : data_get(Arr::first($answers[$toolQuestion->id]), 'answer');
 
-                $this->tableData[$toolQuestion->short]['name'] = $toolQuestion->name;
-                $this->tableData[$toolQuestion->short]['value'] = ToolQuestionHelper::getHumanReadableAnswer(
-                    $this->building, $this->masterInputSource, $toolQuestion, true, $answerToMakeReadable
-                );
-                $this->tableData[$toolQuestion->short]['source'] = Arr::first($answers[$toolQuestion->id])['input_source_name'];
+                // Answer might be null, e.g. roof type can have null surface if for example created via mapping
+                if (! is_null($answerToMakeReadable)) {
+                    $this->tableData[$toolQuestion->short]['name'] = $toolQuestion->name;
+                    $this->tableData[$toolQuestion->short]['value'] = ToolQuestionHelper::getHumanReadableAnswer(
+                        $this->building, $this->masterInputSource, $toolQuestion, true, $answerToMakeReadable
+                    );
+                    $this->tableData[$toolQuestion->short]['source'] = data_get(Arr::first($answers[$toolQuestion->id]), 'input_source_name');
 
-                if (in_array($toolQuestion->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
-                    $this->tableData[$toolQuestion->short]['value'] = Caster::init(
-                        $toolQuestion->data_type, $this->tableData[$toolQuestion->short]['value']
-                    )->getFormatForUser();
-                }
+                    if (in_array($toolQuestion->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
+                        $this->tableData[$toolQuestion->short]['value'] = Caster::init(
+                            $toolQuestion->data_type, $this->tableData[$toolQuestion->short]['value']
+                        )->getFormatForUser();
+                    }
 
-                if (! empty($toolQuestion->unit_of_measure)) {
-                    $this->tableData[$toolQuestion->short]['value'] .= " {$toolQuestion->unit_of_measure}";
+                    if (! empty($toolQuestion->unit_of_measure)) {
+                        $this->tableData[$toolQuestion->short]['value'] .= " {$toolQuestion->unit_of_measure}";
+                    }
                 }
             }
         }

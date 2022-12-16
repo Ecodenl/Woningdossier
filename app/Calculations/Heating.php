@@ -160,7 +160,7 @@ class Heating extends Calculator
         array $wtwUsage,
         string $heatPumpTypeShort = '',
         string $boilerSettingComfortHeatShort = ''
-    ) {
+    ) : array {
         // either 'new' or 'current'
         $case = Str::contains($heatSourceShort, 'new-') ? 'new' : 'current';
         Log::debug(__METHOD__.' - case: '.$case);
@@ -237,28 +237,28 @@ class Heating extends Calculator
 
                 data_set($result, 'gas.bruto', $energyConsumption);
                 // netto = bruto * efficiency
+                $efficiencyHeating = $this->getBoilerKeyFigureEfficiency($boilerTypeShort);
                 // default = 97% for HR-107.
-                $efficiency = $this->getBoilerKeyFigureEfficiency(
-                    $boilerTypeShort
-                ) ?? 97;
-                Log::debug(__METHOD__ . ' - energyConsumption = '.$energyConsumption.' * '.$efficiency->heating.' %'
+                $efficiency = $efficiencyHeating instanceof KeyFigureBoilerEfficiency ? $efficiencyHeating->heating : 97;
+
+                Log::debug(__METHOD__ . ' - energyConsumption = '.$energyConsumption.' * '.$efficiency.' %'
                 );
-                $energyConsumption *= ($efficiency->heating / 100);
+                $energyConsumption *= ($efficiency / 100);
 
                 data_set($result, 'gas.netto', round($energyConsumption, 4));
             } else {
                 $energyConsumption = $amountGas;
                 // bruto = energy consumption / efficiency
+                $efficiencyHeating = $this->getBoilerKeyFigureEfficiency($boilerTypeShort);
                 // default = 97% for HR-107.
-                $efficiency        = $this->getBoilerKeyFigureEfficiency(
-                    $boilerTypeShort
-                ) ?? 97;
-                $energyConsumption /= ($efficiency->heating / 100);
+                $efficiency = $efficiencyHeating instanceof KeyFigureBoilerEfficiency ? $efficiencyHeating->heating : 97;
+
+                $energyConsumption /= ($efficiency / 100);
 
                 data_set($result, 'gas.bruto', round($energyConsumption));
 
                 // netto = bruto * efficiency (basically the energy consumption..)
-                $energyConsumption *= ($efficiency->heating / 100);
+                $energyConsumption *= ($efficiency / 100);
 
                 data_set($result, 'gas.netto', round($energyConsumption, 4));
             }
@@ -298,12 +298,12 @@ class Heating extends Calculator
                     Log::debug(__METHOD__.' - new situation');
                     $energyConsumption = $amountGas;
                     // bruto = energy consumption / efficiency
+                    $efficiencyHeating = $this->getBoilerKeyFigureEfficiency($boilerTypeShort);
                     // default = 97% for HR-107.
-                    $efficiency        = $this->getBoilerKeyFigureEfficiency(
-                        $boilerTypeShort
-                    ) ?? 97;
-                    Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption / ($efficiency->heating / 100)");
-                    $energyConsumption /= ($efficiency->heating / 100);
+                    $efficiency = $efficiencyHeating instanceof KeyFigureBoilerEfficiency ? $efficiencyHeating->heating : 97;
+
+                    Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption / ($efficiency / 100)");
+                    $energyConsumption /= ($efficiency / 100);
                     Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption");
 
                     // use the boiler share here
@@ -313,9 +313,9 @@ class Heating extends Calculator
                     Log::debug(__METHOD__ . " - Bruto(gas) = $energyConsumption = $energyConsumption * ((100 - $shareHeating) / 100)");
                     data_set($result, 'gas.bruto', round($energyConsumption));
 
-                    Log::debug(__METHOD__ . " - Netto(gas) = $energyConsumption * ($efficiency->heating / 100)");
+                    Log::debug(__METHOD__ . " - Netto(gas) = $energyConsumption * ($efficiency / 100)");
                     // netto = bruto * efficiency (basically the energy consumption..)
-                    $energyConsumption *= ($efficiency->heating / 100);
+                    $energyConsumption *= ($efficiency / 100);
                     Log::debug(__METHOD__ . " - Netto(gas) = $energyConsumption");
 
                     data_set(
@@ -447,7 +447,7 @@ class Heating extends Calculator
         return $result;
     }
 
-    // CHECKED.
+
     protected function calculateTapWater(
         string $heatSourceShort,
         string $heatSourceWtwShort,
@@ -583,14 +583,14 @@ class Heating extends Calculator
             data_set($result, 'gas.bruto', $energyConsumption);
 
             // netto = bruto * efficiency
+            $efficiencyWtw = $this->getBoilerKeyFigureEfficiency($boilerTypeShort);
             // default = 89% for HR-107.
-            $efficiency = $this->getBoilerKeyFigureEfficiency(
-                $boilerTypeShort
-            ) ?? 89;
+            $efficiency = $efficiencyWtw instanceof KeyFigureBoilerEfficiency ? $efficiencyWtw->wtw : 89;
+
             Log::debug(
-                'energyConsumption = '.$energyConsumption.' * '.$efficiency->wtw.' %'
+                'energyConsumption = '.$energyConsumption.' * '.$efficiency.' %'
             );
-            $energyConsumption *= ($efficiency->wtw / 100);
+            $energyConsumption *= ($efficiency / 100);
 
             data_set($result, 'gas.netto', round($energyConsumption, 4));
         }
@@ -695,7 +695,7 @@ class Heating extends Calculator
         return $result;
     }
 
-    // CHECKED.
+
     public function lookupHeatPumpCharacteristics(
         ?Model $heatPumpConfigurable,
         ?ToolQuestionCustomValue $heatingTemperature
@@ -726,7 +726,7 @@ class Heating extends Calculator
         return null;
     }
 
-    // CHECKED.
+
     protected function energyUsageForCooking(string $toolQuestionShort): array
     {
         $cookType = $this->getAnswer($toolQuestionShort);
@@ -751,7 +751,7 @@ class Heating extends Calculator
         }
     }
 
-    // CHECKED.
+
     protected function getBoilerKeyFigureEfficiency(string $boilerTypeShort
     ): ?KeyFigureBoilerEfficiency {
         $boiler = ToolHelper::getServiceValueByCustomValue(

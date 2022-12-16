@@ -37,5 +37,9 @@
                 @endforeach
             </tbody>
         </table>
+
+        <div class="mt-4">
+            {!! __('cooperation/frontend/tool.my-plan.calculations.description') !!}
+        </div>
     @endcomponent
 </div>

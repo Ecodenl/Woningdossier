@@ -53,8 +53,8 @@ class DoUpgrade extends Command
             GiveCooperationDefaultScans::class => [],
             ConvertQuestionnaireStepsToPivot::class => [],
 
-            // We don't really wanna run this more than once...
-            //TriggerSaveForAllCompletedSubSteps::class => [],
+            // We don't want to or SHOULD run this more than once. This one is NOT atomic.
+            //MapQuickToLite::class => [],
         ];
 
 

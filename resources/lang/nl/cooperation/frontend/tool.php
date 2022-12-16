@@ -75,7 +75,7 @@ return [
         'calculations' => [
             'title' => 'Uitleg berekeningen',
             'table' => [
-                'question' => 'Vraag',
+                'info' => 'Vraag / info',
                 'value' => 'Waarde',
                 'source' => 'Oorsprong',
             ],

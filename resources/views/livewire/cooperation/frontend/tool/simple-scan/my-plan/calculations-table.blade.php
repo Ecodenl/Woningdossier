@@ -11,7 +11,7 @@
             <thead>
                 <tr>
                     <th>
-                        @lang('cooperation/frontend/tool.my-plan.calculations.table.question')
+                        @lang('cooperation/frontend/tool.my-plan.calculations.table.info')
                     </th>
                     <th>
                         @lang('cooperation/frontend/tool.my-plan.calculations.table.value')
@@ -22,20 +22,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($toolQuestions as $toolQuestion)
-                    @if(array_key_exists($toolQuestion->short, $answers))
-                        <tr>
-                            <td>
-                                {{ $toolQuestion->name }}
-                            </td>
-                            <td class="flex items-center">
-                                {!! $answers[$toolQuestion->short]['answer'] !!}
-                            </td>
-                            <td>
-                                {{ $answers[$toolQuestion->short]['input_source_name'] }}
-                            </td>
-                        </tr>
-                    @endif
+                @foreach($tableData as $data)
+                    <tr>
+                        <td>
+                            {{ $data['name'] }}
+                        </td>
+                        <td class="flex items-center">
+                            {!! $data['value'] !!}
+                        </td>
+                        <td>
+                            {{ $data['source'] }}
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>

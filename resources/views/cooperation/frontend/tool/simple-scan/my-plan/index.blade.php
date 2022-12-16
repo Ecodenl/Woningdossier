@@ -28,8 +28,8 @@
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.comments :scan="$scan" :building="$building"/>
         </div>
 
-        <div class="w-full flex pt-5 pb-5">
-            <div class="flex w-1/3">
+        <div class="w-full flex flex-wrap pt-5 pb-5">
+            <div class="flex w-1/4">
                 @can('viewAny', [\App\Models\Media::class, $inputSource, $building])
                     <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('cooperation', 'scan')) }}"
                        class="btn btn-outline-green">

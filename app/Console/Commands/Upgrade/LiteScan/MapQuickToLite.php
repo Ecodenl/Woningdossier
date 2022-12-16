@@ -68,7 +68,7 @@ class MapQuickToLite extends Command
                         ->whereNotNull('buildings.user_id')
                         ->pluck('completed_steps.building_id')
                         ->toArray();
-$buildings = [1];
+
                     $data = [];
                     $base = [
                         'input_source_id' => $inputSource->id,
@@ -102,7 +102,7 @@ $buildings = [1];
                     ->whereNotNull('buildings.user_id')
                     ->pluck('completed_sub_steps.building_id')
                     ->toArray();
-                $buildings = [1];
+
                 $data = [];
                 $base = [
                     'input_source_id' => $inputSource->id,

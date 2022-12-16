@@ -1281,7 +1281,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'apply-led-light-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1344,7 +1344,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'pump-switch-floor-heating-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1365,7 +1365,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'replace-alternating-current-fan-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1386,7 +1386,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'crack-sealing-windows-doors-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1407,7 +1407,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'mailbox-bristles-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1428,7 +1428,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'radiator-foil-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1456,7 +1456,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'apply-thermostat-knobs-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1477,7 +1477,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'apply-radiator-ventilation-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1498,7 +1498,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'vent-radiators-frequently-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1519,7 +1519,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'lower-comfort-heat-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1540,7 +1540,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'insulate-hr-boiler-pipes-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1561,7 +1561,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'hydronic-balancing-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1582,7 +1582,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'replace-gas-with-infrared-panels-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1603,7 +1603,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'water-saving-shower-head-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
@@ -1659,7 +1659,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
                 'short' => 'use-door-closers-coach-help',
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,

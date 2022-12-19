@@ -128,25 +128,23 @@ class HeatPumpHelper extends ToolHelper
             if (! is_null($heatPumpToCalculate)) {
                 $results = $this->getResults($heatPumpToCalculate, $currentCalculateValue);
 
-                if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-                    $measureApplication = MeasureApplication::findByShort($heatPumpToCalculate);
-                    if ($measureApplication instanceof MeasureApplication) {
-                        $actionPlanAdvice = new UserActionPlanAdvice($results);
-                        $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
-                        $actionPlanAdvice->savings_money = $results['savings_money'];
-                        $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                        $actionPlanAdvice->user()->associate($this->user);
-                        $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
-                        $actionPlanAdvice->step()->associate($step);
+                $measureApplication = MeasureApplication::findByShort($heatPumpToCalculate);
+                if ($measureApplication instanceof MeasureApplication) {
+                    $actionPlanAdvice = new UserActionPlanAdvice($results);
+                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
+                    $actionPlanAdvice->savings_money = $results['savings_money'];
+                    $actionPlanAdvice->input_source_id = $this->inputSource->id;
+                    $actionPlanAdvice->user()->associate($this->user);
+                    $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
+                    $actionPlanAdvice->step()->associate($step);
 
-                        // We only want to check old advices if the updated attributes are not relevant to this measure
-                        if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                            UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
-                                $oldAdvices);
-                        }
-
-                        $actionPlanAdvice->save();
+                    // We only want to check old advices if the updated attributes are not relevant to this measure
+                    if (! in_array($measureApplication->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication,
+                            $oldAdvices);
                     }
+
+                    $actionPlanAdvice->save();
                 }
             }
         }

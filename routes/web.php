@@ -3,15 +3,8 @@
 use App\Http\Controllers\Cooperation;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
 use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
-use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
-use Laravel\Fortify\Http\Controllers\NewPasswordController;
-use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
-use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
-use Laravel\Fortify\Http\Controllers\VerifyEmailController;
+
 
 /** @noinspection PhpParamsInspection */
 
@@ -38,6 +31,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
         }
 
+        Route::group([], base_path('routes/auth.php'));
+
         Route::view('styleguide', 'cooperation.frontend.styleguide');
         Route::view('input-guide', 'cooperation.frontend.input-guide');
 
@@ -47,48 +42,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
         Route::get('switch-language/{locale}', [Cooperation\UserLanguageController::class, 'switchLanguage'])->name('switch-language');
 
-        Route::get('check-existing-mail', [RegisteredUserController::class, 'checkExistingEmail'])->name('check-existing-email');
-
-        // Fortify auth routes start
-        Route::get('/register', [RegisteredUserController::class, 'index'])
-            ->middleware(['guest:'.config('fortify.guard')])
-            ->name('register');
-        Route::post('/register', [RegisteredUserController::class, 'store'])
-            ->middleware(['guest:'.config('fortify.guard')]);
-
-        Route::as('auth.')->group(function () {
-            $limiter = config('fortify.limiters.login');
-            $guard = config('fortify.guard');
-            $verificationLimiter = config('fortify.limiters.verification', '6,1');
-
-            Route::get('/email/verify', [EmailVerificationPromptController::class, '__invoke'])
-                ->middleware([config('fortify.auth_middleware', 'auth').':'.$guard])
-                ->name('verification.notice');
-            Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
-                ->middleware([config('fortify.auth_middleware', 'auth').':'.$guard, 'signed', 'throttle:'.$verificationLimiter])
-                ->name('verification.verify');
-            Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-                ->middleware([config('fortify.auth_middleware', 'auth').':'.$guard, 'throttle:'.$verificationLimiter])
-                ->name('verification.send');
-
-            Route::get('login', [AuthenticatedSessionController::class, 'create'])->middleware(['guest:' . $guard])
-                ->name('login');
-            Route::post('login', [AuthenticatedSessionController::class, 'store'])->middleware(array_filter([
-                'guest:' . $guard, $limiter ? 'throttle:' . $limiter : null,
-            ]))->name('login.submit');
-
-            Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-
-            Route::get('password/request', [PasswordResetLinkController::class, 'create'])->middleware(['guest:' . $guard])
-                ->name('password.request.index');
-            Route::post('password/request', [PasswordResetLinkController::class, 'store'])->middleware(['guest:' . $guard])
-                ->name('password.request.store');
-            Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->middleware(['guest:' . $guard])
-                ->name('password.reset');
-            Route::post('reset-password', [NewPasswordController::class, 'store'])->middleware(['guest:' . $guard])
-                ->name('password.update');
-        });
-        // Fortify auth routes end
 
         Route::prefix('create-building')->name('create-building.')->group(function () {
             Route::get('', [Cooperation\CreateBuildingController::class, 'index'])->name('index');

@@ -30,7 +30,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Fortify::ignoreRoutes();
+         Fortify::ignoreRoutes();
 
         $this->app->bind(
             FortifyRegisterResponse::class,
@@ -67,10 +67,6 @@ class FortifyServiceProvider extends ServiceProvider
                 ? Limit::none()
                 : Limit::perMinute(50)->by($request->email . $request->ip());
         });
-
-//        RateLimiter::for('two-factor', function (Request $request) {
-//            return Limit::perMinute(5)->by($request->session()->get('login.id'));
-//        });
 
         Fortify::registerView(function () {
             return view('cooperation.auth.register');

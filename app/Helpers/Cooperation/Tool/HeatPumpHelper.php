@@ -67,7 +67,6 @@ class HeatPumpHelper extends ToolHelper
         if ($this->considers($step)) {
             $heatPumpToCalculate = null;
             $currentCalculateValue = null;
-            $heatingTemp = null;
 
             $evaluator = ConditionEvaluator::init()
                 ->building($this->building)
@@ -117,72 +116,24 @@ class HeatPumpHelper extends ToolHelper
 
             $heatPumpSubStep = SubStep::bySlug('warmtepomp')->first();
             if ($evaluator->evaluate($heatPumpSubStep->conditions)) {
-                $type = ServiceValue::find($this->getAnswer('heat-pump-type'));
+                $currentCalculateValue = $this->getCurrentHeatPump();
 
-                if ($type instanceof ServiceValue) {
-                    $currentCalculateValue = $type->calculate_value;
-
-                    // No heat pump to calculate, so we will fall back to the one they already have
-                    if (is_null($heatPumpToCalculate) && ! $this->getValues('has_completed_expert')) {
-                        $short = array_flip(static::MEASURE_SERVICE_LINK)[$type->calculate_value];
-                        $heatPumpToCalculate = $short;
-                    }
+                // No heat pump to calculate, so we will fall back to the one they already have
+                if (is_null($heatPumpToCalculate) && ! is_null($currentCalculateValue) && ! $this->getValues('has_completed_expert')) {
+                    $short = array_flip(static::MEASURE_SERVICE_LINK)[$currentCalculateValue];
+                    $heatPumpToCalculate = $short;
                 }
             }
 
             if (! is_null($heatPumpToCalculate)) {
-                $calculateValue = static::MEASURE_SERVICE_LINK[$heatPumpToCalculate];
-
-                // Ensure we correctly "spoof" the calculator values
-                $answers = $this->getValues();
-                $answers['new-heat-pump-type'] = ToolQuestion::findByShort('new-heat-pump-type')
-                    ->toolQuestionCustomValues()
-                    ->where('extra->calculate_value', $calculateValue)
-                    ->first()->short;
-
-                if (! is_null($heatingTemp)) {
-                    $answers['new-boiler-setting-comfort-heat'] = $heatingTemp;
-                }
-
-                if (! $this->getValues('has_completed_expert')) {
-                    // Force 0 to have the desired power calculated.
-                    $answers['heat-pump-preferred-power'] = 0;
-                    // Set "new" situation values to current situation, we need those as well.
-                    $answers['new-cook-type'] = $this->getAnswer('cook-type');
-                    $answers['new-boiler-type'] = \App\Deprecation\ToolHelper::getCustomValueByModel(
-                        ServiceValue::query(),
-                        'new-boiler-type',
-                        $this->getAnswer('boiler-type')
-                    );
-                }
-
-                $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));
-
-                $savingsMoney = null;
-
-                // We need to check the current type; if the placed date surpasses maintenance time, we will
-                // set savings to 0 since the measure will then qualify as a replace of the current type.
-                if (! is_null($currentCalculateValue) && $currentCalculateValue === $calculateValue) {
-                    // Type exists, and this iteration is that type. We don't need to evaluate a second time, since
-                    // by the fact we have the current type, we already know the user was able to answer the question.
-                    $placeYear = $this->getAnswer('heat-pump-placed-date');
-
-                    if (is_numeric($placeYear)) {
-                        $diff = now()->format('Y') - $placeYear;
-
-                        // It's too old, so we set savings to 0
-                        if ($diff >= 18) {
-                            $savingsMoney = 0;
-                        }
-                    }
-                }
+                $results = $this->getResults($heatPumpToCalculate, $currentCalculateValue);
 
                 if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
                     $measureApplication = MeasureApplication::findByShort($heatPumpToCalculate);
                     if ($measureApplication instanceof MeasureApplication) {
                         $actionPlanAdvice = new UserActionPlanAdvice($results);
                         $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
-                        $actionPlanAdvice->savings_money = is_null($savingsMoney) ? $results['savings_money'] : $savingsMoney;
+                        $actionPlanAdvice->savings_money = $results['savings_money'];
                         $actionPlanAdvice->input_source_id = $this->inputSource->id;
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
@@ -223,5 +174,50 @@ class HeatPumpHelper extends ToolHelper
         }
 
         return $this;
+    }
+
+    public function getCurrentHeatPump(): ?int
+    {
+        $type = ServiceValue::find($this->getAnswer('heat-pump-type'));
+
+        return $type instanceof ServiceValue ? $type->calculate_value : null;
+    }
+
+    public function getResults(string $heatPumpToCalculate, ?int $currentCalculateValue = null): array
+    {
+        $calculateValue = static::MEASURE_SERVICE_LINK[$heatPumpToCalculate];
+
+        // Ensure we correctly "spoof" the calculator values
+        $answers = $this->getValues();
+        $answers['new-heat-pump-type'] = ToolQuestion::findByShort('new-heat-pump-type')
+            ->toolQuestionCustomValues()
+            ->where('extra->calculate_value', $calculateValue)
+            ->first()->short;
+
+        if (! $this->getValues('has_completed_expert')) {
+            // Force 0 to have the desired power calculated.
+            $answers['heat-pump-preferred-power'] = 0;
+        }
+
+        $results = HeatPump::calculate($this->building, $this->inputSource, collect($answers));
+
+        // We need to check the current type; if the placed date surpasses maintenance time, we will
+        // set savings to 0 since the measure will then qualify as a replace of the current type.
+        if (! is_null($currentCalculateValue) && $currentCalculateValue === $calculateValue) {
+            // Type exists, and this iteration is that type. We don't need to evaluate a second time, since
+            // by the fact we have the current type, we already know the user was able to answer the question.
+            $placeYear = $this->getAnswer('heat-pump-placed-date');
+
+            if (is_numeric($placeYear)) {
+                $diff = now()->format('Y') - $placeYear;
+
+                // It's too old, so we set savings to 0
+                if ($diff >= 18) {
+                    $results['savings_money'] = 0;
+                }
+            }
+        }
+
+        return $results;
     }
 }

@@ -28,7 +28,7 @@
         <div class="hidden sm:block">
             <nav class="flex border-b border-blue border-opacity-50" aria-label="Tabs">
                 @foreach($step->subSteps as $subStep)
-                    <a x-on:click="active = '{{$subStep->slug}}'" href="#"
+                    <a x-on:click="active = '{{$subStep->slug}}'; triggerCustomEvent(window, 'tab-switched');" href="#"
                        x-bind:class="{ 'bg-green': active === '{{$subStep->slug}}', 'bg-blue-500': active !== '{{$subStep->slug}}' }"
                        class="no-underline rounded-t-md p-2 text-white" wire:ignore>
                         {{$subStep->name}}
@@ -44,3 +44,26 @@
          @endforeach
     </div>
 </div>
+
+@push('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.addEventListener('change', (event) => {
+                let target = event.target;
+
+                let hasWireModel = false;
+                for (const attr of target.attributes) {
+                    if (attr.name.startsWith('wire:model')) {
+                        hasWireModel = true;
+                        break;
+                    }
+                }
+
+                if (hasWireModel) {
+                    triggerCustomEvent(window, 'input-updated');
+                    livewire.emit('inputUpdated');
+                }
+            });
+        });
+    </script>
+@endpush

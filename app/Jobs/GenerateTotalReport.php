@@ -61,10 +61,11 @@ class GenerateTotalReport implements ShouldQueue
         $cooperation = $this->cooperation;
 
         $rows[] = $dumpService->headerStructure;
+        $chunkNo = 1;
 
         // Get all users with a building and who have completed the quick scan
         $cooperation->users()
-            ->whereHas('building')
+            ->whereHas('building.buildingStatuses')
             ->with(['building' => function ($query) use ($inputSource) {
                 $query->with(
                     [
@@ -86,29 +87,46 @@ class GenerateTotalReport implements ShouldQueue
                     ]
                 );
             }, 'energyHabit' => fn ($q) => $q->forInputSource($inputSource)])
-            ->chunkById(100, function($users) use ($dumpService, &$rows) {
+            ->chunkById(100, function($users) use ($dumpService, &$rows, &$chunkNo) {
                 foreach ($users as $user) {
                     $rows[$user->building->id] = $dumpService->user($user)->generateDump();
                 }
 
-                $handle = fopen(Storage::disk('downloads')->path($this->fileStorage->filename), 'a');
-                foreach ($rows as $row) {
-                    fputcsv($handle, $row);
+                Log::debug('GenerateTotalReport - Putting chunk ' . $chunkNo);
+                $path = Storage::disk('downloads')->path($this->fileStorage->filename);
+                $handle = fopen($path, 'a');
+                if (!$handle){
+                    Log::error('GenerateTotalReport - no handle');
                 }
+                Log::debug('GenerateTotalReport - ' . count($rows) .  ' rows on chunk ' . $chunkNo);
+                foreach ($rows as $row) {
+                    $strlen = fputcsv($handle, $row);
+                    if ($strlen === false){
+                        Log::error('GenerateTotalReport - no characters written to path ' . $path);
+                    }
+                    else {
+                        Log::error('GenerateTotalReport - ' . $strlen . " characters written to path " . $path);
+                    }
+                }
+                Log::debug('GenerateTotalReport - closing handle');
                 fclose($handle);
+                Log::debug('GenerateTotalReport - Chunk ' . $chunkNo . ' put');
+                $chunkNo++;
 
                 // empty the rows, to prevent it from becoming to big and potentially slow.
                 $rows = [];
             });
 
-
         $this->fileStorage->isProcessed();
     }
 
-    public function failed(\Exception $exception)
+    public function Failed(\Throwable $exception)
     {
-        Log::debug($exception->getMessage() . ' ' . $exception->getTraceAsString());
-        Log::debug("GenerateTotalReport failed: {$this->cooperation->id}");
         $this->fileStorage->delete();
+
+        Log::debug("GenerateTotalReport failed: {$this->cooperation->id}");
+        if (app()->bound('sentry')) {
+            app('sentry')->captureException($exception);
+        }
     }
 }

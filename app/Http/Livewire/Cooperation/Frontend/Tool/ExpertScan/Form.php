@@ -40,8 +40,6 @@ class Form extends Component
 
     public $cooperation;
 
-    public $activeSubStep;
-
     protected $listeners = [
         'subStepValidationSucceeded' => 'subStepSucceeded',
         'failedValidationForSubSteps',
@@ -65,12 +63,6 @@ class Form extends Component
     {
         return view('livewire.cooperation.frontend.tool.expert-scan.form');
     }
-
-    public function activeSubStep($subStepSlug)
-    {
-        $this->activeSubStep = $subStepSlug;
-    }
-
 
     public function failedValidationForSubSteps(array $subStep)
     {
@@ -226,7 +218,7 @@ class Form extends Component
             ->inputSource($this->masterInputSource);
 
         // We can reuse these answers because all below calculators use the same questions for their conditional logic
-        $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)->merge(collect($this->filledInAnswers));
+        $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions, collect($this->filledInAnswers));
 
         $calculations = [];
         $calculate = [

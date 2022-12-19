@@ -6,11 +6,14 @@ use App\Helpers\DataTypes\Caster;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
-use App\Services\ConditionService;
 use Illuminate\Support\Collection;
 
 trait HasDynamicAnswers
 {
+    use RetrievesAnswers {
+        getAnswer as getBuildingAnswer;
+    }
+
     public ?Collection $answers = null;
 
     /**
@@ -33,29 +36,16 @@ trait HasDynamicAnswers
             if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                 $answer = Caster::init($toolQuestion->data_type, $answer)->reverseFormatted();
             }
-
-            return $answer;
         } else {
-            $evaluation = true;
-            if ($withEvaluation) {
-                $evaluation = ConditionService::init()
-                    ->building($this->building)->inputSource($this->inputSource)
-                    ->forModel($toolQuestion)->isViewable($answers);
-            }
-
-            $answer = null;
-
-            if ($evaluation) {
-                $answer = $this->building->getAnswer($this->inputSource, $toolQuestion);
-            }
-
-            // Even if we can't answer the question, we want this cast
-            if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                $answer = Caster::init($toolQuestion->data_type, $answer)->force()->getCast();
-            }
-
-            return $answer;
+            $answer = $this->getBuildingAnswer($toolQuestionShort, $withEvaluation);
         }
+
+        // Even if we can't answer the question, we want this cast
+        if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
+            $answer = Caster::init($toolQuestion->data_type, $answer)->force()->getCast();
+        }
+
+        return $answer;
     }
 
     /**

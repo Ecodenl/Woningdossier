@@ -14,7 +14,7 @@ class CopyGeneralDataCommentToUsageStepOnStepCommentsTable extends Migration
         $usageStep = DB::table('steps')->where('short', 'usage')->first();
         $generalDataStep = DB::table('steps')->where('short', 'general-data')->first();
 
-        if ($usageStep instanceof stdClass) {
+        if ($usageStep instanceof \stdClass) {
             DB::table('step_comments')
                 ->where('step_id', $generalDataStep->id)
                 ->update([

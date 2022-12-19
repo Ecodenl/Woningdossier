@@ -3,7 +3,7 @@
     <?php
         $hoomdossier_url = route('cooperation.home', ['cooperation' => $userCooperation]);
 
-        $confirmUrl = route('cooperation.auth.password.reset.show', ['token' => $token, 'cooperation' => $userCooperation, 'email' => encrypt($createdUser->account->email)]);
+        $confirmUrl = route('cooperation.auth.password.reset', ['token' => $token, 'cooperation' => $userCooperation]);
 
         $cooperationHref = is_null($userCooperation->cooperation_email) ? $userCooperation->website_url : "mailto:".$userCooperation->cooperation_email;
     ?>

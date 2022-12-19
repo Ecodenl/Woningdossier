@@ -9,6 +9,7 @@ use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class SuccessFullLoginListener
 {
@@ -33,16 +34,18 @@ class SuccessFullLoginListener
         /** @var Account $account */
         $account = $event->user;
 
-        // you may ask yourself "But John Doe, why would you check if the user isset when this is a SuccessFullLoginListener"
+        // You may ask yourself "But John Doe, why would you check if the user is set when this is a SuccessFullLoginListener"
         // This can happen in the case where a user gets deleted by a cooperation (and is attached to multiple cooperations)
-        // so laravel will try to login the user, because of the cookie / session
-        // than it will find a account (user) and log hin in, but the account has no user for "this" cooperation so it will fail
-        // and thus we will check if the account has an user, and if not we will log him out and the cookie with its session are gone foreeveeerrr
+        // so Laravel will try to login the user, because of the cookie / session
+        // than it will find a account (user) and log him in, but the account has no user for "this" cooperation so it will fail
+        // and thus we will check if the account has a user, and if not we will log him out and the cookie with its session are gone foreeveeerrr
         $this->ensureCooperationIsSet();
 
-        if (! $account->user() instanceof User) {
+        $user = $account->user();
+
+        if (! $user instanceof User) {
             \Illuminate\Support\Facades\Log::debug('Account has no user, logging out and exiting.');
-            \Auth::logout();
+            Auth::logout();
             $account->setRememberToken(null);
             $account->save();
             header('Location: '.route('cooperation.welcome'));
@@ -50,23 +53,17 @@ class SuccessFullLoginListener
         }
 
         // cooperation is set, so we can safely retrieve the user from the account.
-        $user = $account->user();
         // get the first building from the user
         $building = $user->building;
         // just get the first available role from the user
-        $userRole = $user->roles()->first();
+        $role = $user->roles->first();
 
-        // if the user for some odd reason had no role attached, attach the resident rol to him.
-        if (! $userRole instanceof Role) {
+        // if the user for some odd reason has no role attached, attach the resident rol to him.
+        if (! $role instanceof Role) {
             $residentRole = Role::findByName('resident');
             $user->assignRole($residentRole);
+            $role = $residentRole;
         }
-
-        // if the user has a building, log him in.
-        // else, redirect him to a page where he needs to create a building
-        // without a building the application is useless.
-        // we cant query on the Spatie\Role model so we first get the result on the "original model"
-        $role = Role::findByName($user->roles()->first()->name);
 
         // get the input source
         $inputSource = $role->inputSource;
@@ -110,8 +107,8 @@ class SuccessFullLoginListener
 
         // this boots before the router, so we check if the request contains deleted cooperations
         // and log them out and forget the remember me cookie
-        if (in_array(request()->route('cooperation'), ['vrijstadenergie', 'hnwr'])) {
-            \Auth::logout();
+        if (in_array(request()->route('cooperation'), ['hnwr'])) {
+            Auth::logout();
             exit;
         }
     }

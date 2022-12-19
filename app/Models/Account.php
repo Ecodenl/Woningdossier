@@ -17,6 +17,9 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property int $id
  * @property string $email
  * @property string $password
+ * @property string|null $two_factor_secret
+ * @property string|null $two_factor_recovery_codes
+ * @property string|null $two_factor_confirmed_at
  * @property string|null $remember_token
  * @property string|null $email_verified_at
  * @property string|null $old_email
@@ -43,6 +46,9 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereOldEmailToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereTwoFactorConfirmedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereTwoFactorRecoveryCodes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereTwoFactorSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereUpdatedAt($value)
  * @mixin \Eloquent
  */

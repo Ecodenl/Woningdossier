@@ -17,13 +17,13 @@
 
         <input type="hidden" name="user[id]" value="{{$user->id}}">
         <div class="panel-body">
-            @if(!$user->allowedAccess())
-            <div class="row">
-                <div class="col-sm-12">
-                    <p class="text-warning" style="font-weight: bold;">@lang('cooperation/admin/buildings.show.user-disallowed-access'):</p>
-                    <p class="text-primary">(@lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name]))</p>
+            @if(! $user->allowedAccess())
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p class="text-warning" style="font-weight: bold;">@lang('cooperation/admin/buildings.show.user-disallowed-access'):</p>
+                        <p class="text-primary">(@lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name]))</p>
+                    </div>
                 </div>
-            </div>
             @endif
             {{-- delete a user --}}
             <div class="row">
@@ -55,6 +55,15 @@
                             </a>
                         @endcan
                     </div>
+                    <div class="btn-group pull-right">
+                        @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
+                            <button role="button" class="btn btn-info" id="view-files" data-toggle="modal"
+                                    data-target="#files-modal">
+                                @lang('cooperation/admin/buildings.show.view-files')
+                                <i class="glyphicon glyphicon-file"></i>
+                            </button>
+                        @endcan
+                    </div>
                 </div>
             </div>
             {{-- status and appointment date --}}
@@ -80,7 +89,7 @@
                         <div class='input-group date' id="appointment-date">
                             <input autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]" type='text' class="form-control"
                                    @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate())
-                                       value=" {{$mostRecentStatus->appointment_date->format('d-m-Y')}}"
+                                       value=" {{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}"
                                    @endif
                             />
 
@@ -100,7 +109,7 @@
                             <label for="associated-coaches">@lang('cooperation/admin/buildings.show.associated-coach.label')</label>
                             <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
                                 @foreach($coaches as $coach)
-                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
+                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof \stdClass ?>
                                     <option
                                             @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
                                                 selected="selected"
@@ -218,7 +227,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php /** @var \App\Models\Log $log */ ?>
+                                @php /** @var \App\Models\Log $log */ @endphp
                                 @foreach($logs as $log)
                                     <tr>
                                         <td data-sort="{{strtotime($log->created_at->format('d-m-Y H:i'))}}">{{$log->created_at->format('d-m-Y H:i')}}</td>
@@ -233,12 +242,33 @@
             @endif
         </div>
     </div>
+
+    @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
+        <div id="files-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog" style="height: 100vh; width: 100vw; margin: 0;">
+
+                <!-- Modal content-->
+                <div class="modal-content" style="height: 100%; width: 100%; overflow: hidden;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">
+                            @lang('cooperation/admin/buildings.show.view-files')
+                        </h4>
+                    </div>
+                    <div class="modal-body" style="margin: 0; padding: 0; height: 100%;">
+                        <iframe src="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media', compact('building')) . "?iframe=1" }}"
+                                style="border: none; width: 100%; height: 100%;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
 
 @push('js')
     <script>
         // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
-        var originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y')}}' @else '' @endif;
+        var originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}' @else '' @endif;
 
         $(document).ready(function () {
 
@@ -275,7 +305,7 @@
                 showTodayButton: true,
                 allowInputToggle: true,
                 locale: 'nl',
-                format: 'L',
+                // format: 'L',
                 showClear: true,
             }).on('dp.hide', function (event) {
                 // this way the right events get triggerd so we will always get a nice formatted date

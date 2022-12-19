@@ -24,10 +24,14 @@ class SubSteppable extends Scannable
 
     public $intercontinentalAnswers = [];
 
+    public bool $loading = false;
+    public bool $componentReady = false;
+
     protected $listeners = [
         'calculationsPerformed',
         'updateFilledInAnswers',
         'save',
+        'inputUpdated',
     ];
 
     public function mount(Step $step, SubStep $subStep)
@@ -41,7 +45,7 @@ class SubSteppable extends Scannable
                     ->with(['subSteppable', 'toolQuestionType']);
             },
             'toolQuestions' => function ($query) {
-                $query->orderBy('order');
+                $query->orderBy('order')->with('forSpecificInputSource');
             },
             'subStepTemplate',
         ]);
@@ -62,6 +66,7 @@ class SubSteppable extends Scannable
         // first we have to hydrate the tool questions
         $this->hydrateToolQuestions();
         // after that we can fill up the user his given answers
+
         $this->setFilledInAnswers();
 
         $this->originalAnswers = $this->filledInAnswers;
@@ -69,7 +74,12 @@ class SubSteppable extends Scannable
 
     public function render()
     {
-        $this->rehydrateToolQuestions();
+        if ($this->componentReady) {
+            $this->rehydrateToolQuestions();
+        }
+        if ($this->loading) {
+            $this->dispatchBrowserEvent('input-updated');
+        }
         return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
     }
 
@@ -80,6 +90,12 @@ class SubSteppable extends Scannable
         // can perform calculations
         $this->emit('updateFilledInAnswers', $this->filledInAnswers, $this->id);
         $this->dispatchBrowserEvent('component-ready', ['id' => $this->id]);
+        $this->componentReady = true;
+    }
+
+    public function inputUpdated()
+    {
+        $this->loading = true;
     }
 
     public function hydrateToolQuestions()
@@ -97,13 +113,15 @@ class SubSteppable extends Scannable
 
     public function updated($field, $value)
     {
-        $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
-        $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-        if ($toolQuestion instanceof ToolQuestion) {
-            // If it's an INT, we want to ensure the value set is also an INT
-            if ($toolQuestion->data_type === Caster::INT) {
-                $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
-                $this->filledInAnswers[$toolQuestionShort] = $value;
+        if (Str::contains($field, 'filledInAnswers')) {
+            $toolQuestionShort = Str::replaceFirst('filledInAnswers.', '', $field);
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+            if ($toolQuestion instanceof ToolQuestion) {
+                // If it's an INT, we want to ensure the value set is also an INT
+                if ($toolQuestion->data_type === Caster::INT) {
+                    $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
+                    $this->filledInAnswers[$toolQuestionShort] = $value;
+                }
             }
         }
 
@@ -119,25 +137,31 @@ class SubSteppable extends Scannable
     public function calculationsPerformed($calculationResults)
     {
         $this->calculationResults = $calculationResults;
+        $this->dispatchBrowserEvent('input-update-processed');
+        $this->loading = false;
     }
 
     protected function evaluateToolQuestions()
     {
+        $evaluator = ConditionEvaluator::init()
+            ->building($this->building)
+            ->inputSource($this->masterInputSource);
+
+        // First fetch all conditions, so we can retrieve any required related answers in one go
+        $conditionsForAllSubSteppables = [];
+        foreach (array_filter($this->subStep->subSteppables->pluck('conditions')->all()) as $condition) {
+            $conditionsForAllSubSteppables = array_merge($conditionsForAllSubSteppables, $condition);
+        }
+        $answersForAllSubSteppables = $evaluator->getToolAnswersForConditions($conditionsForAllSubSteppables,
+            collect($this->filledInAnswers)->merge(collect($this->intercontinentalAnswers)));
+
         foreach ($this->subStep->subSteppables as $index => $subSteppablePivot) {
             $toolQuestion = $subSteppablePivot->subSteppable;
 
             if (! empty($subSteppablePivot->conditions)) {
                 $conditions = $subSteppablePivot->conditions;
 
-                $evaluator = ConditionEvaluator::init()
-                    ->building($this->building)
-                    ->inputSource($this->masterInputSource);
-
-                $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions)
-                    ->merge(collect($this->filledInAnswers))
-                    ->merge(collect($this->intercontinentalAnswers));
-
-                if (! $evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
+                if (! $evaluator->evaluateCollection($conditions, $answersForAllSubSteppables)) {
                     $this->subStep->subSteppables = $this->subStep->subSteppables->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they

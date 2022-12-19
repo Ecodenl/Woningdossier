@@ -26,15 +26,16 @@
 
 </head>
 <body id="app-body" style="overflow: auto;">
-
-@yield('header')
+@if(! request()->input('iframe', false))
+    @yield('header')
+@endif
 @php
     // So the cooperation should always be set but sometimes it is not? We are not sure how so we do some logging
     $background = null;
     if (isset($cooperation) && $cooperation instanceof \App\Models\Cooperation) {
         $background = optional($cooperation->firstMedia(MediaHelper::BACKGROUND))->getUrl();
     } else {
-        \App\Services\DiscordNotifier::init()->notify("Cooperation is not set! URL: " . request()->fullUrl() . "; Route: " . optional(request()->route())->getName() . "; Cooperation ID according to session: " . \App\Helpers\HoomdossierSession::getCooperation() . "; Running in console: " . app()->runningInConsole());
+        \App\Services\DiscordNotifier::init()->notify("Cooperation is not set (background)! URL: " . request()->fullUrl() . "; Route: " . optional(request()->route())->getName() . "; Cooperation ID according to session: " . \App\Helpers\HoomdossierSession::getCooperation() . "; Running in console: " . app()->runningInConsole());
     }
     $background = empty($background) ? asset('images/background.jpg') : $background;
 @endphp

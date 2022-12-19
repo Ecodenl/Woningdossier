@@ -151,7 +151,7 @@
                     'inputName' => 'allow_access',
                     'attr' => 'x-show="! alreadyMember"',
                 ])
-                    <div class="checkbox-wrapper">
+                    <div class="checkbox-wrapper mb-1">
                         <input id="allow-access" name="allow_access" type="checkbox" value="1" x-model="allowAccess">
                         <label for="allow-access">
                             <span class="checkmark"></span>
@@ -160,7 +160,7 @@
                             </span>
                         </label>
                     </div>
-                    <p class="text-left">@lang('conversation-requests.index.text')</p>
+                    <p class="text-left">@lang('conversation-requests.index.text', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name])</p>
                 @endcomponent
 
                 <button class="btn btn-purple w-full mt-3" type="submit" x-bind:disabled="! allowAccess || alreadyMember">

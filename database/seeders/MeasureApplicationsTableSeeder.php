@@ -748,6 +748,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'jaar',
                 ],
                 'step' => 'kleine-maatregelen',
+                'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
                     'icon' => 'icon-tools',
@@ -773,6 +774,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'jaar',
                 ],
                 'step' => 'kleine-maatregelen',
+                'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
                     'icon' => 'icon-tools',
@@ -798,6 +800,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'jaar',
                 ],
                 'step' => 'kleine-maatregelen',
+                'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
                     'icon' => 'icon-tools',
@@ -823,6 +826,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'jaar',
                 ],
                 'step' => 'kleine-maatregelen',
+                'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
                     'icon' => 'icon-tools',
@@ -848,6 +852,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'jaar',
                 ],
                 'step' => 'kleine-maatregelen',
+                'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
                     'icon' => 'icon-tools',
@@ -873,6 +878,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'jaar',
                 ],
                 'step' => 'kleine-maatregelen',
+                'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
                     'icon' => 'icon-tools',
@@ -898,6 +904,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'jaar',
                 ],
                 'step' => 'kleine-maatregelen',
+                'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
                     'icon' => 'icon-tools',
@@ -923,6 +930,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'jaar',
                 ],
                 'step' => 'kleine-maatregelen',
+                'has_calculations' => false,
                 'configurations' => [
                     'comfort' => 0,
                     'icon' => 'icon-tools',
@@ -1202,7 +1210,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 $name = json_decode($existingMeasureApplication->measure_name, true);
                 $info = json_decode($existingMeasureApplication->measure_info, true);
 
-                $savedConfig = json_decode($existingMeasureApplication->measure_info, true);
+                $savedConfig = json_decode($existingMeasureApplication->configurations, true);
                 if (! empty($savedConfig['icon'])) {
                     $configurations['icon'] = $savedConfig['icon'];
                 }

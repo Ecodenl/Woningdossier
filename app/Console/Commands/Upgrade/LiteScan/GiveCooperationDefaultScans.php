@@ -40,7 +40,7 @@ class GiveCooperationDefaultScans extends Command
      */
     public function handle()
     {
-        $cooperations = Cooperation::all();
+        $cooperations = Cooperation::doesntHave('scans')->get();
         $scans = Scan::whereIn('short', ['expert-scan', 'quick-scan'])->get();
         foreach ($cooperations as $cooperation) {
             $cooperation->scans()->sync($scans);

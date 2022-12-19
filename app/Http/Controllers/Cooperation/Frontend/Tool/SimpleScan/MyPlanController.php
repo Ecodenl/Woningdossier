@@ -18,7 +18,6 @@ class MyPlanController extends Controller
 {
     public function index(Cooperation $cooperation, Scan $scan)
     {
-
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 

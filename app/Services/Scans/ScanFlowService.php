@@ -112,7 +112,7 @@ class ScanFlowService
         // might be now completable.
 
         foreach ($subStepsRelated as $subStep) {
-            if ($evaluator->evaluate($subStep->conditions)) {
+            if ($evaluator->evaluate($subStep->conditions ?? [])) {
                 // The SubStep is visible
                 if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
                     Log::debug("Completing SubStep {$subStep->name} because it has answers.");
@@ -151,7 +151,7 @@ class ScanFlowService
 
             // Skip if already processed
             if (! in_array($subStep->id, $processedSubSteps)) {
-                if ($evaluator->evaluate($subStep->conditions)) {
+                if ($evaluator->evaluate($subStep->conditions ?? [])) {
                     if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
                         Log::debug("Completing SubStep {$subStep->name} because it has answers.");
                         SubStepHelper::complete($subStep, $building, $currentInputSource);

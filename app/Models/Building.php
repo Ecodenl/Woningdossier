@@ -745,7 +745,7 @@ class Building extends Model
         return optional($this->getMostRecentBuildingStatus())->appointment_date;
     }
 
-    public function getFirstIncompleteStep(array $extraStepsToIgnore = [], InputSource $inputSource): ?Step
+    public function getFirstIncompleteStep(InputSource $inputSource, array $extraStepsToIgnore = []): ?Step
     {
         $irrelevantSteps = $this->completedSteps()->forInputSource($inputSource)->pluck('step_id')->toArray();
         $irrelevantSteps = array_merge($irrelevantSteps, $extraStepsToIgnore);
@@ -756,7 +756,7 @@ class Building extends Model
             ->first();
     }
 
-    public function getFirstIncompleteSubStep(Step $step, array $extraSubStepsToIgnore = [], InputSource $inputSource): ?SubStep
+    public function getFirstIncompleteSubStep(Step $step, InputSource $inputSource, array $extraSubStepsToIgnore = []): ?SubStep
     {
         $irrelevantSubSteps = $this->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
         $irrelevantSubSteps = array_merge($irrelevantSubSteps, $extraSubStepsToIgnore);

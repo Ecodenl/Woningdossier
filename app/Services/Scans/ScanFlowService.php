@@ -225,7 +225,7 @@ class ScanFlowService
         if (! $nextStep instanceof Step) {
             Log::debug("No next step, fetching first in complete step..");
             // No next step set, let's see if there are any steps left incomplete
-            $nextStep = $this->building->getFirstIncompleteStep([], $this->inputSource);
+            $nextStep = $this->building->getFirstIncompleteStep($this->inputSource);
         }
 
         // There are incomplete steps left, set the sub step

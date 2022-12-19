@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\Conditions\ConditionEvaluator;
+use App\Services\DiscordNotifier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
@@ -745,7 +747,7 @@ class Building extends Model
         return optional($this->getMostRecentBuildingStatus())->appointment_date;
     }
 
-    public function getFirstIncompleteStep(array $extraStepsToIgnore = [], InputSource $inputSource): ?Step
+    public function getFirstIncompleteStep(InputSource $inputSource, array $extraStepsToIgnore = []): ?Step
     {
         $irrelevantSteps = $this->completedSteps()->forInputSource($inputSource)->pluck('step_id')->toArray();
         $irrelevantSteps = array_merge($irrelevantSteps, $extraStepsToIgnore);
@@ -756,17 +758,42 @@ class Building extends Model
             ->first();
     }
 
-    public function getFirstIncompleteSubStep(Step $step, array $extraSubStepsToIgnore = [], InputSource $inputSource): ?SubStep
+    public function getFirstIncompleteSubStep(Step $step, InputSource $inputSource, array $extraSubStepsToIgnore = []): ?SubStep
     {
         $irrelevantSubSteps = $this->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
         $irrelevantSubSteps = array_merge($irrelevantSubSteps, $extraSubStepsToIgnore);
 
-        $firstIncompleteSubStep = $step->subSteps()
-            ->whereNotIn('id', $irrelevantSubSteps)
-            ->orderBy('order')
-            ->first();
+        $evaluator = ConditionEvaluator::init()
+            ->building($this)
+            ->inputSource($inputSource);
 
+        // So, a sub step might have conditions. We need to ensure we check the conditions, else we might get
+        // a wrong redirect, to a sub step we can't complete, which redirects us to the sub step after it. All while
+        // there might be an uncompleted sub step after that conditional sub step. This could be confusing as the user
+        // would always be redirected to the same sub step, even though it's already completed, yet still can't
+        // reach their action plan.
+        do {
+            $firstIncompleteSubStep = $step->subSteps()
+                ->whereNotIn('id', $irrelevantSubSteps)
+                ->orderBy('order')
+                ->first();
+
+            if ($firstIncompleteSubStep instanceof SubStep) {
+                // If we didn't pass, we add the ID as not relevant, so we don't query it a second time.
+                $passes = $evaluator->evaluate($firstIncompleteSubStep->conditions ?? []);
+                if (! $passes) {
+                    $irrelevantSubSteps[] = $firstIncompleteSubStep->id;
+                }
+            } else {
+                // Break the loop if there are no incomplete sub steps left.
+                $passes = true;
+            }
+        } while(! $passes);
+
+        // If no sub step was found, just return to the first available one. This is a fallback, and generally should
+        // not happen.
         if (! $firstIncompleteSubStep instanceof SubStep) {
+            DiscordNotifier::init()->notify("No incomplete SubStep found for building {$this->id} with source {$inputSource->short}.");
             $firstIncompleteSubStep = $step->subSteps()
                 ->orderBy('order')
                 ->first();

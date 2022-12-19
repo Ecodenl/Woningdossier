@@ -151,14 +151,31 @@ class ScanFlowService
 
             // Skip if already processed
             if (! in_array($subStep->id, $processedSubSteps)) {
-                if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
-                    Log::debug("Completing SubStep {$subStep->name} because it has answers.");
-                    SubStepHelper::complete($subStep, $building, $currentInputSource);
-                    $stepsToCheck[] = $subStep->step->short;
+                if ($evaluator->evaluate($subStep->conditions)) {
+                    if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
+                        Log::debug("Completing SubStep {$subStep->name} because it has answers.");
+                        SubStepHelper::complete($subStep, $building, $currentInputSource);
+                        $stepsToCheck[] = $subStep->step->short;
+                    } else {
+                        Log::debug("Incompleting SubStep {$subStep->name} and Step {$subStep->step->name} because SubStep is missing answers.");
+                        SubStepHelper::incomplete($subStep, $building, $currentInputSource);
+                        StepHelper::incomplete($subStep->step, $building, $currentInputSource);
+                    }
                 } else {
-                    Log::debug("Incompleting SubStep {$subStep->name} and Step {$subStep->step->name} because SubStep is missing answers.");
-                    SubStepHelper::incomplete($subStep, $building, $currentInputSource);
-                    StepHelper::incomplete($subStep->step, $building, $currentInputSource);
+                    $completedSubStep = CompletedSubStep::allInputSources()
+                        ->forInputSource($masterInputSource)
+                        ->forBuilding($building)
+                        ->where('sub_step_id', $subStep->id)
+                        ->first();
+
+                    // If it's an invisible step that is complete, we want to incomplete it.
+                    if ($completedSubStep instanceof CompletedSubStep) {
+                        Log::debug("Incompleting SubStep {$subStep->name} because it's not visible.");
+                        SubStepHelper::incomplete($subStep, $building, $currentInputSource);
+                    }
+
+                    // Add to array so we can check the Step completion later
+                    $stepsToCheck[] = $subStep->step->short;
                 }
 
                 $processedSubSteps[] = $subStep->id;
@@ -225,7 +242,7 @@ class ScanFlowService
         if (! $nextStep instanceof Step) {
             Log::debug("No next step, fetching first in complete step..");
             // No next step set, let's see if there are any steps left incomplete
-            $nextStep = $this->building->getFirstIncompleteStep([], $this->inputSource);
+            $nextStep = $this->building->getFirstIncompleteStep($this->inputSource);
         }
 
         // There are incomplete steps left, set the sub step

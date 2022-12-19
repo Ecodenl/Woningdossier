@@ -193,7 +193,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             ->all()
                         );
 
-
                     Route::prefix('{scan}')
                         ->where(collect(['scan'])
                             ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $simpleScans)])

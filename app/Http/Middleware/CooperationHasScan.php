@@ -23,7 +23,6 @@ class CooperationHasScan
             return redirect()->route('cooperation.home');
         }
 
-
         return $next($request);
     }
 }

@@ -1231,6 +1231,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'maintenance_interval' => $measureApplication['maintenance_interval'],
                     'maintenance_unit' => json_encode($measureApplication['maintenance_unit']),
                     'step_id' => $step->id,
+                    'has_calculations' => $measureApplication['has_calculations'] ?? true,
                     'configurations' => json_encode($configurations),
                 ]
             );

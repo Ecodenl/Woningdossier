@@ -78,9 +78,9 @@ class SmallMeasureHelper extends ToolHelper
 
                 $measureApplication = MeasureApplication::findByShort($measureShort);
                 if ($measureApplication instanceof MeasureApplication) {
-                    // TODO: Values!
                     $actionPlanAdvice = new UserActionPlanAdvice();
-                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($measureApplication->costs);
+                    $actionPlanAdvice->costs = $measureApplication->cost_range ?? ['from' => null, 'to' => null];
+                    $actionPlanAdvice->savings_money = $measureApplication->savings_money;
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);

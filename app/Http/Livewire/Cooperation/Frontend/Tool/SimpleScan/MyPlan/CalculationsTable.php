@@ -2,11 +2,14 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
+use App\Calculations\Heater;
 use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
+use App\Helpers\Kengetallen;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
 use App\Services\BuildingService;
 use App\Services\ConditionService;
@@ -19,20 +22,41 @@ class CalculationsTable extends Component
     use AuthorizesRequests;
 
     public Collection $toolQuestions;
-    public array $answers;
+    public Collection $toolCalculationResults;
+    public array $tableData;
     public Building $building;
     public InputSource $masterInputSource;
 
-    private $toolQuestionShorts = [
-        'amount-gas', 'amount-electricity', 'resident-count', 'water-comfort',
+    private array $fixedData = [
+        'cost-gas' => [
+            'name' => 'Gerekend met kosten voor gas',
+            'value' => Kengetallen::EURO_SAVINGS_GAS,
+            'source' => 'RVO',
+        ],
+        'cost-electricity' => [
+            'name' => 'Gerekend met kosten voor elektriciteit',
+            'value' => Kengetallen::EURO_SAVINGS_ELECTRICITY,
+            'source' => 'RVO',
+        ],
+    ];
+
+    private array $toolQuestionShorts = [
+        'amount-gas', 'amount-electricity', 'resident-count', 'water-comfort', 'build-year',
+        'insulation-wall-surface', 'insulation-floor-surface', 'total-window-surface',
+        'pitched-roof-surface', 'flat-roof-surface', 'desired-solar-panel-count',
+        'new-heat-source', 'new-heat-source-warm-tap-water', 'new-cook-type', 'boiler-type', 'heat-pump-type',
+    ];
+
+    private array $toolCalculationResultShorts = [
+        'sun-boiler.specs.size_boiler', 'sun-boiler.specs.size_collector',
     ];
 
     public function mount(Building $building)
     {
         $this->building = $building;
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $this->setToolQuestions();
-        $this->setAnswers();
+        $this->setModels();
+        $this->setTableData();
     }
 
     public function render()
@@ -40,9 +64,10 @@ class CalculationsTable extends Component
         return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.calculations-table');
     }
 
-    protected function setToolQuestions()
+    protected function setModels()
     {
         $this->toolQuestions = ToolQuestion::findByShorts($this->toolQuestionShorts);
+        $this->toolCalculationResults = ToolCalculationResult::findByShorts($this->toolCalculationResultShorts);
 
         $conditionService = ConditionService::init()
             ->building($this->building)
@@ -53,32 +78,54 @@ class CalculationsTable extends Component
                 unset($this->toolQuestions[$index]);
             }
         }
+        foreach ($this->toolCalculationResults as $index => $toolCalculationResult) {
+            if (! $conditionService->forModel($toolCalculationResult)->isViewable()) {
+                unset($this->toolCalculationResults[$index]);
+            }
+        }
     }
 
-    protected function setAnswers()
+    protected function setTableData()
     {
         $answers = BuildingService::init($this->building)->getSourcedAnswers($this->toolQuestions)->toArray();
+
+        $this->tableData = $this->fixedData;
 
         foreach ($this->toolQuestions as $toolQuestion) {
             if (array_key_exists($toolQuestion->id, $answers)) {
                 $answerToMakeReadable = $toolQuestion->data_type === Caster::ARRAY
                     ? Arr::pluck($answers[$toolQuestion->id], 'answer')
-                    : Arr::first($answers[$toolQuestion->id])['answer'];
+                    : data_get(Arr::first($answers[$toolQuestion->id]), 'answer');
 
-                $this->answers[$toolQuestion->short]['answer'] = ToolQuestionHelper::getHumanReadableAnswer(
-                    $this->building, $this->masterInputSource, $toolQuestion, true, $answerToMakeReadable
-                );
-                $this->answers[$toolQuestion->short]['input_source_name'] = Arr::first($answers[$toolQuestion->id])['input_source_name'];
+                // Answer might be null, e.g. roof type can have null surface if for example created via mapping
+                if (! is_null($answerToMakeReadable)) {
+                    $this->tableData[$toolQuestion->short]['name'] = $toolQuestion->name;
+                    $this->tableData[$toolQuestion->short]['value'] = ToolQuestionHelper::getHumanReadableAnswer(
+                        $this->building, $this->masterInputSource, $toolQuestion, true, $answerToMakeReadable
+                    );
+                    $this->tableData[$toolQuestion->short]['source'] = data_get(Arr::first($answers[$toolQuestion->id]), 'input_source_name');
 
-                if (in_array($toolQuestion->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
-                    $this->answers[$toolQuestion->short]['answer'] = Caster::init(
-                        $toolQuestion->data_type, $this->answers[$toolQuestion->short]['answer']
-                    )->getFormatForUser();
+                    if (in_array($toolQuestion->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
+                        $this->tableData[$toolQuestion->short]['value'] = Caster::init(
+                            $toolQuestion->data_type, $this->tableData[$toolQuestion->short]['value']
+                        )->getFormatForUser();
+                    }
+
+                    if (! empty($toolQuestion->unit_of_measure)) {
+                        $this->tableData[$toolQuestion->short]['value'] .= " {$toolQuestion->unit_of_measure}";
+                    }
                 }
+            }
+        }
 
-                if (! empty($toolQuestion->unit_of_measure)) {
-                    $this->answers[$toolQuestion->short]['answer'] .= " {$toolQuestion->unit_of_measure}";
-                }
+        if ($this->toolCalculationResults->isNotEmpty()) {
+            // TODO: make this into some sort of service
+            $sunBoilerResults = Heater::calculate($this->building, $this->masterInputSource);
+
+            foreach ($this->toolCalculationResults as $toolCalculationResult) {
+                $this->tableData[$toolCalculationResult->short]['name'] = $toolCalculationResult->name;
+                $this->tableData[$toolCalculationResult->short]['value'] = Arr::get($sunBoilerResults, $toolCalculationResult->short);
+                $this->tableData[$toolCalculationResult->short]['source'] = "Berekeningen";
             }
         }
     }

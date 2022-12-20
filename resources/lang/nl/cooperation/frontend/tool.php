@@ -75,10 +75,11 @@ return [
         'calculations' => [
             'title' => 'Uitleg berekeningen',
             'table' => [
-                'question' => 'Vraag',
+                'info' => 'Vraag / info',
                 'value' => 'Waarde',
                 'source' => 'Oorsprong',
             ],
+            'description' => "<p>Voor het berekenen van de prijzen maken wij gebruik van de 'Kostenkentallen energiebesparende maatregelen' van RVO. Deze online database kun je via de volgende link vinden: <a target='_blank' rel='nofollow' href='https://digipesis.com/'>Kostenkentallen | RVO</a></p>",
         ],
 
         'uploader' => [

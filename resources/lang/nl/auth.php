@@ -65,6 +65,11 @@ return [
         'no-account' => 'Nog geen account?',
         'warning' => 'Er is geen woning gekoppeld aan uw account, om het Hoomdossier goed te gebruiken hebben wij uw adres nodig.',
     ],
+    'two-factor-challenge' => [
+        'recovery-code-label' => 'Vul hier 1 van de 8 herstel codes in',
+        'use-recovery-code' => 'Ik wil mijn herstelcode gebruiken',
+        'use-code' => 'Ik wil toch mijn 2FA code gebruiken'
+    ],
     'logout' => [
         'form' => [
             'header' => 'Uitloggen',

@@ -66,11 +66,11 @@ Route::as('auth.')->group(function () {
     }
 
     $twoFactorLimiter = config('fortify.limiters.two-factor');
-    if ($enableViews) {
+//    if ($enableViews) {
         Route::get('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'create'])
             ->middleware(['guest:'.config('fortify.guard')])
             ->name('two-factor.login');
-    }
+//    }
 
     Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
         ->middleware(array_filter([
@@ -102,11 +102,11 @@ Route::as('auth.')->group(function () {
         ->middleware($twoFactorMiddleware)
         ->name('two-factor.secret-key');
 
-    Route::get('/user/two-factor-recovery-codes', [RecoveryCodeController::class, 'index'])
-        ->middleware($twoFactorMiddleware)
-        ->name('two-factor.recovery-codes');
+//    Route::get('/user/two-factor-recovery-codes', [RecoveryCodeController::class, 'index'])
+//        ->middleware($twoFactorMiddleware)
+//        ->name('two-factor.recovery-codes');
 
-    Route::post('/user/two-factor-recovery-codes', [RecoveryCodeController::class, 'store'])
-        ->middleware($twoFactorMiddleware);
+//    Route::post('/user/two-factor-recovery-codes', [RecoveryCodeController::class, 'store'])
+//        ->middleware($twoFactorMiddleware);
 });
 // Fortify auth routes end

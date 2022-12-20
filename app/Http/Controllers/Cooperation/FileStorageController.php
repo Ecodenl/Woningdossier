@@ -7,7 +7,6 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\FileStorageFormRequest;
 use App\Jobs\GenerateCustomQuestionnaireReport;
-use App\Jobs\GenerateMeasureReport;
 use App\Jobs\GenerateToolReport;
 use App\Jobs\PdfReport;
 use App\Models\Building;
@@ -171,10 +170,6 @@ class FileStorageController extends Controller
             case 'small-measures-report':
             case 'small-measures-report-anonymized':
                 GenerateToolReport::dispatch($cooperation, $fileType, $fileStorage, $anonymized);
-                break;
-            case 'measure-report':
-            case 'measure-report-anonymized':
-                GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage, $anonymized);
                 break;
             case 'custom-questionnaire-report':
             case 'custom-questionnaire-report-anonymized':

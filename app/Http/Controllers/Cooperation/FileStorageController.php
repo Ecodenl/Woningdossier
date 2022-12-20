@@ -19,6 +19,7 @@ use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\Notification;
 use App\Models\Questionnaire;
+use App\Models\Scan;
 use App\Models\User;
 use App\Services\FileStorageService;
 use App\Services\FileTypeService;
@@ -197,7 +198,7 @@ class FileStorageController extends Controller
                 break;
         }
 
-        return redirect($this->getRedirectUrl($inputSource))->with($with);
+        return redirect($this->getRedirectUrl($cooperation, $inputSource))->with($with);
     }
 
     /**
@@ -240,11 +241,19 @@ class FileStorageController extends Controller
         }
     }
 
-    private function getRedirectUrl(InputSource $inputSource)
+    /**
+     * @param \App\Models\Cooperation $cooperation
+     * @param \App\Models\InputSource $inputSource
+     *
+     * @return string
+     */
+    private function getRedirectUrl(Cooperation $cooperation, InputSource $inputSource): string
     {
-        $url = route('cooperation.frontend.tool.simple-scan.my-plan.index').'#download-section';
         if (InputSource::COOPERATION_SHORT == $inputSource->short) {
             $url = route('cooperation.admin.cooperation.reports.index');
+        } else {
+            $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();
+            $url = route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')).'#download-section';
         }
 
         Log::debug($url);

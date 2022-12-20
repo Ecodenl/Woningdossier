@@ -36,7 +36,7 @@ return [
                     'button' => 'Inschakelen'
                 ],
                 'active' => [
-                    'title' => 'Beveilig je account',
+                    'title' => 'Twee factor authenticatie ingeschakeld',
                     'text' => 'Twee factor authenticatie voegt een extra laag beveiliging toe aan je account, om in te loggen zal je een extra code nodig hebben.',
                     'button' => 'Uitschakelen'
                 ],

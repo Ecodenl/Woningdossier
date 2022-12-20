@@ -27,19 +27,12 @@ class Form extends Scannable
 
     public function mount(Scan $scan, Step $step, SubStep $subStep)
     {
-        $this->scan = $scan;
-        $this->subStep = $subStep;
         Log::debug("mounting form [Step: {$step->id}] [SubStep: {$subStep->id}]");
-
-
+        
+        // Only load in properties that are not order inclusive
         $subStep->load([
-            'subSteppables' => function ($query) {
-                $query
-                    ->orderBy('order')
-                    ->with(['subSteppable', 'toolQuestionType']);
-            },
             'toolQuestions' => function ($query) {
-                $query->orderBy('order')->with('forSpecificInputSource');
+                $query->with('forSpecificInputSource');
             },
             'subStepTemplate',
         ]);
@@ -48,20 +41,20 @@ class Form extends Scannable
         $this->build();
     }
 
-    public function hydrateToolQuestions()
-    {
-        $this->rehydrateToolQuestions();
-    }
-
-    public function rehydrateToolQuestions()
-    {
-        $this->toolQuestions = $this->subStep->toolQuestions;
-    }
-
     public function render()
     {
-        $this->rehydrateToolQuestions();
         return view('livewire.cooperation.frontend.tool.simple-scan.form');
+    }
+
+    public function getSubSteppablesProperty()
+    {
+        return $this->subStep->subSteppables()->orderBy('order')->with(['subSteppable', 'toolQuestionType'])->get();
+    }
+
+    public function getToolQuestionsProperty()
+    {
+        // Eager loaded in hydration
+        return $this->subStep->toolQuestions;
     }
 
     public function save()
@@ -105,8 +98,6 @@ class Form extends Scannable
                         $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                     }
                 }
-
-                $this->hydrateToolQuestions();
 
                 $this->setValidationForToolQuestions();
 
@@ -255,7 +246,6 @@ class Form extends Scannable
             }
         }
 
-        // TODO: We might have to generate the $nextUrl in real time if conditional steps follow a related question
         return redirect()->to($flowService->resolveNextUrl());
     }
 }

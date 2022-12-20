@@ -61,34 +61,6 @@ class FileTypesTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Gegevens van het woonplan, met adresgegevens',
-                ],
-                'content_type' => 'text/csv',
-                'short' => 'action-plan-report',
-            ],
-            [
-                'name' => [
-                    'nl' => 'Gegevens van het woonplan, zonder adresgegevens',
-                ],
-                'content_type' => 'text/csv',
-                'short' => 'action-plan-report-anonymized',
-            ],
-            [
-                'name' => [
-                    'nl' => 'Actieplan per maatregel, met adresgegevens',
-                ],
-                'content_type' => 'text/csv',
-                'short' => 'measure-report',
-            ],
-            [
-                'name' => [
-                    'nl' => 'Actieplan per maatregel, zonder adresgegevens',
-                ],
-                'content_type' => 'text/csv',
-                'short' => 'measure-report-anonymized',
-            ],
-            [
-                'name' => [
                     'nl' => 'PDF Rapportage',
                 ],
                 'content_type' => 'application/pdf',

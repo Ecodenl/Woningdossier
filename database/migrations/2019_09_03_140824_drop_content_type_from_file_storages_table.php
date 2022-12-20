@@ -13,9 +13,11 @@ class DropContentTypeFromFileStoragesTable extends Migration
      */
     public function up()
     {
-        Schema::table('file_storages', function (Blueprint $table) {
-            $table->dropColumn('content_type');
-        });
+        if (Schema::hasColumn('file_storages', 'content_type')) {
+            Schema::table('file_storages', function (Blueprint $table) {
+                $table->dropColumn('content_type');
+            });
+        }
     }
 
     /**
@@ -25,19 +27,17 @@ class DropContentTypeFromFileStoragesTable extends Migration
      */
     public function down()
     {
+        if (! Schema::hasColumn('file_storages', 'content_type')) {
+            Schema::table('file_storages', function (Blueprint $table) {
+                $table->string('content_type')->after('filename');
+            });
 
-        Schema::table('file_storages', function (Blueprint $table) {
-            $table->string('content_type')->after('filename');
-        });
+            $fileStorages = DB::table('file_storages')->get();
 
-        $fileStorages = DB::table('file_storages')->get();
-
-        foreach ($fileStorages as $fileStorage) {
-            $fileType = DB::table('file_types')->where('id', $fileStorage->file_type_id)->first();
-            DB::table('file_storages')->where('id', $fileStorage->id)->update(['content_type' => $fileType->content_type]);
+            foreach ($fileStorages as $fileStorage) {
+                $fileType = DB::table('file_types')->where('id', $fileStorage->file_type_id)->first();
+                DB::table('file_storages')->where('id', $fileStorage->id)->update(['content_type' => $fileType->content_type]);
+            }
         }
-
-
-
     }
 }

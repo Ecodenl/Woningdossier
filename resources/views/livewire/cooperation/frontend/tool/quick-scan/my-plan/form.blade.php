@@ -345,23 +345,23 @@
 -->
         </div>
         {{-- Todo: Check rating slider translations --}}
-        <div class="w-full flex flex-wrap items-center pr-3">
-            @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Comfort', 'disabled' => true, 'default' => $comfort,
-                'livewire' => true, 'inputName' => 'comfort',
-            ])
-        </div>
-        <div class="w-full flex flex-wrap items-center">
-            @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Duurzaamheid', 'disabled' => true, 'default' => $renewable,
-                'livewire' => true, 'inputName' => 'renewable',
-            ])
-        </div>
-        <div class="w-full flex flex-wrap items-center">
-            @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Goede investering', 'disabled' => true, 'default' => $investment,
-                'livewire' => true, 'inputName' => 'investment',
-            ])
-        </div>
+{{--        <div class="w-full flex flex-wrap items-center pr-3">--}}
+{{--            @include('cooperation.frontend.layouts.parts.rating-slider', [--}}
+{{--                'label' => 'Comfort', 'disabled' => true, 'default' => $comfort,--}}
+{{--                'livewire' => true, 'inputName' => 'comfort',--}}
+{{--            ])--}}
+{{--        </div>--}}
+{{--        <div class="w-full flex flex-wrap items-center">--}}
+{{--            @include('cooperation.frontend.layouts.parts.rating-slider', [--}}
+{{--                'label' => 'Duurzaamheid', 'disabled' => true, 'default' => $renewable,--}}
+{{--                'livewire' => true, 'inputName' => 'renewable',--}}
+{{--            ])--}}
+{{--        </div>--}}
+{{--        <div class="w-full flex flex-wrap items-center">--}}
+{{--            @include('cooperation.frontend.layouts.parts.rating-slider', [--}}
+{{--                'label' => 'Goede investering', 'disabled' => true, 'default' => $investment,--}}
+{{--                'livewire' => true, 'inputName' => 'investment',--}}
+{{--            ])--}}
+{{--        </div>--}}
     </div>
 </div>

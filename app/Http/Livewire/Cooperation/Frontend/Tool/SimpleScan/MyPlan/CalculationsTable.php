@@ -30,12 +30,12 @@ class CalculationsTable extends Component
     private array $fixedData = [
         'cost-gas' => [
             'name' => 'Gerekend met kosten voor gas',
-            'value' => Kengetallen::EURO_SAVINGS_GAS,
+            'value' => Kengetallen::EURO_SAVINGS_GAS . ' euro / m<sup>3</sup>',
             'source' => 'RVO',
         ],
         'cost-electricity' => [
             'name' => 'Gerekend met kosten voor elektriciteit',
-            'value' => Kengetallen::EURO_SAVINGS_ELECTRICITY,
+            'value' => Kengetallen::EURO_SAVINGS_ELECTRICITY  . ' euro / kWh',
             'source' => 'RVO',
         ],
     ];
@@ -125,6 +125,11 @@ class CalculationsTable extends Component
             foreach ($this->toolCalculationResults as $toolCalculationResult) {
                 $this->tableData[$toolCalculationResult->short]['name'] = $toolCalculationResult->name;
                 $this->tableData[$toolCalculationResult->short]['value'] = Arr::get($sunBoilerResults, $toolCalculationResult->short);
+
+                if (! empty($toolCalculationResult->unit_of_measure)) {
+                    $this->tableData[$toolCalculationResult->short]['value'] .= " {$toolCalculationResult->unit_of_measure}";
+                }
+
                 $this->tableData[$toolCalculationResult->short]['source'] = "Berekeningen";
             }
         }

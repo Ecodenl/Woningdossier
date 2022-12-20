@@ -2353,6 +2353,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.wall_surface',
                 'translation' => 'Geveloppervlakte van de woning',
                 'short' => 'wall-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2360,8 +2361,9 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required', 'numeric',
                 ],
                 'save_in' => 'building_features.insulation_wall_surface',
-                'translation' => 'Te isoleren oppervlakte',
+                'translation' => 'Te isoleren geveloppervlakte',
                 'short' => 'insulation-wall-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::STRING,
@@ -2579,6 +2581,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.window_surface',
                 'translation' => 'Totale raamoppervlakte van de woning',
                 'short' => 'total-window-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2691,6 +2694,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.floor_surface',
                 'translation' => 'Vloeroppervlak van de woning',
                 'short' => 'floor-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2698,8 +2702,9 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required', 'numeric',
                 ],
                 'save_in' => 'building_features.insulation_surface',
-                'translation' => 'Te isoleren oppervlakte',
+                'translation' => 'Te isoleren vloeroppervlakte',
                 'short' => 'insulation-floor-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::STRING,
@@ -2755,6 +2760,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.roof_surface",
                 'translation' => 'Dakoppervlak hellend dak',
                 'short' => 'pitched-roof-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2764,6 +2770,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.insulation_roof_surface",
                 'translation' => 'Te isoleren oppervlakte van het hellende dak',
                 'short' => 'pitched-roof-insulation-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::INT,
@@ -2831,6 +2838,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_roof_types.{$flatRoof->id}.roof_surface",
                 'translation' => 'Dakoppervlak van platte dak',
                 'short' => 'flat-roof-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2840,6 +2848,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_roof_types.{$flatRoof->id}.insulation_roof_surface",
                 'translation' => 'Te isoleren oppervlakte van het platte dak',
                 'short' => 'flat-roof-insulation-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::INT,

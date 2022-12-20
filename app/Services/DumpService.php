@@ -130,7 +130,7 @@ class DumpService
      *
      * @return $this
      */
-    public function createHeaderStructure(bool $setStepPrefix = true): self
+    public function createHeaderStructure(string $short, bool $setStepPrefix = true): self
     {
         if ($this->anonymize) {
             $headers = [
@@ -160,7 +160,7 @@ class DumpService
             ];
         }
 
-        $structure = ToolHelper::getNewContentStructure();
+        $structure = ToolHelper::getContentStructure($short);
         // If we should set the step prefix, we want to add the step name to each field
         if ($setStepPrefix) {
             foreach ($structure as $stepShort => $content) {
@@ -238,7 +238,7 @@ class DumpService
             ];
         }
 
-        $calculateData = $this->getNewCalculateData();
+        $calculateData = $this->getCalculateData();
         $conditionService = ConditionService::init()
             ->building($building)
             ->inputSource($inputSource);
@@ -313,7 +313,7 @@ class DumpService
         return $data;
     }
 
-    protected function getNewCalculateData(): array
+    protected function getCalculateData(): array
     {
         // TODO: When the other calculators are uniform, also call them via step short (so we can iterate);
 
@@ -448,7 +448,7 @@ class DumpService
         }
 
         // get the content structure of the whole tool.
-        $structure = ToolHelper::getContentStructure();
+        $structure = ToolHelper::getLegacyContentStructure();
 
         $leaveOutTheseDuplicates = [
             'general-data.building-characteristics.building_features.building_type_id',
@@ -598,7 +598,7 @@ class DumpService
             ];
         }
 
-        $calculateData = static::getCalculateData($user, $inputSource);
+        $calculateData = static::getLegacyCalculateData($user, $inputSource);
 
         // loop through the headers
         foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
@@ -624,7 +624,7 @@ class DumpService
                             default:
                                 $answer = null;
                                 if ($buildingVentilation instanceof BuildingVentilation) {
-                                    $optionsForQuestion = ToolHelper::getContentStructure($tableWithColumnOrAndIdKey)['options'];
+                                    $optionsForQuestion = ToolHelper::getLegacyContentStructure($tableWithColumnOrAndIdKey)['options'];
 
                                     if (is_array($buildingVentilation->$column)) {
                                         $givenAnswers = array_flip($buildingVentilation->$column);
@@ -1029,7 +1029,7 @@ class DumpService
     /**
      * Return the calculate data for each step, for a user, with its given inputsource.
      */
-    public static function getCalculateData(User $user, InputSource $inputSource): array
+    public static function getLegacyCalculateData(User $user, InputSource $inputSource): array
     {
         // TODO: LEGACY
         // collect some info about their building

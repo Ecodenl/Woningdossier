@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\Queue;
-use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\FileStorageFormRequest;
 use App\Jobs\GenerateCustomQuestionnaireReport;
 use App\Jobs\GenerateMeasureReport;
-use App\Jobs\GenerateTotalReport;
+use App\Jobs\GenerateToolReport;
 use App\Jobs\PdfReport;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -25,6 +23,7 @@ use App\Services\FileStorageService;
 use App\Services\FileTypeService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class FileStorageController extends Controller
 {
@@ -158,43 +157,39 @@ class FileStorageController extends Controller
 
         // flash messages will be stored here
         $with = [];
+        $anonymized = Str::contains($fileType->short, 'anonymized');
+
         switch ($fileType->short) {
             case 'pdf-report':
                 $with = ['success' => __('woningdossier.cooperation.admin.cooperation.reports.generate.success')];
                 PdfReport::dispatch($user, $inputSource, $fileType, $fileStorage);
                 break;
             case 'total-report':
-                GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage);
-                break;
             case 'total-report-anonymized':
-                GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage, true);
+            case 'lite-scan-report':
+            case 'lite-scan-report-anonymized':
+            case 'small-measures-report':
+            case 'small-measures-report-anonymized':
+                GenerateToolReport::dispatch($cooperation, $fileType, $fileStorage, $anonymized);
                 break;
             case 'measure-report':
-                GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage);
-                break;
             case 'measure-report-anonymized':
-                GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage, true);
+                GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage, $anonymized);
                 break;
             case 'custom-questionnaire-report':
+            case 'custom-questionnaire-report-anonymized':
                 $date = Carbon::now()->format('y-m-d');
-                $questionnaireName = \Illuminate\Support\Str::slug($questionnaire->name);
-                $filename = "{$date}-{$questionnaireName}-met-adresgegevens.csv";
+                $questionnaireName = Str::slug($questionnaire->name);
+
+                $filePart = $anonymized ? 'zonder' : 'met';
+
+                $filename = "{$date}-{$questionnaireName}-{$filePart}-adresgegevens.csv";
 
                 $fileStorage->update([
                     'filename' => $filename,
                     'questionnaire_id' => $questionnaire->id,
                 ]);
-                GenerateCustomQuestionnaireReport::dispatch($questionnaire, $filename, $fileType, $fileStorage);
-                break;
-            case 'custom-questionnaire-report-anonymized':
-                $date = Carbon::now()->format('y-m-d');
-                $questionnaireName = \Illuminate\Support\Str::slug($questionnaire->name);
-                $filename = "{$date}-{$questionnaireName}-zonder-adresgegevens.csv";
-                $fileStorage->update([
-                    'filename' => $filename,
-                    'questionnaire_id' => $questionnaire->id,
-                ]);
-                GenerateCustomQuestionnaireReport::dispatch($questionnaire, $filename, $fileType, $fileStorage, true);
+                GenerateCustomQuestionnaireReport::dispatch($questionnaire, $filename, $fileType, $fileStorage, $anonymized);
                 break;
         }
 
@@ -270,7 +265,7 @@ class FileStorageController extends Controller
     {
         if ('pdf-report' == $fileType->short) {
             // 2013es14-Bewonster-A-g-Bewoner.pdf;
-            $fileName = trim($user->building->postal_code).$user->building->number.'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
+            $fileName = trim($user->building->postal_code).$user->building->number.'-'.Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
         } else {
             $fileName = (new FileTypeService($fileType))->niceFileName();
         }

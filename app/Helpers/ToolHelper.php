@@ -10,7 +10,6 @@ use App\Models\BuildingHeating;
 use App\Models\BuildingHeatingApplication;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
-use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
@@ -27,51 +26,15 @@ use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
 use App\Models\WoodRotStatus;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 class ToolHelper
 {
-    public static function createOptions(
-        Collection $collection,
-        $value = 'name',
-        $id = 'id',
-        $nullPlaceholder = true
-    ): array
-    {
-        $options = [];
+    const STRUCT_TOTAL = 'struct-total';
+    const STRUCT_LITE = 'struct-lite';
+    const STRUCT_SMALL_MEASURES_LITE = 'struct-small-measures-lite';
 
-        if ($nullPlaceholder) {
-            $options[''] = '-';
-        }
-        foreach ($collection as $item) {
-            $options[$item->$id] = $item->$value;
-        }
-
-        return $options;
-    }
-
-    protected static function considerationOptions($name): array
-    {
-
-        return [
-            'label' => $name . ': ' . __(
-                    'cooperation/admin/example-buildings.form.is-considering'
-                ),
-            'type' => 'select',
-            'options' => ConsiderableHelper::getConsiderableValues(),
-        ];
-    }
-
-    /**
-     * Create the tool structure, which returns a mapping of shorts with labels attached.
-     * These shorts could either be a save_in or a short to a model. If it's a model, a class
-     * will be defined.
-     *
-     * @return array
-     */
-    public static function getNewContentStructure(): array
-    {
-        $stepOrder = [
+    const STEP_STRUCTURE = [
+        self::STRUCT_TOTAL => [
             // Quick Scan
             'building-data', 'usage-quick-scan', 'living-requirements', 'residential-status',
             // Expert Scan
@@ -80,7 +43,30 @@ class ToolHelper
             'heating' => [
                 'huidige-situatie', 'nieuwe-situatie',
             ],
-        ];
+        ],
+        self::STRUCT_LITE => [
+            // Lite Scan
+            'building-data-lite', 'usage-lite-scan', 'living-requirements-lite', 'residential-status-lite',
+            'small-measures-lite',
+        ],
+        self::STRUCT_SMALL_MEASURES_LITE => [
+            'small-measures-lite',
+        ],
+    ];
+
+    /**
+     * Create the tool structure, which returns a mapping of shorts with labels attached.
+     * These shorts could either be a save_in or a short to a model. If it's a model, a class
+     * will be defined.
+     *
+     * @param string $short
+     *
+     * @return array
+     */
+    public static function getContentStructure(string $short): array
+    {
+        // Just for safety.
+        $stepOrder = array_key_exists($short, self::STEP_STRUCTURE) ? self::STEP_STRUCTURE[$short] : [];
 
         $structure = [];
 
@@ -150,12 +136,43 @@ class ToolHelper
     }
 
     // TODO: Remove legacy
+    public static function createOptions(
+        Collection $collection,
+        $value = 'name',
+        $id = 'id',
+        $nullPlaceholder = true
+    ): array
+    {
+        $options = [];
+
+        if ($nullPlaceholder) {
+            $options[''] = '-';
+        }
+        foreach ($collection as $item) {
+            $options[$item->$id] = $item->$value;
+        }
+
+        return $options;
+    }
+
+    protected static function considerationOptions($name): array
+    {
+
+        return [
+            'label' => $name . ': ' . __(
+                    'cooperation/admin/example-buildings.form.is-considering'
+                ),
+            'type' => 'select',
+            'options' => ConsiderableHelper::getConsiderableValues(),
+        ];
+    }
+
     /**
      * @param $contentKey
      *
      * @return array
      */
-    public static function getContentStructure($contentKey = null)
+    public static function getLegacyContentStructure($contentKey = null)
     {
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::findByShort('living-rooms-windows');

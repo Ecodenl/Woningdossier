@@ -27,8 +27,7 @@
                         <a @if(!$questionnaireBeingProcessed)
                            href="{{route('cooperation.file-storage.download', ['fileStorage' => $questionnaireForFileType])}}" @endif>
                             {{$fileName}}
-                            ({{$questionnaireForFileType->created_at->format('Y-m-d H:i')}}
-                            )
+                            ({{$questionnaireForFileType->created_at->format('Y-m-d H:i')}})
                         </a>
                     </li>
                 @endif
@@ -40,17 +39,17 @@
                   method="post">
                 <input type="hidden" name="file_storages[questionnaire_id]"
                        value="{{$questionnaire->id}}">
-                {{csrf_field()}}
+                @csrf
                 <button
                         @if($questionnaireBeingProcessed) disabled="disabled"
                         type="button" data-toggle="tooltip"
-                        title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                        title="@lang('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')"
                         @else
                         type="submit"
                         @endif
                         class="btn btn-{{$questionnaireBeingProcessed ? 'warning' : 'primary'}}"
                 >
-                    {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                    @lang('my-plan.download.title')
                     @if($questionnaireBeingProcessed)
                         <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
                     @endif

@@ -7,11 +7,11 @@
 @endpush
 
 @if($anyFilesBeingProcessed)
-@section('top-container')
-    @component('cooperation.tool.components.alert')
-        @lang('woningdossier.cooperation.admin.cooperation.reports.generate.success')
-    @endcomponent
-@endsection
+    @section('top-container')
+        @component('cooperation.tool.components.alert')
+            @lang('woningdossier.cooperation.admin.cooperation.reports.generate.success')
+        @endcomponent
+    @endsection
 @endif
 
 @section('content')
@@ -50,7 +50,8 @@
                                                 <li>
                                                     <a @if(!$fileType->isBeingProcessed() )
                                                        href="{{route('cooperation.file-storage.download', compact('fileStorage'))}}" @endif>
-                                                        {{$fileType->name}} ({{$fileStorage->created_at->format('Y-m-d H:i')}})
+                                                        {{$fileType->name}}
+                                                        ({{$fileStorage->created_at->format('Y-m-d H:i')}})
                                                     </a>
                                                 </li>
                                             @endif

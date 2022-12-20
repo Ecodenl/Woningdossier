@@ -17,6 +17,18 @@ return [
     '2fa' => [
         'index' => [
             'title' => '2 Factor authenticatie instellingen',
+            'setup' => [
+                'scan' => 'Scan deze QR code met de uw 2FA app',
+            ],
+            'confirmed' => [
+                'enabled' => '2 Factor authenticatie is bevestigd en ingeschakeld!'
+            ],
+            'recovery-codes' => [
+                'label' => 'Herstel codes',
+                'show' => 'Herstelcodes weergeven',
+                'hide' => 'Herstelcodes verbergen'
+            ],
+
             'alert' => [
                 'inactive' => [
                     'title' => 'Beveilig je account',

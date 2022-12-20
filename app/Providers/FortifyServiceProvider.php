@@ -77,6 +77,9 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(function () {
             return view('cooperation.auth.login');
         });
+        Fortify::confirmPasswordView(function () {
+            return view('cooperation.auth.confirm-password');
+        });
         Fortify::requestPasswordResetLinkView(function () {
             return view('cooperation.auth.passwords.request.index');
         });

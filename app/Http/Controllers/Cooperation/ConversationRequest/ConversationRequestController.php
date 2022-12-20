@@ -9,6 +9,7 @@ use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\Scan;
 use App\Services\PrivateMessageService;
 
 class ConversationRequestController extends Controller
@@ -23,9 +24,11 @@ class ConversationRequestController extends Controller
      */
     public function index(Cooperation $cooperation, $requestType, $measureApplicationShort = null)
     {
+        $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();
+
         // if the user is observing, he has nothing to do here.
         if (HoomdossierSession::isUserObserving()) {
-            return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index');
+            return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
         }
 
         $title = __('conversation-requests.index.request-coach-conversation');
@@ -38,7 +41,7 @@ class ConversationRequestController extends Controller
             $title = __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
         }
 
-        return view('cooperation.conversation-requests.index', compact( 'requestType', 'measureApplicationName', 'title'));
+        return view('cooperation.conversation-requests.index', compact('scan', 'requestType', 'measureApplicationName', 'title'));
     }
 
     /**
@@ -58,7 +61,8 @@ class ConversationRequestController extends Controller
             $successMessage = __('conversation-requests.store.success.'.InputSource::RESIDENT_SHORT, ['url' => route('cooperation.my-account.messages.index', compact('cooperation'))]);
         }
 
-        return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index')
+        $scan = $cooperation->scans()->where('scans.short', '!=', Scan::EXPERT)->first();
+        return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'))
             ->with('success', $successMessage);
     }
 }

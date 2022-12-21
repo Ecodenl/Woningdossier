@@ -29,12 +29,12 @@ class CalculationsTable extends Component
 
     private array $fixedData = [
         'cost-gas' => [
-            'name' => 'Gerekend met kosten voor gas',
+            'name' => 'cooperation/frontend/tool.my-plan.calculations.values.gas-cost',
             'value' => Kengetallen::EURO_SAVINGS_GAS . ' euro / m<sup>3</sup>',
             'source' => 'RVO',
         ],
         'cost-electricity' => [
-            'name' => 'Gerekend met kosten voor elektriciteit',
+            'name' => 'cooperation/frontend/tool.my-plan.calculations.values.electricity-cost',
             'value' => Kengetallen::EURO_SAVINGS_ELECTRICITY  . ' euro / kWh',
             'source' => 'RVO',
         ],
@@ -89,13 +89,21 @@ class CalculationsTable extends Component
     {
         $answers = BuildingService::init($this->building)->getSourcedAnswers($this->toolQuestions)->toArray();
 
-        $this->tableData = $this->fixedData;
+        $fixedData = $this->fixedData;
+        foreach ($fixedData as $index => $data) {
+            $data['name'] = __($data['name']);
+            $fixedData[$index] = $data;
+        }
+
+        $this->tableData = $fixedData;
 
         foreach ($this->toolQuestions as $toolQuestion) {
             if (array_key_exists($toolQuestion->id, $answers)) {
+                $firstKey = array_key_first($answers[$toolQuestion->id]);
+
                 $answerToMakeReadable = $toolQuestion->data_type === Caster::ARRAY
                     ? Arr::pluck($answers[$toolQuestion->id], 'answer')
-                    : data_get(Arr::first($answers[$toolQuestion->id]), 'answer');
+                    : $answers[$toolQuestion->id][$firstKey]['answer'] ?? null;
 
                 // Answer might be null, e.g. roof type can have null surface if for example created via mapping
                 if (! is_null($answerToMakeReadable)) {
@@ -103,7 +111,7 @@ class CalculationsTable extends Component
                     $this->tableData[$toolQuestion->short]['value'] = ToolQuestionHelper::getHumanReadableAnswer(
                         $this->building, $this->masterInputSource, $toolQuestion, true, $answerToMakeReadable
                     );
-                    $this->tableData[$toolQuestion->short]['source'] = data_get(Arr::first($answers[$toolQuestion->id]), 'input_source_name');
+                    $this->tableData[$toolQuestion->short]['source'] = $answers[$toolQuestion->id][$firstKey]['input_source_name'] ?? null;
 
                     if (in_array($toolQuestion->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
                         $this->tableData[$toolQuestion->short]['value'] = Caster::init(
@@ -123,14 +131,18 @@ class CalculationsTable extends Component
             $sunBoilerResults = Heater::calculate($this->building, $this->masterInputSource);
 
             foreach ($this->toolCalculationResults as $toolCalculationResult) {
-                $this->tableData[$toolCalculationResult->short]['name'] = $toolCalculationResult->name;
-                $this->tableData[$toolCalculationResult->short]['value'] = Arr::get($sunBoilerResults, $toolCalculationResult->short);
+                $answer = $sunBoilerResults[$toolCalculationResult->short] ?? null;
 
-                if (! empty($toolCalculationResult->unit_of_measure)) {
-                    $this->tableData[$toolCalculationResult->short]['value'] .= " {$toolCalculationResult->unit_of_measure}";
+                if (! is_null($answer)) {
+                    $this->tableData[$toolCalculationResult->short]['name'] = $toolCalculationResult->name;
+                    $this->tableData[$toolCalculationResult->short]['value'] = $answer;
+
+                    if (! empty($toolCalculationResult->unit_of_measure)) {
+                        $this->tableData[$toolCalculationResult->short]['value'] .= " {$toolCalculationResult->unit_of_measure}";
+                    }
+
+                    $this->tableData[$toolCalculationResult->short]['source'] = "Berekeningen";
                 }
-
-                $this->tableData[$toolCalculationResult->short]['source'] = "Berekeningen";
             }
         }
     }

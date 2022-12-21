@@ -109,7 +109,6 @@ abstract class Scannable extends Component
         $this->setDirty(true);
     }
 
-
     protected function evaluateToolQuestions()
     {
         $evaluator = ConditionEvaluator::init()
@@ -133,7 +132,7 @@ abstract class Scannable extends Component
                 $conditions = $subSteppablePivot->conditions;
 
                 if (! $evaluator->evaluate($conditions)) {
-                    $this->subSteppables = $this->subStep->subSteppables->forget($index);
+                    $this->subSteppables->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they
                     // will have to fill in the data again. We don't want to save values to the database

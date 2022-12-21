@@ -28,7 +28,7 @@ class Form extends Scannable
     public function mount(Scan $scan, Step $step, SubStep $subStep)
     {
         Log::debug("mounting form [Step: {$step->id}] [SubStep: {$subStep->id}]");
-        
+
         // Only load in properties that are not order inclusive
         $subStep->load([
             'toolQuestions' => function ($query) {
@@ -75,7 +75,6 @@ class Form extends Scannable
                 )->reverseFormatted();
             }
         }
-
 
         if (! empty($this->rules)) {
             $validator = Validator::make([
@@ -132,7 +131,6 @@ class Form extends Scannable
             }
         }
 
-
         $stepShortsToRecalculate = [];
         $shouldDoFullRecalculate = false;
 
@@ -183,7 +181,6 @@ class Form extends Scannable
         }
 
         $flowService->checkConditionals($dirtyToolQuestions, Hoomdossier::user());
-
 
         $quickScan = Scan::findByShort(Scan::QUICK);
         $masterHasCompletedScan = $this->building->hasCompletedScan($this->scan, $this->masterInputSource);

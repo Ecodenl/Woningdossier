@@ -45,7 +45,7 @@
                         // these are the options for an question, the $ventilatioAnswer holds the translation op that option
                         // so we flip the array so we can get the option key by the translation of it.
                         $optionsForAnswer = array_flip(
-                            \App\Helpers\ToolHelper::getContentStructure("ventilation.-.{$translationKey}")['options']
+                            \App\Helpers\ToolHelper::getLegacyContentStructure("ventilation.-.{$translationKey}")['options']
                         );
 
                         $ventilationValue = $optionsForAnswer[$ventilationAnswer] ?? null;

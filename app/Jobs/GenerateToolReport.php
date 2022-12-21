@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\ToolHelper;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\App;
 
-class GenerateTotalReport implements ShouldQueue
+class GenerateToolReport implements ShouldQueue
 {
     use Queueable;
     use Dispatchable;
@@ -48,11 +49,28 @@ class GenerateTotalReport implements ShouldQueue
             Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
         }
 
+        // Define dump type based on file type
+        $short = ToolHelper::STRUCT_TOTAL;
+        switch ($this->fileType->short) {
+            case 'total-report':
+            case 'total-report-anonymized':
+                $short = ToolHelper::STRUCT_TOTAL;
+                break;
+            case 'lite-scan-report':
+            case 'lite-scan-report-anonymized':
+                $short = ToolHelper::STRUCT_LITE;
+                break;
+            case 'small-measures-report':
+            case 'small-measures-report-anonymized':
+                $short = ToolHelper::STRUCT_SMALL_MEASURES_LITE;
+                break;
+        }
+
         $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $dumpService = DumpService::init()->anonymize($this->anonymizeData)
             ->inputSource($inputSource)
-            ->createHeaderStructure();
+            ->createHeaderStructure($short);
 
         $dumpService->setHeaderStructure(
             ContentStructureService::init($dumpService->headerStructure)->applicableForTotalReport()

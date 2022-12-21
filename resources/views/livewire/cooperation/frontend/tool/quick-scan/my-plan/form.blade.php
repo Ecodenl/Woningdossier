@@ -291,47 +291,45 @@
         </div>
     </div>
     <div class="w-full grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-6 grid-flow-row gap-3 mt-5 py-8 content-center border-t-2 border-b-2 border-blue-500 border-opacity-10">
-        <div class="w-full flex flex-wrap items-center space-x-3">
-            <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">
-                <i class="icon-sm icon-moneybag-orange"></i>
-            </div>
-            <div class="flex flex-col justify-center">
-                <span class="text-orange text-sm font-bold">
-                    {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($expectedInvestment, 0), '€ ') }}
-                </span>
-                <p class="-mt-2">
-                    @lang('cooperation/frontend/tool.my-plan.cards.investment')
-                </p>
-            </div>
-        </div>
-        <div class="w-full flex flex-wrap items-center space-x-3">
-            <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">
-                <i class="icon-sm icon-piggybank-green"></i>
-            </div>
-            <div class="flex flex-col justify-center">
-                <span class="text-green text-sm font-bold">
-                    {{ \App\Helpers\NumberFormatter::prefix($yearlySavings, '€ ') }}
-                </span>
-                <p class="-mt-2">
-                    @lang('cooperation/frontend/tool.my-plan.cards.savings')
-                </p>
-            </div>
-        </div>
-        <div class="w-full flex flex-wrap items-center space-x-3">
-<!--
-            <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">
-                <i class="icon-sm icon-savings"></i>
-            </div>
-            <div class="flex flex-col justify-center">
-                <span class="text-blue text-sm font-bold">
-                    {{ \App\Helpers\NumberFormatter::prefix($availableSubsidy, '€ ') }}
-                </span>
-                <p class="-mt-2">
-                    Subsidie mogelijk {{-- Todo: Translate using constant --}}
-                </p>
-            </div>
--->
-        </div>
+{{--        <div class="w-full flex flex-wrap items-center space-x-3">--}}
+{{--            <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">--}}
+{{--                <i class="icon-sm icon-moneybag-orange"></i>--}}
+{{--            </div>--}}
+{{--            <div class="flex flex-col justify-center">--}}
+{{--                <span class="text-orange text-sm font-bold">--}}
+{{--                    {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($expectedInvestment, 0), '€ ') }}--}}
+{{--                </span>--}}
+{{--                <p class="-mt-2">--}}
+{{--                    @lang('cooperation/frontend/tool.my-plan.cards.investment')--}}
+{{--                </p>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--        <div class="w-full flex flex-wrap items-center space-x-3">--}}
+{{--            <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">--}}
+{{--                <i class="icon-sm icon-piggybank-green"></i>--}}
+{{--            </div>--}}
+{{--            <div class="flex flex-col justify-center">--}}
+{{--                <span class="text-green text-sm font-bold">--}}
+{{--                    {{ \App\Helpers\NumberFormatter::prefix($yearlySavings, '€ ') }}--}}
+{{--                </span>--}}
+{{--                <p class="-mt-2">--}}
+{{--                    @lang('cooperation/frontend/tool.my-plan.cards.savings')--}}
+{{--                </p>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--        <div class="w-full flex flex-wrap items-center space-x-3">--}}
+{{--            <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">--}}
+{{--                <i class="icon-sm icon-savings"></i>--}}
+{{--            </div>--}}
+{{--            <div class="flex flex-col justify-center">--}}
+{{--                <span class="text-blue text-sm font-bold">--}}
+{{--                    {{ \App\Helpers\NumberFormatter::prefix($availableSubsidy, '€ ') }}--}}
+{{--                </span>--}}
+{{--                <p class="-mt-2">--}}
+{{--                    Subsidie mogelijk --}}{{-- Todo: Translate using constant --}}
+{{--                </p>--}}
+{{--            </div>--}}
+{{--        </div>--}}
         {{-- Todo: Check rating slider translations --}}
 {{--        <div class="w-full flex flex-wrap items-center pr-3">--}}
 {{--            @include('cooperation.frontend.layouts.parts.rating-slider', [--}}

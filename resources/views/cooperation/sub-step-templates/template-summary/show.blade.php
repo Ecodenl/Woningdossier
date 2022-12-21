@@ -167,7 +167,7 @@
     @endforeach
 
     <div class="flex flex-row flex-wrap w-full">
-        @foreach($subStep->substeppables as $subSteppablePivot)
+        @foreach($this->substeppables as $subSteppablePivot)
             @php
                 $toolQuestion = $subSteppablePivot->subSteppable;
                 $disabled = ! $building->user->account->can('answer', $toolQuestion);

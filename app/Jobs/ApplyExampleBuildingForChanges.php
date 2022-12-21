@@ -165,15 +165,6 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             $buildYear = $this->changes['build_year'];
         }
 
-        // manually trigger
-        ExampleBuildingService::apply(
-            $exampleBuilding,
-            $buildYear,
-            $this->building,
-            InputSource::findByShort(InputSource::EXAMPLE_BUILDING),
-        );
-
-
         // We apply the example building only if the user has not proceeded further than the example building
         // sub steps. We simply check if the user has completed any sub step _besides_ the example building sub steps
         $totalOtherCompletedSubSteps = $this->building->completedSubSteps()
@@ -183,7 +174,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             ->count();
 
         if ($totalOtherCompletedSubSteps === 0) {
-            Log::debug(__CLASS__. ' Override user data with example building data. totalOtherCOmpletedSubSteps: '.$totalOtherCompletedSubSteps);
+            Log::debug(__CLASS__ . ' Override user data with example building data. $totalOtherCompletedSubSteps: ' . $totalOtherCompletedSubSteps);
             ExampleBuildingService::apply(
                 $exampleBuilding,
                 $buildYear,
@@ -191,5 +182,14 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
                 $this->applyForInputSource
             );
         }
+
+        // Manually trigger. We want to trigger the example building sourced later, as otherwise the "last changed
+        // source" is the $applyForInputSource instead of the example building.
+        ExampleBuildingService::apply(
+            $exampleBuilding,
+            $buildYear,
+            $this->building,
+            InputSource::findByShort(InputSource::EXAMPLE_BUILDING),
+        );
     }
 }

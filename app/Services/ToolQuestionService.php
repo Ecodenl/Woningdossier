@@ -80,11 +80,7 @@ class ToolQuestionService {
 
         // We can't do a update or create, we just have to delete the old answers and create the new one.
         if ($this->toolQuestion->data_type === Caster::ARRAY) {
-            $this->toolQuestion->toolQuestionAnswers()
-                ->allInputSources()
-                ->where($where)
-                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
-                ->delete();
+            $this->clearAnswer($this->toolQuestion, $where);
 
             foreach ($givenAnswer as $answer) {
                 $toolQuestionCustomValue = ToolQuestionCustomValue::where('tool_question_id', $this->toolQuestion->id)
@@ -282,24 +278,31 @@ class ToolQuestionService {
         //    }
         //}
 
-        if (! empty($toolQuestionsToUnset)) {
+        // If we have tool questions to unset, and we're not on the example building right now, we will delete the
+        // sub steps
+        if (! empty($toolQuestionsToUnset) && $this->currentInputSource->short !== InputSource::EXAMPLE_BUILDING) {
             $processedIds = [];
+            $processedSubSteps = [];
 
             // Clear (sub) steps
             foreach ($toolQuestionsToUnset as $toolQuestion) {
                 if (! in_array($toolQuestion->id, $processedIds)) {
                     foreach ($toolQuestion->subSteps as $subStep) {
-                        CompletedSubStep::allInputSources()
-                            ->where('building_id', $this->building->id)
-                            ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
-                            ->where('sub_step_id', $subStep->id)
-                            ->delete();
+                        if (! in_array($subStep->id, $processedSubSteps)) {
+                            CompletedSubStep::allInputSources()
+                                ->where('building_id', $this->building->id)
+                                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
+                                ->where('sub_step_id', $subStep->id)
+                                ->delete();
 
-                        CompletedStep::allInputSources()
-                            ->where('building_id', $this->building->id)
-                            ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
-                            ->where('step_id', $subStep->step_id)
-                            ->delete();
+                            CompletedStep::allInputSources()
+                                ->where('building_id', $this->building->id)
+                                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
+                                ->where('step_id', $subStep->step_id)
+                                ->delete();
+
+                            $processedSubSteps[] = $subStep->id;
+                        }
                     }
 
                     $processedIds[] = $toolQuestion->id;
@@ -311,9 +314,14 @@ class ToolQuestionService {
     private function clearAnswer(ToolQuestion $toolQuestion, array $where)
     {
         if (is_null($toolQuestion->save_in)) {
+            // We don't want to mess with the master if it's the example building
+            $whereIn = $this->currentInputSource->short === InputSource::EXAMPLE_BUILDING
+                ? [$this->currentInputSource->id]
+                : [$this->masterInputSource->id, $this->currentInputSource->id];
+
             $toolQuestion->toolQuestionAnswers()
                 ->allInputSources()
-                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
+                ->whereIn('input_source_id', $whereIn)
                 ->where($where)
                 ->delete();
         }

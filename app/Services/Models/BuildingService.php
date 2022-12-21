@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Models;
 
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
@@ -31,7 +31,6 @@ class BuildingService
     public function getSourcedAnswers(Collection $toolQuestions): Collection
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $exampleInputSource = InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
 
         $ids = $toolQuestions->whereNull('save_in')->pluck('id')->toArray();
 
@@ -98,10 +97,7 @@ class BuildingService
                     ->select('input_source_id')
                     ->where($whereColumn, $value)
                     ->whereRaw("{$answerColumn} = tbl.{$answerColumn}")
-                    // Note: save_in questions don't exist in expert; EB content might get updated even if the user
-                    // has made changes. Action plan isn't accessible without answering questions. Therefore
-                    // we DO NOT query on EB source as results aren't accurate.
-                    ->whereNotIn('input_source_id', [$masterInputSource->id, $exampleInputSource->id])
+                    ->where('input_source_id', '!=', $masterInputSource->id)
                     ->where($where)
                     ->orderByDesc('updated_at')
                     ->limit(1);

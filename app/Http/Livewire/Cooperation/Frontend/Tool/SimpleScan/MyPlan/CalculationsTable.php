@@ -11,8 +11,8 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
-use App\Services\BuildingService;
 use App\Services\ConditionService;
+use App\Services\Models\BuildingService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Livewire\Component;
@@ -30,12 +30,12 @@ class CalculationsTable extends Component
     private array $fixedData = [
         'cost-gas' => [
             'name' => 'cooperation/frontend/tool.my-plan.calculations.values.gas-cost',
-            'value' => Kengetallen::EURO_SAVINGS_GAS,
+            'value' => Kengetallen::EURO_SAVINGS_GAS . ' euro / m<sup>3</sup>',
             'source' => 'RVO',
         ],
         'cost-electricity' => [
             'name' => 'cooperation/frontend/tool.my-plan.calculations.values.electricity-cost',
-            'value' => Kengetallen::EURO_SAVINGS_ELECTRICITY,
+            'value' => Kengetallen::EURO_SAVINGS_ELECTRICITY  . ' euro / kWh',
             'source' => 'RVO',
         ],
     ];
@@ -136,6 +136,11 @@ class CalculationsTable extends Component
                 if (! is_null($answer)) {
                     $this->tableData[$toolCalculationResult->short]['name'] = $toolCalculationResult->name;
                     $this->tableData[$toolCalculationResult->short]['value'] = $answer;
+
+                    if (! empty($toolCalculationResult->unit_of_measure)) {
+                        $this->tableData[$toolCalculationResult->short]['value'] .= " {$toolCalculationResult->unit_of_measure}";
+                    }
+
                     $this->tableData[$toolCalculationResult->short]['source'] = "Berekeningen";
                 }
             }

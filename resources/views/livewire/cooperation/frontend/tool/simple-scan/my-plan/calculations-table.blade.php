@@ -4,7 +4,8 @@
     </button>
 
     @component('cooperation.frontend.layouts.components.modal', [
-        'style' => 'width: auto; max-width: 95%;',
+        'class' => 'data-table',
+        'style' => 'width: auto; max-width: 75%;',
         'header' => __('cooperation/frontend/tool.my-plan.calculations.title'),
     ])
         <table class="table fancy-table">

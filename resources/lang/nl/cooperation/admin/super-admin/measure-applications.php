@@ -27,6 +27,18 @@ return [
             'label' => 'Info',
             'placeholder' => 'Beschrijving van de maatregel',
         ],
+        'costs-from' => [
+            'label' => 'Investering vanaf',
+            'placeholder' => 'Minimale investering van de maatregel',
+        ],
+        'costs-to' => [
+            'label' => 'Investering tot',
+            'placeholder' => 'Maximale investering van de maatregel',
+        ],
+        'savings' => [
+            'label' => 'Besparing',
+            'placeholder' => 'Besparing van de maatregel',
+        ],
         'icon' => [
             'label' => 'Icoon',
         ],

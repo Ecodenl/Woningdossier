@@ -93,9 +93,11 @@ class CalculationsTable extends Component
 
         foreach ($this->toolQuestions as $toolQuestion) {
             if (array_key_exists($toolQuestion->id, $answers)) {
+                $firstKey = array_key_first($answers[$toolQuestion->id]);
+
                 $answerToMakeReadable = $toolQuestion->data_type === Caster::ARRAY
                     ? Arr::pluck($answers[$toolQuestion->id], 'answer')
-                    : data_get(Arr::first($answers[$toolQuestion->id]), 'answer');
+                    : $answers[$toolQuestion->id][$firstKey]['answer'] ?? null;
 
                 // Answer might be null, e.g. roof type can have null surface if for example created via mapping
                 if (! is_null($answerToMakeReadable)) {
@@ -103,7 +105,7 @@ class CalculationsTable extends Component
                     $this->tableData[$toolQuestion->short]['value'] = ToolQuestionHelper::getHumanReadableAnswer(
                         $this->building, $this->masterInputSource, $toolQuestion, true, $answerToMakeReadable
                     );
-                    $this->tableData[$toolQuestion->short]['source'] = data_get(Arr::first($answers[$toolQuestion->id]), 'input_source_name');
+                    $this->tableData[$toolQuestion->short]['source'] = $answers[$toolQuestion->id][$firstKey]['input_source_name'] ?? null;
 
                     if (in_array($toolQuestion->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
                         $this->tableData[$toolQuestion->short]['value'] = Caster::init(

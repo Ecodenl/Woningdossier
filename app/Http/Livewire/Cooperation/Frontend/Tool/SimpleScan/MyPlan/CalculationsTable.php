@@ -131,9 +131,13 @@ class CalculationsTable extends Component
             $sunBoilerResults = Heater::calculate($this->building, $this->masterInputSource);
 
             foreach ($this->toolCalculationResults as $toolCalculationResult) {
-                $this->tableData[$toolCalculationResult->short]['name'] = $toolCalculationResult->name;
-                $this->tableData[$toolCalculationResult->short]['value'] = $sunBoilerResults[$toolCalculationResult->short] ?? null;
-                $this->tableData[$toolCalculationResult->short]['source'] = "Berekeningen";
+                $answer = $sunBoilerResults[$toolCalculationResult->short] ?? null;
+
+                if (! is_null($answer)) {
+                    $this->tableData[$toolCalculationResult->short]['name'] = $toolCalculationResult->name;
+                    $this->tableData[$toolCalculationResult->short]['value'] = $answer;
+                    $this->tableData[$toolCalculationResult->short]['source'] = "Berekeningen";
+                }
             }
         }
     }

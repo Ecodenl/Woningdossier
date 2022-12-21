@@ -66,10 +66,12 @@ class MeasureApplication extends Model
     ];
 
     protected $fillable = [
-        'measure_name', 'measure_info', 'configurations',
+        'measure_name', 'measure_info', 'configurations', 'cost_range', 'savings_money',
     ];
 
     protected $casts = [
+        'cost_range' => 'array',
+        'has_calculations' => 'boolean',
         'configurations' => 'array',
     ];
 

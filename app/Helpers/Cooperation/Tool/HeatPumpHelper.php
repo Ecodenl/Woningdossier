@@ -153,9 +153,8 @@ class HeatPumpHelper extends ToolHelper
         if ($this->considers(Step::findByShort('heating'))) {
             $measureApplication = MeasureApplication::findByShort('heat-pump-boiler-place-replace');
             if ($measureApplication instanceof MeasureApplication) {
-                // TODO: Values!
                 $actionPlanAdvice = new UserActionPlanAdvice();
-                //$actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
+                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($measureApplication->costs);
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);

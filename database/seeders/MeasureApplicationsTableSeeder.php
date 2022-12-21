@@ -713,7 +713,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump-boiler-place-replace',
                 'application' => 'place',
-                'costs' => 25000,
+                'costs' => 5000,
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],

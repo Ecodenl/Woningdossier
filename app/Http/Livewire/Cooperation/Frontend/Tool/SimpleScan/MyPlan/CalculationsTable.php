@@ -132,7 +132,7 @@ class CalculationsTable extends Component
 
             foreach ($this->toolCalculationResults as $toolCalculationResult) {
                 $this->tableData[$toolCalculationResult->short]['name'] = $toolCalculationResult->name;
-                $this->tableData[$toolCalculationResult->short]['value'] = Arr::get($sunBoilerResults, $toolCalculationResult->short);
+                $this->tableData[$toolCalculationResult->short]['value'] = $sunBoilerResults[$toolCalculationResult->short] ?? null;
                 $this->tableData[$toolCalculationResult->short]['source'] = "Berekeningen";
             }
         }

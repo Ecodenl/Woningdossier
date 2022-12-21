@@ -29,12 +29,12 @@ class CalculationsTable extends Component
 
     private array $fixedData = [
         'cost-gas' => [
-            'name' => 'Gerekend met kosten voor gas',
+            'name' => 'cooperation/frontend/tool.my-plan.calculations.values.gas-cost',
             'value' => Kengetallen::EURO_SAVINGS_GAS,
             'source' => 'RVO',
         ],
         'cost-electricity' => [
-            'name' => 'Gerekend met kosten voor elektriciteit',
+            'name' => 'cooperation/frontend/tool.my-plan.calculations.values.electricity-cost',
             'value' => Kengetallen::EURO_SAVINGS_ELECTRICITY,
             'source' => 'RVO',
         ],
@@ -89,7 +89,13 @@ class CalculationsTable extends Component
     {
         $answers = BuildingService::init($this->building)->getSourcedAnswers($this->toolQuestions)->toArray();
 
-        $this->tableData = $this->fixedData;
+        $fixedData = $this->fixedData;
+        foreach ($fixedData as $index => $data) {
+            $data['name'] = __($data['name']);
+            $fixedData[$index] = $data;
+        }
+
+        $this->tableData = $fixedData;
 
         foreach ($this->toolQuestions as $toolQuestion) {
             if (array_key_exists($toolQuestion->id, $answers)) {

@@ -2,7 +2,7 @@
     $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
         ->forInputSource($masterInputSource)
         ->forBuilding($building)
-        ->answers(collect($this->prepareAnswersForEvaluation()))
+        ->answers(collect($filledInAnswers))
         ->withCustomEvaluation()
         ->getQuestionValues();
 @endphp

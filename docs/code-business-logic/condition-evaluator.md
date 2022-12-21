@@ -137,8 +137,44 @@ case, the columns are as follows:
 Just like the main evaluator, a building and input source are passed to these evaluators. However, these evaluators 
 also accept a nullable value, as well as a `Collection` of answers, to allow for dynamic and complex logic.
 
-##### Developer note
+## Developer notes
+### Custom evaluator "override"
 The custom evaluators share their results with the condition evaluator so any next checks of the same custom evaluator 
 will allow the earlier result to be checked. This saves a ton of unnecessary duplicate processes. The custom evaluator 
 will return an `array` containing `results`, which are the results of the evaluation, `bool` which is whether the
 evaluation has passed and `key` which is an MD5 to differentiate between custom evaluators with different parameters.
+
+### Easy retrieval of many conditions
+Since we often need all conditions in one go, we can easily get them using the following syntax:
+
+#### Model with conditions column
+```php
+// Pluck conditions, flatten to construct proper depth of array, remove `null` values, then convert to array. 
+// Depth is 1 as these are all conditions from all models in the collection one by one, while really
+// we want them as one large collection. Flatten with 1 will do exactly that. 
+$modelCollection->pluck('conditions')->flatten(1)->filter()->all();
+```
+
+#### Model with conditions in relation
+```php
+// ENSURE RELATION IS FULLY EAGER LOADED!
+// Pluck conditions from relation, flatten to construct proper depth of array, remove `null` values, then convert to
+// array.
+// Depth is 2, because due to the wildcard, we get an extra nest.
+$modelCollection->pluck('relation.*.conditions')->flatten(2)->filter()->all();
+```
+
+#### Model with conditions and relation with conditions
+```php
+// ENSURE RELATION IS FULLY EAGER LOADED!
+// We combine the logic of above 2. Because of this, we only need to flatten the merged collection once, due to it 
+// then being the same depth as the "main" collection, and we need to flatten that also, so we can combine it. 
+$modelCollection->pluck('conditions')
+    ->merge($modelCollection->pluck('relation.*.conditions')->flatten(1))
+    ->filter()
+    ->flatten(1)
+    ->all();
+```
+
+In case the result conditions should have normal indexed keys, it's important to call `->values()` before `->all()`, 
+otherwise you might get a result array with associative keys.

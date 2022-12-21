@@ -1,15 +1,15 @@
-<div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$toolQuestions->count() > 1 ? 10 : 5}} ">
+<div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$this->subSteppables->count() > 1 ? 10 : 5}} ">
 
     @php
         // some necessary crap to display the toolQuestions in the right manor
-        $topLeftPivot = $subStep->subSteppables->where('order', 0)->first();
+        $topLeftPivot = $this->subSteppables->where('order', 0)->first();
         $topLeft = optional($topLeftPivot)->subSteppable;
-        $topRightFirstPivot = $subStep->subSteppables->where('order', 1)->first();
+        $topRightFirstPivot = $this->subSteppables->where('order', 1)->first();
         $topRightFirst = optional($topRightFirstPivot)->subSteppable;
-        $topRightSecondPivot = $subStep->subSteppables->where('order', 2)->first();
+        $topRightSecondPivot = $this->subSteppables->where('order', 2)->first();
         $topRightSecond = optional($topRightSecondPivot)->subSteppable;
 
-        $bottomLeftPivot = $subStep->subSteppables->where('order', 3)->first();
+        $bottomLeftPivot = $this->subSteppables->where('order', 3)->first();
         $bottomLeft = optional($bottomLeftPivot)->subSteppable;
     @endphp
     <div class="w-full flex flex-wrap">

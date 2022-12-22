@@ -130,8 +130,6 @@
                     <li>
                         <a href="{{ route("cooperation.frontend.tool.simple-scan.index", compact('cooperation', 'scan', 'step', 'subStep')) }}"
                            class="in-text">
-{{--                            <img src="{{ asset("images/icons/{$expertStep->slug}.png") }}"--}}
-{{--                                 alt="{{ $subStep->name }}" class="rounded-1/2 inline-block h-8 w-8">--}}
                             {{ $subStep->name }}
                         </a>
                     </li>

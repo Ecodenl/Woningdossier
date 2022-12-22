@@ -69,17 +69,11 @@ class CompleteRelatedSubStep implements ShouldQueue
             Log::debug("Found related (uncompleted) SubSteps: " . json_encode($subStepIds));
             $subStepsToCheck = SubStep::findMany($subStepIds);
 
-            $allConditions = $subStepsToSummarize->pluck('conditions')
-                ->merge($subStepsToSummarize->pluck('subSteppables.*.conditions')->flatten(1))
+            // Get all conditions to get answers for
+            $allConditions = $subStepsToCheck->pluck('conditions')
                 ->filter()
                 ->flatten(1)
                 ->all();
-
-            // Get all conditions to get answers for
-            $allConditions = [];
-            foreach ($subStepsToCheck as $subStepToCheck) {
-                $allConditions = array_merge($allConditions, $subStepToCheck->conditions ?? []);
-            }
 
             $evaluator = ConditionEvaluator::init()
                 ->building($building)

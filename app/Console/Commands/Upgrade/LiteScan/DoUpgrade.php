@@ -54,9 +54,7 @@ class DoUpgrade extends Command
             GiveCooperationDefaultScans::class => [],
             ConvertQuestionnaireStepsToPivot::class => [],
             RemoveActionPlanReport::class => [],
-
-            // We don't really wanna run this more than once...
-            //TriggerSaveForAllCompletedSubSteps::class => [],
+            MapQuickToLite::class => [],
         ];
 
 

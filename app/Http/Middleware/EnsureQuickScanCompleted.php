@@ -32,7 +32,7 @@ class EnsureQuickScanCompleted
         if ($building instanceof Building) {
             $scan = Scan::findByShort('quick-scan');
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-            if ($building->hasCompletedScan($scan, $masterInputSource) || app()->isLocal()) {
+            if ($building->hasCompletedScan($scan, $masterInputSource)) {
                 return $next($request);
             } else {
                 $firstIncompleteStep = $building->getFirstIncompleteStep($scan, $masterInputSource);

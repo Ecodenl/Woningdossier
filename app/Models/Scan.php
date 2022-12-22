@@ -92,4 +92,8 @@ class Scan extends Model
     {
         return $this->short === self::LITE;
     }
+    public function isQuickScan(): bool
+    {
+        return $this->short === self::QUICK;
+    }
 }

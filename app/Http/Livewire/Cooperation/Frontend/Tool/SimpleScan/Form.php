@@ -13,6 +13,7 @@ use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
+use App\Services\Models\BuildingService;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Artisan;
@@ -184,6 +185,11 @@ class Form extends Scannable
         $quickScan = Scan::findByShort(Scan::QUICK);
         $masterHasCompletedScan = $this->building->hasCompletedScan($this->scan, $this->masterInputSource);
 
+        $buildingService = BuildingService::init($this->building);
+
+        $buildingService->canRecalculate($this->scan);
+
+        $buildingService->canRecalculate();
         // so this is another exception to the rule which needs some explaination..
         // we will only calculate the small measure when the user is currently on the lite scan and did not complete the quick-scan
         // this is done so when the user only uses the lite-scan the woonplan only gets small-measure, measureApplications.

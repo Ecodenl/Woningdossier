@@ -41,7 +41,9 @@ class Scan extends Model
     use HasTranslations, HasShortTrait;
 
     const LITE = 'lite-scan';
+
     const QUICK = 'quick-scan';
+
     const EXPERT = 'expert-scan';
 
     protected $translatable = ['name', 'slug'];
@@ -92,8 +94,14 @@ class Scan extends Model
     {
         return $this->short === self::LITE;
     }
+
     public function isQuickScan(): bool
     {
         return $this->short === self::QUICK;
+    }
+
+    public function isExpertScan(): bool
+    {
+        return $this->short === self::EXPERT;
     }
 }

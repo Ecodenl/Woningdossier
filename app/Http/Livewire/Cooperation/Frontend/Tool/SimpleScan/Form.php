@@ -191,7 +191,7 @@ class Form extends Scannable
         // we will only calculate the small measure when the user is currently on the lite scan and did not complete the quick-scan
         // this is done so when the user only uses the lite-scan the woonplan only gets small-measure, measureApplications.
         // else we will just do the regular recalculate/
-        if ($buildingService->cancalculate($this->scan)) {
+        if ($buildingService->canCalculate($this->scan)) {
             if ($this->scan->isLiteScan()) {
                 // so the full recalculate may be turned on due to the question (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate)
                 // however, the quick scan is not completed. A full recalculate is not correct at this time.

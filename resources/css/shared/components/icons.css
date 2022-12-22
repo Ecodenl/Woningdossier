@@ -242,6 +242,9 @@
 .icon-house-purple {
     content: url('/icons/house-purple.svg');
 }
+.icon-house-green {
+    content: url('/icons/house-green.svg');
+}
 .icon-hydronic-balance-temperature {
     content: url('/icons/hydronic-balance-temperature.svg');
 }

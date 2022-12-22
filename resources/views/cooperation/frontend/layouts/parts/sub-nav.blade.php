@@ -62,12 +62,24 @@
             @endforeach
         @endif
     @endforeach
-    @php $inMyPlan = RouteLogic::inMyPlan(Route::currentRouteName()); @endphp
+    @php
+        $inMyPlan = RouteLogic::inMyPlan(Route::currentRouteName());
+        $canAccessWoonplan = \App\Services\WoonplanService::init($building)
+        ->scan($scan)
+        ->canAccessWoonplan();
+        $color = 'blue';
+        if ($canAccessWoonplan) {
+            $color = 'green';
+        }
+        if ($inMyPlan)  {
+          $color = 'purple';
+        }
+    @endphp
     <div class="border border-blue-500 border-opacity-50 h-1/2"></div>
     <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')) }}" class="no-underline">
         <div class="flex items-center justify-start">
-            <i class="icon-sm {{ $inMyPlan ? 'icon-house-purple' : 'icon-house-dark' }} mr-1"></i>
-            <span class="{{ $inMyPlan ? 'text-purple' : 'text-blue' }}">
+            <i class="icon-sm {{'icon-house-'.$color}} mr-1"></i>
+            <span class="{{ 'text-'.$color }}">
                 @lang('cooperation/frontend/tool.my-plan.label')
             </span>
         </div>

@@ -35,14 +35,21 @@ $userInputValues = $userInputValues->sortBy(function ($a) {
         @if(isset($values) && is_array($values))
             @foreach($values as $value)
                 @if(!is_null($value) && $inputValue->$userInputColumn == $value)
-                    <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{ $inputValue->$userInputColumn }}">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</li>
+                    <li class="change-input-value" x-on:click="changeOption($el)"
+                        data-input-value="{{ $inputValue->$userInputColumn }}"
+                        data-input-source-short="{{$userInputValue->inputSource->short}}">
+                        {{ $userInputValue->getInputSourceName() }}: {{ $inputName }}
+                    </li>
                 @endif
             @endforeach
         @else
             @if(!is_null($value) && $inputValue->id == $value)
-                <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{ $inputValue->id }}">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</li>
+                <li class="change-input-value" x-on:click="changeOption($el)"
+                    data-input-value="{{ $inputValue->id }}"
+                    data-input-source-short="{{$userInputValue->inputSource->short}}">
+                    {{ $userInputValue->getInputSourceName() }}: {{ $inputName }}
+                </li>
             @endif
         @endif
-
     @endforeach
 @endforeach

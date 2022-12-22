@@ -46,14 +46,15 @@ class ChecksConditionsForSubSteps
 
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             foreach (ExampleBuildingHelper::RELEVANT_SUB_STEPS as $subStepSlug) {
-                $subStep = $step->subSteps()->where('slug->nl', $subStepSlug)->first();
+                $subStep = $scan->subSteps()->where('sub_steps.slug->nl', $subStepSlug)->first();
+
                 // If valid sub step and showable (could be unanswerable)
                 if ($subStep instanceof SubStep && $request->user()->can('show', [$subStep, $building])) {
                     if (! $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStep->id)->first() instanceof CompletedSubStep) {
                         // Not answered, redirect back
                         return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
-                            'scan' => $request->route('scan'),
-                            'step' => $step,
+                            'scan' => $scan,
+                            'step' => $subStep->step,
                             'subStep' => $subStep,
                         ]);
                     }

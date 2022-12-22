@@ -453,9 +453,9 @@ class Building extends Model
      *
      * @return bool
      */
-    public function hasNotCompleted(Step $step)
+    public function hasNotCompleted(Step $step, InputSource $inputSource = null)
     {
-        return !$this->hasCompleted($step);
+        return !$this->hasCompleted($step, $inputSource);
     }
 
     /**

@@ -1,7 +1,7 @@
 {
     "/js/app.js": "/js/app.js?id=f32901258c1acc55ffc7bd52a986f80a",
-    "/css/frontend/app.css": "/css/frontend/app.css?id=6df684e7a3ab540e6ec90c5ea01f7f11",
-    "/css/admin/app.css": "/css/admin/app.css?id=419555e2952700544c7f4517e1cab39a",
+    "/css/frontend/app.css": "/css/frontend/app.css?id=d1c2ae98148713371df0564f7f7634bd",
+    "/css/admin/app.css": "/css/admin/app.css?id=426bdc0f6c747aba87c509edd556e729",
     "/css/admin/datatables/dataTables.bootstrap.min.css": "/css/admin/datatables/dataTables.bootstrap.min.css?id=aee6a61599227dc516029b2c6475d757",
     "/css/admin/datatables/responsive.dataTables.min.css": "/css/admin/datatables/responsive.dataTables.min.css?id=1bfb0f316029008a5d240443bc0cd2e2",
     "/css/admin/datatables/responsive.bootstrap.min.css": "/css/admin/datatables/responsive.bootstrap.min.css?id=9fafdb7b3f67ad7e48342e946777b1bd",
@@ -192,6 +192,7 @@
     "/icons/hoomdossier-white.svg": "/icons/hoomdossier-white.svg?id=2b2293393e996dc04c6713e311e01c8e",
     "/icons/hoomdossier.svg": "/icons/hoomdossier.svg?id=78de608574bcfcba75c11b08a6647319",
     "/icons/house-dark.svg": "/icons/house-dark.svg?id=9df07ec09f5263079eb4dd05654e9823",
+    "/icons/house-green.svg": "/icons/house-green.svg?id=957d80c9190d9b528f04c50f9aab39b8",
     "/icons/house-light.svg": "/icons/house-light.svg?id=18df1d26cbff1000c485d12812b9ec12",
     "/icons/house-purple.svg": "/icons/house-purple.svg?id=97347d32d95b45c0194890e04f2031b0",
     "/icons/house.svg": "/icons/house.svg?id=b4657baae434efeb79221be498027bc1",

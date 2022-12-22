@@ -8,6 +8,7 @@ use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
+use App\Services\WoonplanService;
 use Closure;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +33,8 @@ class EnsureQuickScanCompleted
         if ($building instanceof Building) {
             $scan = Scan::findByShort('quick-scan');
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-            if ($building->hasCompletedScan($scan, $masterInputSource) || app()->isLocal()) {
+            $woonplanService = WoonplanService::init($building)->scan($scan);
+            if ($woonplanService->canEnterExpertScan($request->route('cooperation'))) {
                 return $next($request);
             } else {
                 $firstIncompleteStep = $building->getFirstIncompleteStep($scan, $masterInputSource);

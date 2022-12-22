@@ -2739,7 +2739,7 @@ class SubSteppablesTableSeeder extends Seeder
                                 ],
                                 [
                                     [
-                                        'column' => 'current-wall-insulation',
+                                        'column' => 'current-wall-insulation|',
                                         'operator' => Clause::EQ,
                                         'value' => $wallInsulationUnknown->id,
                                     ],

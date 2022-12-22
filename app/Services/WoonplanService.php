@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Scan;
@@ -51,6 +52,18 @@ class WoonplanService
         $this->isObserving = true;
 
         return $this;
+    }
+
+    public function canEnterExpertScan(Cooperation $cooperation)
+    {
+        // first check that the cooperation has the expert-scan
+        if ($cooperation->scans()->where('short', Scan::EXPERT)->exists()) {
+            // basically the same check that we use for the access on woonplan
+            if ($this->buildingCompletedFirstFourSteps() || $this->buildingHasMeasureApplications()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function buildingCompletedFirstFourSteps(): bool

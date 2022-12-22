@@ -19,20 +19,15 @@
                 ]);
             @endphp
             <div class="flex flex-row flex-wrap w-full space-y-2">
-                @if(app()->environment() === 'local')
-                    @php
-                        $completed = $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStepToSummarize->id)->first();
-                    @endphp
-                    @if(is_null($completed))
-                        <h1>{{$subStepToSummarize->name}} is niet afgerond</h1>
-                    @endif
-                @endif
+                @php
+                    $completed = $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStepToSummarize->id)->exists();
+                @endphp
                 {{-- Custom changes has no tool questions, it's basically a whole other story --}}
                 @if($subStepToSummarize->subStepTemplate->short === 'template-custom-changes')
                     <div class="flex flex-row flex-wrap w-full">
                         <div class="w-1/2">
                             <a href="{{ $subStepRoute }}" class="no-underline">
-                                <h6 class="as-text font-bold">
+                                <h6 class="as-text font-bold @if(! $completed) text-orange @endif">
                                     @lang("livewire/cooperation/frontend/tool/simple-scan/custom-changes.question.{$scan->short}.label")
                                 </h6>
                             </a>
@@ -130,7 +125,7 @@
                             <div class="flex flex-row flex-wrap w-full">
                                 <div class="@if($subSteppablePivot->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
                                     <a href="{{ $subStepRoute }}" class="no-underline">
-                                        <h6 class="as-text font-bold">
+                                        <h6 class="as-text font-bold @if(! $completed) text-orange @endif">
                                             {{ $toolQuestionToSummarize->name }}
                                         </h6>
                                     </a>
@@ -140,7 +135,7 @@
                                     @foreach($humanReadableAnswer as $name => $answer)
                                         <div class="w-1/2 pl-2">
                                             <a href="{{ $subStepRoute }}" class="no-underline">
-                                                <h6 class="as-text font-bold">
+                                                <h6 class="as-text font-bold @if(! $completed) text-orange @endif">
                                                     {{ $name }}
                                                 </h6>
                                             </a>

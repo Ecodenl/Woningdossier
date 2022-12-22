@@ -23,6 +23,7 @@ class NavbarComposer
         $cooperation = $this->request->route('cooperation');
         // Load the first available scan if it's not in the current route (think of my account)
         $scan = $this->request->route('scan', $cooperation->scans()->where('short', '!=', Scan::EXPERT)->first());
+        $scan->load(['steps.subSteps']);
 
         $view->with('scan', $scan);
         $view->with('expertSteps', Step::expert()->get());

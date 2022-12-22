@@ -123,6 +123,21 @@
 {{--                @endif--}}
             @endif
 
+            @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-info"></i>'])
+                {{-- Loaded in NavbarComposer --}}
+                @foreach($scan->steps as $step)
+                    @php $subStep = $step->subSteps->sortByDesc('order')->first(); @endphp
+                    <li>
+                        <a href="{{ route("cooperation.frontend.tool.simple-scan.index", compact('cooperation', 'scan', 'step', 'subStep')) }}"
+                           class="in-text">
+{{--                            <img src="{{ asset("images/icons/{$expertStep->slug}.png") }}"--}}
+{{--                                 alt="{{ $subStep->name }}" class="rounded-1/2 inline-block h-8 w-8">--}}
+                            {{ $subStep->name }}
+                        </a>
+                    </li>
+                @endforeach
+            @endcomponent
+
             @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
                 <div>
                     <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan')) }}"

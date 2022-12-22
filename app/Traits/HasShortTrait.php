@@ -3,6 +3,8 @@
 namespace App\Traits;
 
 use App\Helpers\Cache\BaseCache;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 trait HasShortTrait
@@ -12,9 +14,9 @@ trait HasShortTrait
      *
      * @param $short
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public static function findByShort($short)
+    public static function findByShort($short): ?Model
     {
         $cacheKey = 'HasShortTrait_find_by_short_%s_%s';
         $className = get_class(self::getModel());
@@ -30,21 +32,10 @@ trait HasShortTrait
      *
      * @param array  $shorts
      *
-     * @return mixed
+     * @return \Illuminate\Support\Collection
      */
-    public static function findByShorts(array $shorts)
+    public static function findByShorts(array $shorts): Collection
     {
-        // TODO: Check if we can cache empty arrays, or if we should implement something like above
-        $cacheKey = 'HasShortTrait_find_by_shorts_%s_%s';
-        $className = get_class(self::getModel());
-
-        // try to cache it so we get some medioker fast stuff
-        return Cache::remember(
-            BaseCache::getCacheKey($cacheKey, $className, implode(',', $shorts)),
-            config('hoomdossier.cache.times.default'),
-            function () use ($shorts) {
-                return self::whereIn('short', $shorts)->get();
-            }
-        );
+        return self::whereIn('short', $shorts)->get();
     }
 }

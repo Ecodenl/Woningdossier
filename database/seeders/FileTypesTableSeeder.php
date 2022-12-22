@@ -33,17 +33,31 @@ class FileTypesTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Actieplan per maatregel, met adresgegevens',
+                    'nl' => 'Gegevens van de eenvoudige variant, met adresgegevens',
                 ],
                 'content_type' => 'text/csv',
-                'short' => 'measure-report',
+                'short' => 'lite-scan-report',
             ],
             [
                 'name' => [
-                    'nl' => 'Actieplan per maatregel, zonder adresgegevens',
+                    'nl' => 'Gegevens van de eenvoudige variant, zonder adresgegevens',
                 ],
                 'content_type' => 'text/csv',
-                'short' => 'measure-report-anonymized',
+                'short' => 'lite-scan-report-anonymized',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Gegevens van de kleine maatregelen, met adresgegevens',
+                ],
+                'content_type' => 'text/csv',
+                'short' => 'small-measures-report',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Gegevens van de kleine maatregelen, zonder adresgegevens',
+                ],
+                'content_type' => 'text/csv',
+                'short' => 'small-measures-report-anonymized',
             ],
             [
                 'name' => [

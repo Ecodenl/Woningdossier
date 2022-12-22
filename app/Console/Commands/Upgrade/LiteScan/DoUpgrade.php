@@ -49,10 +49,12 @@ class DoUpgrade extends Command
                 ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
                 ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
                 ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
+                ['--class' => 'FileTypesTableSeeder', '--force' => true],
             ],
             GiveCooperationDefaultScans::class => [],
             ConvertQuestionnaireStepsToPivot::class => [],
             MapQuickToLite::class => [],
+            RemoveActionPlanReport::class => [],
         ];
 
 

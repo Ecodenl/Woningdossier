@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Models;
 
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
@@ -83,10 +83,14 @@ class BuildingService
             $saveIns = $toolQuestions->whereNotNull('save_in')->pluck('save_in', 'id')->toArray();
             foreach ($saveIns as $toolQuestionId => $saveIn) {
                 $resolved = ToolQuestionHelper::resolveSaveIn($saveIn, $this->building);
+                // Note: Where could contain extra queryable, e.g. service. If empty, the query builder
+                // will safely discard the where statement. If not empty, it gets added to the query.
+                $where = $resolved['where'];
                 $table = $resolved['table'];
                 $answerColumn = $resolved['column'];
-                $whereColumn = array_key_exists('user_id', $resolved['where']) ? 'user_id' : 'building_id';
+                $whereColumn = array_key_exists('user_id', $where) ? 'user_id' : 'building_id';
                 $value = data_get($resolved, "where.{$whereColumn}");
+                unset($where[$whereColumn]);
 
                 // This sub-query selects the latest input source that made changes on the tool question.
                 $selectQuery = DB::table($table)
@@ -94,6 +98,7 @@ class BuildingService
                     ->where($whereColumn, $value)
                     ->whereRaw("{$answerColumn} = tbl.{$answerColumn}")
                     ->where('input_source_id', '!=', $masterInputSource->id)
+                    ->where($where)
                     ->orderByDesc('updated_at')
                     ->limit(1);
 
@@ -101,6 +106,7 @@ class BuildingService
                 $subQuery = DB::table($table)
                     ->select($whereColumn, 'input_source_id', $answerColumn)
                     ->where($whereColumn, $value)
+                    ->where($where)
                     ->where('input_source_id', '!=', $masterInputSource->id)
                     ->groupBy($whereColumn, 'input_source_id', $answerColumn);
 
@@ -110,6 +116,7 @@ class BuildingService
                     ->select("tbl.{$answerColumn} as answer", 'nma.input_source_id', 'is.name as input_source_name')
                     ->selectSub($selectQuery, 'latest_source_id')
                     ->where("tbl.{$whereColumn}", $value)
+                    ->where($where)
                     ->where('tbl.input_source_id', $masterInputSource->id)
                     ->leftJoinSub($subQuery, 'nma', function ($join) use ($whereColumn, $answerColumn) {
                         $join->on("tbl.{$whereColumn}", '=', "nma.{$whereColumn}")

@@ -1,17 +1,18 @@
-<div class="flex w-1/3 justify-center" x-data="modal()">
+<div class="flex w-1/4 justify-center" x-data="modal()">
     <button class="btn btn-outline-purple" x-on:click="toggle()">
         @lang('cooperation/frontend/tool.my-plan.calculations.title')
     </button>
 
     @component('cooperation.frontend.layouts.components.modal', [
-        'style' => 'width: auto; max-width: 95%;',
+        'class' => 'data-table',
+        'style' => 'width: auto; max-width: 75%;',
         'header' => __('cooperation/frontend/tool.my-plan.calculations.title'),
     ])
         <table class="table fancy-table">
             <thead>
                 <tr>
                     <th>
-                        @lang('cooperation/frontend/tool.my-plan.calculations.table.question')
+                        @lang('cooperation/frontend/tool.my-plan.calculations.table.info')
                     </th>
                     <th>
                         @lang('cooperation/frontend/tool.my-plan.calculations.table.value')
@@ -22,22 +23,24 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($toolQuestions as $toolQuestion)
-                    @if(array_key_exists($toolQuestion->short, $answers))
-                        <tr>
-                            <td>
-                                {{ $toolQuestion->name }}
-                            </td>
-                            <td class="flex items-center">
-                                {!! $answers[$toolQuestion->short]['answer'] !!}
-                            </td>
-                            <td>
-                                {{ $answers[$toolQuestion->short]['input_source_name'] }}
-                            </td>
-                        </tr>
-                    @endif
+                @foreach($tableData as $data)
+                    <tr>
+                        <td>
+                            {{ $data['name'] }}
+                        </td>
+                        <td class="flex items-center">
+                            {!! $data['value'] !!}
+                        </td>
+                        <td>
+                            {{ $data['source'] }}
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
+
+        <div class="mt-4">
+            {!! __('cooperation/frontend/tool.my-plan.calculations.description') !!}
+        </div>
     @endcomponent
 </div>

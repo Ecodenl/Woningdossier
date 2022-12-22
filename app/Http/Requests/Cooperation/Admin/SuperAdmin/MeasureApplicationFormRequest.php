@@ -3,12 +3,15 @@
 namespace App\Http\Requests\Cooperation\Admin\SuperAdmin;
 
 use App\Helpers\Hoomdossier;
+use App\Models\MeasureApplication;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\LanguageRequired;
 use Illuminate\Support\Facades\Auth;
 
 class MeasureApplicationFormRequest extends FormRequest
 {
+    protected MeasureApplication $measureApplication;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -19,6 +22,11 @@ class MeasureApplicationFormRequest extends FormRequest
         return Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin');
     }
 
+    public function prepareForValidation()
+    {
+        $this->measureApplication = $this->route('measureApplication');
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -26,7 +34,21 @@ class MeasureApplicationFormRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $evaluateGt = ! is_null($this->input('measure_applications.cost_range.from'));
+
+        $nonCalcRules = [
+            'measure_applications.cost_range.from' => [
+                'nullable', 'numeric', 'min:0',
+            ],
+            'measure_applications.cost_range.to' => [
+                'required', 'numeric', 'min:0', $evaluateGt ? 'gt:measure_applications.cost_range.from' : '',
+            ],
+            'measure_applications.savings_money' => [
+                'required', 'numeric', 'min:0',
+            ],
+        ];
+
+        $rules = [
             'measure_applications.measure_name' => [
                 new LanguageRequired('nl'),
             ],
@@ -37,5 +59,11 @@ class MeasureApplicationFormRequest extends FormRequest
                 'required',
             ],
         ];
+
+        if (! $this->measureApplication->has_calculations) {
+            $rules = array_merge($rules, $nonCalcRules);
+        }
+
+        return $rules;
     }
 }

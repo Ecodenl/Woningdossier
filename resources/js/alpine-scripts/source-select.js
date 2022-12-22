@@ -29,7 +29,6 @@ export default (inputSource = 'no-match') => ({
             // Note: we cannot use forEach, as options is a HTML collection, which is not an array
             for (let i = 0; i < children.length; i++) {
                 let short = children[i].getAttribute('data-input-source-short');
-                children[i].setAttribute("x-on:click", "changeOption($el)");
                 children[i].classList.add('source-select-option');
                 children[i].classList.add(`source-${short}`);
 

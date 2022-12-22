@@ -2,15 +2,13 @@
 
 namespace App\Providers;
 
-use App\Http\ViewComposers\AdminComposer;
-use App\Http\ViewComposers\CooperationComposer;
-use App\Http\ViewComposers\ToolComposer;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
+use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
 use App\Models\Translation;
@@ -22,6 +20,7 @@ use App\Observers\BuildingElementObserver;
 use App\Observers\BuildingObserver;
 use App\Observers\CompletedSubStepObserver;
 use App\Observers\CooperationObserver;
+use App\Observers\MeasureApplicationObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
 use App\Observers\ToolQuestionAnswerObserver;
@@ -31,7 +30,6 @@ use App\Observers\UserObserver;
 use App\Models\ToolQuestionAnswer;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
 
@@ -56,6 +54,7 @@ class WoningdossierServiceProvider extends ServiceProvider
         Translation::observe(TranslationObserver::class);
         CompletedSubStep::observe(CompletedSubStepObserver::class);
         ToolQuestionAnswer::observe(ToolQuestionAnswerObserver::class);
+        MeasureApplication::observe(MeasureApplicationObserver::class);
 
         //View::creator('cooperation.my-account.*', MyAccountComposer::class);
 

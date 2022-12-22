@@ -22,7 +22,7 @@ class BuildingService
         $this->building = $building;
     }
 
-    public function canRecalculate(Scan $scan): bool
+    public function canCalculate(Scan $scan): bool
     {
         if ($scan->isQuickScan()) {
             $quickScan       = Scan::findByShort(Scan::QUICK);

@@ -183,18 +183,15 @@ class Form extends Scannable
         $flowService->checkConditionals($dirtyToolQuestions, Hoomdossier::user());
 
         $quickScan = Scan::findByShort(Scan::QUICK);
-        $masterHasCompletedScan = $this->building->hasCompletedScan($this->scan, $this->masterInputSource);
 
         $buildingService = BuildingService::init($this->building);
 
-        $buildingService->canRecalculate($this->scan);
 
-        $buildingService->canRecalculate();
         // so this is another exception to the rule which needs some explaination..
         // we will only calculate the small measure when the user is currently on the lite scan and did not complete the quick-scan
         // this is done so when the user only uses the lite-scan the woonplan only gets small-measure, measureApplications.
         // else we will just do the regular recalculate/
-        if ($masterHasCompletedScan) {
+        if ($buildingService->cancalculate($this->scan)) {
             if ($this->scan->isLiteScan()) {
                 // so the full recalculate may be turned on due to the question (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate)
                 // however, the quick scan is not completed. A full recalculate is not correct at this time.

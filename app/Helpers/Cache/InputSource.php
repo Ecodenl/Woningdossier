@@ -2,6 +2,8 @@
 
 namespace App\Helpers\Cache;
 
+use Illuminate\Support\Facades\Cache;
+
 class InputSource extends BaseCache
 {
     const CACHE_KEY_GET_ORDERED = 'InputSource_getOrdered';
@@ -9,7 +11,7 @@ class InputSource extends BaseCache
 
     public static function getOrdered()
     {
-        return \Cache::remember(
+        return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_GET_ORDERED),
             config('hoomdossier.cache.times.default'),
             function () {
@@ -25,7 +27,7 @@ class InputSource extends BaseCache
      */
     public static function find($id)
     {
-        return \Cache::remember(
+        return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),
             config('hoomdossier.cache.times.default'),
             function () use ($id) {

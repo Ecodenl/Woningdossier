@@ -12,7 +12,7 @@ class Step extends BaseCache
 
     public static function getOrdered()
     {
-        return \Cache::remember(
+        return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_GET_ORDERED),
             config('hoomdossier.cache.times.default'),
             function () {

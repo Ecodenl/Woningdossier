@@ -3,6 +3,7 @@
 namespace App\Helpers\Cache;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class Translation extends BaseCache
 {
@@ -31,7 +32,7 @@ class Translation extends BaseCache
 
     public static function getTranslations($key)
     {
-        return \Cache::rememberForever(
+        return Cache::rememberForever(
             self::getCacheKey(static::CACHE_KEY_GET_TRANSLATION, $key),
             function () use ($key) {
                 return \App\Models\Translation::where('key', $key)
@@ -42,7 +43,6 @@ class Translation extends BaseCache
 
     public static function wipe(\App\Models\Translation $translation)
     {
-        \Cache::forget(self::getCacheKey(static::CACHE_KEY_GET_TRANSLATION,
-            $translation->key));
+        static::clear(self::getCacheKey(static::CACHE_KEY_GET_TRANSLATION, $translation->key));
     }
 }

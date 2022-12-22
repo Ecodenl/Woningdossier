@@ -2,7 +2,7 @@
 
 namespace App\Helpers\Cache;
 
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class Cooperation extends BaseCache
 {
@@ -16,7 +16,7 @@ class Cooperation extends BaseCache
      */
     public static function find($id)
     {
-        return \Cache::remember(
+        return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),
             config('hoomdossier.cache.times.default'),
             function () use ($id) {
@@ -35,7 +35,7 @@ class Cooperation extends BaseCache
             return null;
         }
 
-        return \Cache::remember(
+        return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_GET_STYLE, $cooperation->id),
             config('hoomdossier.cache.times.default'),
             function () use ($cooperation) {
@@ -52,6 +52,6 @@ class Cooperation extends BaseCache
      */
     public static function wipe($cacheKey, $cooperationId)
     {
-        \Cache::forget(self::getCacheKey($cacheKey, $cooperationId));
+        static::clear(self::getCacheKey($cacheKey, $cooperationId));
     }
 }

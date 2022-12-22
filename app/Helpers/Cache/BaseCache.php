@@ -16,15 +16,9 @@ class BaseCache
      *
      * @return string
      */
-    public static function getCacheKey($string, ...$parameters)
+    public static function getCacheKey($string, ...$parameters): string
     {
         $prefix = config('hoomdossier.cache.prefix', '');
-
-        $cooperation = request()->route('cooperation');
-
-        if ($cooperation instanceof \App\Models\Cooperation) {
-            $prefix .= "{$cooperation->slug}_";
-        }
 
         return $prefix.sprintf($string, ...$parameters);
     }

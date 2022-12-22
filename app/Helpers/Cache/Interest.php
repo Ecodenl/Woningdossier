@@ -2,13 +2,15 @@
 
 namespace App\Helpers\Cache;
 
+use Illuminate\Support\Facades\Cache;
+
 class Interest extends BaseCache
 {
     const CACHE_KEY_GET_ORDERED = 'Interest_getOrdered';
 
     public static function getOrdered()
     {
-        return \Cache::rememberForever(
+        return Cache::rememberForever(
             self::getCacheKey(static::CACHE_KEY_GET_ORDERED),
             function () {
                 return \App\Models\Interest::orderBy('order')->get();

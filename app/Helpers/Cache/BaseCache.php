@@ -43,4 +43,9 @@ class BaseCache
         // If the cache has saved "false", we return null. Cache can't save null.
         return $result instanceof Model ? $result : null;
     }
+
+    public static function clear(string $key)
+    {
+        Cache::forget($key);
+    }
 }

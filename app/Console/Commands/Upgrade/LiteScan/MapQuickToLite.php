@@ -66,26 +66,34 @@ class MapQuickToLite extends Command
                         ->where("step_id", $quickStep->id)
                         ->whereNull('buildings.deleted_at')
                         ->whereNotNull('buildings.user_id')
+                        ->whereNotExists(function ($query) use ($inputSource, $liteStep) {
+                            $query->from('completed_steps')
+                                ->where("input_source_id", $inputSource->id)
+                                ->where("step_id", $liteStep->id)
+                                ->whereRaw('building_id = buildings.id');
+                        })
                         ->pluck('completed_steps.building_id')
                         ->toArray();
 
-                    $data = [];
-                    $base = [
-                        'input_source_id' => $inputSource->id,
-                        'step_id' => $liteStep->id,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+                    if (count($buildings) > 0) {
+                        $data = [];
+                        $base = [
+                            'input_source_id' => $inputSource->id,
+                            'step_id' => $liteStep->id,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
 
-                    foreach ($buildings as $buildingId) {
-                        $copy = $base;
-                        $copy['building_id'] = $buildingId;
-                        $data[] = $copy;
-                    }
+                        foreach ($buildings as $buildingId) {
+                            $copy = $base;
+                            $copy['building_id'] = $buildingId;
+                            $data[] = $copy;
+                        }
 
-                    // Use chunk, because else the insert might become too large for SQL to handle
-                    foreach (array_chunk($data, 5000) as $dataToInsert) {
-                        DB::table('completed_steps')->insert($dataToInsert);
+                        // Use chunk, because else the insert might become too large for SQL to handle
+                        foreach (array_chunk($data, 5000) as $dataToInsert) {
+                            DB::table('completed_steps')->insert($dataToInsert);
+                        }
                     }
                 }
             }
@@ -100,26 +108,34 @@ class MapQuickToLite extends Command
                     ->where("sub_step_id", $mapping->from)
                     ->whereNull('buildings.deleted_at')
                     ->whereNotNull('buildings.user_id')
+                    ->whereNotExists(function ($query) use ($inputSource, $mapping) {
+                        $query->from('completed_sub_steps')
+                            ->where("input_source_id", $inputSource->id)
+                            ->where("sub_step_id", $mapping->to)
+                            ->whereRaw('building_id = buildings.id');
+                    })
                     ->pluck('completed_sub_steps.building_id')
                     ->toArray();
 
-                $data = [];
-                $base = [
-                    'input_source_id' => $inputSource->id,
-                    'sub_step_id' => $mapping->to,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+                if (count($buildings) > 0) {
+                    $data = [];
+                    $base = [
+                        'input_source_id' => $inputSource->id,
+                        'sub_step_id' => $mapping->to,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
 
-                foreach ($buildings as $buildingId) {
-                    $copy = $base;
-                    $copy['building_id'] = $buildingId;
-                    $data[] = $copy;
-                }
+                    foreach ($buildings as $buildingId) {
+                        $copy = $base;
+                        $copy['building_id'] = $buildingId;
+                        $data[] = $copy;
+                    }
 
-                // Use chunk, because else the insert might become too large for SQL to handle
-                foreach (array_chunk($data, 5000) as $dataToInsert) {
-                    DB::table('completed_sub_steps')->insert($dataToInsert);
+                    // Use chunk, because else the insert might become too large for SQL to handle
+                    foreach (array_chunk($data, 5000) as $dataToInsert) {
+                        DB::table('completed_sub_steps')->insert($dataToInsert);
+                    }
                 }
             }
         }

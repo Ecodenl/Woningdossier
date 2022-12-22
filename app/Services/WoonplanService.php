@@ -30,7 +30,7 @@ class WoonplanService
         return $this;
     }
 
-    public function canAccessWoonplan(Scan $scan): bool
+    public function canAccessWoonplan(): bool
     {
         // when a user is observing another building, he can always see the Woonplan
         if ($this->isObserving) {

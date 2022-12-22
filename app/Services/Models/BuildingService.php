@@ -5,6 +5,8 @@ namespace App\Services\Models;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Scan;
+use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -12,19 +14,35 @@ use Illuminate\Support\Facades\DB;
 class BuildingService
 {
     use FluentCaller;
-    
+
     public ?Building $building;
-    
+
     public function __construct(Building $building)
     {
         $this->building = $building;
+    }
+
+    public function canCalculate(Scan $scan): bool
+    {
+        if ($scan->isQuickScan()) {
+            $quickScan       = Scan::findByShort(Scan::QUICK);
+            $woonplanService = WoonplanService::init($this->building)->scan($quickScan);
+            // iknow, the variable is not needed.
+            // just got it here as a description since this same statement is found in different context.
+            $canRecalculate = $woonplanService->buildingCompletedFirstFourSteps() || $woonplanService->buildingHasMeasureApplications();
+            return $canRecalculate;
+        }
+
+        if ($scan->isLiteScan()) {
+            return $this->building->hasCompletedScan($scan, InputSource::findByShort(InputSource::MASTER_SHORT));
+        }
     }
 
     /**
      * Get the answer for a set of questions including the input source that made that answer.
      * Note that this method does not perform evaluation!
      *
-     * @param \Illuminate\Support\Collection $toolQuestions
+     * @param  \Illuminate\Support\Collection  $toolQuestions
      *
      * @return \Illuminate\Support\Collection
      */
@@ -72,7 +90,7 @@ class BuildingService
                 ->havingRaw('nma.input_source_id = latest_source_id')
                 ->get()
                 ->groupBy('tool_question_id')
-                ->map(fn ($val) => $val->map(fn ($subVal) => (array) $subVal)->toArray());
+                ->map(fn($val) => $val->map(fn($subVal) => (array) $subVal)->toArray());
         }
 
         $ids = $toolQuestions->whereNotNull('save_in')->pluck('id')->toArray();
@@ -85,11 +103,11 @@ class BuildingService
                 $resolved = ToolQuestionHelper::resolveSaveIn($saveIn, $this->building);
                 // Note: Where could contain extra queryable, e.g. service. If empty, the query builder
                 // will safely discard the where statement. If not empty, it gets added to the query.
-                $where = $resolved['where'];
-                $table = $resolved['table'];
+                $where        = $resolved['where'];
+                $table        = $resolved['table'];
                 $answerColumn = $resolved['column'];
-                $whereColumn = array_key_exists('user_id', $where) ? 'user_id' : 'building_id';
-                $value = data_get($resolved, "where.{$whereColumn}");
+                $whereColumn  = array_key_exists('user_id', $where) ? 'user_id' : 'building_id';
+                $value        = data_get($resolved, "where.{$whereColumn}");
                 unset($where[$whereColumn]);
 
                 // This sub-query selects the latest input source that made changes on the tool question.
@@ -125,7 +143,7 @@ class BuildingService
                     ->leftJoin('input_sources as is', 'nma.input_source_id', '=', 'is.id')
                     ->havingRaw('nma.input_source_id = latest_source_id')
                     ->get()
-                    ->map(fn ($val) => (array) $val)
+                    ->map(fn($val) => (array) $val)
                     ->toArray();
 
                 $answersForSaveIn->put($toolQuestionId, $answersForResolved);

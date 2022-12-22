@@ -12,6 +12,7 @@ use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Services\Models\NotificationService;
+use App\Services\WoonplanService;
 use Illuminate\Http\Request;
 
 class MyPlanController extends Controller
@@ -23,8 +24,15 @@ class MyPlanController extends Controller
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        // Apparently the plan should be visible for observing users
-        if (! HoomdossierSession::isUserObserving()) {
+        $woonplanService = WoonplanService::init($building)
+            ->scan($scan);
+
+        if(HoomdossierSession::isUserObserving()) {
+            $woonplanService = $woonplanService->userIsObserving();
+        }
+
+        // if the user cant access his woonplan, redirect him back to the first incomplete step + substep.
+        if (!$woonplanService->canAccessWoonplan()) {
             $firstIncompleteStep = $building->getFirstIncompleteStep($scan, $masterInputSource);
 
             // There are incomplete steps left, set the sub step

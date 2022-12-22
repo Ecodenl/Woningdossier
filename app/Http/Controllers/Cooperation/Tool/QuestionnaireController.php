@@ -27,7 +27,8 @@ class QuestionnaireController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $currentInputSource = HoomdossierSession::getInputSource(true);
-        $questions = $request->validated()['questions'];
+        // It might be an empty questionnaire...
+        $questions = $request->validated()['questions'] ?? [];
 
         $questionnaire = Questionnaire::find($request->input('questionnaire_id'));
 

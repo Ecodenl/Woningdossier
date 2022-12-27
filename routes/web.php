@@ -309,6 +309,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         });
                     });
 
+                    Route::post('accounts/disable-2fa', [Cooperation\Admin\Cooperation\CooperationAdmin\AccountController::class, 'disableTwoFactorAuthentication'])
+                        ->middleware('current-role:cooperation-admin')
+                        ->name('accounts.disable-2fa');
+
                     Route::resource('coaches', Cooperation\Admin\Cooperation\CoachController::class)->only(['index', 'show'])
                         ->parameter('coaches', 'user');
                     Route::resource('residents', Cooperation\Admin\Cooperation\ResidentController::class)->only(['index'])

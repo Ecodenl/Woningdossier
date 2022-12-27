@@ -171,6 +171,11 @@
                     </a>
                 </li>
             @endif
+            <li>
+                <a data-toggle="tab" href="#2fa">
+                    @lang('cooperation/admin/buildings.show.tabs.2fa.title')
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -185,6 +190,30 @@
                 </div>
             @endcan
 
+            <div id="2fa" class="tab-pane fade @if(session('fragment') == '2fa' ) in active @endif">
+                <div class="panel">
+                    <div class="panel-body">
+                        @if($building->user->account->hasEnabledTwoFactorAuthentication())
+                            <div class="alert alert-success" role="alert">
+                                @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.title')
+                            </div>
+
+                            <form action="{{route('cooperation.admin.cooperation.accounts.disable-2fa')}}" method="post">
+                                @csrf
+                                @method('post')
+                                <input type="hidden" name="accounts[id]" value="{{$building->user->account_id}}">
+                                <button type="submit" class="btn btn-danger">
+                                    @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.button')
+                                </button>
+                            </form>
+                        @else
+                            <div class="alert alert-info" role="alert">
+                                @lang('cooperation/admin/buildings.show.tabs.2fa.status.inactive.title')
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
 
             {{-- comments on the building, read only. --}}
             <div id="comments-on-building" class="tab-pane fade @if(session('fragment') == 'comments-on-building' ) in active @endif">

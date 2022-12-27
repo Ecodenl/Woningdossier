@@ -54,6 +54,7 @@ class DoUpgrade extends Command
             GiveCooperationDefaultScans::class => [],
             ConvertQuestionnaireStepsToPivot::class => [],
             RemoveActionPlanReport::class => [],
+            ChangeTranslations::class => [],
 //            MapQuickToLite::class => [],
         ];
 

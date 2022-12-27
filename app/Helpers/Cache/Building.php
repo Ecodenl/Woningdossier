@@ -2,6 +2,8 @@
 
 namespace App\Helpers\Cache;
 
+use Illuminate\Support\Facades\Cache;
+
 class Building extends BaseCache
 {
     const CACHE_KEY_FIND = 'Building_find_%s';
@@ -13,7 +15,7 @@ class Building extends BaseCache
      */
     public static function find($id)
     {
-        return \Cache::remember(
+        return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),
             config('hoomdossier.cache.times.default'),
             function () use ($id) {
@@ -24,6 +26,6 @@ class Building extends BaseCache
 
     public static function wipe($id)
     {
-        \Cache::forget(self::getCacheKey(static::CACHE_KEY_FIND, $id));
+        static::clear(self::getCacheKey(static::CACHE_KEY_FIND, $id));
     }
 }

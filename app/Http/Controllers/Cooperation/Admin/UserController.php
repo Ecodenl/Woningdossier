@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
+namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Events\ParticipantAddedEvent;
 use App\Events\UserAllowedAccessToHisBuilding;
@@ -36,12 +36,12 @@ class UserController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('cooperation.admin.cooperation.users.index', compact('users'));
+        return view('cooperation.admin.users.index', compact('users'));
     }
 
     public function create(Cooperation $cooperation)
     {
-        $possibleRoles = Role::all();
+        $possibleRoles = Role::orderByDesc('level')->get();
         $roles = [];
         foreach ($possibleRoles as $possibleRole) {
             if (Hoomdossier::account()->can('assign-role', $possibleRole)) {
@@ -51,7 +51,7 @@ class UserController extends Controller
         $roles = collect($roles);
         $coaches = $cooperation->getCoaches()->get();
 
-        return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
+        return view('cooperation.admin.users.create', compact('roles', 'coaches'));
     }
 
     public function store(UserFormRequest $request, Cooperation $cooperation)
@@ -102,8 +102,8 @@ class UserController extends Controller
         }
 
         return redirect()
-            ->route('cooperation.admin.cooperation.users.index')
-            ->with('success', __('woningdossier.cooperation.admin.cooperation.users.store.success'));
+            ->route('cooperation.admin.users.index')
+            ->with('success', __('cooperation/admin/users.store.success'));
     }
 
     /**

@@ -39,13 +39,13 @@ class UserFormRequest extends FormRequest
             'phone_number' => ['nullable', new PhoneNumber('nl')],
             'street' => 'required|string',
             'city' => 'required|string',
-            'roles' => 'required|exists:roles,id',
+            'roles' => 'required|exists:roles,id', // TODO: This doesn't evaluate if the user may assign the role.
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
         ];
 
         $account = Account::where('email', $this->get('email'))->first();
 
-        // so at this point we already know the data in invalid because the account is already associated with the currrent cooperation
+        // so at this point we already know the data in invalid because the account is already associated with the current cooperation
         // however we add the unique rule so we let laravel do the error handling
         if ($account instanceof Account && $account->isAssociatedWith($this->route('cooperation'))) {
             $emailRules[] = 'unique:accounts,email';

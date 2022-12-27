@@ -42,7 +42,8 @@ class UserController extends Controller
     {
         $user = User::withoutGlobalScopes()->findOrFail($userId);
         $roles = Role::where('name', '!=', 'superuser')
-            ->where('name', '!=', 'super-admin')->get();
+            ->where('name', '!=', 'super-admin')
+            ->orderByDesc('level')->get();
 
         return view('cooperation.admin.super-admin.cooperations.users.show',
             compact('user', 'cooperationToManage', 'roles'));

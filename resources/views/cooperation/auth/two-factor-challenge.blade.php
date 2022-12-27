@@ -29,10 +29,22 @@
                     @endforeach
                 @endcomponent
             @endif
-            {{dd($errors)}}
+
+            @php
+            $withCode = true;
+            $withRecoveryCode = false;
+            if($errors->has('recovery_code')) {
+                $withRecoveryCode = true;
+                $withCode = false;
+            }
+            if ($errors->has('code')) {
+                $withRecoveryCode = false;
+                $withCode = true;
+            }
+            @endphp
             <div class="grid grid-flow-row auto-rows-max w-full place-items-center gap-y-4 my-2">
-                <div class="flex w-full" x-data="{withCode: true, withRecoveryCode: false}">
-                    <form action="{{url('/two-factor-challenge ')}}" method="post">
+                <div class="flex w-full" x-data="{withCode: '{{$withCode}}', withRecoveryCode: '{{$withRecoveryCode}}'}">
+                    <form action="{{route('cooperation.auth.two-factor.challenge')}}" method="post">
                         @csrf
                         <div x-show="withCode">
                             @component('cooperation.frontend.layouts.components.form-group', [
@@ -49,7 +61,7 @@
                             @component('cooperation.frontend.layouts.components.form-group', [
                                     'withInputSource' => false,
                                     'class' => 'w-full',
-                                    'inputName' => 'recover_code',
+                                    'inputName' => 'recovery_code',
                                     'id' => 'recovery_code',
                                     'label' => __('auth.two-factor-challenge.recovery-code-label')
                                 ])
@@ -60,11 +72,11 @@
                             @lang("general.confirm")
                         </button>
 
-                        <button class="w-full btn btn-orange mt-3" type="button" x-on:click="withRecoveryCode = true; withCode = false;" x-show="withRecoveryCode === false">
+                        <button class="w-full btn btn-orange mt-3" type="button" x-on:click="withRecoveryCode = true; withCode = false;" x-show="withRecoveryCode == false">
                             Ik wil mijn herstelcode gebruiken
                         </button>
 
-                        <button class="w-full btn btn-green mt-3" type="button" x-on:click="withRecoveryCode = false; withCode = true;" x-show="withRecoveryCode === true">
+                        <button class="w-full btn btn-green mt-3" type="button" x-on:click="withRecoveryCode = false; withCode = true;" x-show="withRecoveryCode == true">
                             Ik wil toch mijn 2FA code gebruiken
                         </button>
                     </form>

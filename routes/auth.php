@@ -76,7 +76,7 @@ Route::as('auth.')->group(function () {
         ->middleware(array_filter([
             'guest:'.config('fortify.guard'),
             $twoFactorLimiter ? 'throttle:'.$twoFactorLimiter : null,
-        ]));
+        ]))->name('two-factor.challenge');
 
     $twoFactorMiddleware = Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')
         ? [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard'), 'password.confirm']

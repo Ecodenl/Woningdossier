@@ -61,6 +61,7 @@ return [
 
         'navbar' => [
             'my-account' => 'Mijn account',
+            'two-factor-authentication' => '2FA Instellingen',
             'disclaimer' => 'Disclaimer',
             'privacy' => 'Privacy',
             'help' => 'Help',

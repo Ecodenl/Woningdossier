@@ -111,9 +111,10 @@ class User extends Model implements AuthorizableContract
         'extra' => 'array'
     ];
 
-    protected $with = [
-        'roles',
-    ];
+    // We can't eager load roles by default because if the admin changes them, they don't refresh
+    //protected $with = [
+    //    'roles',
+    //];
 
     # Relations
     public function logs(): MorphMany

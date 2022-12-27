@@ -18,6 +18,13 @@ return [
     'throttle' => 'Te veel login pogingen. U kunt het opniew proberen over :seconds seconde(n).',
     'inactive' => 'U kunt nog niet inloggen omdat uw account nog niet is bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail. <a href=":resend-link">Niet ontvangen?</a>',
 
+    'confirm-password' => [
+        'title' => 'Bevestig wachtwoord',
+        'password' => [
+            'title' => 'Bevestig voor uw eigen veiligheid nogmaals u wachtwoord.',
+            'placeholder' => 'Wachtwoord..'
+        ],
+    ],
     'register' => [
         'form' => [
             'allow-access' => 'Geef toestemming om te kunnen registreren',

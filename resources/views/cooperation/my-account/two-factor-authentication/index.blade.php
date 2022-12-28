@@ -58,7 +58,7 @@
                             </div>
                             <div class="flex flex-col space-y-2">
                                 @if($account->hasEnabledTwoFactorAuthentication())
-                                    <form action="{{url('/user/two-factor-authentication')}}" method="post">
+                                    <form action="{{route('cooperation.auth.two-factor.disable')}}" method="post">
                                         @method('delete')
                                         @csrf
                                         <button class="btn btn-purple" type="submit">
@@ -71,7 +71,7 @@
 
                                     </button>
                                 @else
-                                    <form action="{{url('/user/two-factor-authentication')}}" method="post">
+                                    <form action="{{route('cooperation.auth.two-factor.enable')}}" method="post">
                                         @csrf
                                         <button class="btn btn-purple" type="submit">
                                             @lang("my-account.2fa.index.alert.inactive.button")
@@ -110,7 +110,7 @@
                             {!! $account->twoFactorQrCodeSvg();  !!}
                         </div>
                         <div class="justify-center  flex w-full">
-                            <form action="{{url('/user/confirmed-two-factor-authentication ')}}" method="post">
+                            <form action="{{route('cooperation.auth.two-factor.confirm')}}" method="post">
                                 @csrf
                                 <div class="form-group">
                                     <div class="form-header">

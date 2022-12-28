@@ -7,8 +7,6 @@ use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
-use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
-use Laravel\Fortify\Http\Controllers\TwoFactorSecretKeyController;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
@@ -94,11 +92,12 @@ Route::as('auth.')->group(function () {
             $twoFactorLimiter ? 'throttle:'.$twoFactorLimiter : null,
         ]))->name('two-factor.challenge');
 
-    $twoFactorMiddleware = Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')
-        ? [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard'), 'password.confirm:cooperation.auth.password.confirm-show']
-        : [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')];
 
-
+    if (Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')) {
+        $twoFactorMiddleware = [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard'), 'password.confirm:cooperation.auth.password.confirm-show'];
+    } else {
+        $twoFactorMiddleware = [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')];
+    }
 
     Route::post('/user/two-factor-authentication', [TwoFactorAuthenticationController::class, 'store'])
         ->middleware($twoFactorMiddleware)
@@ -112,19 +111,5 @@ Route::as('auth.')->group(function () {
         ->middleware($twoFactorMiddleware)
         ->name('two-factor.disable');
 
-    Route::get('/user/two-factor-qr-code', [TwoFactorQrCodeController::class, 'show'])
-        ->middleware($twoFactorMiddleware)
-        ->name('two-factor.qr-code');
-
-    Route::get('/user/two-factor-secret-key', [TwoFactorSecretKeyController::class, 'show'])
-        ->middleware($twoFactorMiddleware)
-        ->name('two-factor.secret-key');
-
-//    Route::get('/user/two-factor-recovery-codes', [RecoveryCodeController::class, 'index'])
-//        ->middleware($twoFactorMiddleware)
-//        ->name('two-factor.recovery-codes');
-
-//    Route::post('/user/two-factor-recovery-codes', [RecoveryCodeController::class, 'store'])
-//        ->middleware($twoFactorMiddleware);
 });
 // Fortify auth routes end

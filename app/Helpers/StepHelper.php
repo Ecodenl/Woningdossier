@@ -172,8 +172,12 @@ class StepHelper
      */
     public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate): bool
     {
+        // We want to check if the user has completed the sub steps on master. The sub steps might be completed
+        // in a mixed bag of coach and resident.
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
         \Log::debug("COMPLETE IF NEEDED {$step->short}");
-        $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
+        $allCompletedSubStepIds = CompletedSubStep::forInputSource($masterInputSource)
             ->forBuilding($building)
             ->whereHas('subStep', function ($query) use ($step) {
                 $query->where('step_id', $step->id);
@@ -190,7 +194,7 @@ class StepHelper
 
             // Trigger a recalculate if the tool is now complete
             // TODO: Refactor this
-            if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
+            if ($triggerRecalculate && $building->hasCompletedQuickScan($masterInputSource)) {
                 StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
             }
 
@@ -213,7 +217,7 @@ class StepHelper
 
                 // Trigger a recalculate if the tool is now complete
                 // TODO: Refactor this
-                if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
+                if ($triggerRecalculate && $building->hasCompletedQuickScan($masterInputSource)) {
                     StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
                 }
 

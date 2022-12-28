@@ -15,7 +15,8 @@ class BuildingFormRequest extends FormRequest
     /**
      * @var Account
      */
-    private $accountToUpdate = null;
+    private $account = null;
+    private $user = null;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +30,8 @@ class BuildingFormRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        $this->accountToUpdate = $this->route('building')->user->account;
+        $this->account = $this->route('building')->user->account;
+        $this->user = $this->route('building')->user;
     }
 
     /**
@@ -40,10 +42,11 @@ class BuildingFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'accounts.email' => ['required', 'email', Rule::unique('accounts', 'email')->ignore($this->accountToUpdate->id)],
+            'accounts.email' => ['required', 'email', Rule::unique('accounts', 'email')->ignore($this->account)],
             'users.first_name' => 'required|string|max:255',
             'users.last_name' => 'required|string|max:255',
             'users.phone_number' => ['nullable', new PhoneNumber('nl')],
+            'users.extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0', Rule::unique('users', 'extra->contact_id')->ignore($this->user)],
             'buildings.postal_code' => ['required', new PostalCode('nl')],
             'buildings.number' => ['required', 'integer', new HouseNumber('nl')],
             'buildings.extension' => ['nullable', new HouseNumberExtension('nl')],

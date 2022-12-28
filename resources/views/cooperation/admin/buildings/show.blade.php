@@ -280,7 +280,7 @@
             var appointmentDate = $('#appointment-date');
 
             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-            $('table').DataTable({
+            $('#log-table').DataTable({
                 'order': [[0, 'desc']]
             });
 

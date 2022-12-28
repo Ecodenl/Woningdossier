@@ -115,6 +115,14 @@ class User extends Model implements AuthorizableContract
         'roles',
     ];
 
+    # Scopes
+    public function scopeByContact(Builder $query, $contact): Builder
+    {
+        // We assume $contact is an ID. Maybe in the future this won't be the case but this way it can be easily
+        // expanded
+        return $query->where('extra->contact_id', $contact);
+    }
+
     # Relations
     public function logs(): MorphMany
     {

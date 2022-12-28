@@ -132,7 +132,7 @@ return [
 
     'custom' => [
         'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :attribute',
-        'alpha_space' => ':attribute mag alleen letters en spaties bevatten.',
+        'alpha_space' => ':Attribute mag alleen letters en spaties bevatten.',
         'surface' => 'Dit veld is verplicht als u een dak type heeft gekozen.',
         'is-user-member-of-cooperation' => 'De opgegeven gebruiker is geen lid van de huidige cooperatie',
         'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
@@ -167,11 +167,11 @@ return [
         ],
 
         'password' => [
-            'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
+            'min' => 'Het wachtwoord moet minmaal ' . Hoomdossier::PASSWORD_LENGTH . ' karakters bevatten.',
             'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
         ],
         'account.password' => [
-            'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
+            'min' => 'Het wachtwoord moet minmaal ' . Hoomdossier::PASSWORD_LENGTH . ' karakters bevatten.',
             'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
         ],
 
@@ -179,6 +179,18 @@ return [
             'url' => 'Het formaat is ongeldig, de url moet beginnen met https:// of http://.'
         ],
 
+        'contact-id' => [
+            'not-found' => 'Opgegeven contact ID voor :attribute is niet bekend als gebruiker in het Hoomdossier.'
+        ],
+
+        'users' => [
+            'incorrect-role' => 'Gevonden gebruiker voor :attribute heeft niet de verwachte rol (:role).',
+        ],
+
+        'building-coach-statuses' => [
+            'no-access' => 'Bewoner heeft geen toestemming gegeven om gegevens te delen.',
+            'already-linked' => 'De opgegeven coach is al gekoppeld aan de gegeven woning.',
+        ],
         'uploader' => [
             'wrong-files' => 'Een of meerdere bestanden zijn ongeldig of te groot.',
         ],
@@ -186,6 +198,7 @@ return [
     'custom-rules' => [
         'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute.',
         'max-filename-length' => 'De bestandsnaam van :attribute mag niet langer zijn dan :length karakters.',
+        'rule-unique' => ':Attribute bestaat al.'
     ],
 
 
@@ -233,6 +246,7 @@ return [
         'phone_number' => 'Telefoonnummer',
         'house_number' => 'Huisnummer',
         'house_number_extension' => 'Toevoeging',
+        'extra.contact_id' => 'contact ID',
 
         // New measure
         'custom_measure_application.name' => 'onderwerp',
@@ -320,6 +334,22 @@ return [
 
         // Cooperation settings
         'cooperation_settings.' . \App\Helpers\Models\CooperationSettingHelper::SHORT_REGISTER_URL => 'register URL',
+
+        // User data
+        'accounts.email' => 'e-mailadres',
+        'users.first_name' => 'voornaam',
+        'users.last_name' => 'achternaam',
+        'users.phone_number' => 'telefoonnummer',
+        'users.extra.contact_id' => 'contact ID',
+        'buildings.postal_code' => 'postcode',
+        'buildings.number' => 'huisnummer',
+        'buildings.extension' => 'toevoeging',
+        'buildings.street' => 'straat',
+        'buildings.city' => 'stad',
+
+        // API
+        'building_coach_statuses.coach_contact_id' => 'coach contact ID',
+        'building_coach_statuses.resident_contact_id' => 'bewoner contact ID',
 
         // Questionnaires
         'questionnaires.steps' => 'na stap',

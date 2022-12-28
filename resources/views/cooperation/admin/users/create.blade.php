@@ -82,7 +82,9 @@
                                         <select name="roles[]" class="roles form-control" id="roles"
                                                 multiple="multiple">
                                             @foreach($roles as $role)
-                                                <option value="{{$role->id}}">{{$role->human_readable_name}}</option>
+                                                <option value="{{$role->id}}">
+                                                    {{$role->human_readable_name}}
+                                                </option>
                                             @endforeach
                                         </select>
                                     @endcomponent
@@ -171,8 +173,10 @@
                                     <label for="coach">@lang('cooperation/admin/users.create.form.select-coach')</label>
                                     <select name="coach_id" class="coach form-control" id="coach">
                                         @foreach($coaches as $coach)
-                                            <option @if(old('coach_id') == $coach->id) selected
-                                                    @endif value="{{$coach->id}}">{{$coach->getFullName()}}</option>
+                                            <option value="{{$coach->id}}"
+                                                    @if(old('coach_id') == $coach->id) selected @endif>
+                                                {{$coach->getFullName()}}
+                                            </option>
                                         @endforeach
                                     </select>
                                 @endcomponent

@@ -63,7 +63,7 @@ trait CreatesUsers
         // else we send a notification to the user he is associated with a new cooperation
         if ($account->wasRecentlyCreated) {
             // and send the account confirmation mail.
-            $this->sendAccountConfirmationMail($cooperation, $account);
+            $this->sendAccountConfirmationMail($cooperation, $account, $user);
             $account->markEmailAsVerified();
         } else {
             UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
@@ -75,11 +75,11 @@ trait CreatesUsers
      *
      * @param Request $request
      */
-    public function sendAccountConfirmationMail(Cooperation $cooperation, Account $account)
+    public function sendAccountConfirmationMail(Cooperation $cooperation, Account $account, User $user)
     {
         $token = app('auth.password.broker')->createToken($account);
 
         // send a mail to the user
-        Mail::to($account->email)->send(new UserCreatedEmail($cooperation, $account->user(), $token));
+        Mail::to($account->email)->send(new UserCreatedEmail($cooperation, $user, $token));
     }
 }

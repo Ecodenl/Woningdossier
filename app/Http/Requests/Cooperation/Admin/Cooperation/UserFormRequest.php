@@ -3,11 +3,13 @@
 namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 
 use App\Models\Account;
+use App\Models\Cooperation;
 use App\Rules\HouseNumber;
 use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class UserFormRequest extends FormRequest
@@ -19,7 +21,19 @@ class UserFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::check();
+        // Logic is in middleware on the routes
+        return Auth::check();
+    }
+
+    /**
+     * so fields can be modified or added before validation.
+     */
+    public function prepareForValidation()
+    {
+        // Add new data field before it gets sent to the validator
+        $this->merge([
+            'house_number_extension' => strtolower(preg_replace("/[\s-]+/", '', $this->get('house_number_extension', ''))),
+        ]);
     }
 
     /**
@@ -29,6 +43,9 @@ class UserFormRequest extends FormRequest
      */
     public function rules()
     {
+        $cooperationToCheckFor = $this->route('cooperationToManage') instanceof Cooperation
+            ? $this->route('cooperationToManage') : $this->route('cooperation');
+
         $emailRules = ['required', 'email'];
         $rules = [
             'first_name' => 'required|string|max:255',
@@ -47,22 +64,11 @@ class UserFormRequest extends FormRequest
 
         // so at this point we already know the data in invalid because the account is already associated with the current cooperation
         // however we add the unique rule so we let laravel do the error handling
-        if ($account instanceof Account && $account->isAssociatedWith($this->route('cooperation'))) {
+        if ($account instanceof Account && $account->isAssociatedWith($cooperationToCheckFor)) {
             $emailRules[] = 'unique:accounts,email';
         }
         $rules['email'] = $emailRules;
 
         return $rules;
-    }
-
-    /**
-     * so fields can be modified or added before validation.
-     */
-    public function prepareForValidation()
-    {
-        // Add new data field before it gets sent to the validator
-        $this->merge([
-            'house_number_extension' => strtolower(preg_replace("/[\s-]+/", '', $this->get('house_number_extension', ''))),
-        ]);
     }
 }

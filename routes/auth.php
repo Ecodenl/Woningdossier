@@ -80,36 +80,43 @@ Route::as('auth.')->group(function () {
 
     $twoFactorLimiter = config('fortify.limiters.two-factor');
 
-    if ($enableViews) {
-        Route::get('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'create'])
-            ->middleware(['guest:'.config('fortify.guard')])
-            ->name('two-factor.login');
+    // Two Factor Authentication...
+    if (Features::enabled(Features::twoFactorAuthentication())) {
+        if ($enableViews) {
+            Route::get('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'create'])
+                ->middleware(['guest:'.config('fortify.guard')])
+                ->name('two-factor.login');
+        }
+
+        Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
+            ->middleware(array_filter([
+                'guest:'.config('fortify.guard'),
+                $twoFactorLimiter ? 'throttle:'.$twoFactorLimiter : null,
+            ]))->name('two-factor.challenge');
+
+
+        if (Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')) {
+            $twoFactorMiddleware = [
+                config('fortify.auth_middleware', 'auth').':'.config('fortify.guard'),
+                'password.confirm:cooperation.auth.password.confirm-show'
+            ];
+        } else {
+            $twoFactorMiddleware = [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')];
+        }
+
+        Route::post('/user/two-factor-authentication', [TwoFactorAuthenticationController::class, 'store'])
+            ->middleware($twoFactorMiddleware)
+            ->name('two-factor.enable');
+
+        Route::post('/user/confirmed-two-factor-authentication',
+            [ConfirmedTwoFactorAuthenticationController::class, 'store'])
+            ->middleware($twoFactorMiddleware)
+            ->name('two-factor.confirm');
+
+        Route::delete('/user/two-factor-authentication', [TwoFactorAuthenticationController::class, 'destroy'])
+            ->middleware($twoFactorMiddleware)
+            ->name('two-factor.disable');
     }
-
-    Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
-        ->middleware(array_filter([
-            'guest:'.config('fortify.guard'),
-            $twoFactorLimiter ? 'throttle:'.$twoFactorLimiter : null,
-        ]))->name('two-factor.challenge');
-
-
-    if (Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')) {
-        $twoFactorMiddleware = [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard'), 'password.confirm:cooperation.auth.password.confirm-show'];
-    } else {
-        $twoFactorMiddleware = [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')];
-    }
-
-    Route::post('/user/two-factor-authentication', [TwoFactorAuthenticationController::class, 'store'])
-        ->middleware($twoFactorMiddleware)
-        ->name('two-factor.enable');
-
-    Route::post('/user/confirmed-two-factor-authentication', [ConfirmedTwoFactorAuthenticationController::class, 'store'])
-        ->middleware($twoFactorMiddleware)
-        ->name('two-factor.confirm');
-
-    Route::delete('/user/two-factor-authentication', [TwoFactorAuthenticationController::class, 'destroy'])
-        ->middleware($twoFactorMiddleware)
-        ->name('two-factor.disable');
 
 });
 // Fortify auth routes end

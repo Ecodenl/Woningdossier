@@ -22,7 +22,7 @@ class UpdateBuildingToUserAccountStructure extends Migration
             // 1: get building user
             $originalUser = DB::table('users')->where('id', '=',
                 $building->user_id)->first();
-            if (! $originalUser instanceof stdClass) {
+            if (! $originalUser instanceof \stdClass) {
                 echo 'No user found for building '.$building->id.PHP_EOL;
 
                 return;
@@ -60,7 +60,7 @@ class UpdateBuildingToUserAccountStructure extends Migration
 
                 if (! is_null($eb)) {
                     $exampleBuilding = DB::table('example_buildings')->find($eb);
-                    if ($exampleBuilding instanceof stdClass) {
+                    if ($exampleBuilding instanceof \stdClass) {
                         if (! is_null($exampleBuilding->cooperation_id) && $exampleBuilding->cooperation_id != $user->cooperation_id) {
                             dump('Building '.$building->id.' has user with cooperation_id '.$user->cooperation_id.', but example building is for cooperation_id '.$exampleBuilding->cooperation_id);
 
@@ -73,7 +73,7 @@ class UpdateBuildingToUserAccountStructure extends Migration
                                            $features->building_type_id)
                                        ->whereNull('cooperation_id')
                                        ->first();
-                            if ($newEB instanceof stdClass) {
+                            if ($newEB instanceof \stdClass) {
                                 // There's a new example building, update the id
                                 DB::table('buildings')
                                   ->where('id', '=', $building->id)
@@ -317,7 +317,7 @@ class UpdateBuildingToUserAccountStructure extends Migration
 
             // get cooperation id from private messages
             $pm = DB::table('private_messages')->where('id', '=', $privateMessageView->private_message_id)->first();
-            if ($pm instanceof stdClass) {
+            if ($pm instanceof \stdClass) {
                 $pmCooperation = $pm->to_cooperation_id;
 
                 if (array_key_exists($pmCooperation, $siblings)) {
@@ -341,12 +341,12 @@ class UpdateBuildingToUserAccountStructure extends Migration
         $userId = (int) $userId;
         $user = DB::table('users')->find($userId);
 
-        if ($user instanceof stdClass) {
+        if ($user instanceof \stdClass) {
             $siblings = DB::table('users')->where('account_id', '=',
                 $user->account_id)->get();
 
             foreach ($siblings as $sibling) {
-                if ($sibling instanceof stdClass) {
+                if ($sibling instanceof \stdClass) {
                     $result[$sibling->cooperation_id] = $sibling;
                 }
             }
@@ -362,7 +362,7 @@ class UpdateBuildingToUserAccountStructure extends Migration
         $buildingId = (int) $buildingId;
         $building = DB::table('buildings')->find($buildingId);
 
-        if ($building instanceof stdClass) {
+        if ($building instanceof \stdClass) {
             // Get the sibling of this building's user
             $users = $this->getUserSiblingPerCooperation($building->user_id);
 
@@ -370,7 +370,7 @@ class UpdateBuildingToUserAccountStructure extends Migration
                 $b = DB::table('buildings')->where('user_id',
                     '=', $user->id)->first();
 
-                if ($b instanceof stdClass) {
+                if ($b instanceof \stdClass) {
                     $result[$cooperation] = $b;
                 }
             }

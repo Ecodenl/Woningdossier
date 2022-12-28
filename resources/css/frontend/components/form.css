@@ -375,6 +375,10 @@ textarea.form-input {
     @apply hidden;
 }
 
+.select-wrapper .select-dropdown .select-option.disabled.readonly {
+    @apply flex;
+}
+
 .select-wrapper i:not(.select-icon) {
     @apply absolute right-6 top-5/20 pointer-events-none;
 }

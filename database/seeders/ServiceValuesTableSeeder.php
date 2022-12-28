@@ -480,10 +480,10 @@ class ServiceValuesTableSeeder extends Seeder
                 ->where("name->{$typeLocale}", $typeValue)
                 ->first();
 
-            if ($serviceType instanceof stdClass) {
+            if ($serviceType instanceof \stdClass) {
                 $dbService = DB::table('services')->where('short', $service['short'])->first();
 
-                if (! $dbService instanceof stdClass) {
+                if (! $dbService instanceof \stdClass) {
                     $serviceId = DB::table('services')->insertGetId([
                         'name' => json_encode($service['name']),
                         'short' => $service['short'],

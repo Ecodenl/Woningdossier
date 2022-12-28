@@ -23,7 +23,7 @@ class AddCooperationIdsToCooperationIdColumnOnModelHasRolesTable extends Migrati
             $cooperationHoom = DB::table('cooperations')->where('slug', 'hoom')->first();
 
             // you know, just in case.
-            if ($cooperationHoom instanceof stdClass) {
+            if ($cooperationHoom instanceof \stdClass) {
                 // just get the first available cooperation id.
                 $cooperationId = $userCooperations->first()->id;
 

@@ -13,7 +13,7 @@ class AddInputSourceIdsToInputSourceColumnOnCompletedQuestionnairesTable extends
     {
         $residentInputSource = DB::table('input_sources')->where('short', \App\Models\InputSource::RESIDENT_SHORT)->first();
 
-        if ($residentInputSource instanceof stdClass) {
+        if ($residentInputSource instanceof \stdClass) {
             DB::table('completed_questionnaires')->update([
                 'input_source_id' => $residentInputSource->id,
             ]);

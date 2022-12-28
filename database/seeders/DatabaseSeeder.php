@@ -13,28 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // Depending on earlier seeded data
-        //	    $this->call(KeyFigureBoilerEfficienciesTableSeeder::class);
-        //	    $this->call(PvPanelYieldsTableSeeder::class);
-        //		$this->call(KeyFigureConsumptionTapWatersTableSeeder::class);
-//
-//
-        //		// New
-        //		$this->call(HeatingAgesTableSeeder::class);
-//
-//        $this->call(SolarWaterHeatersTableSeeder::class);
-//        $this->call(PresentWindowsTableSeeder::class);
-//        $this->call(PresentShowerWtwsTableSeeder::class);
-//        $this->call(InterestedToExecuteMeasuresTableSeeder::class);
-//        $this->call(ComfortComplaintsTableSeeder::class);
-//        $this->call(ExperienceAirQualityInHomesTableSeeder::class);
-//        $this->call(SufferFromsTableSeeder::class);
-//        $this->call(PresentHeatPumpsTableSeeder::class);
-//
-//
-//        $this->call(VentilationsTableSeeder::class);
-//        $this->call(ComfortLevelTapWatersTableSeeder::class);
-//        $this->call(InsulatingGlazingsTableSeeder::class);
         ////        $this->call(MovingPartsOfWindowAndDoorIsolatedsTableSeeder::class);
         ////        $this->call(WoodElementsTableSeeder::class);
         ////        $this->call(HouseFramesTableSeeder::class);
@@ -44,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(BuildingCategoriesTableSeeder::class);
         $this->call(SpaceCategoriesTableSeeder::class);
         $this->call(AssessmentTypesTableSeeder::class);
+        $this->call(BuildingTypeCategoriesTableSeeder::class);
         $this->call(BuildingTypesTableSeeder::class);
         $this->call(EnergyLabelsTableSeeder::class);
         $this->call(BuildingHeatingApplicationsTableSeeder::class);
@@ -109,6 +88,14 @@ class DatabaseSeeder extends Seeder
         $this->call(NotificationIntervalsTableSeeder::class);
 
         $this->call(StatusesTableSeeder::class);
+
+        $this->call(ToolQuestionsTableSeeder::class);
+        $this->call(ToolLabelsTableSeeder::class);
+        $this->call(ToolCalculationResultsTableSeeder::class);
+        $this->call(SubStepTemplatesTableSeeder::class);
+        $this->call(ToolQuestionTypesTableSeeder::class);
+        $this->call(SubSteppablesTableSeeder::class);
+
         $this->call(KeyFigureHeatPumpCoveragesTableSeeder::class);
         $this->call(HeatPumpCharacteristicsTableSeeder::class);
 

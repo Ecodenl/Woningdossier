@@ -21,7 +21,7 @@ class DropColumnAllowAccessOnPrivateMessagesTable extends Migration
                 ->where('building_id', $building->id)
                 ->orderBy('created_at')
                 ->where('allow_access', true)
-                ->first() instanceof stdClass;
+                ->first() instanceof \stdClass;
 
             $building->user()->update([
                 'allow_access' => $pm,

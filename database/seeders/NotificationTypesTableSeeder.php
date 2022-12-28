@@ -26,7 +26,7 @@ class NotificationTypesTableSeeder extends Seeder
 
         foreach ($notificationTypes as $notificationType) {
             if (! DB::table('notification_types')->where('short',
-                    $notificationType['short'])->first() instanceof stdClass) {
+                    $notificationType['short'])->first() instanceof \stdClass) {
 
                 DB::table('notification_types')->insert([
                     'name'  => json_encode($notificationType['name']),

@@ -13,22 +13,8 @@ return new class extends Migration {
      */
     public function up()
     {
-        // NOTE: We keep the name the same as to not publish it a potential second time (Fortify)
-
-        Schema::table('accounts', function (Blueprint $table) {
-            $table->text('two_factor_secret')
-                ->after('password')
-                ->nullable();
-
-            $table->text('two_factor_recovery_codes')
-                ->after('two_factor_secret')
-                ->nullable();
-
-            // We want this even if not enabled, we might need it in the future
-            $table->timestamp('two_factor_confirmed_at')
-                ->after('two_factor_recovery_codes')
-                ->nullable();
-        });
+        // NOTE: We keep the name the same as to not publish it a potential second time (Fortify), but we don't
+        // actually do anything. See '2019_06_26_111613_add_two_factor_columns_to_accounts_table'
     }
 
     /**
@@ -38,12 +24,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('accounts', function (Blueprint $table) {
-            $table->dropColumn([
-                'two_factor_secret',
-                'two_factor_recovery_codes',
-                'two_factor_confirmed_at',
-            ]);
-        });
+        //
     }
 };

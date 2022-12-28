@@ -46,9 +46,9 @@ class KeyFigureBoilerEfficienciesTableSeeder extends Seeder
 
         foreach ($items as $item) {
             $serviceValue = DB::table('service_values')
-                               ->where('service_id', $service->id)
-                            ->where('calculate_value', $item['service_value_calculate_value'])
-                            ->first();
+                ->where('service_id', $service->id)
+                ->where('calculate_value', $item['service_value_calculate_value'])
+                ->first();
 
             DB::table('key_figure_boiler_efficiencies')->insert([
                 'service_value_id' => $serviceValue->id,

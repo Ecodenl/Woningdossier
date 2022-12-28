@@ -1,9 +1,10 @@
-<div class="form-group @error(($input_name ?? '')) has-error @enderror">
+<div class="form-group {{ $errors->has($input_name) ? 'has-error' : '' }}">
+
     {{$slot}}
 
-    @error($input_name ?? '')
+    @if(isset($input_name) && $errors->has($input_name))
         <span class="help-block">
             <strong>{{$errors->first($input_name)}}</strong>
         </span>
-    @enderror
+    @endif
 </div>

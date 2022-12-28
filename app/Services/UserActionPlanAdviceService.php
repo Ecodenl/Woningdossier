@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Deprecation\ToolHelper;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
+use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\ElementValue;
@@ -332,6 +333,14 @@ class UserActionPlanAdviceService
                 'full-heat-pump-ground-heat' => 'heat-pump',
                 'full-heat-pump-pvt-panels' => 'heat-pump',
                 'heat-pump-boiler-place-replace' => 'heat-pump-boiler',
+                'save-energy-with-light' => 'small-measure',
+                'energy-efficient-equipment' => 'small-measure',
+                'energy-efficient-installations' =>'small-measure',
+                'save-energy-with-crack-sealing' => 'small-measure',
+                'improve-radiators' => 'small-measure',
+                'improve-heating-installations' => 'small-measure',
+                'save-energy-with-warm-tap-water' => 'small-measure',
+                'general' => 'small-measure',
             ];
 
             $logicShort = $categorization[$measureApplication->short];
@@ -618,6 +627,26 @@ class UserActionPlanAdviceService
                     } else {
                         $category = in_array('heat-pump-boiler', $currentSituation)
                             ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                    }
+                    break;
+
+                case 'small-measure':
+                    $relevantQuestions = SmallMeasureHelper::MEASURE_QUESTION_LINK[$measureApplication->short];
+
+                    // TODO: Hopefully this service becomes fluent so we don't need to keep doing this
+                    $instance = new static;
+                    $instance->building = $building;
+                    $instance->inputSource = $masterInputSource;
+
+                    $answers = $instance->getManyAnswers($relevantQuestions, true);
+
+                    // If any of the answers is "want-to" we want it in to do. Not applicable/not interested is not
+                    // relevant, so it will then just be complete. If all answers are not applicable/not interested,
+                    // then the measure won't even be applied.
+                    if (in_array('want-to', $answers)) {
+                        $category = static::CATEGORY_TO_DO;
+                    } else { // (in_array('already-do', $answers)) {
+                        $category = static::CATEGORY_COMPLETE;
                     }
                     break;
             }

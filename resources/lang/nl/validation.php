@@ -249,22 +249,25 @@ return [
         'extra.contact_id' => 'contact ID',
 
         // New measure
-        'custom_measure_application.name' => 'Onderwerp',
-        'custom_measure_application.info' => 'Beschrijving',
-        'custom_measure_application.costs.from' => 'Kosten van',
-        'custom_measure_application.costs.to' => 'Kosten tot',
-        'custom_measure_application.savings_money' => 'Verwachte besparing',
+        'custom_measure_application.name' => 'onderwerp',
+        'custom_measure_application.info' => 'beschrijving',
+        'custom_measure_application.costs.from' => 'investering vanaf',
+        'custom_measure_application.costs.to' => 'investering tot',
+        'custom_measure_application.savings_money' => 'besparing',
 
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',
 
         // Measure applications
-        'measure_applications.measure_name' => 'Naam',
-        'measure_applications.measure_name.*' => 'Naam',
-        'measure_applications.measure_info' => 'Info',
-        'measure_applications.measure_info.*' => 'Info',
-        'measure_applications.configurations.icon' => 'Icoon',
+        'measure_applications.measure_name' => 'naam',
+        'measure_applications.measure_name.*' => 'naam',
+        'measure_applications.measure_info' => 'info',
+        'measure_applications.measure_info.*' => 'info',
+        'measure_applications.cost_range.from' => 'investering vanaf',
+        'measure_applications.cost_range.to' => 'investering tot',
+        'measure_applications.savings_money' => 'besparing',
+        'measure_applications.configurations.icon' => 'icoon',
 
         // general data
         // TODO: Check if these are still relevant
@@ -347,6 +350,11 @@ return [
         // API
         'building_coach_statuses.coach_contact_id' => 'coach contact ID',
         'building_coach_statuses.resident_contact_id' => 'bewoner contact ID',
+
+        // Questionnaires
+        'questionnaires.steps' => 'na stap',
+        'questionnaires.steps.*' => 'na stap',
+        'questionnaires.name.*' => 'naam',
     ],
 
     'values' => [

@@ -47,6 +47,55 @@
                     </div>
                 @endforeach
 
+                @if(! $measureApplication->has_calculations)
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group {{ $errors->has('measure_applications.cost_range.from') ? ' has-error' : '' }}">
+                                <label for="costs-from">
+                                    @lang('cooperation/admin/super-admin/measure-applications.form.costs-from.label')
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
+                                    <input type="text" class="form-control" id="costs-from"
+                                           name="measure_applications[cost_range][from]"
+                                           value="{{ old("measure_applications.cost_range.from", $measureApplication->cost_range['from'] ?? '')}}"
+                                           placeholder="@lang('cooperation/admin/super-admin/measure-applications.form.costs-from.placeholder')">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group {{ $errors->has('measure_applications.cost_range.to') ? ' has-error' : '' }}">
+                                <label for="costs-to">
+                                    @lang('cooperation/admin/super-admin/measure-applications.form.costs-to.label')
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
+                                    <input type="text" class="form-control" id="costs-to"
+                                           name="measure_applications[cost_range][to]"
+                                           value="{{ old("measure_applications.cost_range.to", $measureApplication->cost_range['to'] ?? '')}}"
+                                           placeholder="@lang('cooperation/admin/super-admin/measure-applications.form.costs-to.placeholder')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group {{ $errors->has('measure_applications.savings_money') ? ' has-error' : '' }}">
+                                <label for="savings-money">
+                                    @lang('cooperation/admin/super-admin/measure-applications.form.savings.label')
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
+                                    <input type="text" class="form-control" id="savings-money"
+                                           name="measure_applications[savings_money]"
+                                           value="{{ old("measure_applications.savings_money", $measureApplication->savings_money)}}"
+                                           placeholder="@lang('cooperation/admin/super-admin/measure-applications.form.savings.placeholder')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group {{ $errors->has('measure_applications.configurations.icon') ? ' has-error' : '' }}">

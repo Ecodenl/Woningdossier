@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
 use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
@@ -43,6 +44,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read Model|\Eloquent $userActionPlanAdvisable
  * @method static Builder|UserActionPlanAdvice allInputSources()
  * @method static Builder|UserActionPlanAdvice category(string $category)
+ * @method static Builder|UserActionPlanAdvice cooperationMeasureForType(string $type)
  * @method static Builder|UserActionPlanAdvice forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
  * @method static Builder|UserActionPlanAdvice forBuilding($building)
  * @method static Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
@@ -119,13 +121,22 @@ class UserActionPlanAdvice extends Model implements Auditable
     public function scopeWithoutDeletedCooperationMeasureApplications(Builder $query, InputSource $inputSource): Builder
     {
         // this works because it boots the cooperation measure application model, which has the soft deletes trait
-        return $query->whereHasMorph('userActionPlanAdvisable', [
-            CooperationMeasureApplication::class,
-            MeasureApplication::class,
-            CustomMeasureApplication::class,
-        ],
+        return $query->whereHasMorph('userActionPlanAdvisable', '*',
             // cant use scopes.
             fn (Builder $q) => $q->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)
+        );
+    }
+
+    public function scopeCooperationMeasureForType(Builder $query, string $type)
+    {
+        $isExtensive = $type === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
+
+        return $query->whereHasMorph('userActionPlanAdvisable', '*',
+            function (Builder $query, $type) use ($isExtensive) {
+                if ($type === CooperationMeasureApplication::class) {
+                    return $query->where('is_extensive_measure', $isExtensive);
+                }
+            }
         );
     }
 

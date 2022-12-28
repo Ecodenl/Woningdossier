@@ -1,10 +1,13 @@
-<div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$toolQuestions->count() > 1 ? 10 : 5}} ">
+<div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$this->subSteppables->count() > 1 ? 10 : 5}} ">
 
     @php
         // some necessary crap to display the toolQuestions in the right manor
-        $top = $toolQuestions->where('pivot.order', 0)->first();
-        $bottomLeft = $toolQuestions->where('pivot.order', 1)->first();
-        $bottomRight = $toolQuestions->where('pivot.order', 2)->first();
+        $topPivot = $this->subSteppables->where('order', 0)->first();
+        $top = optional($topPivot)->subSteppable;
+        $bottomLeftPivot = $this->subSteppables->where('order', 1)->first();
+        $bottomLeft = optional($bottomLeftPivot)->subSteppable;
+        $bottomRightPivot = $this->subSteppables->where('order', 2)->first();
+        $bottomRight = optional($bottomRightPivot)->subSteppable;
     @endphp
     <div class="w-full">
         @component('cooperation.frontend.layouts.components.form-group', [
@@ -28,7 +31,7 @@
                 </p>
             @endslot
 
-            @include("cooperation.tool-question-type-templates.{$top->pivot->toolQuestionType->short}.show", ['toolQuestion' => $top])
+            @include("cooperation.tool-question-type-templates.{$topPivot->toolQuestionType->short}.show", ['toolQuestion' => $top])
         @endcomponent
     </div>
     <div class="pt-5 grid grid-cols-1 gap-x-6 sm:grid-cols-2">
@@ -54,7 +57,7 @@
                     </p>
                 @endslot
 
-                @include("cooperation.tool-question-type-templates.{$bottomLeft->pivot->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
+                @include("cooperation.tool-question-type-templates.{$bottomLeftPivot->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
             @endcomponent
         @endif
 
@@ -80,7 +83,7 @@
                     </p>
                 @endslot
 
-                @include("cooperation.tool-question-type-templates.{$bottomRight->pivot->toolQuestionType->short}.show", ['toolQuestion' => $bottomRight])
+                @include("cooperation.tool-question-type-templates.{$bottomRightPivot->toolQuestionType->short}.show", ['toolQuestion' => $bottomRight])
             @endcomponent
         @endif
     </div>

@@ -2,9 +2,9 @@
     @foreach($steps as $step)
         @php
             $stepWasCompleted = $building->hasCompleted($step, \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT));
-            $route = route('cooperation.frontend.tool.quick-scan.index', ['step' => $step, 'subStep' => $step->subSteps()->orderBy('order')->first()]);
+            $route = route('cooperation.frontend.tool.simple-scan.index', ['scan' => $scan, 'step' => $step, 'subStep' => $step->subSteps()->orderBy('order')->first()]);
             if ($stepWasCompleted) {
-                $route = route('cooperation.frontend.tool.quick-scan.index', ['step' => $step, 'subStep' => $step->subSteps()->orderByDesc('order')->first()]);
+                $route = route('cooperation.frontend.tool.simple-scan.index', ['scan' => $scan, 'step' => $step, 'subStep' => $step->subSteps()->orderByDesc('order')->first()]);
             }
         @endphp
         <a href="{{ $route }}"
@@ -25,8 +25,8 @@
         </a>
 
         @php
-            $questionnaires = $step->questionnaires()->orderBy('order')->active()->get();
-            $hasQuestionnaires = $questionnaires->count() > 0;
+            // Eager loaded in SubNavComposer
+            $hasQuestionnaires = $step->questionnaires->count() > 0;
         @endphp
 
         @if(! $loop->last || $hasQuestionnaires)
@@ -38,8 +38,8 @@
                 // also be at the end. We check this later
                 $isLastStep = $loop->last;
             @endphp
-            @foreach($questionnaires as $questionnaire)
-                <a href="{{ route('cooperation.frontend.tool.quick-scan.questionnaires.index', compact('step', 'questionnaire')) }}"
+            @foreach($step->questionnaires as $questionnaire)
+                <a href="{{ route('cooperation.frontend.tool.simple-scan.questionnaires.index', compact('scan', 'step', 'questionnaire')) }}"
                    class="no-underline">
                     <div class="flex items-center">
                         {{-- $currentQuestionnaire gets injected in the SubNavComposer via the ViewServiceProvider --}}
@@ -62,12 +62,24 @@
             @endforeach
         @endif
     @endforeach
-    @php $inMyPlan = RouteLogic::inMyPlan(Route::currentRouteName()); @endphp
+    @php
+        $inMyPlan = RouteLogic::inMyPlan(Route::currentRouteName());
+        $canAccessWoonplan = \App\Services\WoonplanService::init($building)
+        ->scan($scan)
+        ->canAccessWoonplan();
+        $color = 'blue';
+        if ($canAccessWoonplan) {
+            $color = 'green';
+        }
+        if ($inMyPlan)  {
+          $color = 'purple';
+        }
+    @endphp
     <div class="border border-blue-500 border-opacity-50 h-1/2"></div>
-    <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.index') }}" class="no-underline">
+    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')) }}" class="no-underline">
         <div class="flex items-center justify-start">
-            <i class="icon-sm {{ $inMyPlan ? 'icon-house-purple' : 'icon-house-dark' }} mr-1"></i>
-            <span class="{{ $inMyPlan ? 'text-purple' : 'text-blue' }}">
+            <i class="icon-sm {{'icon-house-'.$color}} mr-1"></i>
+            <span class="{{ 'text-'.$color }}">
                 @lang('cooperation/frontend/tool.my-plan.label')
             </span>
         </div>

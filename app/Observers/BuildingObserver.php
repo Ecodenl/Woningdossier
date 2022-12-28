@@ -51,12 +51,4 @@ class BuildingObserver
     {
         \App\Helpers\Cache\Building::wipe($building->id);
     }
-
-    private function isFirstTimeToolIsFilled(Building $building)
-    {
-        $inputSource      = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $cookTypeQuestion = ToolQuestion::findByShort('cook-type');
-
-        return is_null($building->getAnswer($inputSource, $cookTypeQuestion));
-    }
 }

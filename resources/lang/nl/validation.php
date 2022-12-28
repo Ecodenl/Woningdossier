@@ -140,6 +140,8 @@ return [
         'building_roof_types.flat.insulation_roof_surface' => [
             'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het plate dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak platte dak"',
         ],
+        'recovery_code' => 'De opgegeven herstelcode is ongeldig.',
+        'code' => 'De opgegeven 2FA code is ongeldig',
 
         'building_roof_types.pitched.insulation_roof_surface' => [
             'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het hellende dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak hellend dak"',

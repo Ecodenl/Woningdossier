@@ -59,7 +59,20 @@ return [
         'set-appointment-date' => 'Weet u zeker dat u deze datum wilt zetten voor het huidige gebouw?',
         'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
 
+
         'tabs' => [
+            '2fa' => [
+                'title' => '2FA instellingen',
+                'status' => [
+                    'inactive' => [
+                        'title' => '2FA is uitgeschakeld',
+                    ],
+                    'active' => [
+                        'title' => '2FA is ingeschakeld',
+                        'button' => '2FA Uitschakelen voor gebruiker'
+                    ],
+                ],
+            ],
             'messages-public' => [
                 'user-notification' => [
                     'yes' => 'Gebruiker heeft notificaties aanstaan, hij zal op de hoogte worden gesteld van de verstuurde berichten.',

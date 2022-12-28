@@ -101,47 +101,11 @@ checks:
         argument_type_checks: true
 
 build:
-    dependencies:
-        before:
-            - mysql -uroot -e 'CREATE DATABASE IF NOT EXISTS hoomdossier'
-            - php artisan migrate:fresh --seed
-    environment:
-        php: '7.2'
-        mysql: '5.7'
-        node: '8.1'
-        hosts:
-            laravel.dev: '127.0.0.1'
-        variables:
-            APP_KEY: 'base64:N6+ru71DQjdIfcKRcB2StOm+IRN8fkfcPs5C+r/TSSA='
-            APP_ENV: 'testing'
-            APP_URL: 'http://woondossier.dev'
-            API_HOST: 'laravel.dev'
-            DB_HOST: '127.0.0.1'
-            DB_DATABASE: 'hoomdossier'
-            DB_USERNAME: 'root'
-            DB_PASSWORD: ''
-            MAIL_MAILER: 'log'
-    cache:
-        directories:
-            - node_modules
-            - vendor/
-            - ~/.composer/cache/
     nodes:
-        tests: true
         analysis:
             tests:
-                before:
-                    - chmod -R 777 storage
-                    - chmod -R 777 bootstrap/cache
-                    - npm run production
                 override:
-                    - phpcs-run
                     - php-scrutinizer-run
-                    -
-                        command: 'vendor/bin/phpunit --coverage-clover=woondossier-report'
-                        coverage:
-                            file: 'woondossier-report'
-                            format: 'clover'
 #filter:
 #    excluded_paths:
 #        - tests/*

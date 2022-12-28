@@ -50,15 +50,6 @@ jobs:
         id: "determine-composer-cache-directory"
         run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
 
-      #      - name: Get Composer Cache Directory
-      #        id: composer-cache
-      #        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      #      - uses: actions/cache@v1
-      #        with:
-      #          path: ${{ steps.composer-cache.outputs.dir }}
-      #          key: ${{ runner.os }}-composer
-
       - name: "Cache dependencies installed with composer"
         uses: "actions/cache@v2.1.6"
         with:
@@ -66,15 +57,10 @@ jobs:
           key: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-${{ hashFiles('composer.lock') }}"
           restore-keys: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-"
 
-      #- name: Set composer token
-      #  run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_PAT }}
-
-      # when using matrix this comes in handy.
-      #      - name: Install dependencies
-      #        run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-source
-
       - name: Run composer install
-        run: composer install --prefer-dist
+        env:
+          DB_DATABASE: hoomdossier_test
+        run: composer install -q --prefer-dist
       - name: Run phplint - Syntax check
         run: ./vendor/bin/phplint -c phplint.yml app
       - name: Run phpcs - PSR2 check

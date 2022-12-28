@@ -6,7 +6,12 @@
 
         <div class="panel-body">
             <div class="row">
-                <form class="has-address-data" action="{{route('cooperation.admin.users.store')}}"
+                <form class="has-address-data"
+                      @if(isset($cooperationToManage))
+                          action="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.store', compact('cooperation', 'cooperationToManage'))}}"
+                      @else
+                          action="{{route('cooperation.admin.users.store', compact('cooperation'))}}"
+                      @endif
                       method="post">
                     @csrf
                     <input id="addressid" name="addressid" type="text" value="" style="display:none;">

@@ -58,7 +58,7 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
             UserAssociatedWithOtherCooperation::dispatch($user->cooperation, $user);
         }
         // at this point, a user can't register without accepting the privacy terms.
-        UserAllowedAccessToHisBuilding::dispatch($user->building);
+        UserAllowedAccessToHisBuilding::dispatch($user, $user->building);
 
         $this->guard->login($account);
 

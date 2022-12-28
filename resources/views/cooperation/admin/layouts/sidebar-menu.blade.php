@@ -147,18 +147,20 @@
                                         aria-expanded="true">
 
                                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index'])) active @endif">
-                                            <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', ['cooperation' => $cooperation, 'cooperationToManage' => $cooperationToManage])}}">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.home')</a>
+                                            <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', compact('cooperation', 'cooperationToManage'))}}">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.home')</a>
                                         </li>
                                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show', 'cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index'])) active @endif">
-                                            <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index', ['cooperation' => $cooperation, 'cooperationToManage' => $cooperationToManage])}}">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.users')</a>
+                                            <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index', compact('cooperation', 'cooperationToManage'))}}">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.users')</a>
                                         </li>
-
+                                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.create'])) active @endif">
+                                            <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.create', compact('cooperation', 'cooperationToManage'))}}">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')</a>
+                                        </li>
                                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.cooperations.cooperation-to-manage.coordinator.index'])) active @endif">
-                                            <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.coordinator.index', ['cooperation' => $cooperation, 'cooperationToManage' => $cooperationToManage])}}">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.coordinator')</a>
+                                            <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.coordinator.index', compact('cooperation', 'cooperationToManage'))}}">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.coordinator')</a>
                                         </li>
 
                                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.cooperations.cooperation-to-manage.cooperation-admin.index'])) active @endif">
-                                            <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.cooperation-admin.index', ['cooperation' => $cooperation, 'cooperationToManage' => $cooperationToManage])}}">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.cooperation-admin')</a>
+                                            <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.cooperation-admin.index', compact('cooperation', 'cooperationToManage'))}}">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.cooperation-admin')</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -187,11 +189,6 @@
                                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.index'])) active @endif">
                                             <a href="{{route('cooperation.admin.super-admin.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.home')</a>
                                         </li>
-                                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.index', 'cooperation.admin.buildings.show'])) active @endif">
-                                            <a href="{{route('cooperation.admin.users.index')}}">
-                                                @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.home')
-                                            </a>
-                                        </li>
                                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.clients.index'])) active @endif">
                                             <a href="{{route('cooperation.admin.super-admin.clients.index', compact('cooperation'))}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.clients')</a>
                                         </li>
@@ -200,9 +197,6 @@
                                         </li>
                                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.users.index', 'cooperation.admin.super-admin.users.filter'])) active @endif">
                                             <a href="{{route('cooperation.admin.super-admin.users.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.users')</a>
-                                        </li>
-                                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.create'])) active @endif">
-                                            <a href="{{route('cooperation.admin.users.create')}}">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')</a>
                                         </li>
                                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.questionnaires.index', 'cooperation.admin.super-admin.questionnaires.filter'])) active @endif">
                                             <a href="{{route('cooperation.admin.super-admin.questionnaires.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.questionnaires')</a>

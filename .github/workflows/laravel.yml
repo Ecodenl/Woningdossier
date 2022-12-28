@@ -1,38 +1,94 @@
-name: Laravel
-
-on:
-  push:
-    branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
+name: CI
+on: [push, pull_request]
 
 jobs:
-  laravel-tests:
+  build:
+    name: P${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+        #php: [ '8.0', 8.1 ]
+        php: [7.4]
+        #dependency-version: [ prefer-lowest, prefer-stable ]
+        dependency-version: [ prefer-stable ]
 
-    runs-on: ubuntu-latest
-
+    services: # Service container Mysql
+      mysql: # Label used to access the service container
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: hoomdossier_test
+        ports:
+          #- 33306:3306
+          - 3306:3306
+        options: >-  # Set health checks to wait until mysql database has started (it takes some seconds to start)
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
-      - uses: shivammathur/setup-php@v2
+      - name: Verify hoomdossier_test database exists
+        run: mysql --host 127.0.0.1 --port 3306 -uroot -e "SHOW DATABASES LIKE 'hoomdossier_test';"
+        # code & setup
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
-      - uses: actions/checkout@v3
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl
+          coverage: none
+
+      - name: "Validate composer.json and composer.lock"
+        #run: "composer validate --strict"
+        run: "composer validate"
+
+      - name: "Determine composer cache directory"
+        id: "determine-composer-cache-directory"
+        run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
+
+      #      - name: Get Composer Cache Directory
+      #        id: composer-cache
+      #        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      #      - uses: actions/cache@v1
+      #        with:
+      #          path: ${{ steps.composer-cache.outputs.dir }}
+      #          key: ${{ runner.os }}-composer
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v2.1.6"
+        with:
+          path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
+          key: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-"
+
+      #- name: Set composer token
+      #  run: composer config -g github-oauth.github.com ${{ secrets.GITHUB_PAT }}
+
+      # when using matrix this comes in handy.
+      #      - name: Install dependencies
+      #        run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-source
+
+      - name: Run composer install
+        run: composer install --prefer-dist
+      - name: Run phplint - Syntax check
+        run: ./vendor/bin/phplint -c phplint.yml app
+      - name: Run phpcs - PSR2 check
+        run: ./vendor/bin/phpcs --standard=phpbcs.xml app
       - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - name: Create Database
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
-      - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: Generate key
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: php artisan key:generate
-      - name: Directory Permissions
+        run: php -r "file_exists('.env') || copy('.env.actions', '.env.testing'); copy('.env.actions', '.env');" # If .env exist, we use that, if otherwise, copy .env.example to .env and use that instead
+      #      - name: Generate application key
+      #        run: php artisan key:generate
+      - name: Change Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: vendor/bin/phpunit
+        # REALLY REQUIRED to prevent "environment key not set" issues on unit tests..
+      - name: Clear Config
+        run: php artisan config:clear && php artisan config:cache
+      - name: Prepare Laravel Application
+        run: php artisan migrate
+      - name: Run phpunit - Test code
+        run: ./vendor/bin/phpunit

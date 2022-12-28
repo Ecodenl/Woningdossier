@@ -345,7 +345,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::resource('users', Cooperation\Admin\UserController::class)
                     ->only(['index', 'create', 'store'])
                     ->middleware('current-role:cooperation-admin|coordinator|super-admin');
-                Route::prefix('users')->name('users.')->middleware('current-role:cooperation-admin')->group(function () {\
+                Route::prefix('users')->name('users.')->middleware('current-role:cooperation-admin')->group(function () {
                     Route::delete('delete', [Cooperation\Admin\UserController::class, 'destroy'])->name('destroy');
                 });
 

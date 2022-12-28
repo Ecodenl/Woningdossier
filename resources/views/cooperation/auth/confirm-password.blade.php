@@ -43,7 +43,7 @@
                                     'id' => 'password',
                                     'label' => __('auth.confirm-password.password.title')
                                 ])
-                                <input class="form-input" name="password" type="text" placeholder="@lang('auth.confirm-password.password.placeholder')">
+                                <input class="form-input" name="password" type="password" placeholder="@lang('auth.confirm-password.password.placeholder')">
                             @endcomponent
                         </div>
                         <button class="w-full btn btn-purple" type="submit">

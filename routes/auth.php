@@ -81,11 +81,12 @@ Route::as('auth.')->group(function () {
 
 
     $twoFactorLimiter = config('fortify.limiters.two-factor');
-//    if ($enableViews) {
+
+    if ($enableViews) {
         Route::get('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'create'])
             ->middleware(['guest:'.config('fortify.guard')])
             ->name('two-factor.login');
-//    }
+    }
 
     Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
         ->middleware(array_filter([

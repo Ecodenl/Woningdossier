@@ -210,6 +210,15 @@
                             <div class="alert alert-info" role="alert">
                                 @lang('cooperation/admin/buildings.show.tabs.2fa.status.inactive.title')
                             </div>
+
+                            <form action="{{route('cooperation.admin.cooperation.accounts.disable-2fa')}}" method="post">
+                                @csrf
+                                @method('post')
+                                <input type="hidden" name="accounts[id]" value="{{$building->user->account_id}}">
+                                <button type="submit" class="btn btn-danger">
+                                    @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.button')
+                                </button>
+                            </form>
                         @endif
                     </div>
                 </div>

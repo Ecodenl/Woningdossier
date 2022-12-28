@@ -20,15 +20,17 @@ use App\Services\TwoFactorAuthService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Spatie\Permission\Models\Role;
 
 class AccountController extends Controller
 {
-    public function disableTwoFactorAuthentication(AccountFormRequest $request, TwoFactorAuthService $twoFactorAuthService)
+    public function disableTwoFactorAuthentication(AccountFormRequest $request, DisableTwoFactorAuthentication $disable)
     {
         $accountId = $request->validated()['accounts']['id'];
         $account   = Account::findOrFail($accountId);
-        $twoFactorAuthService->disableTwoFactorAuthentication($account);
+
+        $disable($account);
 
         return redirect()->back()->with('success', __('general.2fa.disabled'));
     }

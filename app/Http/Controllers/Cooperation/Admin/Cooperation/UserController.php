@@ -88,7 +88,7 @@ class UserController extends Controller
             BuildingCoachStatusService::giveAccess($coach, $building);
 
             // dispatch an event so the user is notified
-            ParticipantAddedEvent::dispatch($coach, $building);
+            ParticipantAddedEvent::dispatch($coach, $building, $request->user(), $cooperation);
         }
 
         // if the account is recently created we have to send a confirmation mail

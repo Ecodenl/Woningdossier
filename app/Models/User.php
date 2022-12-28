@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
-use PhpParser\Node\Expr\AssignOp\Mod;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -112,9 +111,10 @@ class User extends Model implements AuthorizableContract
         'extra' => 'array'
     ];
 
-    protected $with = [
-        'roles',
-    ];
+    // We can't eager load roles by default because if the admin changes them, they don't refresh
+    //protected $with = [
+    //    'roles',
+    //];
 
 
     # Scopes
@@ -343,18 +343,6 @@ class User extends Model implements AuthorizableContract
     public function getFullName(): string
     {
         return "{$this->first_name} {$this->last_name}";
-    }
-
-    /**
-     * Get the human readable role name based on the role name.
-     *
-     * @param $roleName
-     *
-     * @return mixed
-     */
-    public function getHumanReadableRoleName($roleName)
-    {
-        return $this->roles()->where('name', $roleName)->first()->human_readable_name;
     }
 
     public function buildingPermissions()

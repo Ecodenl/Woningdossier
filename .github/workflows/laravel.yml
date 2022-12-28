@@ -61,6 +61,8 @@ jobs:
         run: php -r "file_exists('.env') || copy('.env.actions', '.env.testing'); copy('.env.actions', '.env');" # If .env exist, we use that, if otherwise, copy .env.example to .env and use that instead
       - name: Run composer install
         run: composer install --prefer-dist
+      - name: Run larastan (PHPStan) - Static code analysis
+        run: ./vendor/bin/phpstan analyse --memory-limit=2G
       #      - name: Generate application key
       #        run: php artisan key:generate
       - name: Change Directory Permissions

@@ -60,8 +60,6 @@ jobs:
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.actions', '.env.testing'); copy('.env.actions', '.env');" # If .env exist, we use that, if otherwise, copy .env.example to .env and use that instead
       - name: Run composer install
-        env:
-          DB_DATABASE: hoomdossier_test
         run: composer install --prefer-dist
       - name: Run phplint - Syntax check
         run: ./vendor/bin/phplint -c phplint.yml app

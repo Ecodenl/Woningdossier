@@ -40,6 +40,7 @@ class BuildingService
 
     /**
      * Get the answer for a set of questions including the input source that made that answer.
+     * The example building will be prioritized if available.
      * Note that this method does not perform evaluation!
      *
      * @param  \Illuminate\Support\Collection  $toolQuestions
@@ -49,21 +50,26 @@ class BuildingService
     public function getSourcedAnswers(Collection $toolQuestions): Collection
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $exampleBuildingInputSource = InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
 
         $ids = $toolQuestions->whereNull('save_in')->pluck('id')->toArray();
 
         // Get the tool question answers for custom values.
         $answersForTqa = collect();
         if (! empty($ids)) {
-            // This sub-query selects the latest input source that made changes on the tool question.
-            $selectQuery = DB::table('tool_question_answers')
-                ->select('input_source_id')
-                ->where('building_id', $this->building->id)
-                ->whereRaw('tool_question_id = tqa.tool_question_id')
-                ->whereRaw('answer = tqa.answer')
-                ->where('input_source_id', '!=', $masterInputSource->id)
-                ->orderByDesc('updated_at')
-                ->limit(1);
+            // This sub-query selects the example building if it has the same answer, or else the latest input source
+            // that made changes on the tool question.
+            $selectQuery = "(SELECT IF (
+                (
+                    SELECT COUNT(*) FROM tool_question_answers
+                    WHERE building_id = ? AND tool_question_id = tqa.tool_question_id AND answer = tqa.answer
+                    AND input_source_id = ?
+                ) > 0, ?, (
+                    SELECT input_source_id FROM tool_question_answers
+                    WHERE building_id = ? AND tool_question_id = tqa.tool_question_id AND answer = tqa.answer
+                    AND input_source_id != ? ORDER BY updated_at DESC LIMIT 1
+                )
+            ) AS latest_source_id)";
 
             // https://laravel.com/docs/9.x/queries#subquery-joins
             // This sub-join retrieves all non-master answers.
@@ -75,9 +81,12 @@ class BuildingService
 
             // Finally, we select the relevant data, where the input source is the latest changed.
             // We convert all "under-the-hood" stdClasses to arrays.
-            $answersForTqa = DB::table('tool_question_answers as tqa')
-                ->select('tqa.tool_question_id', 'tqa.answer', 'nma.input_source_id', 'is.name as input_source_name')
-                ->selectSub($selectQuery, 'latest_source_id')
+            $answersForTqa = DB::table('tool_question_answers AS tqa')
+                ->select('tqa.tool_question_id', 'tqa.answer', 'nma.input_source_id', 'is.name AS input_source_name')
+                ->selectSub(
+                    fn ($query) => $query->selectRaw($selectQuery, [$this->building->id, $exampleBuildingInputSource->id, $exampleBuildingInputSource->id, $this->building->id, $masterInputSource->id]),
+                    'latest_source_id'
+                )
                 ->where('tqa.building_id', $this->building->id)
                 ->where('tqa.input_source_id', $masterInputSource->id)
                 ->whereIn('tqa.tool_question_id', $ids)
@@ -86,7 +95,7 @@ class BuildingService
                         ->on('tqa.tool_question_id', '=', 'nma.tool_question_id')
                         ->on('tqa.answer', '=', 'nma.answer');
                 })
-                ->leftJoin('input_sources as is', 'nma.input_source_id', '=', 'is.id')
+                ->leftJoin('input_sources AS is', 'nma.input_source_id', '=', 'is.id')
                 ->havingRaw('nma.input_source_id = latest_source_id')
                 ->get()
                 ->groupBy('tool_question_id')
@@ -110,15 +119,26 @@ class BuildingService
                 $value        = data_get($resolved, "where.{$whereColumn}");
                 unset($where[$whereColumn]);
 
-                // This sub-query selects the latest input source that made changes on the tool question.
-                $selectQuery = DB::table($table)
-                    ->select('input_source_id')
-                    ->where($whereColumn, $value)
-                    ->whereRaw("{$answerColumn} = tbl.{$answerColumn}")
-                    ->where('input_source_id', '!=', $masterInputSource->id)
-                    ->where($where)
-                    ->orderByDesc('updated_at')
-                    ->limit(1);
+                $append = '';
+                if (! empty($where)) {
+                    foreach ($where as $col => $val) {
+                        $append .= " AND {$col} = {$val}";
+                    }
+                }
+
+                // This sub-query selects the example building if it has the same answer, or else the latest input source
+                // that made changes on the tool question.
+                $selectQuery = "(SELECT IF (
+                    (
+                        SELECT COUNT(*) FROM {$table}
+                        WHERE {$whereColumn} = ? AND {$answerColumn} = tbl.{$answerColumn}
+                        AND input_source_id = ? {$append}
+                    ) > 0, ?, (
+                        SELECT input_source_id FROM {$table}
+                        WHERE {$whereColumn} = ? AND {$answerColumn} = tbl.{$answerColumn}
+                        AND input_source_id != ? {$append} ORDER BY updated_at DESC LIMIT 1
+                    )
+                ) AS latest_source_id)";
 
                 // This sub-join retrieves all non-master answers.
                 $subQuery = DB::table($table)
@@ -131,8 +151,11 @@ class BuildingService
                 // Finally, we select the relevant data, where the input source is the latest changed.
                 // We convert all "under-the-hood" stdClasses to arrays.
                 $answersForResolved = DB::table("{$table} as tbl")
-                    ->select("tbl.{$answerColumn} as answer", 'nma.input_source_id', 'is.name as input_source_name')
-                    ->selectSub($selectQuery, 'latest_source_id')
+                    ->select("tbl.{$answerColumn} AS answer", 'nma.input_source_id', 'is.name AS input_source_name')
+                    ->selectSub(
+                        fn ($query) => $query->selectRaw($selectQuery, [$value, $exampleBuildingInputSource->id, $exampleBuildingInputSource->id, $value, $masterInputSource->id]),
+                        'latest_source_id'
+                    )
                     ->where("tbl.{$whereColumn}", $value)
                     ->where($where)
                     ->where('tbl.input_source_id', $masterInputSource->id)
@@ -140,7 +163,7 @@ class BuildingService
                         $join->on("tbl.{$whereColumn}", '=', "nma.{$whereColumn}")
                             ->on("tbl.{$answerColumn}", '=', "nma.{$answerColumn}");
                     })
-                    ->leftJoin('input_sources as is', 'nma.input_source_id', '=', 'is.id')
+                    ->leftJoin('input_sources AS is', 'nma.input_source_id', '=', 'is.id')
                     ->havingRaw('nma.input_source_id = latest_source_id')
                     ->get()
                     ->map(fn($val) => (array) $val)

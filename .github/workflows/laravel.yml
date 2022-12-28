@@ -57,16 +57,16 @@ jobs:
           key: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-${{ hashFiles('composer.lock') }}"
           restore-keys: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-"
 
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.actions', '.env.testing'); copy('.env.actions', '.env');" # If .env exist, we use that, if otherwise, copy .env.example to .env and use that instead
       - name: Run composer install
         env:
           DB_DATABASE: hoomdossier_test
-        run: composer install -q --prefer-dist
+        run: composer install --prefer-dist
       - name: Run phplint - Syntax check
         run: ./vendor/bin/phplint -c phplint.yml app
       - name: Run phpcs - PSR2 check
         run: ./vendor/bin/phpcs --standard=phpbcs.xml app
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.actions', '.env.testing'); copy('.env.actions', '.env');" # If .env exist, we use that, if otherwise, copy .env.example to .env and use that instead
       #      - name: Generate application key
       #        run: php artisan key:generate
       - name: Change Directory Permissions

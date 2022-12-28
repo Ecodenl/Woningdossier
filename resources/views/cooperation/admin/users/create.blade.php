@@ -221,7 +221,7 @@
 
             email.on('keyup change', function () {
                 $.ajax({
-                    url: '{{route('cooperation.check-existing-email')}}',
+                    url: '{{route('cooperation.check-existing-email', ['cooperation' => $cooperation, 'forCooperation' => $cooperationToManage ?? $cooperation])}}',
                     method: "GET",
                     data: {email: $(this).val()},
                 }).done(function (data) {

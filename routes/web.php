@@ -287,18 +287,15 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
                 });
 
+                Route::resource('users', Cooperation\Admin\UserController::class)
+                    ->only(['index', 'create', 'store'])
+                    ->middleware('current-role:cooperation-admin|coordinator');
+                Route::prefix('users')->name('users.')->middleware('current-role:cooperation-admin')->group(function () {
+                    Route::delete('delete', [Cooperation\Admin\UserController::class, 'destroy'])->name('destroy');
+                });
+
                 /* Section for the cooperation-admin and coordinator */
                 Route::prefix('cooperatie')->name('cooperation.')->middleware('current-role:cooperation-admin|coordinator')->group(function () {
-                    Route::prefix('users')->name('users.')->group(function () {
-                        Route::get('', [Cooperation\Admin\Cooperation\UserController::class, 'index'])->name('index');
-                        Route::get('create', [Cooperation\Admin\Cooperation\UserController::class, 'create'])->name('create');
-                        Route::post('create', [Cooperation\Admin\Cooperation\UserController::class, 'store'])->name('store');
-
-                        Route::middleware('current-role:cooperation-admin')->group(function () {
-                            Route::delete('delete', [Cooperation\Admin\Cooperation\UserController::class, 'destroy'])->name('destroy');
-                        });
-                    });
-
                     Route::post('accounts/disable-2fa', [Cooperation\Admin\Cooperation\CooperationAdmin\AccountController::class, 'disableTwoFactorAuthentication'])
                         ->middleware('current-role:cooperation-admin')
                         ->name('accounts.disable-2fa');
@@ -401,13 +398,21 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                         /* Actions that will be done per cooperation */
                         Route::prefix('{cooperationToManage}/')->name('cooperation-to-manage.')->group(function () {
-                                Route::resource('home', Cooperation\Admin\SuperAdmin\Cooperation\HomeController::class)->only('index');
+                            Route::resource('home', Cooperation\Admin\SuperAdmin\Cooperation\HomeController::class)
+                                ->only('index');
 
-                                Route::resource('cooperation-admin', Cooperation\Admin\SuperAdmin\Cooperation\CooperationAdminController::class)->only(['index']);
-                                Route::resource('coordinator', Cooperation\Admin\SuperAdmin\Cooperation\CoordinatorController::class)->only(['index']);
-                                Route::resource('users', Cooperation\Admin\SuperAdmin\Cooperation\UserController::class)->only(['index', 'show']);
-                                Route::post('users/{id}/confirm', [Cooperation\Admin\SuperAdmin\Cooperation\UserController::class, 'confirm'])->name('users.confirm');
-                            });
+                            Route::resource('cooperation-admin',
+                                Cooperation\Admin\SuperAdmin\Cooperation\CooperationAdminController::class)
+                                ->only(['index']);
+                            Route::resource('coordinator',
+                                Cooperation\Admin\SuperAdmin\Cooperation\CoordinatorController::class)
+                                ->only(['index']);
+                            Route::resource('users', Cooperation\Admin\SuperAdmin\Cooperation\UserController::class)
+                                ->only(['index', 'show', 'create', 'store']);
+                            Route::post('users/{id}/confirm', [
+                                Cooperation\Admin\SuperAdmin\Cooperation\UserController::class, 'confirm',])
+                                ->name('users.confirm');
+                        });
                     });
                 });
 

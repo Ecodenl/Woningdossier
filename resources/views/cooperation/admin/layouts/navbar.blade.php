@@ -28,7 +28,9 @@
                         @foreach(config('hoomdossier.supported_locales') as $locale)
                             @if(app()->getLocale() != $locale)
                                 <li>
-                                    <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">@lang('woningdossier.navbar.languages.'. $locale)</a>
+                                    <a href="{{ route('cooperation.switch-language', compact('cooperation', 'locale')) }}">
+                                        @lang('woningdossier.navbar.languages.'. $locale)
+                                    </a>
                                 </li>
                             @endif
                         @endforeach
@@ -72,18 +74,14 @@
                         </a>
 
                         <ul class="dropdown-menu">
-                            <li><a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
+                            <li>
+                                <a href="{{ route('cooperation.my-account.index', compact('cooperation')) }}">
+                                    @lang('woningdossier.cooperation.my-account.settings.form.index.header')
+                                </a>
+                            </li>
                             {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
                             <li>
-                                <a href="{{ route('cooperation.auth.logout') }}"
-                                   onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                    Logout
-                                </a>
-
-                                <form id="logout-form" action="{{ route('cooperation.auth.logout') }}" method="POST" style="display: none;">
-                                    {{ csrf_field() }}
-                                </form>
+                                @include('cooperation.frontend.shared.parts.logout')
                             </li>
                         </ul>
                     </li>

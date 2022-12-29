@@ -3,7 +3,7 @@
 
     @error($input_name ?? '')
         <span class="help-block">
-            <strong>{{$errors->first($input_name)}}</strong>
+            <strong>{{$message}}</strong>
         </span>
     @enderror
 </div>

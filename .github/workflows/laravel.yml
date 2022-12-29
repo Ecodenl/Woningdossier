@@ -67,6 +67,8 @@ jobs:
         run: composer install --prefer-dist
       - name: Run larastan (PHPStan) - Static code analysis
         run: ./vendor/bin/phpstan analyse --memory-limit=2G
+      - name: Run phpcs - PSR2 check
+        run: ./vendor/bin/phpcs --standard=PSR2 app
       #      - name: Generate application key
       #        run: php artisan key:generate
       - name: Change Directory Permissions

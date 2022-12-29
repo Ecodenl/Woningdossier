@@ -21,7 +21,7 @@ Route::get('/register', [RegisteredUserController::class, 'index'])
 Route::post('/register', [RegisteredUserController::class, 'store'])
     ->middleware(['guest:'.config('fortify.guard')]);
 
-Route::get('check-existing-mail', [RegisteredUserController::class, 'checkExistingEmail'])->name('check-existing-email');
+Route::get('check-existing-mail/{forCooperation?}', [RegisteredUserController::class, 'checkExistingEmail'])->name('check-existing-email');
 
 Route::as('auth.')->group(function () {
     $limiter = config('fortify.limiters.login');

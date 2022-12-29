@@ -1,4 +1,4 @@
-name: CI
+name: tests
 on:
   push:
     branches: [ "develop" ]
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: P${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
+    name: PHP ${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

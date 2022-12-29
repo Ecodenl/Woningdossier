@@ -103,11 +103,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 Route::resource('hoom-settings', Cooperation\MyAccount\HoomSettingsController::class);
 
-                Route::name('import-center.')->prefix('import-centrum')->group(function () {
-                    Route::get('set-compare-session/{inputSourceShort}', [Cooperation\MyAccount\ImportCenterController::class, 'setCompareSession'])->name('set-compare-session');
-                    Route::post('dismiss-notification', [Cooperation\MyAccount\ImportCenterController::class, 'dismissNotification'])->name('dismiss-notification');
-                });
-
                 Route::resource('notification-settings', Cooperation\MyAccount\NotificationSettingsController::class)->only([
                     'index', 'show', 'update',
                 ]);
@@ -126,11 +121,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::prefix('conversation-request')->name('conversation-requests.')->group(function () {
                 Route::get('{requestType}/{measureApplicationShort?}', [Cooperation\ConversationRequest\ConversationRequestController::class, 'index'])->name('index');
                 Route::post('', [Cooperation\ConversationRequest\ConversationRequestController::class, 'store'])->name('store');
-            });
-
-            // the tool
-            Route::prefix('import')->name('import.')->group(function () {
-                Route::post('', [Cooperation\ImportController::class, 'copy'])->name('copy');
             });
 
             Route::as('frontend.')->middleware(['track-visited-url'])->group(function () {

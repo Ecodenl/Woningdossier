@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
-use App\Traits\ToolSettingTrait;
+
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -41,7 +41,7 @@ class QuestionsAnswer extends Model
 {
     use GetValueTrait;
     use GetMyValuesTrait;
-    use ToolSettingTrait;
+    
 
     protected $fillable = [
         'question_id', 'building_id', 'input_source_id', 'answer',

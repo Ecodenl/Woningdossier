@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
-use App\Traits\ToolSettingTrait;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -98,7 +98,6 @@ class BuildingFeature extends Model implements Auditable
 {
     use GetValueTrait,
         GetMyValuesTrait,
-        ToolSettingTrait,
         \App\Traits\Models\Auditable;
 
     protected $fillable = [

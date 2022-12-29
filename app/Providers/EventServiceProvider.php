@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\DossierResetPerformed;
 use App\Events\ExampleBuildingChanged;
 use App\Events\FillingToolForUserEvent;
 use App\Events\ObservingToolForUserEvent;
@@ -18,7 +17,6 @@ use App\Events\UserChangedHisEmailEvent;
 use App\Events\UserRevokedAccessToHisBuilding;
 use App\Listeners\AuditedListener;
 use App\Listeners\DeleteUserActionPlanAdvicesForStep;
-use App\Listeners\DossierResetListener;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\GiveCoachesBuildingPermission;
 use App\Listeners\LogAllowedAccessToBuilding;
@@ -43,7 +41,6 @@ use App\Listeners\SuccessFullLoginListener;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use OwenIt\Auditing\Events\Audited;
-use OwenIt\Auditing\Events\Auditing;
 use Sentry\State\Scope;
 
 class EventServiceProvider extends ServiceProvider
@@ -54,9 +51,6 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        DossierResetPerformed::class => [
-            DossierResetListener::class,
-        ],
         ExampleBuildingChanged::class => [
             PreventChangeNotificationWhenStarting::class,
         ],

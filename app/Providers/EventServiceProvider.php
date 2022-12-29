@@ -28,7 +28,6 @@ use App\Listeners\LogUserAssociatedWithOtherCooperation;
 use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
-use App\Listeners\PreventChangeNotificationWhenStarting;
 use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\RecalculateToolForUserListener;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
@@ -51,9 +50,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        ExampleBuildingChanged::class => [
-            PreventChangeNotificationWhenStarting::class,
-        ],
+        ExampleBuildingChanged::class => [],
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
         ],

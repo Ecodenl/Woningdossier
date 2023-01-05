@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Contracts\TwoFactorLoginResponse;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Http\Responses\FailedTwoFactorLoginResponse;
 use Laravel\Fortify\Http\Responses\LoginResponse as FortifyLoginResponse;
@@ -55,6 +56,11 @@ class FortifyServiceProvider extends ServiceProvider
             FailedTwoFactorLoginResponse::class,
             \App\Responses\FailedTwoFactorLoginResponse::class
         );
+
+        $this->app->bind(
+            TwoFactorLoginResponse::class,
+            \App\Responses\TwoFactorLoginResponse::class
+        );
     }
 
     /**
@@ -69,6 +75,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+
 
         $this->app->singleton(
             RedirectIfTwoFactorAuthenticatable::class,

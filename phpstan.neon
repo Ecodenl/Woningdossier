@@ -9,8 +9,8 @@ parameters:
     # Level 9 is the highest level
     level: 5
 
-    excludePaths:
-            - ./app/Traits/ToolSettingTrait.php
+#    excludePaths:
+#            - ./app/Traits/ToolSettingTrait.php
 
 #    ignoreErrors:
 #        - '#PHPDoc tag @var#'

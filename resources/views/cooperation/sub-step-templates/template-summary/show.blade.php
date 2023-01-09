@@ -6,13 +6,29 @@
     </div>
 
     @php
-        $subStepsToSummarize = $step->subSteps()->where('id', '!=', $subStep->id)->orderBy('order')->get();
+        $subStepsToSummarize = $step->subSteps()
+            ->where('id', '!=', $subStep->id)
+            ->with('subSteppables')
+            ->orderBy('order')
+            ->get();
+
+        $allConditions = $subStepsToSummarize->pluck('conditions')
+            ->merge($subStepsToSummarize->pluck('subSteppables.*.conditions')->flatten(1))
+            ->filter()
+            ->flatten(1)
+            ->all();
+
+        $evaluator = \App\Helpers\Conditions\ConditionEvaluator::init()
+            ->building($building)
+            ->inputSource($masterInputSource);
+
+        $answers = $evaluator->getToolAnswersForConditions($allConditions);
     @endphp
 
     {{-- Loop all sub steps except for the current (summary) step --}}
     @foreach($subStepsToSummarize as $subStepToSummarize)
         {{-- Only display sub steps that are valid to the user --}}
-        @can('show', [$subStepToSummarize, $building])
+        @if($evaluator->evaluateCollection($subStepToSummarize->conditions ?? [], $answers))
             @php
                 $subStepRoute = route('cooperation.frontend.tool.quick-scan.index', [
                     'cooperation' => $cooperation, 'step' => $step, 'subStep' => $subStepToSummarize
@@ -69,28 +85,13 @@
                         </div>
                     </div>
                 @else
-                    @php
-                        $answers = [];
-                    @endphp
-                    {{-- We loop twice to first get all answers. We need the answers to ensure whether or not the tool question should be shown --}}
-                    @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
-                        @php
-                            // Answers will contain an array of arrays of all answers for the tool question in this sub step,
-                            // in which the nested array will be short => answer based
-                            $answers[$toolQuestionToSummarize->short] = $building->getAnswer(($toolQuestionToSummarize->forSpecificInputSource ?? $masterInputSource), $toolQuestionToSummarize);
-                        @endphp
-                    @endforeach
-
                     @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
                         {{-- Only display questions that are valid to the user --}}
                         @php
                             $showQuestion = true;
 
                             if (! empty($toolQuestionToSummarize->pivot->conditions)) {
-                                $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
-                                    ->building($building)
-                                    ->inputSource($masterInputSource)
-                                    ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
+                                $showQuestion = $evaluator->evaluateCollection($toolQuestionToSummarize->pivot->conditions, $answers);
                             }
 
                             // Comments come at the end, and have exceptional logic...
@@ -153,7 +154,7 @@
                     @endforeach
                 @endif
             </div>
-        @endcan
+        @endif
     @endforeach
 
     <div class="flex flex-row flex-wrap w-full">

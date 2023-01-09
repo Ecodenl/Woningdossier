@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
-use App\Events\DossierResetPerformed;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Account;
@@ -76,8 +74,6 @@ class SettingsController extends Controller
             Log::debug("resetting for input source " . $inputSourceId);
             UserService::resetUser($user, InputSource::find($inputSourceId));
         }
-
-        DossierResetPerformed::dispatch($user->building);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }

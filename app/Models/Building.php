@@ -12,7 +12,7 @@ use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
 use App\Traits\HasMedia;
-use App\Traits\ToolSettingTrait;
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -112,7 +112,6 @@ class Building extends Model
 {
     use HasFactory,
         SoftDeletes,
-        ToolSettingTrait,
         HasMedia;
 
     public $fillable = [

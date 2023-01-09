@@ -196,9 +196,6 @@
 
 @push('js')
     <script>
-        var form = $('form');
-        form.disableAutoFill();
-
         $(document).ready(function () {
 
             var oldSelectedRoles = [];
@@ -268,6 +265,5 @@
                 email.trigger('change');
             }
         });
-
     </script>
 @endpush

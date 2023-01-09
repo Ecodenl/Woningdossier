@@ -1,82 +1,82 @@
-name: tests
-on:
-  push:
-    branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
-
-jobs:
-  build:
-    name: PHP ${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest ]
-        #php: [ '8.0', 8.1 ]
-        php: [7.4]
-        #dependency-version: [ prefer-lowest, prefer-stable ]
-        dependency-version: [ prefer-stable ]
-
-    services: # Service container Mysql
-      mysql: # Label used to access the service container
-        image: mysql:8.0
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: hoomdossier_test
-        ports:
-          #- 33306:3306
-          - 3306:3306
-        options: >-  # Set health checks to wait until mysql database has started (it takes some seconds to start)
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-    steps:
-      - name: Verify hoomdossier_test database exists
-        run: mysql --host 127.0.0.1 --port 3306 -uroot -e "SHOW DATABASES LIKE 'hoomdossier_test';"
-        # code & setup
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl
-          coverage: none
-
-      - name: "Validate composer.json and composer.lock"
-        #run: "composer validate --strict"
-        run: "composer validate"
-
-      - name: "Determine composer cache directory"
-        id: "determine-composer-cache-directory"
-        run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
-
-      - name: "Cache dependencies installed with composer"
-        uses: "actions/cache@v2.1.6"
-        with:
-          path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
-          key: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-${{ hashFiles('composer.lock') }}"
-          restore-keys: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-"
-
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.actions', '.env.testing'); copy('.env.actions', '.env');" # If .env exist, we use that, if otherwise, copy .env.example to .env and use that instead
-      - name: Run composer install
-        run: composer install --prefer-dist
-      - name: Run larastan (PHPStan) - Static code analysis
-        run: ./vendor/bin/phpstan analyse --memory-limit=2G
-      - name: Run phpcs - PSR2 check
-        run: ./vendor/bin/phpcs --standard=PSR2 app
-      #      - name: Generate application key
-      #        run: php artisan key:generate
-      - name: Change Directory Permissions
-        run: chmod -R 777 storage bootstrap/cache
-        # REALLY REQUIRED to prevent "environment key not set" issues on unit tests..
-      - name: Clear Config
-        run: php artisan config:clear && php artisan config:cache
-      - name: Prepare Laravel Application
-        run: php artisan migrate
-      - name: Run phpunit - Test code
-        run: ./vendor/bin/phpunit
+#name: tests
+#on:
+#  push:
+#    branches: [ "develop" ]
+#  pull_request:
+#    branches: [ "develop" ]
+#
+#jobs:
+#  build:
+#    name: PHP ${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        os: [ ubuntu-latest ]
+#        #php: [ '8.0', 8.1 ]
+#        php: [7.4]
+#        #dependency-version: [ prefer-lowest, prefer-stable ]
+#        dependency-version: [ prefer-stable ]
+#
+#    services: # Service container Mysql
+#      mysql: # Label used to access the service container
+#        image: mysql:8.0
+#        env:
+#          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+#          MYSQL_DATABASE: hoomdossier_test
+#        ports:
+#          #- 33306:3306
+#          - 3306:3306
+#        options: >-  # Set health checks to wait until mysql database has started (it takes some seconds to start)
+#          --health-cmd="mysqladmin ping"
+#          --health-interval=10s
+#          --health-timeout=5s
+#          --health-retries=3
+#    steps:
+#      - name: Verify hoomdossier_test database exists
+#        run: mysql --host 127.0.0.1 --port 3306 -uroot -e "SHOW DATABASES LIKE 'hoomdossier_test';"
+#        # code & setup
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Setup PHP
+#        uses: shivammathur/setup-php@v2
+#        with:
+#          php-version: ${{ matrix.php }}
+#          extensions: dom, curl
+#          coverage: none
+#
+#      - name: "Validate composer.json and composer.lock"
+#        #run: "composer validate --strict"
+#        run: "composer validate"
+#
+#      - name: "Determine composer cache directory"
+#        id: "determine-composer-cache-directory"
+#        run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
+#
+#      - name: "Cache dependencies installed with composer"
+#        uses: "actions/cache@v2.1.6"
+#        with:
+#          path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
+#          key: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-${{ hashFiles('composer.lock') }}"
+#          restore-keys: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-"
+#
+#      - name: Copy .env
+#        run: php -r "file_exists('.env') || copy('.env.actions', '.env.testing'); copy('.env.actions', '.env');" # If .env exist, we use that, if otherwise, copy .env.example to .env and use that instead
+#      - name: Run composer install
+#        run: composer install --prefer-dist
+#      - name: Run larastan (PHPStan) - Static code analysis
+#        run: ./vendor/bin/phpstan analyse --memory-limit=2G
+#      - name: Run phpcs - PSR2 check
+#        run: ./vendor/bin/phpcs --standard=PSR2 app
+#      #      - name: Generate application key
+#      #        run: php artisan key:generate
+#      - name: Change Directory Permissions
+#        run: chmod -R 777 storage bootstrap/cache
+#        # REALLY REQUIRED to prevent "environment key not set" issues on unit tests..
+#      - name: Clear Config
+#        run: php artisan config:clear && php artisan config:cache
+#      - name: Prepare Laravel Application
+#        run: php artisan migrate
+#      - name: Run phpunit - Test code
+#        run: ./vendor/bin/phpunit

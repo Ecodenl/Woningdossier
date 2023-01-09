@@ -37,7 +37,6 @@ class CloneDataService {
         'custom_measure_applications',
         'questions_answers',
         'tool_question_answers',
-        'tool_settings',
         'user_action_plan_advices',
         'user_energy_habits',
 

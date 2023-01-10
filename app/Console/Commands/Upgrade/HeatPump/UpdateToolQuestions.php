@@ -650,6 +650,8 @@ class UpdateToolQuestions extends Command
                 ->whereIn('key', $keys)
                 ->delete();
         }
+
+        Artisan::call('upgrade:heat-pump:water-calc:update-tool-questions');
     }
 
     private function infoLog($info)

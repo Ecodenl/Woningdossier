@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property array $costs
  * @property string $savings_money
  * @property array $extra
+ * @property int $is_extensive_measure
+ * @property int $is_deletable
  * @property int $cooperation_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -35,6 +37,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|CooperationMeasureApplication whereExtra($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CooperationMeasureApplication whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CooperationMeasureApplication whereInfo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CooperationMeasureApplication whereIsDeletable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CooperationMeasureApplication whereIsExtensiveMeasure($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CooperationMeasureApplication whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CooperationMeasureApplication whereSavingsMoney($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CooperationMeasureApplication whereUpdatedAt($value)

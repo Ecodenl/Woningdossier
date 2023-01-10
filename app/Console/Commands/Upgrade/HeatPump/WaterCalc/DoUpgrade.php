@@ -41,9 +41,6 @@ class DoUpgrade extends Command
     {
         $commands = [
             UpdateToolQuestions::class => [],
-            SeedCommand::class => [
-                ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
-            ],
         ];
 
         foreach ($commands as $command => $variants) {

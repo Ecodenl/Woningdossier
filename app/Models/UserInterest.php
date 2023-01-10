@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
-use App\Traits\ToolSettingTrait;
+
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -49,7 +49,7 @@ class UserInterest extends Model
 
     use GetValueTrait;
     use GetMyValuesTrait;
-    use ToolSettingTrait;
+    
 
     protected $fillable = [
         'user_id', 'interested_in_type', 'interested_in_id', 'interest_id', 'input_source_id',

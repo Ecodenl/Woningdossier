@@ -15,7 +15,7 @@ class AccessController extends Controller
         $building = HoomdossierSession::getBuilding(true);
 
         if ($request->has('allow_access')) {
-            UserAllowedAccessToHisBuilding::dispatch($building);
+            UserAllowedAccessToHisBuilding::dispatch($building->user, $building);
         } else {
             UserRevokedAccessToHisBuilding::dispatch($building);
         }

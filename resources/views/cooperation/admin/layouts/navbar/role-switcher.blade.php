@@ -1,9 +1,3 @@
-{{--@if(\App\Helpers\Hoomdossier::user()->getRoleNames()->count() == 1)
-    <li>
-        <a>
-            @lang('woningdossier.cooperation.admin.navbar.current-role') {{ \App\Helpers\Hoomdossier::user()->getHumanReadableRoleName(\App\Helpers\Hoomdossier::user()->getRoleNames()->first()) }}
-        </a>
-    </li>--}}
 @if(\App\Helpers\Hoomdossier::user()->getRoleNames()->count() > 1 && \App\Helpers\HoomdossierSession::getRole())
     <li class="dropdown">
         @if(\App\Helpers\HoomdossierSession::hasRole())

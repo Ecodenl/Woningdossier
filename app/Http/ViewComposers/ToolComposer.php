@@ -6,9 +6,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Building;
-use App\Models\InputSource;
 use App\Models\Step;
-use App\Models\ToolSetting;
 use Illuminate\View\View;
 
 class ToolComposer
@@ -16,12 +14,10 @@ class ToolComposer
     private $cooperation;
     private $currentUser;
     private $commentsByStep;
-    //private $unreadMessageCount;
     private $currentStep;
     private $currentSubStep;
     private $currentBuilding;
     private $buildingOwner;
-    private $changedSettings;
 
     public function create(View $view)
     {
@@ -82,7 +78,6 @@ class ToolComposer
                 $this->currentBuilding = HoomdossierSession::getBuilding(true);
             }
 
-            $changedSettings = collect([]);
             if ($this->currentBuilding instanceof Building) {
                 if (is_null($this->buildingOwner)) {
                     $this->buildingOwner = $this->currentBuilding->user;
@@ -93,12 +88,7 @@ class ToolComposer
                 }
                 $view->with('building', $this->currentBuilding);
                 $view->with('buildingOwner', $this->buildingOwner);
-                if (is_null($this->changedSettings)) {
-                    $this->changedSettings = ToolSetting::getChangedSettings($this->currentBuilding->id);
-                }
-                $changedSettings = $this->changedSettings;
             }
-            $view->with('toolSettings', $changedSettings);
         }
     }
 }

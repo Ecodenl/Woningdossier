@@ -3,31 +3,32 @@
         {{$summaryStep->name}}
     </p>
 
+    @php
+        $allConditions = $subStepsToSummarize->pluck('conditions')
+            ->merge($subStepsToSummarize->pluck('subSteppables.*.conditions')->flatten(1))
+            ->filter()
+            ->flatten(1)
+            ->all();
+
+        $evaluator = \App\Helpers\Conditions\ConditionEvaluator::init()
+            ->building($building)
+            ->inputSource($inputSource);
+
+        $answers = $evaluator->getToolAnswersForConditions($allConditions);
+    @endphp
+
     <table class="full-width">
         <tbody>
         {{-- Loop all sub steps except for the current (summary) step --}}
         @foreach($subStepsToSummarize as $subStepToSummarize)
-            @if(\App\Helpers\Conditions\ConditionEvaluator::init()->building($building)->inputSource($inputSource)
-                    ->evaluate($subStepToSummarize->conditions ?? []))
-                {{-- We loop twice to first get all answers. We need the answers to ensure whether or not the tool question should be shown --}}
-                @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
-                    @php
-                        // Answers will contain an array of arrays of all answers for the tool question in this sub step,
-                        // in which the nested array will be short => answer based
-                        $answers[$toolQuestionToSummarize->short] = $building->getAnswer(($toolQuestionToSummarize->forSpecificInputSource ?? $inputSource), $toolQuestionToSummarize);
-                    @endphp
-                @endforeach
-
+            @if($evaluator->evaluateCollection($subStepToSummarize->conditions ?? [], $answers))
                 @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
                     {{-- Only display questions that are valid to the user --}}
                     @php
                         $showQuestion = true;
 
                         if (! empty($toolQuestionToSummarize->pivot->conditions)) {
-                            $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
-                                    ->building($building)
-                                    ->inputSource($inputSource)
-                                    ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
+                            $showQuestion = $evaluator->evaluateCollection($toolQuestionToSummarize->pivot->conditions, $answers);
                         }
 
                         // Comments come at the end, and have exceptional logic...

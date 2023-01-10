@@ -26,7 +26,7 @@ class LogAllowedAccessToBuilding
     public function handle($event)
     {
         /** @var User $user */
-        $user = $event->building->user;
+        $user = $event->user;
         Log::create([
             'loggable_type' => User::class,
             'loggable_id' => $user->id,

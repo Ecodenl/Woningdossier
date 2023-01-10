@@ -3,7 +3,7 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.users.index.header')
+            @lang('cooperation/admin/users.index.header')
         </div>
 
         <div class="panel-body">
@@ -13,12 +13,12 @@
                            style="width: 100%">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.date')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.street-house-number')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.zip-code')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.city')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.status')</th>
+                            <th>@lang('cooperation/admin/users.index.table.columns.date')</th>
+                            <th>@lang('cooperation/admin/users.index.table.columns.name')</th>
+                            <th>@lang('cooperation/admin/users.index.table.columns.street-house-number')</th>
+                            <th>@lang('cooperation/admin/users.index.table.columns.zip-code')</th>
+                            <th>@lang('cooperation/admin/users.index.table.columns.city')</th>
+                            <th>@lang('cooperation/admin/users.index.table.columns.status')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -42,9 +42,13 @@
                                     </td>
                                     <td>{{$user->getFullName()}}</td>
                                     <td>
-                                        <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                        @can('show', $building)
+                                            <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                                {{$building->street}} {{$building->number}} {{$building->extension}}
+                                            </a>
+                                        @else
                                             {{$building->street}} {{$building->number}} {{$building->extension}}
-                                        </a>
+                                        @endcan
                                     </td>
                                     <td>{{$building->postal_code}}</td>
                                     <td>

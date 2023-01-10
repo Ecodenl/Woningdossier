@@ -14,7 +14,6 @@
 
 @push('js')
 
-    <script src="{{ asset('js/disable-auto-fill.js') }}"></script>
     <script src="{{asset('js/hoomdossier.js')}}"></script>
 
     <script>

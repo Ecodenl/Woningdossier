@@ -40,7 +40,9 @@
         "laravel/sail": "^1.16",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.10",
-        "phpunit/phpunit": "^9.5.10"
+        "nunomaduro/larastan": "^1.0",
+        "phpunit/phpunit": "^9.5.10",
+        "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
         "psr-4": {

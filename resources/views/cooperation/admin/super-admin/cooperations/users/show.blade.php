@@ -16,9 +16,9 @@
                         <label for="role-select">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show.role.label')</label>
                         <select class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
-                                <option @if($role->name != 'cooperation-admin') locked="locked" disabled="" @endif
-                                @if($user->hasRole($role, $cooperationToManage->id)) selected="selected" @endif
-                                        value="{{$role->id}}">
+                                <option value="{{$role->id}}"
+                                        @if(! in_array($role->name, ['cooperation-admin', 'coordinator'])) locked="locked" disabled @endif
+                                        @if($user->hasRole($role, $cooperationToManage->id)) selected="selected" @endif>
                                     {{$role->human_readable_name}}
                                 </option>
                             @endforeach
@@ -26,12 +26,14 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    @if(!$user->account->hasVerifiedEmail())
+                    @if(! $user->account->hasVerifiedEmail())
                         <div class="form-group">
-                            <form action="{{ route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.confirm', ['cooperationToManage' => $cooperationToManage, 'id' => $user->account->id]) }}" method="post">
-                                {{ csrf_field() }}
+                            <form action="{{ route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.confirm', ['cooperationToManage' => $cooperationToManage, 'id' => $user->account->id]) }}"
+                                  method="post">
+                                @csrf
                                 <label for="confirm-account">Dit account is nog niet bevestigd</label>
-                                <input type="submit" name="confirm" value="Nu bevestigen" class="form-control btn btn-info">
+                                <input type="submit" name="confirm" value="Nu bevestigen"
+                                       class="form-control btn btn-info">
                             </form>
                         </div>
                     @endif
@@ -94,7 +96,7 @@
                         }
                     }).done(function () {
                         // just reload the page
-                        location.reload();
+                        // location.reload();
                     });
                 } else {
                     event.preventDefault();

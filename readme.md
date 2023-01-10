@@ -1,8 +1,10 @@
 # Woningdossier
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/?branch=develop)
-[![Code Coverage](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/?branch=develop)
-[![Build Status](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/badges/build.png?b=develop)](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/build-status/develop)
+![develop](https://github.com/Ecodenl/Woningdossier/actions/workflows/build.yml/badge.svg)
+![develop](https://github.com/Ecodenl/Woningdossier/actions/workflows/tests.yml/badge.svg)
+![develop](https://github.com/Ecodenl/Woningdossier/actions/workflows/static-analysis.yml/badge.svg)
+
+
 
 To contribute to this project you must assign copyright of your contribution to Econobis B.V. 
 To do this, include the following filled-in copyright assignment form in your patch: [Individual contributor assignment agreement](https://alfresco.econobis.nl/share/proxy/alfresco-noauth/api/internal/shared/node/rQdefja0Tz-F16GjPb_fNw/content/Econobis%20and%20Hoomdossier%20Individual%20Contributor%20Assignment%20Agreement.pdf?c=force&noCache=1597329388415&a=true)

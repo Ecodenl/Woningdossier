@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
+use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\Role;
 use App\Models\User;
+use App\Traits\Http\CreatesUsers;
 
 class UserController extends Controller
 {
+    use CreatesUsers;
+
     /**
      * Show the coordinators of the cooperation that the user is managing.
      *
@@ -38,11 +43,37 @@ class UserController extends Controller
             compact('users', 'breadcrumbs', 'cooperationToManage'));
     }
 
+    public function create(Cooperation $cooperation, Cooperation $cooperationToManage)
+    {
+        $possibleRoles = \Spatie\Permission\Models\Role::orderByDesc('level')->get();
+        $roles = [];
+        foreach ($possibleRoles as $possibleRole) {
+            if (Hoomdossier::account()->can('assign-role', $possibleRole)) {
+                $roles[] = $possibleRole;
+            }
+        }
+        $roles = collect($roles);
+        $coaches = $cooperationToManage->getCoaches()->get();
+
+        return view('cooperation.admin.users.create', compact('roles', 'coaches', 'cooperationToManage'));
+    }
+
+    public function store(UserFormRequest $request, Cooperation $cooperation, Cooperation $cooperationToManage)
+    {
+        $this->createUser($request, $cooperationToManage);
+
+        return redirect()
+            ->route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index',
+                compact('cooperation', 'cooperationToManage'))
+            ->with('success', __('cooperation/admin/users.store.success'));
+    }
+
     public function show(Cooperation $currentCooperation, Cooperation $cooperationToManage, $userId)
     {
         $user = User::withoutGlobalScopes()->findOrFail($userId);
         $roles = Role::where('name', '!=', 'superuser')
-            ->where('name', '!=', 'super-admin')->get();
+            ->where('name', '!=', 'super-admin')
+            ->orderByDesc('level')->get();
 
         return view('cooperation.admin.super-admin.cooperations.users.show',
             compact('user', 'cooperationToManage', 'roles'));

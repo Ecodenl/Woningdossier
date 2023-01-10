@@ -58,7 +58,7 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
             UserAssociatedWithOtherCooperation::dispatch($user->cooperation, $user);
         }
         // at this point, a user can't register without accepting the privacy terms.
-        UserAllowedAccessToHisBuilding::dispatch($user->building);
+        UserAllowedAccessToHisBuilding::dispatch($user, $user->building);
 
         $this->guard->login($account);
 
@@ -70,8 +70,10 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function checkExistingEmail(Cooperation $cooperation, Request $request)
+    public function checkExistingEmail(Request $request, Cooperation $cooperation, ?Cooperation $forCooperation = null)
     {
+        $cooperationToCheckFor = $forCooperation instanceof Cooperation ? $forCooperation : $cooperation;
+
         $email = $request->get('email');
         $account = Account::where('email', $email)->first();
 
@@ -81,7 +83,7 @@ class RegisteredUserController extends \Laravel\Fortify\Http\Controllers\Registe
             $response['email_exists'] = true;
 
             // check if the user is a member of the cooperation
-            if ($account->user() instanceof User) {
+            if ($account->users()->forMyCooperation($cooperationToCheckFor->id)->first() instanceof User) {
                 $response['user_is_already_member_of_cooperation'] = true;
             }
 

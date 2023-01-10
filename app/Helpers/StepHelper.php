@@ -125,15 +125,18 @@ class StepHelper
      * @param \App\Models\Building $building
      * @param \App\Models\InputSource $inputSource
      * @param \App\Models\User $authUser
-     * @param bool $triggerRecalculate
      *
      * @return bool True if the step can be completed, false if it can't be completed.
      */
-    public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, User $authUser, bool $triggerRecalculate): bool
+    public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, User $authUser): bool
     {
+        // We want to check if the user has completed the sub steps on master. The sub steps might be completed
+        // in a mixed bag of coach and resident.
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
         Log::debug("Complete step {$step->short} if needed");
         $scan = $step->scan;
-        $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
+        $allCompletedSubStepIds = CompletedSubStep::forInputSource($masterInputSource)
             ->forBuilding($building)
             ->whereHas('subStep', function ($query) use ($step) {
                 $query->where('step_id', $step->id);
@@ -150,7 +153,6 @@ class StepHelper
             static::complete($step, $building, $inputSource);
 
             StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
-
             return true;
         } else {
             // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
@@ -170,7 +172,6 @@ class StepHelper
                 static::complete($step, $building, $inputSource);
 
                 StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
-
                 return true;
             }
         }

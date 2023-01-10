@@ -21,7 +21,6 @@
 
 @prepend('js')
     <script src="{{ asset('js/datatables.js') }}"></script>
-    <script src="{{ asset('js/disable-auto-fill.js') }}"></script>
     <script src="{{asset('js/select2.js')}}"></script>
 
     <script>

@@ -14,17 +14,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property array $name
- * @property int|null $step_id
  * @property int $cooperation_id
- * @property int $order
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $step_id
+ * @property int $order
  * @property-read \App\Models\Cooperation $cooperation
  * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
  * @property-read int|null $questions_count
- * @property-read \App\Models\Step|null $step
+ * @property-read \App\Models\Step $step
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire active()
  * @method static \Database\Factories\QuestionnaireFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forAllCooperations()

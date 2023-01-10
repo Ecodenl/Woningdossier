@@ -69,8 +69,6 @@ class AddressService
             if (is_null($addresses)) {
                 // this is for the users that are not up to date on the huisletter and extension combi
                 // they might only enter a huisleter or extension even though it should be a combi.
-                DiscordNotifier::init()->notify("The last resort has been triggered {$postalCode}, {$number}, {$houseNumberExtension}");
-
                 // the previous calls were all based on a exact match, to get the best match.
                 // this last resort turns that of to get the at least the build year accurate.
                 $attributes['exacteMatch'] = false;

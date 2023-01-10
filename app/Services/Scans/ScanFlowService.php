@@ -73,7 +73,7 @@ class ScanFlowService
     }
 
     /**
-     * Check if we should incomplete steps because conditional steps have come free, or if we need to
+     * Check if we should incomplete (sub) steps because conditional (sub) steps have come free, or if we need to
      * incomplete sub steps because they are hidden now.
      */
     public function checkConditionals(array $filledInAnswers, User $authUser)
@@ -108,14 +108,11 @@ class ScanFlowService
             ->whereNotIn('sub_step_id', $subStepsRelated->pluck('id')->toArray())
             ->get();
 
-        // Get all conditions to get answers for
-        $allConditions = [];
-        foreach ($subStepsRelated as $subStep) {
-            $allConditions = array_merge($allConditions, $subStep->conditions ?? []);
-        }
-        foreach ($subSteppableRelated as $subSteppable) {
-            $allConditions = array_merge($allConditions, $subSteppable->conditions ?? []);
-        }
+        $allConditions = $subStepsRelated->pluck('conditions')
+            ->merge($subSteppableRelated->pluck('conditions'))
+            ->filter()
+            ->flatten(1)
+            ->all();
 
         $evaluator = ConditionEvaluator::init()
             ->building($building)
@@ -129,19 +126,37 @@ class ScanFlowService
         // The logic is as follows:
         // We will simply check if the related SubStep has answers or not.
 
+        // TODO: See if we can convert this to 'evaluateSubSteps' also
         foreach ($subSteppableRelated as $toolQuestionSubSteppable) {
             $subStep = $toolQuestionSubSteppable->subStep;
 
             // Skip if already processed
             if (! in_array($subStep->id, $processedSubSteps)) {
-                if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
-                    Log::debug("Completing SubStep {$subStep->name} because it has answers.");
-                    $subStepService->subStep($subStep)->complete();
-                    $stepsToCheck[] = $subStep->step->short;
+                if ($evaluator->evaluate($subStep->conditions ?? [])) {
+                    if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
+                        Log::debug("Completing SubStep {$subStep->name} because it has answers.");
+                        $subStepService->subStep($subStep)->complete();
+                        $stepsToCheck[] = $subStep->step->short;
+                    } else {
+                        Log::debug("Incompleting SubStep {$subStep->name} and Step {$subStep->step->name} because SubStep is missing answers.");
+                        $subStepService->subStep($subStep)->incomplete();
+                        StepHelper::incomplete($subStep->step, $building, $currentInputSource);
+                    }
                 } else {
-                    Log::debug("Incompleting SubStep {$subStep->name} and Step {$subStep->step->name} because SubStep is missing answers.");
-                    $subStepService->subStep($subStep)->incomplete();
-                    StepHelper::incomplete($subStep->step, $building, $currentInputSource);
+                    $completedSubStep = CompletedSubStep::allInputSources()
+                        ->forInputSource($masterInputSource)
+                        ->forBuilding($building)
+                        ->where('sub_step_id', $subStep->id)
+                        ->first();
+
+                    // If it's an invisible step that is complete, we want to incomplete it.
+                    if ($completedSubStep instanceof CompletedSubStep) {
+                        Log::debug("Incompleting SubStep {$subStep->name} because it's not visible.");
+                        $subStepService->subStep($subStep)->incomplete();
+                    }
+
+                    // Add to array so we can check the Step completion later
+                    $stepsToCheck[] = $subStep->step->short;
                 }
 
                 $processedSubSteps[] = $subStep->id;
@@ -153,7 +168,7 @@ class ScanFlowService
         foreach ($stepsToCheck as $stepShort) {
             $step = Step::findByShort($stepShort);
             Log::debug("Completing Step {$step->name} if possible");
-            $completed = StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, $authUser, false);
+            $completed = StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, $authUser);
             if (! $completed) {
                 Log::debug("Step {$step->name} could not be completed, so we incomplete it.");
                 StepHelper::incomplete($step, $building, $currentInputSource);

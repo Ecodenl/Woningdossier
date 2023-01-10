@@ -7,7 +7,7 @@
                 Hoomdossier niet beschikbaar
             </h1>
             <p>
-                Wegens update is het Hoomdossier nu niet beschikbaar. Dit zal tot het begin van de middag duren.
+                Het Hoomdossier is momenteel niet beschikbaar, wij voeren momenteel een update uit. Dit kan tot 09:30 duren.
             </p>
         </div>
     </div>

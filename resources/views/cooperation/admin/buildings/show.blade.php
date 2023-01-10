@@ -344,14 +344,14 @@
                 if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {
 
                     $.ajax({
-                        url: '{{route('cooperation.admin.cooperation.users.destroy')}}',
+                        url: '{{route('cooperation.admin.users.destroy')}}',
                         method: 'POST',
                         data: {
                             user_id: userId,
                             _method: 'DELETE'
                         }
                     }).done(function () {
-                        window.location.href = '{{route('cooperation.admin.cooperation.users.index')}}'
+                        window.location.href = '{{route('cooperation.admin.users.index')}}'
                     })
                 }
             });

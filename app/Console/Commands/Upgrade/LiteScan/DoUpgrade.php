@@ -55,6 +55,7 @@ class DoUpgrade extends Command
             ConvertQuestionnaireStepsToPivot::class => [],
             RemoveActionPlanReport::class => [],
 //            MapQuickToLite::class => [],
+            TranslationUpdate::class => [],
         ];
 
 

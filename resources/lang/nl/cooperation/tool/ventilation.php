@@ -77,4 +77,7 @@ return [
             'text' => 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.',
         ],
     ],
+    'calculations' => [
+        'warning' => 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.',
+    ],
 ];

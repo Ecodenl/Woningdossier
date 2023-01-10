@@ -1,4 +1,4 @@
-name: static-analysis
+name: Static analysis
 on:
   push:
     branches: [ "develop" ]
@@ -7,7 +7,7 @@ on:
 
 jobs:
   phpstan:
-    name: Static code analysis [PHP ${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}]
+    name: Larastan code analysis [PHP ${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

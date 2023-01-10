@@ -170,7 +170,7 @@ class ScanFlowService
         foreach ($stepsToCheck as $stepShort) {
             $step = Step::findByShort($stepShort);
             Log::debug("Completing Step {$step->name} if possible");
-            $completed = StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, $authUser, false);
+            $completed = StepHelper::completeStepIfNeeded($step, $building, $currentInputSource, $authUser);
             if (! $completed) {
                 Log::debug("Step {$step->name} could not be completed, so we incomplete it.");
                 StepHelper::incomplete($step, $building, $currentInputSource);

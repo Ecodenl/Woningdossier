@@ -114,7 +114,7 @@ class ToolQuestionService {
                 ->updateOrCreate($where, $data);
         }
 
-       $this->checkConditionalAnswers($givenAnswer);
+        $this->checkConditionalAnswers($givenAnswer);
     }
 
     public function saveToolQuestionValuables($givenAnswer)
@@ -182,7 +182,7 @@ class ToolQuestionService {
                 $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
                 // apply the example building for the given changes.
                 // we give him the old building features, otherwise we cant verify the changes
-                ApplyExampleBuildingForChanges::dispatchNow($oldBuildingFeature, $answerData, $this->currentInputSource);
+                ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
             }
         }
 
@@ -221,10 +221,10 @@ class ToolQuestionService {
      */
     private function checkConditionalAnswers($givenAnswer)
     {
-        // TODO: Check the format for rating-slider questions (also in the evaluator itself)
+        // TODO: See how to handle JSON answers in case it ever becomes a conditional (comes back as literal JSON)
         // We build the answers ourselves to make a few less queries
         $answers = collect([
-            $this->toolQuestion->short => is_array($givenAnswer) ? collect($givenAnswer) : $givenAnswer,
+            $this->toolQuestion->short => $givenAnswer,
         ]);
 
         // Now we need to find any conditional answers that might be related to this question
@@ -234,9 +234,17 @@ class ToolQuestionService {
         //$toolQuestionValuables = ToolQuestionValuable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$this->toolQuestion->short}\""])
         //    ->get();
 
+        $allConditions = [];
+        foreach ($conditionalCustomValues as $conditionalCustomValue) {
+            $allConditions = array_merge($allConditions, $conditionalCustomValue->conditions ?? []);
+        }
+
         $evaluator = ConditionEvaluator::init()
             ->inputSource($this->currentInputSource)
             ->building($this->building);
+
+        // Retrieve all answers because conditions might be based on more than just this tool question.
+        $answers = $evaluator->getToolAnswersForConditions($allConditions, $answers);
 
         $toolQuestionsToUnset = [];
         foreach ($conditionalCustomValues as $conditionalCustomValue) {

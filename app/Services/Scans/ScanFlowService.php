@@ -73,7 +73,7 @@ class ScanFlowService
     }
 
     /**
-     * Check if we should incomplete steps because conditional steps have come free, or if we need to
+     * Check if we should incomplete (sub) steps because conditional (sub) steps have come free, or if we need to
      * incomplete sub steps because they are hidden now.
      */
     public function checkConditionals(array $filledInAnswers, User $authUser)
@@ -108,14 +108,11 @@ class ScanFlowService
             ->whereNotIn('sub_step_id', $subStepsRelated->pluck('id')->toArray())
             ->get();
 
-        // Get all conditions to get answers for
-        $allConditions = [];
-        foreach ($subStepsRelated as $subStep) {
-            $allConditions = array_merge($allConditions, $subStep->conditions ?? []);
-        }
-        foreach ($subSteppableRelated as $subSteppable) {
-            $allConditions = array_merge($allConditions, $subSteppable->conditions ?? []);
-        }
+        $allConditions = $subStepsRelated->pluck('conditions')
+            ->merge($subSteppableRelated->pluck('conditions'))
+            ->filter()
+            ->flatten(1)
+            ->all();
 
         $evaluator = ConditionEvaluator::init()
             ->building($building)
@@ -129,6 +126,7 @@ class ScanFlowService
         // The logic is as follows:
         // We will simply check if the related SubStep has answers or not.
 
+        // TODO: See if we can convert this to 'evaluateSubSteps' also
         foreach ($subSteppableRelated as $toolQuestionSubSteppable) {
             $subStep = $toolQuestionSubSteppable->subStep;
 

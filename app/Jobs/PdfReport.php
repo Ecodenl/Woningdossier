@@ -23,13 +23,15 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\UserService;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -64,8 +66,8 @@ class PdfReport implements ShouldQueue
      */
     public function handle()
     {
-        if (\App::runningInConsole()) {
-            \Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
+        if (App::runningInConsole()) {
+            Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
         }
 
         $user = $this->user;
@@ -283,8 +285,7 @@ class PdfReport implements ShouldQueue
 
         $noInterest = Interest::where('calculate_value', 4)->first();
 
-//        /** @var \Barryvdh\DomPDF\PDF $pdf */
-        $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
+        $pdf = Pdf::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
             'commentsByStep', 'reportTranslations', 'reportData', 'newReportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
             'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'

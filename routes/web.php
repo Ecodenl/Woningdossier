@@ -106,7 +106,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
         Route::middleware('auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified')->group(function () {
             Route::get('messages/count', [Cooperation\MessagesController::class, 'getTotalUnreadMessageCount'])->name('message.get-total-unread-message-count');
 
-            if ('local' == app()->environment()) {
+            if (in_array(app()->environment(), ['local', 'accept'])) {
                 // debug purpose only
                 Route::name('pdf.')->prefix('pdf')->group(function () {
                     Route::name('user-report.')->prefix('user-report')->group(function () {

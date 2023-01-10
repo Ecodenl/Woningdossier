@@ -24,7 +24,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\UserService;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -248,8 +248,7 @@ class UserReportController extends Controller
 
         $noInterest = Interest::where('calculate_value', 4)->first();
 
-//        /** @var \Barryvdh\DomPDF\PDF $pdf */
-        $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
+        $pdf = Pdf::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
             'commentsByStep', 'reportTranslations', 'reportData', 'newReportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
             'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'

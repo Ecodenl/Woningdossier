@@ -31,8 +31,8 @@ class MyPlanController extends Controller
             $woonplanService = $woonplanService->userIsObserving();
         }
 
-        // if the user cant access his woonplan, redirect him back to the first incomplete step + substep.
-        if (!$woonplanService->canAccessWoonplan()) {
+        // If the user can't access his woonplan, redirect him back to the first incomplete step + substep.
+        if (! $woonplanService->canAccessWoonplan()) {
             $firstIncompleteStep = $building->getFirstIncompleteStep($scan, $masterInputSource);
 
             // There are incomplete steps left, set the sub step

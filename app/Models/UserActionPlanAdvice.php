@@ -9,7 +9,7 @@ use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
-use App\Traits\ToolSettingTrait;
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -82,7 +82,6 @@ class UserActionPlanAdvice extends Model implements Auditable
 {
     use GetValueTrait,
         GetMyValuesTrait,
-        ToolSettingTrait,
         \App\Traits\Models\Auditable;
 
     protected $table = 'user_action_plan_advices';

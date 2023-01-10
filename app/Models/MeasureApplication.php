@@ -18,12 +18,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $measure_info
  * @property string $short
  * @property string $application
+ * @property mixed|null $cost_range
+ * @property string|null $savings_money
  * @property float $costs
  * @property array $cost_unit
  * @property float $minimal_costs
  * @property int $maintenance_interval
  * @property array $maintenance_unit
  * @property int $step_id
+ * @property int $has_calculations
  * @property array|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -38,9 +41,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication query()
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereApplication($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereConfigurations($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCostRange($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCostUnit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCosts($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereHasCalculations($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMaintenanceInterval($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMaintenanceUnit($value)
@@ -48,6 +53,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMinimalCosts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereSavingsMoney($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereShort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereStepId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereUpdatedAt($value)

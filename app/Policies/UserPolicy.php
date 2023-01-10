@@ -113,7 +113,7 @@ class UserPolicy
     {
         $user = $account->user();
         if ($user->hasRoleAndIsCurrentRole('super-admin')) {
-            return true;
+            return in_array($role->name, ['cooperation-admin', 'coordinator', 'coach', 'resident']);
         }
         if ($user->hasRoleAndIsCurrentRole('cooperation-admin')) {
             return in_array($role->name, ['coordinator', 'coach', 'resident']);

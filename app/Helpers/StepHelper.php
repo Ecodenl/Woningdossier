@@ -131,9 +131,13 @@ class StepHelper
      */
     public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, User $authUser, bool $triggerRecalculate): bool
     {
+        // We want to check if the user has completed the sub steps on master. The sub steps might be completed
+        // in a mixed bag of coach and resident.
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
         Log::debug("Complete step {$step->short} if needed");
         $scan = $step->scan;
-        $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
+        $allCompletedSubStepIds = CompletedSubStep::forInputSource($masterInputSource)
             ->forBuilding($building)
             ->whereHas('subStep', function ($query) use ($step) {
                 $query->where('step_id', $step->id);

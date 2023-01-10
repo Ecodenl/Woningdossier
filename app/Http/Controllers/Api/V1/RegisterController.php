@@ -85,7 +85,7 @@ class RegisterController extends Controller
         }
 
         // at this point, a user cant register without accepting the privacy terms.
-        UserAllowedAccessToHisBuilding::dispatch($user->building);
+        UserAllowedAccessToHisBuilding::dispatch($user, $user->building);
 
         // Get input sources by name (unique)
         $inputSources = [];

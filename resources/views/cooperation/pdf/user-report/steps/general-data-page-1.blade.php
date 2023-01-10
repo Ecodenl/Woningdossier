@@ -22,8 +22,11 @@
             $summaryStep =  \App\Models\Step::findByShort('building-data');
             $summarySubStepOrder = $summaryStep->subSteps()->max('order');
 
-            $subStepsToSummarize = $summaryStep->subSteps()->where('order', '<', $summarySubStepOrder)->orderBy('order')->get();
-
+            $subStepsToSummarize = $summaryStep->subSteps()
+                ->where('order', '<', $summarySubStepOrder)
+                ->with('subSteppables')
+                ->orderBy('order')
+                ->get();
         @endphp
 
         @include('cooperation.pdf.user-report.parts.step-summary', compact('subStepsToSummarize', 'summaryStep'))

@@ -57,9 +57,15 @@ class KeyFigures implements KeyFiguresInterface
      */
     public static function getCurrentConsumption(?int $residentCount, ComfortLevelTapWater $comfortLevel): ?KeyFigureConsumptionTapWater
     {
-        return KeyFigureConsumptionTapWater::where('resident_count', $residentCount)
-            ->where('comfort_level_tap_water_id', $comfortLevel->id)
-            ->first();
+        $key = sprintf('heat-pump-characteristics-%s-%s', $residentCount, $comfortLevel->id);
+        $ttl = 60 * 60 * 24; // 24 hours
+        return cache()->remember($key, $ttl, function () use ($residentCount, $comfortLevel) {
+            return KeyFigureConsumptionTapWater::where('resident_count', $residentCount)
+                                               ->where('comfort_level_tap_water_id', $comfortLevel->id)
+                                               ->first();
+        });
+
+
     }
 
     /**

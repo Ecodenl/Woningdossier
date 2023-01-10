@@ -50,8 +50,8 @@ jobs:
         run: php -r "file_exists('.env') || copy('.env.actions', '.env.testing'); copy('.env.actions', '.env');" # If .env exist, we use that, if otherwise, copy .env.example to .env and use that instead
       - name: Run composer install
         run: composer install --prefer-dist
-      - name: Run phpcs - PSR2 check
-        run: ./vendor/bin/phpcs --standard=PSR2 app
+      - name: Run larastan (PHPStan) - Static code analysis
+        run: ./vendor/bin/phpstan analyse --memory-limit=2G
 
   phpcs:
     name: PHPcs PSR check [PHP ${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}]

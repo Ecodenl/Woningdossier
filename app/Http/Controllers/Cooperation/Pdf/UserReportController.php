@@ -37,8 +37,10 @@ class UserReportController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $dumpService = DumpService::init()->inputSource($inputSource)
+        $dumpService = DumpService::init()
             ->user($user)
+            ->inputSource($inputSource)
+            ->defaultEmptyAnswer()
             ->createHeaderStructure($short, false);
 
         $headers = $dumpService->headerStructure;

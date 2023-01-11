@@ -11,6 +11,7 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\ConsiderableHelper;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
@@ -23,6 +24,7 @@ use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Helpers\Translation;
+use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\buildingHeater;
@@ -46,6 +48,7 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Status;
 use App\Models\Step;
+use App\Models\SubSteppable;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
@@ -53,6 +56,7 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -61,10 +65,12 @@ class DumpService
     use FluentCaller;
 
     protected User $user;
+    protected Building $building;
     protected InputSource $inputSource;
 
     public array $headerStructure;
     public bool $anonymize = false;
+    public bool $defaultEmptyAnswer = false;
 
     public function __construct()
     {
@@ -79,6 +85,7 @@ class DumpService
     public function user(User $user): self
     {
         $this->user = $user;
+        $this->building = $user->building;
         return $this;
     }
 
@@ -103,6 +110,17 @@ class DumpService
     public function anonymize(bool $anonymize = true): self
     {
         $this->anonymize = $anonymize;
+        return $this;
+    }
+
+    /**
+     * Whether or not we should show the "no answer given" text in case the user has no answer. Default false.
+     *
+     * @return $this
+     */
+    public function defaultEmptyAnswer(): self
+    {
+        $this->defaultEmptyAnswer = true;
         return $this;
     }
 
@@ -185,7 +203,7 @@ class DumpService
     public function generateDump(bool $withConditionalLogic = true): array
     {
         $user = $this->user;
-        $building = $user->building;
+        $building = $this->building;
         $inputSource = $this->inputSource;
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
@@ -239,28 +257,26 @@ class DumpService
             ->building($building)
             ->inputSource($inputSource);
 
+        [$models, $answers] = $this->prepareHeaderStructure();
+
         foreach ($this->headerStructure as $key => $translation) {
             if (is_string(($key))) {
-                // Structure is as follows:
-                // 0: step shorts
-                // 1: steppable short / calculation ref
-                // n: potential calculation field
-                $structure = explode('.', $key);
+                $model = $models[$key];
 
-                $step = $structure[0];
-                $potentialShort = $structure[1];
-                if (Str::startsWith($potentialShort, 'question_')) {
+                if ($model instanceof ToolQuestion) {
                     $processElement = true;
                     $humanReadableAnswer = null;
-                    $toolQuestion = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
 
                     if ($withConditionalLogic) {
-                        $processElement = $conditionService->forModel($toolQuestion)->isViewable();
+                        $processElement = $conditionService->forModel($model)->isViewable($answers);
                     }
 
                     if ($processElement) {
-                        $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
-                            $toolQuestion);
+                        $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer(
+                            $building,
+                            $inputSource,
+                            $model
+                        );
                         // Priority slider situation
                         if (is_array($humanReadableAnswer)) {
                             $temp = '';
@@ -273,31 +289,21 @@ class DumpService
 
                     // So, by default the human readable answer is a mention of no answer being filled.
                     // However, this reads pretty gnarly so we nullify it.
-                    if ($humanReadableAnswer === __('cooperation/frontend/tool.no-answer-given')) {
+                    if ($humanReadableAnswer === __('cooperation/frontend/tool.no-answer-given') && ! $this->defaultEmptyAnswer) {
                         $humanReadableAnswer = null;
                     }
 
                     $data[$key] = $humanReadableAnswer;
-                } elseif (Str::startsWith($potentialShort, 'calculation_')) {
+                } elseif ($model instanceof ToolCalculationResult) {
                     $processElement = true;
                     $result = null;
 
-                    // The structure is built using the step as main short part for the calculation. We don't know how
-                    // deeply nested the rest is, so we simply implode everything as that is also how its served.
-                    $columnNest = implode('.', array_slice($structure, 2));
-
-                    // We remove the calculation string, and append the column nest. Now we have the full short, which
-                    // we can use to retrieve the model as well as to fetch from the array.
-                    $column = Str::replaceFirst('calculation_', '', $potentialShort)
-                        . (empty($columnNest) ? '' : ".{$columnNest}");
-
                     if ($withConditionalLogic) {
-                        $toolCalculationResult = ToolCalculationResult::findByShort($column);
-                        $processElement = $conditionService->forModel($toolCalculationResult)->isViewable();
+                        $processElement = $conditionService->forModel($model)->isViewable($answers);
                     }
 
                     if ($processElement) {
-                        $answer = Arr::get($calculateData, $column);
+                        $answer = Arr::get($calculateData, $model->short);
                         $result = $this->formatCalculation($key, $answer);
                     }
 
@@ -315,7 +321,7 @@ class DumpService
 
         // collect some info about their building
         $user = $this->user;
-        $building = $user->building;
+        $building = $this->building;
         $inputSource = $this->inputSource;
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
@@ -391,6 +397,68 @@ class DumpService
         }
 
         return self::formatOutput($key, $value, $decimals, $shouldRound);
+    }
+
+    protected function prepareHeaderStructure(): array
+    {
+        $models = [];
+        $modelIds = [];
+
+        // Retrieve all models first
+        foreach ($this->headerStructure as $key => $translation) {
+            if (is_string(($key))) {
+                // Structure is as follows:
+                // 0: step shorts
+                // 1: steppable short / calculation ref
+                // n: potential calculation field
+                $structure = explode('.', $key);
+
+                $step = $structure[0];
+                $potentialShort = $structure[1];
+                if (Str::startsWith($potentialShort, 'question_')) {
+                    $models[$key] = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
+                } elseif (Str::startsWith($potentialShort, 'calculation_')) {
+                    // The structure is built using the step as main short part for the calculation. We don't know how
+                    // deeply nested the rest is, so we simply implode everything as that is also how its served.
+                    $columnNest = implode('.', array_slice($structure, 2));
+
+                    // We remove the calculation string, and append the column nest. Now we have the full short, which
+                    // we can use to retrieve the model as well as to fetch from the array.
+                    $column = Str::replaceFirst('calculation_', '', $potentialShort)
+                        . (empty($columnNest) ? '' : ".{$columnNest}");
+
+                    $models[$key] = ToolCalculationResult::findByShort($column);
+                }
+                $modelIds[] = $models[$key]->id;
+            }
+        }
+
+        // Retrieve all conditions next
+        $subSteppables = SubSteppable::whereIn('sub_steppable_type', [ToolQuestion::class, ToolCalculationResult::class])
+            ->whereIn('sub_steppable_id', $modelIds)
+            ->whereNotNull('sub_steppables.conditions')
+            ->where('sub_steppables.conditions', '!=', DB::raw("cast('[]' as json)"))
+            ->with([
+                'subStep' => fn ($q) => $q->whereNotNull('sub_steps.conditions')
+                    ->where('sub_steps.conditions', '!=', DB::raw("cast('[]' as json)"))
+            ])
+            ->get();
+
+        // First fetch all conditions, so we can retrieve any required related answers in one go
+        $conditions = $subSteppables->pluck('conditions')
+            ->merge($subSteppables->pluck('relations.*.conditions'))
+            ->filter()
+            ->flatten(1)
+            ->all();
+
+        $answers = ConditionEvaluator::init()
+            ->inputSource($this->inputSource)
+            ->building($this->building)
+            ->getToolAnswersForConditions($conditions);
+
+        // Don't use compact here, as we want to assign the return value to separate variables, and that only works
+        // by using a basic index.
+        return [$models, $answers];
     }
 
     ## TODO: Replace legacy

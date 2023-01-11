@@ -4,6 +4,6 @@
     <title>Document 2</title>
 </head>
 
-<body class="new-page">
+<body>
     {{$slot}}
 </body>

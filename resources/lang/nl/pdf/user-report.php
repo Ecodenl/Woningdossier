@@ -1,6 +1,36 @@
 <?php
 
+use App\Services\UserActionPlanAdviceService;
+
 return [
+    'front-page' => [
+        'date' => 'Datum:',
+        'connected-coaches' => 'Energiecoach:|Energiecoaches:',
+        'title' => 'Stappenplan voor het <br> verduurzamen van uw woning',
+        'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
+    ],
+    'action-plan' => [
+        'title' => 'Dit is jouw woonplan',
+        'text' => 'Je hebt het Hoomdossier voor je woning ingevuld. Hieronder zie je een samenvatting van het woonplan zoals je die hebt ingericht.',
+        'usage' => [
+            'current' => 'Dit is je huidig energiegebruik:',
+            'kengetallen' => 'In deze samenvatting hebben we met de volgende energieprijzen gerekend:',
+        ],
+        'categories' => [
+            UserActionPlanAdviceService::CATEGORY_COMPLETE => 'De volgende maatregelen heb je al gedaan:',
+            UserActionPlanAdviceService::CATEGORY_TO_DO => 'De volgende maatregelen kun je het beste nu aanpakken:',
+            UserActionPlanAdviceService::CATEGORY_LATER => 'De volgende maatregelen kan je ook later uitvoeren: ',
+        ],
+        'advices' => [
+            'measure' => 'Maatregel',
+            'cost-indication' => 'Kostenindicatie [ € ]',
+            'savings' => 'Besparing [ € / jaar ]',
+        ],
+        'comment' => 'Toelichting op het woonplan',
+    ],
+
+
+
     'step-description' => [
 //        'usage' => 'Gebruik van de woning pdf tekst',
 //        'building-characteristics' => 'Gebouwkenmerken van de woning tekst',
@@ -16,15 +46,6 @@ return [
         'heater' => 'Voor huishoudens waar veel wordt gedoucht, kan de zonneboiler een uitkomst zijn. Met een zonneboiler verwarmt u water met de energie van de zon. U kunt zo bijna de helft van uw energiegebruik voor warm water besparen. Ideaal voor gezinnen met kinderen.',
         'heat-pump' => 'Een warmtepomp zorgt op een milieuvriendelijke manier voor verwarming van je huis en warm water in de douche en keuken. Het is een duurzaam alternatief voor je cv-ketel op gas. Bovendien kun je bij aankoop subsidie krijgen en gaat je energierekening omlaag. Met een volledige warmtepomp kun je je huis aardgasvrij maken, met een hybride warmtepomp breng je het gasverbruik op korte termijn fors omlaag.',
         'heating' => 'Verwarming is een grote energieverbruiker in huis. Ongeveer de helft van je energierekening bestaat uit kosten voor verwarming, en 15 procent voor warm water. Op een energiezuinige en duurzame manier je huis en water verwarmen levert dus veel op, voor je portemonnee en het klimaat. De overstap van aardgas naar duurzame warmte wordt ook wel de energietransitie genoemd.' . PHP_EOL . 'Hieronder zie je de maatregelen die je voor duurzame warmte in je woning wilt toevoegen.',
-    ],
-    'front-page' => [
-        'date' => 'Datum:',
-        'connected-coaches' => 'Energiecoach:|Energiecoaches:',
-        'title' => 'Stappenplan voor het <br> verduurzamen van uw woning',
-        'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
-    ],
-    'comments' => [
-        '',
     ],
 
     'ventilation' => [

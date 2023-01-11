@@ -1,6 +1,6 @@
 <div id="front-page" class="container">
     <h1>
-        @lang('pdf/user-report.front-page.intro.title')
+        @lang('pdf/user-report.front-page.title')
     </h1>
 
     <div id="user-info">

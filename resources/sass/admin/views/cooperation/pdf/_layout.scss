@@ -1,4 +1,25 @@
 .container {
     max-width: 960px;
     padding: 5rem 80px;
+
+    .group {
+        padding: 0.5rem 0;
+    }
+
+    .row {
+        display: block;
+        width: 100%;
+
+        @for $i from 1 through 12 {
+            .col-#{$i} {
+                display: inline-block;
+                width: unquote("#{floor(calc(100 / (12 / $i)))}%");
+            }
+        }
+    }
+
+    table {
+        page-break-inside: auto;
+        width: 100%;
+    }
 }

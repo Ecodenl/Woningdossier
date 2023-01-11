@@ -14,10 +14,10 @@
     <body>
         @include('cooperation.pdf.user-report.parts.front-page')
 
-
-
         @include('cooperation.pdf.user-report.parts.footer-note')
     </body>
+
+    @include('cooperation.pdf.user-report.parts.action-plan')
 
 
     {{--    General data is not structured like $reportData--}}

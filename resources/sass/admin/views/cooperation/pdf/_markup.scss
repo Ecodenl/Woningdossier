@@ -16,6 +16,7 @@ h2 {
     font-weight: bold;
     color: $color-main;
     line-height: $universal-line-height;
+    margin-bottom: 0.25rem;
 }
 
 h3 {
@@ -23,6 +24,7 @@ h3 {
     font-weight: bold;
     color: $color-main;
     line-height: $universal-line-height;
+    margin-bottom: 0.25rem;
 }
 
 h4 {
@@ -32,13 +34,19 @@ h4 {
     line-height: $universal-line-height;
 }
 
-body {
-    &.new-page {
-        padding-top: 50px;
-    }
+p {
+    color: $color-black;
+    font-size: $font-size-small;
+    line-height: $universal-line-height;
+}
+
+.comment {
+    word-wrap: break-word !important;
+    white-space: pre-line;
 }
 
 
+// TODO: Check
 .step-intro {
     h2 {
         display: block;

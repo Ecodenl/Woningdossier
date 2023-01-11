@@ -1,38 +1,7 @@
-
-
-
-// TODO: Check these
 .text-center {
     text-align: center;
 }
-.text-uppercase {
-    text-transform: uppercase;
-}
 
-.page-break {
-    page-break-before: always;
-}
-
-.turquoise {
-    color: $color-main
-}
-
-.bg-white {
-    background-color: white;
-}
-
-.full-width {
+.w-full {
     width: 100%;
-}
-
-@for $i from 100 through 500 {
-    .w-#{$i} {
-        width: unquote("#{$i}px")
-    }
-}
-
-@for $i from 0 through 100 {
-    .h-#{$i} {
-        height: unquote("#{$i}px")
-    }
 }

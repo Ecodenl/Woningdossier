@@ -8,6 +8,9 @@ use App\Scopes\VisibleScope;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * App\Models\MeasureApplication
@@ -81,17 +84,11 @@ class MeasureApplication extends Model
         'configurations' => 'array',
     ];
 
-    /**
-     * Returns all the interest levels given for the interest.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function interests()
-    {
-        return $this->morphToMany(Interest::class, 'interested_in', 'user_interests');
-//        return $this->morphed(Interest::class, 'interested_in', 'user_interests');
-    }
+    protected $appends = [
+        'name',
+    ];
 
+   # Model methods
     /**
      * Method to check whether a measure application is an advice.
      */
@@ -110,12 +107,19 @@ class MeasureApplication extends Model
         return in_array($this->short, $measureShortsThatAreAdvices);
     }
 
-    public function step()
+    # Attributes
+    public function getNameAttribute(): string
+    {
+        return $this->measure_name;
+    }
+
+    # Relations
+    public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
     }
 
-    public function userActionPlanAdvices()
+    public function userActionPlanAdvices(): MorphMany
     {
         // We need to retrieve this without the visible tag
         // The visible tag defines whether it should be shown on my plan or not, but for other locations
@@ -124,5 +128,16 @@ class MeasureApplication extends Model
             UserActionPlanAdvice::class,
             'user_action_plan_advisable'
         )->withoutGlobalScope(VisibleScope::class);
+    }
+
+    /**
+     * Returns all the interest levels given for the interest.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function interests(): MorphToMany
+    {
+        return $this->morphToMany(Interest::class, 'interested_in', 'user_interests');
+//        return $this->morphed(Interest::class, 'interested_in', 'user_interests');
     }
 }

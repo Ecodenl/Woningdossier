@@ -8,6 +8,7 @@
         </p>
 
         <div class="group">
+            @php $stepShort = $scanShort === \App\Models\Scan::LITE ? 'usage-lite-scan' : 'usage-quick-scan'; @endphp
             <h4>
                 @lang('pdf/user-report.action-plan.usage.current')
             </h4>
@@ -20,7 +21,7 @@
                 </div>
                 <div class="col-9">
                     <p>
-
+                        {!! $dump[$stepShort]['question_amount-gas'] !!}
                     </p>
                 </div>
             </div>
@@ -32,26 +33,26 @@
                 </div>
                 <div class="col-10">
                     <p>
+                        {!! $dump[$stepShort]['question_amount-electricity'] !!}
+                   </p>
+               </div>
+           </div>
+       </div>
 
-                    </p>
-                </div>
-            </div>
-        </div>
+       <div class="group">
+           <h4>
+               @lang('pdf/user-report.action-plan.usage.kengetallen')
+           </h4>
 
-        <div class="group">
-            <h4>
-                @lang('pdf/user-report.action-plan.usage.kengetallen')
-            </h4>
-
-            <div class="row">
-                <div class="col-2">
-                    <p>
-                        {{ Str::ucfirst(__('general.unit.gas.title')) }}
-                    </p>
-                </div>
-                <div class="col-10">
-                    <p>
-                        {!! number_format(Kengetallen::EURO_SAVINGS_GAS, 2, ',', '.') . ' € / m<sup>3</sup>' !!}
+           <div class="row">
+               <div class="col-2">
+                   <p>
+                       {{ Str::ucfirst(__('general.unit.gas.title')) }}
+                   </p>
+               </div>
+               <div class="col-10">
+                   <p>
+                       {!! number_format(Kengetallen::EURO_SAVINGS_GAS, 2, ',', '.') . ' € / m<sup>3</sup>' !!}
                     </p>
                 </div>
             </div>

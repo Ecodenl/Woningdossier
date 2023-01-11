@@ -5,7 +5,7 @@
 
         // we have to pull apart the interests and filled in data
         // because we have to show the interests with a different title
-        $ventilationData = \App\Helpers\Arr::arrayUndot($dataForSubStep);
+        $ventilationData = \App\Helpers\Arr::undot($dataForSubStep);
 
         $warnings = \App\Helpers\Cooperation\Tool\VentilationHelper::getWarningForValues();
         ?>

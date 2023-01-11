@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Pdf;
 
+use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
@@ -41,11 +42,24 @@ class UserReportController extends Controller
             ->user($user)
             ->inputSource($inputSource)
             ->defaultEmptyAnswer()
+            ->withUnits()
+            ->anonymize() // See line 53
             ->createHeaderStructure($short, false);
 
         $headers = $dumpService->headerStructure;
+        $dump = $dumpService->generateDump();
 
-        //$dump = $dumpService->generateDump();
+        // So we don't use the initial headers (currently). Therefore, we anonymize, as then we only have to unset
+        // the first four keys.
+        unset(
+            $dump[0],
+            $dump[1],
+            $dump[2],
+            $dump[3],
+        );
+
+        // Manipulate the dump so it's categorized by step
+        $dump = Arr::undot($dump);
 
         $categorizedAdvices = $user->userActionPlanAdvices()
             ->forInputSource($inputSource)
@@ -84,12 +98,13 @@ class UserReportController extends Controller
             ->toArray();
 
         return Pdf::loadView('cooperation.pdf.user-report.index', compact(
+            'scanShort',
             'cooperation',
             'building',
             'user',
             'connectedCoachNames',
-            //'headers',
-            //'dump',
+            'headers',
+            'dump',
             'categorizedAdvices',
             'adviceComments',
         ))->stream();

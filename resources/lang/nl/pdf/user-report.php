@@ -28,6 +28,21 @@ return [
         ],
         'comment' => 'Toelichting op het woonplan',
     ],
+    'info-page' => [
+        'calculations-are-indicative' => [
+            'title' => 'Berekeningen zijn indicatief',
+            'text' => 'Met het Hoomdossier proberen we een zo goed mogelijke inschatting te maken van de kansen en mogelijkheden om jouw huis te verduurzamen. Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier inzicht geeft in de mogelijke impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. De feitelijke kosten en opbrengsten van een investering bepaal je vervolgens op basis van offertes. Je kunt het wel gebruiken als basis voor een keukentafelgesprek of een professioneel advies. Er kan geen garantie worden ontleend aan de resultaten van het Hoomdossier ten aanzien van de daadwerkelijke energieprestaties, berekend energiegebruik of besparingen. De essentie van werken met Hoomdossier is het krijgen van inzicht in de kosten en baten van energiebesparende maatregelen.',
+        ],
+        'more-info' => [
+            'title' => 'Meer informatie',
+            'text' => 'Het Hoomdossier wordt aangeboden door :cooperation.',
+            'website' => 'Meer informatie en onze volledige contactgegevens kunt u vinden op :url.'
+        ],
+    ],
+    'simple-scan-answers' => [
+        'title' => 'Bijlage 1',
+        'text' => 'De volgende gegevens heb je ingevuld in het Hoomdossier:',
+    ],
 
 
 
@@ -90,7 +105,7 @@ return [
 
         'calculations-are-indicative' => [
             'title' => 'Berekeningen zijn indicatief',
-            'text' => 'Met het Hoomdossier proberen we een zo goed mogelijke inschatting te maken van de kansen en mogelijkheden om uw huis te verduurzamen. Daarbij maken we gebruik van open data en kengetallen. Ook rekent het programma met landelijk gemiddelde prijzen. De uitkomst kan daarom afwijken van de werkelijke situatie. Wilt u een professioneel advies op maat? Vraag dan een energieadvies aan huis aan. Door het Hoomdossier krijgt u een eerste indruk van de kansen en mogelijkheden om uw huis te verduurzamen. De feitelijke kosten en opbrengsten van een investering bepaalt u vervolgens op basis van offertes.',
+            'text' => 'Met het Hoomdossier proberen we een zo goed mogelijke inschatting te maken van de kansen en mogelijkheden om jouw huis te verduurzamen. Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier inzicht geeft in de mogelijke impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. De feitelijke kosten en opbrengsten van een investering bepaal je vervolgens op basis van offertes. Je kunt het wel gebruiken als basis voor een keukentafelgesprek of een professioneel advies. Er kan geen garantie worden ontleend aan de resultaten van het Hoomdossier ten aanzien van de daadwerkelijke energieprestaties, berekend energiegebruik of besparingen. De essentie van werken met Hoomdossier is het krijgen van inzicht in de kosten en baten van energiebesparende maatregelen.',
         ],
 
         'next-steps' => [

@@ -11,51 +11,51 @@
 }
 .container .row .col-1 {
   display: inline-block;
-  width: 8%;
+  width: 7%;
 }
 .container .row .col-2 {
   display: inline-block;
-  width: 16%;
+  width: 15%;
 }
 .container .row .col-3 {
   display: inline-block;
-  width: 25%;
+  width: 24%;
 }
 .container .row .col-4 {
   display: inline-block;
-  width: 33%;
+  width: 32%;
 }
 .container .row .col-5 {
   display: inline-block;
-  width: 41%;
+  width: 40%;
 }
 .container .row .col-6 {
   display: inline-block;
-  width: 50%;
+  width: 49%;
 }
 .container .row .col-7 {
   display: inline-block;
-  width: 58%;
+  width: 57%;
 }
 .container .row .col-8 {
   display: inline-block;
-  width: 66%;
+  width: 65%;
 }
 .container .row .col-9 {
   display: inline-block;
-  width: 75%;
+  width: 74%;
 }
 .container .row .col-10 {
   display: inline-block;
-  width: 83%;
+  width: 82%;
 }
 .container .row .col-11 {
   display: inline-block;
-  width: 91%;
+  width: 90%;
 }
 .container .row .col-12 {
   display: inline-block;
-  width: 100%;
+  width: 99%;
 }
 .container table {
   page-break-inside: auto;
@@ -141,11 +141,6 @@ ol li {
   font-size: 11px;
 }
 
-p {
-  color: #000000;
-  font-size: 11px;
-  line-height: 1.15;
-}
 p.sub-lead {
   font-weight: bold;
   color: #1C956E;

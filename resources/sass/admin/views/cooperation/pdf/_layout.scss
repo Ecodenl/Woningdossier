@@ -13,7 +13,7 @@
         @for $i from 1 through 12 {
             .col-#{$i} {
                 display: inline-block;
-                width: unquote("#{floor(calc(100 / (12 / $i)))}%");
+                width: unquote("#{calc(floor(calc(100 / (12 / $i))) - 1)}%");
             }
         }
     }

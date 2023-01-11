@@ -71,6 +71,7 @@ class DumpService
     public array $headerStructure;
     public bool $anonymize = false;
     public bool $defaultEmptyAnswer = false;
+    public bool $withUnits = false;
 
     public function __construct()
     {
@@ -125,6 +126,17 @@ class DumpService
     }
 
     /**
+     * Whether or not to append units to answers.
+     *
+     * @return $this
+     */
+    public function withUnits(): self
+    {
+        $this->withUnits = true;
+        return $this;
+    }
+
+    /**
      * Set a header structure to re-use.
      *
      * @param  array  $headerStructure
@@ -146,6 +158,8 @@ class DumpService
      */
     public function createHeaderStructure(string $short, bool $setStepPrefix = true): self
     {
+        //TODO: See if we can use some dedicated keys so it's easier to remove these if not needed (as of right now,
+        // in the PDF).
         if ($this->anonymize) {
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
@@ -289,8 +303,12 @@ class DumpService
 
                     // So, by default the human readable answer is a mention of no answer being filled.
                     // However, this reads pretty gnarly so we nullify it.
-                    if ($humanReadableAnswer === __('cooperation/frontend/tool.no-answer-given') && ! $this->defaultEmptyAnswer) {
-                        $humanReadableAnswer = null;
+                    if ($humanReadableAnswer === __('cooperation/frontend/tool.no-answer-given')) {
+                        if (! $this->defaultEmptyAnswer) {
+                            $humanReadableAnswer = null;
+                        }
+                    } elseif ($this->withUnits && ! empty($model->unit_of_measure)) {
+                        $humanReadableAnswer .= " {$model->unit_of_measure}";
                     }
 
                     $data[$key] = $humanReadableAnswer;
@@ -305,6 +323,10 @@ class DumpService
                     if ($processElement) {
                         $answer = Arr::get($calculateData, $model->short);
                         $result = $this->formatCalculation($key, $answer);
+
+                        if ($this->withUnits && ! empty($model->unit_of_measure)) {
+                            $result .= " {$model->unit_of_measure}";
+                        }
                     }
 
                     $data[$key] = $result;
@@ -396,7 +418,28 @@ class DumpService
             $shouldRound = true;
         }
 
-        return self::formatOutput($key, $value, $decimals, $shouldRound);
+        return $this->formatOutput($key, $value, $decimals, $shouldRound);
+    }
+
+    /**
+     * Format the output of the given column and value.
+     *
+     * @param string $column
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $shouldRound
+     *
+     * @return string
+     */
+    protected function formatOutput(string $column, $value, int $decimals = 0, bool $shouldRound = false): string
+    {
+        if ($shouldRound) {
+            $value = NumberFormatter::round($value);
+        }
+
+        // We should let Excel do the separation of thousands
+        return number_format($value, $decimals, ',', '');
+        //return NumberFormatter::format($value, $decimals, $shouldRound);
     }
 
     protected function prepareHeaderStructure(): array
@@ -1205,26 +1248,7 @@ class DumpService
         return self::formatOutput($column, $value, $decimals, $shouldRound);
     }
 
-    /**
-     * Format the output of the given column and value.
-     *
-     * @param string $column
-     * @param mixed $value
-     * @param int $decimals
-     * @param bool $shouldRound
-     *
-     * @return float|int|string
-     */
-    protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false)
-    {
-        if ($shouldRound) {
-            $value = NumberFormatter::round($value);
-        }
 
-        // We should let Excel do the separation of thousands
-        return number_format($value, $decimals, ',', '');
-        //return NumberFormatter::format($value, $decimals, $shouldRound);
-    }
 
     protected static function translateExtraValueIfNeeded($value)
     {

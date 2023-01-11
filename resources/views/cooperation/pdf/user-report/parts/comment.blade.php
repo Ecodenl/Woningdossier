@@ -13,6 +13,7 @@
 {{--    </div>--}}
 {{--</div>--}}
 
+{{-- Use table instead to ensure DomPdf breaks the comment into a new page if it's too long --}}
 <table>
     <tbody>
         <tr>

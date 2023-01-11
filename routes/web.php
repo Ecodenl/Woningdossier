@@ -1,16 +1,15 @@
 <?php
 
 use App\Http\Controllers\Cooperation;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
-use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
 use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
-use Laravel\Fortify\Http\Controllers\NewPasswordController;
+use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
+use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
 /** @noinspection PhpParamsInspection */
@@ -47,7 +46,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
         Route::get('switch-language/{locale}', [Cooperation\UserLanguageController::class, 'switchLanguage'])->name('switch-language');
 
-        Route::get('check-existing-mail', [RegisteredUserController::class, 'checkExistingEmail'])->name('check-existing-email');
+        Route::get('check-existing-mail/{forCooperation?}', [RegisteredUserController::class, 'checkExistingEmail'])->name('check-existing-email');
 
         // Fortify auth routes start
         Route::get('/register', [RegisteredUserController::class, 'index'])
@@ -333,18 +332,15 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
                 });
 
+                Route::resource('users', Cooperation\Admin\UserController::class)
+                    ->only(['index', 'create', 'store'])
+                    ->middleware('current-role:cooperation-admin|coordinator');
+                Route::prefix('users')->name('users.')->middleware('current-role:cooperation-admin')->group(function () {
+                    Route::delete('delete', [Cooperation\Admin\UserController::class, 'destroy'])->name('destroy');
+                });
+
                 /* Section for the cooperation-admin and coordinator */
                 Route::prefix('cooperatie')->name('cooperation.')->middleware('current-role:cooperation-admin|coordinator')->group(function () {
-                    Route::prefix('users')->name('users.')->group(function () {
-                        Route::get('', [Cooperation\Admin\Cooperation\UserController::class, 'index'])->name('index');
-                        Route::get('create', [Cooperation\Admin\Cooperation\UserController::class, 'create'])->name('create');
-                        Route::post('create', [Cooperation\Admin\Cooperation\UserController::class, 'store'])->name('store');
-
-                        Route::middleware('current-role:cooperation-admin')->group(function () {
-                            Route::delete('delete', [Cooperation\Admin\Cooperation\UserController::class, 'destroy'])->name('destroy');
-                        });
-                    });
-
                     Route::resource('coaches', Cooperation\Admin\Cooperation\CoachController::class)->only(['index', 'show'])
                         ->parameter('coaches', 'user');
                     Route::resource('residents', Cooperation\Admin\Cooperation\ResidentController::class)->only(['index'])
@@ -443,13 +439,21 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                         /* Actions that will be done per cooperation */
                         Route::prefix('{cooperationToManage}/')->name('cooperation-to-manage.')->group(function () {
-                                Route::resource('home', Cooperation\Admin\SuperAdmin\Cooperation\HomeController::class)->only('index');
+                            Route::resource('home', Cooperation\Admin\SuperAdmin\Cooperation\HomeController::class)
+                                ->only('index');
 
-                                Route::resource('cooperation-admin', Cooperation\Admin\SuperAdmin\Cooperation\CooperationAdminController::class)->only(['index']);
-                                Route::resource('coordinator', Cooperation\Admin\SuperAdmin\Cooperation\CoordinatorController::class)->only(['index']);
-                                Route::resource('users', Cooperation\Admin\SuperAdmin\Cooperation\UserController::class)->only(['index', 'show']);
-                                Route::post('users/{id}/confirm', [Cooperation\Admin\SuperAdmin\Cooperation\UserController::class, 'confirm'])->name('users.confirm');
-                            });
+                            Route::resource('cooperation-admin',
+                                Cooperation\Admin\SuperAdmin\Cooperation\CooperationAdminController::class)
+                                ->only(['index']);
+                            Route::resource('coordinator',
+                                Cooperation\Admin\SuperAdmin\Cooperation\CoordinatorController::class)
+                                ->only(['index']);
+                            Route::resource('users', Cooperation\Admin\SuperAdmin\Cooperation\UserController::class)
+                                ->only(['index', 'show', 'create', 'store']);
+                            Route::post('users/{id}/confirm', [
+                                Cooperation\Admin\SuperAdmin\Cooperation\UserController::class, 'confirm',])
+                                ->name('users.confirm');
+                        });
                     });
                 });
 

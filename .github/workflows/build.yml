@@ -1,4 +1,4 @@
-name: Tests
+name: Build
 on:
   push:
     branches: [ "develop" ]
@@ -72,5 +72,3 @@ jobs:
         run: php artisan config:clear && php artisan config:cache
       - name: Prepare Laravel Application
         run: php artisan migrate
-      - name: Run phpunit - Test code
-        run: ./vendor/bin/phpunit

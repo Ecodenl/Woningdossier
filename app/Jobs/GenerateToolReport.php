@@ -73,7 +73,7 @@ class GenerateToolReport implements ShouldQueue
             ->createHeaderStructure($short);
 
         $dumpService->setHeaderStructure(
-            ContentStructureService::init($dumpService->headerStructure)->applicableForTotalReport()
+            ContentStructureService::init($dumpService->headerStructure)->applicableForCsvReport()
         );
 
         $cooperation = $this->cooperation;

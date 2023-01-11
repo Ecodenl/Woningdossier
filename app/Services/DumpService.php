@@ -79,7 +79,6 @@ class DumpService
     public function user(User $user): self
     {
         $this->user = $user;
-
         return $this;
     }
 
@@ -91,7 +90,6 @@ class DumpService
     public function inputSource(InputSource $inputSource): self
     {
         $this->inputSource = $inputSource;
-
         return $this;
     }
 
@@ -105,7 +103,6 @@ class DumpService
     public function anonymize(bool $anonymize = true): self
     {
         $this->anonymize = $anonymize;
-
         return $this;
     }
 
@@ -119,7 +116,6 @@ class DumpService
     public function setHeaderStructure(array $headerStructure): self
     {
         $this->headerStructure = Arr::dot($headerStructure);
-
         return $this;
     }
 

@@ -18,11 +18,10 @@ return [
         'heating' => 'Verwarming is een grote energieverbruiker in huis. Ongeveer de helft van je energierekening bestaat uit kosten voor verwarming, en 15 procent voor warm water. Op een energiezuinige en duurzame manier je huis en water verwarmen levert dus veel op, voor je portemonnee en het klimaat. De overstap van aardgas naar duurzame warmte wordt ook wel de energietransitie genoemd.' . PHP_EOL . 'Hieronder zie je de maatregelen die je voor duurzame warmte in je woning wilt toevoegen.',
     ],
     'front-page' => [
-        'intro' => [
-            'connected-coaches' => 'Energiecoach:|Energiecoaches:',
-            'title' => 'Stappenplan voor het <br> verduurzamen van uw woning',
-            'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
-        ],
+        'date' => 'Datum:',
+        'connected-coaches' => 'Energiecoach:|Energiecoaches:',
+        'title' => 'Stappenplan voor het <br> verduurzamen van uw woning',
+        'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
     ],
     'comments' => [
         '',

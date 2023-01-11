@@ -32,6 +32,8 @@ class ToolHelper
     const STRUCT_TOTAL = 'struct-total';
     const STRUCT_LITE = 'struct-lite';
     const STRUCT_SMALL_MEASURES_LITE = 'struct-small-measures-lite';
+    const STRUCT_PDF_QUICK = 'struct-pdf-quick';
+    const STRUCT_PDF_LITE = 'struct-pdf-lite';
 
     const STEP_STRUCTURE = [
         self::STRUCT_TOTAL => [
@@ -52,6 +54,10 @@ class ToolHelper
         self::STRUCT_SMALL_MEASURES_LITE => [
             'small-measures-lite',
         ],
+        self::STRUCT_PDF_QUICK => [
+            'building-data', 'usage-quick-scan', 'living-requirements', 'residential-status', 'small-measures',
+        ],
+        self::STRUCT_PDF_LITE => self::STRUCT_LITE,
     ];
 
     /**
@@ -66,7 +72,7 @@ class ToolHelper
     public static function getContentStructure(string $short): array
     {
         // Just for safety.
-        $stepOrder = array_key_exists($short, self::STEP_STRUCTURE) ? self::STEP_STRUCTURE[$short] : [];
+        $stepOrder = static::getStepOrder($short);
 
         $structure = [];
 
@@ -133,6 +139,18 @@ class ToolHelper
         }
 
         return $structure;
+    }
+
+    private static function getStepOrder(string $short): array
+    {
+        do {
+            // If the returned value is a string, then it's a short referencing a different step map. This is done
+            // to preserve the amount of duplicate maps and keep things more readable.
+            $stepOrder = array_key_exists($short, self::STEP_STRUCTURE) ? self::STEP_STRUCTURE[$short] : [];
+            $short = is_string($stepOrder) ? $stepOrder : $short;
+        } while (is_string($stepOrder));
+
+        return $stepOrder;
     }
 
     // TODO: Remove legacy

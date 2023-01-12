@@ -54,8 +54,16 @@ class ToolHelper
         self::STRUCT_SMALL_MEASURES_LITE => [
             'small-measures-lite',
         ],
+        // In a perfect world we could just use the total struct...
         self::STRUCT_PDF_QUICK => [
+            // Quick Scan
             'building-data', 'usage-quick-scan', 'living-requirements', 'residential-status', 'small-measures',
+            // Expert Scan
+            'ventilation', 'wall-insulation', 'insulated-glazing', 'floor-insulation', 'roof-insulation',
+            'solar-panels',
+            'heating' => [
+                'huidige-situatie', 'nieuwe-situatie',
+            ],
         ],
         self::STRUCT_PDF_LITE => self::STRUCT_LITE,
     ];

@@ -62,6 +62,9 @@ use Illuminate\Support\Str;
 
 class DumpService
 {
+    const MODE_CSV = 'csv';
+    const MODE_PDF = 'pdf';
+
     use FluentCaller;
 
     protected User $user;
@@ -69,9 +72,7 @@ class DumpService
     protected InputSource $inputSource;
 
     protected bool $anonymize = false;
-    protected bool $defaultEmptyAnswer = false;
-    protected bool $withUnits = false;
-    protected bool $formatArrayAnswers = true;
+    protected string $mode = self::MODE_CSV;
 
     public array $headerStructure;
 
@@ -117,35 +118,13 @@ class DumpService
     }
 
     /**
-     * Whether or not we should show the "no answer given" text in case the user has no answer. Default false.
+     * Set dump mode, which impacts how the dump is formed.
      *
      * @return $this
      */
-    public function defaultEmptyAnswer(): self
+    public function setMode(string $mode): self
     {
-        $this->defaultEmptyAnswer = true;
-        return $this;
-    }
-
-    /**
-     * Whether or not to append units to answers.
-     *
-     * @return $this
-     */
-    public function withUnits(): self
-    {
-        $this->withUnits = true;
-        return $this;
-    }
-
-    /**
-     * Whether or not we should implode JSON array answers.
-     *
-     * @return $this
-     */
-    public function dontFormatArrayAnswers(): self
-    {
-        $this->formatArrayAnswers = false;
+        $this->mode = $mode;
         return $this;
     }
 
@@ -306,22 +285,25 @@ class DumpService
                         );
 
                         // Priority slider situation
-                        if (is_array($humanReadableAnswer) && $this->formatArrayAnswers) {
+                        if (is_array($humanReadableAnswer) && $this->formatArrays()) {
                             $temp = '';
                             foreach ($humanReadableAnswer as $name => $answer) {
                                 $temp .= "{$name}: {$answer}, ";
                             }
                             $humanReadableAnswer = substr($temp, 0, -2);
                         }
+                    } elseif ($this->removeUnconditionals()) {
+                        unset($this->headerStructure[$key]);
+                        continue;
                     }
 
                     // So, by default the human readable answer is a mention of no answer being filled.
                     // However, this reads pretty gnarly so we nullify it.
                     if ($humanReadableAnswer === __('cooperation/frontend/tool.no-answer-given')) {
-                        if (! $this->defaultEmptyAnswer) {
+                        if (! $this->defaultEmptyAnswer()) {
                             $humanReadableAnswer = null;
                         }
-                    } elseif ($this->withUnits && ! empty($model->unit_of_measure)) {
+                    } elseif ($this->withUnits() && ! empty($model->unit_of_measure)) {
                         $humanReadableAnswer .= " {$model->unit_of_measure}";
                     }
 
@@ -338,9 +320,12 @@ class DumpService
                         $answer = Arr::get($calculateData, $model->short);
                         $result = $this->formatCalculation($key, $answer);
 
-                        if ($this->withUnits && ! empty($model->unit_of_measure)) {
+                        if ($this->withUnits() && ! empty($model->unit_of_measure)) {
                             $result .= " {$model->unit_of_measure}";
                         }
+                    } elseif ($this->removeUnconditionals()) {
+                        unset($this->headerStructure[$key]);
+                        continue;
                     }
 
                     $data[$key] = $result;
@@ -516,6 +501,26 @@ class DumpService
         // Don't use compact here, as we want to assign the return value to separate variables, and that only works
         // by using a basic index.
         return [$models, $answers];
+    }
+
+    private function withUnits(): bool
+    {
+        return $this->mode === self::MODE_PDF;
+    }
+
+    private function defaultEmptyAnswer(): bool
+    {
+        return $this->mode === self::MODE_PDF;
+    }
+
+    private function formatArrays(): bool
+    {
+        return $this->mode === self::MODE_CSV;
+    }
+
+    private function removeUnconditionals(): bool
+    {
+        return $this->mode === self::MODE_PDF;
     }
 
     ## TODO: Replace legacy

@@ -47,14 +47,15 @@ return [
         'title' => 'Bijlage 1',
         'text' => 'De volgende gegevens heb je ingevuld in het Hoomdossier:',
     ],
-
+    'expert-scan-answers' => [
+        'title' => 'Bijlage 2',
+        'text' => 'Op de volgende bladzijden zie je voor de maatregelen die in jouw woonplan staan een samenvatting van de ingevoerde gegevens en de gedetailleerde uitkomst van de berekeningen. Meer informatie over de maatregelen kun je ook vinden op de website van Milieucentraal <a href="www.milieucentraal.nl" target="_blank" rel="nofollow">www.milieucentraal.nl</a>.',
+        'action-plan' => 'In deze bijlage vind je de gegevens van de volgende maatregelen',
+    ],
 
 
     'step-description' => [
-//        'usage' => 'Gebruik van de woning pdf tekst',
-//        'building-characteristics' => 'Gebouwkenmerken van de woning tekst',
-//        'interest' => 'Interesse tekst',
-//        'current-state' => 'Huidige staat van de woning tekst',
+
         'ventilation' => 'Voor uw gezondheid is een goede ventilatie met voldoende schone lucht noodzakelijk. Bij oudere slecht geïsoleerde huizen gaat luchtverversing vaak vanzelf via naden en kieren. Maar naarmate huizen beter geïsoleerd worden gebeurt dat steeds minder en is andere ventilatie nodig. Ventilatie zorgt voor minder vuile lucht in huis; helemaal te voorkomen is vervuiling niet. Ventilatie kost wat energie, maar het is geen verspilling: het is hard nodig voor uw gezondheid.',
         'wall-insulation' => 'Huizen met geïsoleerde gevels hebben lagere energielasten en een hoger comfortniveau doordat de muren minder koude afstralen. Bovendien vermindert het risico op condens en schimmelvorming op de muren.',
         'insulated-glazing' => 'Goed isolerende beglazing, HR++ of Triple, geeft een hoger comfort. U voelt minder koude van het raam afstralen en koudeval die door trekt als tocht over de vloer neemt af. Vervangt u enkel glas, dan komt er geen condens meer op de ruiten in de winter.',

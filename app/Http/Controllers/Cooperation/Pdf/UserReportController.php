@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Pdf;
 use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
+use App\Helpers\Str;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
@@ -15,10 +16,7 @@ use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\View;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
-use Mpdf\Mpdf;
 
 class UserReportController extends Controller
 {
@@ -45,14 +43,13 @@ class UserReportController extends Controller
         $dumpService = DumpService::init()
             ->user($user)
             ->inputSource($inputSource)
-            ->defaultEmptyAnswer()
-            ->withUnits()
-            ->dontFormatArrayAnswers()
+            ->setMode(DumpService::MODE_PDF)
             ->anonymize() // See comment above unset below
             ->createHeaderStructure($short, false);
 
-        $headers = $dumpService->headerStructure;
+        // Retrieve headers AFTER the dump is done, as conditionally incorrect data will be removed
         $dump = $dumpService->generateDump();
+        $headers = $dumpService->headerStructure;
 
         // So we don't use the initial headers (currently). Therefore, we anonymize, as then we only have to unset
         // the first four keys.
@@ -63,8 +60,23 @@ class UserReportController extends Controller
             $dump[3],
         );
 
+        $simpleDump = [];
+        $expertDump = [];
+        $expertStepShorts = Scan::findByShort(Scan::EXPERT)->steps()->pluck('short')->toArray();
+
         // Manipulate the dump so it's categorized by step
-        $dump = Arr::undot($dump);
+        foreach ($dump as $key => $data) {
+            // Step short is at first dot
+            $parts = explode('.', $key, 2);
+            $stepShort = $parts[0];
+            $key = $parts[1];
+
+            if (in_array($stepShort, $expertStepShorts)) {
+                $expertDump[$stepShort][$key] = $data;
+            } else {
+                $simpleDump[$stepShort][$key] = $data;
+            }
+        }
 
         $categorizedTotals = [
             UserActionPlanAdviceService::CATEGORY_TO_DO => [
@@ -152,9 +164,11 @@ class UserReportController extends Controller
             'cooperation',
             'building',
             'user',
+            'inputSource',
             'connectedCoachNames',
             'headers',
-            'dump',
+            'simpleDump',
+            'expertDump',
             'categorizedAdvices',
             'categorizedTotals',
             'adviceComments',

@@ -25,8 +25,12 @@
 
         @include('cooperation.pdf.user-report.parts.pages.simple-scan-answers')
 
+        @if($scanShort !== \App\Models\Scan::LITE)
+            @include('cooperation.pdf.user-report.parts.pages.expert-scan-answers')
+        @endif
 
 
+        {{-- Global footer --}}
         @include('cooperation.pdf.user-report.parts.footer-note')
     </body>
 </html>

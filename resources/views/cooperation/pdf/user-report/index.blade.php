@@ -11,6 +11,7 @@
         {{-- Define footer (an/or header) by name --}}
         <style>
             @page {
+                /*header: page-header;*/
                 footer: page-footer;
             }
         </style>

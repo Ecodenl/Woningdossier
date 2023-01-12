@@ -1,11 +1,18 @@
 @foreach($results as $key => $answer)
     @if(Str::contains($key, 'comment'))
         {{-- Comments get extra spacing --}}
-        <div class="pt-3">
+        <div class="py-2">
             @include('cooperation.pdf.user-report.parts.comment', [
                 'label' => $headers["{$stepShort}.{$key}"],
                 'comment' => $answer,
             ])
+        </div>
+    @elseif(Str::contains($key, 'label_'))
+        {{-- Labels get extra styling --}}
+        <div class="row">
+            <h5>
+                {{ $headers["{$stepShort}.{$key}"] }}
+            </h5>
         </div>
     @else
         {{-- JSON answers --}}

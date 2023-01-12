@@ -50,6 +50,7 @@ use App\Models\Status;
 use App\Models\Step;
 use App\Models\SubSteppable;
 use App\Models\ToolCalculationResult;
+use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
@@ -180,7 +181,7 @@ class DumpService
             ];
         }
 
-        $structure = ToolHelper::getContentStructure($short);
+        $structure = ToolHelper::getContentStructure($short, $this->mode);
         // If we should set the step prefix, we want to add the step name to each field
         if ($setStepPrefix) {
             foreach ($structure as $stepShort => $content) {
@@ -329,6 +330,22 @@ class DumpService
                     }
 
                     $data[$key] = $result;
+                } elseif ($model instanceof ToolLabel) {
+                    $processElement = true;
+                    $label = null;
+
+                    if ($withConditionalLogic) {
+                        $processElement = $conditionService->forModel($model)->isViewable($answers);
+                    }
+
+                    if ($processElement) {
+                        $label = $model->name;
+                    } elseif ($this->removeUnconditionals()) {
+                        unset($this->headerStructure[$key]);
+                        continue;
+                    }
+
+                    $data[$key] = $label;
                 }
             }
         }
@@ -470,6 +487,8 @@ class DumpService
                         . (empty($columnNest) ? '' : ".{$columnNest}");
 
                     $models[$key] = ToolCalculationResult::findByShort($column);
+                } elseif (Str::startsWith($potentialShort, 'label_')) {
+                    $models[$key] = ToolLabel::findByShort(Str::replaceFirst('label_', '', $potentialShort));
                 }
                 $modelIds[] = $models[$key]->id;
             }

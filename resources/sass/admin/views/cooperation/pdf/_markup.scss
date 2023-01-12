@@ -1,41 +1,55 @@
-* {
-    margin: 0;
-    font-family: Helvetice, sans-serif;
-}
-
 h1 {
+    font-family: Helvetice, sans-serif;
     font-size: $font-size-title;
     font-weight: bold;
     color: $color-main;
     line-height: $universal-line-height;
-    margin-bottom: 4rem;
+    margin: 0 0 4rem;
+    padding: 0;
 }
 
 h2 {
+    font-family: Helvetice, sans-serif;
     font-size: $font-size-sub-heading-1;
     font-weight: bold;
     color: $color-main;
     line-height: $universal-line-height;
-    margin-bottom: 0.25rem;
+    margin: 0 0 0.25rem;
+    padding: 0;
 }
 
 h3 {
+    font-family: Helvetice, sans-serif;
     font-size: $font-size-sub-heading-2;
     font-weight: bold;
     color: $color-main;
     line-height: $universal-line-height;
-    margin-bottom: 0.25rem;
+    margin: 0 0 0.25rem;
+    padding: 0;
 }
 
 h4 {
+    font-family: Helvetice, sans-serif;
     font-size: $font-size-sub-heading-3;
     font-weight: bold;
     color: $color-main;
     line-height: $universal-line-height;
-    margin-bottom: 0.25rem;
+    margin: 0 0 0.25rem;
+    padding: 0;
+}
+
+h5 {
+    font-family: Helvetice, sans-serif;
+    font-size: $font-size-sub-heading-3;
+    font-weight: bold;
+    color: $color-main;
+    line-height: $universal-line-height;
+    margin: 0.25rem 0 0;
+    padding: 0;
 }
 
 p {
+    font-family: Helvetice, sans-serif;
     color: $color-black;
     font-size: $font-size-normal;
     line-height: $universal-line-height;
@@ -44,6 +58,7 @@ p {
 }
 
 small {
+    font-family: Helvetice, sans-serif;
     color: $color-black;
     font-size: $font-size-small;
     line-height: $universal-line-height;

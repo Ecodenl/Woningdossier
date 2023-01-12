@@ -36,7 +36,9 @@
 
         @include('cooperation.pdf.user-report.parts.step-intro')
 
-        @include('cooperation.pdf.user-report.parts.step-summary')
+        <div class="group">
+            @include('cooperation.pdf.user-report.parts.step-summary')
+        </div>
 
         @include('cooperation.pdf.user-report.parts.page-break')
     @endforeach

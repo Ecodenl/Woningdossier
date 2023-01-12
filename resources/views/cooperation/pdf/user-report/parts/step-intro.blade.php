@@ -14,7 +14,10 @@
 @endphp
 
 <div id="step-intro" class="group">
-    <img src="{{ pdfAsset($stepIconMap[$step->short]) }}" alt="{{ $step->name }}" width="50" height="50">
+    <div class="icon-container">
+        <img src="{{ pdfAsset($stepIconMap[$step->short]) }}" alt="{{ $step->name }}"
+             style="max-width: 100%; max-height: 100%;">
+    </div>
     <h2>
         {{ $step->name }}
     </h2>

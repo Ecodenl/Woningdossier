@@ -25,6 +25,7 @@ use App\Models\Step;
 use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
 use App\Models\WoodRotStatus;
+use App\Services\DumpService;
 use Illuminate\Support\Collection;
 
 class ToolHelper
@@ -74,12 +75,12 @@ class ToolHelper
      * will be defined.
      *
      * @param string $short
+     * @param string $mode
      *
      * @return array
      */
-    public static function getContentStructure(string $short): array
+    public static function getContentStructure(string $short, string $mode): array
     {
-        // Just for safety.
         $stepOrder = static::getStepOrder($short);
 
         $structure = [];
@@ -114,25 +115,36 @@ class ToolHelper
             $subSteps = $query->get();
 
             foreach ($subSteps as $subStep) {
-                $subSteppables = $subStep->subSteppables()->whereNotIn('sub_steppable_type', [ToolLabel::class])->orderBy('order')->get();
+                $query = $subStep->subSteppables();
+                if ($mode === DumpService::MODE_CSV) {
+                    $query->whereNotIn('sub_steppable_type', [ToolLabel::class]);
+                }
+                $subSteppables = $query->orderBy('order')->get();
                 foreach ($subSteppables as $subSteppable) {
                     $model = $subSteppable->subSteppable;
 
                     if (! array_key_exists($model->short, $processedShorts)
                         || ! in_array($subSteppable->sub_steppable_type, $processedShorts[$model->short])) {
                         $isToolQuestion = $subSteppable->sub_steppable_type === ToolQuestion::class;
+                        $isToolLabel = $subSteppable->sub_steppable_type === ToolLabel::class;
 
-                        $shortToSave = ($isToolQuestion ? 'question_' : 'calculation_') . $model->short;
+                        // If it's a tool question we prefix with 'question_', if it's a tool label we
+                        // prefix with 'label_' and otherwise it must be a calculation result so we
+                        // prefix with 'calculation_'.
+                        $prefix = $isToolQuestion ? 'question_'
+                            : ($isToolLabel ? 'label_' : 'calculation_');
+
+                        $shortToSave = $prefix . $model->short;
 
                         $modelName = $model->name;
                         if ($isToolQuestion && ! is_null($model->for_specific_input_source_id)) {
                             $modelName .= " ({$model->forSpecificInputSource->name})";
                         }
-                        if ($stepShort === 'heating' && ! $isToolQuestion) {
+
+                        if ($stepShort === 'heating' && ! $isToolQuestion && ! $isToolLabel && $mode === DumpService::MODE_CSV) {
                             // Calculation fields have a repeated name, which can be confusing in only the heating
                             // step (as of now). Might need to be expanded later on. We add the tool label matched
                             // by the step short hidden in the result short
-                            // TODO: This solution _might_ not look good in the PDF once we switch from legacy
                             $labelShort = explode('.', $model->short)[0];
                             $label = ToolLabel::findByShort($labelShort);
                             $modelName .= " ({$label->name})";

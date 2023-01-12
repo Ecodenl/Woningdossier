@@ -11,6 +11,7 @@ use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\ToolQuestion;
 use App\Services\ContentStructureService;
+use App\Services\DumpService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -46,7 +47,7 @@ class GenerateExampleBuildingCsv implements ShouldQueue
     public function handle()
     {
         $contentStructure = ContentStructureService::init(
-            ToolHelper::getContentStructure(ToolHelper::STRUCT_TOTAL)
+            ToolHelper::getContentStructure(ToolHelper::STRUCT_TOTAL, DumpService::MODE_CSV)
         )->applicableForExampleBuildings();
 
         // Use array_values because apparently you cannot unpack (...) associative arrays (until PHP 8.1, anyways)

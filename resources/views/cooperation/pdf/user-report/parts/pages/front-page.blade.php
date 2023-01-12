@@ -1,4 +1,4 @@
-<div id="front-page" class="container">
+@component('cooperation.pdf.user-report.components.new-page', ['id' => 'front-page'])
     <h1>
         @lang('pdf/user-report.front-page.title')
     </h1>
@@ -19,7 +19,7 @@
     @endphp
     <div id="cooperation-logo">
         @if($logo instanceof \App\Models\Media)
-            <img src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $cooperation->name }}">
+            <img src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $cooperation->name }}" width="250">
         @else
             <h3>
                 {{ $cooperation->name }}
@@ -40,5 +40,4 @@
             @endif
         </p>
     </div>
-</div>
-
+@endcomponent

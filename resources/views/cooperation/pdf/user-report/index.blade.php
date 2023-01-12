@@ -7,20 +7,26 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
         <link rel="stylesheet" type="text/css" href="{{ pdfAsset('css/pdf.css') }}">
-        <title>Document</title>
+
+        {{-- Define footer (an/or header) by name --}}
+        <style>
+            @page {
+                footer: page-footer;
+            }
+        </style>
     </head>
 
-    {{-- This is the frontpage of the pdf, after this a new page must be started with the component. --}}
     <body>
         @include('cooperation.pdf.user-report.parts.pages.front-page')
 
+        @include('cooperation.pdf.user-report.parts.pages.action-plan')
+
+        @include('cooperation.pdf.user-report.parts.pages.info-page')
+
+        @include('cooperation.pdf.user-report.parts.pages.simple-scan-answers')
+
+
+
         @include('cooperation.pdf.user-report.parts.footer-note')
     </body>
-
-    @include('cooperation.pdf.user-report.parts.pages.action-plan')
-
-    @include('cooperation.pdf.user-report.parts.pages.info-page')
-
-    @include('cooperation.pdf.user-report.parts.pages.simple-scan-answers')
-
 </html>

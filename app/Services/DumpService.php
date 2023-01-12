@@ -68,10 +68,12 @@ class DumpService
     protected Building $building;
     protected InputSource $inputSource;
 
+    protected bool $anonymize = false;
+    protected bool $defaultEmptyAnswer = false;
+    protected bool $withUnits = false;
+    protected bool $formatArrayAnswers = true;
+
     public array $headerStructure;
-    public bool $anonymize = false;
-    public bool $defaultEmptyAnswer = false;
-    public bool $withUnits = false;
 
     public function __construct()
     {
@@ -133,6 +135,17 @@ class DumpService
     public function withUnits(): self
     {
         $this->withUnits = true;
+        return $this;
+    }
+
+    /**
+     * Whether or not we should implode JSON array answers.
+     *
+     * @return $this
+     */
+    public function dontFormatArrayAnswers(): self
+    {
+        $this->formatArrayAnswers = false;
         return $this;
     }
 
@@ -291,8 +304,9 @@ class DumpService
                             $inputSource,
                             $model
                         );
+
                         // Priority slider situation
-                        if (is_array($humanReadableAnswer)) {
+                        if (is_array($humanReadableAnswer) && $this->formatArrayAnswers) {
                             $temp = '';
                             foreach ($humanReadableAnswer as $name => $answer) {
                                 $temp .= "{$name}: {$answer}, ";

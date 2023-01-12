@@ -1,8 +1,24 @@
-.text-center {
-    text-align: center;
+.text {
+    &-center {
+        text-align: center;
+    }
+    &-right {
+        text-align: right;
+    }
 }
 
-// TODO: Check
-.w-full {
-    width: 100%;
+.pull-right {
+    float: right;
+}
+
+@for $i from 1 through 12 {
+    .pt-#{$i} {
+        padding-top: unquote("#{calc(0.25 * $i)}rem");
+    }
+    .pr-#{$i} {
+        padding-right: unquote("#{calc(0.25 * $i)}rem");
+    }
+    .pl-#{$i} {
+        padding-left: unquote("#{calc(0.25 * $i)}rem");
+    }
 }

@@ -53,6 +53,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice forMe(?\App\Models\User $user = null)
  * @method static Builder|UserActionPlanAdvice forStep(\App\Models\Step $step)
  * @method static Builder|UserActionPlanAdvice forUser($user)
+ * @method static Builder|UserActionPlanAdvice getCategorized()
  * @method static Builder|UserActionPlanAdvice invisible()
  * @method static Builder|UserActionPlanAdvice newModelQuery()
  * @method static Builder|UserActionPlanAdvice newQuery()

@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property array|null $measure_info
  * @property string $short
  * @property string $application
- * @property mixed|null $cost_range
+ * @property array|null $cost_range
  * @property string|null $savings_money
  * @property float $costs
  * @property array $cost_unit
@@ -29,10 +29,11 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property int $maintenance_interval
  * @property array $maintenance_unit
  * @property int $step_id
- * @property int $has_calculations
+ * @property bool $has_calculations
  * @property array|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $name
  * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
  * @property-read int|null $interests_count

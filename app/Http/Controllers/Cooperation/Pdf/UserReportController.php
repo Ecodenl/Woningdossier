@@ -14,7 +14,11 @@ use App\Models\User;
 use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
+use App\Services\UserActionPlanAdviceService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\View;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
+use Mpdf\Mpdf;
 
 class UserReportController extends Controller
 {
@@ -43,7 +47,8 @@ class UserReportController extends Controller
             ->inputSource($inputSource)
             ->defaultEmptyAnswer()
             ->withUnits()
-            ->anonymize() // See line 53
+            ->dontFormatArrayAnswers()
+            ->anonymize() // See comment above unset below
             ->createHeaderStructure($short, false);
 
         $headers = $dumpService->headerStructure;
@@ -61,29 +66,72 @@ class UserReportController extends Controller
         // Manipulate the dump so it's categorized by step
         $dump = Arr::undot($dump);
 
+        $categorizedTotals = [
+            UserActionPlanAdviceService::CATEGORY_TO_DO => [
+                'costs' => [
+                    'from' => 0,
+                    'to' => 0,
+                ],
+                'savings' => 0,
+            ],
+            UserActionPlanAdviceService::CATEGORY_LATER => [
+                'costs' => [
+                    'from' => 0,
+                    'to' => 0,
+                ],
+                'savings' => 0,
+            ],
+        ];
+
         $categorizedAdvices = $user->userActionPlanAdvices()
             ->forInputSource($inputSource)
             ->withoutDeletedCooperationMeasureApplications($inputSource)
             ->with(['userActionPlanAdvisable' => fn ($q) => $q->withoutGlobalScope(GetValueScope::class)])
             ->getCategorized()
-            ->map(function ($advices) {
-                return $advices->map(function ($userActionPlanAdvice) {
-                    $costs = $userActionPlanAdvice->costs ?? [];
-                    $from = $costs['from'] ?? null;
-                    $to = $costs['to'] ?? null;
+            ->map(function ($advices) use (&$categorizedTotals) {
+                return $advices->map(function ($userActionPlanAdvice) use (&$categorizedTotals) {
+                    if ($userActionPlanAdvice->category !== UserActionPlanAdviceService::CATEGORY_COMPLETE) {
+                        $costs = $userActionPlanAdvice->costs ?? [];
+                        $from = $costs['from'] ?? null;
+                        $to = $costs['to'] ?? null;
 
-                    if (! is_null($from)) {
-                        NumberFormatter::round($from);
-                    }
-                    if (! is_null($to)) {
-                        NumberFormatter::round($to);
+                        if (! is_null($from)) {
+                            NumberFormatter::round($from);
+                        }
+                        if (! is_null($to)) {
+                            NumberFormatter::round($to);
+                        }
+
+                        $userActionPlanAdvice->costs = NumberFormatter::range($from, $to);
+                        $userActionPlanAdvice->savings_money = NumberFormatter::round($userActionPlanAdvice->savings_money ?? 0);
+
+                        if (! is_null($from) || ! is_null($to)) {
+                            if (is_null($from) && ! is_null($to)) {
+                                $from = $to;
+                            } elseif (! is_null($from) && is_null($to)) {
+                                $to = $from;
+                            }
+
+                            $categorizedTotals[$userActionPlanAdvice->category]['costs']['from'] += $from;
+                            $categorizedTotals[$userActionPlanAdvice->category]['costs']['to'] += $to;
+                        }
+
+                        $categorizedTotals[$userActionPlanAdvice->category]['savings'] += $userActionPlanAdvice->savings_money;
                     }
 
-                    $userActionPlanAdvice->costs = NumberFormatter::range($from, $to);
-                    $userActionPlanAdvice->savings_money = NumberFormatter::round($userActionPlanAdvice->savings_money ?? 0);
                     return $userActionPlanAdvice;
                 });
             });
+
+        // Format ready for in blade
+        foreach ($categorizedTotals as $category => $totals) {
+            if ($totals['costs']['from'] === $totals['costs']['to']) {
+                $categorizedTotals[$category]['costs'] = $totals['costs']['from'];
+            } else {
+                $categorizedTotals[$category]['costs'] = NumberFormatter::range($totals['costs']['from'], $totals['costs']['to']);
+            }
+        }
+
         $adviceComments = $user->userActionPlanAdviceComments()
             ->allInputSources()
             ->with('inputSource')
@@ -97,7 +145,9 @@ class UserReportController extends Controller
             ->pluck('full_name')
             ->toArray();
 
-        return Pdf::loadView('cooperation.pdf.user-report.index', compact(
+        // https://github.com/mccarlosen/laravel-mpdf
+        // To style container margins of the PDF, see config/pdf.php
+        return LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
             'scanShort',
             'cooperation',
             'building',
@@ -106,6 +156,7 @@ class UserReportController extends Controller
             'headers',
             'dump',
             'categorizedAdvices',
+            'categorizedTotals',
             'adviceComments',
         ))->stream();
     }

@@ -3,10 +3,13 @@
 use App\Services\UserActionPlanAdviceService;
 
 return [
+    'defaults' => [
+        'page' => 'Pagina',
+    ],
     'front-page' => [
         'date' => 'Datum:',
         'connected-coaches' => 'Energiecoach:|Energiecoaches:',
-        'title' => 'Stappenplan voor het <br> verduurzamen van uw woning',
+        'title' => 'Stappenplan voor het verduurzamen van jouw woning',
         'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
     ],
     'action-plan' => [
@@ -25,6 +28,7 @@ return [
             'measure' => 'Maatregel',
             'cost-indication' => 'Kostenindicatie [ € ]',
             'savings' => 'Besparing [ € / jaar ]',
+            'total' => 'Totaal',
         ],
         'comment' => 'Toelichting op het woonplan',
     ],

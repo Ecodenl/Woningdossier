@@ -1,18 +1,18 @@
 .container {
-    max-width: 960px;
-    padding: 5rem 80px;
+    width: 100%;
 
     .group {
-        padding: 0.5rem 0;
+        padding: 0.25rem 0;
     }
 
     .row {
-        display: block;
+        // mPDF does not support display: inline-block; however using float we can fake it
+        float: left;
         width: 100%;
 
         @for $i from 1 through 12 {
             .col-#{$i} {
-                display: inline-block;
+                float: left;
                 width: unquote("#{calc(floor(calc(100 / (12 / $i))) - 1)}%");
             }
         }

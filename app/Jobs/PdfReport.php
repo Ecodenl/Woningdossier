@@ -2,38 +2,28 @@
 
 namespace App\Jobs;
 
-use App\Calculations\Heater;
-use App\Calculations\HeatPump;
-use App\Calculations\HighEfficiencyBoiler;
-use App\Helpers\DataTypes\Caster;
-use App\Helpers\StepHelper;
-use App\Helpers\ToolQuestionHelper;
-use App\Models\CooperationMeasureApplication;
-use App\Models\CustomMeasureApplication;
+use App\Helpers\NumberFormatter;
+use App\Helpers\ToolHelper;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
-use App\Models\Interest;
-use App\Models\MeasureApplication;
-use App\Models\ToolCalculationResult;
-use App\Models\ToolQuestion;
+use App\Models\Scan;
 use App\Models\User;
-use App\Models\UserActionPlanAdviceComments;
+use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
+use App\Services\Models\AlertService;
 use App\Services\UserActionPlanAdviceService;
-use App\Services\UserService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Throwable;
 
 class PdfReport implements ShouldQueue
@@ -43,21 +33,20 @@ class PdfReport implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    protected $user;
-    protected $inputSource;
-    protected $anonymizeData;
-    protected $fileType;
-    protected $fileStorage;
+    protected User $user;
+    protected FileType $fileType;
+    protected FileStorage $fileStorage;
+    protected Scan $scan;
 
     /**
      * PdfReport constructor.
      */
-    public function __construct(User $user, InputSource $inputSource, FileType $fileType, FileStorage $fileStorage)
+    public function __construct(User $user, FileType $fileType, FileStorage $fileStorage, Scan $scan)
     {
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;
-        $this->inputSource = $inputSource;
         $this->user = $user;
+        $this->scan = $scan;
     }
 
     /**
@@ -68,232 +57,209 @@ class PdfReport implements ShouldQueue
     public function handle()
     {
         if (App::runningInConsole()) {
-            Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
+            Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
         }
 
-        $user = $this->user;
-        $userCooperation = $this->user->cooperation;
-//        $inputSource = $this->inputSource;
-        // Always retrieve from master
+        $scanShort = $this->scan->short;
+        if ($scanShort === Scan::LITE) {
+            $short = ToolHelper::STRUCT_PDF_LITE;
+        } else {
+            $short = ToolHelper::STRUCT_PDF_QUICK;
+        }
+
+        // Always retrieve from master.
         $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-
-        $headers = DumpService::getStructureForTotalDumpService(false, false);
-
-        $user = UserService::eagerLoadUserData($user, $inputSource);
-
+        $user = $this->user;
         $building = $user->building;
+        // Note the term 'userCooperation' instead of "cooperation". It is of ABSOLUTE IMPORTANCE this is NOT named
+        // 'cooperation', as this will conflict with the CooperationComposer and will leave the variable as null and
+        // therefore not usable!
+        $userCooperation = $user->cooperation;
 
-        $buildingFeatures = $building->buildingFeatures;
+        $dumpService = DumpService::init()
+            ->user($user)
+            ->inputSource($inputSource)
+            ->setMode(DumpService::MODE_PDF)
+            ->anonymize() // See comment above unset below
+            ->createHeaderStructure($short, false);
 
-        $GLOBALS['_cooperation'] = $userCooperation;
-        $GLOBALS['_inputSource'] = $inputSource;
+        // Retrieve headers AFTER the dump is done, as conditionally incorrect data will be removed.
+        $dump = $dumpService->generateDump();
+        $headers = $dumpService->headerStructure;
 
-        $buildingInsulatedGlazings = $building->currentInsulatedGlazing->load('measureApplication', 'insulatedGlazing', 'buildingHeating');
+        // So we don't use the initial headers (currently). Therefore, we anonymize, as then we only have to unset
+        // the first four keys.
+        unset(
+            $dump[0],
+            $dump[1],
+            $dump[2],
+            $dump[3],
+        );
 
-        $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
+        $simpleDump = [];
+        $expertDump = [];
+        $expertStepShorts = Scan::findByShort(Scan::EXPERT)->steps()->pluck('short')->toArray();
 
-        // unfortunately we cant load the whereHasMorph
-        // so we have to do 2 separate queries and merge the collections together.
-        $userActionPlanAdvicesForCustomMeasureApplications = $user
-            ->actionPlanAdvices()
-            ->forInputSource($inputSource)
-            ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
-            ->whereHasMorph(
-                'userActionPlanAdvisable',
-                [CustomMeasureApplication::class],
-                function ($query) use ($inputSource) {
-                    $query
-                        ->forInputSource($inputSource);
-                })->with(['userActionPlanAdvisable' => fn($query) => $query->forInputSource($inputSource)])->get();
+        // Manipulate the dump so it's categorized by step.
+        foreach ($dump as $key => $data) {
+            // Step short is at first dot
+            $parts = explode('.', $key, 2);
+            $stepShort = $parts[0];
+            $key = $parts[1];
 
-        $remainingUserActionPlanAdvices = $user
-            ->actionPlanAdvices()
-            ->forInputSource($inputSource)
-            ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
-            ->whereHasMorph(
-                'userActionPlanAdvisable',
-                [MeasureApplication::class, CooperationMeasureApplication::class]
-            )->get();
-
-        $userActionPlanAdvices = $userActionPlanAdvicesForCustomMeasureApplications->merge($remainingUserActionPlanAdvices)->sortBy('order');
-
-
-        // we don't want the actual advices, we have to show them in a different way
-        $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
-
-        // full report for a user
-        $reportForUser = DumpService::totalDump($headers, $userCooperation, $user, $inputSource, false, true, true);
-
-        // the translations for the columns / tables in the user data
-        $reportTranslations = $reportForUser['translations-for-columns'];
-
-        $calculations = $reportForUser['calculations'];
-        $reportData = [];
-
-        foreach ($reportForUser['user-data'] as $key => $value) {
-            // so we now its a step.
-            if (is_string($key)) {
-                $keys = explode('.', $key);
-
-                $tableData = array_splice($keys, 2);
-
-                // we dont want the calculations in the report data, we need them separate
-                if (! in_array('calculation', $tableData)) {
-                    $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
-                }
+            if (in_array($stepShort, $expertStepShorts)) {
+                $expertDump[$stepShort][$key] = $data;
+            } else {
+                $simpleDump[$stepShort][$key] = $data;
             }
         }
 
-        // Because the PDF will change we will just fuck the shit out of this old report
-        unset($reportData['high-efficiency-boiler']);
-        unset($reportData['heater']);
+        $coachHelp = [];
 
-        $newSituation = [
-            'heating' => [
-                'Het huidig verbruik' => [
-                    'amount-gas', 'amount-electricity',
+        if (array_key_exists('small-measures-lite', $simpleDump)) {
+            $data = $simpleDump['small-measures-lite'];
+            // In case of the lite scan, we need to move and merge some data.
+            foreach ($data as $key => $value) {
+                if (Str::contains($key, 'label_')) {
+                    $coachHelp[$key] = $value;
+                } elseif (Str::endsWith($key, '-coach-help')) {
+                    // We don't want the coach help values here... so we move them.
+                    $dataKey = Str::replaceLast('-coach-help', '', $key);
+                    $coachHelp[$dataKey] = $value;
+                    unset($data[$key]);
+                } elseif (Str::endsWith($key, '-how')) {
+                    // We do want the how values but not standalone.
+                    if ($value !== __('cooperation/frontend/tool.no-answer-given')) {
+                        $dataKey = Str::replaceLast('-how', '', $key);
+                        $data[$dataKey] .= "; {$value}";
+                    }
+                    unset($data[$key]);
+                }
+            }
+            $simpleDump['small-measures-lite'] = $data;
+
+            // Now we need to remove empty labels from the coach help, else it looks weird...
+            $previousKey = '';
+            foreach ($coachHelp as $key => $value) {
+                if (! empty($previousKey)) {
+                    if (Str::contains($key, 'label_') && Str::contains($previousKey, 'label_')) {
+                        unset($coachHelp[$previousKey]);
+                    }
+                }
+                $previousKey = $key;
+            }
+
+            // Last short in the array, if this is also a label it's wrong
+            if (Str::contains($previousKey, 'label_')) {
+                unset($coachHelp[$previousKey]);
+            }
+        }
+
+        $categorizedTotals = [
+            UserActionPlanAdviceService::CATEGORY_TO_DO => [
+                'costs' => [
+                    'from' => 0,
+                    'to' => 0,
                 ],
-                'Hoe wordt de warmte in de nieuwe situatie opgewekt' => [
-                    'new-water-comfort', 'new-heat-source', 'new-heat-source-warm-tap-water',
-                    'new-building-heating-application',
-                ],
+                'savings' => 0,
             ],
-            'high-efficiency-boiler' => [
-                [
-                    'hr-boiler-replace', 'new-boiler-type',
+            UserActionPlanAdviceService::CATEGORY_LATER => [
+                'costs' => [
+                    'from' => 0,
+                    'to' => 0,
                 ],
-                'Indicatie over kosten en baten van de cv-ketel' => [
-                    'hr-boiler.amount_gas', 'hr-boiler.savings_gas', 'hr-boiler.savings_co2', 'hr-boiler.replace_year',
-                    'hr-boiler.cost_indication', 'hr-boiler.interest_comparable',
-                ],
-                //'Toelichting op de cv-ketel' => [
-                //    'hr-boiler-comment-coach', 'hr-boiler-comment-resident',
-                //],
-            ],
-            'heat-pump' => [
-                'Gegevens van de nieuwe warmtepomp' => [
-                    'new-heat-pump-type', 'new-boiler-setting-comfort-heat', 'heat-pump.advised_system.required_power',
-                    'heat-pump-preferred-power', 'new-cook-type', 'outside-unit-space', 'inside-unit-space',
-                ],
-                'Indicatie voor de efficiëntie van de warmtepomp' => [
-                    'heat-pump.advised_system.share_heating', 'heat-pump.advised_system.share_tap_water',
-                    'heat-pump.advised_system.scop_heating', 'heat-pump.advised_system.scop_tap_water',
-                ],
-                'Indicatie voor kosten en baten van de warmtepomp' => [
-                    'heat-pump.savings_gas', 'heat-pump.savings_co2', 'heat-pump.savings_money',
-                    'heat-pump.extra_consumption_electricity', 'heat-pump.cost_indication',
-                    'heat-pump.interest_comparable',
-                ],
-                //'Toelichting op de warmtepomp' => [
-                //    'heat-pump-comment-coach', 'heat-pump-comment-resident',
-                //],
-            ],
-            'heater' => [
-                'Geschat huidig verbruik' => [
-                    'sun-boiler.consumption.water', 'sun-boiler.consumption.gas',
-                ],
-                'Specificaties systeem' => [
-                    'sun-boiler.specs.size_boiler', 'sun-boiler.specs.size_collector',
-                    'heater-pv-panel-orientation', 'heater-pv-panel-angle',
-                ],
-                'Indicatie voor kosten en baten van de zonneboiler' => [
-                    'sun-boiler.production_heat', 'sun-boiler.percentage_consumption', 'sun-boiler.savings_gas',
-                    'sun-boiler.savings_co2', 'sun-boiler.savings_money', 'sun-boiler.cost_indication',
-                    'sun-boiler.interest_comparable',
-                ],
-                //'Toelichting op de zonneboiler' => [
-                //    'sun-boiler-comment-coach', 'sun-boiler-comment-resident',
-                //],
+                'savings' => 0,
             ],
         ];
 
-        $calcs = [
-            'hr-boiler' => HighEfficiencyBoiler::calculate($building, $inputSource),
-            'heat-pump' => HeatPump::calculate($building, $inputSource),
-            'sun-boiler' => Heater::calculate($building, $inputSource),
-        ];
+        $categorizedAdvices = $user->userActionPlanAdvices()
+            ->forInputSource($inputSource)
+            ->withoutDeletedCooperationMeasureApplications($inputSource)
+            ->with(['userActionPlanAdvisable' => fn ($q) => $q->withoutGlobalScope(GetValueScope::class)])
+            ->getCategorized()
+            ->map(function ($advices) use (&$categorizedTotals) {
+                return $advices->map(function ($userActionPlanAdvice) use (&$categorizedTotals) {
+                    if ($userActionPlanAdvice->category !== UserActionPlanAdviceService::CATEGORY_COMPLETE) {
+                        $costs = $userActionPlanAdvice->costs ?? [];
+                        $from = $costs['from'] ?? null;
+                        $to = $costs['to'] ?? null;
 
-        $newReportData = [];
-
-        foreach ($newSituation as $step => $data) {
-            foreach ($data as $label => $shorts) {
-                foreach ($shorts as $short) {
-                    // Technically this isn't something we should do, but since it's only for the given shorts
-                    // we know 100% there's no tool questions with a dot in the short
-                    $class = Str::contains($short, '.') ? ToolCalculationResult::class : ToolQuestion::class;
-
-                    $model = $class::findByShort($short);
-
-                    if ($model instanceof ToolQuestion) {
-                        $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
-                            $model);
-                        // Priority slider situation
-                        if (is_array($humanReadableAnswer)) {
-                            $temp = '';
-                            foreach ($humanReadableAnswer as $name => $answer) {
-                                $temp .= "{$name}: {$answer}, ";
-                            }
-                            $humanReadableAnswer = substr($temp, 0, -2);
+                        if (! is_null($from)) {
+                            NumberFormatter::round($from);
                         }
-                        $value = $humanReadableAnswer;
-                    } else {
-                        $value = data_get($calcs, $short);
+                        if (! is_null($to)) {
+                            NumberFormatter::round($to);
+                        }
+
+                        $userActionPlanAdvice->costs = NumberFormatter::range($from, $to);
+                        $userActionPlanAdvice->savings_money = NumberFormatter::round($userActionPlanAdvice->savings_money ?? 0);
+
+                        if (! is_null($from) || ! is_null($to)) {
+                            if (is_null($from) && ! is_null($to)) {
+                                $from = $to;
+                            } elseif (! is_null($from) && is_null($to)) {
+                                $to = $from;
+                            }
+
+                            $categorizedTotals[$userActionPlanAdvice->category]['costs']['from'] += $from;
+                            $categorizedTotals[$userActionPlanAdvice->category]['costs']['to'] += $to;
+                        }
+
+                        $categorizedTotals[$userActionPlanAdvice->category]['savings'] += $userActionPlanAdvice->savings_money;
                     }
 
-                    // Format for user. Both models have a data type
-                    if (in_array($model->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
-                        $value = Caster::init($model->data_type, $value)->getFormatForUser();
-                    }
+                    return $userActionPlanAdvice;
+                });
+            });
 
-                    $trans = $model->name;
-                    if ($model instanceof ToolQuestion && isset($model->for_specific_input_source_id)) {
-                        $trans .= " ({$model->forSpecificInputSource->name})";
-                    }
-
-                    $newReportData[$step][$label][$short] = [
-                        'label' => $trans,
-                        'value' => $value,
-                        'unit' => $model->unit_of_measure ?? null,
-                    ];
-                }
+        // Format ready for in blade
+        foreach ($categorizedTotals as $category => $totals) {
+            if ($totals['costs']['from'] === $totals['costs']['to']) {
+                $categorizedTotals[$category]['costs'] = $totals['costs']['from'];
+            } else {
+                $categorizedTotals[$category]['costs'] = NumberFormatter::range($totals['costs']['from'], $totals['costs']['to']);
             }
         }
 
-        // steps that are considered to be measures.
-        $stepShorts = DB::table('steps')
-            ->where('short', '!=', 'general-data')
-            ->select('short', 'id')
-            ->get()
-            ->pluck('short', 'id')
-            ->flip()
-            ->toArray();
+        $adviceComments = $user->userActionPlanAdviceComments()
+            ->allInputSources()
+            ->with('inputSource')
+            ->whereNotNull('comment')
+            ->where('comment', '!=', '')
+            ->get();
 
         $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
-        $connectedCoachNames = [];
-        foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-            array_push($connectedCoachNames, User::find($coachId)->getFullName());
-        }
-
-        // retrieve all the comments by for each input source on a step
-        $commentsByStep = StepHelper::getAllCommentsByStep($building);
-
-        // the comments that have been made on the action plan
-        $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
-            ->with('inputSource')
-            ->get()
-            ->pluck('comment', 'inputSource.name')
+        $connectedCoachNames = User::whereIn('id', $connectedCoaches->pluck('coach_id')->toArray())
+            ->selectRaw("CONCAT(first_name, ' ', last_name) AS full_name")
+            ->pluck('full_name')
             ->toArray();
 
-        $noInterest = Interest::where('calculate_value', 4)->first();
+        $alerts = AlertService::init()
+            ->inputSource($inputSource)
+            ->building($building)
+            ->getAlerts();
 
-        $pdf = Pdf::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
-            'commentsByStep', 'reportTranslations', 'reportData', 'newReportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-            'buildingFeatures', 'measures', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
-        ));
+        // https://github.com/mccarlosen/laravel-mpdf
+        // To style container margins of the PDF, see config/pdf.php
+        $pdf = LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
+            'scanShort',
+            'userCooperation',
+            'building',
+            'user',
+            'inputSource',
+            'connectedCoachNames',
+            'headers',
+            'simpleDump',
+            'expertDump',
+            'coachHelp',
+            'categorizedAdvices',
+            'categorizedTotals',
+            'adviceComments',
+            'alerts',
+        ))->output();
 
         // save the pdf report
-        Storage::disk('downloads')->put($this->fileStorage->filename, $pdf->output());
+        Storage::disk('downloads')->put($this->fileStorage->filename, $pdf);
 
         $this->fileStorage->isProcessed();
     }

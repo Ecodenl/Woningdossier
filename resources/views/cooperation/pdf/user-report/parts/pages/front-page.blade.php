@@ -15,21 +15,21 @@
     </div>
 
     @php
-        $logo = $cooperation->firstMedia(MediaHelper::LOGO);
+        $logo = $userCooperation->firstMedia(MediaHelper::LOGO);
     @endphp
     <div id="cooperation-logo">
         @if($logo instanceof \App\Models\Media)
-            <img src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $cooperation->name }}" width="250">
+            <img src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $userCooperation->name }}" width="250">
         @else
             <h3>
-                {{ $cooperation->name }}
+                {{ $userCooperation->name }}
             </h3>
         @endif
     </div>
 
     <div id="cooperation-info">
         <h2>
-            {{ $cooperation->name }}
+            {{ $userCooperation->name }}
         </h2>
         <p>
             {{ __('pdf/user-report.pages.front-page.date') . ' ' . date('d-m-Y') }}

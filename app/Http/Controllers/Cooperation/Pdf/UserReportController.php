@@ -23,7 +23,7 @@ class UserReportController extends Controller
     /**
      * TESTING only.
      */
-    public function index(Cooperation $cooperation, ?string $scanShort = null)
+    public function index(Cooperation $userCooperation, ?string $scanShort = null)
     {
         $scanShort ??= Scan::QUICK;
         if ($scanShort === Scan::LITE) {
@@ -204,7 +204,7 @@ class UserReportController extends Controller
         // To style container margins of the PDF, see config/pdf.php
         return LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
             'scanShort',
-            'cooperation',
+            'userCooperation',
             'building',
             'user',
             'inputSource',

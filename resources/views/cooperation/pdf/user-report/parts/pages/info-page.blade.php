@@ -12,9 +12,9 @@
             @lang('pdf/user-report.pages.info-page.more-info.title')
         </h4>
         <p>
-            @lang('pdf/user-report.pages.info-page.more-info.text', ['cooperation' => $cooperation->name])
-            @if(! empty($cooperation->website_url))
-                @lang('pdf/user-report.pages.info-page.more-info.website', ['url' => "<a href='{$cooperation->website_url}' rel='nofollow' target='_blank'>{$cooperation->website_url}</a>"])
+            @lang('pdf/user-report.pages.info-page.more-info.text', ['cooperation' => $userCooperation->name])
+            @if(! empty($userCooperation->website_url))
+                @lang('pdf/user-report.pages.info-page.more-info.website', ['url' => "<a href='{$userCooperation->website_url}' rel='nofollow' target='_blank'>{$userCooperation->website_url}</a>"])
             @endif
         </p>
     </div>

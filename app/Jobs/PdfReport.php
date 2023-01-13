@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Throwable;
 
 class PdfReport implements ShouldQueue
 {
@@ -297,7 +298,7 @@ class PdfReport implements ShouldQueue
         $this->fileStorage->isProcessed();
     }
 
-    public function Failed(\Throwable $exception)
+    public function failed(Throwable $exception)
     {
         $this->fileStorage->delete();
 

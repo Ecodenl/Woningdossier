@@ -18,6 +18,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 class GenerateExampleBuildingCsv implements ShouldQueue
 {
@@ -91,7 +92,7 @@ class GenerateExampleBuildingCsv implements ShouldQueue
         $this->fileStorage->isProcessed();
     }
 
-    public function Failed(\Throwable $exception)
+    public function failed(Throwable $exception)
     {
         $this->fileStorage->delete();
 

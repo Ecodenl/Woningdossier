@@ -1,6 +1,6 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'front-page', 'withPageBreak' => false])
     <h1>
-        @lang('pdf/user-report.front-page.title')
+        @lang('pdf/user-report.pages.front-page.title')
     </h1>
 
     <div id="user-info">
@@ -32,11 +32,11 @@
             {{ $cooperation->name }}
         </h2>
         <p>
-            {{ __('pdf/user-report.front-page.date') . ' ' . date('d-m-Y') }}
+            {{ __('pdf/user-report.pages.front-page.date') . ' ' . date('d-m-Y') }}
             <br>
             @php $coachNames = implode(', ', $connectedCoachNames); @endphp
             @if(! empty($coachNames))
-                {{ trans_choice('pdf/user-report.front-page.connected-coaches', count($connectedCoachNames)) . ' ' . $coachNames }}
+                {{ trans_choice('pdf/user-report.pages.front-page.connected-coaches', count($connectedCoachNames)) . ' ' . $coachNames }}
             @endif
         </p>
     </div>

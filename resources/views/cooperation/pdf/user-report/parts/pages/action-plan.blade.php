@@ -1,15 +1,15 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'action-plan'])
     <h2>
-        @lang('pdf/user-report.action-plan.title')
+        @lang('pdf/user-report.pages.action-plan.title')
     </h2>
     <p>
-        @lang('pdf/user-report.action-plan.text')
+        @lang('pdf/user-report.pages.action-plan.text')
     </p>
 
     <div class="group">
         @php $stepShort = $scanShort === \App\Models\Scan::LITE ? 'usage-lite-scan' : 'usage-quick-scan'; @endphp
         <h4>
-            @lang('pdf/user-report.action-plan.usage.current')
+            @lang('pdf/user-report.pages.action-plan.usage.current')
         </h4>
 
         <div class="row">
@@ -40,7 +40,7 @@
 
     <div class="group">
         <h4>
-            @lang('pdf/user-report.action-plan.usage.kengetallen')
+            @lang('pdf/user-report.pages.action-plan.usage.kengetallen')
         </h4>
 
         <div class="row">
@@ -74,24 +74,24 @@
             @php $showDetails = $category !== \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE; @endphp
             <div class="group">
                 <h3>
-                    @lang("pdf/user-report.action-plan.categories.{$category}")
+                    @lang("pdf/user-report.pages.action-plan.categories.{$category}")
                 </h3>
 
                 @if($showDetails)
                     <div class="row">
                         <div class="col-6">
                             <h4>
-                                @lang('pdf/user-report.action-plan.advices.measure')
+                                @lang('pdf/user-report.pages.action-plan.advices.measure')
                             </h4>
                         </div>
                         <div class="col-3 text-center">
                             <h4>
-                                @lang('pdf/user-report.action-plan.advices.cost-indication')
+                                @lang('pdf/user-report.pages.action-plan.advices.cost-indication')
                             </h4>
                         </div>
                         <div class="col-3 text-center">
                             <h4>
-                                @lang('pdf/user-report.action-plan.advices.savings')
+                                @lang('pdf/user-report.pages.action-plan.advices.savings')
                             </h4>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                     <div class="row">
                         <div class="col-6">
                             <h4>
-                                @lang('pdf/user-report.action-plan.advices.total')
+                                @lang('pdf/user-report.pages.action-plan.advices.total')
                             </h4>
                         </div>
                         <div class="col-3 text-center">
@@ -146,7 +146,7 @@
     @if($adviceComments->isNotEmpty())
         <div class="group">
             <h4>
-                @lang('pdf/user-report.action-plan.comment')
+                @lang('pdf/user-report.pages.action-plan.comment')
             </h4>
             @foreach($adviceComments as $comment)
                 @include('cooperation.pdf.user-report.parts.comment', [

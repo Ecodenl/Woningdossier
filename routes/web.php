@@ -110,7 +110,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 // debug purpose only
                 Route::name('pdf.')->prefix('pdf')->group(function () {
                     Route::name('user-report.')->prefix('user-report')->group(function () {
-                        Route::get('', [Cooperation\Pdf\UserReportController::class, 'index'])->name('index');
+                        Route::get('{scanShort?}', [Cooperation\Pdf\UserReportController::class, 'index'])->name('index');
                     });
                 });
             }

@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Pdf;
 
-use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
-use App\Helpers\Str;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
@@ -16,6 +14,7 @@ use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\Support\Str;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 
 class UserReportController extends Controller
@@ -23,19 +22,18 @@ class UserReportController extends Controller
     /**
      * TESTING only.
      */
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $cooperation, ?string $scanShort = null)
     {
         $GLOBALS['_cooperation'] = $cooperation;
 
-        // TODO: Define short somehow
-        $scanShort = Scan::QUICK;
+        $scanShort ??= Scan::QUICK;
         if ($scanShort === Scan::LITE) {
             $short = ToolHelper::STRUCT_PDF_LITE;
         } else {
             $short = ToolHelper::STRUCT_PDF_QUICK;
         }
 
-        // Always retrieve from master
+        // Always retrieve from master.
         $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
@@ -47,7 +45,7 @@ class UserReportController extends Controller
             ->anonymize() // See comment above unset below
             ->createHeaderStructure($short, false);
 
-        // Retrieve headers AFTER the dump is done, as conditionally incorrect data will be removed
+        // Retrieve headers AFTER the dump is done, as conditionally incorrect data will be removed.
         $dump = $dumpService->generateDump();
         $headers = $dumpService->headerStructure;
 
@@ -64,7 +62,7 @@ class UserReportController extends Controller
         $expertDump = [];
         $expertStepShorts = Scan::findByShort(Scan::EXPERT)->steps()->pluck('short')->toArray();
 
-        // Manipulate the dump so it's categorized by step
+        // Manipulate the dump so it's categorized by step.
         foreach ($dump as $key => $data) {
             // Step short is at first dot
             $parts = explode('.', $key, 2);
@@ -75,6 +73,47 @@ class UserReportController extends Controller
                 $expertDump[$stepShort][$key] = $data;
             } else {
                 $simpleDump[$stepShort][$key] = $data;
+            }
+        }
+
+        $coachHelp = [];
+
+        if (array_key_exists('small-measures-lite', $simpleDump)) {
+            $data = $simpleDump['small-measures-lite'];
+            // In case of the lite scan, we need to move and merge some data.
+            foreach ($data as $key => $value) {
+                if (Str::contains($key, 'label_')) {
+                    $coachHelp[$key] = $value;
+                } elseif (Str::endsWith($key, '-coach-help')) {
+                    // We don't want the coach help values here... so we move them.
+                    $dataKey = Str::replaceLast('-coach-help', '', $key);
+                    $coachHelp[$dataKey] = $value;
+                    unset($data[$key]);
+                } elseif (Str::endsWith($key, '-how')) {
+                    // We do want the how values but not standalone.
+                    if ($value !== __('cooperation/frontend/tool.no-answer-given')) {
+                        $dataKey = Str::replaceLast('-how', '', $key);
+                        $data[$dataKey] .= "; {$value}";
+                    }
+                    unset($data[$key]);
+                }
+            }
+            $simpleDump['small-measures-lite'] = $data;
+
+            // Now we need to remove empty labels from the coach help, else it looks weird...
+            $previousKey = '';
+            foreach ($coachHelp as $key => $value) {
+                if (! empty($previousKey)) {
+                    if (Str::contains($key, 'label_') && Str::contains($previousKey, 'label_')) {
+                        unset($coachHelp[$previousKey]);
+                    }
+                }
+                $previousKey = $key;
+            }
+
+            // Last short in the array, if this is also a label it's wrong
+            if (Str::contains($previousKey, 'label_')) {
+                unset($coachHelp[$previousKey]);
             }
         }
 
@@ -169,6 +208,7 @@ class UserReportController extends Controller
             'headers',
             'simpleDump',
             'expertDump',
+            'coachHelp',
             'categorizedAdvices',
             'categorizedTotals',
             'adviceComments',

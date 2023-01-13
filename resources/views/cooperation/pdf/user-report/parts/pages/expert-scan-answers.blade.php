@@ -1,14 +1,14 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'expert-scan-answers'])
     <h2>
-        @lang('pdf/user-report.expert-scan-answers.title')
+        @lang('pdf/user-report.pages.expert-scan-answers.title')
     </h2>
     <p>
-        @lang('pdf/user-report.expert-scan-answers.text')
+        @lang('pdf/user-report.pages.expert-scan-answers.text')
     </p>
 
     <div class="group">
         <h4>
-            @lang('pdf/user-report.expert-scan-answers.action-plan')
+            @lang('pdf/user-report.pages.expert-scan-answers.action-plan')
         </h4>
         <p>
             @foreach($categorizedAdvices as $category => $advices)

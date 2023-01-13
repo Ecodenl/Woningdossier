@@ -6,6 +6,7 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Models\Alert;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Services\Models\AlertService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Livewire\Component;
@@ -14,23 +15,18 @@ class Alerts extends Component
 {
     protected $listeners = ['refreshAlerts'];
 
-    // As of Livewire 1, we can't use strict type properties for non-native types for JS, as Livewire 1 will cast them
-    // as arrays before properly rehydrating them, which will throw exceptions due to mismatch of type.
-    public $alerts;
-    public $building;
-    public $inputSource;
+    public Collection $alerts;
+    public Building $building;
+    public InputSource $inputSource;
     public bool $alertOpen = false;
 
     // Used in the blade view
-    public array $typeMap = [
-        Alert::TYPE_INFO => 'text-blue-900',
-        Alert::TYPE_SUCCESS => 'text-green',
-        Alert::TYPE_WARNING => 'text-orange',
-        Alert::TYPE_DANGER => 'text-red',
-    ];
+    public array $typeMap = AlertService::TYPE_MAP;
 
     public function mount(Request $request, Building $building, InputSource $inputSource)
     {
+        // Default so it's callable.
+        $this->alerts = collect();
         $this->fill(compact('building', 'inputSource'));
 
         if ($request->route()->getName() === 'cooperation.frontend.tool.simple-scan.my-plan.index') {
@@ -46,54 +42,27 @@ class Alerts extends Component
 
     public function refreshAlerts($answers = null)
     {
-        $alerts = Alert::all();
-
         $oldAlerts = $this->alerts;
-
         $shouldOpenAlert = false;
 
-        $evaluator = ConditionEvaluator::init()
+        $newAlerts = AlertService::init()
+            ->inputSource($this->inputSource)
             ->building($this->building)
-            ->inputSource($this->inputSource);
+            ->setAnswers(collect($answers))
+            ->getAlerts();
 
-        // First fetch all conditions, so we can retrieve any required related answers in one go
-        $conditionsForAllAlerts = [];
-        foreach ($alerts as $alert) {
-            $conditionsForAllAlerts = array_merge($conditionsForAllAlerts, $alert->conditions ?? []);
-        }
-        $answersForAlerts = $evaluator->getToolAnswersForConditions($conditionsForAllAlerts, collect($answers));
+        if (! empty($newAlerts)) {
+            $oldAlertShorts = $oldAlerts->pluck('short')->toArray();
+            $newAlertShorts = $newAlerts->pluck('short')->toArray();
 
-        foreach ($alerts as $index => $alert) {
-            // Check if we should show this alert
-            if ($evaluator->evaluateCollection($alert->conditions, $answersForAlerts)) {
-                $oldAlert = null;
-                if ($oldAlerts instanceof Collection) {
-                    $oldAlert = $oldAlerts->where('short', $alert->short)->first();
-                }
-                // if the current alert is not found in the oldAlerts, it will be considered "new"
-                // in that case we will open the alert menu for the user
-                if(! $oldAlert instanceof Alert) {
-                    $shouldOpenAlert = true;
-                }
-            } else  {
-                $alerts->forget($index);
-            }
-        }
-
-        if ($alerts->isEmpty()) {
-            $shouldOpenAlert = false;
+            $shouldOpenAlert = ! empty(array_diff($newAlertShorts, $oldAlertShorts));
         }
 
         $this->alertOpen = $shouldOpenAlert;
-        $this->alerts = $alerts;
+        $this->alerts = $newAlerts;
 
         // Always call updated for this field. Even if it didn't change, we want to ensure it is cast to the frontend
         $this->updated('alertOpen', $shouldOpenAlert);
-    }
-
-    private function isClosed()
-    {
-        return !$this->alertOpen;
     }
 
     public function updated($field, $value)

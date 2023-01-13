@@ -18,7 +18,7 @@ class ContentStructureService
         $this->contentStructure = $contentStructure;
     }
 
-    public function applicableForTotalReport(): array
+    public function applicableForCsvReport(): array
     {
         // This expects a header structure from the DumpService
         $contentStructure = $this->contentStructure;

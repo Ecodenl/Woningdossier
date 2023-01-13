@@ -51,7 +51,7 @@ trait DecimalReplacementTrait
         $decimal = $this->input($requestKey);
         if (! is_null($decimal)) {
             $decimal = $value = NumberFormatter::reverseFormat($decimal);
-            $this->replacements = array_replace_recursive($this->replacements, Arr::arrayUndot([$requestKey => $decimal]));
+            $this->replacements = array_replace_recursive($this->replacements, Arr::undot([$requestKey => $decimal]));
         }
     }
 }

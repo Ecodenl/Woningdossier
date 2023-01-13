@@ -17,6 +17,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\App;
+use Throwable;
 
 class GenerateToolReport implements ShouldQueue
 {
@@ -73,7 +74,7 @@ class GenerateToolReport implements ShouldQueue
             ->createHeaderStructure($short);
 
         $dumpService->setHeaderStructure(
-            ContentStructureService::init($dumpService->headerStructure)->applicableForTotalReport()
+            ContentStructureService::init($dumpService->headerStructure)->applicableForCsvReport()
         );
 
         $cooperation = $this->cooperation;
@@ -138,7 +139,7 @@ class GenerateToolReport implements ShouldQueue
         $this->fileStorage->isProcessed();
     }
 
-    public function Failed(\Throwable $exception)
+    public function failed(Throwable $exception)
     {
         $this->fileStorage->delete();
 

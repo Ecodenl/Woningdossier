@@ -30,7 +30,6 @@ class DownloadPdf extends Component
 
     public function mount(User $user, Scan $scan)
     {
-
         /** @var FileType $fileType */
         $fileType = FileType::findByShort('pdf-report');
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -69,7 +68,6 @@ class DownloadPdf extends Component
         $this->isFileBeingProcessed = true;
         $this->fileStorage = null;
 
-
         abort_if($this->fileType->isBeingProcessed($this->user->building, $this->inputSource), 403);
 
         $this->handleExistingFiles();
@@ -91,7 +89,7 @@ class DownloadPdf extends Component
 
         // so this could be more elegant with camelsnakekebakstrcase the crap out of it
         // that's for later.
-        PdfReport::dispatch($this->user, $this->masterInputSource, $this->fileType, $fileStorage);
+        PdfReport::dispatch($this->user, $this->fileType, $fileStorage, $this->scan);
     }
 
     private function handleExistingFiles()
@@ -112,13 +110,9 @@ class DownloadPdf extends Component
         }
     }
 
-    private function getFileNameForFileType(FileType $fileType, User $user, InputSource $inputSource)
+    private function getFileNameForFileType(FileType $fileType, User $user, InputSource $inputSource): string
     {
-        if ('pdf-report' == $fileType->short) {
-            // 1234AB11-Bewonster-A-g-Bewoner.pdf;
-            $fileName = trim($user->building->postal_code).$user->building->number.'-'.Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
-        }
-
-        return $fileName;
+        // 1234AB11-Bewonster-A-g-Bewoner.pdf;
+        return trim($user->building->postal_code).$user->building->number.'-'.Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
     }
 }

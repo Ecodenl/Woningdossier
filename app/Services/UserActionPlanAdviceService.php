@@ -30,6 +30,11 @@ class UserActionPlanAdviceService
     const CATEGORY_TO_DO = 'to-do';
     const CATEGORY_LATER = 'later';
 
+    /**
+     * Return the categories, ordered.
+     *
+     * @return string[]
+     */
     public static function getCategories(): array
     {
         return [

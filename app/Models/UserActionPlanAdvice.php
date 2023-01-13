@@ -7,12 +7,14 @@ use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
 use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
+use App\Services\UserActionPlanAdviceService;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Collection;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -51,6 +53,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice forMe(?\App\Models\User $user = null)
  * @method static Builder|UserActionPlanAdvice forStep(\App\Models\Step $step)
  * @method static Builder|UserActionPlanAdvice forUser($user)
+ * @method static Builder|UserActionPlanAdvice getCategorized()
  * @method static Builder|UserActionPlanAdvice invisible()
  * @method static Builder|UserActionPlanAdvice newModelQuery()
  * @method static Builder|UserActionPlanAdvice newQuery()
@@ -109,6 +112,16 @@ class UserActionPlanAdvice extends Model implements Auditable
         parent::boot();
 
         static::addGlobalScope(new VisibleScope());
+    }
+
+    # Scopes
+    public function scopeGetCategorized(Builder $query): Collection
+    {
+        $categories = array_values(UserActionPlanAdviceService::getCategories());
+        return $query->get()->groupBy('category')->sortKeysUsing(function ($a, $b) use ($categories) {
+            // https://stackoverflow.com/questions/3737139/reference-what-does-this-symbol-mean-in-php/31298778#31298778
+            return array_search($a, $categories) <=> array_search($b, $categories);
+        });
     }
 
     /**
@@ -173,6 +186,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $query->where('step_id', $step->id);
     }
 
+    # Relations
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -193,6 +207,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $query->where('category', $category);
     }
 
+    # Unsorted
     /**
      * Check if the costs are a valid range.
      *

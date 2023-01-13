@@ -13,8 +13,15 @@
     ];
 @endphp
 
-<div class="step-intro">
-    <img src="{{asset($stepIconMap[$shortToUseAsMainSubject])}}">
-    <h2>{{\App\Models\Step::findByShort($shortToUseAsMainSubject)->name}}</h2>
-    <p>{!! nl2br(strip_tags(__("pdf/user-report.step-description.{$shortToUseAsMainSubject}"))) !!}</p>
+<div id="step-intro" class="group">
+    <div class="icon-container">
+        <img src="{{ pdfAsset($stepIconMap[$step->short]) }}" alt="{{ $step->name }}"
+             style="max-width: 100%; max-height: 100%;">
+    </div>
+    <h2>
+        {{ $step->name }}
+    </h2>
+    <p>
+        {!! nl2br(strip_tags(__("pdf/user-report.step-description.{$step->short}"))) !!}
+    </p>
 </div>

@@ -24,8 +24,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $scan_id
- * @property-read \Illuminate\Database\Eloquent\Collection|Step[] $children
- * @property-read int|null $children_count
  * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
  * @property-read int|null $measure_applications_count
@@ -38,11 +36,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|Step childrenForStep(\App\Models\Step $step)
  * @method static Builder|Step expert()
  * @method static \Database\Factories\StepFactory factory(...$parameters)
+ * @method static Builder|Step forScan(\App\Models\Scan $scan)
  * @method static Builder|Step newModelQuery()
  * @method static Builder|Step newQuery()
  * @method static Builder|Step ordered()
  * @method static Builder|Step query()
  * @method static Builder|Step quickScan()
+ * @method static Builder|Step recalculable()
  * @method static Builder|Step whereCreatedAt($value)
  * @method static Builder|Step whereId($value)
  * @method static Builder|Step whereName($value)

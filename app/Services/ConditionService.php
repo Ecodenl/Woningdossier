@@ -23,6 +23,8 @@ class ConditionService
     protected Building $building;
     protected InputSource $inputSource;
 
+    protected ?ConditionEvaluator $evaluator = null;
+
     public function forModel(Model $model): self
     {
         // TODO: Should we check for supported classes or just expect the developers to not be retarded?
@@ -73,9 +75,7 @@ class ConditionService
         ];
 
         $class = get_class($this->model);
-        $evaluator = ConditionEvaluator::init()
-            ->building($this->building)
-            ->inputSource($this->inputSource);
+        $evaluator = $this->getEvaluator();
 
         if (in_array($class, $selfConditionsOnly)) {
             $conditions = $this->model->conditions ?? [];
@@ -96,14 +96,15 @@ class ConditionService
                 ->get();
 
             // First fetch all conditions, so we can retrieve any required related answers in one go
-            $conditionsForAllEvaluatable = [];
-            foreach ($subSteps as $subStep) {
-                $conditionsForAllEvaluatable = array_merge($conditionsForAllEvaluatable, $subStep->conditions);
-            }
-            foreach ($subSteppables as $subSteppable) {
-                $conditionsForAllEvaluatable = array_merge($conditionsForAllEvaluatable, $subSteppable->pivot->conditions);
-            }
-            $answersForAllEvaluatable = $evaluator->getToolAnswersForConditions($conditionsForAllEvaluatable, $answers);
+            $conditionsForAllEvaluatable = $subSteps->pluck('conditions')
+                ->merge($subSteppables->pluck('pivot.conditions'))
+                ->filter()
+                ->flatten(1)
+                ->all();
+
+            $evaluator->setAnswers(
+                $evaluator->getToolAnswersForConditions($conditionsForAllEvaluatable, $answers)
+            );
 
             // We sadly can't use one big array for evaluation; consider the case that both a SubStep and SubSteppable
             // have conditions; it might be that the SubSteppable passes, but the SubStep does not. It however does
@@ -112,12 +113,12 @@ class ConditionService
             $passes = false;
             foreach ($subSteps as $subStep) {
                 $conditions = $subStep->conditions;
-                $passes = $evaluator->evaluateCollection($conditions, $answersForAllEvaluatable);
+                $passes = $evaluator->evaluate($conditions);
 
                 if ($passes) {
                     if (! empty($subStep->pivot->conditions)) {
                         $conditions = $subStep->pivot->conditions;
-                        $passes = $evaluator->evaluateCollection($conditions, $answersForAllEvaluatable);
+                        $passes = $evaluator->evaluate($conditions);
 
                         if ($passes) {
                             // We're done here
@@ -134,12 +135,12 @@ class ConditionService
                 // We haven't passed yet, so we will check the SubSteppables
                 foreach ($subSteppables as $subSteppable) {
                     $conditions = $subSteppable->pivot->conditions;
-                    $passes = $evaluator->evaluateCollection($conditions, $answersForAllEvaluatable);
+                    $passes = $evaluator->evaluate($conditions);
 
                     if ($passes) {
                         if (! empty($subStep->conditions)) {
                             $conditions = $subStep->conditions;
-                            $passes = $evaluator->evaluateCollection($conditions, $answersForAllEvaluatable);
+                            $passes = $evaluator->evaluate($conditions);
 
                             if ($passes) {
                                 // We're done here
@@ -162,8 +163,19 @@ class ConditionService
             return $passes;
         }
 
-        $answers = $evaluator->getToolAnswersForConditions($conditions, $answers);
+        return $evaluator->setAnswers(
+            $evaluator->getToolAnswersForConditions($conditions, $answers)
+        )->evaluate($conditions);
+    }
 
-        return $evaluator->evaluateCollection($conditions, $answers);
+    protected function getEvaluator(): ConditionEvaluator
+    {
+        if (is_null($this->evaluator)) {
+            $this->evaluator = ConditionEvaluator::init()
+                ->building($this->building)
+                ->inputSource($this->inputSource);
+        }
+
+        return $this->evaluator;
     }
 }

@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Throwable;
 
 class CloneOpposingInputSource implements ShouldQueue
 {
@@ -38,7 +39,7 @@ class CloneOpposingInputSource implements ShouldQueue
             ->clone();
     }
 
-    public function Failed(\Throwable $exception)
+    public function failed(Throwable $exception)
     {
         NotificationService::init()
             ->forBuilding($this->building)

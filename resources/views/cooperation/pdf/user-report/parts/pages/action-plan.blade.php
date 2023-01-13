@@ -123,19 +123,29 @@
                 @if($showDetails)
                     <div class="row">
                         <div class="col-6">
-                            <h4>
+                            <h5>
                                 @lang('pdf/user-report.pages.action-plan.advices.total')
-                            </h4>
+                            </h5>
                         </div>
                         <div class="col-3 text-center">
-                            <h4>
+                            <h5>
                                 {{ $categorizedTotals[$category]['costs'] }}
-                            </h4>
+                            </h5>
                         </div>
                         <div class="col-3 text-center">
-                            <h4>
+                            <h5>
                                 {{ $categorizedTotals[$category]['savings'] }}
-                            </h4>
+                            </h5>
+                        </div>
+                    </div>
+                @endif
+
+                @if($category === \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO && $alerts->isNotEmpty())
+                    <div class="group">
+                        <div class="row">
+                            <p>
+                                @lang('pdf/user-report.alerts.text')
+                            </p>
                         </div>
                     </div>
                 @endif

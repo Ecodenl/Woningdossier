@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
+use App\Services\Models\AlertService;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Str;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
@@ -24,8 +25,6 @@ class UserReportController extends Controller
      */
     public function index(Cooperation $cooperation, ?string $scanShort = null)
     {
-        $GLOBALS['_cooperation'] = $cooperation;
-
         $scanShort ??= Scan::QUICK;
         if ($scanShort === Scan::LITE) {
             $short = ToolHelper::STRUCT_PDF_LITE;
@@ -196,6 +195,11 @@ class UserReportController extends Controller
             ->pluck('full_name')
             ->toArray();
 
+        $alerts = AlertService::init()
+            ->inputSource($inputSource)
+            ->building($building)
+            ->getAlerts();
+
         // https://github.com/mccarlosen/laravel-mpdf
         // To style container margins of the PDF, see config/pdf.php
         return LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
@@ -212,6 +216,7 @@ class UserReportController extends Controller
             'categorizedAdvices',
             'categorizedTotals',
             'adviceComments',
+            'alerts',
         ))->stream();
     }
 }

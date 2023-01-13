@@ -6,6 +6,10 @@ return [
     'defaults' => [
         'page' => 'Pagina',
     ],
+    'alerts' => [
+        'title' => 'Notificaties',
+        'text' => 'Let op, er zijn aandachtspunten bij de gekozen maatregelen, kijk in de bijlage voor details.',
+    ],
     'pages' => [
         'front-page' => [
             'date' => 'Datum:',

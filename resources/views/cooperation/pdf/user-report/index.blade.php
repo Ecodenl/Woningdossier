@@ -7,6 +7,16 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
         <link rel="stylesheet" type="text/css" href="{{ pdfAsset('css/pdf.css') }}">
+        {{--
+            Because webpack is a clownfest, font-weight: bold is converted into font-weight: 700 which is NOT
+            supported by mPDF. So we just redefine it here because apparently it's too diffult to prevent a CSS conversion
+         --}}
+        <style>
+            h1, h2, h3, h4, h5 {
+                font-weight: bold;
+            }
+        </style>
+
 
         {{-- Define footer (an/or header) by name --}}
         <style>

@@ -8,6 +8,10 @@
         'style' => 'width: auto; max-width: 75%;',
         'header' => __('cooperation/frontend/tool.my-plan.calculations.title'),
     ])
+        <div class="mb-4">
+            {!! __('cooperation/frontend/tool.my-plan.calculations.description') !!}
+        </div>
+
         <table class="table fancy-table">
             <thead>
                 <tr>
@@ -38,9 +42,5 @@
                 @endforeach
             </tbody>
         </table>
-
-        <div class="mt-4">
-            {!! __('cooperation/frontend/tool.my-plan.calculations.description') !!}
-        </div>
     @endcomponent
 </div>

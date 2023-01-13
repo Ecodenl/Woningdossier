@@ -78,7 +78,7 @@ class Ventilation
                     unset($measures['crack-sealing']);
 
                     $improvement = 'Natuurlijke ventilatie is niet zo goed voor het comfort en zorgt voor een hoog energiegebruik. Daarom worden de huizen steeds luchtdichter gemaakt en van goede isolatie voorzien. Om een gezond binnenklimaat te bereiken is hierbij een andere vorm van ventilatie nodig. De volgende opties kunt u overwegen:';
-                    $remark = __('my-plan.warnings.ventilation');
+                    $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
                 case \App\Models\Ventilation::MECHANICAL;
@@ -99,7 +99,7 @@ class Ventilation
                     }
 
                     $improvement = 'Oude ventilatoren gebruiken soms nog wisselstroom en verbruiken voor dezelfde prestatie veel meer elektriciteit en maken meer geluid dan moderne gelijkstroom ventilatoren. De besparing op de gebruikte stroom kan oplopen tot ca. 80 %. Een installateur kan direct beoordelen of u nog een wisselstroom ventilator heeft.';
-                    $remark = __('my-plan.warnings.ventilation');
+                    $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
                 case \App\Models\Ventilation::BALANCED;
@@ -128,7 +128,7 @@ class Ventilation
                     }
 
                     $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
-                    $remark = __('my-plan.warnings.ventilation');
+                    $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
                 case \App\Models\Ventilation::DECENTRAL;
@@ -157,7 +157,7 @@ class Ventilation
                     }
 
                     $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
-                    $remark = __('my-plan.warnings.ventilation');
+                    $remark = __('cooperation/tool/ventilation.calculations.warning');
                     break;
 
             }

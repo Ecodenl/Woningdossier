@@ -1,4 +1,4 @@
-@component('cooperation.pdf.user-report.components.new-page', ['id' => 'front-page'])
+@component('cooperation.pdf.user-report.components.new-page', ['id' => 'front-page', 'withPageBreak' => false])
     <h1>
         @lang('pdf/user-report.front-page.title')
     </h1>

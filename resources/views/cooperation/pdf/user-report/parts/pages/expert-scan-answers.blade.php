@@ -22,7 +22,6 @@
         </p>
     </div>
 
-    @include('cooperation.pdf.user-report.parts.page-break')
 
     @foreach($expertDump as $stepShort => $results)
         @php
@@ -34,12 +33,12 @@
             }
         @endphp
 
+        @include('cooperation.pdf.user-report.parts.page-break')
+
         @include('cooperation.pdf.user-report.parts.step-intro')
 
         <div class="group">
             @include('cooperation.pdf.user-report.parts.step-summary')
         </div>
-
-        @include('cooperation.pdf.user-report.parts.page-break')
     @endforeach
 @endcomponent

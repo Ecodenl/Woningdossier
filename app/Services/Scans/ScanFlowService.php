@@ -78,6 +78,7 @@ class ScanFlowService
      */
     public function checkConditionals(array $filledInAnswers, User $authUser)
     {
+        // TODO: Find a way we can test this behaviour
         Log::debug("Checking conditionals..");
         $building = $this->building;
         $currentInputSource = $this->currentInputSource;
@@ -107,11 +108,13 @@ class ScanFlowService
             ->where('sub_steppable_type', ToolQuestion::class)
             ->whereNotIn('sub_step_id', $this->skipSubSteps)
             ->whereNotIn('sub_step_id', $subStepsRelated->pluck('id')->toArray())
+            ->with('subStep')
             ->get();
 
         $allConditions = $subStepsRelated->pluck('conditions')
             ->merge($subStepsRelated->pluck('toolQuestions.*.pivot.conditions')->flatten(1))
             ->merge($subSteppableRelated->pluck('conditions'))
+            ->merge($subSteppableRelated->pluck('subStep.conditions'))
             ->filter()
             ->flatten(1)
             ->all();
@@ -134,7 +137,6 @@ class ScanFlowService
 
             // Skip if already processed
             if (! in_array($subStep->id, $processedSubSteps)) {
-                \Log::debug($subStep->conditions);
                 if ($evaluator->evaluate($subStep->conditions ?? [])) {
                     if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
                         Log::debug("Completing SubStep {$subStep->name} because it has answers.");

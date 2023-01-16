@@ -63,13 +63,11 @@ class ConditionEvaluator
         $ignore = $answers->keys()->all();
 
         // Pass clauses reference other models with conditions, so we need to resolve them.
-        $passClauses = collect(Arr::flatten($conditions, 2))
-            ->merge(collect(Arr::flatten($conditions, 1)))
-            ->whereIn('operator', [Clause::PASSES, Clause::NOT_PASSES]);
+        $passClauses = $this->fetchPassClauses($conditions);
 
         $clauseConditions = [];
         foreach ($passClauses as $clause) {
-            $clauseConditions[] = $this->fetchPassConditions($clause['column'], $clause['value']);
+            $clauseConditions[] = $this->fetchPassConditions($clause['column'], $clause['value'], true);
         }
 
         // Get answers for condition columns, but ensure we don't fetch special evaluators, as they don't have
@@ -304,12 +302,30 @@ class ConditionEvaluator
         return $evaluation['bool'];
     }
 
-    protected function fetchPassConditions($column, $value): array
+    protected function fetchPassConditions($column, $value, bool $recursive = false): array
     {
         $column = is_array($column) ? $column : ['short' => $column];
         $model = (new $value)->newQuery()->where($column)->first();
 
-        // Ensure we pass potential dynamic answers through
-        return $model->conditions ?? [];
+        $conditions = $model->conditions ?? [];
+
+        // If we are recursive, we want to continue the same cycle, as the retrieved conditions might also reference
+        // other conditions.
+        if ($recursive) {
+            $passClauses = $this->fetchPassClauses($conditions);
+
+            foreach ($passClauses as $clause) {
+                $conditions = array_merge($conditions, $this->fetchPassConditions($clause['column'], $clause['value'], true));
+            }
+        }
+
+        return $conditions;
+    }
+
+    protected function fetchPassClauses(array $conditions): Collection
+    {
+        return collect(Arr::flatten($conditions, 2))
+            ->merge(collect(Arr::flatten($conditions, 1)))
+            ->whereIn('operator', [Clause::PASSES, Clause::NOT_PASSES]);
     }
 }

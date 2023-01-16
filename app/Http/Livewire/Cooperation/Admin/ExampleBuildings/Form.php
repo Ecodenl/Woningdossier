@@ -9,7 +9,7 @@ use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\Step;
-use App\Models\ToolQuestion;
+use App\Rules\LanguageRequired;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
 
@@ -57,7 +57,6 @@ class Form extends Component
         if ($exampleBuilding instanceof ExampleBuilding) {
             $this->exampleBuildingValues = $exampleBuilding->attributesToArray();
             foreach ($exampleBuilding->contents as $exampleBuildingContent) {
-
                 $content = array_merge($this->contentStructure, $exampleBuildingContent->content);
                 // make sure it has all the available tool questions
                 foreach ($content as $toolQuestionShort => $value) {
@@ -116,6 +115,7 @@ class Form extends Component
         $this->hydrateExampleBuildingSteps();
 
         $this->validate([
+            'exampleBuildingValues.name' => new LanguageRequired(),
             'exampleBuildingValues.building_type_id' => 'required|exists:building_types,id',
             'exampleBuildingValues.cooperation_id' => 'nullable|exists:cooperations,id',
             'exampleBuildingValues.is_default' => 'required|boolean',
@@ -125,6 +125,7 @@ class Form extends Component
         if (empty($this->exampleBuildingValues['cooperation_id'])) {
             $this->exampleBuildingValues['cooperation_id'] = null;
         }
+
         // update or create
         if ($this->exampleBuilding instanceof ExampleBuilding) {
             $this->exampleBuilding->update($this->exampleBuildingValues);
@@ -170,6 +171,9 @@ class Form extends Component
             }
 
             if ($buildYear !== "new") {
+                // While we redirect below, it seems Livewire still makes a request to the frontend. We set
+                // the new content, else it throws an undefined index exception.
+                $this->contents[$buildYear] = $content;
                 $this->exampleBuilding->contents()->updateOrCreate(['build_year' => $buildYear], ['content' => $content]);
             }
         }

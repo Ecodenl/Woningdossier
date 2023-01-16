@@ -95,6 +95,7 @@ class ScanFlowService
             }
         })
             ->whereNotIn('id', $this->skipSubSteps)
+            ->with('toolQuestions')
             ->get();
 
         $subSteppableRelated = SubSteppable::where(function ($query) use ($filledInAnswers) {
@@ -109,6 +110,7 @@ class ScanFlowService
             ->get();
 
         $allConditions = $subStepsRelated->pluck('conditions')
+            ->merge($subStepsRelated->pluck('toolQuestions.*.pivot.conditions')->flatten(1))
             ->merge($subSteppableRelated->pluck('conditions'))
             ->filter()
             ->flatten(1)
@@ -132,6 +134,7 @@ class ScanFlowService
 
             // Skip if already processed
             if (! in_array($subStep->id, $processedSubSteps)) {
+                \Log::debug($subStep->conditions);
                 if ($evaluator->evaluate($subStep->conditions ?? [])) {
                     if ($this->hasAnsweredSubStep($subStep, $evaluator)) {
                         Log::debug("Completing SubStep {$subStep->name} because it has answers.");
@@ -237,7 +240,7 @@ class ScanFlowService
         }
 
         if (! $nextStep instanceof Step) {
-            Log::debug("No next step, fetching first in complete step..");
+            Log::debug("No next step, fetching first incomplete step..");
             // No next step set, let's see if there are any steps left incomplete
             $nextStep = $this->building->getFirstIncompleteStep($this->scan, $this->inputSource);
         }

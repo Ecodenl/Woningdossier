@@ -78,6 +78,7 @@ class ScanFlowService
      */
     public function checkConditionals(array $filledInAnswers, User $authUser)
     {
+        // TODO: Find a way we can test this behaviour
         Log::debug("Checking conditionals..");
         $building = $this->building;
         $currentInputSource = $this->currentInputSource;
@@ -95,6 +96,7 @@ class ScanFlowService
             }
         })
             ->whereNotIn('id', $this->skipSubSteps)
+            ->with('toolQuestions')
             ->get();
 
         $subSteppableRelated = SubSteppable::where(function ($query) use ($filledInAnswers) {
@@ -106,10 +108,13 @@ class ScanFlowService
             ->where('sub_steppable_type', ToolQuestion::class)
             ->whereNotIn('sub_step_id', $this->skipSubSteps)
             ->whereNotIn('sub_step_id', $subStepsRelated->pluck('id')->toArray())
+            ->with('subStep')
             ->get();
 
         $allConditions = $subStepsRelated->pluck('conditions')
+            ->merge($subStepsRelated->pluck('toolQuestions.*.pivot.conditions')->flatten(1))
             ->merge($subSteppableRelated->pluck('conditions'))
+            ->merge($subSteppableRelated->pluck('subStep.conditions'))
             ->filter()
             ->flatten(1)
             ->all();
@@ -237,7 +242,7 @@ class ScanFlowService
         }
 
         if (! $nextStep instanceof Step) {
-            Log::debug("No next step, fetching first in complete step..");
+            Log::debug("No next step, fetching first incomplete step..");
             // No next step set, let's see if there are any steps left incomplete
             $nextStep = $this->building->getFirstIncompleteStep($this->scan, $this->inputSource);
         }

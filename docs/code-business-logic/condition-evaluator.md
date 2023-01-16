@@ -166,22 +166,42 @@ $modelCollection->pluck('conditions')
     ->all();
 ```
 
-#### Model with conditions in relation
+#### Model with conditions in single relation
+```php
+// ENSURE RELATION IS FULLY EAGER LOADED!
+// This works exactly the same as above, except on a relation.
+$modelCollection->pluck('relation.conditions')->flatten(1)->filter()->all();
+// E.g. 
+$subSteppables->pluck('subStep.conditions')->flatten(1)->filter()->all();
+```
+
+#### Model with conditions and single relation with conditions
+```php
+// ENSURE RELATION IS FULLY EAGER LOADED!
+// We simply merge a second collection of conditions, as mentioned earlier.
+$modelCollection->pluck('conditions')
+    ->merge($modelCollection->pluck('relation.conditions'))
+    ->filter()
+    ->flatten(1)
+    ->all();
+```
+
+#### Model with conditions in multi relation
 ```php
 // ENSURE RELATION IS FULLY EAGER LOADED!
 // Pluck conditions from relation, flatten to construct proper depth of array, remove `null` values, then convert to
 // array.
 // Depth is 2, because due to the wildcard, we get an extra nest.
-$modelCollection->pluck('relations.*.conditions')->flatten(2)->filter()->all();
+$modelCollection->pluck('relation.*.conditions')->flatten(2)->filter()->all();
 ```
 
 #### Model with conditions and relation with conditions
 ```php
 // ENSURE RELATION IS FULLY EAGER LOADED!
-// We combine the logic of above 2. Because of this, we only need to flatten the merged collection once, due to it 
-// then being the same depth as the "main" collection, and we need to flatten that also, so we can combine it. 
+// We combine the logic of flattening and merging. Because of this, we only need to flatten the merged collection once, 
+// due to it then being the same depth as the "main" collection. After that we proceed as usual.
 $modelCollection->pluck('conditions')
-    ->merge($modelCollection->pluck('relations.*.conditions')->flatten(1))
+    ->merge($modelCollection->pluck('relation.*.conditions')->flatten(1))
     ->filter()
     ->flatten(1)
     ->all();

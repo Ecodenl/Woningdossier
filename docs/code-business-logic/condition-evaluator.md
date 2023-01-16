@@ -172,7 +172,9 @@ $modelCollection->pluck('conditions')
 // Pluck conditions from relation, flatten to construct proper depth of array, remove `null` values, then convert to
 // array.
 // Depth is 2, because due to the wildcard, we get an extra nest.
-$modelCollection->pluck('relations.*.conditions')->flatten(2)->filter()->all();
+$modelCollection->pluck('relation.*.conditions')->flatten(2)->filter()->all();
+// E.g. for the SubSteppables of a SubStep
+$subSteps->pluck('subSteppables.*.conditions')->flatten(2)->filter()->all();
 ```
 
 #### Model with conditions and relation with conditions
@@ -181,7 +183,7 @@ $modelCollection->pluck('relations.*.conditions')->flatten(2)->filter()->all();
 // We combine the logic of above 2. Because of this, we only need to flatten the merged collection once, due to it 
 // then being the same depth as the "main" collection, and we need to flatten that also, so we can combine it. 
 $modelCollection->pluck('conditions')
-    ->merge($modelCollection->pluck('relations.*.conditions')->flatten(1))
+    ->merge($modelCollection->pluck('relation.*.conditions')->flatten(1))
     ->filter()
     ->flatten(1)
     ->all();

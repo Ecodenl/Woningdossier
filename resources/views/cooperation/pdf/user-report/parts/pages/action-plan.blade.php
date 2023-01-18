@@ -120,25 +120,25 @@
                     </div>
                 @endforeach
 
-                @if($showDetails)
-                    <div class="row">
-                        <div class="col-6">
-                            <h5>
-                                @lang('pdf/user-report.pages.action-plan.advices.total')
-                            </h5>
-                        </div>
-                        <div class="col-3 text-center">
-                            <h5>
-                                {{ $categorizedTotals[$category]['costs'] }}
-                            </h5>
-                        </div>
-                        <div class="col-3 text-center">
-                            <h5>
-                                {{ $categorizedTotals[$category]['savings'] }}
-                            </h5>
-                        </div>
-                    </div>
-                @endif
+{{--                @if($showDetails)--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-6">--}}
+{{--                            <h5>--}}
+{{--                                @lang('pdf/user-report.pages.action-plan.advices.total')--}}
+{{--                            </h5>--}}
+{{--                        </div>--}}
+{{--                        <div class="col-3 text-center">--}}
+{{--                            <h5>--}}
+{{--                                {{ $categorizedTotals[$category]['costs'] }}--}}
+{{--                            </h5>--}}
+{{--                        </div>--}}
+{{--                        <div class="col-3 text-center">--}}
+{{--                            <h5>--}}
+{{--                                {{ $categorizedTotals[$category]['savings'] }}--}}
+{{--                            </h5>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                @endif--}}
 
                 @if($category === \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO && $alerts->isNotEmpty())
                     <div class="group">

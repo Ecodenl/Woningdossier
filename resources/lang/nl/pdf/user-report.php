@@ -33,7 +33,6 @@ return [
                 'measure' => 'Maatregel',
                 'cost-indication' => 'Kostenindicatie [ € ]',
                 'savings' => 'Besparing [ € / jaar ]',
-                'total' => 'Totaal',
             ],
             'comment' => 'Toelichting op het woonplan',
         ],

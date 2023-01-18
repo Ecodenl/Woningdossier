@@ -116,30 +116,13 @@ class UserReportController extends Controller
             }
         }
 
-        $categorizedTotals = [
-            UserActionPlanAdviceService::CATEGORY_TO_DO => [
-                'costs' => [
-                    'from' => 0,
-                    'to' => 0,
-                ],
-                'savings' => 0,
-            ],
-            UserActionPlanAdviceService::CATEGORY_LATER => [
-                'costs' => [
-                    'from' => 0,
-                    'to' => 0,
-                ],
-                'savings' => 0,
-            ],
-        ];
-
         $categorizedAdvices = $user->userActionPlanAdvices()
             ->forInputSource($inputSource)
             ->withoutDeletedCooperationMeasureApplications($inputSource)
             ->with(['userActionPlanAdvisable' => fn ($q) => $q->withoutGlobalScope(GetValueScope::class)])
             ->getCategorized()
-            ->map(function ($advices) use (&$categorizedTotals) {
-                return $advices->map(function ($userActionPlanAdvice) use (&$categorizedTotals) {
+            ->map(function ($advices) {
+                return $advices->map(function ($userActionPlanAdvice) {
                     if ($userActionPlanAdvice->category !== UserActionPlanAdviceService::CATEGORY_COMPLETE) {
                         $costs = $userActionPlanAdvice->costs ?? [];
                         $from = $costs['from'] ?? null;
@@ -154,33 +137,11 @@ class UserReportController extends Controller
 
                         $userActionPlanAdvice->costs = NumberFormatter::range($from, $to);
                         $userActionPlanAdvice->savings_money = NumberFormatter::round($userActionPlanAdvice->savings_money ?? 0);
-
-                        if (! is_null($from) || ! is_null($to)) {
-                            if (is_null($from) && ! is_null($to)) {
-                                $from = $to;
-                            } elseif (! is_null($from) && is_null($to)) {
-                                $to = $from;
-                            }
-
-                            $categorizedTotals[$userActionPlanAdvice->category]['costs']['from'] += $from;
-                            $categorizedTotals[$userActionPlanAdvice->category]['costs']['to'] += $to;
-                        }
-
-                        $categorizedTotals[$userActionPlanAdvice->category]['savings'] += $userActionPlanAdvice->savings_money;
                     }
 
                     return $userActionPlanAdvice;
                 });
             });
-
-        // Format ready for in blade
-        foreach ($categorizedTotals as $category => $totals) {
-            if ($totals['costs']['from'] === $totals['costs']['to']) {
-                $categorizedTotals[$category]['costs'] = $totals['costs']['from'];
-            } else {
-                $categorizedTotals[$category]['costs'] = NumberFormatter::range($totals['costs']['from'], $totals['costs']['to']);
-            }
-        }
 
         $adviceComments = $user->userActionPlanAdviceComments()
             ->allInputSources()
@@ -214,7 +175,6 @@ class UserReportController extends Controller
             'expertDump',
             'coachHelp',
             'categorizedAdvices',
-            'categorizedTotals',
             'adviceComments',
             'alerts',
         ))->stream();

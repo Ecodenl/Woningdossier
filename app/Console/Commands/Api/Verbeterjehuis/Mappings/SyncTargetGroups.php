@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
+use App\Models\Mapping;
+use App\Models\ToolQuestion;
+use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Client;
 use App\Services\Verbeterjehuis\Verbeterjehuis;
 use Illuminate\Console\Command;
@@ -37,13 +40,28 @@ class SyncTargetGroups extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(MappingService $mappingService)
     {
         $map = [
-            ''
+            'bought' => 'Woningeigenaar',
+            'rented' => 'Huurder',
+            'rented-private' => 'Huurder'
         ];
-        $client = Client::init();
-        $targetGroups = Verbeterjehuis::init($client)->regulation()->getFilters()['TargetGroups'];
+
+        $targetGroups = collect(
+            Verbeterjehuis::init(Client::init())
+                ->regulation()
+                ->getFilters()['TargetGroups']
+        )->keyBy('Value');
+
+        foreach ($map as $from => $target) {
+            $mappingService->from(
+                ToolQuestion::findByShort('building-contract-type')
+                    ->toolQuestionCustomValues()
+                    ->where('short', $from)
+                    ->first()
+            )->target($targetGroups[$target])->sync();
+        }
 
         return 0;
     }

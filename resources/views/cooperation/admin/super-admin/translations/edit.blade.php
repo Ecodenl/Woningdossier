@@ -37,24 +37,27 @@
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <?php
-
-                                                $groupsToTreatAllTextsAsHelpText = ['home', 'heat-pump',
-                                                    'pdf/user-report',
-                                                    'cooperation/mail/account-associated-with-cooperation',
-                                                    'cooperation/mail/account-created',
-                                                    'cooperation/mail/changed-email',
-                                                    'cooperation/mail/confirm-account',
-                                                    'cooperation/mail/reset-password',
-                                                    'cooperation/mail/unread-message-count',];
-                                                $keysToTreatAsHelpText = [
-                                                    'index.indication-for-costs-other.text',
-                                                    'index.intro.decentrale-mechanische-ventilatie',
-                                                    'index.intro.gebalanceerde-ventilatie',
-                                                    'index.intro.mechanische-ventilatie',
-                                                    'index.intro.natuurlijke-ventilatie'
-                                                ]
-                                                ?>
+                                                @php
+                                                    $groupsToTreatAllTextsAsHelpText = [
+                                                        'home',
+                                                        'heat-pump',
+                                                        'pdf/user-report',
+                                                        'cooperation/mail/account-associated-with-cooperation',
+                                                        'cooperation/mail/account-created',
+                                                        'cooperation/mail/changed-email',
+                                                        'cooperation/mail/confirm-account',
+                                                        'cooperation/mail/reset-password',
+                                                        'cooperation/mail/unread-message-count',
+                                                    ];
+                                                    $keysToTreatAsHelpText = [
+                                                        'index.indication-for-costs-other.text',
+                                                        'index.intro.decentrale-mechanische-ventilatie',
+                                                        'index.intro.gebalanceerde-ventilatie',
+                                                        'index.intro.mechanische-ventilatie',
+                                                        'index.intro.natuurlijke-ventilatie',
+                                                        'my-plan.calculations.description',
+                                                    ];
+                                                @endphp
 
                                                 @foreach($translation->text as $locale => $text)
                                                     <div class="form-group">

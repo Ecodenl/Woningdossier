@@ -23,6 +23,7 @@ class CreateBuildingsTable extends Migration
             $table->string('number')->default('');
             $table->string('extension')->default('');
             $table->string('city')->default('');
+            $table->string('municipality')->nullable()->default(null);
             $table->string('postal_code')->default('');
             $table->string('country_code', 2)->default('nl');
 

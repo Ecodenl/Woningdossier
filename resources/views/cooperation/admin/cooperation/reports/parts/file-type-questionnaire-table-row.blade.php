@@ -49,7 +49,7 @@
                         @endif
                         class="btn btn-{{$questionnaireBeingProcessed ? 'warning' : 'primary'}}"
                 >
-                    @lang('my-plan.download.title')
+                    @lang('cooperation/frontend/tool.my-plan.downloads.create-report')
                     @if($questionnaireBeingProcessed)
                         <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
                     @endif

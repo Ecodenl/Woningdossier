@@ -67,9 +67,7 @@ return [
             InputSource::RESIDENT_SHORT => 'Opmerkingen bewoner',
             InputSource::COACH_SHORT => 'Opmerkingen coach',
         ],
-        'file-is-processing' => 'Rapportage wordt gemaakt..',
-        'download-report' => 'Download bestaande rapportage',
-        'create-report' => 'Maak rapportage',
+
         'loading' => 'Woonplan wordt berekend...',
 
         'calculations' => [
@@ -123,6 +121,11 @@ return [
                     'confirm' => 'Weet je zeker dat je dit bestand wilt verwijderen?',
                 ],
             ],
+        ],
+        'downloads' => [
+            'file-is-processing' => 'Rapportage wordt gemaakt..',
+            'download-report' => 'Download bestaande rapportage',
+            'create-report' => 'Maak rapportage',
         ],
     ],
 ];

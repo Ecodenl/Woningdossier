@@ -71,7 +71,7 @@
                                                     @endif
                                                     class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
                                             >
-                                                @lang('my-plan.download.title')
+                                                @lang('cooperation/frontend/tool.my-plan.downloads.create-report')
                                                 @if($fileType->isBeingProcessed() )
                                                     <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
                                                 @endif

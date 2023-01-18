@@ -69,7 +69,7 @@ class ParticipantController extends Controller
 
             BuildingCoachStatusService::giveAccess($user, $residentBuilding);
 
-            ParticipantAddedEvent::dispatch($user, $residentBuilding);
+            ParticipantAddedEvent::dispatch($user, $residentBuilding, $request->user(), $cooperation);
         }
 
         // since the coordinator is the only one who can do this atm.

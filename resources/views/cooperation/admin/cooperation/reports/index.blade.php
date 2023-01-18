@@ -7,11 +7,11 @@
 @endpush
 
 @if($anyFilesBeingProcessed)
-@section('top-container')
-    @component('cooperation.tool.components.alert')
-        @lang('woningdossier.cooperation.admin.cooperation.reports.generate.success')
-    @endcomponent
-@endsection
+    @section('top-container')
+        @component('cooperation.tool.components.alert')
+            @lang('woningdossier.cooperation.admin.cooperation.reports.generate.success')
+        @endcomponent
+    @endsection
 @endif
 
 @section('content')
@@ -45,12 +45,13 @@
                                     <td>
                                         {{$fileType->name}}
                                         <ul>
-                                            <?php $fileStorage = $fileType->files()->mostRecent()->first();?>
+                                            @php $fileStorage = $fileType->files()->mostRecent()->first(); @endphp
                                             @if($fileStorage instanceof \App\Models\FileStorage)
                                                 <li>
                                                     <a @if(!$fileType->isBeingProcessed() )
                                                        href="{{route('cooperation.file-storage.download', compact('fileStorage'))}}" @endif>
-                                                        {{$fileType->name}} ({{$fileStorage->created_at->format('Y-m-d H:i')}})
+                                                        {{$fileType->name}}
+                                                        ({{$fileStorage->created_at->format('Y-m-d H:i')}})
                                                     </a>
                                                 </li>
                                             @endif
@@ -64,13 +65,13 @@
                                             <button
                                                     @if($fileType->isBeingProcessed()) disabled="disabled" type="button"
                                                     data-toggle="tooltip"
-                                                    title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                                                    title="@lang('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')"
                                                     @else
                                                     type="submit"
                                                     @endif
                                                     class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
                                             >
-                                                {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                                                @lang('cooperation/frontend/tool.my-plan.downloads.create-report')
                                                 @if($fileType->isBeingProcessed() )
                                                     <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
                                                 @endif

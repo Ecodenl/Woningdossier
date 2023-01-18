@@ -23,7 +23,10 @@
     @apply px-6 py-4 text-blue-500 font-light text-sm;
 }
 
-
+/* Data tables have more rows with smaller text count. We reduce vertical padding to compact the table */
+.data-table .table.fancy-table tbody tr td {
+    @apply py-2;
+}
 
 
 

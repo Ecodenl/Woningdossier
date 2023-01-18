@@ -19,9 +19,17 @@ $userInputValues = $userInputValues->sortBy(function ($a) {
     @if(!is_null($value))
         @if(isset($needsFormat) && $needsFormat == true)
             <?php $decimals = $decimals ?? 1; ?>
-            <li class="change-input-value"  data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{\App\Helpers\NumberFormatter::format($value, $decimals)}}">{{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($value, $decimals)}}</li>
+            <li class="change-input-value" x-on:click="changeOption($el)"
+                data-input-value="{{\App\Helpers\NumberFormatter::format($value, $decimals)}}"
+                data-input-source-short="{{$userInputValue->inputSource->short}}">
+                {{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($value, $decimals)}}
+            </li>
         @else
-            <li class="change-input-value"  data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{$value}}">{{$userInputValue->getInputSourceName()}}: {{$value}}</li>
+            <li class="change-input-value" x-on:click="changeOption($el)"
+                data-input-value="{{$value}}"
+                data-input-source-short="{{$userInputValue->inputSource->short}}">
+                {{$userInputValue->getInputSourceName()}}: {{$value}}
+            </li>
         @endif
     @endif
 @endforeach

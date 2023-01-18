@@ -4,8 +4,6 @@ namespace App\Http\ViewComposers\Frontend\Layouts\Parts;
 
 use App\Helpers\Blade\RouteLogic;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
-use App\Models\Step;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -20,9 +18,13 @@ class SubNavComposer
 
     public function create(View $view)
     {
-        $view->with('steps',
-            Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)->get()
-        );
+        $cooperation = $this->request->route('cooperation');
+
+        $steps = $this->request->route('scan')->steps()->with(['questionnaires' => function ($query) use ($cooperation) {
+            $query->active()->where('cooperation_id', $cooperation->id)->orderByPivot('order');
+        }])->get();
+
+        $view->with('steps', $steps);
 
         $view->with('scan', $this->request->route('scan'));
 

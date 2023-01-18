@@ -9,6 +9,7 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\PrivateMessage;
+use App\Models\Scan;
 use App\Models\Status;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
@@ -63,10 +64,12 @@ class BuildingController extends Controller
         // get all the building notes
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
+        $scan = $cooperation->scans()->where('short', '!=', Scan::EXPERT)->first();
+
         return view('cooperation.admin.buildings.show', compact(
                 'user', 'building', 'roles', 'coaches',
                 'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
-                'publicMessages', 'buildingNotes', 'statuses', 'logs'
+                'publicMessages', 'buildingNotes', 'statuses', 'logs', 'scan',
             )
         );
     }
@@ -83,7 +86,7 @@ class BuildingController extends Controller
     {
         $validatedData = $request->validated();
 
-        // cant be null in the table.
+        // Can't be null in the table.
         $validatedData['buildings']['extension'] = $validatedData['buildings']['extension'] ?? '';
         $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';
 

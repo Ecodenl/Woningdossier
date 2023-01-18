@@ -20,6 +20,7 @@ class ConditionEvaluator
     protected InputSource $inputSource;
     protected bool $explain = false;
 
+    public ?Collection $answers = null;
     protected array $customResults = [];
 
     /**
@@ -30,7 +31,6 @@ class ConditionEvaluator
     public function building(Building $building): self
     {
         $this->building = $building;
-
         return $this;
     }
 
@@ -42,14 +42,18 @@ class ConditionEvaluator
     public function inputSource(InputSource $inputSource): self
     {
         $this->inputSource = $inputSource;
-
         return $this;
     }
 
     public function explain(): self
     {
         $this->explain = true;
+        return $this;
+    }
 
+    public function setAnswers(Collection $answers): self
+    {
+        $this->answers = $answers;
         return $this;
     }
 
@@ -117,11 +121,19 @@ class ConditionEvaluator
 
     public function evaluate(array $conditions): bool
     {
-        $answers = $this->getToolAnswersForConditions($conditions);
+        // Set answers if needed.
+        if (is_null($this->answers)) {
+            $this->setAnswers($this->getToolAnswersForConditions($conditions));
+        }
 
-        return $this->evaluateCollection($conditions, $answers);
+        return $this->evaluateCollection($conditions, $this->answers);
     }
 
+    /**
+     * @deprecated Use setAnswers instead + evaluate!
+     * Deprecated label to make more distinct that it needs to be updated.
+     * The $collection parameter should be replaced with $this->answers also.
+     */
     public function evaluateCollection(array $conditions, Collection $collection)
     {
         $result = false;

@@ -46,7 +46,7 @@ class GenerateExampleBuildingCsv implements ShouldQueue
     public function handle()
     {
         $contentStructure = ContentStructureService::init(
-            ToolHelper::getNewContentStructure()
+            ToolHelper::getContentStructure(ToolHelper::STRUCT_TOTAL)
         )->applicableForExampleBuildings();
 
         // Use array_values because apparently you cannot unpack (...) associative arrays (until PHP 8.1, anyways)

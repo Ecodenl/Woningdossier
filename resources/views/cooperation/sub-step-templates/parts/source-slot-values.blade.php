@@ -45,8 +45,9 @@
                 }
             @endphp
 
-            <li class="change-input-value" data-input-source-short="{{$inputSourceShort}}"
-                data-input-value="{{$value}}">
+            <li class="change-input-value" x-on:click="changeOption($el)"
+                data-input-value="{{$value}}"
+                data-input-source-short="{{$inputSourceShort}}">
                 {{\App\Models\InputSource::findByShort($inputSourceShort)->name}}: {{$humanReadableAnswer}}
             </li>
         @endforeach

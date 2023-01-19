@@ -2,9 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolHelper;
+use App\Models\CooperationMeasureApplication;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
@@ -159,14 +161,19 @@ class PdfReport implements ShouldQueue
         }
 
         $measureSteps = [];
+        $smallMeasureAdvices = [
+            'small-measures' => [],
+            'cooperation-measures' => [],
+            'custom-measures' => [],
+        ];
 
         $categorizedAdvices = $user->userActionPlanAdvices()
             ->forInputSource($inputSource)
-            ->withoutDeletedCooperationMeasureApplications($inputSource)
+            ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE, $inputSource)
             ->with(['userActionPlanAdvisable' => fn ($q) => $q->withoutGlobalScope(GetValueScope::class)])
             ->getCategorized()
-            ->map(function ($advices) use (&$measureSteps) {
-                return $advices->map(function ($userActionPlanAdvice) use (&$measureSteps) {
+            ->map(function ($advices) use (&$measureSteps, &$smallMeasureAdvices) {
+                return $advices->map(function ($userActionPlanAdvice) use (&$measureSteps, &$smallMeasureAdvices) {
                     if ($userActionPlanAdvice->category !== UserActionPlanAdviceService::CATEGORY_COMPLETE) {
                         $costs = $userActionPlanAdvice->costs ?? [];
                         $from = $costs['from'] ?? null;
@@ -184,6 +191,18 @@ class PdfReport implements ShouldQueue
 
                         if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {
                             $measureSteps[] = $userActionPlanAdvice->userActionPlanAdvisable->step_id;
+
+                            $smallMeasureAdvicestep = Step::findByShort('small-measures');
+                            if ($userActionPlanAdvice->userActionPlanAdvisable->step_id === $smallMeasureAdvicestep->id) {
+                                $smallMeasureAdvices['small-measures'][] = $userActionPlanAdvice;
+                            }
+
+                        } else {
+                            if ($userActionPlanAdvice->userActionPlanAdvisable instanceof CooperationMeasureApplication) {
+                                $smallMeasureAdvices['cooperation-measures'][] = $userActionPlanAdvice;
+                            } else {
+                                $smallMeasureAdvices['custom-measures'][] = $userActionPlanAdvice;
+                            }
                         }
                     }
 
@@ -191,32 +210,36 @@ class PdfReport implements ShouldQueue
                 });
             });
 
-        // This piece of code, it doesn't make me proud. However, it's a necessary evil, as we need
-        // all the steps that have been completed, but some measures are mapped to old steps. We need to
-        // correct these.
-        if (! empty($measureSteps)) {
-            $measureSteps = array_unique($measureSteps);
-            $shorts = [];
-            $reverseStruct = [];
-            foreach (StepHelper::STEP_COMPLETION_MAP as $parentShort => $subShorts) {
-                $shorts = array_merge($shorts, $subShorts);
 
-                foreach ($subShorts as $subShort) {
-                    $reverseStruct[$subShort] = $parentShort;
+        // Some extra code only needs to happen if we're building the extensive PDF
+        if ($short === ToolHelper::STRUCT_PDF_QUICK) {
+            // This piece of code, it doesn't make me proud. However, it's a necessary evil, as we need
+            // all the steps that have been completed, but some measures are mapped to old steps. We need to
+            // correct these.
+            if (! empty($measureSteps)) {
+                $measureSteps = array_unique($measureSteps);
+                $shorts = [];
+                $reverseStruct = [];
+                foreach (StepHelper::STEP_COMPLETION_MAP as $parentShort => $subShorts) {
+                    $shorts = array_merge($shorts, $subShorts);
+
+                    foreach ($subShorts as $subShort) {
+                        $reverseStruct[$subShort] = $parentShort;
+                    }
                 }
-            }
-            $steps = Step::findByShorts($shorts);
+                $steps = Step::findByShorts($shorts);
 
-            foreach ($steps as $step) {
-                if (in_array($step->id, $measureSteps)) {
-                    // Remove the old step from the array
-                    $index = array_search($step->id, $measureSteps);
-                    unset($measureSteps[$index]);
+                foreach ($steps as $step) {
+                    if (in_array($step->id, $measureSteps)) {
+                        // Remove the old step from the array
+                        $index = array_search($step->id, $measureSteps);
+                        unset($measureSteps[$index]);
 
-                    // Add the new one if needed
-                    $parentStep = Step::findByShort($reverseStruct[$step->short]);
-                    if (! in_array($parentStep->id, $measureSteps)) {
-                        $measureSteps[] = $parentStep->id;
+                        // Add the new one if needed
+                        $parentStep = Step::findByShort($reverseStruct[$step->short]);
+                        if (! in_array($parentStep->id, $measureSteps)) {
+                            $measureSteps[] = $parentStep->id;
+                        }
                     }
                 }
             }
@@ -255,6 +278,7 @@ class PdfReport implements ShouldQueue
             'coachHelp',
             'categorizedAdvices',
             'measureSteps',
+            'smallMeasureAdvices',
             'adviceComments',
             'alerts',
         ))->output();

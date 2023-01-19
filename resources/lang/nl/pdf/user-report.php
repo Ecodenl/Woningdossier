@@ -56,6 +56,10 @@ return [
             'text' => 'Op de volgende bladzijden zie je voor de maatregelen die in jouw woonplan staan een samenvatting van de ingevoerde gegevens en de gedetailleerde uitkomst van de berekeningen. Meer informatie over de maatregelen kun je ook vinden op de website van Milieucentraal <a href="www.milieucentraal.nl" target="_blank" rel="nofollow">www.milieucentraal.nl</a>.',
             'action-plan' => 'In deze bijlage vind je de gegevens van de volgende maatregelen',
         ],
+        'small-measures' => [
+            'title' => 'Kleine en eigen maatregelen',
+            'text' => 'Hier vind je uitleg over de kleine maatregelen, en over eventuele eigen aangemaakte maatregelen, of gekozen maatregelen van de cooperatie.',
+        ],
         'coach-help' => [
             'title' => 'De coach heeft voor deze maatregelen',
         ],

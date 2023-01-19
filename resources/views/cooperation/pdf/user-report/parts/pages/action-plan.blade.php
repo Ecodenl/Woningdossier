@@ -139,10 +139,12 @@
                 @lang('pdf/user-report.pages.action-plan.comment')
             </h4>
             @foreach($adviceComments as $comment)
-                @include('cooperation.pdf.user-report.parts.comment', [
-                    'label' => $comment->inputSource->name,
-                    'comment' => $comment->comment,
-                ])
+                <div class="py-2">
+                    @include('cooperation.pdf.user-report.parts.comment', [
+                        'label' => $comment->inputSource->name,
+                        'comment' => $comment->comment,
+                    ])
+                </div>
             @endforeach
         </div>
     @endif

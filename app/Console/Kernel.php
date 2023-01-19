@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncMeasures;
+use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncTargetGroups;
 use App\Console\Commands\SendNotifications;
 use App\Services\MappingService;
 use Illuminate\Console\Scheduling\Schedule;
@@ -29,7 +31,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('avg:cleanup-audits')->daily();
 
-        $schedule->command(MappingService::class)->daily();
+        $schedule->command(SyncTargetGroups::class)->daily();
+        $schedule->command(SyncMeasures::class)->daily();
 
         // $schedule->command('inspire')
         //          ->hourly();

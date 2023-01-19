@@ -16,10 +16,32 @@
                         </h5>
                     </div>
                 </div>
-                <div class="row pb-2">
+                <div class="row">
                     <div class="col-12">
                         <p>
                             {!! nl2br($advice->userActionPlanAdvisable->info) !!}
+                        </p>
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-3">
+                        <h4>
+                            @lang('pdf/user-report.pages.action-plan.advices.cost-indication')
+                        </h4>
+                    </div>
+                    <div class="col-3">
+                        <p>
+                            {{ $advice->costs }}
+                        </p>
+                    </div>
+                    <div class="col-3">
+                        <h4>
+                            @lang('pdf/user-report.pages.action-plan.advices.savings')
+                        </h4>
+                    </div>
+                    <div class="col-3">
+                        <p>
+                            {{ $advice->savings_money }}
                         </p>
                     </div>
                 </div>

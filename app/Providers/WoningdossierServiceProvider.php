@@ -8,6 +8,8 @@ use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
+use App\Models\CooperationMeasureApplication;
+use App\Models\CustomMeasureApplication;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
@@ -19,7 +21,9 @@ use App\Observers\BuildingFeatureObserver;
 use App\Observers\BuildingElementObserver;
 use App\Observers\BuildingObserver;
 use App\Observers\CompletedSubStepObserver;
+use App\Observers\CooperationMeasureApplicationObserver;
 use App\Observers\CooperationObserver;
+use App\Observers\CustomMeasureApplicationObserver;
 use App\Observers\MeasureApplicationObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
@@ -55,6 +59,8 @@ class WoningdossierServiceProvider extends ServiceProvider
         CompletedSubStep::observe(CompletedSubStepObserver::class);
         ToolQuestionAnswer::observe(ToolQuestionAnswerObserver::class);
         MeasureApplication::observe(MeasureApplicationObserver::class);
+        CustomMeasureApplication::observe(CustomMeasureApplicationObserver::class);
+        CooperationMeasureApplication::observe(CooperationMeasureApplicationObserver::class);
 
         //View::creator('cooperation.my-account.*', MyAccountComposer::class);
 

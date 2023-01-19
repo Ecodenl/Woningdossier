@@ -114,6 +114,11 @@ class MeasureApplication extends Model
         return $this->measure_name;
     }
 
+    public function getInfoAttribute(): string
+    {
+        return $this->measure_info;
+    }
+
     # Relations
     public function step(): BelongsTo
     {

@@ -623,12 +623,10 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
-                ->withoutDeletedCooperationMeasureApplications($this->masterInputSource)
-                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE)
+                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE, $this->masterInputSource)
                 ->category($category)
                 ->orderBy('order')
                 ->get();
-
 
             $this->cards = array_merge($this->cards, $this->convertAdvicesToCards($advices, $category));
         }
@@ -639,8 +637,7 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->invisible()
-                ->withoutDeletedCooperationMeasureApplications($this->masterInputSource)
-                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE)
+                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE, $this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
                 ->category($category)
                 ->orderBy('order')

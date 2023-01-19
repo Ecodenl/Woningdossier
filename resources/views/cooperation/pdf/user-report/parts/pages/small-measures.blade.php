@@ -1,0 +1,29 @@
+@component('cooperation.pdf.user-report.components.new-page', ['id' => 'small-measures'])
+    <h2>
+        @lang('pdf/user-report.pages.small-measures.title')
+    </h2>
+    <p>
+        @lang('pdf/user-report.pages.small-measures.text')
+    </p>
+
+    <div class="group">
+        @foreach($smallMeasureAdvices as $category => $advices)
+            @foreach($advices as $advice)
+                <div class="row">
+                    <div class="col-12">
+                        <h5>
+                            {{ $advice->userActionPlanAdvisable->name }}
+                        </h5>
+                    </div>
+                </div>
+                <div class="row pb-2">
+                    <div class="col-12">
+                        <p>
+                            {!! nl2br($advice->userActionPlanAdvisable->info) !!}
+                        </p>
+                    </div>
+                </div>
+            @endforeach
+        @endforeach
+    </div>
+@endcomponent

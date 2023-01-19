@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Cooperation\Pdf;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
+use App\Models\CooperationMeasureApplication;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
 use App\Models\Scan;
+use App\Models\Step;
 use App\Models\User;
 use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
@@ -116,30 +121,20 @@ class UserReportController extends Controller
             }
         }
 
-        $categorizedTotals = [
-            UserActionPlanAdviceService::CATEGORY_TO_DO => [
-                'costs' => [
-                    'from' => 0,
-                    'to' => 0,
-                ],
-                'savings' => 0,
-            ],
-            UserActionPlanAdviceService::CATEGORY_LATER => [
-                'costs' => [
-                    'from' => 0,
-                    'to' => 0,
-                ],
-                'savings' => 0,
-            ],
+        $measureSteps = [];
+        $smallMeasureAdvices = [
+            'small-measures' => [],
+            'cooperation-measures' => [],
+            'custom-measures' => [],
         ];
 
         $categorizedAdvices = $user->userActionPlanAdvices()
             ->forInputSource($inputSource)
-            ->withoutDeletedCooperationMeasureApplications($inputSource)
+            ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE, $inputSource)
             ->with(['userActionPlanAdvisable' => fn ($q) => $q->withoutGlobalScope(GetValueScope::class)])
             ->getCategorized()
-            ->map(function ($advices) use (&$categorizedTotals) {
-                return $advices->map(function ($userActionPlanAdvice) use (&$categorizedTotals) {
+            ->map(function ($advices) use (&$measureSteps, &$smallMeasureAdvices) {
+                return $advices->map(function ($userActionPlanAdvice) use (&$measureSteps, &$smallMeasureAdvices) {
                     if ($userActionPlanAdvice->category !== UserActionPlanAdviceService::CATEGORY_COMPLETE) {
                         $costs = $userActionPlanAdvice->costs ?? [];
                         $from = $costs['from'] ?? null;
@@ -155,30 +150,59 @@ class UserReportController extends Controller
                         $userActionPlanAdvice->costs = NumberFormatter::range($from, $to);
                         $userActionPlanAdvice->savings_money = NumberFormatter::round($userActionPlanAdvice->savings_money ?? 0);
 
-                        if (! is_null($from) || ! is_null($to)) {
-                            if (is_null($from) && ! is_null($to)) {
-                                $from = $to;
-                            } elseif (! is_null($from) && is_null($to)) {
-                                $to = $from;
+                        if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {
+                            $measureSteps[] = $userActionPlanAdvice->userActionPlanAdvisable->step_id;
+
+                            $smallMeasureAdvicestep = Step::findByShort('small-measures');
+                            if ($userActionPlanAdvice->userActionPlanAdvisable->step_id === $smallMeasureAdvicestep->id) {
+                                $smallMeasureAdvices['small-measures'][] = $userActionPlanAdvice;
                             }
 
-                            $categorizedTotals[$userActionPlanAdvice->category]['costs']['from'] += $from;
-                            $categorizedTotals[$userActionPlanAdvice->category]['costs']['to'] += $to;
+                        } else {
+                            if ($userActionPlanAdvice->userActionPlanAdvisable instanceof CooperationMeasureApplication) {
+                                $smallMeasureAdvices['cooperation-measures'][] = $userActionPlanAdvice;
+                            } else {
+                                $smallMeasureAdvices['custom-measures'][] = $userActionPlanAdvice;
+                            }
                         }
-
-                        $categorizedTotals[$userActionPlanAdvice->category]['savings'] += $userActionPlanAdvice->savings_money;
                     }
 
                     return $userActionPlanAdvice;
                 });
             });
 
-        // Format ready for in blade
-        foreach ($categorizedTotals as $category => $totals) {
-            if ($totals['costs']['from'] === $totals['costs']['to']) {
-                $categorizedTotals[$category]['costs'] = $totals['costs']['from'];
-            } else {
-                $categorizedTotals[$category]['costs'] = NumberFormatter::range($totals['costs']['from'], $totals['costs']['to']);
+
+        // Some extra code only needs to happen if we're building the extensive PDF
+        if ($short === ToolHelper::STRUCT_PDF_QUICK) {
+            // This piece of code, it doesn't make me proud. However, it's a necessary evil, as we need
+            // all the steps that have been completed, but some measures are mapped to old steps. We need to
+            // correct these.
+            if (! empty($measureSteps)) {
+                $measureSteps = array_unique($measureSteps);
+                $shorts = [];
+                $reverseStruct = [];
+                foreach (StepHelper::STEP_COMPLETION_MAP as $parentShort => $subShorts) {
+                    $shorts = array_merge($shorts, $subShorts);
+
+                    foreach ($subShorts as $subShort) {
+                        $reverseStruct[$subShort] = $parentShort;
+                    }
+                }
+                $steps = Step::findByShorts($shorts);
+
+                foreach ($steps as $step) {
+                    if (in_array($step->id, $measureSteps)) {
+                        // Remove the old step from the array
+                        $index = array_search($step->id, $measureSteps);
+                        unset($measureSteps[$index]);
+
+                        // Add the new one if needed
+                        $parentStep = Step::findByShort($reverseStruct[$step->short]);
+                        if (! in_array($parentStep->id, $measureSteps)) {
+                            $measureSteps[] = $parentStep->id;
+                        }
+                    }
+                }
             }
         }
 
@@ -214,7 +238,8 @@ class UserReportController extends Controller
             'expertDump',
             'coachHelp',
             'categorizedAdvices',
-            'categorizedTotals',
+            'measureSteps',
+            'smallMeasureAdvices',
             'adviceComments',
             'alerts',
         ))->stream();

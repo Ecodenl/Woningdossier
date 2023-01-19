@@ -193,6 +193,8 @@ $modelCollection->pluck('conditions')
 // array.
 // Depth is 2, because due to the wildcard, we get an extra nest.
 $modelCollection->pluck('relation.*.conditions')->flatten(2)->filter()->all();
+// E.g. for the SubSteppables of a SubStep
+$subSteps->pluck('subSteppables.*.conditions')->flatten(2)->filter()->all();
 ```
 
 #### Model with conditions and relation with conditions

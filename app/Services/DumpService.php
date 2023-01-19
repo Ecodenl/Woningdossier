@@ -507,7 +507,7 @@ class DumpService
 
         // First fetch all conditions, so we can retrieve any required related answers in one go
         $conditions = $subSteppables->pluck('conditions')
-            ->merge($subSteppables->pluck('relations.*.conditions'))
+            ->merge($subSteppables->pluck('subStep.*.conditions'))
             ->filter()
             ->flatten(1)
             ->all();

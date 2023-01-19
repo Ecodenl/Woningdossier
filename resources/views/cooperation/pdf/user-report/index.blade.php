@@ -38,6 +38,7 @@
 
         @if($scanShort !== \App\Models\Scan::LITE)
             @include('cooperation.pdf.user-report.parts.pages.expert-scan-answers')
+            @include('cooperation.pdf.user-report.parts.pages.small-measures')
         @elseif(! empty($coachHelp))
             @include('cooperation.pdf.user-report.parts.pages.coach-help')
         @endif

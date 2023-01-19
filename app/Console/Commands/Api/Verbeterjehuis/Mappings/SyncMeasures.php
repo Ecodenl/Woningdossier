@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
 use App\Models\Mapping;
+use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Client;
@@ -23,7 +24,7 @@ class SyncMeasures extends Command
      *
      * @var string
      */
-    protected $description = 'This command will map our ToolQuestionCustomValues to the correct target groups.';
+    protected $description = 'This command will map our MeasureApplications to the correct target groups.';
 
     /**
      * Create a new command instance.
@@ -84,12 +85,19 @@ class SyncMeasures extends Command
         $targetGroups = collect(
             Verbeterjehuis::init(Client::init())
                 ->regulation()
-                ->getFilters()['TargetGroups']
+                ->getFilters()['Measures']
         )->keyBy('Value');
 
-        foreach ($map as $from => $target) {
+        foreach ($map as $measureApplicationShort => $targetMeasureValues) {
+            foreach ($targetMeasureValues as $targetMeasureValue) {
+                $mappingService
+                    ->from(MeasureApplication::findByShort($measureApplicationShort))
+                    ->target($targetGroups[$targetMeasureValue])
+                    ->sync();
+            }
         }
 
+        $this->info("Measures mapped to MeasureApplication.");
         return 0;
     }
 }

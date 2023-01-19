@@ -46,7 +46,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read Model|\Eloquent $userActionPlanAdvisable
  * @method static Builder|UserActionPlanAdvice allInputSources()
  * @method static Builder|UserActionPlanAdvice category(string $category)
- * @method static Builder|UserActionPlanAdvice cooperationMeasureForType(string $type)
+ * @method static Builder|UserActionPlanAdvice cooperationMeasureForType(string $type, \App\Models\InputSource $inputSource)
  * @method static Builder|UserActionPlanAdvice forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
  * @method static Builder|UserActionPlanAdvice forBuilding($building)
  * @method static Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
@@ -127,26 +127,44 @@ class UserActionPlanAdvice extends Model implements Auditable
     /**
      * Method to scope the advices without its deleted cooperation measure applications
      *
-     * @param Builder $query
-     * @return Builder
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \App\Models\InputSource $inputSource
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithoutDeletedCooperationMeasureApplications(Builder $query, InputSource $inputSource): Builder
     {
         // this works because it boots the cooperation measure application model, which has the soft deletes trait
-        return $query->whereHasMorph('userActionPlanAdvisable', '*',
+        return $query->whereHasMorph(
+            'userActionPlanAdvisable',
+            '*',
             // cant use scopes.
             fn (Builder $q) => $q->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)
         );
     }
 
-    public function scopeCooperationMeasureForType(Builder $query, string $type)
+    /**
+     * Method to scope the advices without its deleted cooperation measure applications and for given type.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $type
+     * @param \App\Models\InputSource $inputSource
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCooperationMeasureForType(Builder $query, string $type, InputSource $inputSource)
     {
         $isExtensive = $type === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
 
-        return $query->whereHasMorph('userActionPlanAdvisable', '*',
-            function (Builder $query, $type) use ($isExtensive) {
+        return $query->whereHasMorph(
+            'userActionPlanAdvisable',
+            '*',
+            function (Builder $query, $type) use ($isExtensive, $inputSource) {
+                // We have to do this, else the results are incorrect.
+                // This means that you won't need to call above scope if you're also calling this one.
+                $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id);
                 if ($type === CooperationMeasureApplication::class) {
-                    return $query->where('is_extensive_measure', $isExtensive);
+                    $query->where('is_extensive_measure', $isExtensive);
                 }
             }
         );

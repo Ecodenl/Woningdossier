@@ -27,8 +27,8 @@
         @php
             $step = \App\Models\Step::findByShort($stepShort);
 
-            // Don't show current step if the user has not yet completed it
-            if (! $building->hasCompleted($step, $inputSource)) {
+            // Don't show current step if the user has no measure for it.
+            if (! in_array($step->id, $measureSteps)) {
                 continue;
             }
         @endphp

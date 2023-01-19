@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Cooperation\Pdf;
 
+use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
 use App\Models\Scan;
+use App\Models\Step;
 use App\Models\User;
 use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
@@ -116,13 +120,15 @@ class UserReportController extends Controller
             }
         }
 
+        $measureSteps = [];
+
         $categorizedAdvices = $user->userActionPlanAdvices()
             ->forInputSource($inputSource)
             ->withoutDeletedCooperationMeasureApplications($inputSource)
             ->with(['userActionPlanAdvisable' => fn ($q) => $q->withoutGlobalScope(GetValueScope::class)])
             ->getCategorized()
-            ->map(function ($advices) {
-                return $advices->map(function ($userActionPlanAdvice) {
+            ->map(function ($advices) use (&$measureSteps) {
+                return $advices->map(function ($userActionPlanAdvice) use (&$measureSteps) {
                     if ($userActionPlanAdvice->category !== UserActionPlanAdviceService::CATEGORY_COMPLETE) {
                         $costs = $userActionPlanAdvice->costs ?? [];
                         $from = $costs['from'] ?? null;
@@ -137,11 +143,46 @@ class UserReportController extends Controller
 
                         $userActionPlanAdvice->costs = NumberFormatter::range($from, $to);
                         $userActionPlanAdvice->savings_money = NumberFormatter::round($userActionPlanAdvice->savings_money ?? 0);
+
+                        if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {
+                            $measureSteps[] = $userActionPlanAdvice->userActionPlanAdvisable->step_id;
+                        }
                     }
 
                     return $userActionPlanAdvice;
                 });
             });
+
+        // This piece of code, it doesn't make me proud. However, it's a necessary evil, as we need
+        // all the steps that have been completed, but some measures are mapped to old steps. We need to
+        // correct these.
+        if (! empty($measureSteps)) {
+            $measureSteps = array_unique($measureSteps);
+            $shorts = [];
+            $reverseStruct = [];
+            foreach (StepHelper::STEP_COMPLETION_MAP as $parentShort => $subShorts) {
+                $shorts = array_merge($shorts, $subShorts);
+
+                foreach ($subShorts as $subShort) {
+                    $reverseStruct[$subShort] = $parentShort;
+                }
+            }
+            $steps = Step::findByShorts($shorts);
+
+            foreach ($steps as $step) {
+                if (in_array($step->id, $measureSteps)) {
+                    // Remove the old step from the array
+                    $index = array_search($step->id, $measureSteps);
+                    unset($measureSteps[$index]);
+
+                    // Add the new one if needed
+                    $parentStep = Step::findByShort($reverseStruct[$step->short]);
+                    if (! in_array($parentStep->id, $measureSteps)) {
+                        $measureSteps[] = $parentStep->id;
+                    }
+                }
+            }
+        }
 
         $adviceComments = $user->userActionPlanAdviceComments()
             ->allInputSources()
@@ -175,6 +216,7 @@ class UserReportController extends Controller
             'expertDump',
             'coachHelp',
             'categorizedAdvices',
+            'measureSteps',
             'adviceComments',
             'alerts',
         ))->stream();

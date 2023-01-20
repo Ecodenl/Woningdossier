@@ -25,9 +25,11 @@ use Illuminate\Support\Facades\App;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
  * @property-read int|null $sub_steps_count
  * @method static Builder|Scan bySlug(string $slug, string $locale = 'nl')
+ * @method static Builder|Scan expert()
  * @method static Builder|Scan newModelQuery()
  * @method static Builder|Scan newQuery()
  * @method static Builder|Scan query()
+ * @method static Builder|Scan simple()
  * @method static Builder|Scan whereCreatedAt($value)
  * @method static Builder|Scan whereId($value)
  * @method static Builder|Scan whereName($value)
@@ -41,9 +43,7 @@ class Scan extends Model
     use HasTranslations, HasShortTrait;
 
     const LITE = 'lite-scan';
-
     const QUICK = 'quick-scan';
-
     const EXPERT = 'expert-scan';
 
     protected $translatable = ['name', 'slug'];

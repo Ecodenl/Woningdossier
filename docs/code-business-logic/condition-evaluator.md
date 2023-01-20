@@ -155,6 +155,17 @@ Since we often need all conditions in one go, we can easily get them using the f
 $modelCollection->pluck('conditions')->flatten(1)->filter()->all();
 ```
 
+#### Multiple model collections with conditions column
+```php
+// When plucking conditions from 2 separate collections, since it's the same depth you don't want to do anything
+// with it. Basically just merge as many as you need and then proceed with the filter + flatten.
+$modelCollection->pluck('conditions')
+    ->merge($anotherModelCollection->pluck('conditions'))
+    ->filter()
+    ->flatten(1)
+    ->all();
+```
+
 #### Model with conditions in relation
 ```php
 // ENSURE RELATION IS FULLY EAGER LOADED!
@@ -162,6 +173,8 @@ $modelCollection->pluck('conditions')->flatten(1)->filter()->all();
 // array.
 // Depth is 2, because due to the wildcard, we get an extra nest.
 $modelCollection->pluck('relation.*.conditions')->flatten(2)->filter()->all();
+// E.g. for the SubSteppables of a SubStep
+$subSteps->pluck('subSteppables.*.conditions')->flatten(2)->filter()->all();
 ```
 
 #### Model with conditions and relation with conditions

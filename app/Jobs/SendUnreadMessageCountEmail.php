@@ -17,6 +17,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class SendUnreadMessageCountEmail implements ShouldQueue
 {
@@ -55,11 +56,11 @@ class SendUnreadMessageCountEmail implements ShouldQueue
             $this->notificationSetting->last_notified_at = Carbon::now();
             $this->notificationSetting->save();
         } else {
-            \Log::debug('it seems like user id '.$this->user->id.' has no building!');
+            Log::debug('it seems like user id '.$this->user->id.' has no building!');
         }
     }
 
-    public function Failed(\Throwable $exception)
+    public function failed(Throwable $exception)
     {
         // this functionality is here for people which mistyped they're email address
         // this will set the messages to read for the user in its resident its input source.

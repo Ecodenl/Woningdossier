@@ -43,19 +43,6 @@ class RunDeploy extends Command
     public function handle()
     {
 
-        // can be removed after one deploy cycle.
-        if (!DB::table('measure_applications')
-               ->where('short', '=', 'floor-insulation')
-               ->where('costs', '=', 42)
-               ->exists()) {
-            // seeder has not been run yet.
-            $this->call(SeedCommand::class,  ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true]);
-        }
-        else {
-            $this->info("You can remove the seed call for MeasureApplicationsTableSeeder from RunDeploy.php now.");
-        }
-
-
 //        $this->call(SeedCommand::class,  ['--class' => 'ToolQuestionTypesTableSeeder', '--force' => true]);
 //
 //        $commands = [
@@ -65,17 +52,5 @@ class RunDeploy extends Command
 //        foreach ($commands as $command => $arguments) {
 //            $this->call($command, $arguments);
 //        }
-
-        // can be removed after one deploy cycle.
-        if (!DB::table('heat_pump_characteristics')
-               ->where('heat_pump_configurable_id', '=', 28)
-               ->where('costs', '=', 7400)
-               ->exists()) {
-            // seeder has not been run yet.
-            $this->call(SeedCommand::class,  ['--class' => 'HeatPumpCharacteristicsTableSeeder', '--force' => true]);
-        }
-        else {
-            $this->info("You can remove the seed call for HeatPumpCharacteristicsTableSeeder from RunDeploy.php now.");
-        }
     }
 }

@@ -280,7 +280,7 @@
             var appointmentDate = $('#appointment-date');
 
             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-            $('table').DataTable({
+            $('#log-table').DataTable({
                 'order': [[0, 'desc']]
             });
 
@@ -344,14 +344,14 @@
                 if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {
 
                     $.ajax({
-                        url: '{{route('cooperation.admin.cooperation.users.destroy')}}',
+                        url: '{{route('cooperation.admin.users.destroy')}}',
                         method: 'POST',
                         data: {
                             user_id: userId,
                             _method: 'DELETE'
                         }
                     }).done(function () {
-                        window.location.href = '{{route('cooperation.admin.cooperation.users.index')}}'
+                        window.location.href = '{{route('cooperation.admin.users.index')}}'
                     })
                 }
             });

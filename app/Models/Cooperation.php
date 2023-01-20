@@ -118,9 +118,7 @@ class Cooperation extends Model
      */
     public function getCoaches()
     {
-        $coaches = $this->users()->role('coach');
-
-        return $coaches;
+        return $this->users()->forAllCooperations()->role('coach');
     }
 
     /**

@@ -8,11 +8,11 @@ use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
-use PhpParser\Node\Expr\AssignOp\Mod;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -63,8 +63,11 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $roles_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
  * @property-read int|null $user_action_plan_advice_comments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read int|null $user_action_plan_advices_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
  * @property-read int|null $user_interests_count
+ * @method static Builder|User byContact($contact)
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User forAllCooperations()
  * @method static Builder|User forMyCooperation($cooperationId)
@@ -111,9 +114,18 @@ class User extends Model implements AuthorizableContract
         'extra' => 'array'
     ];
 
-    protected $with = [
-        'roles',
-    ];
+    // We can't eager load roles by default because if the admin changes them, they don't refresh
+    //protected $with = [
+    //    'roles',
+    //];
+
+    # Scopes
+    public function scopeByContact(Builder $query, $contact): Builder
+    {
+        // We assume $contact is an ID. Maybe in the future this won't be the case but this way it can be easily
+        // expanded
+        return $query->where('extra->contact_id', $contact);
+    }
 
     # Relations
     public function logs(): MorphMany
@@ -306,7 +318,16 @@ class User extends Model implements AuthorizableContract
         return $this->hasMany(UserMotivation::class);
     }
 
+    /**
+     * @deprecated use userActionPlanAdvices
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function actionPlanAdvices()
+    {
+        return $this->hasMany(UserActionPlanAdvice::class);
+    }
+
+    public function userActionPlanAdvices(): HasMany
     {
         return $this->hasMany(UserActionPlanAdvice::class);
     }
@@ -333,18 +354,6 @@ class User extends Model implements AuthorizableContract
     public function getFullName(): string
     {
         return "{$this->first_name} {$this->last_name}";
-    }
-
-    /**
-     * Get the human readable role name based on the role name.
-     *
-     * @param $roleName
-     *
-     * @return mixed
-     */
-    public function getHumanReadableRoleName($roleName)
-    {
-        return $this->roles()->where('name', $roleName)->first()->human_readable_name;
     }
 
     public function buildingPermissions()

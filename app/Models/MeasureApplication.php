@@ -8,6 +8,9 @@ use App\Scopes\VisibleScope;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * App\Models\MeasureApplication
@@ -18,15 +21,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $measure_info
  * @property string $short
  * @property string $application
+ * @property array|null $cost_range
+ * @property string|null $savings_money
  * @property float $costs
  * @property array $cost_unit
  * @property float $minimal_costs
  * @property int $maintenance_interval
  * @property array $maintenance_unit
  * @property int $step_id
+ * @property bool $has_calculations
  * @property array|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $name
  * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
  * @property-read int|null $interests_count
@@ -38,9 +45,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication query()
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereApplication($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereConfigurations($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCostRange($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCostUnit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCosts($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereHasCalculations($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMaintenanceInterval($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMaintenanceUnit($value)
@@ -48,6 +57,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMinimalCosts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereSavingsMoney($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereShort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereStepId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereUpdatedAt($value)
@@ -75,17 +85,11 @@ class MeasureApplication extends Model
         'configurations' => 'array',
     ];
 
-    /**
-     * Returns all the interest levels given for the interest.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function interests()
-    {
-        return $this->morphToMany(Interest::class, 'interested_in', 'user_interests');
-//        return $this->morphed(Interest::class, 'interested_in', 'user_interests');
-    }
+    protected $appends = [
+        'name',
+    ];
 
+   # Model methods
     /**
      * Method to check whether a measure application is an advice.
      */
@@ -104,12 +108,24 @@ class MeasureApplication extends Model
         return in_array($this->short, $measureShortsThatAreAdvices);
     }
 
-    public function step()
+    # Attributes
+    public function getNameAttribute(): string
+    {
+        return $this->measure_name;
+    }
+
+    public function getInfoAttribute(): string
+    {
+        return $this->measure_info;
+    }
+
+    # Relations
+    public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
     }
 
-    public function userActionPlanAdvices()
+    public function userActionPlanAdvices(): MorphMany
     {
         // We need to retrieve this without the visible tag
         // The visible tag defines whether it should be shown on my plan or not, but for other locations
@@ -118,5 +134,16 @@ class MeasureApplication extends Model
             UserActionPlanAdvice::class,
             'user_action_plan_advisable'
         )->withoutGlobalScope(VisibleScope::class);
+    }
+
+    /**
+     * Returns all the interest levels given for the interest.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function interests(): MorphToMany
+    {
+        return $this->morphToMany(Interest::class, 'interested_in', 'user_interests');
+//        return $this->morphed(Interest::class, 'interested_in', 'user_interests');
     }
 }

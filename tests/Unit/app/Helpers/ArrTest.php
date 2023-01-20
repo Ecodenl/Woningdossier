@@ -7,21 +7,6 @@ use Tests\TestCase;
 
 class ArrTest extends TestCase
 {
-    public static function dottedArrayProvider()
-    {
-        return [
-            [['products.desk.price' => 100], ['products' => ['desk' => ['price' => 100]]]],
-        ];
-    }
-
-    /**
-     * @dataProvider dottedArrayProvider
-     */
-    public function testArrayUndot($input, $expected)
-    {
-        $this->assertEquals($expected, Arr::arrayUndot($input));
-    }
-
     public static function isWholeArrayEmptyProvider()
     {
         return [

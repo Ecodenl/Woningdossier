@@ -146,7 +146,7 @@ class UserService
         $account = Account::where('email', $email)->first();
 
         // if its not found we will create a new one.
-        if (!$account instanceof Account) {
+        if (! $account instanceof Account) {
             $account = AccountService::create($email, $registerData['password']);
         }
 

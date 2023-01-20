@@ -56,6 +56,7 @@ class DoUpgrade extends Command
             RemoveActionPlanReport::class => [],
             ChangeTranslations::class => [],
             MapQuickToLite::class => [],
+            TranslationUpdate::class => [],
         ];
 
 

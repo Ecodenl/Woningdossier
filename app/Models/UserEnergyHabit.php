@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
-use App\Traits\ToolSettingTrait;
+
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
@@ -75,7 +75,6 @@ class UserEnergyHabit extends Model implements Auditable
 {
     use GetValueTrait,
         GetMyValuesTrait,
-        ToolSettingTrait,
         \App\Traits\Models\Auditable;
 
     protected $fillable = [

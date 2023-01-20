@@ -22,9 +22,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cooperation $cooperation
  * @property-read array $translations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionnaireStep[] $questionnaireSteps
+ * @property-read int|null $questionnaire_steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
  * @property-read int|null $questions_count
- * @property-read \App\Models\Step|null $step
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read int|null $steps_count
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire active()
  * @method static \Database\Factories\QuestionnaireFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forAllCooperations()

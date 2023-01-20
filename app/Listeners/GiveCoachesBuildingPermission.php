@@ -14,15 +14,6 @@ use App\Services\BuildingPermissionService;
 class GiveCoachesBuildingPermission
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Handle the event.
      *
      * @param object $event
@@ -31,10 +22,11 @@ class GiveCoachesBuildingPermission
      */
     public function handle($event)
     {
+        $user = $event->user;
         $building = $event->building;
 
         // the coaches can only get building permission when the user allowed it.
-        $building->user->update([
+        $user->update([
             'allow_access' => true,
         ]);
 
@@ -69,7 +61,7 @@ class GiveCoachesBuildingPermission
             PrivateMessageView::create([
                 'input_source_id' => InputSource::findByShort(InputSource::RESIDENT_SHORT)->id,
                 'private_message_id' => $privateMessage->id,
-                'user_id' => $building->user->id,
+                'user_id' => $user->id,
             ]);
         }
     }

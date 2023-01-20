@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\Scans\ScanFlowService;
+use App\Helpers\Conditions\ConditionEvaluator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\Arr;
 use App\Helpers\DataTypes\Caster;
@@ -11,7 +12,6 @@ use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
 use App\Traits\HasMedia;
-use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -112,7 +112,6 @@ class Building extends Model
 {
     use HasFactory,
         SoftDeletes,
-        ToolSettingTrait,
         HasMedia;
 
     public $fillable = [
@@ -781,17 +780,39 @@ class Building extends Model
 
     public function getFirstIncompleteSubStep(Step $step, InputSource $inputSource): ?SubStep
     {
-        $completedSubStepIds = $this->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
+        $irrelevantSubSteps = $this->completedSubSteps()->forInputSource($inputSource)->pluck('sub_step_id')->toArray();
 
-        $firstIncompleteSubStep = $step
-            ->subSteps()
-            ->whereNotIn('id', $completedSubStepIds)
-            ->orderBy('order')
-            ->first();
+        $evaluator = ConditionEvaluator::init()
+            ->building($this)
+            ->inputSource($inputSource);
 
-        if (!$firstIncompleteSubStep instanceof SubStep) {
-            $firstIncompleteSubStep = $step
-                ->subSteps()
+        // So, a sub step might have conditions. We need to ensure we check the conditions, else we might get
+        // a wrong redirect, to a sub step we can't complete, which redirects us to the sub step after it. All while
+        // there might be an uncompleted sub step after that conditional sub step. This could be confusing as the user
+        // would always be redirected to the same sub step, even though it's already completed, yet still can't
+        // reach their action plan.
+        do {
+            $firstIncompleteSubStep = $step->subSteps()
+                ->whereNotIn('id', $irrelevantSubSteps)
+                ->orderBy('order')
+                ->first();
+
+            if ($firstIncompleteSubStep instanceof SubStep) {
+                // If we didn't pass, we add the ID as not relevant, so we don't query it a second time.
+                $passes = $evaluator->evaluate($firstIncompleteSubStep->conditions ?? []);
+                if (! $passes) {
+                    $irrelevantSubSteps[] = $firstIncompleteSubStep->id;
+                }
+            } else {
+                // Break the loop if there are no incomplete sub steps left.
+                $passes = true;
+            }
+        } while(! $passes);
+
+        // If no sub step was found, just return to the first available one. This is a fallback, and generally should
+        // not happen.
+        if (! $firstIncompleteSubStep instanceof SubStep) {
+            $firstIncompleteSubStep = $step->subSteps()
                 ->orderBy('order')
                 ->first();
         }

@@ -7,21 +7,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * App\Models\CooperationScan
+ * App\Models\QuestionnaireStep
  *
  * @property int $id
- * @property int $cooperation_id
- * @property int $scan_id
+ * @property int $questionnaire_id
+ * @property int $step_id
+ * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationScan newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationScan newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationScan query()
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationScan whereCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationScan whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationScan whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationScan whereScanId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CooperationScan whereUpdatedAt($value)
+ * @property-read \App\Models\Questionnaire $questionnaire
+ * @property-read \App\Models\Step $step
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep query()
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereQuestionnaireId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereStepId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionnaireStep whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class QuestionnaireStep extends Pivot

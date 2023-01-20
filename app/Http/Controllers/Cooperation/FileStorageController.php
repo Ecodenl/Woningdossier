@@ -159,10 +159,11 @@ class FileStorageController extends Controller
         $anonymized = Str::contains($fileType->short, 'anonymized');
 
         switch ($fileType->short) {
-            case 'pdf-report':
-                $with = ['success' => __('woningdossier.cooperation.admin.cooperation.reports.generate.success')];
-                PdfReport::dispatch($user, $inputSource, $fileType, $fileStorage);
-                break;
+            //case 'pdf-report':
+            //    NOTE: Currently NOT used, however if this should be usable again, the parameters should be updated.
+            //    $with = ['success' => __('woningdossier.cooperation.admin.cooperation.reports.generate.success')];
+            //    PdfReport::dispatch($user, $inputSource, $fileType, $fileStorage);
+            //    break;
             case 'total-report':
             case 'total-report-anonymized':
             case 'lite-scan-report':

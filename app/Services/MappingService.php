@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\Mapping;
 use App\Traits\FluentCaller;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\Mixed_;
 
 class MappingService
 {
@@ -13,31 +15,53 @@ class MappingService
     public $from;
     public $target;
 
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
-    public function from($from)
+    public function from($from): self
     {
         $this->from = $from;
         return $this;
     }
 
-    public function target($target)
+    public function target($target): self
     {
         $this->target = $target;
         return $this;
     }
 
+    public function resolveMapping(): Mapping
+    {
+        return Mapping::where($this->whereFrom())->first();
+    }
+
+    public function resolveTarget()
+    {
+        $mapping = $this->resolveMapping();
+        if ( ! empty($mapping->target_data)) {
+            return $mapping->target_data;
+        }
+        if ( ! is_null($mapping->target_value)) {
+            return $mapping->target_value;
+        }
+        // todo: implement return morph model
+    }
+
+    public function whereFrom(): array
+    {
+        if ($this->from instanceof Model) {
+            return [
+                'from_model_type' => $this->from->getMorphClass(),
+                'from_model_id' => $this->from->id,
+            ];
+        }
+        return ['from_value' => $this->from];
+    }
+
     public function sync(): Mapping
     {
-        $where = [];
         $mapping = [];
-
-        if ($this->from instanceof Model) {
-            $where['from_model_type'] = $this->from->getMorphClass();
-            $where['from_model_id'] = $this->from->id;
-        } else {
-            $where['from_value'] = $this->from;
-        }
 
         if ($this->target instanceof Model) {
             $mapping['target_model_type'] = $this->target->getMorphClass();
@@ -50,6 +74,6 @@ class MappingService
             }
         }
 
-        return Mapping::updateOrCreate($where, $mapping);
+        return Mapping::updateOrCreate($this->whereFrom(), $mapping);
     }
 }

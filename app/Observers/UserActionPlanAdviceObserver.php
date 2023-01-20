@@ -14,6 +14,10 @@ use App\Services\UserActionPlanAdviceService;
 
 class UserActionPlanAdviceObserver
 {
+    public function saving(UserActionPlanAdvice $userActionPlanAdvice)
+    {
+        dd($userActionPlanAdvice);
+    }
     /**
      * Listen to the creating event, will set the planned year based on interest.
      */
@@ -33,6 +37,7 @@ class UserActionPlanAdviceObserver
 
             UserActionPlanAdviceService::setAdviceCategory($userActionPlanAdvice);
         }
+
 
         if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
             $advisable = $userActionPlanAdvice->userActionPlanAdvisable;

@@ -2,9 +2,8 @@
 
 namespace App\Services\Verbeterjehuis\Payloads;
 
-use App\Models\InputSource;
 use App\Models\MeasureApplication;
-use App\Models\ToolQuestion;
+use App\Services\MappingService;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 
@@ -19,36 +18,19 @@ class Search implements VerbeterjehuisPayload
         $this->payload = collect($payload);
     }
 
-    public function where()
+    public function forMeasureApplication(MeasureApplication $measureApplication): array
     {
-        $x = [
-            0 => [
-                'tags' => [
-                    [
-                        'value' => 'pils',
-                        'id' => 74
-                    ],
-                    [
-                        'value' => 'bier',
-                        'id' => 69
-                    ]
-                ]
-            ],
-            1 => [
-                'tags' => [
-                    [
-                        'value' => 'wodka',
-                        'id' => 1
-                    ],
-                    [
-                        'value' => 'whiskie',
-                        'id' => 12
-                    ]
-                ]
-            ],
-        ];
-        return $this->payload->where('Tags', 2835);
+        $target = MappingService::init()->from($measureApplication)->resolveTarget();
 
+        $relevantRegulations = [];
+
+        $this->payload->map(function ($regulation) use ($target, &$relevantRegulations) {
+            $relevantTags = array_filter($regulation['Tags'], fn($tag) => $tag['Value'] === $target['Value']);
+            if ( ! empty($relevantTags)) {
+                $relevantRegulations[] = $regulation;
+            }
+        });
+
+        return $relevantRegulations;
     }
-
 }

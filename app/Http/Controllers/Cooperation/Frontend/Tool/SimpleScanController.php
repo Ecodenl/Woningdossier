@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Jobs\CloneOpposingInputSource;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Notification;
 use App\Models\Scan;
@@ -19,27 +20,12 @@ class SimpleScanController extends Controller
 {
     public function index(Cooperation $cooperation, Scan $scan, Step $step, SubStep $subStep)
     {
-        $userActionPlanAdvice = UserActionPlanAdvice::
-        cooperationMeasureForType(MeasureApplication::class, HoomdossierSession::getInputSource(true))
-            ->forUser(HoomdossierSession::getBuilding(true)->user)
-            ->skip(1)
-            ->first();
+        $payload = RegulationService::init()
+            ->forBuilding(HoomdossierSession::getBuilding(true))
+            ->get();
 
-        $target = MappingService::init()->from($userActionPlanAdvice->userActionPlanAdvisable)->resolveTarget();
-
-        $relevantRegulations = [];
-        RegulationService::init()
-            ->fromBuilding(HoomdossierSession::getBuilding(true))
-            ->get()
-            ->payload
-            ->map(function ($regulation) use ($target, &$relevantRegulations) {
-                $relevantTags = array_filter($regulation['Tags'], fn($tag) => $tag['Value'] === $target['Value']);
-                if (!empty($relevantTags)) {
-                    $relevantRegulations[] = $target;
-                }
-            });
-
-        dd($relevantRegulations);
+        $regulations = $payload->forMeasureApplication(MeasureApplication::findByShort('floor-insulation'));
+        dd($regulations, 'bier');
 
         // the route will always be matched, however a sub step has to match the step.
         abort_if(! $step->subSteps()->find($subStep->id) instanceof SubStep, 404);

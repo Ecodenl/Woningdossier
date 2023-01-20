@@ -3,13 +3,7 @@
 namespace App\Services\Verbeterjehuis;
 
 use App\Models\Building;
-use App\Models\InputSource;
-use App\Models\MeasureApplication;
-use App\Models\ToolQuestion;
-use App\Models\UserActionPlanAdvice;
-use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Payloads\Search;
-use App\Services\Verbeterjehuis\Payloads\VerbeterjehuisPayload;
 use App\Traits\FluentCaller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -22,7 +16,7 @@ class RegulationService
 
     public array $context = [];
 
-    public function fromBuilding(Building $building): self
+    public function forBuilding(Building $building): self
     {
         $this->building = $building;
         return $this;
@@ -46,7 +40,7 @@ class RegulationService
         });
     }
 
-    public function get(): VerbeterjehuisPayload
+    public function get(): Search
     {
         return Search::init($this->fetch());
     }

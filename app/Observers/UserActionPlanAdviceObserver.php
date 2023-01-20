@@ -11,12 +11,19 @@ use App\Models\SubStep;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ConditionService;
 use App\Services\UserActionPlanAdviceService;
+use App\Services\Verbeterjehuis\RegulationService;
 
 class UserActionPlanAdviceObserver
 {
     public function saving(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        dd($userActionPlanAdvice);
+        $payload = RegulationService::init()
+            ->forBuilding($userActionPlanAdvice->user->building)
+            ->get();
+
+        if ($userActionPlanAdvice->user_action_plan_advisable_type === MeasureApplication::class) {
+            $regulations = $payload->forMeasureApplication($userActionPlanAdvice->userActionPlanAdvisable);
+        }
     }
     /**
      * Listen to the creating event, will set the planned year based on interest.

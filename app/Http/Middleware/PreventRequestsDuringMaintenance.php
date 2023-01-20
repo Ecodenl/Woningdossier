@@ -27,23 +27,21 @@ class PreventRequestsDuringMaintenance extends Middleware
      */
     public function handle($request, Closure $next)
     {
-        if (! in_array(app()->environment(), ['local', 'testing', 'accept'])) {
+        // If we're not in maintenance mode, there's no point in trying to find a cooperation
+        if ($this->app->isDownForMaintenance()) {
             $host = $_SERVER['HTTP_HOST'];
-            preg_match('/(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i', $host, $match);
+            preg_match('/(?:http[s]*\:\/\/)*(.*?)\.((?=[^\/]*\..{2,5})|(?=localhost:[\d]{4}))/i', $host, $match);
             $cooperation = $match[1] ?? '';
 
             $cooperation = Cooperation::where('slug', '=', $cooperation)->first();
 
-            // if no valid cooperation is found, return to index
-            if (!$cooperation instanceof Cooperation) {
-                return redirect()->route('index');
-            }
+            if ($cooperation instanceof Cooperation) {
+                HoomdossierSession::setCooperation($cooperation);
 
-            HoomdossierSession::setCooperation($cooperation);
-
-            // Set as default URL parameter
-            if (HoomdossierSession::hasCooperation()) {
-                URL::defaults(['cooperation' => $cooperation->slug]);
+                // Set as default URL parameter
+                if (HoomdossierSession::hasCooperation()) {
+                    URL::defaults(['cooperation' => $cooperation->slug]);
+                }
             }
         }
 

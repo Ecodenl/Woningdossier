@@ -26,7 +26,7 @@ class CooperationMiddleware
         $cooperation = $request->route()->parameter('cooperation');
 
         // if no valid cooperation is found, return to index
-        if (!$cooperation instanceof Cooperation) {
+        if (! $cooperation instanceof Cooperation) {
             return redirect()->route('index');
         }
 

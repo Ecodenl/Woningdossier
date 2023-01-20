@@ -155,6 +155,27 @@ Since we often need all conditions in one go, we can easily get them using the f
 $modelCollection->pluck('conditions')->flatten(1)->filter()->all();
 ```
 
+#### Model with conditions in single relation
+```php
+// ENSURE RELATION IS FULLY EAGER LOADED!
+// This works exactly the same as above, except on a relation.
+$modelCollection->pluck('relation.conditions')->flatten(1)->filter()->all();
+// E.g. 
+$subSteppables->pluck('subStep.conditions')->flatten(1)->filter()->all();
+```
+
+#### Model with conditions and single relation with conditions
+```php
+// ENSURE RELATION IS FULLY EAGER LOADED!
+// We simply merge a second collection of conditions.
+$modelCollection->pluck('conditions')
+    ->merge($modelCollection->pluck('relation.conditions'))
+    ->filter()
+    ->flatten(1)
+    ->all();
+```
+
+#### Model with conditions in multi relation
 #### Multiple model collections with conditions column
 ```php
 // When plucking conditions from 2 separate collections, since it's the same depth you don't want to do anything
@@ -180,8 +201,8 @@ $subSteps->pluck('subSteppables.*.conditions')->flatten(2)->filter()->all();
 #### Model with conditions and relation with conditions
 ```php
 // ENSURE RELATION IS FULLY EAGER LOADED!
-// We combine the logic of above 2. Because of this, we only need to flatten the merged collection once, due to it 
-// then being the same depth as the "main" collection, and we need to flatten that also, so we can combine it. 
+// We combine the logic of flattening and merging. Because of this, we only need to flatten the merged collection once, 
+// due to it then being the same depth as the "main" collection. After that we proceed as usual.
 $modelCollection->pluck('conditions')
     ->merge($modelCollection->pluck('relation.*.conditions')->flatten(1))
     ->filter()

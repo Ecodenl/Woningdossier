@@ -6,14 +6,11 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Jobs\CloneOpposingInputSource;
 use App\Models\Cooperation;
-use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Notification;
 use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
-use App\Models\UserActionPlanAdvice;
-use App\Services\MappingService;
 use App\Services\Verbeterjehuis\RegulationService;
 
 class SimpleScanController extends Controller
@@ -24,8 +21,11 @@ class SimpleScanController extends Controller
             ->forBuilding(HoomdossierSession::getBuilding(true))
             ->get();
 
-        $regulations = $payload->forMeasureApplication(MeasureApplication::findByShort('floor-insulation'));
-        dd($regulations, 'bier');
+        $regulations = $payload
+            ->prepare()
+            ->forMeasureApplication(MeasureApplication::findByShort('floor-insulation'))
+            ->forBuildingContractType(HoomdossierSession::getBuilding(true));
+//        dd($regulations, 'bier');
 
         // the route will always be matched, however a sub step has to match the step.
         abort_if(! $step->subSteps()->find($subStep->id) instanceof SubStep, 404);

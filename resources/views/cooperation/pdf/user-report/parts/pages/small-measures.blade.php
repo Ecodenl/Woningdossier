@@ -23,7 +23,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="row pb-3">
+                <div class="row py-3">
                     <div class="col-3">
                         <h4>
                             @lang('pdf/user-report.pages.action-plan.advices.cost-indication')

@@ -31,7 +31,7 @@ class MappingService
         return $this;
     }
 
-    public function resolveMapping(): Mapping
+    public function resolveMapping(): ?Mapping
     {
         return Mapping::where($this->whereFrom())->first();
     }
@@ -39,13 +39,17 @@ class MappingService
     public function resolveTarget()
     {
         $mapping = $this->resolveMapping();
-        if ( ! empty($mapping->target_data)) {
-            return $mapping->target_data;
-        }
-        if ( ! is_null($mapping->target_value)) {
-            return $mapping->target_value;
+        if ($mapping instanceof Mapping) {
+
+            if ( ! empty($mapping->target_data)) {
+                return $mapping->target_data;
+            }
+            if ( ! is_null($mapping->target_value)) {
+                return $mapping->target_value;
+            }
         }
         // todo: implement return morph model
+        return null;
     }
 
     public function whereFrom(): array

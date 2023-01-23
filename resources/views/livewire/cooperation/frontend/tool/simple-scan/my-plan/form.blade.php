@@ -58,20 +58,17 @@
                                         {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
                                     @endif
                                 </p>
-    <!--
-                                <?php $subsidy = $card['subsidy'] ?? ''; ?>
-                                @if($subsidy == $SUBSIDY_AVAILABLE)
-                                    <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2"
+                                @if($card['subsidy_available'])
+                                    <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2 w-full"
                                          style="width: fit-content; width: -moz-fit-content;">
                                         Subsidie mogelijk {{-- Todo: Translate using constant --}}
                                     </div>
-                                @elseif($subsidy == $SUBSIDY_UNAVAILABLE)
-                                    <div class="h-4 rounded-lg text-xs relative text-red p bg-red bg-opacity-10 flex items-center px-2"
+                                @elseif($card['loan_available'])
+                                    <div class="h-4 rounded-lg text-xs relative text-red p bg-red bg-opacity-10 flex items-center px-2 w-full"
                                          style="width: fit-content; width: -moz-fit-content;">
                                         Geen subsidie {{-- Todo: Translate using constant --}}
                                     </div>
                                 @endif
-    -->
                             </div>
                             <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3"
                                  draggable="true" x-on:dragstart.prevent.stop>

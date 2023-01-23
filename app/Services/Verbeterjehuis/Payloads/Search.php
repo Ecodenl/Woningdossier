@@ -23,21 +23,24 @@ class Search implements VerbeterjehuisPayload
         $this->transformedPayload = $this->prepare();
     }
 
-    public function prepare()
+    public function prepare(): Collection
     {
-        // nope, do this on cache
-        dd($this->payload);
+        return $this->payload->map(function (array $regulation) {
+            $regulation['TargetGroup'] = explode(', ', $regulation['TargetGroup']);
+            return $regulation;
+        });
     }
 
     public function forMeasureApplication(MeasureApplication $measureApplication): self
     {
         $target = MappingService::init()->from($measureApplication)->resolveTarget();
+        if (is_array($target)) {
+            $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {
+                $relevantTags = array_filter($regulation['Tags'], fn($tag) => $tag['Value'] === $target['Value']);
 
-        $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {
-            $relevantTags = array_filter($regulation['Tags'], fn($tag) => $tag['Value'] === $target['Value']);
-
-            return  ! empty($relevantTags);
-        });
+                return ! empty($relevantTags);
+            });
+        }
 
         return $this;
     }
@@ -47,12 +50,37 @@ class Search implements VerbeterjehuisPayload
         // this question will give us the answer about which type of building the user has
         // rent / homeowner
         $toolQuestion = ToolQuestion::findByShort('building-contract-type');
-        $toolQuestionCustomValue = $toolQuestion->toolQuestionCustomValues()->visible()->where('short', '=',
-            $building->getAnswer(InputSource::findByShort('master'), $toolQuestion))
+        $toolQuestionCustomValue = $toolQuestion
+            ->toolQuestionCustomValues()
+            ->visible()
+            ->where(
+                'short',
+                $building->getAnswer(InputSource::findByShort('master'), $toolQuestion)
+            )
             ->first();
-        $target = MappingService::init()->from($toolQuestionCustomValue)->resolveTarget();
 
-        $this->transformedPayload = $this->transformedPayload;
-        dd($target);
+        $target = MappingService::init()->from($toolQuestionCustomValue)->resolveTarget();
+        if (is_array($target)) {
+
+            $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {
+                return in_array($target['Value'], $regulation['TargetGroup']);
+            });
+        }
+        return $this;
+    }
+
+    public function getLoans(): Collection
+    {
+        return $this->transformedPayload->where('Type', 'loan');
+    }
+
+    public function getSubsidies(): Collection
+    {
+        return $this->transformedPayload->where('Type', 'subsidy');
+    }
+
+    public function all(): Collection
+    {
+        return $this->transformedPayload;
     }
 }

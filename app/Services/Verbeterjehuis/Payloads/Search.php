@@ -10,7 +10,7 @@ use App\Services\MappingService;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 
-class Search implements VerbeterjehuisPayload
+class Search
 {
     use FluentCaller;
 

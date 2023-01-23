@@ -26,14 +26,14 @@ class UserActionPlanAdviceObserver
         ]);
 
         if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {
-            Log::debug("Is measure application");
+            Log::debug("----SUBSIDY {$userActionPlanAdvice->userActionPlanAdvisable->measure_name} ----");
             $payload = RegulationService::init()
                 ->forBuilding($userActionPlanAdvice->user->building)
                 ->get();
 
             $regulations = $payload
                 ->forMeasureApplication($userActionPlanAdvice->userActionPlanAdvisable)
-                ->forBuildingContractType($userActionPlanAdvice->user->building);
+                ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
 
             if ($regulations->getLoans()->isNotEmpty()) {
                 Log::debug("Is loan");

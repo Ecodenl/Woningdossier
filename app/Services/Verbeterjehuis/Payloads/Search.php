@@ -45,7 +45,7 @@ class Search implements VerbeterjehuisPayload
         return $this;
     }
 
-    public function forBuildingContractType(Building $building): self
+    public function forBuildingContractType(Building $building, InputSource $inputSource): self
     {
         // this question will give us the answer about which type of building the user has
         // rent / homeowner
@@ -55,7 +55,7 @@ class Search implements VerbeterjehuisPayload
             ->visible()
             ->where(
                 'short',
-                $building->getAnswer(InputSource::findByShort('master'), $toolQuestion)
+                $building->getAnswer($inputSource, $toolQuestion)
             )
             ->first();
 

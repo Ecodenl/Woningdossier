@@ -20,7 +20,7 @@
         @else
             @foreach($alerts as $alert)
                 <li>
-                    <p class="{{ $typeMap[$alert['type']] }} text-sm">
+                    <p class="{{ $typeMap[$alert->type] }} text-sm">
                         {{$alert->text}}
                     </p>
                 </li>

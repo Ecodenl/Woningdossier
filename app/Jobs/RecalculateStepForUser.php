@@ -14,6 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Throwable;
 
 class RecalculateStepForUser implements ShouldQueue
 {
@@ -58,7 +59,7 @@ class RecalculateStepForUser implements ShouldQueue
     }
 
 
-    public function Failed(\Throwable $exception)
+    public function failed(Throwable $exception)
     {
         NotificationService::init()
             ->forBuilding($this->user->building)

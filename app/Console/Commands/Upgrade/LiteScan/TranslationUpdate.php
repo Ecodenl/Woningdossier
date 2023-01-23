@@ -56,8 +56,19 @@ class TranslationUpdate extends Command
                         'nl' => __('cooperation/frontend/tool.my-plan.calculations.description'),
                     ])
                 ]);
-
-            Artisan::call('cache:clear');
         }
+
+        if (DB::table('language_lines')->where('group', 'pdf/user-report')
+            ->where('key', 'defaults.page')->doesntExist()
+        ) {
+            DB::table('language_lines')->where('group', 'pdf/user-report')
+                ->where('key', 'NOT LIKE', 'step-description.%')
+                ->delete();
+
+            Artisan::call('translations:import', ['--only-groups' => 'pdf/user-report']);
+        }
+
+
+        Artisan::call('cache:clear');
     }
 }

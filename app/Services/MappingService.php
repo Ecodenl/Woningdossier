@@ -4,9 +4,7 @@ namespace App\Services;
 
 use App\Models\Mapping;
 use App\Traits\FluentCaller;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use phpDocumentor\Reflection\Types\Mixed_;
 
 class MappingService
 {
@@ -15,9 +13,7 @@ class MappingService
     public $from;
     public $target;
 
-    public function __construct()
-    {
-    }
+    public function __construct(){}
 
     public function from($from): self
     {

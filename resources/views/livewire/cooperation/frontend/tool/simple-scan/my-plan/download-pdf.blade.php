@@ -1,5 +1,5 @@
 <div class="flex w-1/2 justify-end space-x-5">
-    <div wire:poll="checkIfFileIsProcessed">
+    <div @if($isFileBeingProcessed) wire:poll="checkIfFileIsProcessed" @endif>
         @if($fileStorage instanceof \App\Models\FileStorage)
             <a href="{{route('cooperation.file-storage.download', compact('cooperation', 'fileStorage'))}}" class="btn btn-purple">
                 @lang('cooperation/frontend/tool.my-plan.downloads.download-report')

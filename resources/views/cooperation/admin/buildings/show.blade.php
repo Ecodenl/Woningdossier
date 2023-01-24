@@ -36,16 +36,49 @@
                             </button>
                         @endcan
                         @can('access-building', $building)
-                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building'))}}" id="observe-building" class="btn btn-primary">
-                                @lang('cooperation/admin/buildings.show.observe-building.label')
-                                @lang('cooperation/admin/buildings.show.observe-building.button')
-                            </a>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        @lang('cooperation/admin/buildings.show.observe-building.label')
+                                        @lang('cooperation/admin/buildings.show.observe-building.button')
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        @foreach($scans as $scan)
+                                            @php
+                                                $transShort = \App\Services\Models\ScanService::init()
+                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                    ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                            @endphp
+                                            <li>
+                                                <a href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
+                                                    @lang($transShort, ['scan' => $scan->name])
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
-                                <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building'))}}"
-                                   id="edit-building" class="btn btn-warning">
-                                    @lang('cooperation/admin/buildings.show.fill-for-user.label')
-                                    @lang('cooperation/admin/buildings.show.fill-for-user.button')
-                                </a>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        @lang('cooperation/admin/buildings.show.fill-for-user.label')
+                                        @lang('cooperation/admin/buildings.show.fill-for-user.button')
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        @foreach($scans as $scan)
+                                            @php
+                                                $transShort = \App\Services\Models\ScanService::init()
+                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                    ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                            @endphp
+                                            <li>
+                                                <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
+                                                    @lang($transShort, ['scan' => $scan->name])
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             @endif
                         @endcan
                         @can('edit', $building)

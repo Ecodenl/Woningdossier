@@ -65,9 +65,10 @@ class BuildingController extends Controller
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
         $scan = $cooperation->scans()->where('short', '!=', Scan::EXPERT)->first();
+        $scans = $cooperation->load(['scans' => fn($q) => $q->where('short', '!=', Scan::EXPERT)])->scans;
 
         return view('cooperation.admin.buildings.show', compact(
-                'user', 'building', 'roles', 'coaches',
+                'user', 'building', 'roles', 'coaches', 'scans',
                 'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
                 'publicMessages', 'buildingNotes', 'statuses', 'logs', 'scan',
             )

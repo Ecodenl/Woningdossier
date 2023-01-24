@@ -286,8 +286,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::resource('messages', Cooperation\Admin\MessagesController::class)->only('index');
 
                     Route::prefix('tool')->name('tool.')->group(function () {
-                        Route::get('fill-for-user/{building}', [Cooperation\Admin\ToolController::class, 'fillForUser'])->name('fill-for-user');
-                        Route::get('observe-tool-for-user/{building}', [Cooperation\Admin\ToolController::class, 'observeToolForUser'])
+                        Route::get('fill-for-user/{building}/{scan}', [Cooperation\Admin\ToolController::class, 'fillForUser'])->name('fill-for-user');
+                        Route::get('observe-tool-for-user/{building}/{scan}', [Cooperation\Admin\ToolController::class, 'observeToolForUser'])
                             ->name('observe-tool-for-user');
                     });
 

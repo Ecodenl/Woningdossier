@@ -8,7 +8,10 @@ use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\Step;
+use App\Services\Scans\ScanFlowService;
 
 class ToolController extends Controller
 {
@@ -19,21 +22,16 @@ class ToolController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function fillForUser(Cooperation $cooperation, Building $building)
+    public function fillForUser(Cooperation $cooperation, Building $building, Scan $scan)
     {
         $building->load('user');
-
         $this->authorize('access-building', $building);
 
         FillingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
-        $step = Step::findByShort('building-data');
-
-        return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
-            'scan' => $step->scan,
-            'step' => $step,
-            'subStep' => $step->subSteps()->orderBy('order')->first(),
-        ]);
+        return redirect()->to(
+            ScanFlowService::init($scan, $building, InputSource::findByShort(InputSource::MASTER_SHORT))->resolveInitialUrl()
+        );
     }
 
     /**
@@ -43,7 +41,7 @@ class ToolController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function observeToolForUser(Cooperation $cooperation, Building $building)
+    public function observeToolForUser(Cooperation $cooperation, Building $building, Scan $scan)
     {
         $building->load('user');
 
@@ -51,12 +49,8 @@ class ToolController extends Controller
 
         ObservingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
-        $step = Step::findByShort('building-data');
-
-        return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
-            'scan' => $step->scan,
-            'step' => $step,
-            'subStep' => $step->subSteps()->orderBy('order')->first(),
-        ]);
+        return redirect()->to(
+            ScanFlowService::init($scan, $building, InputSource::findByShort(InputSource::MASTER_SHORT))->resolveInitialUrl()
+        );
     }
 }

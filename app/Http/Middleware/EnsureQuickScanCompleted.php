@@ -5,8 +5,10 @@ namespace App\Http\Middleware;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\SubStep;
+use App\Services\WoonplanService;
 use Closure;
 use Illuminate\Support\Facades\Route;
 
@@ -29,17 +31,22 @@ class EnsureQuickScanCompleted
         }
 
         if ($building instanceof Building) {
+            $scan = Scan::findByShort('quick-scan');
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-            if ($building->hasCompletedQuickScan($masterInputSource) || app()->isLocal()) {
+            $woonplanService = WoonplanService::init($building)->scan($scan);
+            if ($woonplanService->canEnterExpertScan($request->route('cooperation'))) {
                 return $next($request);
             } else {
-                $firstIncompleteStep = $building->getFirstIncompleteStep($masterInputSource);
+                $firstIncompleteStep = $building->getFirstIncompleteStep($scan, $masterInputSource);
 
                 if ($firstIncompleteStep instanceof Step) {
                     $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep, $masterInputSource);
 
                     if ($firstIncompleteSubStep instanceof SubStep) {
-                        return redirect()->route('cooperation.frontend.tool.quick-scan.index', [
+
+                        return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
+                            // so this may need some rework to check from a scan standpoint.
+                            'scan' => $scan,
                             'step' => $firstIncompleteStep,
                             'subStep' => $firstIncompleteSubStep,
                         ]);
@@ -47,6 +54,7 @@ class EnsureQuickScanCompleted
                 }
             }
         }
+
 
         // Either the building is not relevant, or something funky has happened with the completed quick scan
         // steps. Either way, we cannot let the building go through to the expert tool. We redirect back home

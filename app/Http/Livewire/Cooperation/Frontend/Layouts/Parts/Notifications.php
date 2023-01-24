@@ -14,6 +14,7 @@ class Notifications extends Component
     public Building $building;
     public string $nextUrl;
     public array $types;
+    public bool $hasRedirected = false;
 
     public function mount($nextUrl, $types)
     {
@@ -25,7 +26,9 @@ class Notifications extends Component
 
     public function render()
     {
-        $this->checkNotification();
+        if (! $this->hasRedirected) {
+            $this->checkNotification();
+        }
 
         return view('livewire.cooperation.frontend.layouts.parts.notifications');
     }
@@ -46,6 +49,7 @@ class Notifications extends Component
         }
 
         if (! $activeNotification) {
+            $this->hasRedirected = true;
             return redirect()->to($this->nextUrl);
         }
     }

@@ -1,11 +1,11 @@
 <div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row gap-4">
     @php
- $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
-                    ->forInputSource($masterInputSource)
-                    ->forBuilding($building)
-                    ->answers(collect($this->prepareAnswersForEvaluation()))
-                    ->withCustomEvaluation()
-                    ->getQuestionValues();
+        $questionValues = \App\Helpers\QuestionValues\QuestionValue::init($cooperation, $toolQuestion)
+            ->forInputSource($masterInputSource)
+            ->forBuilding($building)
+            ->answers(collect($filledInAnswers))
+            ->withCustomEvaluation()
+            ->getQuestionValues();
     @endphp
     @foreach($questionValues as $toolQuestionValue)
         @php

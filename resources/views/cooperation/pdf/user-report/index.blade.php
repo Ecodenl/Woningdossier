@@ -1,102 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{app()->getLocale()}}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    @if(app()->environment() === 'local')
-        @php
-            $href = $_SERVER['DOCUMENT_ROOT'] . '/css/pdf.css';
-        @endphp
-    @else
-        @php
-            $href = asset('css/pdf.css');
-        @endphp
-    @endif
-    <link rel="stylesheet" type="text/css" href="{{ $href }}">
-    <title>Document</title>
-</head>
-
-{{-- This is the frontpage of the pdf, after this a new page must be started with the component. --}}
-<body>
-    <footer>
-        @include('cooperation.pdf.user-report.parts.footer-note')
-    </footer>
-
-    @include('cooperation.pdf.user-report.parts.front-page')
-</body>
-
-
-{{--    General data is not structured like $reportData--}}
-{{--    So have to create our own order.--}}
-
-
-@include('cooperation.pdf.user-report.steps.general-data-page-1', [
-    'stepShort' => 'general-data'
-])
-
-@component('cooperation.pdf.components.new-page')
-    <div class="container">
-        @include('cooperation.pdf.user-report.steps.general-data-page-2')
-    </div>
-@endcomponent
-
-@component('cooperation.pdf.components.new-page')
-    <div class="container">
-        @include('cooperation.pdf.user-report.steps.general-data-page-3')
-    </div>
-@endcomponent
-    
-@foreach($reportData as $stepShort => $dataForStep)
-    @php
-        $hasResidentCompletedStep = $building->hasCompleted(
-            \App\Models\Step::withGeneralData()->where('short', $stepShort)->first(),
-            $inputSource
-        );
-    @endphp
-    @if(array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
-        @foreach ($dataForStep as $subStepShort => $dataForSubStep)
-            @php
-                $shortToUseAsMainSubject = $subStepShort == '-' ? $stepShort : $subStepShort
-            @endphp
-            @include('cooperation.pdf.user-report.parts.measure-page')
-        @endforeach
-    @endif
-@endforeach
-
-@foreach($newReportData as $stepShort => $dataForStep)
-    @php
-        $hasResidentCompletedStep = $building->hasCompleted(
-            \App\Models\Step::where('short', $stepShort)->first(),
-            $inputSource
-        );
-        $stepAnswerMap = [
-            'heater' => 'sun-boiler',
-            'high-efficiency-boiler' => 'hr-boiler',
-            'heat-pump' => 'heat-pump',
-        ];
-    @endphp
-    @if(array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
-        @php
-            $subStepShort = '-';
-            $shortToUseAsMainSubject = $stepShort;
-
-            $showPage = true;
-            if (array_key_exists($stepShort, $stepAnswerMap)) {
-                $newHeatSourceQuestion = \App\Models\ToolQuestion::findByShort('new-heat-source');
-                $newHeatSourceWaterQuestion = \App\Models\ToolQuestion::findByShort('new-heat-source-warm-tap-water');
-                $newSituation = array_merge($building->getAnswer($inputSource, $newHeatSourceQuestion), $building->getAnswer($inputSource, $newHeatSourceWaterQuestion));
-
-                $showPage = in_array($stepAnswerMap[$stepShort], $newSituation);
+        <link rel="stylesheet" type="text/css" href="{{ pdfAsset('css/pdf.css') }}">
+        {{--
+            Because webpack is a clownfest, font-weight: bold is converted into font-weight: 700 which is NOT
+            supported by mPDF. So we just redefine it here because apparently it's too diffult to prevent a CSS conversion
+         --}}
+        <style>
+            h1, h2, h3, h4, h5 {
+                font-weight: bold;
             }
-        @endphp
-        @if($showPage)
-            @include('cooperation.pdf.user-report.parts.measure-page')
+        </style>
+
+
+        {{-- Define footer (an/or header) by name --}}
+        <style>
+            @page {
+                /*header: page-header;*/
+                footer: page-footer;
+            }
+        </style>
+    </head>
+
+    <body>
+        @include('cooperation.pdf.user-report.parts.pages.front-page')
+
+        @include('cooperation.pdf.user-report.parts.pages.action-plan')
+
+        @include('cooperation.pdf.user-report.parts.pages.info-page')
+
+        @include('cooperation.pdf.user-report.parts.pages.simple-scan-answers')
+
+        @if($scanShort !== \App\Models\Scan::LITE)
+            @include('cooperation.pdf.user-report.parts.pages.expert-scan-answers')
+            @include('cooperation.pdf.user-report.parts.pages.small-measures')
+        @elseif(! empty($coachHelp))
+            @include('cooperation.pdf.user-report.parts.pages.coach-help')
         @endif
-    @endif
-@endforeach
 
-@include('cooperation.pdf.user-report.parts.outro')
 
+        {{-- Global footer --}}
+        @include('cooperation.pdf.user-report.parts.footer-note')
+    </body>
 </html>

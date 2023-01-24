@@ -29,7 +29,7 @@ export default (initiallyOpen = false) => ({
 
             if (null !== context.select) {
                 let observer = new MutationObserver(function(mutations) {
-                    context.constructSelect();
+                    context.constructSelect(false);
                 });
 
                 observer.observe(context.select, { childList: true });
@@ -73,9 +73,16 @@ export default (initiallyOpen = false) => ({
         });
 
         if (this.multiple) {
-            // If it's multiple, we will add an event listener to rebuild the input on resizing
+            // If it's multiple, we will add an event listener to rebuild the input on resizing,
+            // as well as on switching tabs.
             window.addEventListener('resize', (event) => {
                 this.setInputValue();
+            });
+
+            window.addEventListener('tab-switched', (event) => {
+                setTimeout(() => {
+                    this.setInputValue();
+                });
             });
         }
 

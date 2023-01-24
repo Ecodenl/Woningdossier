@@ -8,6 +8,7 @@ use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -62,6 +63,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $roles_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
  * @property-read int|null $user_action_plan_advice_comments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
+ * @property-read int|null $user_action_plan_advices_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
  * @property-read int|null $user_interests_count
  * @method static Builder|User byContact($contact)
@@ -115,7 +118,6 @@ class User extends Model implements AuthorizableContract
     //protected $with = [
     //    'roles',
     //];
-
 
     # Scopes
     public function scopeByContact(Builder $query, $contact): Builder
@@ -316,7 +318,16 @@ class User extends Model implements AuthorizableContract
         return $this->hasMany(UserMotivation::class);
     }
 
+    /**
+     * @deprecated use userActionPlanAdvices
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function actionPlanAdvices()
+    {
+        return $this->hasMany(UserActionPlanAdvice::class);
+    }
+
+    public function userActionPlanAdvices(): HasMany
     {
         return $this->hasMany(UserActionPlanAdvice::class);
     }

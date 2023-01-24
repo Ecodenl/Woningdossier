@@ -508,7 +508,7 @@ return [
                         'example-buildings' => 'Voorbeeldwoningen',
                         'questionnaires' => 'Vragenlijsten',
                         'settings' => 'Instellingen',
-                        'step' => 'Stappen aan en uitzetten',
+                        'scans' => 'Beschikbare scans',
                     ],
 
                     'steps' => [

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Cooperation;
+use App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
@@ -63,7 +64,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 // debug purpose only
                 Route::name('pdf.')->prefix('pdf')->group(function () {
                     Route::name('user-report.')->prefix('user-report')->group(function () {
-                        Route::get('', [Cooperation\Pdf\UserReportController::class, 'index'])->name('index');
+                        Route::get('{scanShort?}', [Cooperation\Pdf\UserReportController::class, 'index'])->name('index');
                     });
                 });
             }
@@ -127,44 +128,69 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::resource('help', Cooperation\Frontend\HelpController::class)->only('index');
                 Route::as('tool.')->group(function () {
                     $scans = \App\Helpers\Cache\Scan::allShorts();
+                    $simpleScans = \App\Helpers\Cache\Scan::simpleShorts();
+
                     // TODO: Deprecate to whereIn in L9
-                    Route::get('{scan}', [ScanController::class, 'show'])
-                        ->name('scans.show')
+                    Route::get('{scan}', [Cooperation\Frontend\Tool\ScanController::class, 'redirect'])
+                        ->name('scan.redirect')
                         ->where(collect(['scan'])
-                            ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $scans)])
+                            ->mapWithKeys(fn($parameter) => [$parameter => implode('|', $scans)])
                             ->all()
                         );
 
-                    Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
+                    Route::prefix('{scan}')
+                        ->where(collect(['scan'])
+                            ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $simpleScans)])
+                            ->all()
+                        )
+                        ->as('simple-scan.')
+                        ->middleware('cooperation-has-scan')
+                        ->group(function () {
+                            $steps = \App\Helpers\Cache\Step::allSlugs();
 
-                        Route::as('my-plan.')->prefix('woonplan')->group(function () {
-                            Route::get('', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'index'])->name('index');
-                            Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\QuickScan\MyPlanController::class, 'media'])->name('media');
+                            Route::prefix('{step:slug}')
+                                ->where(
+                                    collect(['step'])
+                                        ->mapWithKeys(fn ($parameter) => [$parameter => implode('|', $steps)])
+                                        ->all()
+                                )
+                                ->group(function () {
+                                    // Define this route as last to not match above routes as step/sub step combo
+                                    Route::get('{subStep:slug}', [Cooperation\Frontend\Tool\SimpleScanController::class, 'index'])
+                                        ->name('index')
+                                        ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
+
+                                    Route::get('vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\SimpleScan\QuestionnaireController::class, 'index'])
+                                        ->name('questionnaires.index');
+                                });
+
+                            Route::as('my-plan.')->prefix('woonplan')->group(function () {
+                                Route::get('', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'index'])->name('index');
+                                Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'media'])->name('media');
+                            });
                         });
 
-                        Route::get('{step}/vragenlijst/{questionnaire}', [Cooperation\Frontend\Tool\QuickScan\QuestionnaireController::class, 'index'])
-                            ->name('questionnaires.index');
-
-                        // Define this route as last to not match above routes as step/sub step combo
-                        Route::get('{step}/{subStep}', [Cooperation\Frontend\Tool\QuickScanController::class, 'index'])
-                            ->name('index')
-                            ->middleware(['checks-conditions-for-sub-steps', 'duplicate-data-for-user']);
-                    });
-
+                    //TODO: Bind by expert shorts and route bind steps also (perhaps we can merge with above code to
+                    // minify route code...)
                     Route::as('expert-scan.')->prefix('expert-scan')->group(function () {
                         // Define this route as last to not match above routes as step/sub step combo
-                        Route::get('{step}', [Cooperation\Frontend\Tool\ExpertScanController::class, 'index'])
-                        ->name('index')
-                        ->middleware(['ensure-quick-scan-completed', 'duplicate-data-for-user']);
+                        Route::prefix('{step}')
+                            ->group(function () {
+                                Route::get('', [Cooperation\Frontend\Tool\ExpertScanController::class, 'index'])
+                                    ->name('index')
+                                    ->middleware(['ensure-quick-scan-completed', 'duplicate-data-for-user']);
+
+                                Route::get('vragenlijst/{questionnaire}',
+                                    [Cooperation\Frontend\Tool\ExpertScan\QuestionnaireController::class, 'index'])
+                                    ->name('questionnaires.index');
+                            });
                     });
-
-
                 });
             });
 
             Route::prefix('tool')->name('tool.')->middleware('ensure-quick-scan-completed', 'track-visited-url')->group(function () {
                 Route::get('/', function () {
-                    return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index');
+                    return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index');
                 })->name('index');
 
                 Route::prefix('questionnaire')->name('questionnaire.')->group(function () {
@@ -336,9 +362,31 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             Route::post('', [Cooperation\Admin\Cooperation\CooperationAdmin\SettingsController::class, 'store'])->name('store');
                         });
 
-                        Route::resource('cooperation-measure-applications', Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController::class)
-                            ->except(['show'])
+                            Route::resource('scans', Cooperation\Admin\Cooperation\CooperationAdmin\ScanController::class)
+                                ->only(['index', 'store']);
+
+                        Route::resource('cooperation-measure-applications', CooperationMeasureApplicationController::class)
+                            ->except(['index', 'create', 'store', 'show'])
                             ->parameter('cooperation-measure-applications', 'cooperationMeasureApplication');
+                        Route::prefix('cooperation-measure-applications')->as('cooperation-measure-applications.')->group(function () {
+                            // TODO: Deprecate to whereIn in L9
+                            Route::prefix('{type}')
+                                ->where(collect(['type'])
+                                    ->mapWithKeys(fn ($parameter) => [
+                                        $parameter => implode('|',
+                                            \App\Helpers\Models\CooperationMeasureApplicationHelper::getMeasureTypes()),
+                                    ])
+                                    ->all()
+                                )->group(function () {
+                                    Route::get('', [CooperationMeasureApplicationController::class, 'index'])
+                                        ->name('index');
+                                    Route::get('create', [CooperationMeasureApplicationController::class, 'create'])
+                                        ->name('create');
+                                    Route::post('create', [CooperationMeasureApplicationController::class, 'store'])
+                                        ->name('store');
+                                });
+
+                        });
                     });
                 });
 

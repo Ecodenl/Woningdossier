@@ -10,18 +10,20 @@ use App\Helpers\Arr;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
-use Artisan;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -117,7 +119,6 @@ class Form extends Component
         $shouldDoFullRecalculate = false;
         $dirtyToolQuestions = [];
 
-        $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
         foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
@@ -146,7 +147,7 @@ class Form extends Component
                     ->applyExampleBuilding()
                     ->save($givenAnswer);
 
-                if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource) && $masterHasCompletedQuickScan) {
+                if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
                     Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
                     $shouldDoFullRecalculate = true;
                 }
@@ -157,6 +158,9 @@ class Form extends Component
             }
         }
 
+        $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+            ->forStep($this->step);
+
         // since we are done saving all the filled in answers, we can safely mark the sub steps as completed
         foreach ($this->subSteps as $subStep) {
             // Now mark the sub step as complete
@@ -166,18 +170,14 @@ class Form extends Component
                 'input_source_id' => $this->currentInputSource->id
             ]);
 
-            $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
-                ->forStep($this->step);
-
             if ($completedSubStep->wasRecentlyCreated) {
                 // No need to check SubSteps that were recently created because they passed conditions
                 $flowService->skipSubstep($subStep);
             }
-
-            $flowService->checkConditionals($dirtyToolQuestions);
         }
 
-        // the INITIAL calculation will be handled by the CompletedSubStepObserver
+        $flowService->checkConditionals($dirtyToolQuestions, Hoomdossier::user());
+
         if ($shouldDoFullRecalculate) {
             // We should do a full recalculate because some base value that has impact on every calculation is changed.
             Log::debug("Dispatching full recalculate..");
@@ -190,8 +190,7 @@ class Form extends Component
             ]);
 
             // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
-        } else if ($masterHasCompletedQuickScan && !empty($stepShortsToRecalculate)) {
-            // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
+        } elseif (! empty($stepShortsToRecalculate)) {
             $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
             // since we are just re-calculating specific parts of the tool we do it without the old advices
             // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
@@ -204,8 +203,12 @@ class Form extends Component
             ]);
         }
 
-        // TODO: Make FlowService URL workable
-        return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $this->cooperation]);
+        return redirect()->to(
+            ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+                ->forStep($this->step)
+                ->forSubStep($this->subSteps->sortByDesc('order')->first()) // Always last, as expert can't have a next SubStep
+                ->resolveNextUrl()
+        );
     }
 
     public function performCalculations()

@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
-use App\Helpers\HoomdossierSession;
 use App\Jobs\MapQuickScanSituationToExpert;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;

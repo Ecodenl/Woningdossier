@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Jobs\MapQuickScanSituationToExpert;
+use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\SubStep;
@@ -24,7 +25,9 @@ class UserActionPlanAdviceObserver
             'subsidy_available' => false,
         ]);
 
+        // TODO: this should be possible for a cooperationMeasureApplication and customMEasureApplicationin the near future.
         if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {
+            RefreshRegulationsForUserActionPlanAdvice::dispatchN($userActionPlanAdvice);
             Log::debug("----SUBSIDY {$userActionPlanAdvice->userActionPlanAdvisable->measure_name} ----");
             $payload = RegulationService::init()
                 ->forBuilding($userActionPlanAdvice->user->building)

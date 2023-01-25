@@ -3,12 +3,14 @@
 namespace App\Jobs;
 
 use App\Models\UserActionPlanAdvice;
+use App\Services\UserActionPlanAdviceService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
 {
@@ -33,21 +35,6 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
      */
     public function handle()
     {
-        $userActionPlanAdvice = $this->userActionPlanAdvice;
-
-        $payload = RegulationService::init()
-            ->forBuilding($userActionPlanAdvice->user->building)
-            ->get();
-
-        $regulations = $payload
-            ->forMeasureApplication($userActionPlanAdvice->userActionPlanAdvisable)
-            ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
-
-        if ($regulations->getLoans()->isNotEmpty()) {
-            $userActionPlanAdvice->loan_available = true;
-        }
-        if ($regulations->getSubsidies()->isNotEmpty()) {
-            $userActionPlanAdvice->subsidy_available = true;
-        }
+        UserActionPlanAdviceService::init()->refreshRegulations($this->userActionPlanAdvice);
     }
 }

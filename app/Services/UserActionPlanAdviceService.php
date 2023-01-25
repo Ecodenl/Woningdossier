@@ -18,17 +18,41 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
+use App\Services\Verbeterjehuis\RegulationService;
+use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService
 {
-    use RetrievesAnswers;
+    use RetrievesAnswers, FluentCaller;
 
     const CATEGORY_COMPLETE = 'complete';
     const CATEGORY_TO_DO = 'to-do';
     const CATEGORY_LATER = 'later';
+
+    public function __construct() {}
+
+    public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
+    {
+        Log::debug("Refreshing regulations {$userActionPlanAdvice->id}");
+        $payload = RegulationService::init()
+            ->forBuilding($userActionPlanAdvice->user->building)
+            ->get();
+
+        $regulations = $payload
+            ->forMeasureApplication($userActionPlanAdvice->userActionPlanAdvisable)
+            ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
+
+        if ($regulations->getLoans()->isNotEmpty()) {
+            $userActionPlanAdvice->loan_available = true;
+        }
+        if ($regulations->getSubsidies()->isNotEmpty()) {
+            $userActionPlanAdvice->subsidy_available = true;
+        }
+        $userActionPlanAdvice->save();
+    }
 
     /**
      * Return the categories, ordered.

@@ -11,6 +11,7 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\ConsiderableHelper;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
@@ -23,6 +24,7 @@ use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Helpers\Translation;
+use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\buildingHeater;
@@ -46,25 +48,34 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Status;
 use App\Models\Step;
+use App\Models\SubSteppable;
 use App\Models\ToolCalculationResult;
+use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DumpService
 {
+    const MODE_CSV = 'csv';
+    const MODE_PDF = 'pdf';
+
     use FluentCaller;
 
     protected User $user;
+    protected Building $building;
     protected InputSource $inputSource;
 
+    protected bool $anonymize = false;
+    protected string $mode = self::MODE_CSV;
+
     public array $headerStructure;
-    public bool $anonymize = false;
 
     public function __construct()
     {
@@ -79,7 +90,7 @@ class DumpService
     public function user(User $user): self
     {
         $this->user = $user;
-
+        $this->building = $user->building;
         return $this;
     }
 
@@ -91,7 +102,6 @@ class DumpService
     public function inputSource(InputSource $inputSource): self
     {
         $this->inputSource = $inputSource;
-
         return $this;
     }
 
@@ -105,7 +115,17 @@ class DumpService
     public function anonymize(bool $anonymize = true): self
     {
         $this->anonymize = $anonymize;
+        return $this;
+    }
 
+    /**
+     * Set dump mode, which impacts how the dump is formed.
+     *
+     * @return $this
+     */
+    public function setMode(string $mode): self
+    {
+        $this->mode = $mode;
         return $this;
     }
 
@@ -119,7 +139,6 @@ class DumpService
     public function setHeaderStructure(array $headerStructure): self
     {
         $this->headerStructure = Arr::dot($headerStructure);
-
         return $this;
     }
 
@@ -130,8 +149,10 @@ class DumpService
      *
      * @return $this
      */
-    public function createHeaderStructure(bool $setStepPrefix = true): self
+    public function createHeaderStructure(string $short, bool $setStepPrefix = true): self
     {
+        //TODO: See if we can use some dedicated keys so it's easier to remove these if not needed (as of right now,
+        // in the PDF).
         if ($this->anonymize) {
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
@@ -160,7 +181,7 @@ class DumpService
             ];
         }
 
-        $structure = ToolHelper::getNewContentStructure();
+        $structure = ToolHelper::getContentStructure($short, $this->mode);
         // If we should set the step prefix, we want to add the step name to each field
         if ($setStepPrefix) {
             foreach ($structure as $stepShort => $content) {
@@ -189,7 +210,7 @@ class DumpService
     public function generateDump(bool $withConditionalLogic = true): array
     {
         $user = $this->user;
-        $building = $user->building;
+        $building = $this->building;
         $inputSource = $this->inputSource;
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
@@ -238,74 +259,93 @@ class DumpService
             ];
         }
 
-        $calculateData = $this->getNewCalculateData();
+        $calculateData = $this->getCalculateData();
         $conditionService = ConditionService::init()
             ->building($building)
             ->inputSource($inputSource);
 
+        [$models, $answers] = $this->prepareHeaderStructure();
+
         foreach ($this->headerStructure as $key => $translation) {
             if (is_string(($key))) {
-                // Structure is as follows:
-                // 0: step shorts
-                // 1: steppable short / calculation ref
-                // n: potential calculation field
-                $structure = explode('.', $key);
+                $model = $models[$key];
 
-                $step = $structure[0];
-                $potentialShort = $structure[1];
-                if (Str::startsWith($potentialShort, 'question_')) {
+                if ($model instanceof ToolQuestion) {
                     $processElement = true;
                     $humanReadableAnswer = null;
-                    $toolQuestion = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
 
                     if ($withConditionalLogic) {
-                        $processElement = $conditionService->forModel($toolQuestion)->isViewable();
+                        $processElement = $conditionService->forModel($model)->isViewable($answers);
                     }
 
                     if ($processElement) {
-                        $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer($building, $inputSource,
-                            $toolQuestion);
+                        $humanReadableAnswer = ToolQuestionHelper::getHumanReadableAnswer(
+                            $building,
+                            $inputSource,
+                            $model
+                        );
+
                         // Priority slider situation
-                        if (is_array($humanReadableAnswer)) {
+                        if (is_array($humanReadableAnswer) && $this->formatArrays()) {
                             $temp = '';
                             foreach ($humanReadableAnswer as $name => $answer) {
                                 $temp .= "{$name}: {$answer}, ";
                             }
                             $humanReadableAnswer = substr($temp, 0, -2);
                         }
+                    } elseif ($this->removeUnconditionals()) {
+                        unset($this->headerStructure[$key]);
+                        continue;
                     }
 
                     // So, by default the human readable answer is a mention of no answer being filled.
                     // However, this reads pretty gnarly so we nullify it.
                     if ($humanReadableAnswer === __('cooperation/frontend/tool.no-answer-given')) {
-                        $humanReadableAnswer = null;
+                        if (! $this->defaultEmptyAnswer()) {
+                            $humanReadableAnswer = null;
+                        }
+                    } elseif ($this->withUnits() && ! empty($model->unit_of_measure)) {
+                        $humanReadableAnswer .= " {$model->unit_of_measure}";
                     }
 
                     $data[$key] = $humanReadableAnswer;
-                } elseif (Str::startsWith($potentialShort, 'calculation_')) {
+                } elseif ($model instanceof ToolCalculationResult) {
                     $processElement = true;
                     $result = null;
 
-                    // The structure is built using the step as main short part for the calculation. We don't know how
-                    // deeply nested the rest is, so we simply implode everything as that is also how its served.
-                    $columnNest = implode('.', array_slice($structure, 2));
-
-                    // We remove the calculation string, and append the column nest. Now we have the full short, which
-                    // we can use to retrieve the model as well as to fetch from the array.
-                    $column = Str::replaceFirst('calculation_', '', $potentialShort)
-                        . (empty($columnNest) ? '' : ".{$columnNest}");
-
                     if ($withConditionalLogic) {
-                        $toolCalculationResult = ToolCalculationResult::findByShort($column);
-                        $processElement = $conditionService->forModel($toolCalculationResult)->isViewable();
+                        $processElement = $conditionService->forModel($model)->isViewable($answers);
                     }
 
                     if ($processElement) {
-                        $answer = Arr::get($calculateData, $column);
+                        $answer = Arr::get($calculateData, $model->short);
                         $result = $this->formatCalculation($key, $answer);
+
+                        if ($this->withUnits() && ! empty($model->unit_of_measure)) {
+                            $result .= " {$model->unit_of_measure}";
+                        }
+                    } elseif ($this->removeUnconditionals()) {
+                        unset($this->headerStructure[$key]);
+                        continue;
                     }
 
                     $data[$key] = $result;
+                } elseif ($model instanceof ToolLabel) {
+                    $processElement = true;
+                    $label = null;
+
+                    if ($withConditionalLogic) {
+                        $processElement = $conditionService->forModel($model)->isViewable($answers);
+                    }
+
+                    if ($processElement) {
+                        $label = $model->name;
+                    } elseif ($this->removeUnconditionals()) {
+                        unset($this->headerStructure[$key]);
+                        continue;
+                    }
+
+                    $data[$key] = $label;
                 }
             }
         }
@@ -313,13 +353,13 @@ class DumpService
         return $data;
     }
 
-    protected function getNewCalculateData(): array
+    protected function getCalculateData(): array
     {
         // TODO: When the other calculators are uniform, also call them via step short (so we can iterate);
 
         // collect some info about their building
         $user = $this->user;
-        $building = $user->building;
+        $building = $this->building;
         $inputSource = $this->inputSource;
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
@@ -376,12 +416,12 @@ class DumpService
         return $calculations;
     }
 
-    protected function formatCalculation($key, $value)
+    protected function formatCalculation(string $key, $value)
     {
         $decimals = 0;
         $shouldRound = false;
 
-        if (self::isYear($key) || ! is_numeric($value)) {
+        if (Str::contains($key, 'year') || ! is_numeric($value)) {
             return $value;
         }
 
@@ -394,751 +434,7 @@ class DumpService
             $shouldRound = true;
         }
 
-        return self::formatOutput($key, $value, $decimals, $shouldRound);
-    }
-
-    ## TODO: Replace legacy
-    public static function makeHeaderText($stepName, $subStepName, $text)
-    {
-        // inside the content structure a step with no sub steps will be given a "-" as step
-        // this way we can maintain nest
-        if (empty($subStepName) || '-' == $subStepName) {
-            $headerText = "{$stepName}: {$text}";
-        } else {
-            $headerText = "{$stepName}, {$subStepName}: {$text}";
-        }
-
-        return $headerText;
-    }
-
-    public static function getStructureForTotalDumpService(bool $anonymized, $prefixValuesWithStep = true)
-    {
-        if ($anonymized) {
-            $headers = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
-
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.example-building'),
-            ];
-        } else {
-            $headers = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.coach-appointment-date'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
-
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
-
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.example-building'),
-            ];
-        }
-
-        // get the content structure of the whole tool.
-        $structure = ToolHelper::getContentStructure();
-
-        $leaveOutTheseDuplicates = [
-            'general-data.building-characteristics.building_features.building_type_id',
-            'general-data.building-characteristics.building_features.build_year',
-            // hoofddak
-            'roof-insulation.building_features.roof_type_id',
-            // bewoners, gasverbruik en type ketel
-            'high-efficiency-boiler.user_energy_habits.resident_count',
-            'high-efficiency-boiler.user_energy_habits.amount_gas',
-            'high-efficiency-boiler.service.5.service_value_id',
-            // elektriciteitsverbruik
-            'solar-panels.user_energy_habits.amount_electricity',
-            // comfort niveau
-            'heater.user_energy_habits.water_comfort_id',
-            'heater.calculation.production_heat.help',
-        ];
-
-        // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
-        // unfortunately we cant array dot the structure since we only need the labels
-        foreach ($structure as $stepShort => $stepStructure) {
-            // building-detail contains data that is already present in the columns above
-            $step = Step::findByShort($stepShort);
-            foreach ($stepStructure as $subStep => $subStepStructure) {
-                foreach ($subStepStructure as $tableWithColumnOrAndId => $contents) {
-                    if ('calculations' == $tableWithColumnOrAndId) {
-                        if ($prefixValuesWithStep) {
-                            // If you want to go ahead and translate in a different namespace, do it here
-                            // we will dot the array, map it so we can add the step name to it
-                            $deeperContents = array_map(function ($content) use ($step, $subStep) {
-                                return self::makeHeaderText($step->name, $subStep, $content);
-                            }, Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.'));
-                        } else {
-                            $deeperContents = Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.');
-                        }
-
-                        $headers = array_merge($headers, $deeperContents);
-                    } else {
-                        $labelWithEuroNormalization = str_replace(['&euro;', '€'], ['euro', 'euro'], $contents['label']);
-
-                        if ($prefixValuesWithStep) {
-                            $subStepName = null;
-                            if ('-' !== $subStep) {
-                                $subStepName = optional(Step::findByShort($subStep))->name ?? '';
-                            }
-
-                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = self::makeHeaderText($step->name ?? 'Algemeen', $subStepName, $labelWithEuroNormalization);
-                        } else {
-                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = $labelWithEuroNormalization;
-                        }
-                    }
-                }
-            }
-        }
-
-        foreach ($leaveOutTheseDuplicates as $leaveOut) {
-            unset($headers[$leaveOut]);
-        }
-
-        return $headers;
-    }
-
-    /**
-     * Method to generate a total dump from a user for a specific input source.
-     * This dump collects all possible data for a given user for the tool and returns it in an array.
-     *
-     * @param array $structureForTotalDump | we need the headers to get table and row data, provided from the self::dissectHeaders, using self::getStructureForTotalDumpService
-     * @param Cooperation $cooperation ,
-     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if an input gets hidden it wont be put in the dump
-     */
-    public static function totalDump(array $structureForTotalDump, Cooperation $cooperation, User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
-    {
-        $headers = $structureForTotalDump;
-        $rows = [];
-
-        if ($withTranslationsForColumns) {
-            $rows['translations-for-columns'] = $headers;
-        }
-
-        // create a row where we will store the user data
-        $row = [];
-
-        // collect basic info from a user.
-        $building = $user->building;
-        $buildingId = $building->id;
-
-        $createdAt = optional($user->created_at)->format('Y-m-d');
-        $mostRecentStatus = $building->getMostRecentBuildingStatus();
-
-        if (! $mostRecentStatus instanceof BuildingStatus) {
-            Log::warning("Building status not set for building {$building->id}");
-            DiscordNotifier::init()->notify("Building status not set for building {$building->id}");
-            $mostRecentStatus = BuildingStatus::first();
-            $buildingStatus = Status::findByShort('active')->name;
-        } else {
-            $buildingStatus = $mostRecentStatus->status->name;
-        }
-
-        $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
-        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
-        $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
-            ->map(function ($user) {
-                return $user->getFullName();
-            })->implode(', ');
-
-        $firstName = $user->first_name;
-        $lastName = $user->last_name;
-        $email = $user->account->email;
-
-        $phoneNumber = CsvHelper::escapeLeadingZero($user->phone_number);
-
-        $street = $building->street;
-        $number = $building->number;
-        $extension = $building->extension ?? '';
-        $city = $building->city;
-        $postalCode = $building->postal_code;
-
-        // get the building features from the resident
-        $buildingFeature = $building->buildingFeatures;
-
-        /** @var BuildingVentilation $buildingVentilation */
-        $buildingVentilation = $building->buildingVentilations->first();
-
-        $buildingType = $buildingFeature->buildingType->name ?? '';
-        $buildYear = $buildingFeature->build_year ?? '';
-
-        $exampleBuilding = '';
-        if ($buildingFeature instanceof BuildingFeature) {
-            $exampleBuilding = optional($buildingFeature->exampleBuilding)->isSpecific() ? $buildingFeature->exampleBuilding->name : '';
-        }
-
-
-        $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d H:i');
-
-        // set the personal userinfo
-        if ($anonymized) {
-            // set the personal userinfo
-            $row[$building->id] = [
-                $createdAt, $buildingStatus, $postalCode, $city,
-                $buildingType, $buildYear, $exampleBuilding,
-            ];
-        } else {
-            $row[$building->id] = [
-                $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
-                $firstName, $lastName, $email, $phoneNumber,
-                $street, trim($number . ' ' . $extension), $postalCode, $city,
-                $buildingType, $buildYear, $exampleBuilding,
-            ];
-        }
-
-        $calculateData = static::getCalculateData($user, $inputSource);
-
-        // loop through the headers
-        foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
-            if (is_string($tableWithColumnOrAndIdKey)) {
-                // explode it so we can do stuff with it.
-                $tableWithColumnOrAndId = explode('.', $tableWithColumnOrAndIdKey);
-
-                // collect some basic info
-                // which will apply to (most) cases.
-                $step = $tableWithColumnOrAndId[0];
-                $subStep = $tableWithColumnOrAndId[1];
-                $table = $tableWithColumnOrAndId[2];
-                $columnOrId = $tableWithColumnOrAndId[3];
-
-                $maybe1 = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
-                $maybe2 = isset($tableWithColumnOrAndId[5]) ? $tableWithColumnOrAndId[5] : '';
-                //dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
-
-                switch ($table) {
-                    case 'building_ventilations':
-                        $column = $columnOrId;
-                        switch ($columnOrId) {
-                            default:
-                                $answer = null;
-                                if ($buildingVentilation instanceof BuildingVentilation) {
-                                    $optionsForQuestion = ToolHelper::getContentStructure($tableWithColumnOrAndIdKey)['options'];
-
-                                    if (is_array($buildingVentilation->$column)) {
-                                        $givenAnswers = array_flip($buildingVentilation->$column);
-
-                                        $answer = implode(
-                                            ', ',
-                                            array_intersect_key($optionsForQuestion, $givenAnswers)
-                                        );
-                                    }
-                                }
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
-                                break;
-                        }
-                        break;
-
-                    // handle the calculation table.
-                    // No its not a table, but we treat it as in the structure array.
-                    case 'calculation':
-                        // works in most cases, otherwise they will be renamed etc.
-                        $column = $columnOrId;
-                        $costsOrYear = $tableWithColumnOrAndId[4] ?? null;
-
-                        switch ($step) {
-                            case 'roof-insulation':
-                                $roofCategory = $tableWithColumnOrAndId[3];
-                                $column = $tableWithColumnOrAndId[4];
-                                $costsOrYear = $tableWithColumnOrAndId[5] ?? null;
-
-                                $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$roofCategory][$column] ?? '' : $calculateData[$step][$subStep][$roofCategory][$column][$costsOrYear] ?? '';
-                                break;
-                            default:
-                                $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$column] : $calculateData[$step][$subStep][$column][$costsOrYear] ?? '';
-                                break;
-                        }
-
-                        $calculationResult = self::formatFieldOutput($column, $calculationResult, $maybe1, $maybe2);
-
-//                        dd($calculationResult, $tableWithColumnOrAndIdKey, $column, $calculateData[$step][$subStep][$column]);
-                        //dump("calculationResult: " . $calculationResult . " for step " . $step);
-
-                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $calculationResult ?? '';
-                        break;
-
-                    // handle the building_features table and its columns.
-                    case 'building_features':
-                        if ($buildingFeature instanceof BuildingFeature) {
-                            switch ($columnOrId) {
-                                case 'roof_type_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
-                                    break;
-                                case 'energy_label_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
-                                    break;
-                                case 'facade_damaged_paintwork_id':
-                                    $condition = 2 != $buildingFeature->facade_plastered_painted;
-                                    if ($withConditionalLogic) {
-                                        if ($condition) {
-                                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
-                                        }
-                                    } else {
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
-                                    }
-                                    break;
-                                case 'facade_plastered_painted':
-                                    $possibleAnswers = [
-                                        1 => \App\Helpers\Translation::translate('general.options.yes.title'),
-                                        2 => \App\Helpers\Translation::translate('general.options.no.title'),
-                                        3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-                                    ];
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->facade_plastered_painted] ?? '';
-                                    break;
-                                case 'facade_plastered_surface_id':
-                                    $condition = 2 != $buildingFeature->facade_plastered_painted;
-                                    if ($withConditionalLogic) {
-                                        if ($condition) {
-                                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
-                                        }
-                                    } else {
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
-                                    }
-                                    break;
-                                case 'monument':
-                                    $possibleAnswers = [
-                                        1 => \App\Helpers\Translation::translate('general.options.yes.title'),
-                                        2 => \App\Helpers\Translation::translate('general.options.no.title'),
-                                        0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-                                    ];
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->monument] ?? '';
-                                    break;
-                                case 'cavity_wall':
-                                    $possibleAnswers = [
-                                        1 => \App\Helpers\Translation::translate('general.options.yes.title'),
-                                        2 => \App\Helpers\Translation::translate('general.options.no.title'),
-                                        0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-                                    ];
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->cavity_wall] ?? '';
-                                    break;
-                                case 'wall_joints':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->wallJoints instanceof FacadeSurface ? $buildingFeature->wallJoints->name : '';
-                                    break;
-                                case 'contaminated_wall_joints':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->contaminatedWallJoints instanceof FacadeSurface ? $buildingFeature->contaminatedWallJoints->name : '';
-                                    break;
-                                case 'window_surface':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = NumberFormatter::format($buildingFeature->$columnOrId, 2) ?? '';
-                                    break;
-                                default:
-                                    // the column does not need a relationship, so just get the column
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->$columnOrId ?? '';
-                                    break;
-                            }
-                        } else {
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                        }
-                        break;
-
-                    // handle the building_roof_types table and its columns.
-                    case 'building_roof_types':
-                        $roofTypeId = $columnOrId;
-                        //$column     = $tableWithColumnOrAndId[3];
-                        $column = $maybe1;
-
-                        $buildingRoofType = $building->roofTypes
-                            ->where('roof_type_id', $roofTypeId)
-                            ->first();
-
-                        if ($buildingRoofType instanceof BuildingRoofType) {
-                            switch ($column) {
-                                case 'element_value_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->elementValue instanceof ElementValue ? $buildingRoofType->elementValue->value : '';
-                                    break;
-                                case 'building_heating_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->buildingHeating instanceof BuildingHeating ? $buildingRoofType->buildingHeating->name : '';
-                                    break;
-                                default:
-                                    // check if we need to get data from the extra column
-                                    if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
-                                        $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
-                                        if (in_array($extraKey, ['tiles_condition', 'measure_application_id'])) {
-                                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
-
-                                            if (!empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
-                                                $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
-                                                $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
-                                            }
-                                            // The measure application id, in this case. can be 0, this means the option: "niet" has been chosen the option is not saved as a measure application
-                                            if ('measure_application_id' == $extraKey) {
-                                                $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
-                                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : __('roof-insulation.measure-application.no.title');
-                                            }
-                                        } else {
-                                            // literal
-                                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
-                                        }
-                                    } else {
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->$column ?? '';
-                                    }
-                                    break;
-                            }
-                        } else {
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                        }
-                        break;
-
-                    // handle the user_interest table and its columns.
-                    case 'considerables':
-                        $considerableModel = $tableWithColumnOrAndId[3];
-                        $considerableId = $tableWithColumnOrAndId[4];
-
-                        // returns a bool, the values are keyed by 0 and 1
-                        $considerable = $considerableModel::find($considerableId);
-                        $considers = $user->considers($considerable, $inputSource);
-
-                        $row[$buildingId][$tableWithColumnOrAndIdKey] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
-                        break;
-
-                    // handle the element table.
-                    case 'element':
-                        $elementOrServiceId = $columnOrId;
-
-                        /** @var BuildingElement $element */
-                        $buildingElement = $building->buildingElements
-                            ->where('element_id', $elementOrServiceId)
-                            ->first();
-
-                        if ($buildingElement instanceof BuildingElement) {
-                            // check if we need to get data from the extra column
-                            if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
-                                $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
-
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = is_array($buildingElement->extra) ? self::translateExtraValueIfNeeded($buildingElement->extra[$extraKey]) ?? '' : '';
-                            } else {
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingElement->elementValue->value ?? '';
-                            }
-                        } else {
-                            // always set defaults
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                        }
-                        break;
-
-                    // handle the service table.
-                    case 'service':
-                        $elementOrServiceId = $columnOrId;
-
-                        $buildingService = $building->buildingServices
-                            ->where('service_id', $elementOrServiceId)
-                            ->first();
-
-                        if ($buildingService instanceof BuildingService) {
-                            // check if we need to get data from the extra column
-                            if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
-                                $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
-                                $extraIsArray = is_array($buildingService->extra);
-
-                                // if is array, try to get the answer from the extra column, does the key not exist set a default value.
-                                $answer = $extraIsArray ? optional($buildingService->extra)[$extraKey] : null;
-
-                                // when the answer is a bool / true its checked, so instead of showing true we show ja.
-                                // total sun panels is stored in same column, but need to be treated as a number
-                                if ('true' == $answer && 'total-sun-panels' !== $buildingService->service->short) {
-                                    $answer = 'Ja';
-                                } elseif ('total-sun-panels' !== $buildingService->service->short && 'false' == $answer) {
-                                    $answer = 'Nee';
-                                }
-
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
-                            } else {
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingService->serviceValue->value ?? '';
-                            }
-                        } else {
-                            // always set defaults
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                        }
-                        break;
-
-                    // handle the building_insulated_glazing table and its columns.
-                    case 'building_insulated_glazings':
-                        $measureApplicationId = $columnOrId;
-                        $column = $tableWithColumnOrAndId[4];
-
-                        /** @var BuildingInsulatedGlazing $buildingInsulatedGlazing */
-                        $buildingInsulatedGlazing = $building->currentInsulatedGlazing
-                            ->where('measure_application_id', $measureApplicationId)
-                            ->first();
-
-                        if ($buildingInsulatedGlazing instanceof BuildingInsulatedGlazing) {
-                            switch ($column) {
-                                case 'insulating_glazing_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->insulatedGlazing->name ?? '';
-                                    break;
-                                case 'building_heating_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->buildingHeating->name ?? '';
-                                    break;
-                                default:
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->$column ?? '';
-                                    break;
-                            }
-                        } else {
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                        }
-                        break;
-
-                    // handle the building_pv_panels table and its column
-                    case 'building_pv_panels':
-                        $column = $columnOrId;
-
-                        /** @var BuildingPvPanel $buildingPvPanel */
-                        $buildingPvPanel = $building->pvPanels;
-
-                        if ($buildingPvPanel instanceof BuildingPvPanel) {
-                            switch ($column) {
-                                case 'pv_panel_orientation_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingPvPanel->orientation->name ?? '';
-                                    break;
-                                default:
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingPvPanel->$column ?? '';
-                                    break;
-                            }
-                        } else {
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                        }
-                        break;
-
-                    // handle the building_heaters table and its column
-                    case 'building_heaters':
-                        $column = $columnOrId;
-
-                        /** @var buildingHeater $buildingHeater */
-                        $buildingHeater = $building->heater;
-
-                        if ($buildingHeater instanceof BuildingHeater) {
-                            switch ($column) {
-                                case 'pv_panel_orientation_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingHeater->orientation->name ?? '';
-                                    break;
-                                default:
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingHeater->$column ?? '';
-                                    break;
-                            }
-                        } else {
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                        }
-                        break;
-
-                    case 'tool_question_answers':
-                        $column = $columnOrId;
-                        switch ($column) {
-                            case 'cook-type':
-                                $cookType = $building->getAnswer($inputSource, ToolQuestion::findByShort('cook-type'));
-                                $answer = __('woningdossier.cooperation.radiobutton.no');
-                                if ($cookType == "gas") {
-                                    $answer = __('woningdossier.cooperation.radiobutton.yes');
-                                }
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer ?? '';
-                                break;
-                            default:
-                                $answer = "";
-                                $answers = $building->getAnswer($inputSource, ToolQuestion::findByShort($column));
-
-                                // this will allow us to translates the answers
-                                // only when its a array, it will be null when no answer is given.
-                                if (is_array($answers)) {
-                                    $answer = ToolQuestionCustomValue::whereIn('short', $answers)
-                                            ->get()
-                                            ->pluck('name')
-                                            ->implode(', ') ?? '';
-                                }
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
-
-                                break;
-                        }
-                        break;
-
-                    // handle the user_energy_habits table and its column
-                    case 'user_energy_habits':
-                        $column = $columnOrId;
-
-                        /** @var UserEnergyHabit $userEnergyHabit */
-                        $userEnergyHabit = $user->energyHabit;
-
-                        if ($userEnergyHabit instanceof UserEnergyHabit) {
-                            switch ($column) {
-                                case 'renovation_plans':
-                                    $renovationPlanAnswerOptions = [
-                                        1 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-2-year'),
-                                        2 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-5-year'),
-                                        0 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.none'),
-                                    ];
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $renovationPlanAnswerOptions[$userEnergyHabit->renovation_plans] ?? null;
-                                    break;
-                                case 'water_comfort_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($userEnergyHabit->comfortLevelTapWater)->name;
-                                    break;
-                                case 'heating_first_floor':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($userEnergyHabit->heatingFirstFloor)->name;
-                                    break;
-                                case 'heating_second_floor':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($userEnergyHabit->heatingSecondFloor)->name ?? '';
-                                    break;
-                                default:
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->$column ?? '';
-                                    break;
-                            }
-                        } else {
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                        }
-                        break;
-
-                    // handle the building_paintwork_statuses table and its column
-                    case 'building_paintwork_statuses':
-                        $column = $columnOrId;
-
-                        /** @var BuildingPaintworkStatus $buildingPaintworkStatus */
-                        $buildingPaintworkStatus = $building->currentPaintworkStatus;
-
-                        if ($buildingPaintworkStatus instanceof BuildingPaintworkStatus) {
-                            switch ($column) {
-                                case 'paintwork_status_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingPaintworkStatus->paintworkStatus->name ?? '';
-                                    break;
-                                case 'wood_rot_status_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingPaintworkStatus->woodRotStatus->name ?? '';
-                                    break;
-                                default:
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingPaintworkStatus->$column ?? '';
-                                    break;
-                            }
-                        } else {
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                        }
-                        break;
-                }
-            }
-        }
-
-        $rows['user-data'] = $row[$buildingId];
-        $rows['calculations'] = $calculateData;
-
-        return $rows;
-    }
-
-    /**
-     * Return the calculate data for each step, for a user, with its given inputsource.
-     */
-    public static function getCalculateData(User $user, InputSource $inputSource): array
-    {
-        // TODO: LEGACY
-        // collect some info about their building
-        $building = $user->building;
-
-        $userEnergyHabit = $user->energyHabit;
-
-        $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
-            (new WallInsulationHelper($user, $inputSource))
-                ->createValues()
-                ->getValues()
-        );
-
-        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
-            (new InsulatedGlazingHelper($user, $inputSource))
-                ->createValues()
-                ->getValues());
-
-        $floorInsulationSavings = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit,
-            (new FloorInsulationHelper($user, $inputSource))
-                ->createValues()
-                ->getValues()
-        );
-
-        $roofInsulationSavings = RoofInsulation::calculate(
-            $building,
-            $inputSource,
-            $userEnergyHabit,
-            (new RoofInsulationHelper($user, $inputSource))
-                ->createValues()
-                ->getValues()
-        );
-
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource);
-
-        $solarPanelSavings = SolarPanel::calculate(
-            $building,
-            (new SolarPanelHelper($user, $inputSource))
-                ->createValues()
-                ->getValues()
-        );
-
-        $heaterSavings = Heater::calculate($building, $inputSource);
-
-        $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
-            (new VentilationHelper($user, $inputSource))
-                ->createValues()
-                ->getValues()
-        );
-
-        return [
-            'ventilation' => [
-                // for now, in the future this may change and multiple results can be returned
-                '-' => $ventilationSavings['result']['crack_sealing'],
-            ],
-            'wall-insulation' => [
-                '-' => $wallInsulationSavings,
-            ],
-            'insulated-glazing' => [
-                '-' => $insulatedGlazingSavings,
-            ],
-            'floor-insulation' => [
-                '-' => $floorInsulationSavings,
-            ],
-            'roof-insulation' => [
-                '-' => $roofInsulationSavings,
-            ],
-            'high-efficiency-boiler' => [
-                '-' => $highEfficiencyBoilerSavings,
-            ],
-            'solar-panels' => [
-                '-' => $solarPanelSavings,
-            ],
-            'heater' => [
-                '-' => $heaterSavings,
-            ],
-        ];
-    }
-
-    protected static function formatFieldOutput($column, $value, $maybe1, $maybe2)
-    {
-        //dump("formatFieldOutput (" . $column . ", " . $value . ", " . $maybe1 . ", " . $maybe2 . ")");
-        $decimals = 0;
-        $shouldRound = false;
-
-        if (self::isYear($column) || self::isYear($maybe1, $maybe2)) {
-            return $value;
-        }
-
-        if (!is_numeric($value)) {
-            return $value;
-        }
-
-        if (in_array($column, ['interest_comparable'])) {
-            $decimals = 1;
-        }
-        if ('specs' == $column && 'size_collector' == $maybe1) {
-            $decimals = 1;
-        }
-        if ('paintwork' == $column && 'costs' == $maybe1) {
-            /// round the cost for paintwork
-            $shouldRound = true;
-        }
-        if (in_array($column, ['percentage_consumption']) || Str::contains($column, 'savings_') ||
-            Str::contains($column, 'cost')) {
-            $shouldRound = true;
-        }
-
-        return self::formatOutput($column, $value, $decimals, $shouldRound);
+        return $this->formatOutput($key, $value, $decimals, $shouldRound);
     }
 
     /**
@@ -1149,9 +445,9 @@ class DumpService
      * @param int $decimals
      * @param bool $shouldRound
      *
-     * @return float|int|string
+     * @return string
      */
-    protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false)
+    protected function formatOutput(string $column, $value, int $decimals = 0, bool $shouldRound = false): string
     {
         if ($shouldRound) {
             $value = NumberFormatter::round($value);
@@ -1162,37 +458,87 @@ class DumpService
         //return NumberFormatter::format($value, $decimals, $shouldRound);
     }
 
-    protected static function translateExtraValueIfNeeded($value)
+    protected function prepareHeaderStructure(): array
     {
-        if (in_array($value, ['yes', 'no', 'unknown'])) {
-            $key = 'general.options.%s.title';
+        $models = [];
+        $modelIds = [];
 
-            return Translation::translate(sprintf($key, $value));
+        // Retrieve all models first
+        foreach ($this->headerStructure as $key => $translation) {
+            if (is_string(($key))) {
+                // Structure is as follows:
+                // 0: step shorts
+                // 1: steppable short / calculation ref
+                // n: potential calculation field
+                $structure = explode('.', $key);
+
+                $step = $structure[0];
+                $potentialShort = $structure[1];
+                if (Str::startsWith($potentialShort, 'question_')) {
+                    $models[$key] = ToolQuestion::findByShort(Str::replaceFirst('question_', '', $potentialShort));
+                } elseif (Str::startsWith($potentialShort, 'calculation_')) {
+                    // The structure is built using the step as main short part for the calculation. We don't know how
+                    // deeply nested the rest is, so we simply implode everything as that is also how its served.
+                    $columnNest = implode('.', array_slice($structure, 2));
+
+                    // We remove the calculation string, and append the column nest. Now we have the full short, which
+                    // we can use to retrieve the model as well as to fetch from the array.
+                    $column = Str::replaceFirst('calculation_', '', $potentialShort)
+                        . (empty($columnNest) ? '' : ".{$columnNest}");
+
+                    $models[$key] = ToolCalculationResult::findByShort($column);
+                } elseif (Str::startsWith($potentialShort, 'label_')) {
+                    $models[$key] = ToolLabel::findByShort(Str::replaceFirst('label_', '', $potentialShort));
+                }
+                $modelIds[] = $models[$key]->id;
+            }
         }
+
+        // Retrieve all conditions next
+        $subSteppables = SubSteppable::whereIn('sub_steppable_type', [ToolQuestion::class, ToolCalculationResult::class])
+            ->whereIn('sub_steppable_id', $modelIds)
+            ->whereNotNull('sub_steppables.conditions')
+            ->where('sub_steppables.conditions', '!=', DB::raw("cast('[]' as json)"))
+            ->with([
+                'subStep' => fn ($q) => $q->whereNotNull('sub_steps.conditions')
+                    ->where('sub_steps.conditions', '!=', DB::raw("cast('[]' as json)"))
+            ])
+            ->get();
+
+        // First fetch all conditions, so we can retrieve any required related answers in one go
+        $conditions = $subSteppables->pluck('conditions')
+            ->merge($subSteppables->pluck('subStep.*.conditions'))
+            ->filter()
+            ->flatten(1)
+            ->all();
+
+        $answers = ConditionEvaluator::init()
+            ->inputSource($this->inputSource)
+            ->building($this->building)
+            ->getToolAnswersForConditions($conditions);
+
+        // Don't use compact here, as we want to assign the return value to separate variables, and that only works
+        // by using a basic index.
+        return [$models, $answers];
     }
 
-    /**
-     * Returns whether or not two (optional!) columns contain a year or not.
-     *
-     * @param  string  $column
-     * @param  string  $extraValue
-     *
-     * @return bool
-     */
-    protected static function isYear($column, $extraValue = ''): bool
+    private function withUnits(): bool
     {
-        // TODO: extraValue can be made redundant in the future
-        if (! is_null($column)) {
-            if (Str::contains($column, 'year')) {
-                return true;
-            }
-            if ('extra' == $column) {
-                return in_array($extraValue, [
-                    'year',
-                ]);
-            }
-        }
+        return $this->mode === self::MODE_PDF;
+    }
 
-        return false;
+    private function defaultEmptyAnswer(): bool
+    {
+        return $this->mode === self::MODE_PDF;
+    }
+
+    private function formatArrays(): bool
+    {
+        return $this->mode === self::MODE_CSV;
+    }
+
+    private function removeUnconditionals(): bool
+    {
+        return $this->mode === self::MODE_PDF;
     }
 }

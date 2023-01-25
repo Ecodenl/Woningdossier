@@ -25,6 +25,7 @@ class MeasureApplicationController extends Controller
     public function update(MeasureApplicationFormRequest $request, Cooperation $cooperation, MeasureApplication $measureApplication)
     {
         $measureApplicationData = $request->validated()['measure_applications'];
+
         // Merge, comfort cannot currently be set by users, but we don't want to override it.
         $measureApplicationData['configurations'] = array_merge($measureApplication->configurations, $measureApplicationData['configurations']);
 

@@ -3,15 +3,18 @@
 namespace App\Models;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
 use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
+use App\Services\UserActionPlanAdviceService;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Collection;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -43,12 +46,14 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read Model|\Eloquent $userActionPlanAdvisable
  * @method static Builder|UserActionPlanAdvice allInputSources()
  * @method static Builder|UserActionPlanAdvice category(string $category)
+ * @method static Builder|UserActionPlanAdvice cooperationMeasureForType(string $type, \App\Models\InputSource $inputSource)
  * @method static Builder|UserActionPlanAdvice forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
  * @method static Builder|UserActionPlanAdvice forBuilding($building)
  * @method static Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder|UserActionPlanAdvice forMe(?\App\Models\User $user = null)
  * @method static Builder|UserActionPlanAdvice forStep(\App\Models\Step $step)
  * @method static Builder|UserActionPlanAdvice forUser($user)
+ * @method static Builder|UserActionPlanAdvice getCategorized()
  * @method static Builder|UserActionPlanAdvice invisible()
  * @method static Builder|UserActionPlanAdvice newModelQuery()
  * @method static Builder|UserActionPlanAdvice newQuery()
@@ -109,22 +114,59 @@ class UserActionPlanAdvice extends Model implements Auditable
         static::addGlobalScope(new VisibleScope());
     }
 
+    # Scopes
+    public function scopeGetCategorized(Builder $query): Collection
+    {
+        $categories = array_values(UserActionPlanAdviceService::getCategories());
+        return $query->get()->groupBy('category')->sortKeysUsing(function ($a, $b) use ($categories) {
+            // https://stackoverflow.com/questions/3737139/reference-what-does-this-symbol-mean-in-php/31298778#31298778
+            return array_search($a, $categories) <=> array_search($b, $categories);
+        });
+    }
+
     /**
      * Method to scope the advices without its deleted cooperation measure applications
      *
-     * @param Builder $query
-     * @return Builder
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \App\Models\InputSource $inputSource
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithoutDeletedCooperationMeasureApplications(Builder $query, InputSource $inputSource): Builder
     {
         // this works because it boots the cooperation measure application model, which has the soft deletes trait
-        return $query->whereHasMorph('userActionPlanAdvisable', [
-            CooperationMeasureApplication::class,
-            MeasureApplication::class,
-            CustomMeasureApplication::class,
-        ],
+        return $query->whereHasMorph(
+            'userActionPlanAdvisable',
+            '*',
             // cant use scopes.
             fn (Builder $q) => $q->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)
+        );
+    }
+
+    /**
+     * Method to scope the advices without its deleted cooperation measure applications and for given type.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $type
+     * @param \App\Models\InputSource $inputSource
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCooperationMeasureForType(Builder $query, string $type, InputSource $inputSource)
+    {
+        $isExtensive = $type === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
+
+        return $query->whereHasMorph(
+            'userActionPlanAdvisable',
+            '*',
+            function (Builder $query, $type) use ($isExtensive, $inputSource) {
+                // We have to do this, else the results are incorrect.
+                // This means that you won't need to call above scope if you're also calling this one.
+                $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id);
+                if ($type === CooperationMeasureApplication::class) {
+                    $query->where('is_extensive_measure', $isExtensive);
+                }
+            }
         );
     }
 
@@ -162,6 +204,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $query->where('step_id', $step->id);
     }
 
+    # Relations
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -182,6 +225,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $query->where('category', $category);
     }
 
+    # Unsorted
     /**
      * Check if the costs are a valid range.
      *

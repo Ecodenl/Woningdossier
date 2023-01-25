@@ -2,15 +2,15 @@
 
 namespace App\Providers;
 
-use App\Http\ViewComposers\AdminComposer;
-use App\Http\ViewComposers\CooperationComposer;
-use App\Http\ViewComposers\ToolComposer;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
+use App\Models\CooperationMeasureApplication;
+use App\Models\CustomMeasureApplication;
+use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
 use App\Models\Translation;
@@ -21,6 +21,10 @@ use App\Observers\BuildingFeatureObserver;
 use App\Observers\BuildingElementObserver;
 use App\Observers\BuildingObserver;
 use App\Observers\CompletedSubStepObserver;
+use App\Observers\CooperationMeasureApplicationObserver;
+use App\Observers\CooperationObserver;
+use App\Observers\CustomMeasureApplicationObserver;
+use App\Observers\MeasureApplicationObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
 use App\Observers\ToolQuestionAnswerObserver;
@@ -30,7 +34,6 @@ use App\Observers\UserObserver;
 use App\Models\ToolQuestionAnswer;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
 
@@ -43,6 +46,7 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Cooperation::observe(CooperationObserver::class);
         PrivateMessage::observe(PrivateMessageObserver::class);
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
         PrivateMessageView::observe(PrivateMessageViewObserver::class);
@@ -54,13 +58,10 @@ class WoningdossierServiceProvider extends ServiceProvider
         Translation::observe(TranslationObserver::class);
         CompletedSubStep::observe(CompletedSubStepObserver::class);
         ToolQuestionAnswer::observe(ToolQuestionAnswerObserver::class);
+        MeasureApplication::observe(MeasureApplicationObserver::class);
+        CustomMeasureApplication::observe(CustomMeasureApplicationObserver::class);
+        CooperationMeasureApplication::observe(CooperationMeasureApplicationObserver::class);
 
-
-        View::creator('cooperation.tool.*', ToolComposer::class);
-        View::creator('cooperation.frontend.tool.expert-scan.index', ToolComposer::class);
-
-        View::creator('*', CooperationComposer::class);
-        View::creator('cooperation.admin.*', AdminComposer::class);
         //View::creator('cooperation.my-account.*', MyAccountComposer::class);
 
         SessionGuard::macro('account', function () {
@@ -82,9 +83,6 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(ToolComposer::class);
-        $this->app->singleton(CooperationComposer::class);
-
         $this->app->bind('Cooperation', function () {
             $cooperation = null;
             if (Session::has('cooperation')) {

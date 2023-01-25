@@ -135,4 +135,19 @@ class StoreRegisterRequest
      * @var array
      */
     public $tool_questions;
+
+    /**
+     * @OA\Property(
+     *     property="roles",
+     *     type="array",
+     *     example={"resident", "coach"},
+     *     @OA\Items(
+     *       type="string"
+     *     )
+     * )
+     */
+
+    public $roles;
+
+
 }

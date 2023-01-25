@@ -11,11 +11,20 @@
                 @endif
                 {!! __('home.start.description') !!}
 
-                <a class="btn btn-purple w-full xl:w-1/4 flex items-center justify-center mt-5"
-                    href="{{$url}}">
-                    @lang('default.start')
-                    <i class="icon-sm icon-arrow-right-circle ml-5"></i>
-                </a>
+
+                <div class="flex justify-between space-x-2">
+                    @foreach($scans as $scan)
+                        @php
+                            $transShort = \App\Services\Models\ScanService::init()
+                                ->scan($scan)->building($building)->hasMadeScanProgress()
+                                ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                        @endphp
+                        <a class="btn btn-purple"
+                           href="{{\App\Services\Scans\ScanFlowService::init($scan, $building, $inputSource)->resolveInitialUrl()}}">
+                            @lang($transShort, ['scan' => $scan->name])
+                        </a>
+                    @endforeach
+                </div>
             </div>
             <div class="text-center w-1/2 relative bg-center bg-no-repeat bg-cover"
                  style="background-image: url('{{ asset('images/family.png') }}')">

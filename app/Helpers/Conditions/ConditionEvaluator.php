@@ -20,6 +20,7 @@ class ConditionEvaluator
     protected InputSource $inputSource;
     protected bool $explain = false;
 
+    public ?Collection $answers = null;
     protected array $customResults = [];
 
     /**
@@ -30,7 +31,6 @@ class ConditionEvaluator
     public function building(Building $building): self
     {
         $this->building = $building;
-
         return $this;
     }
 
@@ -42,14 +42,18 @@ class ConditionEvaluator
     public function inputSource(InputSource $inputSource): self
     {
         $this->inputSource = $inputSource;
-
         return $this;
     }
 
     public function explain(): self
     {
         $this->explain = true;
+        return $this;
+    }
 
+    public function setAnswers(Collection $answers): self
+    {
+        $this->answers = $answers;
         return $this;
     }
 
@@ -58,11 +62,21 @@ class ConditionEvaluator
         $answers = $answers instanceof Collection ? $answers : collect();
         $ignore = $answers->keys()->all();
 
-        // Get answers for condition columns, but ensure we don't fetch PASS clause columns (as they don't have
-        // any answers so they don't need checking, and they could be arrays which would cause issues), and also
-        // don't fetch special evaluators, as they don't have answers either.
+        // Pass clauses reference other models with conditions, so we need to resolve them.
+        $passClauses = $this->fetchPassClauses($conditions);
+
+        $clauseConditions = [];
+        foreach ($passClauses as $clause) {
+            $clauseConditions[] = $this->fetchPassConditions($clause['column'], $clause['value'], true);
+        }
+
+        // Get answers for condition columns, but ensure we don't fetch special evaluators, as they don't have
+        // answers. We will merge the earlier fetched pass clause keys. Due to the fact we have AND constructs
+        // that contain separate OR clauses, we need to flatten twice, both for single and double level.
         $questionKeys = collect(Arr::flatten($conditions, 2))
             ->merge(collect(Arr::flatten($conditions, 1)))
+            ->merge(collect(Arr::flatten($clauseConditions, 2)))
+            ->merge(collect(Arr::flatten($clauseConditions, 1)))
             ->whereNotIn('operator', [Clause::PASSES, Clause::NOT_PASSES])
             ->where('column', '!=', 'fn')
             ->whereNotIn('column', $ignore)
@@ -117,11 +131,19 @@ class ConditionEvaluator
 
     public function evaluate(array $conditions): bool
     {
-        $answers = $this->getToolAnswersForConditions($conditions);
+        // Set answers if needed.
+        if (is_null($this->answers)) {
+            $this->setAnswers($this->getToolAnswersForConditions($conditions));
+        }
 
-        return $this->evaluateCollection($conditions, $answers);
+        return $this->evaluateCollection($conditions, $this->answers);
     }
 
+    /**
+     * @deprecated Use setAnswers instead + evaluate!
+     * Deprecated label to make more distinct that it needs to be updated.
+     * The $collection parameter should be replaced with $this->answers also.
+     */
     public function evaluateCollection(array $conditions, Collection $collection)
     {
         $result = false;
@@ -201,16 +223,23 @@ class ConditionEvaluator
 
         // Else check if we should do sub-evaluation
         if ($operator === Clause::PASSES || $operator === Clause::NOT_PASSES) {
-            $column = is_array($column) ? $column : ['short' => $column];
-            $model = (new $value)->newQuery()->where($column)->first();
+            $conditions = $this->fetchPassConditions($column, $value);
 
-            // Ensure we pass potential dynamic answers through
-            $conditions = $model->conditions ?? [];
-            $answersForNewConditions = $this->getToolAnswersForConditions($conditions, $collection);
+            if (! empty($conditions)) {
+                $answersForNewConditions = $this->getToolAnswersForConditions($conditions, $collection);
+                $answers = $this->answers instanceof Collection ? $this->answers : collect();
 
-            // Return result based on whether it should or should not pass
-            $result = $this->evaluateCollection($conditions, $answersForNewConditions);
-            return $operator === Clause::PASSES ? $result : ! $result;
+                $this->setAnswers(
+                    $answers->merge($answersForNewConditions)
+                );
+
+                // Return result based on whether it should or should not pass
+                $result = $this->evaluate($conditions);
+                return $operator === Clause::PASSES ? $result : ! $result;
+            }
+
+            // Empty conditions are always true
+            return true;
         }
 
         // Else fall through to other clauses
@@ -271,5 +300,32 @@ class ConditionEvaluator
         $this->customResults[$operator][$evaluation['key']] = $evaluation['results'];
 
         return $evaluation['bool'];
+    }
+
+    protected function fetchPassConditions($column, $value, bool $recursive = false): array
+    {
+        $column = is_array($column) ? $column : ['short' => $column];
+        $model = (new $value)->newQuery()->where($column)->first();
+
+        $conditions = $model->conditions ?? [];
+
+        // If we are recursive, we want to continue the same cycle, as the retrieved conditions might also reference
+        // other conditions.
+        if ($recursive) {
+            $passClauses = $this->fetchPassClauses($conditions);
+
+            foreach ($passClauses as $clause) {
+                $conditions = array_merge($conditions, $this->fetchPassConditions($clause['column'], $clause['value'], true));
+            }
+        }
+
+        return $conditions;
+    }
+
+    protected function fetchPassClauses(array $conditions): Collection
+    {
+        return collect(Arr::flatten($conditions, 2))
+            ->merge(collect(Arr::flatten($conditions, 1)))
+            ->whereIn('operator', [Clause::PASSES, Clause::NOT_PASSES]);
     }
 }

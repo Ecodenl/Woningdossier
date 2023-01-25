@@ -173,7 +173,6 @@ return [
         /*
          * Package Service Providers...
          */
-        Barryvdh\DomPDF\ServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
 
         /*
@@ -209,6 +208,8 @@ return [
 //        'NumberFormatter' => \App\Helpers\NumberFormatter::class, // We cannot alias NumberFormatter due to the native PHP class (https://www.php.net/manual/en/class.numberformatter.php)
         'Hoomdossier' => \App\Helpers\Hoomdossier::class,
         'CooperationSettingHelper' => \App\Helpers\Models\CooperationSettingHelper::class,
+        'Kengetallen' => \App\Helpers\Kengetallen::class,
+        'Caster' => \App\Helpers\DataTypes\Caster::class,
 
         // Default
         'App' => Illuminate\Support\Facades\App::class,

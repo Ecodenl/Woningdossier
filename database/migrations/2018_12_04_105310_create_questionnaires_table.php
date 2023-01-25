@@ -18,9 +18,6 @@ class CreateQuestionnairesTable extends Migration
 
             $table->json('name');
 
-            $table->integer('step_id')->unsigned()->nullable();
-            $table->foreign('step_id')->references('id')->on('steps')->onDelete('set null');
-
             $table->integer('cooperation_id')->unsigned();
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
 

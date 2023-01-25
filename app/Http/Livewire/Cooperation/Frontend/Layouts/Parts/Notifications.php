@@ -3,16 +3,18 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Layouts\Parts;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\Models\NotificationService;
 use Livewire\Component;
 
 class Notifications extends Component
 {
-    public $masterInputSource;
-    public $building;
-    public $nextUrl;
-    public $types;
+    public InputSource $masterInputSource;
+    public Building $building;
+    public string $nextUrl;
+    public array $types;
+    public bool $hasRedirected = false;
 
     public function mount($nextUrl, $types)
     {
@@ -24,7 +26,9 @@ class Notifications extends Component
 
     public function render()
     {
-        $this->checkNotification();
+        if (! $this->hasRedirected) {
+            $this->checkNotification();
+        }
 
         return view('livewire.cooperation.frontend.layouts.parts.notifications');
     }
@@ -45,6 +49,7 @@ class Notifications extends Component
         }
 
         if (! $activeNotification) {
+            $this->hasRedirected = true;
             return redirect()->to($this->nextUrl);
         }
     }

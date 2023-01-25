@@ -2,18 +2,25 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
+use App\Helpers\Arr;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\QuestionnaireRequest;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\Questionnaire;
+use App\Models\QuestionnaireStep;
 use App\Models\QuestionOption;
+use App\Models\Scan;
 use App\Models\Step;
 use App\Services\QuestionnaireService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class QuestionnaireController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function index()
     {
         $questionnaires = Questionnaire::all();
@@ -21,53 +28,110 @@ class QuestionnaireController extends Controller
         return view('cooperation.admin.cooperation.questionnaires.index', compact('questionnaires'));
     }
 
-    public function destroy(Cooperation $cooperation, Questionnaire $questionnaire)
-    {
-        $questionnaire->delete();
-
-        return response(200);
-    }
-
-    public function edit(Cooperation $cooperation, Questionnaire $questionnaire)
-    {
-        $this->authorize('update', $questionnaire);
-
-        $expertSteps = Step::withoutChildren()->expert()->orderBy('order')->get();
-        $quickScanSteps = Step::withoutChildren()->quickScan()->orderBy('order')->get();
-
-        return view('cooperation.admin.cooperation.questionnaires.questionnaire-editor', compact('questionnaire', 'expertSteps', 'quickScanSteps'));
-    }
-
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function create()
     {
         $this->authorize('create', Questionnaire::class);
 
-        $expertSteps = Step::withoutChildren()->expert()->orderBy('order')->get();
-        $quickScanSteps = Step::withoutChildren()->quickScan()->orderBy('order')->get();
+        $scans = Scan::with(['steps' => function ($query) {
+            $query->whereNotIn('short', ['high-efficiency-boiler', 'heat-pump', 'heater']);
+        }])->get();
 
-        return view('cooperation.admin.cooperation.questionnaires.create', compact('expertSteps', 'quickScanSteps'));
+        return view('cooperation.admin.cooperation.questionnaires.create', compact('scans'));
+    }
+
+    /**
+     * Store a questionnaire, after this the user will get redirected to the edit page and he can add questions to the questionnaire.
+     *
+     * @param \App\Models\Cooperation $cooperation
+     * @param \App\Http\Requests\Cooperation\Admin\Cooperation\QuestionnaireRequest $request
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function store(Cooperation $cooperation, QuestionnaireRequest $request): RedirectResponse
+    {
+        $this->authorize('create', Questionnaire::class);
+
+        $questionnaireData = $request->validated()['questionnaires'];
+
+        $questionnaire = Questionnaire::create([
+            'name' => $questionnaireData['name'],
+            'cooperation_id' => $cooperation->id,
+            'is_active' => false,
+        ]);
+
+        $steps = Step::findMany($questionnaireData['steps']);
+
+        $stepIds = [];
+        foreach ($steps as $step) {
+            $orderForStep = QuestionnaireStep::whereHas('questionnaire', fn ($q) => $q->where('cooperation_id', $cooperation->id))
+                ->where('step_id', $step->id)->max('order') ?? -1;
+
+            $stepIds[$step->id] = ['order' => ++$orderForStep];
+        }
+        $questionnaire->steps()->attach($stepIds);
+
+        return redirect()->route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire'));
+    }
+
+    /**
+     * @param \App\Models\Cooperation $cooperation
+     * @param \App\Models\Questionnaire $questionnaire
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function edit(Cooperation $cooperation, Questionnaire $questionnaire)
+    {
+        $this->authorize('update', $questionnaire);
+
+        $scans = Scan::with(['steps' => function ($query) {
+            $query->whereNotIn('short', ['high-efficiency-boiler', 'heat-pump', 'heater']);
+        }])->get();
+
+        return view('cooperation.admin.cooperation.questionnaires.questionnaire-editor', compact('questionnaire', 'scans'));
     }
 
     /**
      * Update the questionnaire and questions
-     * if there are new questions create those toes.
+     * if there are new questions create those too.
      *
-     * @param Request $request
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @param \App\Http\Requests\Cooperation\Admin\Cooperation\QuestionnaireRequest $request
+     * @param \App\Models\Cooperation $cooperation
+     * @param \App\Models\Questionnaire $questionnaire
      *
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(QuestionnaireRequest $request, Cooperation $cooperation, Questionnaire $questionnaire)
+    public function update(QuestionnaireRequest $request, Cooperation $cooperation, Questionnaire $questionnaire): RedirectResponse
     {
         $this->authorize('update', $questionnaire);
 
-        // TODO: Make form name plural, like the table name
-        $questionnaireData = $request->validated()['questionnaire'];
-        $questionnaire->update($questionnaireData);
+        $data = $request->validated();
+        $questionnaireData = $data['questionnaires'];
+        $questionnaire->update(Arr::only($questionnaireData, 'name'));
+
+        $steps = Step::findMany($questionnaireData['steps']);
+
+        // Detach first to not weird out the order
+        // TODO: Maybe we want to fix questionnaire_step order?
+        $questionnaire->steps()->detach();
+
+        $stepIds = [];
+        foreach ($steps as $step) {
+            $orderForStep = QuestionnaireStep::whereHas('questionnaire', fn ($q) => $q->where('cooperation_id', $cooperation->id))
+                    ->where('step_id', $step->id)->max('order') ?? -1;
+
+            $stepIds[$step->id] = ['order' => ++$orderForStep];
+        }
+        $questionnaire->steps()->attach($stepIds);
 
         // get the data for the questionnaire
-        $validation = $request->get('validation', []);
+        $validation = $data['validation'] ?? [];
         $order = 0;
 
         if ($request->has('questions')) {
@@ -78,44 +142,32 @@ class QuestionnaireController extends Controller
         }
 
         return redirect()
-            ->route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire'))
+            ->route('cooperation.admin.cooperation.questionnaires.index')
             ->with('success', __('woningdossier.cooperation.admin.cooperation.questionnaires.edit.success'));
     }
 
     /**
-     * Store a questionnaire, after this the user will get redirected to the edit page and he can add questions to the questionnaire.
+     * @param \App\Models\Cooperation $cooperation
+     * @param \App\Models\Questionnaire $questionnaire
      *
-     * @param Request $request
-     *
-     * @throws \Exception
-     *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function store(Cooperation $cooperation, QuestionnaireRequest $request)
+    public function destroy(Cooperation $cooperation, Questionnaire $questionnaire)
     {
-        $this->authorize('create', Questionnaire::class);
+        // TODO: Maybe we want to fix questionnaire_step order?
+        $questionnaire->delete();
 
-        // TODO: Make form name plural, like the table name
-        $questionnaireData = $request->validated()['questionnaire'];
-
-        $nameTranslations = $questionnaireData['name'];
-        $stepId = $questionnaireData['step_id'];
-
-        $step = Step::find($stepId);
-
-        QuestionnaireService::createQuestionnaire($cooperation, $step, $nameTranslations);
-
-        return redirect()->route('cooperation.admin.cooperation.questionnaires.index');
+        return response(200);
     }
 
     /**
      * Detele a question (softdelete).
      *
-     * @param Request $request
+     * @param \App\Models\Cooperation $cooperation
+     * @param $questionId
      *
-     * @throws \Exception
-     *
-     * @return int
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function deleteQuestion(Cooperation $cooperation, $questionId)
     {
@@ -130,18 +182,18 @@ class QuestionnaireController extends Controller
             $question->delete();
         }
 
-        return 202;
+        return response(202);
     }
 
     /**
      * Delete a question option.
      *
+     * @param \App\Models\Cooperation $cooperation
      * @param $questionId
      * @param $questionOptionId
      *
-     * @throws \Exception
-     *
-     * @return int
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function deleteQuestionOption(Cooperation $cooperation, $questionId, $questionOptionId)
     {
@@ -159,28 +211,7 @@ class QuestionnaireController extends Controller
             }
         }
 
-        return 202;
-    }
-
-    /**
-     * Check if the translations from the request are empty.
-     *
-     * @param $translations
-     */
-    protected function isEmptyTranslation(array $translations): bool
-    {
-        foreach ($translations as $locale => $translation) {
-            if (! is_null($translation)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    protected function isNotEmptyTranslation(array $translations): bool
-    {
-        return ! $this->isEmptyTranslation($translations);
+        return response(202);
     }
 
     /**

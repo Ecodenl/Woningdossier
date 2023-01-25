@@ -18,6 +18,7 @@ class StepsTableSeeder extends Seeder
 
         $expertScan = DB::table('scans')->where('short', 'expert-scan')->first();
         $quickScan = DB::table('scans')->where('short', 'quick-scan')->first();
+        $liteScan = DB::table('scans')->where('short', 'lite-scan')->first();
 
         $steps = [
             [
@@ -205,6 +206,67 @@ class StepsTableSeeder extends Seeder
                     'nl' => 'Woningstatus',
                 ],
                 'order' => 3,
+            ],
+            [
+                'slug' => 'kleine-maatregelen',
+                'short' => 'small-measures',
+                'scan_id' => $quickScan->id,
+                'name' => [
+                    'en' => 'Small measures and behaviour',
+                    'nl' => 'Kleine maatregelen en gedrag',
+                ],
+                'order' => 4,
+            ],
+            // Same steps but lite
+            [
+                'slug' => 'woninggegevens',
+                'short' => 'building-data-lite',
+                'scan_id' => $liteScan->id,
+                'name' => [
+                    'en' => 'Building data',
+                    'nl' => 'Woninggegevens',
+                ],
+                'order' => 0,
+            ],
+            [
+                'slug' => 'bewoners-gebruik',
+                'short' => 'usage-lite-scan',
+                'scan_id' => $liteScan->id,
+                'name' => [
+                    'en' => 'Usage',
+                    'nl' => 'Gebruik',
+                ],
+                'order' => 1,
+            ],
+            [
+                'slug' => 'woonwensen',
+                'short' => 'living-requirements-lite',
+                'scan_id' => $liteScan->id,
+                'name' => [
+                    'en' => 'Living requirements',
+                    'nl' => 'Woonwensen',
+                ],
+                'order' => 2,
+            ],
+            [
+                'slug' => 'woonstatus',
+                'short' => 'residential-status-lite',
+                'scan_id' => $liteScan->id,
+                'name' => [
+                    'en' => 'Residential status',
+                    'nl' => 'Woningstatus',
+                ],
+                'order' => 3,
+            ],
+            [
+                'slug' => 'kleine-maatregelen',
+                'short' => 'small-measures-lite',
+                'scan_id' => $liteScan->id,
+                'name' => [
+                    'en' => 'Small measures and behaviour',
+                    'nl' => 'Kleine maatregelen en gedrag',
+                ],
+                'order' => 4,
             ],
         ];
 

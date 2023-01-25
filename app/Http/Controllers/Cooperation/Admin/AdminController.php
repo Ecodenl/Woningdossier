@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
-use App\Models\Role;
+use App\Helpers\Hoomdossier;
 
 class AdminController extends Controller
 {
@@ -16,7 +16,7 @@ class AdminController extends Controller
 
     public function index()
     {
-        $user = \App\Helpers\Hoomdossier::user();
+        $user = Hoomdossier::user();
 
         // if the user only has one role we will redirect him to the right url
         if (1 == $user->getRoleNames()->count()) {

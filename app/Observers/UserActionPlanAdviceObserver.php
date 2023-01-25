@@ -12,8 +12,6 @@ use App\Models\SubStep;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ConditionService;
 use App\Services\UserActionPlanAdviceService;
-use App\Services\Verbeterjehuis\RegulationService;
-use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceObserver
 {
@@ -27,24 +25,7 @@ class UserActionPlanAdviceObserver
 
         // TODO: this should be possible for a cooperationMeasureApplication and customMEasureApplicationin the near future.
         if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {
-            RefreshRegulationsForUserActionPlanAdvice::dispatchN($userActionPlanAdvice);
-            Log::debug("----SUBSIDY {$userActionPlanAdvice->userActionPlanAdvisable->measure_name} ----");
-            $payload = RegulationService::init()
-                ->forBuilding($userActionPlanAdvice->user->building)
-                ->get();
-
-            $regulations = $payload
-                ->forMeasureApplication($userActionPlanAdvice->userActionPlanAdvisable)
-                ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
-
-            if ($regulations->getLoans()->isNotEmpty()) {
-                Log::debug("Is loan");
-                $userActionPlanAdvice->loan_available = true;
-            }
-            if ($regulations->getSubsidies()->isNotEmpty()) {
-                Log::debug("Is subsidy");
-                $userActionPlanAdvice->subsidy_available = true;
-            }
+            RefreshRegulationsForUserActionPlanAdvice::dispatchSync($userActionPlanAdvice);
         }
     }
 

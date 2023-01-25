@@ -12,6 +12,7 @@ trait HasDynamicAnswers
 {
     use RetrievesAnswers {
         getAnswer as getBuildingAnswer;
+        getManyAnswers as getManyBuildingAnswers;
     }
 
     public ?Collection $answers = null;
@@ -31,6 +32,7 @@ trait HasDynamicAnswers
 
         // If the answer exists, we want to ensure we format it correctly for backend use
         if ($answers->has($toolQuestionShort)) {
+            // TODO: Answer might be set but perhaps not answerable? Should we evaluate here too?
             $answer = $answers->get($toolQuestionShort);
 
             if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
@@ -46,6 +48,44 @@ trait HasDynamicAnswers
         }
 
         return $answer;
+    }
+
+    protected function getManyAnswers(array $toolQuestionShorts, bool $withEvaluation = true): array
+    {
+        $answers = is_null($this->answers) ? collect() : $this->answers;
+
+        $toolQuestionAnswers = [];
+
+        foreach ($toolQuestionShorts as $index => $toolQuestionShort) {
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+
+            if ($answers->has($toolQuestionShort)) {
+                // TODO: Answer might be set but perhaps not answerable? Should we evaluate here too?
+                $answer = $answers->get($toolQuestionShort);
+
+                if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
+                    $answer = Caster::init($toolQuestion->data_type, $answer)->reverseFormatted();
+                }
+                $toolQuestionAnswers[$toolQuestionShort] = $answer;
+                unset($toolQuestionShorts[$index]);
+            }
+        }
+
+        // Still some answers left unanswered
+        if (! empty($toolQuestionShorts)) {
+            $toolQuestionAnswers = array_merge($toolQuestionAnswers,
+                $this->getManyBuildingAnswers($toolQuestionShorts, $withEvaluation));
+        }
+
+        // Cast data
+        foreach ($toolQuestionAnswers as $short => $answer) {
+            $toolQuestion = ToolQuestion::findByShort($short);
+            if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
+                $toolQuestionAnswers[$short] = Caster::init($toolQuestion->data_type, $answer)->force()->getCast();
+            }
+        }
+
+        return $toolQuestionAnswers;
     }
 
     /**

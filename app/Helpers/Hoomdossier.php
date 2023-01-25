@@ -166,6 +166,7 @@ class Hoomdossier
      */
     public static function account()
     {
+        // Note: This could also be a App\Models\Client
         return Auth::user();
     }
 }

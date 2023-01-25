@@ -16,15 +16,9 @@ class BaseCache
      *
      * @return string
      */
-    public static function getCacheKey($string, ...$parameters)
+    public static function getCacheKey($string, ...$parameters): string
     {
         $prefix = config('hoomdossier.cache.prefix', '');
-
-        $cooperation = request()->route('cooperation');
-
-        if ($cooperation instanceof \App\Models\Cooperation) {
-            $prefix .= "{$cooperation->slug}_";
-        }
 
         return $prefix.sprintf($string, ...$parameters);
     }
@@ -42,5 +36,10 @@ class BaseCache
 
         // If the cache has saved "false", we return null. Cache can't save null.
         return $result instanceof Model ? $result : null;
+    }
+
+    public static function clear(string $key)
+    {
+        Cache::forget($key);
     }
 }

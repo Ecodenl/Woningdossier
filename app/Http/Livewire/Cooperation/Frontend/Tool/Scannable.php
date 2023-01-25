@@ -7,6 +7,7 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Services\ToolQuestionService;
@@ -16,59 +17,48 @@ use Livewire\Component;
 
 abstract class Scannable extends Component
 {
-    /*
-     *
-     * NOTE: When programmatically updating variables, ensure the updated method is called! This triggers a browser
-     * event, which can be caught by the frontend and set visuals correct, e.g. with the sliders.
-     *
-     */
     protected $listeners = ['update', 'updated', 'save'];
-    /** @var Building */
-    public $building;
 
-    public $masterInputSource;
-    public $currentInputSource;
-    public $residentInputSource;
-    public $coachInputSource;
-    public $cooperation;
+    public Building $building;
 
+    public InputSource $masterInputSource;
+    public InputSource $currentInputSource;
 
-    public $rules;
-    public $attributes;
+    public Cooperation $cooperation;
 
-    public $toolQuestions;
-    public $originalAnswers = [];
-    public $filledInAnswers = [];
-    public $filledInAnswersForAllInputSources = [];
+    public array $rules = [];
+    public array $attributes = [];
 
-    public $dirty;
+    public array $originalAnswers = [];
+    public array $filledInAnswers = [];
+    public array $filledInAnswersForAllInputSources = [];
 
-    public function boot()
+    public bool $dirty = false;
+    public bool $automaticallyEvaluate = true;
+
+    public function build()
     {
+        $this->cooperation = HoomdossierSession::getCooperation(true);
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
-        $this->residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-        $this->coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
-        // first we have to hydrate the tool questions
-        $this->hydrateToolQuestions();
         // after that we can fill up the user his given answers
         $this->setFilledInAnswers();
-        // add the validation for the tool questions
-        $this->setValidationForToolQuestions();
-        // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
-        $this->evaluateToolQuestions();
 
-        $this->originalAnswers = $this->filledInAnswers;
+        if ($this->automaticallyEvaluate) {
+            // add the validation for the tool questions
+            $this->setValidationForToolQuestions();
+            // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
+            $this->evaluateToolQuestions();
+        }
     }
 
+    abstract function getSubSteppablesProperty();
 
-    abstract function hydrateToolQuestions();
+    abstract function getToolQuestionsProperty();
 
     abstract function save();
-
-    abstract function rehydrateToolQuestions();
 
     protected function setValidationForToolQuestions()
     {
@@ -79,7 +69,6 @@ abstract class Scannable extends Component
                         $this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
                     }
                     break;
-
 
                 case Caster::ARRAY:
                     // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
@@ -100,19 +89,7 @@ abstract class Scannable extends Component
 
     protected function refreshAlerts()
     {
-        $answers = $this->prepareAnswersForEvaluation();
-
-        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts', $answers);
-    }
-
-    public function prepareAnswersForEvaluation(): array
-    {
-        $answers = [];
-        foreach ($this->toolQuestions as $toolQuestion) {
-            $answers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->short];
-        }
-
-        return $answers;
+        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts', $this->filledInAnswers);
     }
 
     public function updated($field, $value)
@@ -129,12 +106,11 @@ abstract class Scannable extends Component
             }
         }
 
-        // TODO: Deprecate this dispatch in Livewire V2
-        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
+        if ($this->automaticallyEvaluate) {
+            $this->setValidationForToolQuestions();
+            $this->evaluateToolQuestions();
+        }
 
-        $this->rehydrateToolQuestions();
-        $this->setValidationForToolQuestions();
-        $this->evaluateToolQuestions();
         $this->refreshAlerts();
 
         $this->setDirty(true);
@@ -147,42 +123,58 @@ abstract class Scannable extends Component
             ->inputSource($this->masterInputSource);
 
         // First fetch all conditions, so we can retrieve any required related answers in one go
-        $conditionsForAllQuestions = [];
-        foreach (array_filter($this->toolQuestions->pluck('pivot.conditions')->all()) as $condition) {
-            $conditionsForAllQuestions = array_merge($conditionsForAllQuestions, $condition);
+        $conditionsForAllSubSteppables = $this->subSteppables->pluck('conditions')->flatten(1)->filter()->all();
+
+        $answers = collect($this->filledInAnswers);
+        // The expert scan has flown over answers. We want to add those for evaluation also, if they exist.
+        // This way, we can reuse this method in both cases.
+        if ($this->hasProperty('intercontinentalAnswers')) {
+            $answers = $answers->merge(collect($this->intercontinentalAnswers));
         }
-        $answersForAllQuestions = $evaluator->getToolAnswersForConditions($conditionsForAllQuestions, collect($this->filledInAnswers));
 
-        foreach ($this->toolQuestions as $index => $toolQuestion) {
-            if (! empty($toolQuestion->pivot->conditions)) {
-                $conditions = $toolQuestion->pivot->conditions;
+        $answersForAllSubSteppables = $evaluator->getToolAnswersForConditions(
+            $conditionsForAllSubSteppables,
+            $answers
+        );
 
-                if (! $evaluator->evaluateCollection($conditions, $answersForAllQuestions)) {
-                    $this->toolQuestions = $this->toolQuestions->forget($index);
+        $evaluator->setAnswers($answersForAllSubSteppables);
+
+        foreach ($this->subSteppables as $index => $subSteppablePivot) {
+            $toolQuestion = $subSteppablePivot->subSteppable;
+
+            if (! empty($subSteppablePivot->conditions)) {
+                $conditions = $subSteppablePivot->conditions;
+
+                if (! $evaluator->evaluate($conditions)) {
+                    $this->subSteppables->forget($index);
 
                     // We will unset the answers the user has given. If the user then changes their mind, they
                     // will have to fill in the data again. We don't want to save values to the database
                     // that are unvalidated (or not relevant).
 
                     // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
-                    $this->filledInAnswers[$toolQuestion->short] = null;
 
-                    // and unset the validation for the question based on type.
-                    switch ($toolQuestion->data_type) {
-                        case Caster::JSON:
-                            foreach ($toolQuestion->options as $option) {
-                                unset($this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"]);
-                            }
-                            break;
+                    // we will only unset the rules if its a tool question, not relevant for other sub steppables.
+                    if ($subSteppablePivot->isToolQuestion()) {
+                        $this->filledInAnswers[$toolQuestion->short] = null;
 
-                        case Caster::ARRAY:
-                            unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
-                            unset($this->rules["filledInAnswers.{$toolQuestion->short}.*"]);
-                            break;
+                        // and unset the validation for the question based on type.
+                        switch ($toolQuestion->data_type) {
+                            case Caster::JSON:
+                                foreach ($toolQuestion->options as $option) {
+                                    unset($this->rules["filledInAnswers.{$toolQuestion->short}.{$option['short']}"]);
+                                }
+                                break;
 
-                        default:
-                            unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
-                            break;
+                            case Caster::ARRAY:
+                                unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
+                                unset($this->rules["filledInAnswers.{$toolQuestion->short}.*"]);
+                                break;
+
+                            default:
+                                unset($this->rules["filledInAnswers.{$toolQuestion->short}"]);
+                                break;
+                        }
                     }
                 }
             }
@@ -220,8 +212,7 @@ abstract class Scannable extends Component
                     $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                 }
 
-                $this->rehydrateToolQuestions();
-
+                // TODO: Check if this should be subject to $this->automaticallyEvaluate
                 $this->setValidationForToolQuestions();
 
                 $this->evaluateToolQuestions();
@@ -323,6 +314,8 @@ abstract class Scannable extends Component
                     break;
             }
         }
+
+        $this->originalAnswers = $this->filledInAnswers;
     }
 
     private function prepareValidationRule(array $validation): array

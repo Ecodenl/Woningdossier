@@ -55,7 +55,9 @@ class TranslationController extends Controller
         if ('ventilation' == $group) {
             $group = "cooperation/tool/{$group}";
         }
-
+        if ('my-plan' == $group) {
+            $group = "cooperation/frontend/tool";
+        }
         if ('pdf-user-report' == $group) {
             $group = 'pdf/user-report';
         }

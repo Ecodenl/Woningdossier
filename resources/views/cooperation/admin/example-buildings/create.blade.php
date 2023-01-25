@@ -9,7 +9,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    @livewire('cooperation.admin.example-buildings.form', ['exampleBuilding' => null])
+                    <livewire:cooperation.admin.example-buildings.form :exampleBuilding="null"/>
                 </div>
             </div>
         </div>

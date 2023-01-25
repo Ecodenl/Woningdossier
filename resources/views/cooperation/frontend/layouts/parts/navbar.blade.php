@@ -96,14 +96,15 @@
             @endif
 
 
-            @livewire('cooperation.frontend.layouts.parts.alerts', ['building' => $building, 'inputSource' => $masterInputSource])
+            <livewire:cooperation.frontend.layouts.parts.alerts :building="$building"
+                                                                :inputSource="$masterInputSource"/>
             @if(! Hoomdossier::user()->isFillingToolForOtherBuilding())
-                @livewire('cooperation.frontend.layouts.parts.messages')
+                <livewire:cooperation.frontend.layouts.parts.messages/>
             @endif
 
             {{-- Keep local for ease of use --}}
             @if(app()->isLocal())
-                @if($building instanceof \App\Models\Building && $building->hasCompletedQuickScan($masterInputSource))
+{{--                @if($building instanceof \App\Models\Building && $building->hasCompletedQuickScan($masterInputSource))--}}
                     @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
                         {{-- Loaded in NavbarComposer --}}
                         @foreach($expertSteps as $expertStep)
@@ -119,12 +120,25 @@
                             @endif
                         @endforeach
                     @endcomponent
-                @endif
+{{--                @endif--}}
             @endif
+
+            @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-info"></i>'])
+                {{-- Loaded in NavbarComposer --}}
+                @foreach($scan->steps as $step)
+                    @php $subStep = $step->subSteps->sortByDesc('order')->first(); @endphp
+                    <li>
+                        <a href="{{ route("cooperation.frontend.tool.simple-scan.index", compact('cooperation', 'scan', 'step', 'subStep')) }}"
+                           class="in-text">
+                            {{ $subStep->name }}
+                        </a>
+                    </li>
+                @endforeach
+            @endcomponent
 
             @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
                 <div>
-                    <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media') }}"
+                    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan')) }}"
                        class="flex flex-wrap justify-center items-center">
                         <i class="icon-md icon-document"></i>
                     </a>

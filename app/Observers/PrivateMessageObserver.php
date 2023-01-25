@@ -2,8 +2,10 @@
 
 namespace App\Observers;
 
+use App\Events\PrivateMessageReceiverEvent;
+use App\Helpers\HoomdossierSession;
 use App\Models\PrivateMessage;
-use App\Services\PrivateMessageViewService;
+use Illuminate\Support\Facades\Auth;
 
 class PrivateMessageObserver
 {
@@ -12,6 +14,6 @@ class PrivateMessageObserver
      */
     public function created(PrivateMessage $privateMessage)
     {
-        PrivateMessageViewService::create($privateMessage);
+        PrivateMessageReceiverEvent::dispatch($privateMessage, HoomdossierSession::getCooperation(true), Auth::user());
     }
 }

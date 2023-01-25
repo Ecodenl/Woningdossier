@@ -67,10 +67,22 @@ return [
             InputSource::RESIDENT_SHORT => 'Opmerkingen bewoner',
             InputSource::COACH_SHORT => 'Opmerkingen coach',
         ],
-        'file-is-processing' => 'Rapportage wordt gemaakt..',
-        'download-report' => 'Download bestaande rapportage',
-        'create-report' => 'Maak rapportage',
+
         'loading' => 'Woonplan wordt berekend...',
+
+        'calculations' => [
+            'title' => 'Uitleg berekeningen',
+            'table' => [
+                'info' => 'Vraag / info',
+                'value' => 'Waarde',
+                'source' => 'Oorsprong',
+            ],
+            'description' => "<p>Voor het berekenen van de prijzen maken wij gebruik van de 'Kostenkentallen energiebesparende maatregelen' van RVO. Deze online database kun je via de volgende link vinden: <a target='_blank' rel='nofollow' href='https://digipesis.com/'>Kostenkentallen | RVO</a></p>",
+            'values' => [
+                'gas-cost' => 'Gerekend met kosten voor gas',
+                'electricity-cost' => 'Gerekend met kosten voor elektriciteit',
+            ],
+        ],
 
         'uploader' => [
             'add' => 'Bestanden toevoegen',
@@ -109,6 +121,11 @@ return [
                     'confirm' => 'Weet je zeker dat je dit bestand wilt verwijderen?',
                 ],
             ],
+        ],
+        'downloads' => [
+            'file-is-processing' => 'Rapportage wordt gemaakt..',
+            'download-report' => 'Download bestaande rapportage',
+            'create-report' => 'Maak rapportage',
         ],
     ],
 ];

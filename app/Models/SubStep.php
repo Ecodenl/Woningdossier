@@ -6,6 +6,7 @@ use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\App;
 
 /**
  * App\Models\SubStep
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent $commentable
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedSubStep[] $completedSubSteps
+ * @property-read int|null $completed_sub_steps_count
  * @property-read array $translations
  * @property-read \App\Models\Step $step
  * @property-read \App\Models\SubStepTemplate|null $subStepTemplate
@@ -65,10 +68,9 @@ class SubStep extends Model
         'conditions' => 'array',
     ];
 
-    # Model methods
-    public function getRouteKeyName(): string
+    public function getRouteKeyName()
     {
-        $locale = app()->getLocale();
+        $locale = App::getLocale();
         return "slug->{$locale}";
     }
 
@@ -113,6 +115,11 @@ class SubStep extends Model
             ->using(SubSteppable::class)
             ->orderBy('order')
             ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
+    }
+
+    public function completedSubSteps()
+    {
+        return $this->hasMany(CompletedSubStep::class);
     }
 
     public function subSteppables()

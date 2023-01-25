@@ -9,6 +9,7 @@ use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -23,8 +24,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $scan_id
- * @property-read \Illuminate\Database\Eloquent\Collection|Step[] $children
- * @property-read int|null $children_count
  * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
  * @property-read int|null $measure_applications_count
@@ -37,11 +36,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|Step childrenForStep(\App\Models\Step $step)
  * @method static Builder|Step expert()
  * @method static \Database\Factories\StepFactory factory(...$parameters)
+ * @method static Builder|Step forScan(\App\Models\Scan $scan)
  * @method static Builder|Step newModelQuery()
  * @method static Builder|Step newQuery()
  * @method static Builder|Step ordered()
  * @method static Builder|Step query()
  * @method static Builder|Step quickScan()
+ * @method static Builder|Step recalculable()
  * @method static Builder|Step whereCreatedAt($value)
  * @method static Builder|Step whereId($value)
  * @method static Builder|Step whereName($value)
@@ -75,6 +76,17 @@ class Step extends Model
         static::addGlobalScope(new NoGeneralDataScope());
     }
 
+    public function resolveChildRouteBinding($childType, $value, $field)
+    {
+        // so this method is supposed to resolve the child route binding (any relationship)
+        // which could be any child of the step
+        // the sub step has a translatable slug, which is impossible to configure on the routes
+        if ($childType === 'subStep' && $field === 'slug'){
+            $field = (new SubStep())->getRouteKeyName();
+            return parent::resolveChildRouteBinding($childType, $value, $field);
+        }
+    }
+
     public function getRouteKeyName()
     {
         return 'slug';
@@ -94,31 +106,27 @@ class Step extends Model
     {
         return $this->hasMany(SubStep::class);
     }
-    public function nextQuickScan(): ?Step
+
+    public function nextStepForScan()
     {
-        return Step::quickScan()
+        return $this
+            ->scan
+            ->steps()
             ->where('order', '>', $this->order)
             ->orderBy('order')
             ->first();
     }
 
-    public function previousQuickScan(): ?Step
+    public function previousStepForScan()
     {
-        return Step::quickScan()
+        return $this
+            ->scan
+            ->steps()
             ->where('order', '<', $this->order)
             ->orderByDesc('order')
             ->first();
     }
 
-    /**
-     * Return the children or so called "sub steps" of a step.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function children()
-    {
-        return $this->hasMany(Step::class, 'parent_id', 'id');
-    }
 
     /**
      * Return the parent of the step.
@@ -145,34 +153,42 @@ class Step extends Model
         return $query->where('parent_id', null);
     }
 
-    public function questionnaires(): HasMany
+    public function questionnaires(): BelongsToMany
     {
-        return $this->hasMany(Questionnaire::class);
+        return $this->belongsToMany(Questionnaire::class)
+            ->using(QuestionnaireStep::class)
+            ->withPivot('order');
     }
 
-    public function hasQuestionnaires(): bool
-    {
-        return $this->questionnaires()->count() > 0;
-    }
-
-    public function hasActiveQuestionnaires(): bool
-    {
-        return $this->questionnaires()->active()->count() > 0;
-    }
-
-    public function scopeOrdered(Builder $query)
+    public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('order', 'asc');
     }
 
-    public function scopeQuickScan(Builder $query)
+    /** @deprecated Use scopeForScan instead */
+    public function scopeQuickScan(Builder $query): Builder
     {
-        return $query->whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
+        $quickScan = Scan::findByShort(Scan::QUICK);
+        return $this->scopeForScan($query, $quickScan);
     }
 
-    public function scopeExpert(Builder $query)
+    /** @deprecated Use scopeForScan instead */
+    public function scopeExpert(Builder $query): Builder
     {
-        return $query->whereNotIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
+        $expertScan = Scan::findByShort(Scan::EXPERT);
+        return $this->scopeForScan($query, $expertScan);
+    }
+
+    public function scopeForScan(Builder $query, Scan $scan): Builder
+    {
+        return $query->where('scan_id', $scan->id);
+    }
+
+    public function scopeRecalculable(Builder $query): Builder
+    {
+        return $query->where(
+            fn (Builder $q) => $q->expert()->orWhere('short', 'small-measures')
+        );
     }
 
     public function scan()

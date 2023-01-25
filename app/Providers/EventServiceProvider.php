@@ -73,7 +73,6 @@ class EventServiceProvider extends ServiceProvider
             LogObservingToolForUserListener::class,
         ],
         StepDataHasBeenChanged::class => [
-            RecalculateToolForUserListener::class,
             StepDataHasBeenChangedListener::class,
         ],
         UserChangedHisEmailEvent::class => [

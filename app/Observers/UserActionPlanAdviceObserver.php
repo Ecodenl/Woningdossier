@@ -19,12 +19,6 @@ class UserActionPlanAdviceObserver
 {
     public function saved(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        // default on false, ofcourse.
-        $userActionPlanAdvice->fill([
-            'loan_available' => false,
-            'subsidy_available' => false,
-        ]);
-
         // TODO: this should be possible for a cooperationMeasureApplication and customMEasureApplicationin the near future.
         if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {
             // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.

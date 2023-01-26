@@ -57,7 +57,6 @@ class UserActionPlanAdviceService
             'loan_available' => $loanAvailable,
             'subsidy_available' => $subsidyAvailable
         ]));
-
     }
 
     /**

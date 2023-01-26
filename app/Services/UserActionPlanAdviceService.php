@@ -38,7 +38,6 @@ class UserActionPlanAdviceService
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        Log::debug("Refreshing regulations {$userActionPlanAdvice->id}");
         $payload = RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
             ->get();

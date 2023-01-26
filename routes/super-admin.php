@@ -72,3 +72,7 @@ Route::prefix('cooperations')->name('cooperations.')->group(function () {
             ->name('users.confirm');
     });
 });
+
+Route::resource('cooperation-presets', Cooperation\Admin\SuperAdmin\CooperationPresetController::class)
+    ->only('index', 'show')
+    ->parameter('cooperation-presets', 'cooperationPreset');

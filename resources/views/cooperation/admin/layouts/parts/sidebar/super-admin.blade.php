@@ -49,6 +49,11 @@
                             <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.key-figures.index'])) active @endif">
                                 <a href="{{route('cooperation.admin.super-admin.key-figures.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.key-figures')</a>
                             </li>
+                            <li class="list-group-item @if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.super-admin.cooperation-presets')) active @endif">
+                                <a href="{{route('cooperation.admin.super-admin.cooperation-presets.index')}}">
+                                    @lang('cooperation/admin/shared.sidebar.cooperation-presets')
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

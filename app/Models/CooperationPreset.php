@@ -15,4 +15,9 @@ class CooperationPreset extends Model
     {
         return $this->hasMany(CooperationPresetContent::class);
     }
+
+    public function getRouteKeyName()
+    {
+        return 'short';
+    }
 }

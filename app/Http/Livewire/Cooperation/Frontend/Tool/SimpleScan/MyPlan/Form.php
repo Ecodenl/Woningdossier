@@ -668,7 +668,8 @@ class Form extends Component
                     'name' => Str::limit($advisable->measure_name, 57),
                     'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
-                    'subsidy' => $this->SUBSIDY_AVAILABLE,
+                    'subsidy_available' => $advice->subsidy_available,
+                    'loan_available' => $advice->loan_available,
                     'info' => nl2br($advisable->measure_info),
                     'route' => $route,
                     'comfort' => $advisable->configurations['comfort'] ?? 0,

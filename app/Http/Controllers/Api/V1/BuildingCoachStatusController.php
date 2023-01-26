@@ -45,20 +45,21 @@ class BuildingCoachStatusController extends Controller
      */
     public function buildingCoachStatus(BuildingCoachStatusFormRequest $request, Cooperation $cooperation)
     {
-        $contactIds = $request->validated()['building_coach_statuses'];
-
-        $coach = User::byContact($contactIds['coach_contact_id'])->first();
-        $resident = User::byContact($contactIds['resident_contact_id'])->first();
-
-        if ($resident->allowedAccess()) {
-            // give the coach permission to the resident his building
-            BuildingPermissionService::givePermission($coach, $resident->building);
-        }
-
-        BuildingCoachStatusService::giveAccess($coach, $resident->building);
-
-        ParticipantAddedEvent::dispatch($coach, $resident->building, $request->user(), $cooperation);
-
-        return response([], 200);
+        return response([], 400);
+//        $contactIds = $request->validated()['building_coach_statuses'];
+//
+//        $coach = User::byContact($contactIds['coach_contact_id'])->first();
+//        $resident = User::byContact($contactIds['resident_contact_id'])->first();
+//
+//        if ($resident->allowedAccess()) {
+//            // give the coach permission to the resident his building
+//            BuildingPermissionService::givePermission($coach, $resident->building);
+//        }
+//
+//        BuildingCoachStatusService::giveAccess($coach, $resident->building);
+//
+//        ParticipantAddedEvent::dispatch($coach, $resident->building, $request->user(), $cooperation);
+//
+//        return response([], 200);
     }
 }

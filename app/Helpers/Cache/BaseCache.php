@@ -23,6 +23,27 @@ class BaseCache
         return $prefix.sprintf($string, ...$parameters);
     }
 
+    /**
+     * Returns the cache key for a particular format and parameters, prefixed with the current cooperation.
+     *
+     * @param $string
+     * @param mixed ...$parameters
+     *
+     * @return string
+     */
+    public static function getCooperationCacheKey($string, ...$parameters): string
+    {
+        $prefix = config('hoomdossier.cache.prefix', '');
+
+        $cooperation = request()->route('cooperation');
+
+        if ($cooperation instanceof \App\Models\Cooperation) {
+            $prefix .= "{$cooperation->slug}_";
+        }
+
+        return $prefix.sprintf($string, ...$parameters);
+    }
+
     public static function cacheModel(string $cacheKey, Builder $query): ?Model
     {
         $result = Cache::remember(

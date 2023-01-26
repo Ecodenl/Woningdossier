@@ -11,6 +11,7 @@ use App\Models\SubStep;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ConditionService;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceObserver
 {
@@ -24,11 +25,11 @@ class UserActionPlanAdviceObserver
         // when he considers it it might as well be planned.
         $userActionPlanAdvice->planned = true;
 
-        if (! $userActionPlanAdvice->isDirty('visible')) {
+        if ( ! $userActionPlanAdvice->isDirty('visible')) {
             // Visibility isn't set. Let's define it
             UserActionPlanAdviceService::setAdviceVisibility($userActionPlanAdvice);
         }
-        if (! $userActionPlanAdvice->isDirty('category') || is_null($userActionPlanAdvice->category)) {
+        if ( ! $userActionPlanAdvice->isDirty('category') || is_null($userActionPlanAdvice->category)) {
             // Category isn't set. Let's define it.
 
             UserActionPlanAdviceService::setAdviceCategory($userActionPlanAdvice);
@@ -36,12 +37,14 @@ class UserActionPlanAdviceObserver
 
         if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
             $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
-            if ($advisable instanceof MeasureApplication && in_array($advisable->short, array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
+            if ($advisable instanceof MeasureApplication && in_array($advisable->short,
+                    array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
                 $building = $userActionPlanAdvice->user->building;
-                if (! ConditionService::init()->building($building)->inputSource($userActionPlanAdvice->inputSource)->hasCompletedSteps(['heating'])) {
+                if ( ! ConditionService::init()->building($building)->inputSource($userActionPlanAdvice->inputSource)->hasCompletedSteps(['heating'])) {
                     // User has not yet completed the expert. We will map values, then do a new calculation as
                     // values might no longer match. Due to dispatchSync the "recalc" only happens after the mapping.
-                    MapQuickScanSituationToExpert::dispatchSync($building, $userActionPlanAdvice->inputSource, $advisable);
+                    MapQuickScanSituationToExpert::dispatchSync($building, $userActionPlanAdvice->inputSource,
+                        $advisable);
                     $heatPumpHelper = HeatPumpHelper::init($building->user, $userActionPlanAdvice->inputSource)
                         ->createValues();
                     $evaluator = ConditionEvaluator::init()
@@ -59,6 +62,20 @@ class UserActionPlanAdviceObserver
                     $userActionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
                     $userActionPlanAdvice->savings_money = $results['savings_money'];
                 }
+            }
+        }
+    }
+
+    public function created(UserActionPlanAdvice $userActionPlanAdvice)
+    {
+        Log::debug('before refresh');
+        if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
+            $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
+            if ($advisable instanceof MeasureApplication) {
+                Log::debug('before refresh, inside if.');
+                // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.
+                // Or its triggered from a recalculation, which means the code is already running on a queue.
+                UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);
             }
         }
     }

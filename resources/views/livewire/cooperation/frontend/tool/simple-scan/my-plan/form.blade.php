@@ -4,7 +4,7 @@
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <h5 class="heading-5">
-                    @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
+{{--                    @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)--}}
                 </h5>
             </div>
         </div>
@@ -50,28 +50,30 @@
                                         {{ $card['name'] }}
                                     </h6>
                                 @endif
-                                <p class="-mt-1">
-                                    {{-- This also triggers if both values are 0 --}}
-                                    @if(empty($card['costs']['from']) && empty($card['costs']['to']))
-                                        @lang('cooperation/frontend/tool.my-plan.cards.see-info')
-                                    @else
-                                        {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
+                                <div class="flex justify-between">
+                                    <p>
+                                        {{-- This also triggers if both values are 0 --}}
+                                        @if(empty($card['costs']['from']) && empty($card['costs']['to']))
+                                            @lang('cooperation/frontend/tool.my-plan.cards.see-info')
+                                        @else
+                                            {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
+                                        @endif
+                                    </p>
+                                    <p class="font-bold">
+                                        {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
+                                    </p>
+                                </div>
+                                    @if($card['subsidy_available'])
+                                        <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2 w-full"
+                                             style="width: fit-content; width: -moz-fit-content;">
+                                            Subsidie mogelijk
+                                        </div>
+                                    @elseif($card['loan_available'])
+                                        <div class="h-4 rounded-lg text-xs relative text-red p bg-red bg-opacity-10 flex items-center px-2 w-full"
+                                             style="width: fit-content; width: -moz-fit-content;">
+                                            Geen subsidie
+                                        </div>
                                     @endif
-                                </p>
-    <!--
-                                <?php $subsidy = $card['subsidy'] ?? ''; ?>
-                                @if($subsidy == $SUBSIDY_AVAILABLE)
-                                    <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2"
-                                         style="width: fit-content; width: -moz-fit-content;">
-                                        Subsidie mogelijk {{-- Todo: Translate using constant --}}
-                                    </div>
-                                @elseif($subsidy == $SUBSIDY_UNAVAILABLE)
-                                    <div class="h-4 rounded-lg text-xs relative text-red p bg-red bg-opacity-10 flex items-center px-2"
-                                         style="width: fit-content; width: -moz-fit-content;">
-                                        Geen subsidie {{-- Todo: Translate using constant --}}
-                                    </div>
-                                @endif
-    -->
                             </div>
                             <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3"
                                  draggable="true" x-on:dragstart.prevent.stop>
@@ -82,9 +84,7 @@
                                     @endcomponent
                                 @endif
                             </div>
-                            <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
-                                {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
-                            </p>
+
                         </div>
                     @endforeach
                 </div>

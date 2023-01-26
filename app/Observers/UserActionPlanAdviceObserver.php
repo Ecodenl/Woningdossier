@@ -35,10 +35,10 @@ class UserActionPlanAdviceObserver
             UserActionPlanAdviceService::setAdviceCategory($userActionPlanAdvice);
         }
 
-
         if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
             $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
-            if ($advisable instanceof MeasureApplication && in_array($advisable->short, array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
+            if ($advisable instanceof MeasureApplication && in_array($advisable->short,
+                    array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
                 $building = $userActionPlanAdvice->user->building;
                 if ( ! ConditionService::init()->building($building)->inputSource($userActionPlanAdvice->inputSource)->hasCompletedSteps(['heating'])) {
                     // User has not yet completed the expert. We will map values, then do a new calculation as
@@ -63,7 +63,16 @@ class UserActionPlanAdviceObserver
                     $userActionPlanAdvice->savings_money = $results['savings_money'];
                 }
             }
-            if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {
+        }
+    }
+
+    public function created(UserActionPlanAdvice $userActionPlanAdvice)
+    {
+        Log::debug('before refresh');
+        if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
+            $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
+            if ($advisable instanceof MeasureApplication) {
+                Log::debug('before refresh, inside if.');
                 // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.
                 // Or its triggered from a recalculation, which means the code is already running on a queue.
                 UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);

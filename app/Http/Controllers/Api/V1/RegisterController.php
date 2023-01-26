@@ -66,6 +66,10 @@ class RegisterController extends Controller
     public function store(RegisterFormRequest $request, Cooperation $cooperation)
     {
         $requestData = $request->all();
+        if (! is_null($requestData['extra']['contact_id'] ?? null)) {
+            // Force as INT
+            $requestData['extra']['contact_id'] = (int) $requestData['extra']['contact_id'];
+        }
 
         // normally we would have a user given password, however we will reset the password right after its created.
         // this way the user can set his own password.

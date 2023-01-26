@@ -45,6 +45,7 @@ class UserActionPlanAdviceService
             ->forBuilding($userActionPlanAdvice->user->building)
             ->get();
 
+        // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
         $regulations = $payload
             ->forMeasureApplication($userActionPlanAdvice->userActionPlanAdvisable)
             ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);

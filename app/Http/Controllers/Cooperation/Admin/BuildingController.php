@@ -87,6 +87,10 @@ class BuildingController extends Controller
     public function update(BuildingFormRequest $request, Cooperation $cooperation, Building $building)
     {
         $validatedData = $request->validated();
+        if (! is_null($validatedData['users']['extra']['contact_id'] ?? null)) {
+            // Force as INT
+            $validatedData['users']['extra']['contact_id'] = (int) $validatedData['users']['extra']['contact_id'];
+        }
 
         // Can't be null in the table.
         $validatedData['buildings']['extension'] = $validatedData['buildings']['extension'] ?? '';

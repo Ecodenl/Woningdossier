@@ -13,7 +13,7 @@ class AddMunicipalityColumnToBuildingsTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('buildings', 'municipality')) {
+        if (!Schema::hasColumn('buildings', 'municipality')) {
             Schema::table('buildings', function (Blueprint $table) {
                 $table->string('municipality')->nullable()->default(null)->after('city');
             });
@@ -28,7 +28,9 @@ class AddMunicipalityColumnToBuildingsTable extends Migration
     public function down()
     {
         Schema::table('buildings', function (Blueprint $table) {
-            $table->dropColumn('municipality');
+            if (Schema::hasColumn('buildings', 'municipality')) {
+                $table->dropColumn('municipality');
+            }
         });
     }
 }

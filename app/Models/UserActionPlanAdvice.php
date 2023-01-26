@@ -94,6 +94,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         'input_source_id',
         'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'category', 'visible', 'order', 'costs',
         'savings_gas', 'savings_electricity', 'savings_money', 'year', 'planned', 'planned_year', 'step_id',
+        'loan_available', 'subsidy_available'
     ];
 
     /**
@@ -104,6 +105,8 @@ class UserActionPlanAdvice extends Model implements Auditable
     protected $casts = [
         'planned' => 'boolean',
         'visible' => 'boolean',
+        'subsidy_available' => 'boolean',
+        'loan_available' => 'boolean',
         'costs' => 'array',
     ];
 

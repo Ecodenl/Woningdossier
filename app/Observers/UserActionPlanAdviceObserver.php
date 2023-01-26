@@ -4,29 +4,16 @@ namespace App\Observers;
 
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
-use App\Helpers\Queue;
 use App\Jobs\MapQuickScanSituationToExpert;
-use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\SubStep;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ConditionService;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceObserver
 {
-    public function saved(UserActionPlanAdvice $userActionPlanAdvice)
-    {
-        // TODO: this should be possible for a cooperationMeasureApplication and customMEasureApplicationin the near future.
-        if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {
-            // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.
-            // Or its triggered from a recalculation, which means the code is already running on a queue.
-            UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);
-        }
-    }
-
     /**
      * Listen to the creating event, will set the planned year based on interest.
      */
@@ -50,8 +37,7 @@ class UserActionPlanAdviceObserver
 
         if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
             $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
-            if ($advisable instanceof MeasureApplication && in_array($advisable->short,
-                    array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
+            if ($advisable instanceof MeasureApplication && in_array($advisable->short, array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
                 $building = $userActionPlanAdvice->user->building;
                 if ( ! ConditionService::init()->building($building)->inputSource($userActionPlanAdvice->inputSource)->hasCompletedSteps(['heating'])) {
                     // User has not yet completed the expert. We will map values, then do a new calculation as
@@ -75,6 +61,11 @@ class UserActionPlanAdviceObserver
                     $userActionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
                     $userActionPlanAdvice->savings_money = $results['savings_money'];
                 }
+            }
+            if ($userActionPlanAdvice->userActionPlanAdvisable instanceof MeasureApplication) {
+                // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.
+                // Or its triggered from a recalculation, which means the code is already running on a queue.
+                UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);
             }
         }
     }

@@ -17,6 +17,6 @@ class CooperationPresetController extends Controller
 
     public function show(Cooperation $cooperation, CooperationPreset $cooperationPreset)
     {
-        dd($cooperationPreset);
+        return view('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperationPreset'));
     }
 }

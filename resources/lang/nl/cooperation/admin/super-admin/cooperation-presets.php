@@ -12,5 +12,11 @@ return [
     ],
     'show' => [
         'title' => 'Contents van preset beheren',
+        'table' => [
+            'columns' => [
+                'title' => 'Titel',
+                'actions' => 'Acties',
+            ],
+        ],
     ],
 ];

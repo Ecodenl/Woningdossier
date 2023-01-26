@@ -76,3 +76,7 @@ Route::prefix('cooperations')->name('cooperations.')->group(function () {
 Route::resource('cooperation-presets', Cooperation\Admin\SuperAdmin\CooperationPresetController::class)
     ->only('index', 'show')
     ->parameter('cooperation-presets', 'cooperationPreset');
+
+Route::resource('cooperation-presets.cooperation-preset-contents', Cooperation\Admin\SuperAdmin\CooperationPresetContentController::class)
+    ->only('create', 'edit')
+    ->parameters(['cooperation-presets' => 'cooperationPreset', 'cooperation-preset-contents' => 'cooperationPresetContent']);

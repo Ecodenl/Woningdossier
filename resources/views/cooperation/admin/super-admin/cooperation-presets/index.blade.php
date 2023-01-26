@@ -9,25 +9,25 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-responsive ">
+                    <table class="table table-responsive">
                         <thead>
-                        <tr>
-                            <th>@lang('cooperation/admin/super-admin/cooperation-presets.index.table.columns.title')</th>
-                            <th>@lang('cooperation/admin/super-admin/cooperation-presets.index.table.columns.actions')</th>
-                        </tr>
+                            <tr>
+                                <th>@lang('cooperation/admin/super-admin/cooperation-presets.index.table.columns.title')</th>
+                                <th>@lang('cooperation/admin/super-admin/cooperation-presets.index.table.columns.actions')</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @foreach($cooperationPresets as $cooperationPreset)
-                            <tr>
-                                <td>{{$cooperationPreset->title}}</td>
-                                <td>
-                                    <a href="{{route('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperationPreset'))}}"
-                                       class="btn btn-success">
-                                        @lang('cooperation/admin/super-admin/cooperation-presets.show.title')
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
+                            @foreach($cooperationPresets as $cooperationPreset)
+                                <tr>
+                                    <td>{{$cooperationPreset->title}}</td>
+                                    <td>
+                                        <a href="{{route('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperationPreset'))}}"
+                                           class="btn btn-success">
+                                            @lang('cooperation/admin/super-admin/cooperation-presets.show.title')
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
 
@@ -36,7 +36,6 @@
         </div>
     </div>
 @endsection
-
 
 @push('js')
     <script>

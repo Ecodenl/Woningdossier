@@ -8,6 +8,7 @@ use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
 use App\Services\MappingService;
 use App\Traits\FluentCaller;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class Search
@@ -31,8 +32,9 @@ class Search
         });
     }
 
-    public function forMeasureApplication(MeasureApplication $measureApplication): self
+    public function forMeasure(Model $measureModel): self
     {
+        if (get_class($measureModel));
         $target = MappingService::init()->from($measureApplication)->resolveTarget();
         if (is_array($target)) {
             $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {

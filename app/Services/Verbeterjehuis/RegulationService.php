@@ -2,6 +2,7 @@
 
 namespace App\Services\Verbeterjehuis;
 
+use App\Helpers\Cache\BaseCache;
 use App\Models\Building;
 use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Traits\FluentCaller;
@@ -25,6 +26,16 @@ class RegulationService
     private function getCacheKey(): string
     {
         return md5(implode('|', $this->context));
+    }
+
+    public function getFilters(): array
+    {
+        return Cache::driver('database')
+            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), function () {
+                return Verbeterjehuis::init(Client::init())
+                    ->regulation()
+                    ->getFilters();
+            });
     }
 
     public function fetch(): array

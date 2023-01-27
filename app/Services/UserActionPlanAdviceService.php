@@ -44,7 +44,7 @@ class UserActionPlanAdviceService
         ]);
         $payload = RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
-            ->get();
+            ->getSearch();
 
         $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
 

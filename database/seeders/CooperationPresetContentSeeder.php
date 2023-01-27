@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Services\Models\CooperationPresetService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -10,7 +11,7 @@ class CooperationPresetContentSeeder extends Seeder
     public function run()
     {
         $contentByShort = [
-            'cooperation-measure-applications' => CooperationMeasureApplicationsTableSeeder::MEASURES,
+            CooperationPresetService::COOPERATION_MEASURE_APPLICATIONS => CooperationMeasureApplicationsTableSeeder::MEASURES,
         ];
 
         foreach ($contentByShort as $short => $contents) {

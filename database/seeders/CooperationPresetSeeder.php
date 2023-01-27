@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Services\Models\CooperationPresetService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +13,7 @@ class CooperationPresetSeeder extends Seeder
         $presets = [
             [
                 'title' => 'Cooperatie maatregelen',
-                'short' => 'cooperation-measure-applications',
+                'short' => CooperationPresetService::COOPERATION_MEASURE_APPLICATIONS,
             ],
         ];
 

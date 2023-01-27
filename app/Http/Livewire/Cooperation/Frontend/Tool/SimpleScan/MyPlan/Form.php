@@ -71,10 +71,6 @@ class Form extends Component
     public int $renewable = 0;
     public int $investment = 0;
 
-    // TODO: Move this to a constant helper when this is retrieved from backend
-    public string $SUBSIDY_AVAILABLE = 'available';
-    public string $SUBSIDY_UNAVAILABLE = 'unavailable';
-    public string $SUBSIDY_UNKNOWN = 'unknown';
 
     protected $rules = [
         'custom_measure_application.name' => 'required',
@@ -282,7 +278,8 @@ class Form extends Component
             'info' => $customMeasureApplication->info,
             'icon' => 'icon-tools',
             'costs' => $advice->costs,
-            'subsidy' => $this->SUBSIDY_UNKNOWN,
+            'subsidy_available' => $advice->subsidy_available,
+            'loan_available' => $advice->loan_available,
             'savings' => $advice->savings_money ?? 0,
         ];
 
@@ -688,8 +685,6 @@ class Form extends Component
                 $cards[$category][$order] = [
                     'name' => Str::limit($advisable->name, 57),
                     'icon' => $advisable->extra['icon'] ?? 'icon-tools',
-                    // TODO: Subsidy
-                    'subsidy' => $this->SUBSIDY_UNKNOWN,
                     'info' => nl2br($advisable->info),
                 ];
             }

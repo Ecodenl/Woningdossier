@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\Cache\BaseCache;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
@@ -70,7 +71,7 @@ trait GetMyValuesTrait
      */
     public function hasAttribute(string $attribute): bool
     {
-        return (Schema::hasColumn($this->getTable(), $attribute));
+        return \App\Helpers\Cache\Schema::hasColumn($this->getTable(), $attribute);
     }
 
     protected function saveForMasterInputSource()

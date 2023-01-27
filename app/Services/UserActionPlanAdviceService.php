@@ -8,6 +8,7 @@ use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Helpers\StepHelper;
 use App\Models\Building;
+use App\Models\CustomMeasureApplication;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -45,7 +46,8 @@ class UserActionPlanAdviceService
             ->forBuilding($userActionPlanAdvice->user->building)
             ->get();
 
-        $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
+
 
         // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
         $regulations = $payload

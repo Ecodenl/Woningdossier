@@ -68,15 +68,10 @@ class UserActionPlanAdviceObserver
 
     public function created(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        Log::debug('before refresh');
-        if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
-            $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
-            if ($advisable instanceof MeasureApplication) {
-                Log::debug('before refresh, inside if.');
-                // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.
-                // Or its triggered from a recalculation, which means the code is already running on a queue.
-                UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);
-            }
-        }
+        // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.
+        // Or its triggered from a recalculation, which means the code is already running on a queue.
+
+        // usually we would exclude the master input source, however the refreshRegulations does NOT trigger model events.
+        UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);
     }
 }

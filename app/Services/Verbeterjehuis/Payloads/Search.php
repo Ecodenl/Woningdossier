@@ -35,12 +35,20 @@ class Search
     public function forMeasure(Model $measureModel): self
     {
         $target = MappingService::init()->from($measureModel)->resolveTarget();
+
         if (is_array($target)) {
             $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {
                 $relevantTags = array_filter($regulation['Tags'], fn($tag) => $tag['Value'] === $target['Value']);
-
                 return ! empty($relevantTags);
             });
+        }
+        if (is_null($target)) {
+            // so there is no mapping available
+            // which in a sense means that there are no relevant regulations.
+            // this is why we clear it.
+            // ALSO worth noting, this is only possible because not every measure has a mapping
+            // for instance the forBuildingContractType will always have a mapping available.
+            $this->transformedPayload = collect();
         }
 
         return $this;

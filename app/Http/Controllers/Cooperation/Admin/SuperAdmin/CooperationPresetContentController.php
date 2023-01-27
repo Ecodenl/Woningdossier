@@ -18,4 +18,12 @@ class CooperationPresetContentController extends Controller
     {
         return view('cooperation.admin.super-admin.cooperation-preset-contents.edit', compact('cooperationPreset', 'cooperationPresetContent'));
     }
+
+    public function destroy(Cooperation $cooperation, CooperationPreset $cooperationPreset, CooperationPresetContent $cooperationPresetContent)
+    {
+        $cooperationPresetContent->delete();
+
+        return redirect()->route('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperation', 'cooperationPreset'))
+            ->with('success', __('cooperation/admin/super-admin/cooperation-preset-contents.destroy.success'));
+    }
 }

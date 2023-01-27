@@ -78,5 +78,5 @@ Route::resource('cooperation-presets', Cooperation\Admin\SuperAdmin\CooperationP
     ->parameter('cooperation-presets', 'cooperationPreset');
 
 Route::resource('cooperation-presets.cooperation-preset-contents', Cooperation\Admin\SuperAdmin\CooperationPresetContentController::class)
-    ->only('create', 'edit')
+    ->only('create', 'edit', 'destroy')
     ->parameters(['cooperation-presets' => 'cooperationPreset', 'cooperation-preset-contents' => 'cooperationPresetContent']);

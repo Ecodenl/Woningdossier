@@ -13,4 +13,8 @@ return [
     'update' => [
         'success' => 'Preset bijgewerkt',
     ],
+    'destroy' => [
+        'confirm' => 'Weet je zeker dat je deze preset wilt verwijderen?',
+        'success' => 'Preset verwijderd',
+    ],
 ];

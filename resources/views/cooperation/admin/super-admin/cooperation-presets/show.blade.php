@@ -38,16 +38,23 @@
                                         {{ $title }}
                                     </td>
                                     <td>
-                                        <a href="{{route('cooperation.admin.super-admin.cooperation-presets.cooperation-preset-contents.edit', compact('cooperationPreset', 'cooperationPresetContent'))}}"
+                                        <a href="{{ route('cooperation.admin.super-admin.cooperation-presets.cooperation-preset-contents.edit', compact('cooperationPreset', 'cooperationPresetContent')) }}"
                                            class="btn btn-success">
                                             @lang('cooperation/admin/super-admin/cooperation-preset-contents.edit.title')
                                         </a>
+                                        <form action="{{ route('cooperation.admin.super-admin.cooperation-presets.cooperation-preset-contents.destroy', compact('cooperationPreset', 'cooperationPresetContent')) }}"
+                                              method="POST" class="d-line">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger" type="submit">
+                                                @lang('default.buttons.destroy')
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
@@ -60,6 +67,13 @@
         $(document).ready(function () {
             $('table').dataTable({
                 responsive: false
+            });
+
+            $('button[type="submit"]').click((event) => {
+                if (! confirm('@lang('cooperation/admin/super-admin/cooperation-preset-contents.destroy.confirm')')) {
+                    event.preventDefault();
+                    return false;
+                }
             });
         });
     </script>

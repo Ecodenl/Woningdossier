@@ -34,8 +34,7 @@ class Search
 
     public function forMeasure(Model $measureModel): self
     {
-        if (get_class($measureModel));
-        $target = MappingService::init()->from($measureApplication)->resolveTarget();
+        $target = MappingService::init()->from($measureModel)->resolveTarget();
         if (is_array($target)) {
             $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {
                 $relevantTags = array_filter($regulation['Tags'], fn($tag) => $tag['Value'] === $target['Value']);

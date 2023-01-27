@@ -15,6 +15,9 @@ class Form extends Component
 
     public function mount(?CooperationPresetContent $cooperationPresetContent = null)
     {
+        // Normally we can let Livewire set the model for us, however, on create we don't have one. Yet, by casting
+        // a model as null, we get a fresh model object, on which we can call things such as ->exists.
+        $this->cooperationPresetContent = $cooperationPresetContent;
         if ($cooperationPresetContent->exists) {
             $this->fill([
                 'content' => $cooperationPresetContent->content,

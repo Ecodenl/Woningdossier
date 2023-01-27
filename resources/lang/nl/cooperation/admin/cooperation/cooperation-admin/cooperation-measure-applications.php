@@ -56,5 +56,8 @@ return [
         'icon' => [
             'label' => 'Icoon',
         ],
+        'is-extensive-measure' => [
+            'label' => 'Is grote maatregel',
+        ]
     ],
 ];

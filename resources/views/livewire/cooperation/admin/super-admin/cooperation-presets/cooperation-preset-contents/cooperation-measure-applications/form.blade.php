@@ -1,9 +1,9 @@
 <div>
-    <form wire:submit.prevent="save()">
+    <form wire:submit.prevent="save()" autocomplete="off">
         <div class="row">
             <div class="col-sm-6">
                 <a id="leave-creation-tool" class="btn btn-warning"
-                   href="{{route('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperationPreset'))}}">
+                   href="{{route('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperation', 'cooperationPreset'))}}">
                     @lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool')
                 </a>
             </div>
@@ -42,7 +42,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    @component('layouts.parts.components.form-group', ["content.info.{$locale}"])
+                                    @component('layouts.parts.components.form-group', ['input_name' => "content.info.{$locale}"])
                                         <label for="info-{{$locale}}">
                                             @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.info.label')
                                         </label>
@@ -100,7 +100,7 @@
                                 @endcomponent
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" wire:ignore>
                             <div class="col-sm-6">
                                 @component('layouts.parts.components.form-group', ['input_name' => 'content.extra.icon'])
                                     <label for="icon">
@@ -108,6 +108,9 @@
                                     </label>
                                     <select class="form-control" id="icon"
                                             wire:model="content.extra.icon">
+                                        <option value="">
+                                            @lang('default.form.dropdown.choose')
+                                        </option>
                                         @foreach(File::allFiles(public_path('icons')) as $file)
                                             @php
                                                 $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
@@ -126,7 +129,7 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 @component('layouts.parts.components.form-group', ['input_name' => 'content.is_extensive_measure'])
-                                    <div class="checkbox-wrapper">
+                                    <div class="checkbox-wrapper mt-10">
                                         <input id="is-extensive-measure" wire:model="content.is_extensive_measure"
                                                type="checkbox" value="1">
                                         <label for="is-extensive-measure">
@@ -152,11 +155,15 @@
             var $icon = $('#icon');
             $icon.select2();
 
-            $icon.change(function () {
+            $icon.change(function (event) {
                 var $iconPreview = $('#icon-preview');
                 $iconPreview.removeClass();
                 var icon = $(this).val();
                 $iconPreview.addClass(`icon-lg ${icon}`);
+
+                // So, select2 triggers a jQuery change, which isn't caught by Livewire. We dispatch an emit
+                // to handle it...
+                Livewire.emitTo('cooperation.admin.super-admin.cooperation-presets.cooperation-preset-contents.cooperation-measure-applications.form', 'fieldUpdate', 'content.extra.icon', icon);
             });
 
             $icon.trigger('change');

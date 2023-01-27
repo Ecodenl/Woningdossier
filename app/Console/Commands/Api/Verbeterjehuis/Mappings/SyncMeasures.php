@@ -7,6 +7,7 @@ use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Client;
+use App\Services\Verbeterjehuis\RegulationService;
 use App\Services\Verbeterjehuis\Verbeterjehuis;
 use Illuminate\Console\Command;
 
@@ -83,9 +84,7 @@ class SyncMeasures extends Command
         ];
 
         $targetGroups = collect(
-            Verbeterjehuis::init(Client::init())
-                ->regulation()
-                ->getFilters()['Measures']
+            RegulationService::init()->getFilters()['Measures']
         )->keyBy('Value');
 
         foreach ($map as $measureApplicationShort => $targetMeasureValues) {

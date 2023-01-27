@@ -26,6 +26,7 @@ use Livewire\Component;
 class Form extends Component
 {
     use AuthorizesRequests;
+
     public array $cards = [
         UserActionPlanAdviceService::CATEGORY_COMPLETE => [
 
@@ -70,10 +71,6 @@ class Form extends Component
     public int $renewable = 0;
     public int $investment = 0;
 
-    // TODO: Move this to a constant helper when this is retrieved from backend
-    public string $SUBSIDY_AVAILABLE = 'available';
-    public string $SUBSIDY_UNAVAILABLE = 'unavailable';
-    public string $SUBSIDY_UNKNOWN = 'unknown';
 
     protected $rules = [
         'custom_measure_application.name' => 'required',
@@ -227,7 +224,8 @@ class Form extends Component
         $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
         $costs['to'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['to'] ?? ''), 2);
         $this->custom_measure_application['costs'] = $costs;
-        $this->custom_measure_application['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '', $this->custom_measure_application['savings_money'] ?? 0), 2);
+        $this->custom_measure_application['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '',
+            $this->custom_measure_application['savings_money'] ?? 0), 2);
 
         $validator = Validator::make([
             'custom_measure_application' => $this->custom_measure_application
@@ -280,7 +278,8 @@ class Form extends Component
             'info' => $customMeasureApplication->info,
             'icon' => 'icon-tools',
             'costs' => $advice->costs,
-            'subsidy' => $this->SUBSIDY_UNKNOWN,
+            'subsidy_available' => $advice->subsidy_available,
+            'loan_available' => $advice->loan_available,
             'savings' => $advice->savings_money ?? 0,
         ];
 
@@ -304,7 +303,7 @@ class Form extends Component
         });
 
         // Structure: order => card
-        if (! empty($cardData)) {
+        if ( ! empty($cardData)) {
             $oldOrder = array_key_first($cardData);
             $movedCard = $cardData[$oldOrder];
 
@@ -377,7 +376,7 @@ class Form extends Component
             return $card['id'] == $id;
         });
 
-        if (! empty($cardData)) {
+        if ( ! empty($cardData)) {
             $oldOrder = array_key_first($cardData);
             $trashedCard = $cardData[$oldOrder];
 
@@ -471,8 +470,8 @@ class Form extends Component
         $package = $this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO];
         $package = array_merge($package, $this->cards[UserActionPlanAdviceService::CATEGORY_COMPLETE]);
         $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
-                                       ->whereIn('id', \Illuminate\Support\Arr::pluck($package, 'id'))
-                                       ->get();
+            ->whereIn('id', \Illuminate\Support\Arr::pluck($package, 'id'))
+            ->get();
         $totalGasSavings = $advices->sum('savings_gas');
         $totalElectricitySavings = $advices->sum('savings_electricity');
 
@@ -491,10 +490,10 @@ class Form extends Component
 
         // calculate to kg. (set gas and electricity to same unit)
         $co2Reductions = $totalGasSavings * Kengetallen::CO2_SAVING_GAS +
-        $totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY;
+            $totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY;
 
         $co2Current = $usageGas * Kengetallen::CO2_SAVING_GAS +
-        $usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY;
+            $usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY;
 
         // To calculate the new percentage, we need the new situation
         $co2New = $co2Current - $co2Reductions;
@@ -555,7 +554,7 @@ class Form extends Component
         }
 
         $myAdvice = null;
-        if (! empty($advisableId)) {
+        if ( ! empty($advisableId)) {
             // Get MY advice
             $myAdvice = UserActionPlanAdvice::forInputSource($this->currentInputSource)
                 ->where('user_id', $this->building->user->id)
@@ -583,7 +582,7 @@ class Form extends Component
             return $card['id'] == $id;
         });
 
-        if (! empty($cardData)) {
+        if ( ! empty($cardData)) {
             $oldOrder = array_key_first($cardData);
             $addedCard = $cardData[$oldOrder];
 
@@ -623,7 +622,8 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
-                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE, $this->masterInputSource)
+                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE,
+                    $this->masterInputSource)
                 ->category($category)
                 ->orderBy('order')
                 ->get();
@@ -637,13 +637,15 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->invisible()
-                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE, $this->masterInputSource)
+                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE,
+                    $this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
                 ->category($category)
                 ->orderBy('order')
                 ->get();
 
-            $this->hiddenCards = array_merge($this->hiddenCards, $this->convertAdvicesToCards($hiddenAdvices, $category));
+            $this->hiddenCards = array_merge($this->hiddenCards,
+                $this->convertAdvicesToCards($hiddenAdvices, $category));
         }
     }
 
@@ -668,8 +670,6 @@ class Form extends Component
                     'name' => Str::limit($advisable->measure_name, 57),
                     'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
-                    'subsidy_available' => $advice->subsidy_available,
-                    'loan_available' => $advice->loan_available,
                     'info' => nl2br($advisable->measure_info),
                     'route' => $route,
                     'comfort' => $advisable->configurations['comfort'] ?? 0,
@@ -685,16 +685,17 @@ class Form extends Component
                 $cards[$category][$order] = [
                     'name' => Str::limit($advisable->name, 57),
                     'icon' => $advisable->extra['icon'] ?? 'icon-tools',
-                    // TODO: Subsidy
-                    'subsidy' => $this->SUBSIDY_UNKNOWN,
                     'info' => nl2br($advisable->info),
                 ];
             }
 
+            $cards[$category][$order]['subsidy_available'] = $advice->subsidy_available;
+            $cards[$category][$order]['loan_available'] = $advice->loan_available;
+
             $cards[$category][$order]['id'] = $advice->id;
             $cards[$category][$order]['costs'] = [
                 'from' => empty($advice->costs['from']) ? null : NumberFormatter::round($advice->costs['from']),
-                'to' =>  empty($advice->costs['to']) ? null : NumberFormatter::round($advice->costs['to']),
+                'to' => empty($advice->costs['to']) ? null : NumberFormatter::round($advice->costs['to']),
             ];
             $cards[$category][$order]['savings'] = NumberFormatter::round($advice->savings_money ?? 0);
 
@@ -719,13 +720,13 @@ class Form extends Component
                     break;
                 }
             } // Full range
-            elseif (! empty($condition['from']) && ! empty($condition['to'])) {
+            elseif ( ! empty($condition['from']) && ! empty($condition['to'])) {
                 if ($calculation >= $condition['from'] && $calculation < $condition['to']) {
                     $value = $calculationCondition['value'];
                     break;
                 }
             } // Bottom range only
-            elseif (! empty($condition['from']) && empty($condition['to'])) {
+            elseif ( ! empty($condition['from']) && empty($condition['to'])) {
                 if ($calculation >= $condition['from']) {
                     $value = $calculationCondition['value'];
                     break;

@@ -8,6 +8,7 @@ use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Helpers\StepHelper;
 use App\Models\Building;
+use App\Models\CustomMeasureApplication;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -43,11 +44,14 @@ class UserActionPlanAdviceService
         ]);
         $payload = RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
-            ->get();
+            ->getSearch();
+
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
+
 
         // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
         $regulations = $payload
-            ->forMeasureApplication($userActionPlanAdvice->userActionPlanAdvisable)
+            ->forMeasure($advisable)
             ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
 
         $loanAvailable = $regulations->getLoans()->isNotEmpty();

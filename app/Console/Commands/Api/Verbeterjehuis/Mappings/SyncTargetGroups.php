@@ -6,6 +6,7 @@ use App\Models\Mapping;
 use App\Models\ToolQuestion;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Client;
+use App\Services\Verbeterjehuis\RegulationService;
 use App\Services\Verbeterjehuis\Verbeterjehuis;
 use Illuminate\Console\Command;
 
@@ -49,9 +50,7 @@ class SyncTargetGroups extends Command
         ];
 
         $targetGroups = collect(
-            Verbeterjehuis::init(Client::init())
-                ->regulation()
-                ->getFilters()['TargetGroups']
+            RegulationService::init()->getFilters()['TargetGroups']
         )->keyBy('Value');
 
         foreach ($map as $from => $target) {

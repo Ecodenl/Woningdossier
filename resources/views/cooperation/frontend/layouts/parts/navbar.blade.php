@@ -95,6 +95,12 @@
                 @endcomponent
             @endif
 
+            <div>
+                <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('scan')) }}"
+                   class="flex flex-wrap justify-center items-center">
+                    <i class="icon-md icon-euro"></i>
+                </a>
+            </div>
 
             <livewire:cooperation.frontend.layouts.parts.alerts :building="$building"
                                                                 :inputSource="$masterInputSource"/>

@@ -128,4 +128,18 @@ return [
             'create-report' => 'Maak rapportage',
         ],
     ],
+    'my-regulations' => [
+        'categories' => [
+            'subsidy' => 'Subsidies (:count)',
+            'loans' => 'Leningen (:count)',
+            'other' => 'Overige (:count)',
+        ],
+        'container' => [
+            'intro' => [
+                'subsidy' => 'Er zijn de volgende subsidieregelingen beschikbaar voor jouw situatie:',
+                'loans' => 'Er zijn de volgende leningen beschikbaar in jouw gemeente:',
+                'other' => 'De volgende regelingen zijn van toepassing op jouw situatie:',
+            ],
+        ]
+    ],
 ];

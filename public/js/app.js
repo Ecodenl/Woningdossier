@@ -3081,37 +3081,37 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           var attributeObserver = new MutationObserver(function (mutations) {
             context.setDisabledState();
           });
-          attributeObserver.observe(_this.select, {
+          attributeObserver.observe(context.select, {
             attributeFilter: ['disabled']
           });
 
           // Bind event listener for change
           // TODO: Check if values update correctly when data is changed on Livewire side
           context.select.addEventListener('change', function (event) {
-            _this.updateSelectedValues();
+            context.updateSelectedValues();
           });
         }
         if (context.livewire && null !== context.select) {
           //TODO: This works for now, but the wire:model can have extra options such as .lazy, which will
           // not be caught this way. Might require different resolving in the future
-          _this.wireModel = context.select.getAttribute('wire:model');
+          context.wireModel = context.select.getAttribute('wire:model');
         }
-        if (_this.values === null && _this.multiple) {
-          _this.values = [];
+        if (context.values === null && context.multiple) {
+          context.values = [];
+        }
+        if (context.multiple) {
+          // If it's multiple, we will add an event listener to rebuild the input on resizing,
+          // as well as on switching tabs.
+          window.addEventListener('resize', function (event) {
+            context.setInputValue();
+          });
+          window.addEventListener('tab-switched', function (event) {
+            setTimeout(function () {
+              context.setInputValue();
+            });
+          });
         }
       });
-      if (this.multiple) {
-        // If it's multiple, we will add an event listener to rebuild the input on resizing,
-        // as well as on switching tabs.
-        window.addEventListener('resize', function (event) {
-          _this.setInputValue();
-        });
-        window.addEventListener('tab-switched', function (event) {
-          setTimeout(function () {
-            _this.setInputValue();
-          });
-        });
-      }
       this.$watch('values', function (value, oldValue) {
         _this.setInputValue();
       });
@@ -4502,55 +4502,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (function () {
+  var _tab;
   var defaultTab = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   return {
-    currentTab: null,
+    currentTab: defaultTab,
     lastTab: null,
     init: function init() {
       var _this = this;
       document.addEventListener('DOMContentLoaded', function () {
-        // Ensure defaultTab starts with '#'
-        var hash = document.location.hash || defaultTab;
-
-        // check if the current url matches a hashtag
-        if (hash) {
-          _this.switchTab(document.querySelector("a[href=\"".concat(hash, "\"]")));
-        }
-
         // In case no tab is set we grab the main.
         if (_this.currentTab === null) {
           var mainTab = _this.$refs['main-tab'];
           // Set main tab by default
           if (mainTab) {
-            _this.currentTab = mainTab;
+            _this.currentTab = mainTab.getAttribute('data-tab');
           }
         }
       });
     },
-    tab: _defineProperty({}, 'x-on:click', function xOnClick() {
-      this.switchTab(this.$el);
+    tab: (_tab = {}, _defineProperty(_tab, 'x-on:click', function xOnClick() {
+      this.$event.preventDefault();
+      this.switchTab(this.$el.getAttribute('data-tab'));
+    }), _defineProperty(_tab, 'x-bind:class', function xBindClass() {
+      return this.$el.getAttribute('data-tab') === this.currentTab ? 'active' : '';
+    }), _tab),
+    container: _defineProperty({}, 'x-show', function xShow() {
+      return this.$el.getAttribute('data-tab') === this.currentTab;
     }),
     switchTab: function switchTab(element) {
       if (element) {
-        var href = element.getAttribute('href');
-        if (href[0] === '#') {
-          var tab = document.querySelector(href);
-          if (tab && tab !== this.currentTab) {
-            // Set last tab
-            this.lastTab = this.currentTab;
-            // Set current tab
-            this.currentTab = tab;
-            // Set hash
-            window.location.hash = element.hash;
-
-            // Update buttons if needed
-            var navTabs = this.$refs['nav-tabs'];
-            if (navTabs) {
-              navTabs.querySelector('li.active').classList.remove('active');
-              element.parentElement.classList.add('active');
-            }
-          }
-        }
+        this.currentTab = this.$el.getAttribute('data-tab');
+        triggerCustomEvent(window, 'tab-switched');
       }
     },
     back: function back() {

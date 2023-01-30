@@ -3,8 +3,9 @@
 namespace App\Observers;
 
 use App\Models\Cooperation;
+use App\Models\CooperationPreset;
 use App\Services\CooperationScanService;
-use Database\Seeders\CooperationMeasureApplicationsTableSeeder;
+use App\Services\Models\CooperationPresetService;
 
 class CooperationObserver
 {
@@ -13,6 +14,10 @@ class CooperationObserver
         // Give the cooperation the default quick-scan upon register.
         CooperationScanService::init($cooperation)->syncScan('quick-scan');
 
-        $cooperation->cooperationMeasureApplications()->createMany(CooperationMeasureApplicationsTableSeeder::MEASURES);
+        $preset = CooperationPreset::findByShort(CooperationPresetService::COOPERATION_MEASURE_APPLICATIONS);
+
+        $cooperation->cooperationMeasureApplications()->createMany(
+            CooperationPresetService::init()->forPreset($preset)->getContent()
+        );
     }
 }

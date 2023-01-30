@@ -355,6 +355,18 @@ return [
         'questionnaires.steps' => 'na stap',
         'questionnaires.steps.*' => 'na stap',
         'questionnaires.name.*' => 'naam',
+
+        // Cooperation presets
+        // Cooperation measure applications
+        'content.name' => 'naam',
+        'content.name.*' => 'naam',
+        'content.info' => 'info',
+        'content.info.*' => 'info',
+        'content.costs.from' => 'investering vanaf',
+        'content.costs.to' => 'investering tot',
+        'content.savings_money' => 'besparing',
+        'content.extra.icon' => 'icoon',
+        'content.is_extensive_measure' => 'is grote maatregel',
     ],
 
     'values' => [

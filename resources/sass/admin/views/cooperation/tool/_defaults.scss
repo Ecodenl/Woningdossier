@@ -1,5 +1,11 @@
 .panel {
   .panel-heading {
+    &.flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     h3 {
       padding: 0px;
     }

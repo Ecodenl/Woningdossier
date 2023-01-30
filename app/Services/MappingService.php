@@ -36,11 +36,10 @@ class MappingService
     {
         $mapping = $this->resolveMapping();
         if ($mapping instanceof Mapping) {
-
-            if ( ! empty($mapping->target_data)) {
+            if (! empty($mapping->target_data)) {
                 return $mapping->target_data;
             }
-            if ( ! is_null($mapping->target_value)) {
+            if (! is_null($mapping->target_value)) {
                 return $mapping->target_value;
             }
         }
@@ -63,6 +62,7 @@ class MappingService
     {
         $mapping = [];
 
+        // In the case we EVER allow different types for mapping, we must ensure other fields get nullified.
         if ($this->target instanceof Model) {
             $mapping['target_model_type'] = $this->target->getMorphClass();
             $mapping['target_model_id'] = $this->target->id;

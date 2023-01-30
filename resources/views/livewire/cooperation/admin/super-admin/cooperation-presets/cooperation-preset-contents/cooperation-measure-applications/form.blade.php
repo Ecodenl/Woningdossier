@@ -8,7 +8,7 @@
                 </a>
             </div>
             <div class="col-sm-6">
-                <button type="submit"  class="btn btn-primary pull-right">
+                <button type="submit" class="btn btn-primary pull-right">
                     @lang('default.buttons.save')
                 </button>
             </div>
@@ -57,6 +57,27 @@
                                 </div>
                             </div>
                         @endforeach
+                        <div class="row" wire:ignore>
+                            <div class="col-sm-6">
+                                @component('layouts.parts.components.form-group', ['input_name' => 'content.relations.mapping.measure_category'])
+                                    <label for="measure-category">
+                                        @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
+                                    </label>
+                                    <select class="form-control"
+                                            wire:model="content.relations.mapping.measure_category"
+                                            id="measure-category">
+                                        <option value="">
+                                            @lang('default.form.dropdown.choose')
+                                        </option>
+                                        @foreach($measures as $measure)
+                                            <option value="{{ $measure['Value'] }}">
+                                                {{ $measure['Label'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                @endcomponent
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 @component('layouts.parts.components.form-group', ['input_name' => 'content.costs.from'])
@@ -152,6 +173,13 @@
 @push('js')
     <script>
         $(document).ready(() => {
+            var $measureCategory = $('#measure-category');
+            $measureCategory.select2();
+
+            $measureCategory.change(function (event) {
+                Livewire.emitTo('cooperation.admin.super-admin.cooperation-presets.cooperation-preset-contents.cooperation-measure-applications.form', 'fieldUpdate', 'content.relations.mapping.measure_category', $(this).val());
+            });
+
             var $icon = $('#icon');
             $icon.select2();
 

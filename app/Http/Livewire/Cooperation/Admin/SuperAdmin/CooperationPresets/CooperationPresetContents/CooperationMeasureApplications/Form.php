@@ -6,12 +6,16 @@ use App\Helpers\HoomdossierSession;
 use App\Models\CooperationPreset;
 use App\Models\CooperationPresetContent;
 use App\Rules\LanguageRequired;
+use App\Services\Verbeterjehuis\RegulationService;
+use Illuminate\Support\Arr;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class Form extends Component
 {
     public CooperationPreset $cooperationPreset;
     public ?CooperationPresetContent $cooperationPresetContent;
+    public array $measures;
 
     public array $content = [
         // Required defaults
@@ -24,13 +28,14 @@ class Form extends Component
         'is_extensive_measure' => false,
     ];
 
-    protected function rules()
+    protected function rules(): array
     {
         $evaluateGt = ! empty($this->content['costs']['from']);
 
         return [
             'content.name' => [new LanguageRequired()],
             'content.info' => [new LanguageRequired()],
+            'content.relations.mapping.measure_category' => ['required', Rule::in(Arr::pluck($this->measures, 'Value'))],
             'content.costs.from' => [
                 'nullable', 'numeric', 'min:0',
             ],
@@ -64,6 +69,8 @@ class Form extends Component
                 'content' => $cooperationPresetContent->content,
             ]);
         }
+
+        $this->measures = RegulationService::init()->getFilters()['Measures'];
     }
 
     public function render()

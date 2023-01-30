@@ -44,8 +44,8 @@ class CustomChanges extends Component
     {
         return [
             'customMeasureApplicationsFormData.*.name' => 'required',
-            'customMeasureApplicationsFormData.*.measure_category' => ['required', Rule::in(Arr::pluck($this->measures, 'Value'))],
             'customMeasureApplicationsFormData.*.info' => 'required',
+            'customMeasureApplicationsFormData.*.measure_category' => ['required', Rule::in(Arr::pluck($this->measures, 'Value'))],
             'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
             'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
             'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric|max:999999',

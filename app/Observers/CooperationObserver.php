@@ -16,8 +16,17 @@ class CooperationObserver
 
         $preset = CooperationPreset::findByShort(CooperationPresetService::COOPERATION_MEASURE_APPLICATIONS);
 
-        $cooperation->cooperationMeasureApplications()->createMany(
-            CooperationPresetService::init()->forPreset($preset)->getContent()
-        );
+        $service = CooperationPresetService::init()->forPreset($preset);
+        $content = $service->getContent();
+
+        foreach ($content as $measureContent) {
+            $relations = $measureContent['relations'] ?? [];
+            unset($measureContent['relations']);
+            $model = $cooperation->cooperationMeasureApplications()->create($measureContent);
+
+            if (is_array($relations)) {
+                $service->forModel($model)->handleRelations($relations);
+            }
+        }
     }
 }

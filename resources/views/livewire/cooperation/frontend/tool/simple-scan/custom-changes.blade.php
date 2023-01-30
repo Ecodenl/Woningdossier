@@ -49,39 +49,10 @@
                             ])
                                 <input class="form-input"
                                        wire:model="customMeasureApplicationsFormData.{{$index}}.name"
-                                       id="custom-measure-application-{{$index}}-{{$index}}-name"
+                                       id="custom-measure-application-{{$index}}-name"
                                        placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')"
                                        @if($disabled) disabled="disabled" @endif
                                 >
-                            @endcomponent
-                            <div class="w-full flex items-center">
-                                <i class="icon-sm icon-info mr-3"></i>
-                                <h6 class="heading-6">
-                                    @lang('cooperation/frontend/shared.modals.add-measure.measure-category')
-                                </h6>
-                            </div>
-                            @component('cooperation.frontend.layouts.components.form-group', [
-                               'inputName' => "customMeasureApplicationsFormData.{$index}.measure_category",
-                               'class' => 'w-full -mt-4 mb-4',
-                               'id' => "custom-measure-application-{$index}-measure-category-wrapper",
-                               'withInputSource' => false,
-                            ])
-                                @component('cooperation.frontend.layouts.components.alpine-select')
-                                    <select class="form-input hidden"
-                                              wire:model="customMeasureApplicationsFormData.{{$index}}.measure_category"
-                                              id="custom-measure-application-{{$index}}-{{$index}}-measure-category"
-                                              @if($disabled) disabled="disabled" @endif
-                                    >
-                                        <option value="">
-                                            @lang('default.form.dropdown.choose')
-                                        </option>
-                                        @foreach($measures as $measure)
-                                            <option value="{{ $measure['Value'] }}">
-                                                {{ $measure['Label'] }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                @endcomponent
                             @endcomponent
                             <div class="w-full flex items-center">
                                 <i class="icon-sm icon-info mr-3"></i>
@@ -101,6 +72,35 @@
                                           placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
                                           @if($disabled) disabled="disabled" @endif
                                 ></textarea>
+                            @endcomponent
+                            <div class="w-full flex items-center">
+                                <i class="icon-sm icon-info mr-3"></i>
+                                <h6 class="heading-6">
+                                    @lang('cooperation/frontend/shared.modals.add-measure.measure-category')
+                                </h6>
+                            </div>
+                            @component('cooperation.frontend.layouts.components.form-group', [
+                               'inputName' => "customMeasureApplicationsFormData.{$index}.measure_category",
+                               'class' => 'w-full -mt-4 mb-4',
+                               'id' => "custom-measure-application-{$index}-measure-category-wrapper",
+                               'withInputSource' => false,
+                            ])
+                                @component('cooperation.frontend.layouts.components.alpine-select')
+                                    <select class="form-input hidden"
+                                            wire:model="customMeasureApplicationsFormData.{{$index}}.measure_category"
+                                            id="custom-measure-application-{{$index}}-measure-category"
+                                            @if($disabled) disabled="disabled" @endif
+                                    >
+                                        <option value="">
+                                            @lang('default.form.dropdown.choose')
+                                        </option>
+                                        @foreach($measures as $measure)
+                                            <option value="{{ $measure['Value'] }}">
+                                                {{ $measure['Label'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                @endcomponent
                             @endcomponent
                             <div class="w-full flex items-center">
                                 <i class="icon-sm icon-info mr-3"></i>

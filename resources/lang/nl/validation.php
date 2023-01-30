@@ -326,6 +326,8 @@ return [
         // Cooperation measure applications
         'cooperation_measure_applications.name' => 'Naam',
         'cooperation_measure_applications.name.*' => 'Naam',
+        'cooperation_measure_applications.measure_category' => 'maatregelcategorie',
+        'cooperation_measure_applications.measure_category.*' => 'maatregelcategorie',
         'cooperation_measure_applications.info' => 'Info',
         'cooperation_measure_applications.info.*' => 'Info',
         'cooperation_measure_applications.costs.from' => 'Investering vanaf',

@@ -101,7 +101,7 @@ class CustomChanges extends Component
 
         $measure = $this->cooperationMeasureApplicationsFormData[$index] ?? null;
 
-        if (!empty($measure)) {
+        if (! empty($measure)) {
             $cooperationMeasureApplication = CooperationMeasureApplication::find($measure['id']);
 
             // No bogged data

@@ -9,6 +9,7 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Scan;
 use App\Services\Models\NotificationService;
+use App\Services\Verbeterjehuis\RegulationService;
 
 class MyRegulationsController extends Controller
 {
@@ -33,6 +34,17 @@ class MyRegulationsController extends Controller
             }
         }
 
-        return view('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('activeNotification'));
+        $payload = RegulationService::init()
+            ->forBuilding($building)
+            ->getSearch()
+            ->getCategorized();
+
+        // TODO: Logic
+        $advices = $building->user->userActionPlanAdvices()
+            ->forInputSource($masterInputSource)
+            ->withoutDeletedCooperationMeasureApplications($masterInputSource)
+            ->get();
+
+        return view('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('activeNotification', 'masterInputSource', 'payload', 'advices'));
     }
 }

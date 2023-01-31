@@ -180209,6 +180209,39 @@ textarea.form-input {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem
 }
+
+/* Regulation cards */
+
+.regulation-card-wrapper {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.regulation-card-wrapper .regulation-card {
+  border-radius: 0.5rem;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgba(55, 129, 240, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+  padding: 1rem;
+  width: 42rem;
+  min-height: 16rem;
+}
+
+.regulation-card-wrapper .regulation-card .bubble {
+  margin: 0.25rem;
+  border-radius: 9999px;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-weight: 500;
+}
 .table {
   width: 100%;
 }

@@ -4,9 +4,9 @@ namespace App\Services\Verbeterjehuis\Payloads;
 
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
 use App\Services\MappingService;
+use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -80,12 +80,17 @@ class Search
 
     public function getLoans(): Collection
     {
-        return $this->transformedPayload->where('Type', 'loan');
+        return $this->transformedPayload->where('Type', RegulationService::LOAN);
     }
 
     public function getSubsidies(): Collection
     {
-        return $this->transformedPayload->where('Type', 'subsidy');
+        return $this->transformedPayload->where('Type', RegulationService::SUBSIDY);
+    }
+
+    public function getCategorized(): Collection
+    {
+        return $this->transformedPayload->groupBy('Type');
     }
 
     public function all(): Collection

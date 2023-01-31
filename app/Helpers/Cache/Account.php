@@ -32,7 +32,7 @@ class Account extends BaseCache
         }
 
         return Cache::remember(
-            self::getCacheKey(static::CACHE_KEY_USER, $account->id),
+            self::getCooperationCacheKey(static::CACHE_KEY_USER, $account->id),
             config('hoomdossier.cache.times.default'),
             function () use ($account) {
                 return $account->users()->first();
@@ -43,6 +43,6 @@ class Account extends BaseCache
     public static function wipe($id)
     {
         static::clear(self::getCacheKey(static::CACHE_KEY_FIND, $id));
-        static::clear(self::getCacheKey(static::CACHE_KEY_USER, $id));
+        static::clear(self::getCooperationCacheKey(static::CACHE_KEY_USER, $id));
     }
 }

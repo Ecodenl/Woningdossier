@@ -92,6 +92,7 @@ class AppServiceProvider extends ServiceProvider
                 // We only active the notification if it isn't already. This is because it will increment the count of
                 // the current active notification, and we don't want to do that.
                 if ($service->isNotActive()) {
+                    Log::debug("None active, setting active");
                     $service->setActive();
                 }
             }

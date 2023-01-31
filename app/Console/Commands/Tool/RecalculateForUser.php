@@ -111,7 +111,7 @@ class RecalculateForUser extends Command
                         ->onQueue(Queue::ASYNC);
                 }
 
-                Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
+                Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id} | total: {$stepsToRecalculate->count()}");
 
                 NotificationService::init()
                     ->forBuilding($user->building)

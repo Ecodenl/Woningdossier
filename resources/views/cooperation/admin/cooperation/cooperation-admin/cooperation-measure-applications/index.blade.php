@@ -2,10 +2,12 @@
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">
+        <div class="panel-heading flex">
             @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.index.title')
             <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create', compact('type'))}}"
-               class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+               class="btn btn-md btn-primary pull-right">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
         </div>
 
         <div class="panel-body">

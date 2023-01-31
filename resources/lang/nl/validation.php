@@ -250,6 +250,7 @@ return [
 
         // New measure
         'custom_measure_application.name' => 'onderwerp',
+        'custom_measure_application.measure_category' => 'maatregelcategorie',
         'custom_measure_application.info' => 'beschrijving',
         'custom_measure_application.costs.from' => 'investering vanaf',
         'custom_measure_application.costs.to' => 'investering tot',
@@ -325,6 +326,7 @@ return [
         // Cooperation measure applications
         'cooperation_measure_applications.name' => 'Naam',
         'cooperation_measure_applications.name.*' => 'Naam',
+        'cooperation_measure_applications.measure_category' => 'maatregelcategorie',
         'cooperation_measure_applications.info' => 'Info',
         'cooperation_measure_applications.info.*' => 'Info',
         'cooperation_measure_applications.costs.from' => 'Investering vanaf',
@@ -355,6 +357,19 @@ return [
         'questionnaires.steps' => 'na stap',
         'questionnaires.steps.*' => 'na stap',
         'questionnaires.name.*' => 'naam',
+
+        // Cooperation presets
+        // Cooperation measure applications
+        'content.name' => 'naam',
+        'content.name.*' => 'naam',
+        'content.info' => 'info',
+        'content.info.*' => 'info',
+        'content.relations.mapping.measure_category' => 'maatregelcategorie',
+        'content.costs.from' => 'investering vanaf',
+        'content.costs.to' => 'investering tot',
+        'content.savings_money' => 'besparing',
+        'content.extra.icon' => 'icoon',
+        'content.is_extensive_measure' => 'is grote maatregel',
     ],
 
     'values' => [

@@ -99,6 +99,9 @@ class DatabaseSeeder extends Seeder
         $this->call(KeyFigureHeatPumpCoveragesTableSeeder::class);
         $this->call(HeatPumpCharacteristicsTableSeeder::class);
 
+        $this->call(CooperationPresetSeeder::class);
+        $this->call(CooperationPresetContentSeeder::class);
+
         if ('testing' !== app()->environment()) {
             $this->call(SqlDumpSeeder::class);
         }

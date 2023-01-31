@@ -3,12 +3,15 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Queue;
+use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use Illuminate\Support\Facades\Auth;
 
 class SuccessFullLoginListener
@@ -84,6 +87,11 @@ class SuccessFullLoginListener
                 'full_name' => $user->getFullName(),
             ]),
         ]);
+
+        $userActionPlanAdvices = UserActionPlanAdvice::withoutGlobalScopes()->forUser($user)->get();
+        foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
+            RefreshRegulationsForUserActionPlanAdvice::dispatch($userActionPlanAdvice)->onQueue(Queue::ASYNC);
+        }
     }
 
     /**

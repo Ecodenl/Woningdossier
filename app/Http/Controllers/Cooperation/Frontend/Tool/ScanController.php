@@ -23,7 +23,8 @@ class ScanController extends Controller
             ->forType(CloneOpposingInputSource::class)
             ->forInputSource($currentInputSource)->first();
 
-        return view("cooperation.frontend.tool.simple-scan.index", compact('scan', 'step', 'subStep', 'notification', 'currentInputSource'));
+        return view("cooperation.frontend.tool.simple-scan.index",
+            compact('scan', 'step', 'subStep', 'notification', 'currentInputSource'));
     }
 
     public function redirect(Cooperation $cooperation, Scan $scan, Step $step, SubStep $subStep)

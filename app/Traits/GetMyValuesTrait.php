@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\Cache\BaseCache;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 trait GetMyValuesTrait
@@ -69,7 +71,7 @@ trait GetMyValuesTrait
      */
     public function hasAttribute(string $attribute): bool
     {
-        return (Schema::hasColumn($this->getTable(), $attribute));
+        return \App\Helpers\Cache\Schema::hasColumn($this->getTable(), $attribute);
     }
 
     protected function saveForMasterInputSource()

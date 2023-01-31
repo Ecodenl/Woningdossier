@@ -8,6 +8,7 @@ use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Helpers\StepHelper;
 use App\Models\Building;
+use App\Models\CustomMeasureApplication;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -18,17 +19,54 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
+use App\Services\Verbeterjehuis\RegulationService;
+use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService
 {
-    use RetrievesAnswers;
+    use RetrievesAnswers, FluentCaller;
 
     const CATEGORY_COMPLETE = 'complete';
     const CATEGORY_TO_DO = 'to-do';
     const CATEGORY_LATER = 'later';
+
+    public function __construct()
+    {
+    }
+
+    public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
+    {
+        Log::debug('Refreshing regulations for ', [
+            'building_id' => $userActionPlanAdvice->user->building->id, 'user_id' => $userActionPlanAdvice->user_id, 'input_source_id' => $userActionPlanAdvice->input_source_id,
+        ]);
+        $payload = RegulationService::init()
+            ->forBuilding($userActionPlanAdvice->user->building)
+            ->getSearch();
+
+        // todo, pick the right one here.
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
+
+        Log::debug('Payload', $payload->payload->toArray());
+
+        // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
+        $regulations = $payload
+            ->forMeasure($advisable)
+            ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
+
+        Log::debug('regulations', $regulations->getSubsidies()->toArray());
+        $loanAvailable = $regulations->getLoans()->isNotEmpty();
+        $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
+
+        // This method is triggered by the observer, so to avoid a infinite loop we call it without events.
+        UserActionPlanAdvice::withoutEvents(fn() => $userActionPlanAdvice->update([
+            'loan_available' => $loanAvailable,
+            'subsidy_available' => $subsidyAvailable
+        ]));
+        Log::debug('Action plan advice', $userActionPlanAdvice->only('loan_available', 'subsidy_available'));
+    }
 
     /**
      * Return the categories, ordered.
@@ -47,9 +85,9 @@ class UserActionPlanAdviceService
     /**
      * Method to delete the user action plan advices for a given user, input source and step.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\InputSource $inputSource
-     * @param \App\Models\Step $step
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\InputSource  $inputSource
+     * @param  \App\Models\Step  $step
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -100,7 +138,8 @@ class UserActionPlanAdviceService
             // the energy saving measure application shorts.
             $flatRoofMeasureApplications = ['roof-insulation-flat-replace-current', 'roof-insulation-flat-current'];
             $pitchedRoofMeasureApplications = [
-                'roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside',
+                'roof-insulation-pitched-replace-tiles',
+                'roof-insulation-pitched-inside',
             ];
 
             // check the current advice its measure application, this way we can determine which roofType we have to check
@@ -134,7 +173,7 @@ class UserActionPlanAdviceService
     /**
      * Get the action plan categorized under measure type.
      *
-     * @param bool $withAdvices
+     * @param  bool  $withAdvices
      *
      * @return array
      */
@@ -166,7 +205,7 @@ class UserActionPlanAdviceService
                 }
 
                 // if advices are not desirable and the measureApplication is not an advice it will be added to the result
-                if (!$withAdvices && !$measureApplication->isAdvice()) {
+                if ( ! $withAdvices && ! $measureApplication->isAdvice()) {
                     $result[$measureApplication->measure_type][$advice->step->slug][$measureApplication->short] = $advice;
                 }
 
@@ -185,12 +224,15 @@ class UserActionPlanAdviceService
     /**
      * Set properties from old advices on another advice
      *
-     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
-     * @param \App\Models\MeasureApplication $measureApplication
-     * @param \Illuminate\Database\Eloquent\Collection $oldAdvices
+     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
+     * @param  \App\Models\MeasureApplication  $measureApplication
+     * @param  \Illuminate\Database\Eloquent\Collection  $oldAdvices
      */
-    public static function checkOldAdvices(UserActionPlanAdvice $userActionPlanAdvice, MeasureApplication $measureApplication, Collection $oldAdvices)
-    {
+    public static function checkOldAdvices(
+        UserActionPlanAdvice $userActionPlanAdvice,
+        MeasureApplication $measureApplication,
+        Collection $oldAdvices
+    ) {
         $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
             ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
         // This measure was set before. We ensure they stay
@@ -204,7 +246,7 @@ class UserActionPlanAdviceService
     /**
      * Set the visibility of a user action plan advice
      *
-     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
+     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
      */
     public static function setAdviceVisibility(UserActionPlanAdvice $userActionPlanAdvice)
     {
@@ -279,7 +321,7 @@ class UserActionPlanAdviceService
     /**
      * Set the category of a user action plan advice
      *
-     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
+     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
      */
     public static function setAdviceCategory(UserActionPlanAdvice $userActionPlanAdvice)
     {
@@ -340,7 +382,7 @@ class UserActionPlanAdviceService
                 'heat-pump-boiler-place-replace' => 'heat-pump-boiler',
                 'save-energy-with-light' => 'small-measure',
                 'energy-efficient-equipment' => 'small-measure',
-                'energy-efficient-installations' =>'small-measure',
+                'energy-efficient-installations' => 'small-measure',
                 'save-energy-with-crack-sealing' => 'small-measure',
                 'improve-radiators' => 'small-measure',
                 'improve-heating-installations' => 'small-measure',
@@ -407,7 +449,8 @@ class UserActionPlanAdviceService
 
                 case 'glass':
                     $relevantQuestions = ToolQuestion::findByShorts([
-                        'current-living-rooms-windows', 'current-sleeping-rooms-windows',
+                        'current-living-rooms-windows',
+                        'current-sleeping-rooms-windows',
                     ]);
                     $answers = [];
                     foreach ($relevantQuestions as $relevantQuestion) {
@@ -420,7 +463,7 @@ class UserActionPlanAdviceService
                         }
                     }
 
-                    if (! empty($answers)) {
+                    if ( ! empty($answers)) {
                         // Sort by order
                         asort($answers);
                         $lowestOrder = Arr::first($answers);
@@ -452,12 +495,15 @@ class UserActionPlanAdviceService
 
                     $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
                     $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
-                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion), $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion),
+                        $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
                     if ($hasAnsweredHeating) {
                         $newHeatSourceQuestion = ToolQuestion::findByShort('new-heat-source');
                         $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
-                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion), $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
-                        $replaceAnswer = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('hr-boiler-replace'));
+                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion),
+                            $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
+                        $replaceAnswer = $building->getAnswer($masterInputSource,
+                            ToolQuestion::findByShort('hr-boiler-replace'));
 
                         if (in_array('hr-boiler', $currentSituation) && in_array('hr-boiler', $newSituation)) {
                             $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
@@ -488,12 +534,15 @@ class UserActionPlanAdviceService
                 case 'sun-boiler':
                     $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
                     $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
-                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion), $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion),
+                        $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
                     if ($hasAnsweredHeating) {
                         $newHeatSourceQuestion = ToolQuestion::findByShort('new-heat-source');
                         $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
-                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion), $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
-                        $replaceAnswer = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('sun-boiler-replace'));
+                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion),
+                            $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
+                        $replaceAnswer = $building->getAnswer($masterInputSource,
+                            ToolQuestion::findByShort('sun-boiler-replace'));
 
                         if (in_array('sun-boiler', $currentSituation) && in_array('sun-boiler', $newSituation)) {
                             $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
@@ -579,12 +628,15 @@ class UserActionPlanAdviceService
                 case 'heat-pump':
                     $heatSourceQuestion = ToolQuestion::findByShort('heat-source');
                     $heatSourceWaterQuestion = ToolQuestion::findByShort('heat-source-warm-tap-water');
-                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion), $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
+                    $currentSituation = array_merge($building->getAnswer($masterInputSource, $heatSourceQuestion),
+                        $building->getAnswer($masterInputSource, $heatSourceWaterQuestion));
                     if ($hasAnsweredHeating) {
                         $newHeatSourceQuestion = ToolQuestion::findByShort('new-heat-source');
                         $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
-                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion), $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
-                        $replaceAnswer = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-replace'));
+                        $newSituation = array_merge($building->getAnswer($masterInputSource, $newHeatSourceQuestion),
+                            $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion));
+                        $replaceAnswer = $building->getAnswer($masterInputSource,
+                            ToolQuestion::findByShort('heat-pump-replace'));
 
                         if (in_array('heat-pump', $currentSituation) && in_array('heat-pump', $newSituation)) {
                             $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
@@ -593,15 +645,17 @@ class UserActionPlanAdviceService
                     } else {
                         if (in_array('heat-pump', $currentSituation)) {
                             $calculateValue = ServiceValue::find(
-                                $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-type'))
-                            )->calculate_value ?? null;
+                                    $building->getAnswer($masterInputSource,
+                                        ToolQuestion::findByShort('heat-pump-type'))
+                                )->calculate_value ?? null;
 
                             // We complete it if it's the current heat pump and isn't for maintenance yet.
-                            if (! is_null($calculateValue)
+                            if ( ! is_null($calculateValue)
                                 && HeatPumpHelper::MEASURE_SERVICE_LINK[$measureApplication->short] === $calculateValue) {
                                 $category = self::CATEGORY_COMPLETE;
 
-                                $placeYear = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-placed-date'));
+                                $placeYear = $building->getAnswer($masterInputSource,
+                                    ToolQuestion::findByShort('heat-pump-placed-date'));
 
                                 if (is_numeric($placeYear)) {
                                     $diff = now()->format('Y') - $placeYear;
@@ -623,9 +677,11 @@ class UserActionPlanAdviceService
                     if ($hasAnsweredHeating) {
                         $newHeatSourceWaterQuestion = ToolQuestion::findByShort('new-heat-source-warm-tap-water');
                         $newSituation = $building->getAnswer($masterInputSource, $newHeatSourceWaterQuestion);
-                        $replaceAnswer = $building->getAnswer($masterInputSource, ToolQuestion::findByShort('heat-pump-boiler-replace'));
+                        $replaceAnswer = $building->getAnswer($masterInputSource,
+                            ToolQuestion::findByShort('heat-pump-boiler-replace'));
 
-                        if (in_array('heat-pump-boiler', $currentSituation) && in_array('heat-pump-boiler', $newSituation)) {
+                        if (in_array('heat-pump-boiler', $currentSituation) && in_array('heat-pump-boiler',
+                                $newSituation)) {
                             $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
                         }
                         // No need to check further, it'll fall back to TO DO anyway

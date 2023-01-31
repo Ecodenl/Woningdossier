@@ -4,8 +4,11 @@ namespace App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\Hoomdossier;
 use App\Rules\LanguageRequired;
+use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CooperationMeasureApplicationFormRequest extends FormRequest
 {
@@ -34,6 +37,10 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
             ],
             'cooperation_measure_applications.info' => [
                 new LanguageRequired('nl'),
+            ],
+            'cooperation_measure_applications.measure_category' => [
+                'required',
+                Rule::in(Arr::pluck(RegulationService::init()->getFilters()['Measures'], 'Value')),
             ],
             'cooperation_measure_applications.costs.from' => [
                 'nullable', 'numeric', 'min:0',

@@ -8,6 +8,9 @@ use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\Cooperation
 use App\Jobs\HandleCooperationMeasureApplicationDeletion;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
+use App\Services\MappingService;
+use App\Services\Verbeterjehuis\RegulationService;
+use Illuminate\Support\Arr;
 
 class CooperationMeasureApplicationController extends Controller
 {
@@ -22,12 +25,15 @@ class CooperationMeasureApplicationController extends Controller
 
     public function create(Cooperation $cooperation, string $type)
     {
-        return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create', compact('type'));
+        $measures = RegulationService::init()->getFilters()['Measures'];
+        return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create', compact('type', 'measures'));
     }
 
     public function store(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, string $type)
     {
         $measureData = $request->validated()['cooperation_measure_applications'];
+        $measureCategory = $measureData['measure_category'];
+        unset($measureData['measure_category']);
         $measureData['cooperation_id'] = $cooperation->id;
         $measureData['is_extensive_measure'] = $type === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
         $measureData['is_deletable'] = true;
@@ -35,7 +41,9 @@ class CooperationMeasureApplicationController extends Controller
         foreach ($measureData['name'] as $locale => $content) {
             $measureData['name'][$locale] = strip_tags($content);
         }
-        CooperationMeasureApplication::create($measureData);
+        $cooperationMeasureApplication = CooperationMeasureApplication::create($measureData);
+        $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
+        MappingService::init()->from($cooperationMeasureApplication)->target($targetData)->sync();
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('type'))
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.store.success'));
@@ -44,18 +52,22 @@ class CooperationMeasureApplicationController extends Controller
     public function edit(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
         $type = $cooperationMeasureApplication->getType();
-
-        return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication', 'type'));
+        $measures = RegulationService::init()->getFilters()['Measures'];
+        return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication', 'type', 'measures'));
     }
 
     public function update(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
         $measureData = $request->validated()['cooperation_measure_applications'];
+        $measureCategory = $measureData['measure_category'];
+        unset($measureData['measure_category']);
         foreach ($measureData['name'] as $locale => $content) {
             $measureData['name'][$locale] = strip_tags($content);
         }
 
         $cooperationMeasureApplication->update($measureData);
+        $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
+        MappingService::init()->from($cooperationMeasureApplication)->target($targetData)->sync();
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => $cooperationMeasureApplication->getType()])
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.update.success'));

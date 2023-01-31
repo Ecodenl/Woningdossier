@@ -37,6 +37,9 @@ return [
             'label' => 'Naam',
             'placeholder' => 'Naam van de maatregel',
         ],
+        'measure-category' => [
+            'label' => 'Maatregelcategorie',
+        ],
         'info' => [
             'label' => 'Info',
             'placeholder' => 'Beschrijving van de maatregel',

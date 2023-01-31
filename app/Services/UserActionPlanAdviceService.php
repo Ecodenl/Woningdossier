@@ -40,7 +40,7 @@ class UserActionPlanAdviceService
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
     {
         Log::debug('Refreshing regulations for ', [
-            'building_id' => $userActionPlanAdvice->user->building->id, 'user_id' => $userActionPlanAdvice->user_id
+            'building_id' => $userActionPlanAdvice->user->building->id, 'user_id' => $userActionPlanAdvice->user_id, 'input_source_id' => $userActionPlanAdvice->input_source_id,
         ]);
         $payload = RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
@@ -49,12 +49,14 @@ class UserActionPlanAdviceService
         // todo, pick the right one here.
         $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
 
+        Log::debug('Payload', $payload->payload->toArray());
 
         // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
         $regulations = $payload
             ->forMeasure($advisable)
             ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
 
+        Log::debug('regulations', $regulations->getSubsidies()->toArray());
         $loanAvailable = $regulations->getLoans()->isNotEmpty();
         $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
 
@@ -63,6 +65,7 @@ class UserActionPlanAdviceService
             'loan_available' => $loanAvailable,
             'subsidy_available' => $subsidyAvailable
         ]));
+        Log::debug('Action plan advice', $userActionPlanAdvice->only('loan_available', 'subsidy_available'));
     }
 
     /**

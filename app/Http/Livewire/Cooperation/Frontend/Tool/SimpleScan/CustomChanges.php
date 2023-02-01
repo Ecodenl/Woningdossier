@@ -5,6 +5,8 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
+use App\Jobs\RefreshRegulationsForAdvisable;
+use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
@@ -307,6 +309,7 @@ class CustomChanges extends Component
                         ],
                         $updateData
                     );
+                RefreshRegulationsForAdvisable::dispatch($from);
             }
         }
 

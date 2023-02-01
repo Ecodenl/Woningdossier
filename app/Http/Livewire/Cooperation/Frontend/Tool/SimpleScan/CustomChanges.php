@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
+use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
@@ -309,7 +310,7 @@ class CustomChanges extends Component
                         ],
                         $updateData
                     );
-                RefreshRegulationsForAdvisable::dispatch($from);
+                CustomMeasureApplicationChanged::dispatch($from);
             }
         }
 

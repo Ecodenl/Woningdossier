@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\CooperationMeasureApplicationUpdated;
+use App\Events\CustomMeasureApplicationChanged;
 use App\Events\FillingToolForUserEvent;
 use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
@@ -28,6 +30,7 @@ use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
+use App\Listeners\RefreshRelatedAdvices;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
 use App\Listeners\SendUserAssociatedWithCooperationMail;
 use App\Listeners\SetMessagesReadForBuilding;
@@ -50,6 +53,12 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
+        ],
+        CooperationMeasureApplicationUpdated::class => [
+            RefreshRelatedAdvices::class,
+        ],
+        CustomMeasureApplicationChanged::class => [
+            RefreshRelatedAdvices::class
         ],
         Login::class => [
             SuccessFullLoginListener::class,

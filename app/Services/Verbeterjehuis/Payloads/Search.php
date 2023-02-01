@@ -4,7 +4,6 @@ namespace App\Services\Verbeterjehuis\Payloads;
 
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
 use App\Services\MappingService;
 use App\Traits\FluentCaller;
@@ -70,7 +69,6 @@ class Search
 
         $target = MappingService::init()->from($toolQuestionCustomValue)->resolveTarget();
         if (is_array($target)) {
-
             $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {
                 return in_array($target['Value'], $regulation['TargetGroup']);
             });

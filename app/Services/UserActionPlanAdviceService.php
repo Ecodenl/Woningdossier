@@ -49,14 +49,11 @@ class UserActionPlanAdviceService
         // todo, pick the right one here.
         $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
 
-        Log::debug('Payload', $payload->payload->toArray());
-
         // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
         $regulations = $payload
             ->forMeasure($advisable)
             ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
 
-        Log::debug('regulations', $regulations->getSubsidies()->toArray());
         $loanAvailable = $regulations->getLoans()->isNotEmpty();
         $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
 

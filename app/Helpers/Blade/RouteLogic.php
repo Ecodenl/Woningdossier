@@ -24,7 +24,14 @@ class RouteLogic
     {
         $routeName = static::getRouteName($route);
 
-        return Str::contains($routeName, 'my-plan.index');
+        return Str::contains($routeName, 'my-plan.');
+    }
+
+    public static function inMyRegulations($route): bool
+    {
+        $routeName = static::getRouteName($route);
+
+        return Str::contains($routeName, 'my-regulations.index');
     }
 
     public static function inQuestionnaire($route): bool

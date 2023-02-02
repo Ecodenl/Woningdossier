@@ -105,21 +105,14 @@ a.in-text {
 
 /* Navigation tabs */
 .nav-tabs {
-    @apply pl-0 pb-0 list-none w-full;
+    @apply flex border-b border-blue border-opacity-50;
 }
 
-.nav-tabs li {
-    @apply float-left relative block;
+.nav-tabs a {
+    @apply no-underline rounded-t-md py-2 px-4 text-white bg-blue-500;
 }
 
-.nav-tabs li a {
-    @apply no-underline relative block py-2 px-4 mr-1 text-sm text-green border border-solid border-transparent rounded-t bg-transparent;
-}
-
-.nav-tabs li.completed a {
-    @apply text-white bg-blue-800;
-}
-.nav-tabs li.active a {
+.nav-tabs a.active {
     @apply text-white bg-green;
 }
 

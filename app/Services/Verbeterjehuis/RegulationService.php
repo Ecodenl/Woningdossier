@@ -8,11 +8,14 @@ use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Traits\FluentCaller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Mpdf\Shaper\Sea;
 
 class RegulationService
 {
     use FluentCaller;
+
+    const SUBSIDY = 'subsidy';
+    const LOAN = 'loan';
+    const OTHER = 'other';
 
     public Building $building;
 
@@ -22,11 +25,6 @@ class RegulationService
     {
         $this->building = $building;
         return $this;
-    }
-
-    private function getCacheKey(): string
-    {
-        return md5(implode('|', $this->context));
     }
 
     public function getFilters(): array
@@ -52,5 +50,10 @@ class RegulationService
                     ->search($this->context);
             })
         );
+    }
+
+    private function getCacheKey(): string
+    {
+        return md5(implode('|', $this->context));
     }
 }

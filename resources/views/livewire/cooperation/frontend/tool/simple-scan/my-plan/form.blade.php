@@ -69,9 +69,9 @@
                                             Subsidie mogelijk
                                         </div>
                                     @elseif($card['loan_available'])
-                                        <div class="h-4 rounded-lg text-xs relative text-red p bg-red bg-opacity-10 flex items-center px-2 w-full"
+                                        <div class="h-4 rounded-lg text-xs relative text-orange p bg-red bg-opacity-10 flex items-center px-2 w-full"
                                              style="width: fit-content; width: -moz-fit-content;">
-                                            Geen subsidie
+                                            Lening mogelijk
                                         </div>
                                     @endif
                             </div>

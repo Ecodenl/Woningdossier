@@ -1,7 +1,7 @@
 {
-    "/js/app.js": "/js/app.js?id=d1607bc818ca4351a525873a2233a443",
-    "/css/frontend/app.css": "/css/frontend/app.css?id=a3268af8a1d7807ea98e4434d9401148",
-    "/css/admin/app.css": "/css/admin/app.css?id=a579d47a2136aa646c7c9183af17cbb2",
+    "/js/app.js": "/js/app.js?id=12219fa523591ec85621e10d6bf62087",
+    "/css/frontend/app.css": "/css/frontend/app.css?id=517dc161efe8e7ce206f32e97b630e3b",
+    "/css/admin/app.css": "/css/admin/app.css?id=0cdd4886d09def3d862f3e8dc2e13309",
     "/css/admin/datatables/dataTables.bootstrap.min.css": "/css/admin/datatables/dataTables.bootstrap.min.css?id=647cf0eae52496965d18ca3b1d01b9d7",
     "/css/admin/datatables/responsive.dataTables.min.css": "/css/admin/datatables/responsive.dataTables.min.css?id=fb58218d722de182dee1c2a26bc01816",
     "/css/admin/datatables/responsive.bootstrap.min.css": "/css/admin/datatables/responsive.bootstrap.min.css?id=a95ec10392bc74cd788e9ea8c5855569",
@@ -168,6 +168,7 @@
     "/icons/electric.svg": "/icons/electric.svg?id=5583556853849409f9bc582429dfe816",
     "/icons/end-of-terrace-house.svg": "/icons/end-of-terrace-house.svg?id=224307b50ac6ee08f5bc34d147d5e010",
     "/icons/error-cross.svg": "/icons/error-cross.svg?id=91acf37b2e7c8ad236e746381d3606c7",
+    "/icons/euro.svg": "/icons/euro.svg?id=159261a092db3f01d89a5ac74db3c8d7",
     "/icons/flat-pitched-roof.svg": "/icons/flat-pitched-roof.svg?id=f4f752cd64646bb005063111a092ffff",
     "/icons/flat-roof.svg": "/icons/flat-roof.svg?id=6e349bca7854766057b33be28b6fdb18",
     "/icons/floor-heating.svg": "/icons/floor-heating.svg?id=72783dd7261983f558bd48227f38e708",

@@ -2,9 +2,12 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
+use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
+use App\Jobs\RefreshRegulationsForAdvisable;
+use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
@@ -285,6 +288,16 @@ class CustomChanges extends Component
 
             // The default "voeg onderdeel toe" also holds data, but the name will be empty. So when name empty; do not save
             if (isset($customMeasureApplication) && $customMeasureApplication instanceof CustomMeasureApplication) {
+                // !important! this has to be done before the userActionPlanAdvice relation is made
+                // otherwise the observer will fire when the mapping hasnt been done yet.
+
+                // Add or update mapping to measure category
+                $measureCategory = $measureData['measure_category'];
+                $targetData = Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
+                // We read from the master. Therefore we need to sync to the master also.
+                $from = $customMeasureApplication->getSibling($this->masterInputSource);
+                MappingService::init()->from($from)->target($targetData)->sync();
+
                 // Update the user action plan advice linked to this custom measure
                 $customMeasureApplication
                     ->userActionPlanAdvices()
@@ -297,13 +310,7 @@ class CustomChanges extends Component
                         ],
                         $updateData
                     );
-
-                // Add or update mapping to measure category
-                $measureCategory = $measureData['measure_category'];
-                $targetData = Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
-                // We read from the master. Therefore we need to sync to the master also.
-                $from = $customMeasureApplication->getSibling($this->masterInputSource);
-                MappingService::init()->from($from)->target($targetData)->sync();
+                CustomMeasureApplicationChanged::dispatch($from);
             }
         }
 

@@ -38,39 +38,39 @@ export default (initiallyOpen = false) => ({
                     context.setDisabledState();
                 });
 
-                attributeObserver.observe(this.select, { attributeFilter: ['disabled'] });
+                attributeObserver.observe(context.select, { attributeFilter: ['disabled'] });
 
                 // Bind event listener for change
                 // TODO: Check if values update correctly when data is changed on Livewire side
                 context.select.addEventListener('change', (event) => {
-                    this.updateSelectedValues();
+                    context.updateSelectedValues();
                 });
             }
 
             if (context.livewire && null !== context.select) {
                 //TODO: This works for now, but the wire:model can have extra options such as .lazy, which will
                 // not be caught this way. Might require different resolving in the future
-                this.wireModel = context.select.getAttribute('wire:model');
+                context.wireModel = context.select.getAttribute('wire:model');
             }
 
-            if (this.values === null && this.multiple) {
-                this.values = [];
+            if (context.values === null && context.multiple) {
+                context.values = [];
+            }
+
+            if (context.multiple) {
+                // If it's multiple, we will add an event listener to rebuild the input on resizing,
+                // as well as on switching tabs.
+                window.addEventListener('resize', (event) => {
+                    context.setInputValue();
+                });
+
+                window.addEventListener('tab-switched', (event) => {
+                    setTimeout(() => {
+                        context.setInputValue();
+                    });
+                });
             }
         });
-
-        if (this.multiple) {
-            // If it's multiple, we will add an event listener to rebuild the input on resizing,
-            // as well as on switching tabs.
-            window.addEventListener('resize', (event) => {
-                this.setInputValue();
-            });
-
-            window.addEventListener('tab-switched', (event) => {
-                setTimeout(() => {
-                    this.setInputValue();
-                });
-            });
-        }
 
         this.$watch('values', (value, oldValue) => {
             this.setInputValue();

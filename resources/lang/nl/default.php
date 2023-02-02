@@ -30,6 +30,7 @@ return [
     'caution' => 'Let op!',
     'from' => 'van',
     'to' => 'tot',
+    'for' => 'voor',
 
     'progress' => [
         'not-completed' => ':step - deze stap is nog niet afgerond',

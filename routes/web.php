@@ -213,6 +213,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                                 Route::get('', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'index'])->name('index');
                                 Route::get('bestanden/{building?}', [Cooperation\Frontend\Tool\SimpleScan\MyPlanController::class, 'media'])->name('media');
                             });
+
+                            Route::as('my-regulations.')->prefix('mijn-regelingen')->group(function () {
+                                Route::get('', [Cooperation\Frontend\Tool\SimpleScan\MyRegulationsController::class, 'index'])->name('index');
+                            });
                         });
 
                     //TODO: Bind by expert shorts and route bind steps also (perhaps we can merge with above code to

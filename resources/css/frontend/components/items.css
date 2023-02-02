@@ -77,3 +77,18 @@
 .dropdown-wrapper .dropdown > * {
     @apply py-1 px-3
 }
+
+/* Regulation cards */
+.regulation-card-wrapper {
+    @apply w-full my-4;
+}
+
+.regulation-card-wrapper .regulation-card {
+    @apply border border-blue-500 rounded-lg p-4 bg-blue-800 bg-opacity-10;
+    width: 42rem;
+    min-height: 16rem;
+}
+
+.regulation-card-wrapper .regulation-card .bubble {
+    @apply rounded-full py-1 px-4 font-medium bg-white m-1;
+}

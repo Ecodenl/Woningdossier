@@ -14,7 +14,6 @@ use App\Models\SubStep;
 use App\Services\Models\NotificationService;
 use App\Services\WoonplanService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class MyPlanController extends Controller
 {
@@ -22,7 +21,6 @@ class MyPlanController extends Controller
     {
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
-
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $woonplanService = WoonplanService::init($building)

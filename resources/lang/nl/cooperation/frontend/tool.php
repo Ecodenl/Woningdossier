@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\InputSource;
+use App\Services\Verbeterjehuis\RegulationService;
 
 return [
     'step-count' => 'Stap :current van :total',
@@ -127,5 +128,19 @@ return [
             'download-report' => 'Download bestaande rapportage',
             'create-report' => 'Maak rapportage',
         ],
+    ],
+    'my-regulations' => [
+        'categories' => [
+            RegulationService::SUBSIDY => 'Subsidies (:count)',
+            RegulationService::LOAN => 'Leningen (:count)',
+            RegulationService::OTHER => 'Overige (:count)',
+        ],
+        'container' => [
+            'intro' => [
+                RegulationService::SUBSIDY => 'Er zijn de volgende subsidieregelingen beschikbaar voor jouw situatie:',
+                RegulationService::LOAN => 'Er zijn de volgende leningen beschikbaar in jouw gemeente:',
+                RegulationService::OTHER => 'Andere beschikbare regelingen:',
+            ],
+        ]
     ],
 ];

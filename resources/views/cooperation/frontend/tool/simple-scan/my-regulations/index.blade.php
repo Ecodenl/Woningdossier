@@ -51,8 +51,9 @@
                                                 @for($i = 0; $i < $total; $i++)
                                                     <span class="flex as-text bubble"
                                                           @if($i > 2) x-show="selected === '{{ $result['Id'] }}'" @endif>
+                                                        Maatregel naam.
                                                         {{-- TODO: currently custom measures are being annoying, but not spending too much time on it due to potential change in logic --}}
-                                                        {{ $advices[$i]->userActionPlanAdvisable->name ?? $advices[$i]->userActionPlanAdvisable()->forInputSource($masterInputSource)->first()->name }}
+                                                        {{-- $advices[$i]->userActionPlanAdvisable->name ?? $advices[$i]->userActionPlanAdvisable()->forInputSource($masterInputSource)->first()->name --}}
                                                     </span>
                                                 @endfor
                                                 @if($total > 3)

@@ -8,7 +8,9 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Scan;
+use App\Models\UserActionPlanAdvice;
 use App\Services\Models\NotificationService;
+use App\Services\UserActionPlanAdviceService;
 use App\Services\Verbeterjehuis\RegulationService;
 
 class MyRegulationsController extends Controller
@@ -39,10 +41,11 @@ class MyRegulationsController extends Controller
             ->getSearch()
             ->getCategorized();
 
-        // TODO: Logic
-        $advices = $building->user->userActionPlanAdvices()
+        $advices =
+            $building->user->userActionPlanAdvices()
             ->forInputSource($masterInputSource)
             ->withoutDeletedCooperationMeasureApplications($masterInputSource)
+            ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
             ->get();
 
         return view('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('activeNotification', 'masterInputSource', 'payload', 'advices'));

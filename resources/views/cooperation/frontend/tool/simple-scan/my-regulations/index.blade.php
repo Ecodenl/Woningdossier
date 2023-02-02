@@ -41,6 +41,10 @@
                                             {{ $result['Intro'] }}
                                         </p>
                                         <div class="my-8"></div>
+                                        @php
+                                            $advisable = $advices->first()->userActionPlanAdvisable()->forInputSource($masterInputSource)->first();
+                                            $target = \App\Services\MappingService::init()->from($advisable)->resolveTarget();
+                                        @endphp
                                         <div class="flex flex-wrap flex-row w-full items-center">
                                             @if($advices->isNotEmpty())
                                                 <span class="flex as-text mr-1">
@@ -49,11 +53,10 @@
                                                 {{-- TODO: Logic --}}
                                                 @php $total = mt_rand(1, $advices->count()); @endphp
                                                 @for($i = 0; $i < $total; $i++)
-                                                    <span class="flex as-text bubble"
-                                                          @if($i > 2) x-show="selected === '{{ $result['Id'] }}'" @endif>
-                                                        Maatregel naam.
+                                                    <span class="flex as-text bubble" @if($i > 2) x-show="selected === '{{ $result['Id'] }}'" @endif>
+
                                                         {{-- TODO: currently custom measures are being annoying, but not spending too much time on it due to potential change in logic --}}
-                                                        {{-- $advices[$i]->userActionPlanAdvisable->name ?? $advices[$i]->userActionPlanAdvisable()->forInputSource($masterInputSource)->first()->name --}}
+                                                        {{ $advices[$i]->userActionPlanAdvisable->name ?? $advices[$i]->userActionPlanAdvisable()->forInputSource($masterInputSource)->first()->name }}
                                                     </span>
                                                 @endfor
                                                 @if($total > 3)

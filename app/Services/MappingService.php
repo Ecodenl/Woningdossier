@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Mapping;
+use App\Models\User;
 use App\Traits\FluentCaller;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class MappingService
 {
@@ -58,22 +60,28 @@ class MappingService
         return ['from_value' => $this->from];
     }
 
-    public function sync(): Mapping
+    public function sync($syncableData): void
     {
-        $mapping = [];
+        // first we will remove the current rows.
+        Mapping::where($this->whereFrom())->delete();
 
-        // In the case we EVER allow different types for mapping, we must ensure other fields get nullified.
-        if ($this->target instanceof Model) {
-            $mapping['target_model_type'] = $this->target->getMorphClass();
-            $mapping['target_model_id'] = $this->target->id;
-        } else {
-            if (is_array($this->target)) {
-                $mapping['target_data'] = $this->target;
+        $attributes = [];
+        foreach ($syncableData as $index => $target) {
+            $attributes[$index] = $this->whereFrom();
+            // In the case we EVER allow different types for mapping, we must ensure other fields get nullified.
+            if ($this->target instanceof Model) {
+                $attributes[$index]['target_model_type'] = $target->getMorphClass();
+                $attributes[$index]['target_model_id'] = $target->id;
             } else {
-                $mapping['target_value'] = $this->target;
+                if (is_array($target)) {
+                    $attributes[$index]['target_data'] = json_encode($target);
+                } else {
+                    $attributes[$index]['target_value'] = $target;
+                }
             }
         }
 
-        return Mapping::updateOrCreate($this->whereFrom(), $mapping);
+        DB::table((new Mapping())->getTable())
+            ->insert($attributes);
     }
 }

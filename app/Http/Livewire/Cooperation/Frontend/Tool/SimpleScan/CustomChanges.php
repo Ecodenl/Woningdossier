@@ -296,7 +296,7 @@ class CustomChanges extends Component
                 $targetData = Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
                 // We read from the master. Therefore we need to sync to the master also.
                 $from = $customMeasureApplication->getSibling($this->masterInputSource);
-                MappingService::init()->from($from)->target($targetData)->sync();
+                MappingService::init()->from($from)->sync([$targetData]);
 
                 // Update the user action plan advice linked to this custom measure
                 $customMeasureApplication

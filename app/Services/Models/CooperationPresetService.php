@@ -42,7 +42,7 @@ class CooperationPresetService
                 case 'mapping':
                     $measureCategory = $values['measure_category'];
                     $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
-                    MappingService::init()->from($this->model)->target($targetData)->sync();
+                    MappingService::init()->from($this->model)->sync([$targetData]);
                     break;
 
                 default:

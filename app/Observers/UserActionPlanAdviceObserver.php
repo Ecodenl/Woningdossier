@@ -72,6 +72,9 @@ class UserActionPlanAdviceObserver
         // Or its triggered from a recalculation, which means the code is already running on a queue.
 
         // usually we would exclude the master input source, however the refreshRegulations does NOT trigger model events.
-        UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);
+        // all other advisables will be triggered in the code itself, the observer can only handle the measure application consistently
+        if ($userActionPlanAdvice->user_action_plan_advisable_type === MeasureApplication::class) {
+            UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);
+        }
     }
 }

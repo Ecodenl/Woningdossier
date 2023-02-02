@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use App\Events\CooperationMeasureApplicationUpdated;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationFormRequest;
 use App\Jobs\HandleCooperationMeasureApplicationDeletion;
+use App\Jobs\RefreshRegulationsForAdvisable;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
 use App\Services\MappingService;
@@ -68,6 +70,7 @@ class CooperationMeasureApplicationController extends Controller
         $cooperationMeasureApplication->update($measureData);
         $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
         MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
+        CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => $cooperationMeasureApplication->getType()])
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.update.success'));

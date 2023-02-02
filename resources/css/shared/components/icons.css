@@ -170,6 +170,9 @@
 .icon-error-cross {
     content: url('/icons/error-cross.svg');
 }
+.icon-euro {
+    content: url('/icons/euro.svg');
+}
 .icon-flat-pitched-roof {
     content: url('/icons/flat-pitched-roof.svg');
 }

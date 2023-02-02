@@ -50,23 +50,13 @@ class Notification extends Model
         'type',
         'building_id',
         'input_source_id',
-        'is_active',
-        'active_count',
+        'uuid',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
-
-    public function scopeActive(Builder $query)
-    {
-        return $query->where('is_active', true);
-    }
-
+    # Scopes
     public function scopeActiveNotifications(Builder $query, Building $building, InputSource $inputSource)
     {
         return $query
-            ->active()
             ->forBuilding($building)
             ->forInputSource($inputSource);
     }

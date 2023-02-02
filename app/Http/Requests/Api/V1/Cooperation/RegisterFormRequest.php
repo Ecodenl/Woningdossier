@@ -6,17 +6,21 @@ use App\Helpers\RoleHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Requests\Api\ApiRequest;
 use App\Models\Account;
+use App\Models\Cooperation;
 use App\Models\ToolQuestion;
 use App\Rules\HouseNumber;
 use App\Rules\Api\V1\HouseNumberExtension;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Validator;
 
 class RegisterFormRequest extends ApiRequest
 {
+    private ?Cooperation $cooperation = null;
+
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,6 +29,19 @@ class RegisterFormRequest extends ApiRequest
     public function authorize()
     {
         return true;
+    }
+
+    /**
+     * so fields can be modified or added before validation.
+     */
+    public function prepareForValidation()
+    {
+        $this->cooperation = $this->route('cooperation');
+
+        // Add new data field before it gets sent to the validator
+        $this->merge([
+            'house_number_extension' => strtolower(preg_replace("/[\s-]+/", '', $this->get('house_number_extension', ''))),
+        ]);
     }
 
     /**
@@ -44,7 +61,7 @@ class RegisterFormRequest extends ApiRequest
             'street' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'phone_number' => ['nullable', new PhoneNumber('nl')],
-            'extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0', Rule::unique('users', 'extra->contact_id')],
+            'extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0'],
 
             'roles' => ['nullable', 'array'],
             'roles.*' => ['string', Rule::in([RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH])],
@@ -54,7 +71,7 @@ class RegisterFormRequest extends ApiRequest
         $account = Account::where('email', $this->get('email'))->first();
         // if the account exists but the user is not associated with the current cooperation
         // then we unset the email and password rule because we dont need to validate them, we handle them in the controller
-        if ($account instanceof Account && ! $account->isAssociatedWith($this->route('cooperation'))) {
+        if ($account instanceof Account && ! $account->isAssociatedWith($this->cooperation)) {
             unset($rules['email']);
         }
 
@@ -77,14 +94,23 @@ class RegisterFormRequest extends ApiRequest
             'allow_access.required' => __('auth.register.validation.allow_access'),
         ];
     }
-    /**
-     * so fields can be modified or added before validation.
-     */
-    public function prepareForValidation()
+
+    public function withValidator(Validator $validator)
     {
-        // Add new data field before it gets sent to the validator
-        $this->merge([
-            'house_number_extension' => strtolower(preg_replace("/[\s-]+/", '', $this->get('house_number_extension', ''))),
-        ]);
+        $validator->after(function (Validator $validator) {
+            $contactId = $this->input('extra.contact_id');
+            // If contact_id is set we want to ensure it's unique PER cooperation
+            if (! empty($contactId)) {
+                $query = DB::table('users')->where('extra->contact_id', $contactId)
+                    ->where('cooperation_id', $this->cooperation->id);
+
+                // We found a user, so one exists with this contact ID
+                if ($query->first() instanceof \stdClass) {
+                    $validator->errors()->add('extra.contact_id', __('validation.unique', [
+                        'attribute' => __('validation.attributes')['users.extra.contact_id'],
+                    ]));
+                }
+            }
+        });
     }
 }

@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Notification forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder|Notification forMe(?\App\Models\User $user = null)
  * @method static Builder|Notification forType(string $type)
+ * @method static Builder|Notification forUuid(string $uuid)
  * @method static Builder|Notification forUser($user)
  * @method static Builder|Notification newModelQuery()
  * @method static Builder|Notification newQuery()
@@ -54,15 +55,20 @@ class Notification extends Model
     ];
 
     # Scopes
-    public function scopeActiveNotifications(Builder $query, Building $building, InputSource $inputSource)
+    public function scopeActiveNotifications(Builder $query, Building $building, InputSource $inputSource): Builder
     {
         return $query
             ->forBuilding($building)
             ->forInputSource($inputSource);
     }
 
-    public function scopeForType(Builder $query, string $type)
+    public function scopeForType(Builder $query, string $type): Builder
     {
         return $query->where('type', $type);
+    }
+
+    public function scopeForUuid(Builder $query, string $uuid): Builder
+    {
+        return $query->where('uuid', $uuid);
     }
 }

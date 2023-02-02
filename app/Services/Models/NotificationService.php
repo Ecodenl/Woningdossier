@@ -14,31 +14,35 @@ class NotificationService
     protected InputSource $inputSource;
     protected Building $building;
     protected string $type;
+    protected string $uuid;
 
     public function forInputSource(InputSource $inputSource): self
     {
         $this->inputSource = $inputSource;
-
         return $this;
     }
 
     public function forBuilding(Building $building): self
     {
         $this->building = $building;
-
         return $this;
     }
 
     public function setType(string $type): self
     {
         $this->type = $type;
+        return $this;
+    }
 
+    public function setUuid(string $uuid): self
+    {
+        $this->uuid = $uuid;
         return $this;
     }
 
     public function isActive(): bool
     {
-        return (bool) optional($this->getNotification())->is_active;
+        return $this->getNotification() instanceof Notification;
     }
 
     public function isNotActive(): bool
@@ -46,53 +50,34 @@ class NotificationService
         return ! $this->isActive();
     }
 
-    public function setActive(int $count = 1)
+    public function setActive($params)
     {
-        // Get current count. This is because we could have 2 RecalculateForUser processes being dispatched at the
-        // same time. It wouldn't make sense to show the action plan if one process is still running.
-        $count = $count + (optional($this->getNotification())->active_count ?? 0);
-        $active = $count > 0;
+        $params = is_array($params) ? $params : func_get_args();
 
-        Notification::allInputSources()->updateOrCreate(
-            [
-                'input_source_id' => $this->inputSource->id,
-                'type' => $this->type,
-                'building_id' => $this->building->id,
-            ],
-            [
-                'is_active' => $active,
-                'active_count' => $count,
-            ]
-        );
+        foreach ($params as $param) {
+            $uuid = is_object($param) ? ($param->uuid ?? null) : $param;
+
+            if (is_string($uuid)) {
+                Notification::allInputSources()->updateOrCreate(
+                    [
+                        'input_source_id' => $this->inputSource->id,
+                        'type' => $this->type,
+                        'uuid' => $this->uuid,
+                        'building_id' => $this->building->id,
+                    ],
+                );
+            }
+        }
     }
 
     /**
-     * Decrement the active count by one, and deactivate the notification if the count reaches 0.
-     *
-     * @param bool $force If true the notification will be deactivated regardless of count.
+     * Deactivate the notification.
      *
      * @return void
      */
-    public function deactivate(bool $force = false)
+    public function deactivate()
     {
-        $notification = $this->getNotification();
-
-        // If there's no notification there's nothing to deactivate
-        if ($notification instanceof Notification) {
-            if ($force) {
-                $notification->update([
-                    'active_count' => 0,
-                    'is_active' => false,
-                ]);
-            } else {
-                $notification->active_count--;
-                if ($notification->active_count === 0) {
-                    $notification->is_active = false;
-                }
-
-                $notification->save();
-            }
-        }
+        optional($this->getNotification())->delete();
     }
 
     protected function getNotification(): ?Notification
@@ -100,6 +85,7 @@ class NotificationService
         return Notification::forBuilding($this->building)
             ->forType($this->type)
             ->forInputSource($this->inputSource)
+            ->forUuid($this->inputSource)
             ->first();
     }
 }

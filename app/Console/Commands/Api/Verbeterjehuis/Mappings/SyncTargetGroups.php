@@ -4,6 +4,7 @@ namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
 use App\Models\Mapping;
 use App\Models\ToolQuestion;
+use App\Services\DiscordNotifier;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Client;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -59,8 +60,9 @@ class SyncTargetGroups extends Command
                     ->toolQuestionCustomValues()
                     ->where('short', $from)
                     ->first()
-            )->target($targetGroups[$target])->sync();
+            )->sync([$targetGroups[$target]]);
         }
+        DiscordNotifier::init()->notify('SyncTargetGroups just ran!');
 
         return 0;
     }

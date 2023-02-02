@@ -45,7 +45,7 @@ class CooperationMeasureApplicationController extends Controller
         }
         $cooperationMeasureApplication = CooperationMeasureApplication::create($measureData);
         $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
-        MappingService::init()->from($cooperationMeasureApplication)->target($targetData)->sync();
+        MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('type'))
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.store.success'));
@@ -69,7 +69,7 @@ class CooperationMeasureApplicationController extends Controller
 
         $cooperationMeasureApplication->update($measureData);
         $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
-        MappingService::init()->from($cooperationMeasureApplication)->target($targetData)->sync();
+        MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => $cooperationMeasureApplication->getType()])

@@ -62,7 +62,7 @@ class NotificationService
                     [
                         'input_source_id' => $this->inputSource->id,
                         'type' => $this->type,
-                        'uuid' => $this->uuid,
+                        'uuid' => $uuid,
                         'building_id' => $this->building->id,
                     ],
                 );
@@ -82,10 +82,13 @@ class NotificationService
 
     protected function getNotification(): ?Notification
     {
-        return Notification::forBuilding($this->building)
-            ->forType($this->type)
-            ->forInputSource($this->inputSource)
-            ->forUuid($this->inputSource)
-            ->first();
+        $query = Notification::activeNotifications($this->building, $this->inputSource)
+            ->forType($this->type);
+
+        if (isset($this->uuid)) {
+            $query->forUuid($this->uuid);
+        }
+
+        return $query->first();
     }
 }

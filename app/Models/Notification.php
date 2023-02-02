@@ -57,9 +57,7 @@ class Notification extends Model
     # Scopes
     public function scopeActiveNotifications(Builder $query, Building $building, InputSource $inputSource): Builder
     {
-        return $query
-            ->forBuilding($building)
-            ->forInputSource($inputSource);
+        return $query->forBuilding($building)->forInputSource($inputSource);
     }
 
     public function scopeForType(Builder $query, string $type): Builder

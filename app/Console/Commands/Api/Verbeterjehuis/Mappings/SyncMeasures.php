@@ -48,9 +48,9 @@ class SyncMeasures extends Command
             'floor-insulation' => [2834, 2934],
             'bottom-insulation' => [2834, 2934],
             'floor-insulation-research' => [2834, 2934],
-            'cavity-wall-insulation' => [2834, 2933], // TODO: Mapping says gevel, which do we pick? 2933 === muur, 4296 === geveltuin
-            'facade-wall-insulation' => [2834, 2933], // TODO: Above
-            'wall-insulation-research' => [2834, 2933], // TODO: Above
+            'cavity-wall-insulation' => [2834, 2933],
+            'facade-wall-insulation' => [2834, 2933],
+            'wall-insulation-research' => [2834, 2933],
             'glass-in-lead' => [2834, 2936],
             'hrpp-glass-only' => [2834, 2936],
             'hrpp-glass-frames' => [2834, 2936],
@@ -88,13 +88,13 @@ class SyncMeasures extends Command
         )->keyBy('Value');
 
         foreach ($map as $measureApplicationShort => $targetMeasureValues) {
-            // TODO: This will now only ever sync one of the values...
+            $syncData = [];
             foreach ($targetMeasureValues as $targetMeasureValue) {
-                $mappingService
-                    ->from(MeasureApplication::findByShort($measureApplicationShort))
-                    ->target($targetGroups[$targetMeasureValue])
-                    ->sync();
+                $syncData[] = $targetGroups[$targetMeasureValue];
             }
+            $mappingService
+                ->from(MeasureApplication::findByShort($measureApplicationShort))
+                ->sync($syncData);
         }
 
         $this->info("Measures mapped to MeasureApplication.");

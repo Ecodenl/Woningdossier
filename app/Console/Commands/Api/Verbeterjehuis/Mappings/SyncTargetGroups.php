@@ -59,7 +59,7 @@ class SyncTargetGroups extends Command
                     ->toolQuestionCustomValues()
                     ->where('short', $from)
                     ->first()
-            )->target($targetGroups[$target])->sync();
+            )->sync([$targetGroups[$target]]);
         }
 
         return 0;

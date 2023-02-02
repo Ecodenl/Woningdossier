@@ -6,6 +6,7 @@ use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncMeasures;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncTargetGroups;
 use App\Helpers\Arr;
 use Illuminate\Console\Command;
+use Illuminate\Database\Console\Seeds\SeedCommand;
 
 class DoUpgrade extends Command
 {
@@ -43,6 +44,10 @@ class DoUpgrade extends Command
         $commands = [
             SyncMeasures::class => [],
             SyncTargetGroups::class => [],
+            SeedCommand::class => [
+                ['--class' => 'CooperationPresetSeeder', '--force' => true],
+                ['--class' => 'CooperationPresetContentSeeder', '--force' => true],
+            ],
         ];
 
         foreach ($commands as $command => $variants) {

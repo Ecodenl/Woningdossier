@@ -40,6 +40,19 @@ class NotificationService
         return $this;
     }
 
+    public function hasActiveTypes(array $types): bool
+    {
+        $isActive = false;
+        foreach ($types as $type) {
+            if ($this->setType($type)->isActive()) {
+                $isActive = true;
+                break;
+            }
+        }
+
+        return $isActive;
+    }
+
     public function isActive(): bool
     {
         return $this->getNotification() instanceof Notification;

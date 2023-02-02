@@ -5,7 +5,6 @@ use App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin\Cooperat
 use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
-use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;

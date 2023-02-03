@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Support\Collection;
@@ -33,8 +34,14 @@ class MyRegulationHelper
             ->selectRaw('json_unquote(mappings.target_data->"$.Value") as target_data_value, user_action_plan_advices.*')
             ->with(['userActionPlanAdvisable' => function ($query) {
                 $query->withoutGlobalScopes();
+                // dit neemt nu alsnog de verwijderde cooperatie maatregelen mee.
             }])
             ->get();
+
+        // TODO can maybe use this
+        // todo: can use allInputSources because its already narrowed down on advices.
+//        ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE,
+//        $this->masterInputSource)
 
         foreach ($payload->transformedPayload as $regulation) {
             // create an empty key, check further on will be cleaner that way.

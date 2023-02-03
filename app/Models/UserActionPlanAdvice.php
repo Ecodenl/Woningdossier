@@ -128,25 +128,6 @@ class UserActionPlanAdvice extends Model implements Auditable
     }
 
     /**
-     * Method to scope the advices without its deleted cooperation measure applications
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \App\Models\InputSource $inputSource
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeWithoutDeletedCooperationMeasureApplications(Builder $query, InputSource $inputSource): Builder
-    {
-        // this works because it boots the cooperation measure application model, which has the soft deletes trait
-        return $query->whereHasMorph(
-            'userActionPlanAdvisable',
-            '*',
-            // cant use scopes.
-            fn (Builder $q) => $q->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)
-        );
-    }
-
-    /**
      * Method to scope the advices without its deleted cooperation measure applications and for given type.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query

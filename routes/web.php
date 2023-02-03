@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Cooperation;
 use App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationController;
+use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Cooperation\Frontend\Tool\ScanController;

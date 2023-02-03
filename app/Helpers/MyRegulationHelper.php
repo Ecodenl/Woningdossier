@@ -34,7 +34,9 @@ class MyRegulationHelper
             // so the advisable MAY have a input source id
             // this would the case for the custom measure application
             // since each input source has its own unique row, we already know we have the correct one when comming from the advices. (since thats filtered on input source already)
-            ->with(['userActionPlanAdvisable'])
+            ->with(['userActionPlanAdvisable' => function ($query) {
+                $query->withoutGlobalScope(GetValueScope::class);
+            }])
             ->whereIn('user_action_plan_advices.category', [
                 UserActionPlanAdviceService::CATEGORY_TO_DO,
                 UserActionPlanAdviceService::CATEGORY_LATER,

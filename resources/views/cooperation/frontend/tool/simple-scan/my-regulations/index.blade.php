@@ -13,60 +13,70 @@
                 <nav class="nav-tabs" x-show="selected === null">
                     @foreach(__('cooperation/frontend/tool.my-regulations.categories') as $key => $category)
                         <a x-bind="tab" href="#" @if($loop->first) x-ref="main-tab" @endif data-tab="{{ $key }}">
-                            {{ str_replace(':count', count(($payload[$key] ?? [])), $category) }}
+                            {{ str_replace(':count', count(($relevantRegulations[$key] ?? [])), $category) }}
                         </a>
                     @endforeach
                 </nav>
 
                 <div class="w-full border border-blue-500 rounded-r rounded-bl p-4">
-                    @foreach(__('cooperation/frontend/tool.my-regulations.categories') as $key => $category)
-                        <div x-bind="container" data-tab="{{ $key }}">
+                    @foreach($relevantRegulations as $regulationType => $relevantRegulationsForType)
+                        <div x-bind="container" data-tab="{{ $regulationType }}">
                             <p x-show="selected === null">
-                                @lang("cooperation/frontend/tool.my-regulations.container.intro.{$key}")
+                                @lang("cooperation/frontend/tool.my-regulations.container.intro.{$regulationType}")
                             </p>
 
-                            @foreach(($payload[$key] ?? []) as $result)
+                            @foreach($relevantRegulationsForType as $regulation)
                                 <div class="regulation-card-wrapper"
-                                     x-show="selected === null || selected === '{{ $result['Id'] }}'">
-                                    <div id="result-{{$result['Id']}}" class="regulation-card relative ease-out duration-300"
+                                     x-show="selected === null || selected === '{{ $regulation['Id'] }}'">
+                                    <div id="result-{{$regulation['Id']}}"
+                                         class="regulation-card relative ease-out duration-300"
                                          x-bind:class="selected === null ? 'cursor-pointer border-transparent hover:border-blue-500' : 'border-blue-500'"
-                                         x-on:click="selected = '{{ $result['Id'] }}'">
+                                         x-on:click="selected = '{{ $regulation['Id'] }}'">
                                         <i class="icon-md icon-close-circle-light clickable absolute top-4 right-4"
-                                           x-show="selected === '{{ $result['Id'] }}'"
+                                           x-show="selected === '{{ $regulation['Id'] }}'"
                                            x-on:click.stop="selected = null"></i>
                                         <h4 class="heading-4">
-                                            {{ $result['Title'] }}
+                                            {{ $regulation['Title'] }}
                                         </h4>
                                         <p>
-                                            {{ $result['Intro'] }}
+                                            {{ $regulation['Intro'] }}
                                         </p>
                                         <div class="my-8"></div>
                                         <div class="flex flex-wrap flex-row w-full items-center">
-                                            @if($advices->isNotEmpty())
                                                 <span class="flex as-text mr-1">
                                                     {{ Str::ucfirst(__('default.for')) }}:
                                                 </span>
-                                                {{-- TODO: Logic --}}
-                                                @php $total = mt_rand(1, $advices->count()); @endphp
-                                                @for($i = 0; $i < $total; $i++)
-                                                    <span class="flex as-text bubble"
-                                                          @if($i > 2) x-show="selected === '{{ $result['Id'] }}'" @endif>
-                                                        Maatregel naam.
-                                                        {{-- TODO: currently custom measures are being annoying, but not spending too much time on it due to potential change in logic --}}
-                                                        {{-- $advices[$i]->userActionPlanAdvisable->name ?? $advices[$i]->userActionPlanAdvisable()->forInputSource($masterInputSource)->first()->name --}}
+                                            {{-- TODO: Logic --}}
+                                            @php($total = count($regulation['advisable_names']))
+                                            @for($i = 0; $i < $total; $i++)
+                                                <span class="flex as-text bubble"
+                                                      @if($i > 2) x-show="selected === '{{ $regulation['Id'] }}'" @endif>
+                                                        {{$regulation['advisable_names'][$i]}}
                                                     </span>
-                                                @endfor
-                                                @if($total > 3)
-                                                    <span class="flex as-text bubble" x-show="selected === null">
+                                            @endfor
+                                            @if($total > 3)
+                                                <span class="flex as-text bubble" x-show="selected === null">
                                                         +{{ $total - 3 }}
                                                     </span>
-                                                @endif
                                             @endif
                                         </div>
+                                        @if(\App::isLocal())
+                                        <div class="flex flex-wrap flex-row w-full items-center">
+                                                <span class="flex as-text mr-1">
+                                                    Verbeterjehuis maatregelen:
+                                                </span>
+
+                                                @foreach($regulation['Tags'] as $tag)
+                                                    <span class="flex as-text bubble">
+                                                        {{$tag['Label']}}
+                                                    </span>
+                                                @endforeach
+                                        </div>
+                                        @endif
                                     </div>
 
-                                    <div x-show="selected === '{{ $result['Id'] }}'" class="my-4">
-                                        {!! $result['Details'] !!}
+                                    <div x-show="selected === '{{ $regulation['Id'] }}'" class="my-4">
+                                        {!! $regulation['Details'] !!}
                                     </div>
                                 </div>
                             @endforeach

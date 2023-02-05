@@ -21,13 +21,13 @@
     </div>
 
     <!-- This example requires Tailwind CSS v2.0+ -->
-    <div x-data="{ active: '{{$step->subSteps->first()->slug}}'}"
+    <div x-data="{ active: '{{$subSteps->first()->slug}}'}"
          x-on:scroll-to-top.window="window.scrollTo({ top: 0, behavior: 'smooth' })"
          wire:ignore.self>
 
         <div class="hidden sm:block">
             <nav class="flex border-b border-blue border-opacity-50" aria-label="Tabs">
-                @foreach($step->subSteps as $subStep)
+                @foreach($subSteps as $subStep)
                     <a x-on:click="active = '{{$subStep->slug}}'; triggerCustomEvent(window, 'tab-switched');" href="#"
                        x-bind:class="{ 'bg-green': active === '{{$subStep->slug}}', 'bg-blue-500': active !== '{{$subStep->slug}}' }"
                        class="no-underline rounded-t-md p-2 text-white" wire:ignore>
@@ -37,10 +37,11 @@
             </nav>
         </div>
 
-        @foreach($step->subSteps as $subStep)
+        @foreach($subSteps as $subStep)
              <div x-show="active == '{{$subStep->slug}}'" wire:ignore.self>
-                <livewire:cooperation.frontend.tool.expert-scan.sub-steppable :step="$step" :subStep="$subStep"
-                                                                              :wire:key="$subStep->id"/>
+                 @include('cooperation.frontend.tool.expert-scan.parts.sub-steppable', [
+                    'subSteppables' => $this->subSteppables->where('sub_step_id', $subStep->id)
+                 ])
              </div>
          @endforeach
     </div>

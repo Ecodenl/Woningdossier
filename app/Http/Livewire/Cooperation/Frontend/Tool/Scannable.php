@@ -46,6 +46,7 @@ abstract class Scannable extends Component
         // after that we can fill up the user his given answers
         $this->setFilledInAnswers();
 
+        // TODO: Remove this
         if ($this->automaticallyEvaluate) {
             // add the validation for the tool questions
             $this->setValidationForToolQuestions();

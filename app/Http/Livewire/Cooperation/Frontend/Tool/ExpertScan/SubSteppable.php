@@ -19,11 +19,9 @@ class SubSteppable extends Scannable
     public Step $step;
     public SubStep $subStep;
 
-    public array $calculationResults = [];
 
     public array $intercontinentalAnswers = [];
 
-    public bool $loading = false;
     public bool $componentReady = false;
 
     protected $listeners = [
@@ -44,7 +42,6 @@ class SubSteppable extends Scannable
 
         // This is important, as we want to perform evaluation pre-render
         $this->automaticallyEvaluate = false;
-        $this->build();
     }
 
     public function render()
@@ -52,9 +49,7 @@ class SubSteppable extends Scannable
         if ($this->componentReady) {
             $this->performEvaluation();
         }
-        if ($this->loading) {
-            $this->dispatchBrowserEvent('input-updated');
-        }
+
         return view('livewire.cooperation.frontend.tool.expert-scan.sub-steppable');
     }
 
@@ -79,10 +74,7 @@ class SubSteppable extends Scannable
         $this->componentReady = true;
     }
 
-    public function inputUpdated()
-    {
-        $this->loading = true;
-    }
+
 
     public function updated($field, $value)
     {
@@ -107,79 +99,7 @@ class SubSteppable extends Scannable
         }
     }
 
-    public function save()
-    {
-        // Before we can validate (and save), we must reset the formatting from text to mathable
-        foreach ($this->toolQuestions as $toolQuestion) {
-            if ($toolQuestion->data_type === Caster::FLOAT) {
-                $this->filledInAnswers[$toolQuestion->short] = Caster::init(
-                    $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
-                )->reverseFormatted();
-            }
-        }
 
-        if (! empty($this->rules)) {
-            $validator = Validator::make([
-                'filledInAnswers' => $this->filledInAnswers
-            ], $this->rules, [], $this->attributes);
-
-            // Translate values also
-            $defaultValues = __('validation.values.defaults');
-
-            foreach ($this->filledInAnswers as $toolQuestionId => $answer) {
-                $validator->addCustomValues([
-                    "filledInAnswers.{$toolQuestionId}" => $defaultValues,
-                ]);
-            }
-
-            Log::debug("Sub step {$this->subStep->name} " . ($validator->fails() ? 'fails validation' : 'passes validation'));
-            foreach ($this->toolQuestions as $toolQuestion) {
-                if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                    $this->filledInAnswers[$toolQuestion->short] = Caster::init(
-                        $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
-                    )->getFormatForUser();
-                }
-            }
-            if ($validator->fails()) {
-                // Validator failed, let's put it back as the user format
-                // notify the main form that validation failed for this particular sub step.
-                $this->emitUp('failedValidationForSubSteps', $this->subStep);
-
-                $this->dispatchBrowserEvent('validation-failed');
-            }
-
-            $validator->validate();
-        }
-
-        // Turns out, default values exist! We need to check if the tool questions have answers, else
-        // they might not save...
-        if (! $this->dirty) {
-            foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
-                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-
-                // Define if we should check this question...
-                if ($this->building->user->account->can('answer', $toolQuestion)) {
-                    $currentAnswer = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->currentInputSource, $toolQuestion);
-                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-
-                    // Master input source is important. Ensure both are set
-                    if (is_null($currentAnswer) || is_null($masterAnswer)) {
-                        $this->setDirty(true);
-                        break;
-                    }
-                }
-            }
-        }
-
-        $answers = [];
-
-        // if it's not dirty, we don't want to pass the answers, as we don't need to update them.
-        if ($this->dirty) {
-            $answers = $this->filledInAnswers;
-        }
-
-        $this->emitUp('subStepValidationSucceeded', $this->subStep, $answers);
-    }
 
     private function performEvaluation()
     {

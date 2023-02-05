@@ -11,13 +11,10 @@ use App\Helpers\Conditions\Clause;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\Hoomdossier;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
-use App\Models\Building;
+use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
-use App\Models\InputSource;
-use App\Models\Scan;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
@@ -26,23 +23,17 @@ use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Livewire\Component;
+use Illuminate\Support\Facades\Validator;
 
-class Form extends Component
+class Form extends Scannable
 {
     public Step $step;
     public Collection $subSteps;
-    public string $locale;
 
-    public array $filledInAnswers = [];
-    public Building $building;
-    public InputSource $masterInputSource;
-    public InputSource $currentInputSource;
-
-    public array $succeededSubSteps = [];
+    public array $calculationResults = [];
     public array $failedValidationForSubSteps = [];
 
-    public Cooperation $cooperation;
+    public bool $loading = false;
 
     protected $listeners = [
         'subStepValidationSucceeded' => 'subStepSucceeded',
@@ -52,65 +43,133 @@ class Form extends Component
 
     public function mount(Step $step, Cooperation $cooperation)
     {
-        $this->subSteps = $step->subSteps;
+        $this->subSteps = $step->subSteps()->with([
+            'toolQuestions' => function ($query) {
+                $query->with('forSpecificInputSource');
+            },
+            'subStepTemplate',
+        ])->get();
 
-        $this->locale = app()->getLocale();
-        $this->building = HoomdossierSession::getBuilding(true);
-        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->build();
     }
 
     public function render()
     {
+        if ($this->loading) {
+            $this->dispatchBrowserEvent('input-updated');
+        }
         return view('livewire.cooperation.frontend.tool.expert-scan.form');
     }
 
-    public function failedValidationForSubSteps(array $subStep)
+    public function getSubSteppablesProperty()
     {
-        // Unset succeeded sub step because it fails now
-        unset($this->succeededSubSteps[$subStep['slug'][$this->locale]]);
-
-        $this->failedValidationForSubSteps[$subStep['slug'][$this->locale]] = $subStep['name'][$this->locale];
-        $this->dispatchBrowserEvent('scroll-to-top');
-    }
-
-    // We will mark the given sub step as succeeded
-    public function subStepSucceeded(array $subStep, array $filledInAnswers)
-    {
-        // Unset failed sub step because it succeeds now
-        unset($this->failedValidationForSubSteps[$subStep['slug'][$this->locale]]);
-
-        $this->setFilledInAnswers($filledInAnswers);
-        $this->succeededSubSteps[$subStep['slug'][$this->locale]] = $subStep['slug'][$this->locale];
-
-        // Save answers if all sub steps have been successfully answered
-        if ($this->allSubStepsSucceeded()) {
-            $this->saveFilledInAnswers();
+        $subSteppables = collect();
+        foreach ($this->subSteps as $subStep) {
+            $subSteppables = $subSteppables->merge($subStep->subSteppables()->orderBy('order')
+                ->with(['subSteppable', 'toolQuestionType'])
+                ->get());
         }
+
+        return $subSteppables;
     }
 
-    public function setFilledInAnswers($filledInAnswers)
+    public function getToolQuestionsProperty()
     {
-        // We can't directly set the answers because there will be more than one sub step that is passing
-        // answers. array_merge messes up the keys and addition (array + array) causes weird behaviour
-        foreach ($filledInAnswers as $toolQuestionShort => $answer) {
-            $this->filledInAnswers[$toolQuestionShort] = $answer;
+        $toolQuestions = collect();
+        foreach ($this->subSteps as $subStep) {
+            // Eager loaded in hydration
+            $toolQuestions = $toolQuestions->merge($subStep->toolQuestions);
         }
+
+        return $toolQuestions;
     }
 
-    public function updateFilledInAnswers($filledInAnswers)
+    public function inputUpdated()
     {
-        $this->setFilledInAnswers($filledInAnswers);
+        $this->loading = true;
+    }
+
+    public function updated($field, $value)
+    {
+        parent::updated($field, $value);
+
         $this->performCalculations();
+        $this->dispatchBrowserEvent('input-update-processed');
+        $this->loading = false;
     }
 
-    public function allSubStepsSucceeded()
+    public function save()
     {
-        // Total amount of sub steps should match in both count and slugs
-        $allFinished = count($this->succeededSubSteps) == $this->subSteps->count();
-        $noDiff = empty(array_diff($this->subSteps->pluck('slug')->toArray(), $this->succeededSubSteps));
+        // Before we can validate (and save), we must reset the formatting from text to mathable
+        foreach ($this->toolQuestions as $toolQuestion) {
+            if ($toolQuestion->data_type === Caster::FLOAT) {
+                $this->filledInAnswers[$toolQuestion->short] = Caster::init(
+                    $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
+                )->reverseFormatted();
+            }
+        }
 
-        return $allFinished && $noDiff;
+        if (! empty($this->rules)) {
+            $validator = Validator::make([
+                'filledInAnswers' => $this->filledInAnswers
+            ], $this->rules, [], $this->attributes);
+
+            // Translate values also
+            $defaultValues = __('validation.values.defaults');
+
+            foreach ($this->filledInAnswers as $toolQuestionId => $answer) {
+                $validator->addCustomValues([
+                    "filledInAnswers.{$toolQuestionId}" => $defaultValues,
+                ]);
+            }
+
+            Log::debug("Sub step {$this->subStep->name} " . ($validator->fails() ? 'fails validation' : 'passes validation'));
+            foreach ($this->toolQuestions as $toolQuestion) {
+                if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
+                    $this->filledInAnswers[$toolQuestion->short] = Caster::init(
+                        $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
+                    )->getFormatForUser();
+                }
+            }
+            if ($validator->fails()) {
+                // Validator failed, let's put it back as the user format
+                // notify the main form that validation failed for this particular sub step.
+                $this->emitUp('failedValidationForSubSteps', $this->subStep);
+
+                $this->dispatchBrowserEvent('validation-failed');
+            }
+
+            $validator->validate();
+        }
+
+        // Turns out, default values exist! We need to check if the tool questions have answers, else
+        // they might not save...
+        if (! $this->dirty) {
+            foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+
+                // Define if we should check this question...
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                    $currentAnswer = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->currentInputSource, $toolQuestion);
+                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+
+                    // Master input source is important. Ensure both are set
+                    if (is_null($currentAnswer) || is_null($masterAnswer)) {
+                        $this->setDirty(true);
+                        break;
+                    }
+                }
+            }
+        }
+
+        $answers = [];
+
+        // if it's not dirty, we don't want to pass the answers, as we don't need to update them.
+        if ($this->dirty) {
+            $answers = $this->filledInAnswers;
+        }
+
+        $this->emitUp('subStepValidationSucceeded', $this->subStep, $answers);
     }
 
     public function saveFilledInAnswers()

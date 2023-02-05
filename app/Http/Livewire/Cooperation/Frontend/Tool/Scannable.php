@@ -34,7 +34,6 @@ abstract class Scannable extends Component
     public array $filledInAnswersForAllInputSources = [];
 
     public bool $dirty = false;
-    public bool $automaticallyEvaluate = true;
 
     public function build()
     {
@@ -46,20 +45,17 @@ abstract class Scannable extends Component
         // after that we can fill up the user his given answers
         $this->setFilledInAnswers();
 
-        // TODO: Remove this
-        if ($this->automaticallyEvaluate) {
-            // add the validation for the tool questions
-            $this->setValidationForToolQuestions();
-            // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
-            $this->evaluateToolQuestions();
-        }
+        // add the validation for the tool questions
+        $this->setValidationForToolQuestions();
+        // and evaluate the conditions for the tool questions, because we may have to hide questions upon load.
+        $this->evaluateToolQuestions();
     }
 
-    abstract function getSubSteppablesProperty();
+    abstract public function getSubSteppablesProperty();
 
-    abstract function getToolQuestionsProperty();
+    abstract public function getToolQuestionsProperty();
 
-    abstract function save();
+    abstract public function save();
 
     protected function setValidationForToolQuestions()
     {
@@ -107,10 +103,8 @@ abstract class Scannable extends Component
             }
         }
 
-        if ($this->automaticallyEvaluate) {
-            $this->setValidationForToolQuestions();
-            $this->evaluateToolQuestions();
-        }
+        $this->setValidationForToolQuestions();
+        $this->evaluateToolQuestions();
 
         $this->refreshAlerts();
 
@@ -213,7 +207,6 @@ abstract class Scannable extends Component
                     $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                 }
 
-                // TODO: Check if this should be subject to $this->automaticallyEvaluate
                 $this->setValidationForToolQuestions();
 
                 $this->evaluateToolQuestions();

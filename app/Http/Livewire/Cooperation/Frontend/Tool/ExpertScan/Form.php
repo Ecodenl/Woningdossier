@@ -36,9 +36,7 @@ class Form extends Scannable
     public bool $loading = false;
 
     protected $listeners = [
-        'subStepValidationSucceeded' => 'subStepSucceeded',
-        'failedValidationForSubSteps',
-        'updateFilledInAnswers',
+        'save',
     ];
 
     public function mount(Step $step, Cooperation $cooperation)
@@ -51,6 +49,7 @@ class Form extends Scannable
         ])->get();
 
         $this->build();
+        $this->performCalculations();
     }
 
     public function render()
@@ -93,6 +92,7 @@ class Form extends Scannable
     {
         parent::updated($field, $value);
 
+        $this->failedValidationForSubSteps = [];
         $this->performCalculations();
         $this->dispatchBrowserEvent('input-update-processed');
         $this->loading = false;
@@ -104,7 +104,8 @@ class Form extends Scannable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->data_type === Caster::FLOAT) {
                 $this->filledInAnswers[$toolQuestion->short] = Caster::init(
-                    $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
+                    $toolQuestion->data_type,
+                    $this->filledInAnswers[$toolQuestion->short]
                 )->reverseFormatted();
             }
         }
@@ -114,7 +115,7 @@ class Form extends Scannable
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules, [], $this->attributes);
 
-            // Translate values also
+            // Translate values also (otherwise we get weird translations for e.g. a required_if)
             $defaultValues = __('validation.values.defaults');
 
             foreach ($this->filledInAnswers as $toolQuestionId => $answer) {
@@ -123,18 +124,30 @@ class Form extends Scannable
                 ]);
             }
 
-            Log::debug("Sub step {$this->subStep->name} " . ($validator->fails() ? 'fails validation' : 'passes validation'));
             foreach ($this->toolQuestions as $toolQuestion) {
                 if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                     $this->filledInAnswers[$toolQuestion->short] = Caster::init(
-                        $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
+                        $toolQuestion->data_type,
+                        $this->filledInAnswers[$toolQuestion->short]
                     )->getFormatForUser();
                 }
             }
             if ($validator->fails()) {
+                foreach ($validator->errors()->messages() as $field => $messages) {
+                    $short = explode('.', $field, 2)[1];
+                    $tq = $this->toolQuestions->where('short', $short)->first();
+
+                    $subStepId = $tq->pivot->sub_step_id;
+                    if (! array_key_exists($subStepId, $this->failedValidationForSubSteps)) {
+                        $this->failedValidationForSubSteps[$subStepId] = $this->subSteps->where('id', $subStepId)
+                            ->first()
+                            ->name;
+                    }
+                }
+
+
                 // Validator failed, let's put it back as the user format
                 // notify the main form that validation failed for this particular sub step.
-                $this->emitUp('failedValidationForSubSteps', $this->subStep);
 
                 $this->dispatchBrowserEvent('validation-failed');
             }
@@ -162,104 +175,100 @@ class Form extends Scannable
             }
         }
 
-        $answers = [];
-
-        // if it's not dirty, we don't want to pass the answers, as we don't need to update them.
-        if ($this->dirty) {
-            $answers = $this->filledInAnswers;
-        }
-
-        $this->emitUp('subStepValidationSucceeded', $this->subStep, $answers);
+        $this->saveFilledInAnswers();
     }
 
     public function saveFilledInAnswers()
     {
-        $stepShortsToRecalculate = [];
-        $shouldDoFullRecalculate = false;
-        $dirtyToolQuestions = [];
+        if ($this->dirty) {
 
-        // Answers have been updated, we save them and dispatch a recalculate
-        // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
-        foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
-            // Define if we should answer this question...
-            /** @var ToolQuestion $toolQuestion */
-            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-            if ($this->building->user->account->can('answer', $toolQuestion)) {
+            $stepShortsToRecalculate = [];
+            $shouldDoFullRecalculate = false;
+            $dirtyToolQuestions = [];
 
-                // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
-                // so when we actually start saving it we have to format it one more time
-                if ($toolQuestion->data_type === Caster::FLOAT) {
-                    $givenAnswer = Caster::init(
-                        $toolQuestion->data_type, $givenAnswer
-                    )->reverseFormatted();
+            // Answers have been updated, we save them and dispatch a recalculate
+            // at this point we already know that the form is dirty, otherwise this event wouldnt have been dispatched
+            foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
+                // Define if we should answer this question...
+                /** @var ToolQuestion $toolQuestion */
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+
+                    // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
+                    // so when we actually start saving it we have to format it one more time
+                    if ($toolQuestion->data_type === Caster::FLOAT) {
+                        $givenAnswer = Caster::init(
+                            $toolQuestion->data_type, $givenAnswer
+                        )->reverseFormatted();
+                    }
+
+                    // TODO: this is a horrible way to trace dirty answers
+                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                    if ($masterAnswer !== $givenAnswer) {
+                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                    }
+
+                    ToolQuestionService::init($toolQuestion)
+                        ->building($this->building)
+                        ->currentInputSource($this->currentInputSource)
+                        ->applyExampleBuilding()
+                        ->save($givenAnswer);
+
+                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
+                        Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
+                        $shouldDoFullRecalculate = true;
+                    }
+
+                    // get the expert step equivalent
+                    // we will filter out duplicates later on.
+                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                 }
-
-                // TODO: this is a horrible way to trace dirty answers
-                $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-                if ($masterAnswer !== $givenAnswer) {
-                    $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
-                }
-
-                ToolQuestionService::init($toolQuestion)
-                    ->building($this->building)
-                    ->currentInputSource($this->currentInputSource)
-                    ->applyExampleBuilding()
-                    ->save($givenAnswer);
-
-                if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
-                    Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
-                    $shouldDoFullRecalculate = true;
-                }
-
-                // get the expert step equivalent
-                // we will filter out duplicates later on.
-                $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
             }
-        }
 
-        $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
-            ->forStep($this->step);
+            $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+                ->forStep($this->step);
 
-        // since we are done saving all the filled in answers, we can safely mark the sub steps as completed
-        foreach ($this->subSteps as $subStep) {
-            // Now mark the sub step as complete
-            $completedSubStep = CompletedSubStep::firstOrCreate([
-                'sub_step_id' => $subStep->id,
-                'building_id' => $this->building->id,
-                'input_source_id' => $this->currentInputSource->id
-            ]);
+            // since we are done saving all the filled in answers, we can safely mark the sub steps as completed
+            foreach ($this->subSteps as $subStep) {
+                // Now mark the sub step as complete
+                $completedSubStep = CompletedSubStep::firstOrCreate([
+                    'sub_step_id' => $subStep->id,
+                    'building_id' => $this->building->id,
+                    'input_source_id' => $this->currentInputSource->id
+                ]);
 
-            if ($completedSubStep->wasRecentlyCreated) {
-                // No need to check SubSteps that were recently created because they passed conditions
-                $flowService->skipSubstep($subStep);
+                if ($completedSubStep->wasRecentlyCreated) {
+                    // No need to check SubSteps that were recently created because they passed conditions
+                    $flowService->skipSubstep($subStep);
+                }
             }
-        }
 
-        $flowService->checkConditionals($dirtyToolQuestions, Hoomdossier::user());
+            $flowService->checkConditionals($dirtyToolQuestions, Hoomdossier::user());
 
-        if ($shouldDoFullRecalculate) {
-            // We should do a full recalculate because some base value that has impact on every calculation is changed.
-            Log::debug("Dispatching full recalculate..");
+            if ($shouldDoFullRecalculate) {
+                // We should do a full recalculate because some base value that has impact on every calculation is changed.
+                Log::debug("Dispatching full recalculate..");
 
-            Artisan::call(RecalculateForUser::class, [
-                '--user' => [$this->building->user->id],
-                '--input-source' => [$this->currentInputSource->short],
-                // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
-                '--with-old-advices' => true,
-            ]);
+                Artisan::call(RecalculateForUser::class, [
+                    '--user' => [$this->building->user->id],
+                    '--input-source' => [$this->currentInputSource->short],
+                    // we are doing a full recalculate, we want to keep the user his advices organised as they are at the moment.
+                    '--with-old-advices' => true,
+                ]);
 
-            // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
-        } elseif (! empty($stepShortsToRecalculate)) {
-            $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
-            // since we are just re-calculating specific parts of the tool we do it without the old advices
-            // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
-            // but it moves the re-calculated advices to the proper column.
-            Artisan::call(RecalculateForUser::class, [
-                '--user' => [$this->building->user->id],
-                '--input-source' => [$this->currentInputSource->short],
-                '--step-short' => $stepShortsToRecalculate,
-                '--with-old-advices' => false,
-            ]);
+                // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
+            } elseif (! empty($stepShortsToRecalculate)) {
+                $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
+                // since we are just re-calculating specific parts of the tool we do it without the old advices
+                // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
+                // but it moves the re-calculated advices to the proper column.
+                Artisan::call(RecalculateForUser::class, [
+                    '--user' => [$this->building->user->id],
+                    '--input-source' => [$this->currentInputSource->short],
+                    '--step-short' => $stepShortsToRecalculate,
+                    '--with-old-advices' => false,
+                ]);
+            }
         }
 
         return redirect()->to(
@@ -279,7 +288,7 @@ class Form extends Scannable
             ->inputSource($this->masterInputSource);
 
         // We can reuse these answers because all below calculators use the same questions for their conditional logic
-        $evaluatableAnswers = $evaluator->getToolAnswersForConditions($conditions, collect($this->filledInAnswers));
+        $evaluator->setAnswers($evaluator->getToolAnswersForConditions($conditions, collect($this->filledInAnswers)));
 
         $calculations = [];
         $calculate = [
@@ -291,7 +300,7 @@ class Form extends Scannable
         foreach ($calculate as $short => $calculator) {
             $performedCalculations = [];
             $conditions = $this->getCalculatorConditions($short);
-            if ($evaluator->evaluateCollection($conditions, $evaluatableAnswers)) {
+            if ($evaluator->evaluate($conditions)) {
                 $performedCalculations = $calculator::calculate($this->building, $this->masterInputSource, collect($this->filledInAnswers));
             }
 
@@ -307,7 +316,7 @@ class Form extends Scannable
             $calculations[$short] = $performedCalculations;
         }
 
-        $this->emit('calculationsPerformed', $calculations);
+        $this->calculationResults = $calculations;
     }
 
     private function getCalculatorConditions(string $short): array

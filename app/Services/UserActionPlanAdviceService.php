@@ -46,13 +46,14 @@ class UserActionPlanAdviceService
             ->forBuilding($userActionPlanAdvice->user->building)
             ->getSearch();
 
-        // todo, pick the right one here.
-        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->first();
 
         // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
         $regulations = $payload
             ->forMeasure($advisable)
             ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
+
+        Log::debug('regulations', $regulations->getSubsidies()->toArray());
 
         $loanAvailable = $regulations->getLoans()->isNotEmpty();
         $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
@@ -225,18 +226,20 @@ class UserActionPlanAdviceService
      * @param  \App\Models\MeasureApplication  $measureApplication
      * @param  \Illuminate\Database\Eloquent\Collection  $oldAdvices
      */
-    public static function checkOldAdvices(
-        UserActionPlanAdvice $userActionPlanAdvice,
-        MeasureApplication $measureApplication,
-        Collection $oldAdvices
-    ) {
-        $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
-            ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
+    public static function checkOldAdvices(UserActionPlanAdvice $userActionPlanAdvice, MeasureApplication $measureApplication, Collection $oldAdvices)
+    {
+        $oldAdvice = $oldAdvices
+            ->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
+            ->where('user_action_plan_advisable_id', '=', $measureApplication->id)
+            ->first();
+
         // This measure was set before. We ensure they stay
         if ($oldAdvice instanceof UserActionPlanAdvice) {
             $userActionPlanAdvice->category = $oldAdvice->category;
             $userActionPlanAdvice->visible = $oldAdvice->visible;
             $userActionPlanAdvice->order = $oldAdvice->order;
+            $userActionPlanAdvice->subsidy_available = $oldAdvice->subsidy_available;
+            $userActionPlanAdvice->loan_available = $oldAdvice->loan_available;
         }
     }
 

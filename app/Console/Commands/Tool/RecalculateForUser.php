@@ -115,7 +115,7 @@ class RecalculateForUser extends Command
                     ->forBuilding($user->building)
                     ->forInputSource($inputSource)
                     ->setType(RecalculateStepForUser::class)
-                    ->setActive($stepsToRecalculateChain);
+                    ->setActive(collect($stepsToRecalculateChain)->pluck('uuid')->all());
 
                 Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
 

@@ -78,39 +78,28 @@ class AppServiceProvider extends ServiceProvider
 
         Queue::before(function (JobProcessing $event) {
             $payload = $event->job->payload();
-            /** @var RecalculateStepForUser $command */
+            /** @var RecalculateStepForUser|CloneOpposingInputSource $command */
             $command = unserialize($payload['data']['command']);
             $jobName = get_class($command);
             if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
-                $building = $command->user->building ?? $command->building;
+                $building = $command->building ?? $command->user->building;
                 Log::debug("JOB {$jobName} started | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-                $service = NotificationService::init()
-                    ->forBuilding($building)
-                    ->forInputSource($command->inputSource)
-                    ->setType($jobName);
-
-                // We only active the notification if it isn't already. This is because it will increment the count of
-                // the current active notification, and we don't want to do that.
-                if ($service->isNotActive()) {
-                    Log::debug("None active, setting active");
-                    $service->setActive();
-                }
             }
-
         });
 
         Queue::after(function (JobProcessed $event) {
             $payload = $event->job->payload();
-            /** @var RecalculateStepForUser $command */
+            /** @var RecalculateStepForUser|CloneOpposingInputSource $command */
             $command = unserialize($payload['data']['command']);
             $jobName = get_class($command);
             if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
-                $building = $command->user->building ?? $command->building;
+                $building = $command->building ?? $command->user->building;
                 Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
                 NotificationService::init()
                     ->forBuilding($building)
                     ->forInputSource($command->inputSource)
                     ->setType($jobName)
+                    ->setUuid($command->uuid)
                     ->deactivate();
             }
         });

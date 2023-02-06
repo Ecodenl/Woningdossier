@@ -35,18 +35,10 @@ class Notifications extends Component
 
     public function checkNotification()
     {
-        $service = NotificationService::init()
+        $activeNotification = NotificationService::init()
             ->forInputSource($this->masterInputSource)
-            ->forBuilding($this->building);
-
-        $activeNotification = false;
-
-        foreach ($this->types as $type) {
-            if ($service->setType($type)->isActive()) {
-                $activeNotification = true;
-                break;
-            }
-        }
+            ->forBuilding($this->building)
+            ->hasActiveTypes($this->types);
 
         if (! $activeNotification) {
             $this->hasRedirected = true;

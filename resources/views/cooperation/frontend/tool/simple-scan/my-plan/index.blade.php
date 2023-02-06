@@ -3,8 +3,8 @@
 @section('content')
     @if($activeNotification)
         <livewire:cooperation.frontend.layouts.parts.notifications
-                :nextUrl="route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'))"
                 :types="[\App\Jobs\RecalculateStepForUser::class]"
+                :nextUrl="route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'))"
         />
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
     @else

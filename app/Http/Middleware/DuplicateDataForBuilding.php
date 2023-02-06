@@ -42,14 +42,19 @@ class DuplicateDataForBuilding
 
             if ($opposingInputSourceCompletedSubStepExists) {
                 Log::debug("User {$building->id} its opposing input source HAS completed sub steps for input source {$inputSource->short}, starting to clone..");
+                $job = new CloneOpposingInputSource($building, $inputSource, $opposingInputSource);
+
                 // we will set the notification before its picked up by the queue
                 // otherwise the user would get weird ux
                 NotificationService::init()
                     ->forBuilding($building)
                     ->forInputSource($inputSource)
                     ->setType(CloneOpposingInputSource::class)
-                    ->setActive();
-                CloneOpposingInputSource::dispatch($building, $inputSource, $opposingInputSource);
+                    ->setActive([$job->uuid]);
+
+                // We dispatch like this, so we have access to the job before we send it off, and thus allow us to pass
+                // the uuid to the notification service.
+                dispatch($job);
             }
         }
 

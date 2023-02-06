@@ -1,11 +1,11 @@
 @extends('cooperation.frontend.layouts.tool')
 
 @section('content')
-
-    @if($notification instanceof \App\Models\Notification)
+    @if($activeNotification)
         <livewire:cooperation.frontend.layouts.parts.notifications
                 :types="[App\Jobs\CloneOpposingInputSource::class]"
-                :nextUrl="route('cooperation.frontend.tool.simple-scan.index', compact('scan', 'step', 'subStep'))"/>
+                :nextUrl="route('cooperation.frontend.tool.simple-scan.index', compact('scan', 'step', 'subStep'))"
+        />
         @include('cooperation.frontend.shared.parts.loader', [
             'label' => __("cooperation/frontend/tool/simple-scan/index.cloning-in-progress.{$currentInputSource->short}")
         ])

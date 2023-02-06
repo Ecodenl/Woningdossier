@@ -50,7 +50,7 @@ class DuplicateDataForBuilding
                     ->forBuilding($building)
                     ->forInputSource($inputSource)
                     ->setType(CloneOpposingInputSource::class)
-                    ->setActive($job->uuid);
+                    ->setActive([$job->uuid]);
 
                 // We dispatch like this, so we have access to the job before we send it off, and thus allow us to pass
                 // the uuid to the notification service.

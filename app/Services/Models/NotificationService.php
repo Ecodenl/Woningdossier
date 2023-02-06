@@ -63,23 +63,17 @@ class NotificationService
         return ! $this->isActive();
     }
 
-    public function setActive($params)
+    public function setActive(array $uuids)
     {
-        $params = is_array($params) ? $params : func_get_args();
-
-        foreach ($params as $param) {
-            $uuid = is_object($param) ? ($param->uuid ?? null) : $param;
-
-            if (is_string($uuid)) {
-                Notification::allInputSources()->updateOrCreate(
-                    [
-                        'input_source_id' => $this->inputSource->id,
-                        'type' => $this->type,
-                        'uuid' => $uuid,
-                        'building_id' => $this->building->id,
-                    ],
-                );
-            }
+        foreach ($uuids as $uuid) {
+            Notification::allInputSources()->updateOrCreate(
+                [
+                    'input_source_id' => $this->inputSource->id,
+                    'type' => $this->type,
+                    'uuid' => $uuid,
+                    'building_id' => $this->building->id,
+                ],
+            );
         }
     }
 

@@ -122,7 +122,7 @@
                              'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                              'inputName' => 'password',
                              'attr' => 'x-show="! alreadyMember && ! emailExists"',
-                         ])
+                        ])
 
                             <div class="flex w-full" x-data="{showPass: false}">
                                 <input class="form-input" type="password" name="password"
@@ -141,7 +141,8 @@
                             'inputName' => 'password_confirmation',
                             'attr' => 'x-show="! alreadyMember && ! emailExists"',
                         ])
-                            <input class="form-input" type="password" name="password_confirmation" placeholder="@lang('auth.register.form.password-confirmation')">
+                            <input class="form-input" type="password" name="password_confirmation"
+                                   placeholder="@lang('auth.register.form.password-confirmation')">
                         @endcomponent
                     </div>
                 </div>
@@ -163,7 +164,9 @@
                     <p class="text-left">@lang('conversation-requests.index.text', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name])</p>
                 @endcomponent
 
-                <button class="btn btn-purple w-full mt-3" type="submit" x-bind:disabled="! allowAccess || alreadyMember">
+                {{-- When clicking the button, we disable it. We don't have to do anything fancy, since it won't have pointer events when disabled --}}
+                <button class="btn btn-purple w-full mt-3" type="submit" x-on:click="submitted = true;"
+                        x-bind:disabled="! allowAccess || alreadyMember || submitted">
                     @lang('auth.register.form.submit')
                 </button>
             </form>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
+use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -49,20 +50,11 @@ class MyPlanController extends Controller
             }
         }
 
-        $types = [\App\Jobs\RecalculateStepForUser::class];
-
-        $service = NotificationService::init()
+        $activeNotification = NotificationService::init()
             ->forInputSource($masterInputSource)
-            ->forBuilding($building);
-
-        $activeNotification = false;
-
-        foreach ($types as $type) {
-            if ($service->setType($type)->isActive()) {
-                $activeNotification = true;
-                break;
-            }
-        }
+            ->forBuilding($building)
+            ->setType(RecalculateStepForUser::class)
+            ->isActive();
 
         $inputSource = HoomdossierSession::getInputSource(true);
 

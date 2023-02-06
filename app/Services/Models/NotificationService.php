@@ -63,7 +63,7 @@ class NotificationService
         return ! $this->isActive();
     }
 
-    public function setActive(array $uuids)
+    public function setActive(array $uuids = [])
     {
         foreach ($uuids as $uuid) {
             Notification::allInputSources()->updateOrCreate(

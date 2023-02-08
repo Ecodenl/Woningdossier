@@ -76,7 +76,7 @@
                                     </div>
 
                                     <div x-show="selected === '{{ $regulation['Id'] }}'" class="detail-wrapper">
-                                        {!! $regulation['Details'] !!}
+                                        {!! (new \App\Helpers\Sanitizers\HtmlSanitizer())->sanitize($regulation['Details']) !!}
 
                                         @if(! empty($regulation['ProviderUrl']))
                                             <a target="_blank" rel="nofollow" href="{{ $regulation['ProviderUrl'] }}"

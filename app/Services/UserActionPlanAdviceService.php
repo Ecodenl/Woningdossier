@@ -53,7 +53,7 @@ class UserActionPlanAdviceService
             ->forMeasure($advisable)
             ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
 
-        Log::debug('regulations', $regulations->getSubsidies()->toArray());
+//        Log::debug('regulations', $regulations->getSubsidies()->toArray());
 
         $loanAvailable = $regulations->getLoans()->isNotEmpty();
         $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();

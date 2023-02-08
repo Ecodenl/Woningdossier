@@ -10,6 +10,7 @@ use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class Search
 {
@@ -68,7 +69,10 @@ class Search
             )
             ->first();
 
+
         $target = MappingService::init()->from($toolQuestionCustomValue)->resolveTarget();
+//        Log::debug('contractType', $toolQuestionCustomValue);
+        Log::debug('contractType', $target);
         if (is_array($target)) {
             $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {
                 return in_array($target['Value'], $regulation['TargetGroup']);

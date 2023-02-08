@@ -77,6 +77,13 @@
 
                                     <div x-show="selected === '{{ $regulation['Id'] }}'" class="detail-wrapper">
                                         {!! $regulation['Details'] !!}
+
+                                        @if(! empty($regulation['ProviderUrl']))
+                                            <a target="_blank" rel="nofollow" href="{{ $regulation['ProviderUrl'] }}"
+                                               class="btn btn-green">
+                                                @lang('cooperation/frontend/tool.my-regulations.provider.to')
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach

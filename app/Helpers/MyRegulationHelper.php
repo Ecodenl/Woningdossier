@@ -80,10 +80,11 @@ class MyRegulationHelper
                     $regulation['advisable_names'][] = $advisable->name ?? $advisable->measure_name;
                 }
             }
-            if ( ! empty($regulation['advisable_names'])) {
+            if (! empty($regulation['advisable_names'])) {
                 $relevantRegulations[$regulationType][] = $regulation;
             }
         }
+
         return $relevantRegulations;
     }
 }

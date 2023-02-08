@@ -101,6 +101,10 @@
     @apply pb-5;
 }
 
+.regulation-card-wrapper .detail-wrapper h4 {
+    @apply font-semibold text-blue text-md; /* .heading-4 */
+}
+
 .regulation-card-wrapper .detail-wrapper ul {
     @apply mb-5;
 }

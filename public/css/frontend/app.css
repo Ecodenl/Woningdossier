@@ -180260,6 +180260,14 @@ textarea.form-input {
   padding-bottom: 1.25rem;
 }
 
+.regulation-card-wrapper .detail-wrapper h4 {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgba(65, 76, 87, var(--tw-text-opacity)); /* .heading-4 */
+}
+
 .regulation-card-wrapper .detail-wrapper ul {
   margin-bottom: 1.25rem;
 }

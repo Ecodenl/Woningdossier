@@ -60,22 +60,22 @@
                                                     </span>
                                             @endif
                                         </div>
-                                        @if(\App::isLocal())
-                                        <div class="flex flex-wrap flex-row w-full items-center">
-                                                <span class="flex as-text mr-1">
-                                                    Verbeterjehuis maatregelen:
-                                                </span>
-
-                                                @foreach($regulation['Tags'] as $tag)
-                                                    <span class="flex as-text bubble">
-                                                        {{$tag['Label']}}
+                                        @if(App::isLocal())
+                                            <div class="flex flex-wrap flex-row w-full items-center">
+                                                    <span class="flex as-text mr-1">
+                                                        Verbeterjehuis maatregelen:
                                                     </span>
-                                                @endforeach
-                                        </div>
+
+                                                    @foreach($regulation['Tags'] as $tag)
+                                                        <span class="flex as-text bubble">
+                                                            {{$tag['Label']}}
+                                                        </span>
+                                                    @endforeach
+                                            </div>
                                         @endif
                                     </div>
 
-                                    <div x-show="selected === '{{ $regulation['Id'] }}'" class="my-4">
+                                    <div x-show="selected === '{{ $regulation['Id'] }}'" class="detail-wrapper">
                                         {!! $regulation['Details'] !!}
                                     </div>
                                 </div>

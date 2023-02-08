@@ -17,13 +17,13 @@ class MyRegulationHelper
             ->forBuilding($building)
             ->getSearch();
 
-        // here we will heavy modify the "payload" (regulations)
-        // this is all bussines logic
-        // we will filter out all the regulations that are not relevant for the user, they are not relevant when theere are no matching advices
-        // we will also add the appropriate data while at it, so we dont have to do it again in the view.
+        // Here we will heavily modify the "payload" (regulations).
+        // This is all business logic:
+        // - we will filter out all the regulations that are not relevant for the user, they are not relevant when there are no matching advices.
+        // - we will also add the appropriate data while at it, so we don't have to do it again in the view.
 
-        // first we have to get all available mappings for the user its action plan advices
-        // first get all user action plan advices that have an advisable mapping
+        // First we have to get all available mappings for the user its action plan advices.
+        // First get all user action plan advices that have an advisable mapping.
         /** @var Collection $advicesWithAdvisableMapping */
         $advicesWithAdvisableMapping = $building
             ->user

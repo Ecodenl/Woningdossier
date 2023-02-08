@@ -178410,6 +178410,14 @@ p, .as-text, ul li, ol li {
   color: rgba(100, 117, 133, var(--tw-text-opacity));
 }
 
+b, strong {
+  font-weight: 600;
+}
+
+i, em {
+  font-style: italic;
+}
+
 /* Lists */
 
 ul, ol {
@@ -180241,6 +180249,27 @@ textarea.form-input {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   font-weight: 500;
+}
+
+.regulation-card-wrapper .detail-wrapper {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.regulation-card-wrapper .detail-wrapper p {
+  padding-bottom: 1.25rem;
+}
+
+.regulation-card-wrapper .detail-wrapper ul {
+  margin-bottom: 1.25rem;
+}
+
+.regulation-card-wrapper .detail-wrapper ul li {
+  margin-top: 0.5rem;
+}
+
+.regulation-card-wrapper .detail-wrapper ul li:first-of-type {
+  margin-top: 0px;
 }
 .table {
   width: 100%;

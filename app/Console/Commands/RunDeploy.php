@@ -43,14 +43,12 @@ class RunDeploy extends Command
     public function handle()
     {
 
-//        $this->call(SeedCommand::class,  ['--class' => 'ToolQuestionTypesTableSeeder', '--force' => true]);
-//
-//        $commands = [
-//            SeedCommand::class => ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
-//        ];
-//
-//        foreach ($commands as $command => $arguments) {
-//            $this->call($command, $arguments);
-//        }
+        $commands = [
+            SeedCommand::class => ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
+        ];
+
+        foreach ($commands as $command => $arguments) {
+            $this->call($command, $arguments);
+        }
     }
 }

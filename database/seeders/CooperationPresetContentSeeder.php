@@ -18,14 +18,16 @@ class CooperationPresetContentSeeder extends Seeder
             $preset = DB::table('cooperation_presets')->where('short', $short)->first();
 
             if ($preset instanceof \stdClass) {
-                foreach ($contents as $content) {
-                    // Not meant for update
-                    DB::table('cooperation_preset_contents')->insert(
-                        [
-                            'cooperation_preset_id' => $preset->id,
-                            'content' => json_encode($content),
-                        ]
-                    );
+                // Only seed if there's no content yet, as we can't really query on JSON
+                if (DB::table('cooperation_preset_contents')->where('cooperation_preset_id', $preset->id)->doesntExist()) {
+                    foreach ($contents as $content) {
+                        DB::table('cooperation_preset_contents')->insert(
+                            [
+                                'cooperation_preset_id' => $preset->id,
+                                'content' => json_encode($content),
+                            ]
+                        );
+                    }
                 }
             }
         }

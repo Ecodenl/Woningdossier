@@ -4,6 +4,7 @@ export default (emailUrl) => ({
     alreadyMember: false,
     emailExists: false,
     emailUrl: emailUrl,
+    submitted: false,
 
     checkEmail(element) {
         let goodDomains = new RegExp('\\b(nl|be|net|com|info|nu|de)\\b', 'i');

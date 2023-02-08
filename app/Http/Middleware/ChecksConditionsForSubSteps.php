@@ -40,23 +40,25 @@ class ChecksConditionsForSubSteps
             return redirect()->to($url);
         }
 
-        // We can show this step according to the sub step conditionals, but have we answered the example building yet?
-        if (! in_array($subStep->getTranslation('slug', 'nl'), ExampleBuildingHelper::RELEVANT_SUB_STEPS)) {
-            // Not an example building sub step, let's check...
+        if (! HoomdossierSession::isUserObserving()) {
+            // We can show this step according to the sub step conditionals, but have we answered the example building yet?
+            if (! in_array($subStep->getTranslation('slug', 'nl'), ExampleBuildingHelper::RELEVANT_SUB_STEPS)) {
+                // Not an example building sub step, let's check...
 
-            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-            foreach (ExampleBuildingHelper::RELEVANT_SUB_STEPS as $subStepSlug) {
-                $subStep = $scan->subSteps()->where('sub_steps.slug->nl', $subStepSlug)->first();
+                $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+                foreach (ExampleBuildingHelper::RELEVANT_SUB_STEPS as $subStepSlug) {
+                    $subStep = $scan->subSteps()->where('sub_steps.slug->nl', $subStepSlug)->first();
 
-                // If valid sub step and showable (could be unanswerable)
-                if ($subStep instanceof SubStep && $request->user()->can('show', [$subStep, $building])) {
-                    if (! $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStep->id)->first() instanceof CompletedSubStep) {
-                        // Not answered, redirect back
-                        return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
-                            'scan' => $scan,
-                            'step' => $subStep->step,
-                            'subStep' => $subStep,
-                        ]);
+                    // If valid sub step and showable (could be unanswerable)
+                    if ($subStep instanceof SubStep && $request->user()->can('show', [$subStep, $building])) {
+                        if (! $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStep->id)->first() instanceof CompletedSubStep) {
+                            // Not answered, redirect back
+                            return redirect()->route('cooperation.frontend.tool.simple-scan.index', [
+                                'scan' => $scan,
+                                'step' => $subStep->step,
+                                'subStep' => $subStep,
+                            ]);
+                        }
                     }
                 }
             }

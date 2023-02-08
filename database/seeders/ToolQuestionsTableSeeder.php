@@ -240,7 +240,7 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ],
                     'rented' => [
-                        'name' => 'Huurwoning cooperatie',
+                        'name' => 'Huurwoning corporatie',
                         'extra' => [
                             'icon' => 'icon-placeholder',
                         ],

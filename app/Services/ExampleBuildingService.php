@@ -19,6 +19,7 @@ class ExampleBuildingService
     const NEVER_OVERWRITE_TOOL_QUESTION_SHORTS = [
         'building-type-category',
         // 'building-type',
+        'building-contract-type',
         'build-year',
         'specific-example-building',
         'surface',

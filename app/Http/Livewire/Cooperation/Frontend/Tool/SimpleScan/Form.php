@@ -187,7 +187,7 @@ class Form extends Scannable
         $buildingService = BuildingService::init($this->building);
 
 
-        // so this is another exception to the rule which needs some explaination..
+        // so this is another exception to the rule which needs some explanation..
         // we will only calculate the small measure when the user is currently on the lite scan and did not complete the quick-scan
         // this is done so when the user only uses the lite-scan the woonplan only gets small-measure, measureApplications.
         // else we will just do the regular recalculate/
@@ -198,7 +198,7 @@ class Form extends Scannable
                 // when the user is on the lite scan and its uncomplete
                 // we are only allowed to recalculate the small measures
                 // however, when the user complete the quick scan we CAN recalculate other steps.
-                $userHasUncompletedQuickScan = $this->building->hasNotCompletedScan($quickScan,  $this->masterInputSource);
+                $userHasUncompletedQuickScan = $this->building->hasNotCompletedScan($quickScan, $this->masterInputSource);
                 $cooperationDoesntHaveQuickScan = $this->cooperation->scans()->where('scans.id', $quickScan->id)->doesntExist();
                 if ($userHasUncompletedQuickScan || $cooperationDoesntHaveQuickScan) {
                     $shouldDoFullRecalculate = false;

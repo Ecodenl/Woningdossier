@@ -30,12 +30,12 @@ class CalculationsTable extends Component
     private array $fixedData = [
         'cost-gas' => [
             'name' => 'cooperation/frontend/tool.my-plan.calculations.values.gas-cost',
-            'value' => Kengetallen::EURO_SAVINGS_GAS . ' euro / m<sup>3</sup>',
+            'value' => Kengetallen::EURO_SAVINGS_GAS . ' € / m<sup>3</sup>',
             'source' => 'RVO',
         ],
         'cost-electricity' => [
             'name' => 'cooperation/frontend/tool.my-plan.calculations.values.electricity-cost',
-            'value' => Kengetallen::EURO_SAVINGS_ELECTRICITY  . ' euro / kWh',
+            'value' => Kengetallen::EURO_SAVINGS_ELECTRICITY  . ' € / kWh',
             'source' => 'RVO',
         ],
     ];

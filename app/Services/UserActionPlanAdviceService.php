@@ -6,9 +6,10 @@ use App\Deprecation\ToolHelper;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
+use App\Helpers\Queue;
 use App\Helpers\StepHelper;
+use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
-use App\Models\CustomMeasureApplication;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -33,8 +34,25 @@ class UserActionPlanAdviceService
     const CATEGORY_TO_DO = 'to-do';
     const CATEGORY_LATER = 'later';
 
+    protected User $user;
+
     public function __construct()
     {
+        //
+    }
+
+    public function forUser(User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    public function refreshUserRegulations()
+    {
+        $userActionPlanAdvices = UserActionPlanAdvice::withoutGlobalScopes()->forUser($this->user)->get();
+        foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
+            RefreshRegulationsForUserActionPlanAdvice::dispatch($userActionPlanAdvice)->onQueue(Queue::ASYNC);
+        }
     }
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)

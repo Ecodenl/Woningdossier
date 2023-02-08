@@ -53,8 +53,6 @@ class UserActionPlanAdviceService
             ->forMeasure($advisable)
             ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
 
-//        Log::debug('regulations', $regulations->getSubsidies()->toArray());
-
         $loanAvailable = $regulations->getLoans()->isNotEmpty();
         $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
 
@@ -63,7 +61,7 @@ class UserActionPlanAdviceService
             'loan_available' => $loanAvailable,
             'subsidy_available' => $subsidyAvailable
         ]));
-        Log::debug('Action plan advice', $userActionPlanAdvice->only('loan_available', 'subsidy_available'));
+        Log::debug('Action plan advice', $userActionPlanAdvice->only('id', 'loan_available', 'subsidy_available'));
     }
 
     /**

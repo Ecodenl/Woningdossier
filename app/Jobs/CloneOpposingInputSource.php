@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\Cloning\CloneDataService;
-use App\Services\Models\NotificationService;
+use App\Traits\Queue\HasNotifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,7 +15,11 @@ use Throwable;
 
 class CloneOpposingInputSource implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable,
+        InteractsWithQueue,
+        Queueable,
+        SerializesModels,
+        HasNotifications;
 
     public Building $building;
     public InputSource $inputSource;
@@ -26,6 +30,8 @@ class CloneOpposingInputSource implements ShouldQueue
         $this->building = $building;
         $this->inputSource = $inputSource;
         $this->cloneableInputSource = $cloneableInputSource;
+
+        $this->setUuid();
     }
 
     /**
@@ -41,11 +47,7 @@ class CloneOpposingInputSource implements ShouldQueue
 
     public function failed(Throwable $exception)
     {
-        NotificationService::init()
-            ->forBuilding($this->building)
-            ->forInputSource($this->inputSource)
-            ->setType(CloneOpposingInputSource::class)
-            ->deactivate(true);
+        $this->deactivateNotification();
 
         if (app()->bound('sentry')) {
             app('sentry')->captureException($exception);

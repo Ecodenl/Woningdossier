@@ -130,6 +130,9 @@ return [
         ],
     ],
     'my-regulations' => [
+        'provider' => [
+            'to' => 'Naar aanbieder',
+        ],
         'categories' => [
             RegulationService::SUBSIDY => 'Subsidies (:count)',
             RegulationService::LOAN => 'Leningen (:count)',

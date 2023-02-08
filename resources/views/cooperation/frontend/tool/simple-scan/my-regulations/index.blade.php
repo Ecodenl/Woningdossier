@@ -60,23 +60,30 @@
                                                     </span>
                                             @endif
                                         </div>
-                                        @if(\App::isLocal())
-                                        <div class="flex flex-wrap flex-row w-full items-center">
-                                                <span class="flex as-text mr-1">
-                                                    Verbeterjehuis maatregelen:
-                                                </span>
-
-                                                @foreach($regulation['Tags'] as $tag)
-                                                    <span class="flex as-text bubble">
-                                                        {{$tag['Label']}}
+                                        @if(App::isLocal())
+                                            <div class="flex flex-wrap flex-row w-full items-center">
+                                                    <span class="flex as-text mr-1">
+                                                        Verbeterjehuis maatregelen:
                                                     </span>
-                                                @endforeach
-                                        </div>
+
+                                                    @foreach($regulation['Tags'] as $tag)
+                                                        <span class="flex as-text bubble">
+                                                            {{$tag['Label']}}
+                                                        </span>
+                                                    @endforeach
+                                            </div>
                                         @endif
                                     </div>
 
-                                    <div x-show="selected === '{{ $regulation['Id'] }}'" class="my-4">
-                                        {!! $regulation['Details'] !!}
+                                    <div x-show="selected === '{{ $regulation['Id'] }}'" class="detail-wrapper">
+                                        {!! (new \App\Helpers\Sanitizers\HtmlSanitizer())->sanitize($regulation['Details']) !!}
+
+                                        @if(! empty($regulation['ProviderUrl']))
+                                            <a target="_blank" rel="nofollow" href="{{ $regulation['ProviderUrl'] }}"
+                                               class="btn btn-green">
+                                                @lang('cooperation/frontend/tool.my-regulations.provider.to')
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach

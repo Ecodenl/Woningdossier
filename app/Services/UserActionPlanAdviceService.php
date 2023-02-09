@@ -57,9 +57,11 @@ class UserActionPlanAdviceService
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
     {
+        /*
         Log::debug('Refreshing regulations for ', [
             'building_id' => $userActionPlanAdvice->user->building->id, 'user_id' => $userActionPlanAdvice->user_id, 'input_source_id' => $userActionPlanAdvice->input_source_id,
         ]);
+        */
         $payload = RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
             ->getSearch();
@@ -79,7 +81,7 @@ class UserActionPlanAdviceService
             'loan_available' => $loanAvailable,
             'subsidy_available' => $subsidyAvailable
         ]));
-        Log::debug('Action plan advice', $userActionPlanAdvice->only('id', 'loan_available', 'subsidy_available'));
+        // Log::debug('Action plan advice', $userActionPlanAdvice->only('id', 'loan_available', 'subsidy_available'));
     }
 
     /**

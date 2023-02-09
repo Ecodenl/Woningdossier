@@ -3198,7 +3198,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.own_total",
                 'translation' => 'Eigen kosten (voor aftrek subsidie)',
-                'short' => "user-cost-{$measure->short}-own-total",
+                'short' => "user-costs-{$measure->short}-own-total",
             ];
             $questions[] = [
                 'data_type' => Caster::INT,
@@ -3207,7 +3207,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.subsidy_total",
                 'translation' => 'Subsidiebedrag (zelf invullen)',
-                'short' => "user-cost-{$measure->short}-subsidy-total",
+                'short' => "user-costs-{$measure->short}-subsidy-total",
             ];
         }
 

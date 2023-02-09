@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Helpers\Conditions\Clause;
 use App\Models\Element;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
@@ -62,6 +63,40 @@ class SubSteppablesTableSeeder extends Seeder
         $roofInsulationNone = Element::findByShort('roof-insulation')->values()->where('calculate_value', 2)->first();
         $pitchedRoof = RoofType::findByShort('pitched');
         $flatRoof = RoofType::findByShort('flat');
+
+        // Measure applications
+        $floorInsulation = MeasureApplication::findByShort('floor-insulation');
+        $bottomInsulation = MeasureApplication::findByShort('bottom-insulation');
+        $floorInsulationResearch = MeasureApplication::findByShort('floor-insulation-research');
+        $cavityWallInsulation = MeasureApplication::findByShort('cavity-wall-insulation');
+        $facadeWallInsulation = MeasureApplication::findByShort('facade-wall-insulation');
+        $wallInsulationResearch = MeasureApplication::findByShort('wall-insulation-research');
+
+        $glassInLead = MeasureApplication::findByShort('glass-in-lead');
+        $hrppGlassOnly = MeasureApplication::findByShort('hrpp-glass-only');
+        $hrppGlassFrames = MeasureApplication::findByShort('hrpp-glass-frames');
+        $hr3pFrames = MeasureApplication::findByShort('hr3p-frames');
+
+        $roofInsulationPitchedInside = MeasureApplication::findByShort('roof-insulation-pitched-inside');
+        $roofInsulationPitchedReplaceTiles = MeasureApplication::findByShort('roof-insulation-pitched-replace-tiles');
+        $roofInsulationFlatCurrent = MeasureApplication::findByShort('roof-insulation-flat-current');
+        $roofInsulationFlatReplaceCurrent = MeasureApplication::findByShort('roof-insulation-flat-replace-current');
+
+        $hrBoilerPlaceReplace = MeasureApplication::findByShort('high-efficiency-boiler-replace');
+        $heaterPlaceReplace = MeasureApplication::findByShort('heater-place-replace');
+        $solarPanelsPlaceReplace = MeasureApplication::findByShort('solar-panels-place-replace');
+
+        $crackSealingMeasureApplication = MeasureApplication::findByShort('crack-sealing');
+        $ventilationBalancedWtw = MeasureApplication::findByShort('ventilation-balanced-wtw');
+        $ventilationDecentralWtw = MeasureApplication::findByShort('ventilation-decentral-wtw');
+        $ventilationDemandDriven = MeasureApplication::findByShort('ventilation-demand-driven');
+
+        $hybridHeatPumpOutsideAir = MeasureApplication::findByShort('hybrid-heat-pump-outside-air');
+        $hybridHeatPumpVentilationAir = MeasureApplication::findByShort('hybrid-heat-pump-ventilation-air');
+        $hybridHeatPumpPvtPanels = MeasureApplication::findByShort('hybrid-heat-pump-pvt-panels');
+        $fullHeatPumpOutsideAir = MeasureApplication::findByShort('full-heat-pump-outside-air');
+        $fullHeatPumpGroundHeat = MeasureApplication::findByShort('full-heat-pump-ground-heat');
+        $fullHeatPumpPvtPanels = MeasureApplication::findByShort('full-heat-pump-pvt-panels');
 
         #-------------------------
         # Quick Scan SubSteppables
@@ -1914,9 +1949,16 @@ class SubSteppablesTableSeeder extends Seeder
         $newSunBoilerCondition = [
             [
                 [
-                    'column' => 'new-heat-source',
-                    'operator' => Clause::CONTAINS,
-                    'value' => 'sun-boiler',
+                    [
+                        'column' => 'new-heat-source',
+                        'operator' => Clause::CONTAINS,
+                        'value' => 'sun-boiler',
+                    ],
+                    [
+                        'column' => 'new-heat-source-warm-tap-water',
+                        'operator' => Clause::CONTAINS,
+                        'value' => 'sun-boiler',
+                    ],
                 ],
             ],
             [
@@ -2217,6 +2259,17 @@ class SubSteppablesTableSeeder extends Seeder
                             'size' => 'col-span-2',
                             'conditions' => $newHeatPumpCondition,
                         ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hybrid-heat-pump-outside-air-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'hybrid-heat-pump-outside-air'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hybrid-heat-pump-outside-air-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'hybrid-heat-pump-outside-air', $hybridHeatPumpOutsideAir),
+                        ],
+                        // TODO: Other 5 heat pumps...
                         // Sun boiler
                         [
                             'morph' => ToolLabel::findByShort('sun-boiler'),
@@ -4414,5 +4467,43 @@ class SubSteppablesTableSeeder extends Seeder
                 ],
             ],
         ];
+    }
+
+    private function getSubsidyQuestionConditions(string $newShort, string $question, string $value, $advisable = null): array
+    {
+        $conditions = [
+            [
+                [
+                    [
+                        'column' => 'new-heat-source',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $newShort,
+                    ],
+                    [
+                        'column' => 'new-heat-source-warm-tap-water',
+                        'operator' => Clause::CONTAINS,
+                        'value' => $newShort,
+                    ],
+                ],
+                [
+                    'column' => $question,
+                    'operator' => Clause::EQ,
+                    'value' => $value,
+                ],
+            ],
+        ];
+
+        if (! is_null($advisable)) {
+            $conditions[0][] = [
+                'column' => 'fn',
+                'operator' => 'MeasureHasSubsidy',
+                'value' => [
+                    'advisable_type' => get_class($advisable),
+                    'advisable_id' => $advisable->id,
+                ],
+            ];
+        }
+
+        return $conditions;
     }
 }

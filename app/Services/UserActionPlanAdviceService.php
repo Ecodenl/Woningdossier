@@ -47,9 +47,14 @@ class UserActionPlanAdviceService
         return $this;
     }
 
-    public function refreshUserRegulations()
+    public function refreshUserRegulations(): void
     {
-        $userActionPlanAdvices = UserActionPlanAdvice::withoutGlobalScopes()->forUser($this->user)->get();
+        $userActionPlanAdvices = $this
+            ->user
+            ->UserActionPlanAdvices()
+            ->withoutGlobalScopes()
+            ->get();
+
         foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
             RefreshRegulationsForUserActionPlanAdvice::dispatch($userActionPlanAdvice)->onQueue(Queue::ASYNC);
         }
@@ -57,15 +62,16 @@ class UserActionPlanAdviceService
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
     {
+        /*
         Log::debug('Refreshing regulations for ', [
             'building_id' => $userActionPlanAdvice->user->building->id, 'user_id' => $userActionPlanAdvice->user_id, 'input_source_id' => $userActionPlanAdvice->input_source_id,
         ]);
+        */
         $payload = RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
             ->getSearch();
 
-        // todo, pick the right one here.
-        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->first();
 
         // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
         $regulations = $payload
@@ -80,7 +86,7 @@ class UserActionPlanAdviceService
             'loan_available' => $loanAvailable,
             'subsidy_available' => $subsidyAvailable
         ]));
-        Log::debug('Action plan advice', $userActionPlanAdvice->only('loan_available', 'subsidy_available'));
+        // Log::debug('Action plan advice', $userActionPlanAdvice->only('id', 'loan_available', 'subsidy_available'));
     }
 
     /**
@@ -248,13 +254,18 @@ class UserActionPlanAdviceService
         MeasureApplication $measureApplication,
         Collection $oldAdvices
     ) {
-        $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
-            ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
+        $oldAdvice = $oldAdvices
+            ->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
+            ->where('user_action_plan_advisable_id', '=', $measureApplication->id)
+            ->first();
+
         // This measure was set before. We ensure they stay
         if ($oldAdvice instanceof UserActionPlanAdvice) {
             $userActionPlanAdvice->category = $oldAdvice->category;
             $userActionPlanAdvice->visible = $oldAdvice->visible;
             $userActionPlanAdvice->order = $oldAdvice->order;
+            $userActionPlanAdvice->subsidy_available = $oldAdvice->subsidy_available;
+            $userActionPlanAdvice->loan_available = $oldAdvice->loan_available;
         }
     }
 

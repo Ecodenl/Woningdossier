@@ -58,27 +58,29 @@
                                         </div>
                                     </div>
                                 @endforeach
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        @component('layouts.parts.components.form-group', ['input_name' => 'cooperation_measure_applications.measure_category'])
-                                            <label for="measure-category">
-                                                @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
-                                            </label>
-                                            <select class="form-control" name="cooperation_measure_applications[measure_category]"
-                                                    id="measure-category">
-                                                <option value="">
-                                                    @lang('default.form.dropdown.choose')
-                                                </option>
-                                                @foreach($measures as $measure)
-                                                    <option value="{{ $measure['Value'] }}"
-                                                            @if(old("cooperation_measure_applications.measure_category") === $measure['Value']) selected @endif>
-                                                        {{ $measure['Label'] }}
+                                @if($type === \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE)
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            @component('layouts.parts.components.form-group', ['input_name' => 'cooperation_measure_applications.measure_category'])
+                                                <label for="measure-category">
+                                                    @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
+                                                </label>
+                                                <select class="form-control" name="cooperation_measure_applications[measure_category]"
+                                                        id="measure-category">
+                                                    <option value="">
+                                                        @lang('default.form.dropdown.choose')
                                                     </option>
-                                                @endforeach
-                                            </select>
-                                        @endcomponent
+                                                    @foreach($measures as $measure)
+                                                        <option value="{{ $measure['Value'] }}"
+                                                                @if(old("cooperation_measure_applications.measure_category") === $measure['Value']) selected @endif>
+                                                            {{ $measure['Label'] }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            @endcomponent
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group {{ $errors->has('cooperation_measure_applications.costs.from') ? ' has-error' : '' }}">

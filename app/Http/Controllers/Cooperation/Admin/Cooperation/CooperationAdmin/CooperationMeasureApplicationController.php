@@ -34,7 +34,7 @@ class CooperationMeasureApplicationController extends Controller
     public function store(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, string $type)
     {
         $measureData = $request->validated()['cooperation_measure_applications'];
-        $measureCategory = $measureData['measure_category'];
+        $measureCategory = $measureData['measure_category'] ?? null;
         unset($measureData['measure_category']);
         $measureData['cooperation_id'] = $cooperation->id;
         $measureData['is_extensive_measure'] = $type === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
@@ -44,8 +44,11 @@ class CooperationMeasureApplicationController extends Controller
             $measureData['name'][$locale] = strip_tags($content);
         }
         $cooperationMeasureApplication = CooperationMeasureApplication::create($measureData);
-        $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
-        MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
+
+        if (! is_null($measureCategory)) {
+            $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
+            MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
+        }
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('type'))
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.store.success'));
@@ -61,15 +64,18 @@ class CooperationMeasureApplicationController extends Controller
     public function update(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
         $measureData = $request->validated()['cooperation_measure_applications'];
-        $measureCategory = $measureData['measure_category'];
+        $measureCategory = $measureData['measure_category'] ?? null;
         unset($measureData['measure_category']);
         foreach ($measureData['name'] as $locale => $content) {
             $measureData['name'][$locale] = strip_tags($content);
         }
 
         $cooperationMeasureApplication->update($measureData);
-        $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
-        MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
+
+        if (! is_null($measureCategory)) {
+            $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
+            MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
+        }
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => $cooperationMeasureApplication->getType()])

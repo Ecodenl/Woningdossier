@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\Models\CooperationMeasureApplicationHelper;
+use App\Models\CooperationMeasureApplication;
 use App\Rules\LanguageRequired;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Foundation\Http\FormRequest;
@@ -31,6 +33,11 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
     {
         $evaluateGt = ! is_null($this->input('cooperation_measure_applications.costs.from'));
 
+        // On create, we have a type. On update we have a model.
+        $isExtensive = ($measure = $this->route('cooperationMeasureApplication')) instanceof CooperationMeasureApplication
+            ? $measure->is_extensive_measure
+            : $this->route('type') === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
+
         return [
             'cooperation_measure_applications.name' => [
                 new LanguageRequired('nl'),
@@ -39,7 +46,7 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
                 new LanguageRequired('nl'),
             ],
             'cooperation_measure_applications.measure_category' => [
-                'required',
+                Rule::requiredIf(! $isExtensive),
                 Rule::in(Arr::pluck(RegulationService::init()->getFilters()['Measures'], 'Value')),
             ],
             'cooperation_measure_applications.costs.from' => [

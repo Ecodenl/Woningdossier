@@ -26,6 +26,16 @@ ol li {
     @apply text-blue-500 font-light text-sm;
 }
 
+b,
+strong {
+    @apply font-semibold;
+}
+
+i,
+em {
+    @apply italic;
+}
+
 /* Lists */
 ul,
 ol {

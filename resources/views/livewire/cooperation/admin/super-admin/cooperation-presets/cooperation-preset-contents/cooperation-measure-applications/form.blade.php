@@ -1,3 +1,11 @@
+@push('css')
+    {{-- Styling so hidden select2 doesn't get crappy width --}}
+    <style>
+        span.select2-container {
+            width: 100% !important;
+        }
+    </style>
+@endpush
 <div>
     <form wire:submit.prevent="save()" autocomplete="off">
         <div class="row">
@@ -57,24 +65,27 @@
                                 </div>
                             </div>
                         @endforeach
-                        <div class="row" wire:ignore>
+                        <div class="row" @if($content['is_extensive_measure']) style="display: none;" @endif>
                             <div class="col-sm-6">
                                 @component('layouts.parts.components.form-group', ['input_name' => 'content.relations.mapping.measure_category'])
                                     <label for="measure-category">
                                         @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
                                     </label>
-                                    <select class="form-control"
-                                            wire:model="content.relations.mapping.measure_category"
-                                            id="measure-category">
-                                        <option value="">
-                                            @lang('default.form.dropdown.choose')
-                                        </option>
-                                        @foreach($measures as $measure)
-                                            <option value="{{ $measure['Value'] }}">
-                                                {{ $measure['Label'] }}
+                                    <div wire:ignore>
+                                        {{-- Wire:ignore here so the select2 doesn't die, but still allows error messages --}}
+                                        <select class="form-control"
+                                                wire:model="content.relations.mapping.measure_category"
+                                                id="measure-category">
+                                            <option value="">
+                                                @lang('default.form.dropdown.choose')
                                             </option>
-                                        @endforeach
-                                    </select>
+                                            @foreach($measures as $measure)
+                                                <option value="{{ $measure['Value'] }}">
+                                                    {{ $measure['Label'] }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 @endcomponent
                             </div>
                         </div>
@@ -121,29 +132,31 @@
                                 @endcomponent
                             </div>
                         </div>
-                        <div class="row" wire:ignore>
+                        <div class="row">
                             <div class="col-sm-6">
                                 @component('layouts.parts.components.form-group', ['input_name' => 'content.extra.icon'])
                                     <label for="icon">
                                         @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.icon.label')
                                     </label>
-                                    <select class="form-control" id="icon"
-                                            wire:model="content.extra.icon">
-                                        <option value="">
-                                            @lang('default.form.dropdown.choose')
-                                        </option>
-                                        @foreach(File::allFiles(public_path('icons')) as $file)
-                                            @php
-                                                $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
-                                            @endphp
-                                            <option value="{{ $iconName }}">
-                                                {{ $iconName }}
+                                    <div wire:ignore>
+                                        <select class="form-control" id="icon"
+                                                wire:model="content.extra.icon">
+                                            <option value="">
+                                                @lang('default.form.dropdown.choose')
                                             </option>
-                                        @endforeach
-                                    </select>
+                                            @foreach(File::allFiles(public_path('icons')) as $file)
+                                                @php
+                                                    $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
+                                                @endphp
+                                                <option value="{{ $iconName }}">
+                                                    {{ $iconName }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 @endcomponent
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-6" wire:ignore>
                                 <i id="icon-preview" style="margin-top: 2.6rem;"></i>
                             </div>
                         </div>

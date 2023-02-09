@@ -8,15 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
-use App\Models\Mapping;
-use App\Models\MeasureApplication;
 use App\Models\Scan;
-use App\Models\UserActionPlanAdvice;
-use App\Services\MappingService;
 use App\Services\Models\NotificationService;
-use App\Services\UserActionPlanAdviceService;
-use App\Services\Verbeterjehuis\RegulationService;
-use Illuminate\Support\Collection;
 
 class MyRegulationsController extends Controller
 {
@@ -42,7 +35,9 @@ class MyRegulationsController extends Controller
         }
         $relevantRegulations = MyRegulationHelper::getRelevantRegulations($building, $masterInputSource);
 
-        return view('cooperation.frontend.tool.simple-scan.my-regulations.index',
-            compact('activeNotification', 'masterInputSource', 'relevantRegulations'));
+        return view(
+            'cooperation.frontend.tool.simple-scan.my-regulations.index',
+            compact('activeNotification', 'masterInputSource', 'relevantRegulations')
+        );
     }
 }

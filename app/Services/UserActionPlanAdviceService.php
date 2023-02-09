@@ -47,9 +47,14 @@ class UserActionPlanAdviceService
         return $this;
     }
 
-    public function refreshUserRegulations()
+    public function refreshUserRegulations(): void
     {
-        $userActionPlanAdvices = UserActionPlanAdvice::withoutGlobalScopes()->forUser($this->user)->get();
+        $userActionPlanAdvices = $this
+            ->user
+            ->UserActionPlanAdvices()
+            ->withoutGlobalScopes()
+            ->get();
+
         foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
             RefreshRegulationsForUserActionPlanAdvice::dispatch($userActionPlanAdvice)->onQueue(Queue::ASYNC);
         }
@@ -244,8 +249,11 @@ class UserActionPlanAdviceService
      * @param  \App\Models\MeasureApplication  $measureApplication
      * @param  \Illuminate\Database\Eloquent\Collection  $oldAdvices
      */
-    public static function checkOldAdvices(UserActionPlanAdvice $userActionPlanAdvice, MeasureApplication $measureApplication, Collection $oldAdvices)
-    {
+    public static function checkOldAdvices(
+        UserActionPlanAdvice $userActionPlanAdvice,
+        MeasureApplication $measureApplication,
+        Collection $oldAdvices
+    ) {
         $oldAdvice = $oldAdvices
             ->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
             ->where('user_action_plan_advisable_id', '=', $measureApplication->id)

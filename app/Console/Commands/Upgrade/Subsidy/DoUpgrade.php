@@ -48,6 +48,7 @@ class DoUpgrade extends Command
                 ['--class' => 'CooperationPresetSeeder', '--force' => true],
                 ['--class' => 'CooperationPresetContentSeeder', '--force' => true],
             ],
+            FixContractType::class => [],
         ];
 
         foreach ($commands as $command => $variants) {

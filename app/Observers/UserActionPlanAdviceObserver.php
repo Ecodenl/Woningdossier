@@ -37,14 +37,16 @@ class UserActionPlanAdviceObserver
 
         if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
             $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
-            if ($advisable instanceof MeasureApplication && in_array($advisable->short,
-                    array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
+            if ($advisable instanceof MeasureApplication && in_array($advisable->short, array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
                 $building = $userActionPlanAdvice->user->building;
-                if ( ! ConditionService::init()->building($building)->inputSource($userActionPlanAdvice->inputSource)->hasCompletedSteps(['heating'])) {
+                if (!ConditionService::init()->building($building)->inputSource($userActionPlanAdvice->inputSource)->hasCompletedSteps(['heating'])) {
                     // User has not yet completed the expert. We will map values, then do a new calculation as
                     // values might no longer match. Due to dispatchSync the "recalc" only happens after the mapping.
-                    MapQuickScanSituationToExpert::dispatchSync($building, $userActionPlanAdvice->inputSource,
-                        $advisable);
+                    MapQuickScanSituationToExpert::dispatchSync(
+                        $building,
+                        $userActionPlanAdvice->inputSource,
+                        $advisable
+                    );
                     $heatPumpHelper = HeatPumpHelper::init($building->user, $userActionPlanAdvice->inputSource)
                         ->createValues();
                     $evaluator = ConditionEvaluator::init()
@@ -70,7 +72,6 @@ class UserActionPlanAdviceObserver
     {
         // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.
         // Or its triggered from a recalculation, which means the code is already running on a queue.
-
         // usually we would exclude the master input source, however the refreshRegulations does NOT trigger model events.
         // all other advisables will be triggered in the code itself, the observer can only handle the measure application consistently
         if ($userActionPlanAdvice->user_action_plan_advisable_type === MeasureApplication::class) {

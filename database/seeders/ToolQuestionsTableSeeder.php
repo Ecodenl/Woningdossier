@@ -3178,11 +3178,41 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
         ];
 
+        #######
+        #
+        # README:
+        # For ease of seeding: user cost questions are related to energy saving measures that have expert related
+        # questions. Therefore, we simply loop through all of them. This means it's easily expanded for future added
+        # measures, as well as being simple in the code. This seeder is large enough already.
+        #
+        #######
+
+        $allExpertEnergySavingMeasures = MeasureApplication::measureType(MeasureApplication::ENERGY_SAVING)
+            ->where('step_id', '!=', $stepSmallMeasures->id)->get();
+
+        foreach ($allExpertEnergySavingMeasures as $measure) {
+            $questions[] = [
+                'data_type' => Caster::INT,
+                'validation' => [
+                    'required', 'min:0',
+                ],
+                'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.own_total",
+                'translation' => 'Eigen kosten (voor aftrek subsidie)',
+                'short' => "user-cost-{$measure->short}-own-total",
+            ];
+            $questions[] = [
+                'data_type' => Caster::INT,
+                'validation' => [
+                    'required', 'min:0',
+                ],
+                'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.subsidy_total",
+                'translation' => 'Subsidiebedrag (zelf invullen)',
+                'short' => "user-cost-{$measure->short}-subsidy-total",
+            ];
+        }
 
         foreach ($questions as $questionData) {
             if ($questionData['short'] != "") {
-
-
                 // Create the question itself
 
                 // Translation can be a key or text. We compare the results, because if it's a key, then the

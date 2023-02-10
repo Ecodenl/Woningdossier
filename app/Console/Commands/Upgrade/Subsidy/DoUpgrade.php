@@ -50,6 +50,7 @@ class DoUpgrade extends Command
                 ['--class' => 'CooperationPresetContentSeeder', '--force' => true],
                 ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
                 ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
+                ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
             ClearCommand::class => [],
         ];

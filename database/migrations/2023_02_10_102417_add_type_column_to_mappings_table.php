@@ -29,7 +29,7 @@ class AddTypeColumnToMappingsTable extends Migration
     {
         if (Schema::hasColumn('mappings', 'type')) {
             Schema::table('mappings', function (Blueprint $table) {
-                $table->string('type')->nullable()->default(null)->after('id');
+                $table->dropColumn('type');
             });
         }
     }

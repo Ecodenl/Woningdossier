@@ -277,6 +277,48 @@
             </div>
         </div>
 
+        <div class="user-costs">
+            @foreach($userCosts as $measureId => $questions)
+                @php $measureApplication = \App\Models\MeasureApplication::find($measureId); @endphp
+                <div class="flex flex-row flex-wrap w-full mt-2" id="user-cost-{{$measureId}}">
+                    <div class="section-title w-full">
+                        <h4 class="heading-4">
+                            {{ $measureApplication->name }}
+                        </h4>
+                    </div>
+
+                    <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                        @foreach($questions as $short => $answer)
+                            @php $toolQuestion = \App\Models\ToolQuestion::findByShort($short); @endphp
+                            <div class="w-full sm:w-1/3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'inputName' => $short,
+                                    'label' => $toolQuestion->name,
+                                    'id' => $short,
+                                    'modalId' => $short . '-info',
+                                    'inputGroupClass' => $inputGroupClass ?? '',
+                                ])
+                                    @slot('sourceSlot')
+                                        @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                                            'values' => $building->getAnswerForAllInputSources($toolQuestion),
+                                            'toolQuestion' => $toolQuestion,
+                                        ])
+                                    @endslot
+
+                                    @slot('modalBodySlot')
+                                        {!! $toolQuestion->help_text !!}
+                                    @endslot
+
+                                    <input name="{{ $short }}" value="{{ old($short, $answer) }}" class="form-input"
+                                           id="{{ $short }}">
+                                @endcomponent
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
         <div id="costs-other" class="mt-4">
             @include('cooperation.tool.includes.section-title', [
                 'translation' => 'cooperation/tool/ventilation.index.indication-for-costs-other',
@@ -318,6 +360,13 @@
 @push('js')
     <script>
         $(document).ready(function () {
+            let advices = $(".advices");
+
+            advices.on('change', '.considerable', function () {
+                let id = this.getAttribute('id');
+                checkUserCost(id.split('-')[1]);
+            });
+
             let data = {};
             $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {
                 data[$(this).attr('name')] = $(this).val();
@@ -401,16 +450,18 @@
                             $("p#improvement").html(data.improvement);
                         }
 
+                        @if(app()->isLocal())
                         console.log(data.considerables);
+                        @endif
                         if (data.hasOwnProperty('considerables') && data.considerables.length !== 0) {
-                            var advices = $(".advices");
                             advices.html('<div class="w-full sm:w-3/4"><strong>Verbetering</strong></div><div class="w-full sm:w-1/4"><strong>Meenemen in berekening ?</strong></div>');
                             $.each(data.considerables, function (considerableId, considerable) {
                                 var checked = '';
                                 if (considerable.hasOwnProperty('is_considerable') && considerable.is_considerable == true) {
                                     checked = ' checked="checked"';
                                 }
-                                advices.append('<div class="w-full sm:w-3/4">' + considerable.name + '</div><div class="w-full sm:w-1/4"><input type="checkbox" name="considerables['+considerableId+'][is_considering]" value="1" '+checked+'></div>');
+                                advices.append('<div class="w-full sm:w-3/4">' + considerable.name + '</div><div class="w-full sm:w-1/4"><input id="considerable-' + considerableId + '" class="considerable" type="checkbox" name="considerables['+considerableId+'][is_considering]" value="1" '+checked+'></div>');
+                                checkUserCost(considerableId);
                             });
                             indicationForCosts.show();
                         } else {
@@ -421,7 +472,7 @@
                         //    $("p#remark").html(data.remark);
                         //}
 
-                        // when the costs indication is empty, we can safley asume there are no cost indications.
+                        // when the costs indication is empty, we can safely assume there are no cost indications.
                         if (data.hasOwnProperty('result') && data.result.hasOwnProperty('crack_sealing') && data.result.crack_sealing.cost_indication !== null) {
                             indicationForCosts.show();
                             if (data.result.crack_sealing.hasOwnProperty('savings_gas')) {
@@ -448,6 +499,14 @@
                         @endif
                     }
                 });
+            }
+
+            function checkUserCost(measureId) {
+                if ($(`#considerable-${measureId}`).prop('checked')) {
+                    $(`#user-cost-${measureId}`).show();
+                } else {
+                    $(`#user-cost-${measureId}`).hide();
+                }
             }
 
             $('input[type="checkbox"]:enabled').first().trigger('change');

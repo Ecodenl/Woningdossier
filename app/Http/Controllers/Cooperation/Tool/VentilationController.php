@@ -12,6 +12,7 @@ use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Services\ConsiderableService;
+use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
 
@@ -38,8 +39,12 @@ class VentilationController extends ToolController
         $livingSituationValues = VentilationHelper::getLivingSituationValues();
         $usageValues = VentilationHelper::getUsageValues();
 
+        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+            ->forAdvisable(Step::findByShort('ventilation'))
+            ->getAnswers();
+
         return view('cooperation.tool.ventilation.index', compact(
-            'building', 'buildingVentilation', 'howValues', 'livingSituationValues', 'usageValues'
+            'building', 'buildingVentilation', 'howValues', 'livingSituationValues', 'usageValues', 'userCosts',
         ));
     }
 
@@ -50,6 +55,7 @@ class VentilationController extends ToolController
      */
     public function store(VentilationFormRequest $request)
     {
+        // TODO: Handle user costs!
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);

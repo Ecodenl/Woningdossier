@@ -82,7 +82,7 @@ class SubSteppablesTableSeeder extends Seeder
         $roofInsulationFlatCurrent = MeasureApplication::findByShort('roof-insulation-flat-current');
         $roofInsulationFlatReplaceCurrent = MeasureApplication::findByShort('roof-insulation-flat-replace-current');
 
-        $hrBoilerPlaceReplace = MeasureApplication::findByShort('high-efficiency-boiler-replace');
+        $hrBoilerReplace = MeasureApplication::findByShort('high-efficiency-boiler-replace');
         $heaterPlaceReplace = MeasureApplication::findByShort('heater-place-replace');
         $solarPanelsPlaceReplace = MeasureApplication::findByShort('solar-panels-place-replace');
 
@@ -2097,6 +2097,16 @@ class SubSteppablesTableSeeder extends Seeder
                             'size' => 'col-span-2',
                             'conditions' => $newHrBoilerCondition,
                         ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-high-efficiency-boiler-replace-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('hr-boiler', null, null),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hybrid-heat-pump-outside-air-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('hr-boiler', null, null, $hrBoilerReplace),
+                        ],
                         // Heat pump
                         [
                             'morph' => ToolLabel::findByShort('heat-pump'),
@@ -2262,14 +2272,63 @@ class SubSteppablesTableSeeder extends Seeder
                         [
                             'morph' => ToolQuestion::findByShort('user-costs-hybrid-heat-pump-outside-air-own-total'),
                             'size' => 'col-span-2',
-                            'conditions' => $this->getSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'hybrid-heat-pump-outside-air'),
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'hybrid-heat-pump-outside-air'),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('user-costs-hybrid-heat-pump-outside-air-subsidy-total'),
                             'size' => 'col-span-2',
-                            'conditions' => $this->getSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'hybrid-heat-pump-outside-air', $hybridHeatPumpOutsideAir),
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'hybrid-heat-pump-outside-air', $hybridHeatPumpOutsideAir),
                         ],
-                        // TODO: Other 5 heat pumps...
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hybrid-heat-pump-ventilation-air-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'hybrid-heat-pump-ventilation-air'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hybrid-heat-pump-ventilation-air-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'hybrid-heat-pump-ventilation-air', $hybridHeatPumpVentilationAir),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hybrid-heat-pump-pvt-panels-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'hybrid-heat-pump-pvt-panels'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hybrid-heat-pump-pvt-panels-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'hybrid-heat-pump-pvt-panels', $hybridHeatPumpPvtPanels),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-full-heat-pump-outside-air-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'full-heat-pump-outside-air'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-full-heat-pump-outside-air-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'full-heat-pump-outside-air', $fullHeatPumpOutsideAir),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-full-heat-pump-ground-heat-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'full-heat-pump-ground-heat'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-full-heat-pump-ground-heat-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'full-heat-pump-ground-heat', $fullHeatPumpGroundHeat),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-full-heat-pump-pvt-panels-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'full-heat-pump-pvt-panels'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-full-heat-pump-pvt-panels-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('heat-pump', 'new-heat-pump-type', 'full-heat-pump-pvt-panels', $fullHeatPumpPvtPanels),
+                        ],
                         // Sun boiler
                         [
                             'morph' => ToolLabel::findByShort('sun-boiler'),
@@ -2407,6 +2466,16 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolCalculationResult::findByShort('sun-boiler.interest_comparable'),
                             'size' => 'col-span-3',
                             'conditions' => $newSunBoilerCondition,
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-heater-place-replace-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('sun-boiler', null, null),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-heater-place-replace-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getExpertSubsidyQuestionConditions('sun-boiler', null, null, $heaterPlaceReplace),
                         ],
                         // Heat pump boiler
                         [
@@ -2747,6 +2816,46 @@ class SubSteppablesTableSeeder extends Seeder
                             'morph' => ToolCalculationResult::findByShort('ventilation.interest_comparable'),
                             'size' => 'col-span-2',
                             'conditions' => [],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-crack-sealing-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'crack-sealing-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-crack-sealing-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'crack-sealing-considerable', 1, $crackSealingMeasureApplication),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-ventilation-balanced-wtw-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'ventilation-balanced-wtw-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-ventilation-balanced-wtw-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'ventilation-balanced-wtw-considerable', 1, $ventilationBalancedWtw),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-ventilation-decentral-wtw-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'ventilation-decentral-wtw-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-ventilation-decentral-wtw-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'ventilation-decentral-wtw-considerable', 1, $ventilationDecentralWtw),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-ventilation-demand-driven-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'ventilation-demand-driven-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-ventilation-demand-driven-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'ventilation-demand-driven-considerable', 1, $ventilationDemandDriven),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('ventilation-comment-resident'),
@@ -3094,6 +3203,16 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
+                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-only-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-only-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-only-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-only-considerable', 1, $hrppGlassOnly),
+                        ],
+                        [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-frame-considerable'),
                             'size' => 'col-span-6',
                             'conditions' => [],
@@ -3156,6 +3275,16 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
+                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-frames-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-frame-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-frames-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-frame-considerable', 1, $hrppGlassFrames),
+                        ],
+                        [
                             'morph' => ToolQuestion::findByShort('hr3p-glass-frame-considerable'),
                             'size' => 'col-span-6',
                             'conditions' => [],
@@ -3167,7 +3296,7 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => [
                                 [
                                     [
-                                        'column' => 'hr3p-glass-frame-current-glass',
+                                        'column' => 'hr3p-glass-frame-considerable',
                                         'operator' => Clause::EQ,
                                         'value' => 1,
                                     ],
@@ -3181,7 +3310,7 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => [
                                 [
                                     [
-                                        'column' => 'hr3p-glass-frame-current-glass',
+                                        'column' => 'hr3p-glass-frame-considerable',
                                         'operator' => Clause::EQ,
                                         'value' => 1,
                                     ],
@@ -3195,7 +3324,7 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => [
                                 [
                                     [
-                                        'column' => 'hr3p-glass-frame-current-glass',
+                                        'column' => 'hr3p-glass-frame-considerable',
                                         'operator' => Clause::EQ,
                                         'value' => 1,
                                     ],
@@ -3209,7 +3338,7 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => [
                                 [
                                     [
-                                        'column' => 'hr3p-glass-frame-current-glass',
+                                        'column' => 'hr3p-glass-frame-considerable',
                                         'operator' => Clause::EQ,
                                         'value' => 1,
                                     ],
@@ -3217,7 +3346,16 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                             'tool_question_type_id' => $textType->id,
                         ],
-
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hr3p-frames-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hr3p-glass-frame-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hr3p-frames-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hr3p-glass-frame-considerable', 1, $hr3pFrames),
+                        ],
                         [
                             'morph' => ToolQuestion::findByShort('glass-in-lead-replace-considerable'),
                             'size' => 'col-span-6',
@@ -3280,14 +3418,22 @@ class SubSteppablesTableSeeder extends Seeder
                             ],
                             'tool_question_type_id' => $textType->id,
                         ],
-
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-glass-in-lead-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'glass-in-lead-replace-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-glass-in-lead-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'glass-in-lead-replace-considerable', 1, $glassInLead),
+                        ],
                         [
                             'morph' => ToolQuestion::findByShort('total-window-surface'),
                             'size' => 'col-span-6',
                             'conditions' => [],
                             'tool_question_type_id' => $textType->id,
                         ],
-
                         [
                             'morph' => ToolQuestion::findByShort('frame-type'),
                             'size' => 'col-span-6',
@@ -4372,6 +4518,16 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => [],
                         ],
                         [
+                            'morph' => ToolQuestion::findByShort('user-costs-solar-panels-place-replace-own-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'solar-panels-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-solar-panels-place-replace-subsidy-total'),
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'solar-panels-considerable', 1, $solarPanelsPlaceReplace),
+                        ],
+                        [
                             'morph' => ToolQuestion::findByShort('solar-panels-comment-resident'),
                             'tool_question_type_id' => $textareaType->id,
                             'size' => 'col-span-3',
@@ -4469,7 +4625,7 @@ class SubSteppablesTableSeeder extends Seeder
         ];
     }
 
-    private function getSubsidyQuestionConditions(string $newShort, string $question, string $value, $advisable = null): array
+    private function getExpertSubsidyQuestionConditions(string $newShort, ?string $question, ?string $value, $advisable = null): array
     {
         $conditions = [
             [
@@ -4485,13 +4641,20 @@ class SubSteppablesTableSeeder extends Seeder
                         'value' => $newShort,
                     ],
                 ],
-                [
-                    'column' => $question,
-                    'operator' => Clause::EQ,
-                    'value' => $value,
-                ],
             ],
         ];
+        return $this->getSubsidyQuestionConditions($conditions, $question, $value, $advisable);
+    }
+
+    private function getSubsidyQuestionConditions(array $conditions, ?string $question, ?string $value, $advisable = null): array
+    {
+        if (! is_null($question)) {
+            $conditions[0][] = [
+                'column' => $question,
+                'operator' => Clause::EQ,
+                'value' => $value,
+            ];
+        }
 
         if (! is_null($advisable)) {
             $conditions[0][] = [

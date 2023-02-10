@@ -2636,7 +2636,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$hrppGlassFrames->id}.is_considering",
                 'translation' => 'HR++ glas + kozijn: Meenemen in berekening',
-                'short' => 'hrpp-glass-frame-considerable',
+                'short' => 'hrpp-glass-frame-considerable', // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2684,7 +2684,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$hr3pFrames->id}.is_considering",
                 "translation" => "HR+++ glas + kozijn: Meenemen in berekening",
-                "short" => "hr3p-glass-frame-considerable",
+                "short" => "hr3p-glass-frame-considerable", // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2732,7 +2732,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$glassInLead->id}.is_considering",
                 "translation" => "Glas-in-lood vervangen: Meenemen in berekening",
-                "short" => "glass-in-lead-replace-considerable",
+                "short" => "glass-in-lead-replace-considerable", // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -3120,7 +3120,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "considerables.App\\Models\\Step.{$solarPanelStep->id}.is_considering",
                 'translation' => 'Zonnepanelen: Meenemen in berekening',
-                'short' => 'solar-panels-considerable',
+                'short' => 'solar-panels-considerable', // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -3203,7 +3203,7 @@ class ToolQuestionsTableSeeder extends Seeder
             $questions[] = [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required', 'min:0',
+                    'required', 'gt:0',
                 ],
                 'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.subsidy_total",
                 'translation' => 'Subsidiebedrag (zelf invullen)',

@@ -20,7 +20,7 @@ class CreateBuildingsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
             $table->unsignedBigInteger('municipality_id')->nullable()->default(null);
-            $table->foreign('municipality_id')->references('id')->on('municipalities');
+            $table->foreign('municipality_id')->references('id')->on('municipalities')->nullOnDelete();
 
             $table->string('street')->default('');
             $table->string('number')->default('');

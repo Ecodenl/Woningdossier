@@ -16,7 +16,7 @@ class AddMunicipalityIdToBuildingsTable extends Migration
         if ( ! Schema::hasColumn('buildings', 'municipality_id')) {
             Schema::table('buildings', function (Blueprint $table) {
                 $table->unsignedBigInteger('municipality_id')->after('user_id')->nullable()->default(null);
-                $table->foreign('municipality_id')->references('id')->on('municipalities');
+                $table->foreign('municipality_id')->references('id')->on('municipalities')->nullOnDelete();
             });
         }
     }

@@ -19,7 +19,9 @@ class CreateBuildingsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
-            $table->foreignIdFor(\App\Models\Municipality::class, 'municipality_id')->onDelete('set null');
+            $table->unsignedBigInteger('municipality_id')->nullable()->default(null);
+            $table->foreign('municipality_id')->references('id')->on('municipalities');
+
             $table->string('street')->default('');
             $table->string('number')->default('');
             $table->string('extension')->default('');

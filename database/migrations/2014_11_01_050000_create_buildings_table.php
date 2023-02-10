@@ -19,11 +19,11 @@ class CreateBuildingsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
+            $table->foreignIdFor(\App\Models\Municipality::class, 'municipality_id')->onDelete('set null');
             $table->string('street')->default('');
             $table->string('number')->default('');
             $table->string('extension')->default('');
             $table->string('city')->default('');
-            $table->string('municipality')->nullable()->default(null);
             $table->string('postal_code')->default('');
             $table->string('country_code', 2)->default('nl');
 

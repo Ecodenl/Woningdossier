@@ -42,7 +42,6 @@ class AddressService
             'exacteMatch' => true,
         ];
 
-
         // since we do not have a separate input for the huisletter we treat the houseNumberExtension as one:
         // first try it as a extension
         // if not found as a houseletter
@@ -98,6 +97,7 @@ class AddressService
 
             $result = [
                 'id' => $address['nummeraanduidingIdentificatie'] ?? '',
+                'bag_woonplaats_id' => $address['woonplaatsIdentificatie'] ?? '',
                 'street' => $address['openbareRuimteNaam'] ?? '',
                 'number' => $address['huisnummer'] ?? '',
                 'postal_code' => $address['postcode'] ?? '',
@@ -111,6 +111,14 @@ class AddressService
         }
 
         return $result;
+    }
+
+    public function woonplaats($woonplaatsIdentificatie)
+    {
+        Lvbag::init($this->client)
+            ->woonplaats()
+            ->show($woonplaatsIdentificatie);
+        // toodo handle various scenarios
     }
 
     public function listFromAttributes(array $attributes): ?array

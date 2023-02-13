@@ -183,8 +183,9 @@ class UserService
             ]
         );
 
+        $addressService = AddressService::init();
         // now get the picoaddress data.
-        $addressData = AddressService::init()->first(
+        $addressData = $addressService->first(
             $data['postal_code'], $data['number'], $data['house_number_extension']
         );
 
@@ -196,6 +197,7 @@ class UserService
             'surface' => $addressData['surface'] ?? null,
             'build_year' => $addressData['build_year'] ?? null,
         ]);
+
 
         // create the building for the user
         $building = Building::create($data);

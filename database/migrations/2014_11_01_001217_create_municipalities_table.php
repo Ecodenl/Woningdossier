@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddShortColumnToStepsTable extends Migration
+class CreateMunicipalitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddShortColumnToStepsTable extends Migration
      */
     public function up()
     {
-        Schema::table('steps', function (Blueprint $table) {
-            $table->string('short')->after('slug');
+        Schema::create('municipalities', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('short');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddShortColumnToStepsTable extends Migration
      */
     public function down()
     {
-        Schema::table('steps', function (Blueprint $table) {
-            $table->dropColumn('short');
-        });
+        Schema::dropIfExists('municipalities');
     }
 }

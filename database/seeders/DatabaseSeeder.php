@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
 //        $this->call(BuildingCurrentHeatingsTableSeeder::class);
 //        $this->call(HeatSourcesTableSeeder::class);
 //        $this->call(BuildingServiceTypeTableSeeder::class);
+        $this->call(InputSourcesTableSeeder::class);
         $this->call(BuildingCategoriesTableSeeder::class);
         $this->call(SpaceCategoriesTableSeeder::class);
         $this->call(AssessmentTypesTableSeeder::class);

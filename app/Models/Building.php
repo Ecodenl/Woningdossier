@@ -25,6 +25,7 @@ use Illuminate\Support\Str;
  *
  * @property int $id
  * @property int|null $user_id
+ * @property int|null $municipality_id
  * @property string $street
  * @property string $number
  * @property string $extension
@@ -92,6 +93,7 @@ use Illuminate\Support\Str;
  * @method static Builder|Building whereHasMedia($tags = [], bool $matchAll = false)
  * @method static Builder|Building whereHasMediaMatchAll(array $tags)
  * @method static Builder|Building whereId($value)
+ * @method static Builder|Building whereMunicipalityId($value)
  * @method static Builder|Building whereNumber($value)
  * @method static Builder|Building whereOwner($value)
  * @method static Builder|Building wherePostalCode($value)

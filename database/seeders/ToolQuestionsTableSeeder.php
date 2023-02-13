@@ -3194,7 +3194,7 @@ class ToolQuestionsTableSeeder extends Seeder
             $questions[] = [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'nullable', 'gt:0',
+                    'nullable', 'numeric', 'integer', 'gt:0',
                 ],
                 'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.own_total",
                 'translation' => 'Eigen kosten (voor aftrek subsidie)',
@@ -3204,7 +3204,7 @@ class ToolQuestionsTableSeeder extends Seeder
             $questions[] = [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'nullable', 'gt:0',
+                    'nullable', 'numeric', 'integer', 'gt:0',
                 ],
                 'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.subsidy_total",
                 'translation' => 'Subsidiebedrag (zelf invullen)',

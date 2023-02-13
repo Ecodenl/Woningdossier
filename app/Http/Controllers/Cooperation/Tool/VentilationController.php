@@ -43,24 +43,7 @@ class VentilationController extends ToolController
 
         $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
             ->forAdvisable(Step::findByShort('ventilation'))
-            ->getAnswers();
-
-        // Remove subsidies if conditions not matched. This is not ideal but hopefully only temporary until we
-        // refactor these static scans
-        foreach ($userCosts as $measureId => $questions) {
-            foreach ($questions as $short => $answer) {
-                if (Str::contains($short, 'subsidy-total')) {
-                    $measure = MeasureApplication::find($measureId);
-                    $value = [
-                        'advisable_type' => get_class($measure),
-                        'advisable_id' => $measure->id,
-                    ];
-                    if (! MeasureHasSubsidy::init($building, $masterInputSource)->evaluate($value)['bool']) {
-                        unset($userCosts[$measureId][$short]);
-                    }
-                }
-            }
-        }
+            ->getAnswers(true);
 
         return view('cooperation.tool.ventilation.index', compact(
             'building', 'buildingVentilation', 'howValues', 'livingSituationValues', 'usageValues', 'userCosts',
@@ -96,11 +79,13 @@ class VentilationController extends ToolController
 
         $userCosts = $request->validated()['user_costs'];
         $userCostService = UserCostService::init($buildingOwner, $inputSource);
+        $userCostValues = [];
         foreach ($userCosts as $measureShort => $costData) {
             $measureApplication = MeasureApplication::findByShort($measureShort);
             // Only save for considered measures
             if ($considerables[$measureApplication->id]['is_considering']) {
                 $userCostService->forAdvisable($measureApplication)->sync($costData);
+                $userCostValues[$measureShort] = $costData;
             }
         }
 
@@ -123,6 +108,7 @@ class VentilationController extends ToolController
         $values = $request->only('building_ventilations');
         $values['considerables'] = $considerables;
         $values['updated_measure_ids'] = $updatedMeasureIds;
+        $values['user_costs'] = $userCostValues;
 
         (new VentilationHelper($buildingOwner, $inputSource))
             ->setValues($values)

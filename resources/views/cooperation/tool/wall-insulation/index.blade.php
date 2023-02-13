@@ -10,7 +10,7 @@
             @include('cooperation.tool.includes.considerable', ['considerable' => $currentStep])
             <div class="flex flex-row flex-wrap w-full">
                 <div class="w-full">
-                    <?php // todo: something seems off with the name ?>
+                    {{-- todo: something seems off with the name --}}
                     @component('cooperation.tool.components.step-question', [
                         'id' => 'element_' . $facadeInsulation->element->id,
                         'name' => 'house_has_insulation',
@@ -382,6 +382,11 @@
                     </div>
                 </div>
             </div>
+
+            @include('cooperation.tool.includes.user-costs', [
+               'userCosts' => $userCosts,
+            ])
+
             <div id="taking-into-account">
                 <hr>
                 @include('cooperation.tool.includes.section-title', ['translation' => 'wall-insulation.taking-into-account.title', 'id' => 'taking-into-account'])
@@ -437,7 +442,6 @@
                         @endcomponent
                     </div>
                 </div>
-
             </div>
 
             @include('cooperation.tool.includes.comment', [
@@ -482,6 +486,8 @@
             $("select, input[type=radio], input[type=text]").change(() => formChange());
 
             function formChange() {
+                checkUserCost();
+
                 if ($('.is-painted').is(':checked')) {
                     $('#painted-options').show();
                     $('#surfaces').show()
@@ -597,6 +603,26 @@
             }
         }
 
+        function checkUserCost() {
+            if ($('.considerable:checked').val() == 1) {
+                $('.user-costs').show();
+            } else {
+                $('.user-costs').hide();
+            }
+
+            let idMap = {
+                0: '{{ \App\Models\MeasureApplication::findByShort('wall-insulation-research')->id }}',
+                2: '{{ \App\Models\MeasureApplication::findByShort('facade-wall-insulation')->id }}'
+            };
+
+            let cavityWall = '{{ \App\Models\MeasureApplication::findByShort('cavity-wall-insulation')->id }}';
+
+            $('[id^="user-cost-"]').hide();
+            let hasCavityWall = $('[name="building_features[cavity_wall]"]:checked').val()
+            let id = idMap[hasCavityWall] || cavityWall;
+
+            $(`[id^="user-cost-${id}"]`).show();
+        }
     </script>
 @endpush
 

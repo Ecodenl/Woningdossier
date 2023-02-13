@@ -2,6 +2,7 @@
 
 namespace App\Services\Models;
 
+use App\Helpers\Conditions\Evaluators\MeasureHasSubsidy;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Step;
@@ -11,6 +12,7 @@ use App\Services\ToolQuestionService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class UserCostService
 {
@@ -35,7 +37,7 @@ class UserCostService
         return $this;
     }
 
-    public function getAnswers(): array
+    public function getAnswers(bool $performLegacyConversion = false): array
     {
         $shorts = $this->getToolQuestionShorts();
 
@@ -43,12 +45,30 @@ class UserCostService
             $shorts[$measureId] = $this->getManyAnswers($questionShorts);
         }
 
+        if ($performLegacyConversion) {
+            // Remove subsidies if conditions not matched. This is not ideal but hopefully only temporary until we
+            // refactor these static expert scan controllers
+            foreach ($shorts as $measureId => $questions) {
+                foreach ($questions as $short => $answer) {
+                    if (Str::contains($short, 'subsidy-total')) {
+                        $measure = MeasureApplication::find($measureId);
+                        $value = [
+                            'advisable_type' => get_class($measure),
+                            'advisable_id' => $measure->id,
+                        ];
+                        if (! MeasureHasSubsidy::init($this->building, $this->inputSource)->evaluate($value)['bool']) {
+                            unset($shorts[$measureId][$short]);
+                        }
+                    }
+                }
+            }
+        }
+
         return $shorts;
     }
 
     public function sync(array $answers): void
     {
-        \Log::debug('Saving', $answers);
         // TODO: If we add other types, we want to support them. For now, only measure applications.
         foreach ($answers as $short => $answer) {
             $short = str_replace('_', '-', $short);

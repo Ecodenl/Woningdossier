@@ -277,52 +277,10 @@
             </div>
         </div>
 
-        <div class="user-costs">
-            @foreach($userCosts as $measureId => $questions)
-                @php $measureApplication = \App\Models\MeasureApplication::find($measureId); @endphp
-                <div class="flex flex-row flex-wrap w-full mt-2" id="user-cost-{{$measureId}}">
-                    <div class="section-title w-full">
-                        <h4 class="heading-4">
-                            {{ $measureApplication->name }}
-                        </h4>
-                    </div>
-
-                    <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
-                        @foreach($questions as $short => $answer)
-                            @php
-                                $toolQuestion = \App\Models\ToolQuestion::findByShort($short);
-                                // We need to construct the name. We know the structure, just not the short in the
-                                // center.
-                                $name = \App\Helpers\Models\UserCostHelper::resolveNameFromShort($short);
-                            @endphp
-                            <div class="w-full sm:w-1/3">
-                                @component('cooperation.frontend.layouts.components.form-group', [
-                                    'inputName' => $name,
-                                    'label' => $toolQuestion->name,
-                                    'id' => $short,
-                                    'modalId' => $short . '-info',
-                                    'inputGroupClass' => $inputGroupClass ?? '',
-                                ])
-                                    @slot('sourceSlot')
-                                        @include('cooperation.sub-step-templates.parts.source-slot-values', [
-                                            'values' => $building->getAnswerForAllInputSources($toolQuestion),
-                                            'toolQuestion' => $toolQuestion,
-                                        ])
-                                    @endslot
-
-                                    @slot('modalBodySlot')
-                                        {!! $toolQuestion->help_text !!}
-                                    @endslot
-
-                                    <input name="{{ \App\Helpers\Str::dotToHtml($name) }}" value="{{ old($name, $answer) }}" class="form-input"
-                                           id="{{ $short }}">
-                                @endcomponent
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            @endforeach
-        </div>
+         @include('cooperation.tool.includes.user-costs', [
+            'withHeader' => true,
+            'userCosts' => $userCosts,
+         ])
 
         <div id="costs-other" class="mt-4">
             @include('cooperation.tool.includes.section-title', [

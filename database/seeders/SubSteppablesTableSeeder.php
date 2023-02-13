@@ -3361,18 +3361,6 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-only-own-total'),
-                            'tool_question_type_id' => $textType->id,
-                            'size' => 'col-span-2',
-                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-only-considerable', 1),
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-only-subsidy-total'),
-                            'tool_question_type_id' => $textType->id,
-                            'size' => 'col-span-2',
-                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-only-considerable', 1, $hrppGlassOnly),
-                        ],
-                        [
                             'morph' => ToolQuestion::findByShort('hrpp-glass-frame-considerable'),
                             'size' => 'col-span-6',
                             'conditions' => [],
@@ -3433,18 +3421,6 @@ class SubSteppablesTableSeeder extends Seeder
                                 ],
                             ],
                             'tool_question_type_id' => $textType->id,
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-frames-own-total'),
-                            'tool_question_type_id' => $textType->id,
-                            'size' => 'col-span-2',
-                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-frame-considerable', 1),
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-frames-subsidy-total'),
-                            'tool_question_type_id' => $textType->id,
-                            'size' => 'col-span-2',
-                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-frame-considerable', 1, $hrppGlassFrames),
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hr3p-glass-frame-considerable'),
@@ -3509,18 +3485,6 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('user-costs-hr3p-frames-own-total'),
-                            'tool_question_type_id' => $textType->id,
-                            'size' => 'col-span-2',
-                            'conditions' => $this->getSubsidyQuestionConditions([], 'hr3p-glass-frame-considerable', 1),
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('user-costs-hr3p-frames-subsidy-total'),
-                            'tool_question_type_id' => $textType->id,
-                            'size' => 'col-span-2',
-                            'conditions' => $this->getSubsidyQuestionConditions([], 'hr3p-glass-frame-considerable', 1, $hr3pFrames),
-                        ],
-                        [
                             'morph' => ToolQuestion::findByShort('glass-in-lead-replace-considerable'),
                             'size' => 'col-span-6',
                             'conditions' => [],
@@ -3583,18 +3547,6 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('user-costs-glass-in-lead-own-total'),
-                            'tool_question_type_id' => $textType->id,
-                            'size' => 'col-span-2',
-                            'conditions' => $this->getSubsidyQuestionConditions([], 'glass-in-lead-replace-considerable', 1),
-                        ],
-                        [
-                            'morph' => ToolQuestion::findByShort('user-costs-glass-in-lead-subsidy-total'),
-                            'tool_question_type_id' => $textType->id,
-                            'size' => 'col-span-2',
-                            'conditions' => $this->getSubsidyQuestionConditions([], 'glass-in-lead-replace-considerable', 1, $glassInLead),
-                        ],
-                        [
                             'morph' => ToolQuestion::findByShort('total-window-surface'),
                             'size' => 'col-span-6',
                             'conditions' => [],
@@ -3633,6 +3585,7 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => [],
                             'tool_question_type_id' => $dropdownType->id,
                         ],
+                        // TODO: Tool label
                         [
                             'morph' => ToolCalculationResult::findByShort('insulated-glazing.savings_gas'),
                             'size' => 'col-span-2',
@@ -3658,6 +3611,55 @@ class SubSteppablesTableSeeder extends Seeder
                             'size' => 'col-span-2',
                             'conditions' => [],
                         ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-only-own-total'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-only-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-only-subsidy-total'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-only-considerable', 1, $hrppGlassOnly),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-frames-own-total'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-frame-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hrpp-glass-frames-subsidy-total'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hrpp-glass-frame-considerable', 1, $hrppGlassFrames),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hr3p-frames-own-total'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hr3p-glass-frame-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-hr3p-frames-subsidy-total'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'hr3p-glass-frame-considerable', 1, $hr3pFrames),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-glass-in-lead-own-total'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'glass-in-lead-replace-considerable', 1),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-glass-in-lead-subsidy-total'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([], 'glass-in-lead-replace-considerable', 1, $glassInLead),
+                        ],
+                        // TODO: Tool label
                         [
                             'morph' => ToolCalculationResult::findByShort('insulated-glazing.paintwork.costs'),
                             'size' => 'col-span-3',

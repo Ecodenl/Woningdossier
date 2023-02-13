@@ -337,6 +337,14 @@
 
             $('#ventilation-form').submit(function () {
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
+                // We want the user to be able to see their own old values for user costs. We don't want them submitted
+                // however, as it could interfere with the validation.
+                $('.user-costs input:not(.source-select-input)').each(function () {
+                    // offsetParent is null when hidden
+                    if (null === this.offsetParent) {
+                        $(this).val(null);
+                    }
+                });
                 return true;
             });
 
@@ -464,15 +472,15 @@
                 });
             }
 
-            function checkUserCost(measureId) {
-                if ($(`#considerable-${measureId}`).prop('checked')) {
-                    $(`#user-cost-${measureId}`).show();
-                } else {
-                    $(`#user-cost-${measureId}`).hide();
-                }
-            }
-
             $('input[type="checkbox"]:enabled').first().trigger('change');
         });
+
+        function checkUserCost(measureId) {
+            if ($(`#considerable-${measureId}`).prop('checked')) {
+                $(`#user-cost-${measureId}`).show();
+            } else {
+                $(`#user-cost-${measureId}`).hide();
+            }
+        }
     </script>
 @endpush

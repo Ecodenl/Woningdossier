@@ -42,7 +42,7 @@ class UserCostService
         $shorts = $this->getToolQuestionShorts();
 
         foreach ($shorts as $measureId => $questionShorts) {
-            $shorts[$measureId] = $this->getManyAnswers($questionShorts);
+            $shorts[$measureId] = $this->getManyAnswers($questionShorts, ! $performLegacyConversion);
         }
 
         if ($performLegacyConversion) {

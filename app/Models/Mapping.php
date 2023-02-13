@@ -24,4 +24,9 @@ class Mapping extends Model
     protected $casts = [
         'target_data' => 'array'
     ];
+
+    public function mapable()
+    {
+        return $this->morphTo('target_model');
+    }
 }

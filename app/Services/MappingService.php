@@ -44,8 +44,10 @@ class MappingService
             if (! is_null($mapping->target_value)) {
                 return $mapping->target_value;
             }
+            if (!is_null($mapping->target_model_type)) {
+                return $mapping->mapable;
+            }
         }
-        // todo: implement return morph model
         return null;
     }
 
@@ -60,7 +62,7 @@ class MappingService
         return ['from_value' => $this->from];
     }
 
-    public function sync($syncableData): void
+    public function sync(array $syncableData): void
     {
         // first we will remove the current rows.
         Mapping::where($this->whereFrom())->delete();
@@ -69,7 +71,7 @@ class MappingService
         foreach ($syncableData as $index => $target) {
             $attributes[$index] = $this->whereFrom();
             // In the case we EVER allow different types for mapping, we must ensure other fields get nullified.
-            if ($this->target instanceof Model) {
+            if ($target instanceof Model) {
                 $attributes[$index]['target_model_type'] = $target->getMorphClass();
                 $attributes[$index]['target_model_id'] = $target->id;
             } else {

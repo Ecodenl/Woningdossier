@@ -5,7 +5,9 @@ namespace App\Services\Models;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Models\User;
+use App\Services\ToolQuestionService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Model;
@@ -44,6 +46,19 @@ class UserCostService
         return $shorts;
     }
 
+    public function sync(array $answers): void
+    {
+        \Log::debug('Saving', $answers);
+        // TODO: If we add other types, we want to support them. For now, only measure applications.
+        foreach ($answers as $short => $answer) {
+            $short = str_replace('_', '-', $short);
+            $toolQuestionShort = "user-costs-{$this->advisable->short}-{$short}";
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+            ToolQuestionService::init($toolQuestion)->building($this->building)
+                ->currentInputSource($this->currentInputSource)
+                ->save($answer);
+        }
+    }
 
     private function getToolQuestionShorts(): array
     {

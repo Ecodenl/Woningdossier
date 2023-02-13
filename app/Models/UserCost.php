@@ -16,8 +16,6 @@ class UserCost extends Model implements Auditable
         GetMyValuesTrait,
         \App\Traits\Models\Auditable;
 
-    protected $table = 'user_action_plan_advices';
-
     public $fillable = [
         'user_id', 'input_source_id', 'advisable_type', 'advisable_id', 'own_total', 'subsidy_total',
     ];

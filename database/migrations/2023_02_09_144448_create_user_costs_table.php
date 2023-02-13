@@ -23,7 +23,7 @@ class CreateUserCostsTable extends Migration
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
             $table->string('advisable_type');
             $table->unsignedBigInteger('advisable_id');
-            $table->unsignedInteger('own_total')->default(0);
+            $table->unsignedInteger('own_total')->nullable();
             $table->unsignedInteger('subsidy_total')->nullable();
             $table->timestamps();
         });

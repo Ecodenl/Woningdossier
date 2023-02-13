@@ -3194,19 +3194,21 @@ class ToolQuestionsTableSeeder extends Seeder
             $questions[] = [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required', 'min:0',
+                    'nullable', 'gt:0',
                 ],
                 'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.own_total",
                 'translation' => 'Eigen kosten (voor aftrek subsidie)',
+                'help_text' => 'In het geval dat je al weet hoeveel een maatregel gaat kosten (bijvoorbeeld door een opgevraagde offerte), kun je hier dat bedrag invullen.',
                 'short' => "user-costs-{$measure->short}-own-total",
             ];
             $questions[] = [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required', 'gt:0',
+                    'nullable', 'gt:0',
                 ],
                 'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.subsidy_total",
                 'translation' => 'Subsidiebedrag (zelf invullen)',
+                'help_text' => 'In het geval dat je al weet hoeveel subsidie je terugkrijgt op een maatregel, kun je dit hier invullen.',
                 'short' => "user-costs-{$measure->short}-subsidy-total",
             ];
         }

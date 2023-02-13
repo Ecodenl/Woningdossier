@@ -289,10 +289,15 @@
 
                     <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
                         @foreach($questions as $short => $answer)
-                            @php $toolQuestion = \App\Models\ToolQuestion::findByShort($short); @endphp
+                            @php
+                                $toolQuestion = \App\Models\ToolQuestion::findByShort($short);
+                                // We need to construct the name. We know the structure, just not the short in the
+                                // center.
+                                $name = \App\Helpers\Models\UserCostHelper::resolveNameFromShort($short);
+                            @endphp
                             <div class="w-full sm:w-1/3">
                                 @component('cooperation.frontend.layouts.components.form-group', [
-                                    'inputName' => $short,
+                                    'inputName' => $name,
                                     'label' => $toolQuestion->name,
                                     'id' => $short,
                                     'modalId' => $short . '-info',
@@ -309,7 +314,7 @@
                                         {!! $toolQuestion->help_text !!}
                                     @endslot
 
-                                    <input name="{{ $short }}" value="{{ old($short, $answer) }}" class="form-input"
+                                    <input name="{{ \App\Helpers\Str::dotToHtml($name) }}" value="{{ old($name, $answer) }}" class="form-input"
                                            id="{{ $short }}">
                                 @endcomponent
                             </div>

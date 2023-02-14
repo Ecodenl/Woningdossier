@@ -41,10 +41,10 @@
         @endif
     </div>
 
+    @if($isSuperAdmin)
     <div class="form-group {{ $errors->has('exampleBuildingValues.cooperation_id') ? ' has-error' : '' }}">
         <label for="cooperation">@lang('cooperation/admin/example-buildings.components.cooperation')</label>
-        <select id="cooperation" wire:model="exampleBuildingValues.cooperation_id" class="form-control"
-                @if(! $isSuperAdmin) disabled @endif>
+        <select id="cooperation" wire:model="exampleBuildingValues.cooperation_id" class="form-control">
             @if($isSuperAdmin)
                 <option value="" selected="selected">-</option>
             @endif
@@ -61,6 +61,7 @@
         </span>
         @endif
     </div>
+    @endif
 
     <div class="form-group {{ $errors->has('exampleBuildingValues.order') ? 'has-error' : '' }}">
         <label for="order">@lang('cooperation/admin/example-buildings.components.order')</label>

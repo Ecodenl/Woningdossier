@@ -58,12 +58,6 @@ class Form extends Component
         $this->isSuperAdmin = HoomdossierSession::currentRole() === RoleHelper::ROLE_SUPER_ADMIN;
         if ($this->isSuperAdmin) {
             $this->cooperations = Cooperation::all();
-        } else {
-            $currentCooperation = HoomdossierSession::getCooperation(true);
-            // Only add current cooperation, but in Eloquent collection, cuz Livewire won't rehydrate
-            // non-Eloquent collections.
-            $this->cooperations = new Collection([$currentCooperation]);
-            $this->exampleBuildingValues['cooperation_id'] = $currentCooperation->id;
         }
 
         $this->buildingTypes = BuildingType::all();
@@ -147,10 +141,14 @@ class Form extends Component
 
         $this->validate();
         if ($this->isSuperAdmin) {
+            // If the super-admin wants to create a application wide example building
+            // he keep the input empty
             if (empty($this->exampleBuildingValues['cooperation_id'])) {
                 $this->exampleBuildingValues['cooperation_id'] = null;
             }
         } else {
+            // non super-admin, so the example building will always be related to the users it cooperation
+            // we alter the values for easy saving.
             $this->exampleBuildingValues['cooperation_id'] = HoomdossierSession::getCooperation();
         }
 

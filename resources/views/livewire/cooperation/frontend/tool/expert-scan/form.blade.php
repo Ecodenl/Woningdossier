@@ -36,11 +36,11 @@
         </div>
 
         @foreach($step->subSteps as $subStep)
-             <div x-bind="container" data-tab="{{$subStep->slug}}" wire:ignore.self>
+            <div x-bind="container" data-tab="{{$subStep->slug}}" wire:ignore.self>
                 <livewire:cooperation.frontend.tool.expert-scan.sub-steppable :step="$step" :subStep="$subStep"
                                                                               :wire:key="$subStep->id"/>
-             </div>
-         @endforeach
+            </div>
+        @endforeach
     </div>
 </div>
 

@@ -196,7 +196,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::post('', [Cooperation\Tool\QuestionnaireController::class, 'store'])->name('store');
                 });
 
-                Route::resource('example-building', Cooperation\Tool\ExampleBuildingController::class)->only('store');
                 Route::resource('building-type', Cooperation\Tool\BuildingTypeController::class)->only('store');
 
                 Route::get('heat-pump', function () {
@@ -276,7 +275,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 Route::middleware('current-role:cooperation-admin|super-admin')->group(function () {
-                    Route::resource('example-buildings', Cooperation\Admin\ExampleBuildingController::class)->parameter('example-buildings', 'exampleBuilding');
+                    Route::resource('example-buildings', Cooperation\Admin\ExampleBuildingController::class)
+                        ->parameter('example-buildings', 'exampleBuilding')
+                        ->only(['index', 'create', 'edit', 'destroy']);
                     Route::get('example-buildings/{exampleBuilding}/copy', [Cooperation\Admin\ExampleBuildingController::class, 'copy'])->name('example-buildings.copy');
                 });
 

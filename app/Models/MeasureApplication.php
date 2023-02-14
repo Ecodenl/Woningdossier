@@ -7,6 +7,7 @@ use App\Helpers\KeyFigures\WallInsulation\Temperature as WallInsulationTemperatu
 use App\Scopes\VisibleScope;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -117,6 +118,12 @@ class MeasureApplication extends Model
     public function getInfoAttribute(): string
     {
         return $this->measure_info;
+    }
+
+    # Scopes
+    public function scopeMeasureType(Builder $query, string $measureType): Builder
+    {
+        return $query->where('measure_type', $measureType);
     }
 
     # Relations

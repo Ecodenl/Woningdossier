@@ -428,6 +428,7 @@ class Building extends Model
      */
     public function hasAnsweredExpertQuestion(Step $step = null): bool
     {
+        // TODO: Should we rename this to "hasAnsweredExpertStep"? Or maybe just use "hasCompleted"?
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $quickScan = Scan::findByShort('quick-scan');

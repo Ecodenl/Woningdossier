@@ -51,11 +51,11 @@ class VentilationHelper extends ToolHelper
                     $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['result']['crack_sealing']['cost_indication'] ?? null);
                 } else {
                     $actionPlanAdvice = new UserActionPlanAdvice();
+                    $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts(null); // To force an array format
                 }
 
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->planned = true;
-                $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts(null); // To force an array format
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);

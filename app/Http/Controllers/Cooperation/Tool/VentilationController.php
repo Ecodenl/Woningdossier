@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Ventilation;
+use App\Helpers\Conditions\Evaluators\MeasureHasSubsidy;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Tool\VentilationFormRequest;
@@ -12,8 +13,10 @@ use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Services\ConsiderableService;
+use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class VentilationController extends ToolController
 {
@@ -38,8 +41,12 @@ class VentilationController extends ToolController
         $livingSituationValues = VentilationHelper::getLivingSituationValues();
         $usageValues = VentilationHelper::getUsageValues();
 
+        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+            ->forAdvisable(Step::findByShort('ventilation'))
+            ->getAnswers(true);
+
         return view('cooperation.tool.ventilation.index', compact(
-            'building', 'buildingVentilation', 'howValues', 'livingSituationValues', 'usageValues'
+            'building', 'buildingVentilation', 'howValues', 'livingSituationValues', 'usageValues', 'userCosts',
         ));
     }
 
@@ -70,6 +77,18 @@ class VentilationController extends ToolController
             ConsiderableService::save(MeasureApplication::findOrFail($considerableId), $buildingOwner, $inputSource, $considerableData);
         }
 
+        $userCosts = $request->validated()['user_costs'];
+        $userCostService = UserCostService::init($buildingOwner, $inputSource);
+        $userCostValues = [];
+        foreach ($userCosts as $measureShort => $costData) {
+            $measureApplication = MeasureApplication::findByShort($measureShort);
+            // Only save for considered measures
+            if ($considerables[$measureApplication->id]['is_considering']) {
+                $userCostService->forAdvisable($measureApplication)->sync($costData);
+                $userCostValues[$measureShort] = $costData;
+            }
+        }
+
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $step, $stepComments['comment']);
 
@@ -89,6 +108,7 @@ class VentilationController extends ToolController
         $values = $request->only('building_ventilations');
         $values['considerables'] = $considerables;
         $values['updated_measure_ids'] = $updatedMeasureIds;
+        $values['user_costs'] = $userCostValues;
 
         (new VentilationHelper($buildingOwner, $inputSource))
             ->setValues($values)

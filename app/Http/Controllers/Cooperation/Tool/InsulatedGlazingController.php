@@ -16,8 +16,10 @@ use App\Models\Element;
 use App\Models\InsulatingGlazing;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
+use App\Models\Step;
 use App\Models\WoodRotStatus;
 use App\Services\ConsiderableService;
+use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str as SupportStr;
@@ -86,11 +88,16 @@ class InsulatedGlazingController extends ToolController
 
         $myBuildingElements = BuildingElement::forMe()->get();
 
+        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+            ->forAdvisable(Step::findByShort('insulated-glazing'))
+            ->getAnswers(true);
+
         return view('cooperation.tool.insulated-glazing.index', compact(
             'building', 'myBuildingElements', 'buildingOwner',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
-            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility'
+            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility',
+            'userCosts'
         ));
     }
 
@@ -119,13 +126,26 @@ class InsulatedGlazingController extends ToolController
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        foreach ($request->validated()['considerables'] as $considerableId => $considerableData) {
+        $considerables = $request->validated()['considerables'];
+        foreach ($considerables as $considerableId => $considerableData) {
             // so we can determine the highest interest level later on.
             ConsiderableService::save(MeasureApplication::findOrFail($considerableId), $user, $inputSource, $considerableData);
         }
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
+
+        $userCosts = $request->validated()['user_costs'];
+        $userCostService = UserCostService::init($user, $inputSource);
+        $userCostValues = [];
+        foreach ($userCosts as $measureShort => $costData) {
+            $measureApplication = MeasureApplication::findByShort($measureShort);
+            // Only save for considered measures
+            if ($considerables[$measureApplication->id]['is_considering']) {
+                $userCostService->forAdvisable($measureApplication)->sync($costData);
+                $userCostValues[$measureShort] = $costData;
+            }
+        }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
 
@@ -158,6 +178,7 @@ class InsulatedGlazingController extends ToolController
         $values = $request->only('considerables', 'building_insulated_glazings', 'building_features',
             'building_elements', 'building_paintwork_statuses');
         $values['updated_measure_ids'] = $updatedMeasureIds;
+        $values['user_costs'] = $userCostValues;
 
         (new InsulatedGlazingHelper($user, $inputSource))
             ->setValues($values)

@@ -13,6 +13,7 @@ use App\Traits\GetValueTrait;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -188,13 +189,18 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $query->where('step_id', $step->id);
     }
 
+    public function scopeCategory(Builder $query, string $category)
+    {
+        return $query->where('category', $category);
+    }
+
     # Relations
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function step()
+    public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
     }
@@ -202,11 +208,6 @@ class UserActionPlanAdvice extends Model implements Auditable
     public function userActionPlanAdvisable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function scopeCategory(Builder $query, string $category)
-    {
-        return $query->where('category', $category);
     }
 
     # Unsorted

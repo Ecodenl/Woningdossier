@@ -2636,7 +2636,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$hrppGlassFrames->id}.is_considering",
                 'translation' => 'HR++ glas + kozijn: Meenemen in berekening',
-                'short' => 'hrpp-glass-frame-considerable',
+                'short' => 'hrpp-glass-frame-considerable', // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2684,7 +2684,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$hr3pFrames->id}.is_considering",
                 "translation" => "HR+++ glas + kozijn: Meenemen in berekening",
-                "short" => "hr3p-glass-frame-considerable",
+                "short" => "hr3p-glass-frame-considerable", // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2732,7 +2732,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$glassInLead->id}.is_considering",
                 "translation" => "Glas-in-lood vervangen: Meenemen in berekening",
-                "short" => "glass-in-lead-replace-considerable",
+                "short" => "glass-in-lead-replace-considerable", // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -3120,7 +3120,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "considerables.App\\Models\\Step.{$solarPanelStep->id}.is_considering",
                 'translation' => 'Zonnepanelen: Meenemen in berekening',
-                'short' => 'solar-panels-considerable',
+                'short' => 'solar-panels-considerable', // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -3178,11 +3178,43 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
         ];
 
+        #######
+        #
+        # README:
+        # For ease of seeding: user cost questions are related to energy saving measures that have expert related
+        # questions. Therefore, we simply loop through all of them. This means it's easily expanded for future added
+        # measures, as well as being simple in the code. This seeder is large enough already.
+        #
+        #######
+
+        $allExpertEnergySavingMeasures = MeasureApplication::measureType(MeasureApplication::ENERGY_SAVING)
+            ->where('step_id', '!=', $stepSmallMeasures->id)->get();
+
+        foreach ($allExpertEnergySavingMeasures as $measure) {
+            $questions[] = [
+                'data_type' => Caster::INT,
+                'validation' => [
+                    'nullable', 'numeric', 'integer', 'gt:0',
+                ],
+                'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.own_total",
+                'translation' => 'Eigen kosten (voor aftrek subsidie)',
+                'help_text' => 'In het geval dat je al weet hoeveel een maatregel gaat kosten (bijvoorbeeld door een opgevraagde offerte), kun je hier dat bedrag invullen.',
+                'short' => "user-costs-{$measure->short}-own-total",
+            ];
+            $questions[] = [
+                'data_type' => Caster::INT,
+                'validation' => [
+                    'nullable', 'numeric', 'integer', 'gt:0',
+                ],
+                'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.subsidy_total",
+                'translation' => 'Subsidiebedrag (zelf invullen)',
+                'help_text' => 'In het geval dat je al weet hoeveel subsidie je terugkrijgt op een maatregel, kun je dit hier invullen.',
+                'short' => "user-costs-{$measure->short}-subsidy-total",
+            ];
+        }
 
         foreach ($questions as $questionData) {
             if ($questionData['short'] != "") {
-
-
                 // Create the question itself
 
                 // Translation can be a key or text. We compare the results, because if it's a key, then the

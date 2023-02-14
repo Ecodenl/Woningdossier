@@ -252,6 +252,10 @@
                 </div>
             </div>
 
+            @include('cooperation.tool.includes.user-costs', [
+                'userCosts' => $userCosts,
+            ])
+
             <div class="flex flex-row flex-wrap w-full hidden" id="no-crawlspace-error">
                 <div class="w-full">
                     @component('cooperation.frontend.layouts.parts.alert', [
@@ -304,6 +308,7 @@
             $("select, input[type=radio], input[type=text]").change(() => formChange());
 
             function formChange() {
+                checkUserCost();
 
                 var formData = $('#floor-insulation-form').serialize();
                 $.ajax({
@@ -417,6 +422,26 @@
             }
         });
 
+        function checkUserCost() {
+            if ($('.considerable input:checked').val() == 1 && $('#has_crawlspace').val() !== 'no') {
+                $('.user-costs').show();
+            } else {
+                $('.user-costs').hide();
+            }
+
+            let idMap = {
+                37: '{{ \App\Models\MeasureApplication::findByShort(\App\Helpers\KeyFigures\FloorInsulation\Temperature::FLOOR_INSULATION_FLOOR)->id }}',
+                38: '{{ \App\Models\MeasureApplication::findByShort(\App\Helpers\KeyFigures\FloorInsulation\Temperature::FLOOR_INSULATION_BOTTOM)->id }}'
+            };
+
+            let research = '{{ \App\Models\MeasureApplication::findByShort(\App\Helpers\KeyFigures\FloorInsulation\Temperature::FLOOR_INSULATION_RESEARCH)->id }}';
+
+            $('[id^="user-cost-"]').hide();
+            let crawlspaceHeight = $('#crawlspace_height').val()
+            let id = idMap[crawlspaceHeight] || research;
+
+            $(`[id^="user-cost-${id}"]`).show();
+        }
     </script>
 @endpush
 

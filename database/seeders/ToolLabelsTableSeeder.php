@@ -131,7 +131,7 @@ class ToolLabelsTableSeeder extends Seeder
             ],
         ];
 
-        foreach($labels as $data) {
+        foreach ($labels as $data) {
             $data['name'] = json_encode($data['name']);
             DB::table('tool_labels')->updateOrInsert(['short' => $data['short']], $data);
         }

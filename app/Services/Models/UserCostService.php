@@ -8,6 +8,8 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Models\User;
+use App\Models\UserCost;
+use App\Services\ConditionService;
 use App\Services\ToolQuestionService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
@@ -65,6 +67,41 @@ class UserCostService
         }
 
         return $shorts;
+    }
+
+    public function getCost(): ?float
+    {
+        $userCosts = $this->user->userCosts()
+            ->forInputSource($this->inputSource)
+            ->whereHasMorph(
+                'advisable',
+                get_class($this->advisable),
+                fn($q) => $q->where('advisable_id', $this->advisable->id)
+            )
+            ->first();
+
+        // The user has answered a user cost question before for this measure.
+        if ($userCosts instanceof UserCost) {
+            // Now check if the user can answer the questions
+            $ownTotalQuestion = ToolQuestion::findByShort("user-costs-{$this->advisable->short}-own-total");
+            $subsidyTotalQuestion = ToolQuestion::findByShort("user-costs-{$this->advisable->short}-subsidy-total");
+
+            $service = ConditionService::init()
+                ->building($this->building)
+                ->inputSource($this->inputSource);
+
+            if ($service->forModel($ownTotalQuestion)->isViewable()) {
+                $costs = $userCosts->own_total;
+
+                if (! is_null($costs) && $service->forModel($subsidyTotalQuestion)->isViewable()) {
+                    $costs = $costs - ($userCosts->subsidy_total ?? 0);
+                }
+
+                return $costs;
+            }
+        }
+
+        return null;
     }
 
     public function sync(array $answers): void

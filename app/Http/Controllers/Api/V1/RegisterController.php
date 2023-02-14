@@ -13,6 +13,7 @@ use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\ToolQuestion;
+use App\Models\User;
 use App\Services\ToolQuestionService;
 use App\Services\UserService;
 use Illuminate\Support\Arr;

@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Lvbag;
 
+use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Traits\FluentCaller;
 use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
-class AddressService
+class BagService
 {
-    public Client $client;
-
     use FluentCaller;
+
+    public Client $client;
 
     public function __construct()
     {
@@ -22,11 +22,6 @@ class AddressService
             'epsg:28992',
             App::isProduction(),
         );
-    }
-
-    public static function bubba($closure)
-    {
-        return $closure('pils');
     }
 
     /**
@@ -38,7 +33,7 @@ class AddressService
      * @param  null|string  $houseNumberExtension
      * @return array
      */
-    public function first($postalCode, $number, ?string $houseNumberExtension = ""): array
+    public function firstAddress($postalCode, $number, ?string $houseNumberExtension = "")
     {
         $attributes = [
             'postcode' => $postalCode,
@@ -100,6 +95,7 @@ class AddressService
         if ( ! is_null($addresses)) {
             $address = array_shift($addresses);
 
+            AddressExpanded::init($address);
             $result = [
                 'id' => $address['nummeraanduidingIdentificatie'] ?? '',
                 'bag_woonplaats_id' => $address['woonplaatsIdentificatie'] ?? '',
@@ -115,6 +111,39 @@ class AddressService
             Log::debug(__CLASS__, $result);
         }
 
+        return $result;
+    }
+
+    public function firstWoonplaats($woonplaatsIdentificatie, array $attributes = []): ?array
+    {
+        return $this->wrapCall(fn() => Lvbag::init($this->client)
+            ->woonplaats()
+            ->show($woonplaatsIdentificatie, $attributes)
+        );
+    }
+
+
+    public function listFromAttributes(array $attributes): ?array
+    {
+        return new AddressExpanded($this->wrapCall(fn() => Lvbag::init($this->client)
+            ->adresUitgebreid()
+            ->list($attributes)
+        ));
+    }
+
+    public function wrapCall($closure): ?array
+    {
+        $result = null;
+        try {
+            $result = $closure();
+        } catch (\Exception $exception) {
+            if ($exception->getCode() !== 400) {
+                app('sentry')->captureException($exception);
+            }
+            if ($exception->getCode() === 400) {
+                return $result;
+            }
+        }
         return $result;
     }
 }

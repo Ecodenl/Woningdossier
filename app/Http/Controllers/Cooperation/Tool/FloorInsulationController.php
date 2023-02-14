@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
+use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Http\Requests\Cooperation\Tool\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\Element;
-use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\Step;
 use App\Services\ConsiderableService;
+use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
 
 class FloorInsulationController extends ToolController
@@ -52,11 +55,15 @@ class FloorInsulationController extends ToolController
             $building->buildingFeatures()
         )->get();
 
+        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+            ->forAdvisable(Step::findByShort('floor-insulation'))
+            ->getAnswers(true);
+
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe',
             'buildingElementsOrderedOnInputSourceCredibility',
             'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
-            'crawlspacePresent', 'building'
+            'crawlspacePresent', 'building', 'userCosts'
         ));
     }
 
@@ -89,11 +96,39 @@ class FloorInsulationController extends ToolController
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        ConsiderableService::save($this->step, $user, $inputSource,
-            $request->validated()['considerables'][$this->step->id]);
+        $considerables = $request->validated()['considerables'];
+        ConsiderableService::save($this->step, $user, $inputSource, $considerables[$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
+
+        $userCosts = $request->validated()['user_costs'];
+        $userCostService = UserCostService::init($user, $inputSource);
+        $userCostValues = [];
+        if (Arr::first($considerables)['is_considering'] && ($request->validated()['building_elements']['extra']['has_crawlspace'] ?? null) !== 'no') {
+            $crawlSpace = Element::findByShort('crawlspace');
+            $crawlSpaceHigh = $crawlSpace->elementValues()->where('calculate_value', 45)->first();
+            $crawlSpaceMid = $crawlSpace->elementValues()->where('calculate_value', 30)->first();
+
+            $idMap = [
+                $crawlSpaceHigh->id => Temperature::FLOOR_INSULATION_FLOOR,
+                $crawlSpaceMid->id => Temperature::FLOOR_INSULATION_BOTTOM,
+            ];
+
+            $research = Temperature::FLOOR_INSULATION_RESEARCH;
+
+            $height = $request->validated()['building_elements']['element_value_id'] ?? null;
+            $advice = $idMap[$height] ?? $research;
+
+            foreach ($userCosts as $measureShort => $costData) {
+                // Only save for connected type
+                if ($measureShort === $advice) {
+                    $measureApplication = MeasureApplication::findByShort($measureShort);
+                    $userCostService->forAdvisable($measureApplication)->sync($costData);
+                    $userCostValues[$measureShort] = $costData;
+                }
+            }
+        }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
         $updatedMeasureIds = [];

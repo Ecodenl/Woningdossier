@@ -612,18 +612,18 @@
         }
 
         function checkUserCost() {
-            if ($('.considerable:checked').val() == 1) {
+            if ($('.considerable input:checked').val() == 1) {
                 $('.user-costs').show();
             } else {
                 $('.user-costs').hide();
             }
 
             let idMap = {
-                0: '{{ \App\Models\MeasureApplication::findByShort('wall-insulation-research')->id }}',
-                2: '{{ \App\Models\MeasureApplication::findByShort('facade-wall-insulation')->id }}'
+                0: '{{ \App\Models\MeasureApplication::findByShort(\App\Helpers\KeyFigures\WallInsulation\Temperature::WALL_INSULATION_RESEARCH)->id }}',
+                2: '{{ \App\Models\MeasureApplication::findByShort(\App\Helpers\KeyFigures\WallInsulation\Temperature::WALL_INSULATION_FACADE)->id }}'
             };
 
-            let cavityWall = '{{ \App\Models\MeasureApplication::findByShort('cavity-wall-insulation')->id }}';
+            let cavityWall = '{{ \App\Models\MeasureApplication::findByShort(\App\Helpers\KeyFigures\WallInsulation\Temperature::WALL_INSULATION_JOINTS)->id }}';
 
             $('[id^="user-cost-"]').hide();
             let hasCavityWall = $('[name="building_features[cavity_wall]"]:checked').val()

@@ -77,7 +77,8 @@ class WallInsulationController extends ToolController
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
+        $considerables = $request->validated()['considerables'];
+        ConsiderableService::save($this->step, $user, $inputSource, $considerables[$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
@@ -105,8 +106,7 @@ class WallInsulationController extends ToolController
         $userCosts = $request->validated()['user_costs'];
         $userCostService = UserCostService::init($user, $inputSource);
         $userCostValues = [];
-
-        if (Arr::first($request->validated()['considerables'])['is_considering']) {
+        if (Arr::first($considerables)['is_considering']) {
             foreach ($userCosts as $measureShort => $costData) {
                 // Only save for connected type
                 if ($measureShort === $advice) {

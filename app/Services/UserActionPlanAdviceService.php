@@ -71,7 +71,7 @@ class UserActionPlanAdviceService
             ->forBuilding($userActionPlanAdvice->user->building)
             ->getSearch();
 
-        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->first();
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
 
         // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
         $regulations = $payload

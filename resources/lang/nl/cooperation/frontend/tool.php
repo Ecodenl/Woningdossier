@@ -130,6 +130,7 @@ return [
         ],
     ],
     'my-regulations' => [
+        'loading' => 'Maatregelen worden berekend...',
         'provider' => [
             'to' => 'Naar aanbieder',
         ],

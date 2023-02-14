@@ -105,7 +105,7 @@ class FloorInsulationController extends ToolController
         $userCosts = $request->validated()['user_costs'];
         $userCostService = UserCostService::init($user, $inputSource);
         $userCostValues = [];
-        if (Arr::first($considerables)['is_considering'] && ($request->validated()['building_elements']['extra']['has_crawlspace'] ?? null) !== 'no') {
+        if ($considerables[$this->step->id]['is_considering'] && ($request->validated()['building_elements']['extra']['has_crawlspace'] ?? null) !== 'no') {
             $crawlSpace = Element::findByShort('crawlspace');
             $crawlSpaceHigh = $crawlSpace->elementValues()->where('calculate_value', 45)->first();
             $crawlSpaceMid = $crawlSpace->elementValues()->where('calculate_value', 30)->first();
@@ -143,6 +143,7 @@ class FloorInsulationController extends ToolController
 
         $values = $request->validated();
         $values['updated_measure_ids'] = $updatedMeasureIds;
+        $values['user_costs'] = $userCostValues;
 
         (new FloorInsulationHelper($user, $inputSource))
             ->setValues($values)

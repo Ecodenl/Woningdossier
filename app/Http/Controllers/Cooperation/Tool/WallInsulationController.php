@@ -106,7 +106,7 @@ class WallInsulationController extends ToolController
         $userCosts = $request->validated()['user_costs'];
         $userCostService = UserCostService::init($user, $inputSource);
         $userCostValues = [];
-        if (Arr::first($considerables)['is_considering']) {
+        if ($considerables[$this->step->id]['is_considering']) {
             foreach ($userCosts as $measureShort => $costData) {
                 // Only save for connected type
                 if ($measureShort === $advice) {

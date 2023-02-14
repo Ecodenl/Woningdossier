@@ -6,7 +6,7 @@
                 :nextUrl="route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'))"
                 :types="[\App\Jobs\RecalculateStepForUser::class]"
         />
-        @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
+        @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-regulations.loading')])
     @else
         <div class="w-full flex flex-wrap" x-data="{ selected: null }">
             <div class="w-full flex flex-wrap" x-data="tabs()">

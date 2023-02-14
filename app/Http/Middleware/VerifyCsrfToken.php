@@ -19,6 +19,5 @@ class VerifyCsrfToken extends Middleware
         'tool/high-efficiency-boiler/calculate',
         'tool/solar-panels/calculate',
         'tool/heater/calculate',
-        'tool/example-building',
     ];
 }

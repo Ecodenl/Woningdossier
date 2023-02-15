@@ -303,7 +303,7 @@ class Form extends Component
         });
 
         // Structure: order => card
-        if ( ! empty($cardData)) {
+        if (! empty($cardData)) {
             $oldOrder = array_key_first($cardData);
             $movedCard = $cardData[$oldOrder];
 
@@ -376,7 +376,7 @@ class Form extends Component
             return $card['id'] == $id;
         });
 
-        if ( ! empty($cardData)) {
+        if (! empty($cardData)) {
             $oldOrder = array_key_first($cardData);
             $trashedCard = $cardData[$oldOrder];
 
@@ -554,7 +554,7 @@ class Form extends Component
         }
 
         $myAdvice = null;
-        if ( ! empty($advisableId)) {
+        if (! empty($advisableId)) {
             // Get MY advice
             $myAdvice = UserActionPlanAdvice::forInputSource($this->currentInputSource)
                 ->where('user_id', $this->building->user->id)
@@ -582,7 +582,7 @@ class Form extends Component
             return $card['id'] == $id;
         });
 
-        if ( ! empty($cardData)) {
+        if (! empty($cardData)) {
             $oldOrder = array_key_first($cardData);
             $addedCard = $cardData[$oldOrder];
 
@@ -720,13 +720,13 @@ class Form extends Component
                     break;
                 }
             } // Full range
-            elseif ( ! empty($condition['from']) && ! empty($condition['to'])) {
+            elseif (! empty($condition['from']) && ! empty($condition['to'])) {
                 if ($calculation >= $condition['from'] && $calculation < $condition['to']) {
                     $value = $calculationCondition['value'];
                     break;
                 }
             } // Bottom range only
-            elseif ( ! empty($condition['from']) && empty($condition['to'])) {
+            elseif (! empty($condition['from']) && empty($condition['to'])) {
                 if ($calculation >= $condition['from']) {
                     $value = $calculationCondition['value'];
                     break;

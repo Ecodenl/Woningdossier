@@ -49,9 +49,8 @@ class UserActionPlanAdviceService
 
     public function refreshUserRegulations(): void
     {
-        $userActionPlanAdvices = $this
-            ->user
-            ->UserActionPlanAdvices()
+        $userActionPlanAdvices = $this->user
+            ->userActionPlanAdvices()
             ->withoutGlobalScopes()
             ->get();
 
@@ -82,9 +81,9 @@ class UserActionPlanAdviceService
         $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
 
         // This method is triggered by the observer, so to avoid a infinite loop we call it without events.
-        UserActionPlanAdvice::withoutEvents(fn() => $userActionPlanAdvice->update([
+        UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([
             'loan_available' => $loanAvailable,
-            'subsidy_available' => $subsidyAvailable
+            'subsidy_available' => $subsidyAvailable,
         ]));
         // Log::debug('Action plan advice', $userActionPlanAdvice->only('id', 'loan_available', 'subsidy_available'));
     }
@@ -106,9 +105,9 @@ class UserActionPlanAdviceService
     /**
      * Method to delete the user action plan advices for a given user, input source and step.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\Step  $step
+     * @param \App\Models\User $user
+     * @param \App\Models\InputSource $inputSource
+     * @param \App\Models\Step $step
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -194,7 +193,7 @@ class UserActionPlanAdviceService
     /**
      * Get the action plan categorized under measure type.
      *
-     * @param  bool  $withAdvices
+     * @param bool $withAdvices
      *
      * @return array
      */
@@ -226,7 +225,7 @@ class UserActionPlanAdviceService
                 }
 
                 // if advices are not desirable and the measureApplication is not an advice it will be added to the result
-                if ( ! $withAdvices && ! $measureApplication->isAdvice()) {
+                if (! $withAdvices && ! $measureApplication->isAdvice()) {
                     $result[$measureApplication->measure_type][$advice->step->slug][$measureApplication->short] = $advice;
                 }
 
@@ -245,15 +244,16 @@ class UserActionPlanAdviceService
     /**
      * Set properties from old advices on another advice
      *
-     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
-     * @param  \App\Models\MeasureApplication  $measureApplication
-     * @param  \Illuminate\Database\Eloquent\Collection  $oldAdvices
+     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
+     * @param \App\Models\MeasureApplication $measureApplication
+     * @param \Illuminate\Database\Eloquent\Collection $oldAdvices
      */
     public static function checkOldAdvices(
         UserActionPlanAdvice $userActionPlanAdvice,
         MeasureApplication $measureApplication,
         Collection $oldAdvices
-    ) {
+    )
+    {
         $oldAdvice = $oldAdvices
             ->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
             ->where('user_action_plan_advisable_id', '=', $measureApplication->id)
@@ -272,7 +272,7 @@ class UserActionPlanAdviceService
     /**
      * Set the visibility of a user action plan advice
      *
-     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
+     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
      */
     public static function setAdviceVisibility(UserActionPlanAdvice $userActionPlanAdvice)
     {
@@ -347,7 +347,7 @@ class UserActionPlanAdviceService
     /**
      * Set the category of a user action plan advice
      *
-     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
+     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
      */
     public static function setAdviceCategory(UserActionPlanAdvice $userActionPlanAdvice)
     {
@@ -489,7 +489,7 @@ class UserActionPlanAdviceService
                         }
                     }
 
-                    if ( ! empty($answers)) {
+                    if (! empty($answers)) {
                         // Sort by order
                         asort($answers);
                         $lowestOrder = Arr::first($answers);
@@ -676,8 +676,9 @@ class UserActionPlanAdviceService
                                 )->calculate_value ?? null;
 
                             // We complete it if it's the current heat pump and isn't for maintenance yet.
-                            if ( ! is_null($calculateValue)
-                                && HeatPumpHelper::MEASURE_SERVICE_LINK[$measureApplication->short] === $calculateValue) {
+                            if (! is_null($calculateValue)
+                                && HeatPumpHelper::MEASURE_SERVICE_LINK[$measureApplication->short] === $calculateValue
+                            ) {
                                 $category = self::CATEGORY_COMPLETE;
 
                                 $placeYear = $building->getAnswer($masterInputSource,
@@ -707,7 +708,8 @@ class UserActionPlanAdviceService
                             ToolQuestion::findByShort('heat-pump-boiler-replace'));
 
                         if (in_array('heat-pump-boiler', $currentSituation) && in_array('heat-pump-boiler',
-                                $newSituation)) {
+                                $newSituation)
+                        ) {
                             $category = $replaceAnswer ? self::CATEGORY_TO_DO : self::CATEGORY_LATER;
                         }
                         // No need to check further, it'll fall back to TO DO anyway

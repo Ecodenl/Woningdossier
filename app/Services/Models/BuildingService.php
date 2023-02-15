@@ -2,6 +2,7 @@
 
 namespace App\Services\Models;
 
+use App\Events\NoMappingFoundForBagMunicipality;
 use App\Helpers\MappingHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
@@ -61,12 +62,8 @@ class BuildingService
             // so the target is not resolved, thats "fine". We will check if a empty mapping exists
             // if not we will create it
             if ($mappingService->from($municipalityName)->doesntExist()) {
-                $mappingService
-                    ->from($municipalityName)
-                    ->sync([], MappingHelper::TYPE_MUNICIPALITY);
+                NoMappingFoundForBagMunicipality::dispatch($municipalityName);
             }
-
-            DiscordNotifier::init()->notify("No mapping found for municipality {$municipalityName} map this");
         }
     }
 

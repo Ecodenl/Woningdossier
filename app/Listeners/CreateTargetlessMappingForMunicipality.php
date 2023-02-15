@@ -5,10 +5,13 @@ namespace App\Listeners;
 use App\Helpers\MappingHelper;
 use App\Mail\Admin\NoMappingFoundForBagMunicipalityEmail;
 use App\Services\MappingService;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 
-class CreateTargetlessMappingForMunicipality
+class CreateTargetlessMappingForMunicipality implements ShouldQueue
 {
+    public $queue = 'default';
+
     public MappingService $mappingService;
     /**
      * Create the event listener.

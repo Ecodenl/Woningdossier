@@ -10,7 +10,6 @@ use App\Models\InputSource;
 use App\Models\Mapping;
 use App\Models\Municipality;
 use App\Models\Scan;
-use App\Services\DiscordNotifier;
 use App\Services\Lvbag\BagService;
 use App\Services\MappingService;
 use App\Services\WoonplanService;

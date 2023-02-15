@@ -194,13 +194,13 @@ class UserService
         );
 
         $bagService = new BagService();
+
         $addressData = $bagService->firstAddress(
             $data['postal_code'], $data['number'], $data['house_number_extension']
         );
 
-//        $municipality
         // Force empty string
-        $data['extension'] = $addressData['huisletter'] ?? $data['house_number_extension'] ?? '';
+        $data['extension'] = $data['house_number_extension'] ?? '';
 
         $features = new BuildingFeature([
             'surface' => $addressData['surface'] ?? null,

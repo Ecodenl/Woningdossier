@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Services;
 
+use App\Helpers\MappingHelper;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
@@ -24,6 +25,18 @@ class MappingServiceTest extends TestCase
     {
         parent::setUp();
         Artisan::call('cache:clear');
+    }
+
+    public function test_sync_maps_correct_from_value_to_targetless()
+    {
+        MappingService::init()
+            ->from("Hellevoetsluis")
+            ->sync([], MappingHelper::TYPE_MUNICIPALITY);
+
+        $this->assertDatabaseHas('mappings', [
+            'from_value' => 'Hellevoetsluis',
+            'type' => MappingHelper::TYPE_MUNICIPALITY
+        ]);
     }
 
     public function test_sync_maps_correct_from_value_to_morph()

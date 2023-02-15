@@ -15,7 +15,9 @@ class MappingService
     public $from;
     public $target;
 
-    public function __construct(){}
+    public function __construct()
+    {
+    }
 
     public function from($from): self
     {
@@ -41,20 +43,20 @@ class MappingService
 
     public function doesntExist(): bool
     {
-        return !$this->exists();
+        return ! $this->exists();
     }
 
     public function resolveTarget()
     {
         $mapping = $this->resolveMapping();
         if ($mapping instanceof Mapping) {
-            if (! empty($mapping->target_data)) {
+            if ( ! empty($mapping->target_data)) {
                 return $mapping->target_data;
             }
-            if (! is_null($mapping->target_value)) {
+            if ( ! is_null($mapping->target_value)) {
                 return $mapping->target_value;
             }
-            if (!is_null($mapping->target_model_type)) {
+            if ( ! is_null($mapping->target_model_type)) {
                 return $mapping->mapable;
             }
         }
@@ -77,18 +79,25 @@ class MappingService
         // first we will remove the current rows.
         Mapping::where($this->whereFrom())->delete();
 
-        $attributes = compact('type');
-        foreach ($syncableData as $index => $target) {
-            $attributes[$index] = $this->whereFrom();
-            // In the case we EVER allow different types for mapping, we must ensure other fields get nullified.
-            if ($target instanceof Model) {
-                $attributes[$index]['target_model_type'] = $target->getMorphClass();
-                $attributes[$index]['target_model_id'] = $target->id;
-            } else {
-                if (is_array($target)) {
-                    $attributes[$index]['target_data'] = json_encode($target);
+        // its possible to create target less mappings
+        // this is not ideal, however its much easier for the admin to manage.
+        if (empty($syncableData)) {
+            $attributes = $this->whereFrom();
+            $attributes['type'] = $type;
+        } else {
+            foreach ($syncableData as $index => $target) {
+                $attributes[$index] = $this->whereFrom();
+                $attributes[$index]['type'] = $type;
+                // In the case we EVER allow different types for mapping, we must ensure other fields get nullified.
+                if ($target instanceof Model) {
+                    $attributes[$index]['target_model_type'] = $target->getMorphClass();
+                    $attributes[$index]['target_model_id'] = $target->id;
                 } else {
-                    $attributes[$index]['target_value'] = $target;
+                    if (is_array($target)) {
+                        $attributes[$index]['target_data'] = json_encode($target);
+                    } else {
+                        $attributes[$index]['target_value'] = $target;
+                    }
                 }
             }
         }

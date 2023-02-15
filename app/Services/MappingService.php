@@ -31,7 +31,8 @@ class MappingService
 
     public function resolveMapping(): ?Mapping
     {
-        return Mapping::where($this->whereFrom())->first();
+        // We don't want to resolve a 'null' from mapping for now.
+        return is_null($this->from) ? null : Mapping::where($this->whereFrom())->first();
     }
 
     public function resolveTarget()

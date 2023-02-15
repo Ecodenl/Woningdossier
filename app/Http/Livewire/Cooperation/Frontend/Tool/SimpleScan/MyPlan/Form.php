@@ -669,7 +669,6 @@ class Form extends Component
                 $cards[$category][$order] = [
                     'name' => Str::limit($advisable->measure_name, 57),
                     'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
-                    // TODO: Subsidy
                     'info' => nl2br($advisable->measure_info),
                     'route' => $route,
                     'comfort' => $advisable->configurations['comfort'] ?? 0,

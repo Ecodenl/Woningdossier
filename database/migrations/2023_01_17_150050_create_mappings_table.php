@@ -15,6 +15,7 @@ class CreateMappingsTable extends Migration
     {
         Schema::create('mappings', function (Blueprint $table) {
             $table->id();
+            $table->string('type')->nullable()->default(null);
             $table->json('conditions')->nullable()->default(null);
 
             $table->nullableMorphs('from_model');

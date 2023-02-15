@@ -4124,6 +4124,7 @@ __webpack_require__.r(__webpack_exports__);
     alreadyMember: false,
     emailExists: false,
     emailUrl: emailUrl,
+    submitted: false,
     checkEmail: function checkEmail(element) {
       var goodDomains = new RegExp('\\b(nl|be|net|com|info|nu|de)\\b', 'i');
 

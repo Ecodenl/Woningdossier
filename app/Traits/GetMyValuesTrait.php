@@ -13,6 +13,7 @@ use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\Notification;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionAnswer;
 use App\Models\User;
@@ -50,9 +51,12 @@ trait GetMyValuesTrait
                     ToolQuestionAnswer::class,
                     CompletedStep::class,
                     CompletedSubStep::class,
+                    Notification::class,
                 ];
 
-                // TODO: This needs to work for all models
+                // TODO: This needs to work for all models.
+                //TODO: We need a way to detect if we _should_ delete. A row can exist for multiple sources, so
+                // deleting one should only delete the master if there's no other row.
                 if (in_array(get_class($model), $supportedClasses)) {
                     $model->deleteForMasterInputSource();
                 }
@@ -95,11 +99,12 @@ trait GetMyValuesTrait
             $crucialRelationCombinationIds = [
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
                 'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
-                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id',
+                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id', 'uuid',
             ];
             $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
 
             if ($this instanceof UserActionPlanAdvice) {
+                // TODO: Should this check the model input source (`->forInputSource($this->inputSource)`)?
                 $advisable = $this->userActionPlanAdvisable;
                 if ($advisable instanceof MeasureApplication || $advisable instanceof CooperationMeasureApplication) {
                     $crucialRelationCombinationIds[] = 'user_action_plan_advisable_id';
@@ -149,7 +154,6 @@ trait GetMyValuesTrait
 
     protected function deleteForMasterInputSource()
     {
-        // TODO: Logic might not be complete
         $tablesToIgnore = [
             'user_action_plan_advice_comments', 'step_comments',
         ];
@@ -168,7 +172,7 @@ trait GetMyValuesTrait
             $crucialRelationCombinationIds = [
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
                 'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
-                'considerable_id', 'considerable_type',
+                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id', 'uuid',
             ];
             $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
 

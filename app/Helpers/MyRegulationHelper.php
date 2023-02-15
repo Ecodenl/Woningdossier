@@ -17,13 +17,13 @@ class MyRegulationHelper
             ->forBuilding($building)
             ->getSearch();
 
-        // here we will heavy modify the "payload" (regulations)
-        // this is all bussines logic
-        // we will filter out all the regulations that are not relevant for the user, they are not relevant when theere are no matching advices
-        // we will also add the appropriate data while at it, so we dont have to do it again in the view.
+        // Here we will heavily modify the "payload" (regulations).
+        // This is all business logic:
+        // - we will filter out all the regulations that are not relevant for the user, they are not relevant when there are no matching advices.
+        // - we will also add the appropriate data while at it, so we don't have to do it again in the view.
 
-        // first we have to get all available mappings for the user its action plan advices
-        // first get all user action plan advices that have an advisable mapping
+        // First we have to get all available mappings for the user its action plan advices.
+        // First get all user action plan advices that have an advisable mapping.
         /** @var Collection $advicesWithAdvisableMapping */
         $advicesWithAdvisableMapping = $building
             ->user
@@ -53,7 +53,9 @@ class MyRegulationHelper
             ->orderByRaw('user_action_plan_advices.id, target_data_value')
             ->get();
 
-        foreach ($payload->transformedPayload as $regulation) {
+        $transformedPayload = $payload->forBuildingContractType($building, $inputSource)->all();
+
+        foreach ($transformedPayload as $regulation) {
             // create an empty key, check further on will be cleaner that way.
             $regulation['advisable_names'] = [];
             $regulationType = $regulation['Type'];
@@ -80,10 +82,11 @@ class MyRegulationHelper
                     $regulation['advisable_names'][] = $advisable->name ?? $advisable->measure_name;
                 }
             }
-            if ( ! empty($regulation['advisable_names'])) {
+            if (! empty($regulation['advisable_names'])) {
                 $relevantRegulations[$regulationType][] = $regulation;
             }
         }
+
         return $relevantRegulations;
     }
 }

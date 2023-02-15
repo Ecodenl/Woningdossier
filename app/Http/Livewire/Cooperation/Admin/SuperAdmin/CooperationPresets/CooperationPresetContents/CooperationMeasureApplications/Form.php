@@ -35,7 +35,10 @@ class Form extends Component
         return [
             'content.name' => [new LanguageRequired()],
             'content.info' => [new LanguageRequired()],
-            'content.relations.mapping.measure_category' => ['required', Rule::in(Arr::pluck($this->measures, 'Value'))],
+            'content.relations.mapping.measure_category' => [
+                Rule::requiredIf(! $this->content['is_extensive_measure']),
+                Rule::in(Arr::pluck($this->measures, 'Value'))
+            ],
             'content.costs.from' => [
                 'nullable', 'numeric', 'min:0',
             ],
@@ -94,6 +97,9 @@ class Form extends Component
     {
         $content = $this->validate()['content'];
         $content['is_deletable'] = ! $content['is_extensive_measure'];
+        if ($content['is_extensive_measure']) {
+            unset($content['relations']['mapping']);
+        }
 
         if ($this->cooperationPresetContent->exists) {
             $this->cooperationPresetContent->update(compact('content'));

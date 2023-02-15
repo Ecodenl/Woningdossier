@@ -64,7 +64,7 @@
                                     </p>
                                 </div>
                                     @if($card['subsidy_available'])
-                                        <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::SUBSIDY }}"
+                                        <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('cooperation', 'scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::SUBSIDY }}"
                                            class="in-text" draggable="false">
                                             <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2 w-full"
                                                  style="width: fit-content; width: -moz-fit-content;">
@@ -72,7 +72,7 @@
                                             </div>
                                         </a>
                                     @elseif($card['loan_available'])
-                                        <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::LOAN }}"
+                                        <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('cooperation', 'scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::LOAN }}"
                                            class="in-text" draggable="false">
                                             <div class="h-4 rounded-lg text-xs relative text-orange p bg-red bg-opacity-10 flex items-center px-2 w-full"
                                                  style="width: fit-content; width: -moz-fit-content;">

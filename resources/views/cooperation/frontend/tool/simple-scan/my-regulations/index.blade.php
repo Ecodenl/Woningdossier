@@ -9,7 +9,7 @@
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-regulations.loading')])
     @else
         <div class="w-full flex flex-wrap" x-data="{ selected: null }">
-            <div class="w-full flex flex-wrap" x-data="tabs()">
+            <div class="w-full flex flex-wrap" x-data="tabs(@if(request()->has('tab')) '{{ request()->get('tab') }}' @endif)">
                 <nav class="nav-tabs" x-show="selected === null">
                     @foreach(__('cooperation/frontend/tool.my-regulations.categories') as $key => $category)
                         <a x-bind="tab" href="#" @if($loop->first) x-ref="main-tab" @endif data-tab="{{ $key }}">

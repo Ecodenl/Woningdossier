@@ -34,6 +34,7 @@ class CreateBuildingsTable extends Migration
             $table->boolean('primary')->default(false);
 
             $table->string('bag_addressid')->default('');
+            $table->string('bag_woonplaats_id')->after('bag_addressid')->nullable()->default(null);
 
             $table->timestamps();
             $table->softDeletes();

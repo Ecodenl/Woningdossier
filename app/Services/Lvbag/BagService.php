@@ -3,6 +3,7 @@
 namespace App\Services\Lvbag;
 
 use App\Services\Lvbag\Payloads\AddressExpanded;
+use App\Services\Lvbag\Payloads\City;
 use App\Traits\FluentCaller;
 use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
@@ -33,7 +34,7 @@ class BagService
      * @param  null|string  $houseNumberExtension
      * @return array
      */
-    public function address($postalCode, $number, ?string $houseNumberExtension = "")
+    public function firstAddress($postalCode, $number, ?string $houseNumberExtension = ""): array
     {
         $attributes = [
             'postcode' => $postalCode,
@@ -47,25 +48,26 @@ class BagService
         // if not found as a houseletter
         // if that does not work we will do a last resort that may not be that accurate..
         if ( ! empty($houseNumberExtension)) {
-            $addresses = $this->listFromAttributes($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
-            if ($addresses->isEmpty()) {
+            $addressExpanded = $this->listAddressExpanded($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
+            if ($addressExpanded->isEmpty()) {
                 // if that does not work we will try the huislett
-                $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
+                $addressExpanded = $this->listAddressExpanded($attributes + ['huisletter' => $houseNumberExtension]);
             }
 
             // the extension may contain a combination fo the huisletter and toevoeging
             // we will handle that here
-            if ($addresses->isEmpty()) {
+            if ($addressExpanded->isEmpty()) {
                 $extensions = str_split($houseNumberExtension);
                 // huisletter should always have a length of 1
                 $huisletter = array_shift($extensions);
                 $huisnummertoevoeging = implode('', $extensions);
 
-                $addresses = $this->listFromAttributes($attributes + compact('huisletter', 'huisnummertoevoeging'));
+                $addressExpanded = $this->listAddressExpanded($attributes + compact('huisletter',
+                        'huisnummertoevoeging'));
             }
 
             // a last resort..
-            if ($addresses->isEmpty()) {
+            if ($addressExpanded->isEmpty()) {
                 // this is for the users that are not up to date on the huisletter and extension combi
                 // they might only enter a huisleter or extension even though it should be a combi.
                 // the previous calls were all based on a exact match, to get the best match.
@@ -74,41 +76,47 @@ class BagService
                 // these 2 calls could both return multiple addresses
                 // it just depends on the given address, we will shift it later on to get only one result
                 // the surface is probably inaccurate however the build year will be spot on (i think :kek:)
-                $addresses = $this->listFromAttributes($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
+                $addressExpanded = $this->listAddressExpanded($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
 
-                if ($addresses->isEmpty()) {
-                    $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
+                if ($addressExpanded->isEmpty()) {
+                    $addressExpanded = $this->listAddressExpanded($attributes + ['huisletter' => $houseNumberExtension]);
                 }
-                if ($addresses->isEmpty()) {
+                if ($addressExpanded->isEmpty()) {
                     // and a call without the extension, this should always return a address but this is very inaccurate.
-                    $addresses = $this->listFromAttributes($attributes);
+                    $addressExpanded = $this->listAddressExpanded($attributes);
                 }
             }
         } else {
             // the simple case.. :)
-            $addresses = $this->listFromAttributes($attributes);
+            $addressExpanded = $this->listAddressExpanded($attributes);
         }
 
-        $result = [];
+        $result = $addressExpanded->prepareForBuilding();
+        // so the bag MAY return it, splitted on huisletter and extension.
+        // however it doesnt really matter since we will save it as is.
+        $result['house_number_extension'] = $houseNumberExtension;
+        Log::debug(__CLASS__, $result);
 
-        return $addresses;
+        return $result;
     }
 
-    public function firstWoonplaats($woonplaatsIdentificatie, array $attributes = []): ?array
+    public function showCity($woonplaatsIdentificatie, array $attributes = []): ?City
     {
-        return $this->wrapCall(fn() => Lvbag::init($this->client)
-            ->woonplaats()
-            ->show($woonplaatsIdentificatie, $attributes)
-        );
+        return new City($this->wrapCall(function () use ($woonplaatsIdentificatie, $attributes) {
+            return Lvbag::init($this->client)
+                ->woonplaats()
+                ->show($woonplaatsIdentificatie, $attributes);
+        }));
     }
 
-
-    public function listFromAttributes(array $attributes): ?AddressExpanded
+    public function listAddressExpanded(array $attributes): ?AddressExpanded
     {
-        return new AddressExpanded($this->wrapCall(fn() => Lvbag::init($this->client)
-            ->adresUitgebreid()
-            ->list($attributes)
-        ));
+        return new AddressExpanded($this->wrapCall(function () use ($attributes) {
+            $list = Lvbag::init($this->client)
+                ->adresUitgebreid()
+                ->list($attributes);
+            return array_shift($list);
+        }));
     }
 
     public function wrapCall($closure): ?array

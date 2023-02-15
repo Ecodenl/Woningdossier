@@ -14,6 +14,7 @@ use App\Scopes\GetValueScope;
 use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
@@ -122,6 +123,7 @@ class Building extends Model
         'city',
         'postal_code',
         'bag_addressid',
+        'bag_woonplaats_id',
         'building_coach_status_id',
         'extension',
         'is_active',
@@ -149,6 +151,11 @@ class Building extends Model
     public function customMeasureApplications(): HasMany
     {
         return $this->hasMany(CustomMeasureApplication::class);
+    }
+
+    public function municipality(): BelongsTo
+    {
+        return $this->belongsTo(Municipality::class);
     }
 
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion, bool $withMaster = false)

@@ -57,7 +57,6 @@ class AddressService
                 // if that does not work we will try the huislett
                 $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
             }
-
             // the extension may contain a combination fo the huisletter and toevoeging
             // we will handle that here
             if (is_null($addresses)) {
@@ -96,7 +95,6 @@ class AddressService
 
         $result = [];
 
-        dd($addresses);
         // only when the address is not null, else we will take the user his input.
         if ( ! is_null($addresses)) {
             $address = array_shift($addresses);
@@ -113,7 +111,6 @@ class AddressService
                 'build_year' => $address['oorspronkelijkBouwjaar'][0] ?? 1930,
                 'surface' => $address['oppervlakte'] ?? 0,
             ];
-            Log::debug(__CLASS__, $result);
         }
 
         return $result;

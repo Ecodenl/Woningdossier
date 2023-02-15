@@ -34,6 +34,16 @@ class MappingService
         return Mapping::where($this->whereFrom())->first();
     }
 
+    public function exists(): bool
+    {
+        return $this->resolveMapping() instanceof Mapping;
+    }
+
+    public function doesntExist(): bool
+    {
+        return !$this->exists();
+    }
+
     public function resolveTarget()
     {
         $mapping = $this->resolveMapping();
@@ -62,12 +72,12 @@ class MappingService
         return ['from_value' => $this->from];
     }
 
-    public function sync(array $syncableData): void
+    public function sync(array $syncableData = [], ?string $type = null): void
     {
         // first we will remove the current rows.
         Mapping::where($this->whereFrom())->delete();
 
-        $attributes = [];
+        $attributes = compact('type');
         foreach ($syncableData as $index => $target) {
             $attributes[$index] = $this->whereFrom();
             // In the case we EVER allow different types for mapping, we must ensure other fields get nullified.

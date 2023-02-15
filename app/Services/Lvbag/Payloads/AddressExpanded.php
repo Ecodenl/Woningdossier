@@ -9,7 +9,7 @@ class AddressExpanded
 
     public function __construct(?array $expendedAddress)
     {
-        $this->expendedAddresses = $expendedAddress;
+        $this->expendedAddress = $expendedAddress;
     }
 
     public function isEmpty(): bool
@@ -17,22 +17,15 @@ class AddressExpanded
         return empty($this->expendedAddress);
     }
 
-    public function first(): ?array
-    {
-//        return array_shift($this->expendedAddresses);
-    }
-
     public function prepareForBuilding(): array
     {
-//        $address = $this->first();
+        $address = $this->expendedAddress;
         return  [
-            'id' => $address['nummeraanduidingIdentificatie'] ?? '',
+            'bag_addressid' => $address['nummeraanduidingIdentificatie'] ?? '',
             'bag_woonplaats_id' => $address['woonplaatsIdentificatie'] ?? '',
             'street' => $address['openbareRuimteNaam'] ?? '',
             'number' => $address['huisnummer'] ?? '',
             'postal_code' => $address['postcode'] ?? '',
-            // so this is incorrect, but ye
-            'house_number_extension' => $houseNumberExtension,
             'city' => $address['woonplaatsNaam'] ?? '',
             'build_year' => $address['oorspronkelijkBouwjaar'][0] ?? 1930,
             'surface' => $address['oppervlakte'] ?? 0,

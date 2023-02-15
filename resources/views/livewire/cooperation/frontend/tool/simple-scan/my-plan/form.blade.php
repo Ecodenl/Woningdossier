@@ -63,6 +63,7 @@
                                         {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
                                     </p>
                                 </div>
+                                @if($cardCategory !== \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
                                     @if($card['subsidy_available'])
                                         <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::SUBSIDY }}"
                                            class="in-text" draggable="false">
@@ -80,6 +81,7 @@
                                             </div>
                                         </a>
                                     @endif
+                                @endif
                             </div>
                             <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3"
                                  draggable="true" x-on:dragstart.prevent.stop>

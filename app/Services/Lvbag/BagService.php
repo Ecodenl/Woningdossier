@@ -33,7 +33,7 @@ class BagService
      * @param  null|string  $houseNumberExtension
      * @return array
      */
-    public function firstAddress($postalCode, $number, ?string $houseNumberExtension = "")
+    public function address($postalCode, $number, ?string $houseNumberExtension = "")
     {
         $attributes = [
             'postcode' => $postalCode,
@@ -48,14 +48,14 @@ class BagService
         // if that does not work we will do a last resort that may not be that accurate..
         if ( ! empty($houseNumberExtension)) {
             $addresses = $this->listFromAttributes($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
-            if (is_null($addresses)) {
+            if ($addresses->isEmpty()) {
                 // if that does not work we will try the huislett
                 $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
             }
 
             // the extension may contain a combination fo the huisletter and toevoeging
             // we will handle that here
-            if (is_null($addresses)) {
+            if ($addresses->isEmpty()) {
                 $extensions = str_split($houseNumberExtension);
                 // huisletter should always have a length of 1
                 $huisletter = array_shift($extensions);
@@ -65,7 +65,7 @@ class BagService
             }
 
             // a last resort..
-            if (is_null($addresses)) {
+            if ($addresses->isEmpty()) {
                 // this is for the users that are not up to date on the huisletter and extension combi
                 // they might only enter a huisleter or extension even though it should be a combi.
                 // the previous calls were all based on a exact match, to get the best match.
@@ -76,10 +76,10 @@ class BagService
                 // the surface is probably inaccurate however the build year will be spot on (i think :kek:)
                 $addresses = $this->listFromAttributes($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
 
-                if (is_null($addresses)) {
+                if ($addresses->isEmpty()) {
                     $addresses = $this->listFromAttributes($attributes + ['huisletter' => $houseNumberExtension]);
                 }
-                if (is_null($addresses)) {
+                if ($addresses->isEmpty()) {
                     // and a call without the extension, this should always return a address but this is very inaccurate.
                     $addresses = $this->listFromAttributes($attributes);
                 }
@@ -91,27 +91,7 @@ class BagService
 
         $result = [];
 
-        // only when the address is not null, else we will take the user his input.
-        if ( ! is_null($addresses)) {
-            $address = array_shift($addresses);
-
-            AddressExpanded::init($address);
-            $result = [
-                'id' => $address['nummeraanduidingIdentificatie'] ?? '',
-                'bag_woonplaats_id' => $address['woonplaatsIdentificatie'] ?? '',
-                'street' => $address['openbareRuimteNaam'] ?? '',
-                'number' => $address['huisnummer'] ?? '',
-                'postal_code' => $address['postcode'] ?? '',
-                // so this is incorrect, but ye
-                'house_number_extension' => $houseNumberExtension,
-                'city' => $address['woonplaatsNaam'] ?? '',
-                'build_year' => $address['oorspronkelijkBouwjaar'][0] ?? 1930,
-                'surface' => $address['oppervlakte'] ?? 0,
-            ];
-            Log::debug(__CLASS__, $result);
-        }
-
-        return $result;
+        return $addresses;
     }
 
     public function firstWoonplaats($woonplaatsIdentificatie, array $attributes = []): ?array
@@ -123,7 +103,7 @@ class BagService
     }
 
 
-    public function listFromAttributes(array $attributes): ?array
+    public function listFromAttributes(array $attributes): ?AddressExpanded
     {
         return new AddressExpanded($this->wrapCall(fn() => Lvbag::init($this->client)
             ->adresUitgebreid()

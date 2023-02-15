@@ -96,6 +96,7 @@ class AddressService
 
         $result = [];
 
+        dd($addresses);
         // only when the address is not null, else we will take the user his input.
         if ( ! is_null($addresses)) {
             $address = array_shift($addresses);
@@ -116,5 +117,23 @@ class AddressService
         }
 
         return $result;
+    }
+
+    public function listFromAttributes(array $attributes): ?array
+    {
+        $addresses = null;
+        try {
+            $addresses = Lvbag::init($this->client)
+                ->adresUitgebreid()
+                ->list($attributes);
+        } catch (\Exception $exception) {
+            if ($exception->getCode() !== 400) {
+                app('sentry')->captureException($exception);
+            }
+            if ($exception->getCode() === 400) {
+                return $addresses;
+            }
+        }
+        return $addresses;
     }
 }

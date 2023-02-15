@@ -10,6 +10,7 @@ use App\Models\Considerable;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\User;
+use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -118,6 +119,9 @@ class UserService
         if (!in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
             // re-query pico
             $addressData = AddressService::init()->first($building->postal_code, $building->number, $building->extension);
+            $addressExpanded = BagService::init()->addresses($building->postal_code, $building->number, $building->extension);
+//            $addressExpanded->first()->
+
 
             if ( ! empty(($addressData['id'] ?? null))) {
                 $building->update(['bag_addressid' => $addressData['id']]);

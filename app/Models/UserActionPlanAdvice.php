@@ -89,7 +89,7 @@ class UserActionPlanAdvice extends Model implements Auditable
 
     protected $table = 'user_action_plan_advices';
 
-    public $fillable = [
+    protected $fillable = [
         'user_id',
         'input_source_id',
         'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'category', 'visible', 'order', 'costs',
@@ -108,6 +108,10 @@ class UserActionPlanAdvice extends Model implements Auditable
         'subsidy_available' => 'boolean',
         'loan_available' => 'boolean',
         'costs' => 'array',
+    ];
+
+    protected array $ignoreAttributes = [
+        'loan_available', 'subsidy_available',
     ];
 
     public static function boot()

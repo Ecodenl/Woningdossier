@@ -4,9 +4,6 @@ namespace Tests\Unit\app\Services\Models;
 
 use App\Helpers\MappingHelper;
 use App\Models\Building;
-use App\Models\CustomMeasureApplication;
-use App\Models\InputSource;
-use App\Models\Mapping;
 use App\Models\Municipality;
 use App\Services\MappingService;
 use App\Services\Models\BuildingService;
@@ -17,10 +14,10 @@ use Tests\TestCase;
 
 class BuildingServiceTest extends TestCase
 {
-//    use RefreshDatabase;
+    use RefreshDatabase;
 
-//    public $seed = true;
-//    public $seeder = DatabaseSeeder::class;
+    public $seed = true;
+    public $seeder = DatabaseSeeder::class;
 
     protected function setUp(): void
     {

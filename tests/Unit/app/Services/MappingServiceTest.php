@@ -23,8 +23,8 @@ class MappingServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
         Artisan::call('cache:clear');
+        parent::setUp();
     }
 
     public function test_sync_maps_correct_from_value_to_targetless()

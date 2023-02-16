@@ -12,6 +12,7 @@ use App\Services\Lvbag\BagService;
 use App\Services\MappingService;
 use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -40,6 +41,31 @@ class BuildingService
         if ($scan->isLiteScan()) {
             return $this->building->hasCompletedScan($scan, InputSource::findByShort(InputSource::MASTER_SHORT));
         }
+    }
+
+    /**
+     * Method speaks for itself... however ->
+     * The var is prefixed with "request", this is because we want ALL request address data.
+     * (postal_code, number, extension, city, street)
+     * We simply cant rely on external api data, the address data will always be filled with data from the request
+     * we only need it for the id's
+     * @param  array  $requestAddressData
+     * @return void
+     */
+    public function updateAddress(array $requestAddressData)
+    {
+        $addressData = BagService::init()->firstAddress(
+            $requestAddressData['postal_code'], $requestAddressData['number'], $requestAddressData['extension']
+        );
+        // filter relevant data from the request
+        $buildingData = Arr::only($requestAddressData, ['street', 'city', 'postal_code', 'number']);
+        $buildingData['extension'] = $requestAddressData['extension'] ?? '';
+
+        // the only data we really need from the bag
+        $buildingData['bag_woonplaats_id'] = $addressData['bag_woonplaats_id'];
+        $buildingData['bag_addressid'] = $addressData['bag_addressid'];
+
+        $this->building->update($buildingData);
     }
 
     public function attachMunicipality()

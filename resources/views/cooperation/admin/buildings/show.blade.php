@@ -7,7 +7,7 @@
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
-                'municipality' => $building->municipality->name,
+                'municipality' => optional($building->municipality)->name,
                 'email' => $user->account->email,
                 'phone-number' => $user->phone_number,
             ])

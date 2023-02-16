@@ -8,8 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Account;
 use App\Models\InputSource;
-use App\Services\AddressService;
 use App\Services\Lvbag\BagService;
+use App\Services\Models\BuildingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -38,8 +38,10 @@ class SettingsController extends Controller
 
         $userData['phone_number'] = $userData['phone_number'] ?? '';
         $buildingData['extension'] = $buildingData['extension'] ?? '';
-        $buildingData['number'] = $buildingData['house_number'] ?? '';
+        $buildingData['number'] = $buildingData['number'] ?? '';
 
+
+        BuildingService::init($building)->attachMunicipality();
         // update the user stuff
         $user->update($userData);
         // now update the building itself

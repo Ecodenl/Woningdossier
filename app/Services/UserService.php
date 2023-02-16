@@ -193,8 +193,7 @@ class UserService
             ]
         );
 
-        $bagService = new BagService();
-        $addressData = $bagService->firstAddress(
+        $addressData = BagService::init()->firstAddress(
             $data['postal_code'], $data['number'], $data['house_number_extension']
         );
 

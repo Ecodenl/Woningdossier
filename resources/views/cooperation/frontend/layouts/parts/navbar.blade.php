@@ -142,6 +142,15 @@
                 @endforeach
             @endcomponent
 
+            @if(app()->isLocal())
+                <div>
+                    <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')) }}"
+                       class="flex flex-wrap justify-center items-center">
+                        <i class="icon-md icon-house"></i>
+                    </a>
+                </div>
+            @endif
+
             @can('viewAny', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building])
                 <div>
                     <a href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan')) }}"

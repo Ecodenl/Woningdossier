@@ -92,5 +92,14 @@
                 </div>
             </div>
         </div>
+
+        <div class="flex flex-row flex-wrap w-full mb-4">
+            <div class="w-full sm:w-1/2">
+                <a class="btn btn-green float-left"
+                   href="{{ route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan')) }}">
+                     @lang('cooperation/frontend/tool.my-plan.label')
+                </a>
+            </div>
+        </div>
     @endif
 @endsection

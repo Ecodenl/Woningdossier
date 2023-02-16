@@ -26,7 +26,6 @@ class LogRegisteredUserListener
      */
     public function handle($event)
     {
-        \Illuminate\Support\Facades\Log::debug('user', $event->user->toArray());
         Log::create([
             'loggable_type' => User::class,
             'loggable_id' => $event->user->id,

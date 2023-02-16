@@ -151,7 +151,8 @@
                         </div>
                         <div class="w-full border border-gray fixed left-0"></div>
                         <div class="flex flex-wrap justify-center mt-14">
-                            <button wire:click="save({{$index}})" class="btn btn-purple w-full">
+                            <button wire:loading.attr="disabled" wire:click="save({{$index}})"
+                                    class="btn btn-purple w-full">
                                 <i class="icon-xs icon-plus-purple mr-3"></i>
                                 @if($loop->last)
                                     @lang('cooperation/frontend/shared.modals.add-measure.save')

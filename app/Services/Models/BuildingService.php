@@ -50,18 +50,21 @@ class BuildingService
             ->showCity($this->building->bag_woonplaats_id, ['expand' => 'true'])
             ->municipalityName();
 
-        $mappingService = new MappingService();
-        $municipality = $mappingService
-            ->from($municipalityName)
-            ->resolveTarget();
+        // its entirely possible that a municipality is not returned from the bag.
+        if ( ! is_null($municipalityName)) {
+            $mappingService = new MappingService();
+            $municipality = $mappingService
+                ->from($municipalityName)
+                ->resolveTarget();
 
-        if ($municipality instanceof Municipality) {
-            $this->building->municipality()->associate($municipality);
-        } else {
-            // so the target is not resolved, thats "fine". We will check if a empty mapping exists
-            // if not we will create it
-            if ($mappingService->from($municipalityName)->doesntExist()) {
-                NoMappingFoundForBagMunicipality::dispatch($municipalityName);
+            if ($municipality instanceof Municipality) {
+                $this->building->municipality()->associate($municipality);
+            } else {
+                // so the target is not resolved, thats "fine". We will check if a empty mapping exists
+                // if not we will create it
+                if ($mappingService->from($municipalityName)->doesntExist()) {
+                    NoMappingFoundForBagMunicipality::dispatch($municipalityName);
+                }
             }
         }
     }

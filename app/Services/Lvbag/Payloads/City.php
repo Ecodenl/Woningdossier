@@ -17,9 +17,12 @@ class City
     {
         // i cant come up with a correct english translation
         // we will keep this as "bronhouders"
-        $bronhouders = Arr::get($this->city, '_embedded.bronhouders');
+        $bronhouders = Arr::get($this->city, '_embedded.bronhouders', []);
         // maybe there can be multiple bronhouders for a city / woonplaats
         // we will take the first one.
-        return array_shift($bronhouders)['naam'];
+        if (!empty($bronhouders)) {
+            return array_shift($bronhouders)['naam'];
+        }
+        return null;
     }
 }

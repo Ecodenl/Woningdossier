@@ -17,8 +17,7 @@ use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
-    use WithFaker,
-        RefreshDatabase;
+    use WithFaker, RefreshDatabase;
 
     private array $formData;
 

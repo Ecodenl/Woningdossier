@@ -16,6 +16,7 @@ use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BuildingService
 {
@@ -56,6 +57,7 @@ class BuildingService
             $municipality = $mappingService
                 ->from($municipalityName)
                 ->resolveTarget();
+
 
             if ($municipality instanceof Municipality) {
                 $this->building->municipality()->associate($municipality);

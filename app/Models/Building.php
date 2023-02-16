@@ -123,6 +123,7 @@ class Building extends Model
         'city',
         'postal_code',
         'bag_addressid',
+        'municipality_id',
         'bag_woonplaats_id',
         'building_coach_status_id',
         'extension',

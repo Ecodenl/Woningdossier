@@ -20,10 +20,10 @@ use Tests\TestCase;
 
 class RegisteredUserControllerTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, RefreshDatabase;
 
-//    public $seed = true;
-//    public $seeder = DatabaseSeeder::class;
+    public $seed = true;
+    public $seeder = DatabaseSeeder::class;
     private array $formData;
 
     protected function setUp(): void
@@ -49,8 +49,8 @@ class RegisteredUserControllerTest extends TestCase
     {
         /** @var Cooperation $cooperation */
         $cooperation = Cooperation::factory()->create();
-        /** @var Client $client */
 
+        /** @var Client $client */
         $this->formData['password_confirmation'] = $this->formData['password'];
         $response = $this->post(route('cooperation.register.store', compact('cooperation')), $this->formData);
 

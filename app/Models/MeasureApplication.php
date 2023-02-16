@@ -6,6 +6,7 @@ use App\Helpers\KeyFigures\FloorInsulation\Temperature as FloorInsulationTempera
 use App\Helpers\KeyFigures\WallInsulation\Temperature as WallInsulationTemperature;
 use App\Scopes\VisibleScope;
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasMappings;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -66,7 +67,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 class MeasureApplication extends Model
 {
     use HasTranslations,
-        HasShortTrait;
+        HasShortTrait,
+        HasMappings;
 
     const ENERGY_SAVING = 'energy_saving';
     const MAINTENANCE = 'maintenance';

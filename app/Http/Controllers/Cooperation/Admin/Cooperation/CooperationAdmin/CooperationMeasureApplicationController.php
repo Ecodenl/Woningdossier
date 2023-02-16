@@ -7,7 +7,6 @@ use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationFormRequest;
 use App\Jobs\HandleCooperationMeasureApplicationDeletion;
-use App\Jobs\RefreshRegulationsForAdvisable;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
 use App\Services\MappingService;

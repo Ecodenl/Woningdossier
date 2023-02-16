@@ -3,11 +3,9 @@
 namespace App\Services\Models;
 
 use App\Events\NoMappingFoundForBagMunicipality;
-use App\Helpers\MappingHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\Mapping;
 use App\Models\Municipality;
 use App\Models\Scan;
 use App\Services\Lvbag\BagService;
@@ -16,7 +14,6 @@ use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class BuildingService
 {

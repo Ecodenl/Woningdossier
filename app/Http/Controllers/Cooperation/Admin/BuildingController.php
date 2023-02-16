@@ -6,6 +6,7 @@ use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\PrivateMessage;
@@ -13,6 +14,9 @@ use App\Models\Scan;
 use App\Models\Status;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
+use App\Services\Lvbag\BagService;
+use App\Services\Models\BuildingService;
+use Illuminate\Support\Arr;
 use Spatie\Permission\Models\Role;
 
 class BuildingController extends Controller
@@ -91,11 +95,12 @@ class BuildingController extends Controller
             $validatedData['users']['extra']['contact_id'] = (int) $validatedData['users']['extra']['contact_id'];
         }
 
-        // Can't be null in the table.
-        $validatedData['buildings']['extension'] = $validatedData['buildings']['extension'] ?? '';
-        $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';
+        $buildingService = BuildingService::init($building);
+        $buildingService->updateAddress($validatedData['buildings']);
 
-        $building->update($validatedData['buildings']);
+        $buildingService->attachMunicipality();
+
+        $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';
         $building->user->update($validatedData['users']);
         $building->user->account->update($validatedData['accounts']);
 

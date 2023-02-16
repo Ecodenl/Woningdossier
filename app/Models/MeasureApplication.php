@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property array|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $info
  * @property-read string $name
  * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests

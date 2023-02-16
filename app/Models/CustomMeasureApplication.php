@@ -24,6 +24,7 @@ use Spatie\Translatable\HasTranslations;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
  * @property-read \App\Models\InputSource $inputSource
+ * @property-read \App\Models\Mapping|null $mapping
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|CustomMeasureApplication allInputSources()

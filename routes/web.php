@@ -53,7 +53,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             ->middleware(['guest:' . config('fortify.guard')])
             ->name('register');
         Route::post('/register', [RegisteredUserController::class, 'store'])
-            ->middleware(['guest:' . config('fortify.guard')]);
+            ->middleware(['guest:' . config('fortify.guard')])
+            ->name('register.store');
 
         Route::as('auth.')->group(function () {
             $limiter = config('fortify.limiters.login');

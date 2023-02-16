@@ -14,6 +14,7 @@ use App\Scopes\GetValueScope;
 use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
@@ -25,6 +26,7 @@ use Illuminate\Support\Str;
  *
  * @property int $id
  * @property int|null $user_id
+ * @property int|null $municipality_id
  * @property string $street
  * @property string $number
  * @property string $extension
@@ -92,6 +94,7 @@ use Illuminate\Support\Str;
  * @method static Builder|Building whereHasMedia($tags = [], bool $matchAll = false)
  * @method static Builder|Building whereHasMediaMatchAll(array $tags)
  * @method static Builder|Building whereId($value)
+ * @method static Builder|Building whereMunicipalityId($value)
  * @method static Builder|Building whereNumber($value)
  * @method static Builder|Building whereOwner($value)
  * @method static Builder|Building wherePostalCode($value)
@@ -120,6 +123,8 @@ class Building extends Model
         'city',
         'postal_code',
         'bag_addressid',
+        'municipality_id',
+        'bag_woonplaats_id',
         'building_coach_status_id',
         'extension',
         'is_active',
@@ -147,6 +152,11 @@ class Building extends Model
     public function customMeasureApplications(): HasMany
     {
         return $this->hasMany(CustomMeasureApplication::class);
+    }
+
+    public function municipality(): BelongsTo
+    {
+        return $this->belongsTo(Municipality::class);
     }
 
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion, bool $withMaster = false)

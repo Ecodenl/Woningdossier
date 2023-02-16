@@ -17,6 +17,10 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubSteppable[] $subSteppables
+ * @property-read int|null $sub_steppables_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
+ * @property-read int|null $sub_steps_count
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolLabel query()

@@ -53,12 +53,9 @@ return [
                         'button' => 'Eigen maatregel toevoegen',
                     ],
                 ],
-
-
-
             ],
             'see-info' => 'Zie info',
-            'subsidy' => [
+            'regulations' => [
                 'subsidy-available' => 'Subsidie mogelijk',
                 'loan-available' => 'Lening mogelijk',
             ],
@@ -131,6 +128,7 @@ return [
         ],
     ],
     'my-regulations' => [
+        'loading' => 'Maatregelen worden berekend...',
         'provider' => [
             'to' => 'Naar aanbieder',
         ],

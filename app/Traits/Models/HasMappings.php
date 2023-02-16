@@ -4,19 +4,19 @@ namespace App\Traits\Models;
 
 use App\Models\Mapping;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasMappings
 {
     public static function bootHasMappings()
     {
         static::deleting(function (Model $model) {
-            $model->mapping()->delete();
+            $model->mappings()->delete();
         });
     }
 
-    public function mapping(): MorphOne
+    public function mappings(): MorphMany
     {
-        return $this->morphOne(Mapping::class, 'from_model');
+        return $this->morphMany(Mapping::class, 'from_model');
     }
 }

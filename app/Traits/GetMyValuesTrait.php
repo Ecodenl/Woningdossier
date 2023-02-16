@@ -88,6 +88,10 @@ trait GetMyValuesTrait
         if (! in_array($this->getTable(), $tablesToIgnore)) {
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             $data = $this->attributesToArray();
+            // In case there's attributes we don't want to copy over
+            foreach (($this->ignoreAttributes ?? []) as $ignoreAttribute) {
+                unset($data[$ignoreAttribute]);
+            }
 
             $data['input_source_id'] = $masterInputSource->id;
             unset($data['id']);

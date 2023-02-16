@@ -10,8 +10,9 @@ use App\Models\MeasureApplication;
 use App\Models\SubStep;
 use App\Models\UserActionPlanAdvice;
 use App\Services\ConditionService;
+use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Model;
 
 class UserActionPlanAdviceObserver
 {
@@ -25,21 +26,20 @@ class UserActionPlanAdviceObserver
         // when he considers it it might as well be planned.
         $userActionPlanAdvice->planned = true;
 
-        if ( ! $userActionPlanAdvice->isDirty('visible')) {
+        if (! $userActionPlanAdvice->isDirty('visible')) {
             // Visibility isn't set. Let's define it
             UserActionPlanAdviceService::setAdviceVisibility($userActionPlanAdvice);
         }
-        if ( ! $userActionPlanAdvice->isDirty('category') || is_null($userActionPlanAdvice->category)) {
+        if (! $userActionPlanAdvice->isDirty('category') || is_null($userActionPlanAdvice->category)) {
             // Category isn't set. Let's define it.
-
             UserActionPlanAdviceService::setAdviceCategory($userActionPlanAdvice);
         }
 
         if ($userActionPlanAdvice->inputSource->short !== InputSource::MASTER_SHORT) {
-            $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
+            $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->withoutGlobalScopes()->first();
             if ($advisable instanceof MeasureApplication && in_array($advisable->short, array_keys(HeatPumpHelper::MEASURE_SERVICE_LINK))) {
                 $building = $userActionPlanAdvice->user->building;
-                if (!ConditionService::init()->building($building)->inputSource($userActionPlanAdvice->inputSource)->hasCompletedSteps(['heating'])) {
+                if (! ConditionService::init()->building($building)->inputSource($userActionPlanAdvice->inputSource)->hasCompletedSteps(['heating'])) {
                     // User has not yet completed the expert. We will map values, then do a new calculation as
                     // values might no longer match. Due to dispatchSync the "recalc" only happens after the mapping.
                     MapQuickScanSituationToExpert::dispatchSync(
@@ -63,6 +63,17 @@ class UserActionPlanAdviceObserver
 
                     $userActionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($results['cost_indication']);
                     $userActionPlanAdvice->savings_money = $results['savings_money'];
+                }
+            }
+
+            // Check if we should apply user costs
+            if ($advisable instanceof Model) {
+                $cost = UserCostService::init($userActionPlanAdvice->user, $userActionPlanAdvice->inputSource)
+                    ->forAdvisable($advisable)
+                    ->getCost();
+
+                if (! is_null($cost)) {
+                    $userActionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($cost);
                 }
             }
         }

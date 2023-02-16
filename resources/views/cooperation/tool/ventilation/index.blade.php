@@ -277,6 +277,11 @@
             </div>
         </div>
 
+         @include('cooperation.tool.includes.user-costs', [
+            'withHeader' => true,
+            'userCosts' => $userCosts,
+         ])
+
         <div id="costs-other" class="mt-4">
             @include('cooperation.tool.includes.section-title', [
                 'translation' => 'cooperation/tool/ventilation.index.indication-for-costs-other',
@@ -318,6 +323,13 @@
 @push('js')
     <script>
         $(document).ready(function () {
+            let advices = $(".advices");
+
+            advices.on('change', '.considerable', function () {
+                let id = this.getAttribute('id');
+                checkUserCost(id.split('-')[1]);
+            });
+
             let data = {};
             $('input:not(.source-select-input), textarea, select:not(.source-select)').change(function () {
                 data[$(this).attr('name')] = $(this).val();
@@ -325,6 +337,14 @@
 
             $('#ventilation-form').submit(function () {
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
+                // We want the user to be able to see their own old values for user costs. We don't want them submitted
+                // however, as it could interfere with the validation.
+                $('.user-costs input:not(.source-select-input)').each(function () {
+                    // offsetParent is null when hidden
+                    if (null === this.offsetParent) {
+                        $(this).val(null);
+                    }
+                });
                 return true;
             });
 
@@ -401,16 +421,18 @@
                             $("p#improvement").html(data.improvement);
                         }
 
+                        @if(app()->isLocal())
                         console.log(data.considerables);
+                        @endif
                         if (data.hasOwnProperty('considerables') && data.considerables.length !== 0) {
-                            var advices = $(".advices");
                             advices.html('<div class="w-full sm:w-3/4"><strong>Verbetering</strong></div><div class="w-full sm:w-1/4"><strong>Meenemen in berekening ?</strong></div>');
                             $.each(data.considerables, function (considerableId, considerable) {
                                 var checked = '';
                                 if (considerable.hasOwnProperty('is_considerable') && considerable.is_considerable == true) {
                                     checked = ' checked="checked"';
                                 }
-                                advices.append('<div class="w-full sm:w-3/4">' + considerable.name + '</div><div class="w-full sm:w-1/4"><input type="checkbox" name="considerables['+considerableId+'][is_considering]" value="1" '+checked+'></div>');
+                                advices.append('<div class="w-full sm:w-3/4">' + considerable.name + '</div><div class="w-full sm:w-1/4"><input id="considerable-' + considerableId + '" class="considerable" type="checkbox" name="considerables['+considerableId+'][is_considering]" value="1" '+checked+'></div>');
+                                checkUserCost(considerableId);
                             });
                             indicationForCosts.show();
                         } else {
@@ -421,7 +443,7 @@
                         //    $("p#remark").html(data.remark);
                         //}
 
-                        // when the costs indication is empty, we can safley asume there are no cost indications.
+                        // when the costs indication is empty, we can safely assume there are no cost indications.
                         if (data.hasOwnProperty('result') && data.result.hasOwnProperty('crack_sealing') && data.result.crack_sealing.cost_indication !== null) {
                             indicationForCosts.show();
                             if (data.result.crack_sealing.hasOwnProperty('savings_gas')) {
@@ -452,5 +474,13 @@
 
             $('input[type="checkbox"]:enabled').first().trigger('change');
         });
+
+        function checkUserCost(measureId) {
+            if ($(`#considerable-${measureId}`).prop('checked')) {
+                $(`#user-cost-${measureId}`).show();
+            } else {
+                $(`#user-cost-${measureId}`).hide();
+            }
+        }
     </script>
 @endpush

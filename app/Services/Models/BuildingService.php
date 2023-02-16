@@ -60,7 +60,7 @@ class BuildingService
 
 
             if ($municipality instanceof Municipality) {
-                $this->building->municipality()->associate($municipality);
+                $this->building->municipality()->associate($municipality)->save();
             } else {
                 // so the target is not resolved, thats "fine". We will check if a empty mapping exists
                 // if not we will create it

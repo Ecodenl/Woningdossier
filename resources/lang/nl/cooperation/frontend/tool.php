@@ -59,7 +59,8 @@ return [
             ],
             'see-info' => 'Zie info',
             'subsidy' => [
-                // Todo when constants are available
+                'subsidy-available' => 'Subsidie mogelijk',
+                'loan-available' => 'Lening mogelijk',
             ],
             'investment' => 'Investering',
             'savings' => 'Besparing per jaar',

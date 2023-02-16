@@ -55,7 +55,7 @@ class Search
         return $this;
     }
 
-    public function forBuildingContractType(Building $building, InputSource $inputSource): self
+    public function forBuildingContractType(Building $building, InputSource $inputSource, ?string $answer = null): self
     {
         // this question will give us the answer about which type of building the user has
         // rent / homeowner
@@ -65,7 +65,7 @@ class Search
             ->visible()
             ->where(
                 'short',
-                $building->getAnswer($inputSource, $toolQuestion)
+                $answer ?? $building->getAnswer($inputSource, $toolQuestion)
             )
             ->first();
 

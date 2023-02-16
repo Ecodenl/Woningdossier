@@ -33,8 +33,8 @@ class MyAccountSettingsFormRequest extends FormRequest
             'user.phone_number' => ['nullable', new PhoneNumber()],
 
             'building.postal_code' => ['required', new PostalCode('nl')],
-            'building.house_number' => ['required', 'numeric', new HouseNumber('nl')],
-            'building.house_number_extension' => ['nullable', new HouseNumberExtension('nl')],
+            'building.number' => ['required', 'numeric', new HouseNumber('nl')],
+            'building.extension' => ['nullable', new HouseNumberExtension('nl')],
             'building.street' => 'required|string|max:255',
             'building.city' => 'required|string|max:255',
         ];

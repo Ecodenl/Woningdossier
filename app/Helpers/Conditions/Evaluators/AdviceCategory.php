@@ -35,7 +35,7 @@ class AdviceCategory extends ShouldEvaluate
 
         $measureApplication = MeasureApplication::findByShort($measureApplicationShort);
 
-        $advice = $building->user->actionPlanAdvices()
+        $advice = $building->user->userActionPlanAdvices()
             ->forInputSource($inputSource)
             ->forAdvisable($measureApplication)
             ->first();

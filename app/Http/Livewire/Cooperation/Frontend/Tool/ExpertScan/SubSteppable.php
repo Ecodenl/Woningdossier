@@ -178,7 +178,7 @@ class SubSteppable extends Scannable
             $answers = $this->filledInAnswers;
         }
 
-        $this->emitUp('subStepValidationSucceeded', $this->subStep, $answers);
+        $this->emitUp('subStepValidationSucceeded', $this->subStep, $answers, $this->rules);
     }
 
     private function performEvaluation()

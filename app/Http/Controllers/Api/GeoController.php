@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FillAddressRequest;
 use App\Services\AddressService;
+use App\Services\Lvbag\BagService;
 
 class GeoController extends Controller
 {
@@ -14,7 +15,7 @@ class GeoController extends Controller
         $number = trim(strip_tags($request->get('number', '')));
         $houseNumberExtension = trim(strip_tags($request->get('house_number_extension', '')));
 
-        $address = AddressService::init()->first($postalCode, $number, $houseNumberExtension);
+        $address = BagService::init()->firstAddress($postalCode, $number, $houseNumberExtension);
 
         if (empty($address)) {
             $address = $request->all();

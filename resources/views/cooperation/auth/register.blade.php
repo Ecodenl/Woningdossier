@@ -80,8 +80,8 @@
                     'inputName' => 'house_number_extension',
                     'attr' => 'x-show="! alreadyMember"',
                 ])
-                    <input class="form-input" type="text" name="house_number_extension"
-                           value="{{ old('house_number_extension') }}"
+                    <input class="form-input" type="text" name="extension"
+                           value="{{ old('extension') }}"
                            placeholder="@lang('auth.register.form.house-number-extension')"
                            x-bind="houseNumberExtension">
                 @endcomponent

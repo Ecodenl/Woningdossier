@@ -13,7 +13,7 @@ class MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable ext
      */
     public function up()
     {
-        $this->line(MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable::class);
+        // $this->line(MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable::class);
 
         $interestInIdsToMigrate = \DB::table('services')
             ->whereIn('short', ['hybrid-heat-pump', 'full-heat-pump'])

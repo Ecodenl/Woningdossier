@@ -64,6 +64,8 @@ class RoofInsulationFormRequest extends FormRequest
             'building_roof_types.*.building_heating_id' => 'exists:building_heatings,id',
             'building_roof_types.*.extra.tiles_condition' => 'numeric|exists:roof_tile_statuses,id',
             'building_roof_types.roof_type_id' => 'exists:roof_types,id',
+            'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
+            'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
         ];
     }
 

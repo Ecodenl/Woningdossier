@@ -14,12 +14,10 @@ class QuestionnaireFactory extends Factory
     public function definition()
     {
         return [
-        'cooperation_id' => \App\Models\Cooperation::factory(),
-        'step_id' => \App\Models\Step::factory(),
-        'order' => 0,
-        'name' => [
-            'nl' => $this->faker->text(80),
-        ],
-    ];
+            'cooperation_id' => \App\Models\Cooperation::factory(),
+            'name' => [
+                'nl' => $this->faker->text(80),
+            ],
+        ];
     }
 }

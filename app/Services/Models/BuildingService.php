@@ -2,12 +2,17 @@
 
 namespace App\Services\Models;
 
+use App\Events\NoMappingFoundForBagMunicipality;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Municipality;
 use App\Models\Scan;
+use App\Services\Lvbag\BagService;
+use App\Services\MappingService;
 use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -25,7 +30,7 @@ class BuildingService
     public function canCalculate(Scan $scan): bool
     {
         if ($scan->isQuickScan()) {
-            $quickScan       = Scan::findByShort(Scan::QUICK);
+            $quickScan = Scan::findByShort(Scan::QUICK);
             $woonplanService = WoonplanService::init($this->building)->scan($quickScan);
             // iknow, the variable is not needed.
             // just got it here as a description since this same statement is found in different context.
@@ -35,6 +40,57 @@ class BuildingService
 
         if ($scan->isLiteScan()) {
             return $this->building->hasCompletedScan($scan, InputSource::findByShort(InputSource::MASTER_SHORT));
+        }
+    }
+
+    /**
+     * Method speaks for itself... however ->
+     * The var is prefixed with "request", this is because we want ALL request address data.
+     * (postal_code, number, extension, city, street)
+     * We simply cant rely on external api data, the address data will always be filled with data from the request
+     * we only need it for the id's
+     * @param  array  $requestAddressData
+     * @return void
+     */
+    public function updateAddress(array $requestAddressData)
+    {
+        $addressData = BagService::init()->firstAddress(
+            $requestAddressData['postal_code'], $requestAddressData['number'], $requestAddressData['extension']
+        );
+        // filter relevant data from the request
+        $buildingData = Arr::only($requestAddressData, ['street', 'city', 'postal_code', 'number']);
+        $buildingData['extension'] = $requestAddressData['extension'] ?? '';
+
+        // the only data we really need from the bag
+        $buildingData['bag_woonplaats_id'] = $addressData['bag_woonplaats_id'];
+        $buildingData['bag_addressid'] = $addressData['bag_addressid'];
+
+        $this->building->update($buildingData);
+    }
+
+    public function attachMunicipality()
+    {
+        $municipalityName = BagService::init()
+            ->showCity($this->building->bag_woonplaats_id, ['expand' => 'true'])
+            ->municipalityName();
+
+        // its entirely possible that a municipality is not returned from the bag.
+        if ( ! is_null($municipalityName)) {
+            $mappingService = new MappingService();
+            $municipality = $mappingService
+                ->from($municipalityName)
+                ->resolveTarget();
+
+
+            if ($municipality instanceof Municipality) {
+                $this->building->municipality()->associate($municipality)->save();
+            } else {
+                // so the target is not resolved, thats "fine". We will check if a empty mapping exists
+                // if not we will create it
+                if ($mappingService->from($municipalityName)->doesntExist()) {
+                    NoMappingFoundForBagMunicipality::dispatch($municipalityName);
+                }
+            }
         }
     }
 
@@ -56,7 +112,7 @@ class BuildingService
 
         // Get the tool question answers for custom values.
         $answersForTqa = collect();
-        if (! empty($ids)) {
+        if ( ! empty($ids)) {
             // This sub-query selects the example building if it has the same answer, or else the latest input source
             // that made changes on the tool question.
             $selectQuery = "(SELECT IF (
@@ -84,7 +140,13 @@ class BuildingService
             $answersForTqa = DB::table('tool_question_answers AS tqa')
                 ->select('tqa.tool_question_id', 'tqa.answer', 'nma.input_source_id', 'is.name AS input_source_name')
                 ->selectSub(
-                    fn ($query) => $query->selectRaw($selectQuery, [$this->building->id, $exampleBuildingInputSource->id, $exampleBuildingInputSource->id, $this->building->id, $masterInputSource->id]),
+                    fn($query) => $query->selectRaw($selectQuery, [
+                        $this->building->id,
+                        $exampleBuildingInputSource->id,
+                        $exampleBuildingInputSource->id,
+                        $this->building->id,
+                        $masterInputSource->id
+                    ]),
                     'latest_source_id'
                 )
                 ->where('tqa.building_id', $this->building->id)
@@ -99,28 +161,28 @@ class BuildingService
                 ->havingRaw('nma.input_source_id = latest_source_id')
                 ->get()
                 ->groupBy('tool_question_id')
-                ->map(fn($val) => $val->map(fn($subVal) => (array) $subVal)->toArray());
+                ->map(fn($val) => $val->map(fn($subVal) => (array)$subVal)->toArray());
         }
 
         $ids = $toolQuestions->whereNotNull('save_in')->pluck('id')->toArray();
 
         // Get the tool question answers for save in questions.
         $answersForSaveIn = collect();
-        if (! empty($ids)) {
+        if ( ! empty($ids)) {
             $saveIns = $toolQuestions->whereNotNull('save_in')->pluck('save_in', 'id')->toArray();
             foreach ($saveIns as $toolQuestionId => $saveIn) {
                 $resolved = ToolQuestionHelper::resolveSaveIn($saveIn, $this->building);
                 // Note: Where could contain extra queryable, e.g. service. If empty, the query builder
                 // will safely discard the where statement. If not empty, it gets added to the query.
-                $where        = $resolved['where'];
-                $table        = $resolved['table'];
+                $where = $resolved['where'];
+                $table = $resolved['table'];
                 $answerColumn = $resolved['column'];
-                $whereColumn  = array_key_exists('user_id', $where) ? 'user_id' : 'building_id';
-                $value        = data_get($resolved, "where.{$whereColumn}");
+                $whereColumn = array_key_exists('user_id', $where) ? 'user_id' : 'building_id';
+                $value = data_get($resolved, "where.{$whereColumn}");
                 unset($where[$whereColumn]);
 
                 $append = '';
-                if (! empty($where)) {
+                if ( ! empty($where)) {
                     foreach ($where as $col => $val) {
                         $append .= " AND {$col} = {$val}";
                     }
@@ -153,7 +215,13 @@ class BuildingService
                 $answersForResolved = DB::table("{$table} as tbl")
                     ->select("tbl.{$answerColumn} AS answer", 'nma.input_source_id', 'is.name AS input_source_name')
                     ->selectSub(
-                        fn ($query) => $query->selectRaw($selectQuery, [$value, $exampleBuildingInputSource->id, $exampleBuildingInputSource->id, $value, $masterInputSource->id]),
+                        fn($query) => $query->selectRaw($selectQuery, [
+                            $value,
+                            $exampleBuildingInputSource->id,
+                            $exampleBuildingInputSource->id,
+                            $value,
+                            $masterInputSource->id
+                        ]),
                         'latest_source_id'
                     )
                     ->where("tbl.{$whereColumn}", $value)
@@ -166,7 +234,7 @@ class BuildingService
                     ->leftJoin('input_sources AS is', 'nma.input_source_id', '=', 'is.id')
                     ->havingRaw('nma.input_source_id = latest_source_id')
                     ->get()
-                    ->map(fn($val) => (array) $val)
+                    ->map(fn($val) => (array)$val)
                     ->toArray();
 
                 $answersForSaveIn->put($toolQuestionId, $answersForResolved);

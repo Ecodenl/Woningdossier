@@ -8,7 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Account;
 use App\Models\InputSource;
-use App\Services\AddressService;
+use App\Services\Lvbag\BagService;
+use App\Services\Models\BuildingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -31,16 +32,16 @@ class SettingsController extends Controller
         $userData = $data['user'];
 
         // now get the pico address data.
-        $picoAddressData = AddressService::init()->first(
+        $picoAddressData = BagService::init()->firstAddress(
             $buildingData['postal_code'], $buildingData['house_number'], $buildingData['extension']
         );
 
         $userData['phone_number'] = $userData['phone_number'] ?? '';
         $buildingData['extension'] = $buildingData['extension'] ?? '';
-        $buildingData['number'] = $buildingData['house_number'] ?? '';
-        // try to obtain the address id from the api, else get the one from the request.
-        $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'] ?? '';
+        $buildingData['number'] = $buildingData['number'] ?? '';
 
+
+        BuildingService::init($building)->attachMunicipality();
         // update the user stuff
         $user->update($userData);
         // now update the building itself

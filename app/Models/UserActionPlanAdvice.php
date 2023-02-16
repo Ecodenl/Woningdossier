@@ -13,6 +13,7 @@ use App\Traits\GetValueTrait;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -27,6 +28,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int $user_action_plan_advisable_id
  * @property string|null $category
  * @property bool $visible
+ * @property bool $subsidy_available
+ * @property bool $loan_available
  * @property int $order
  * @property array|null $costs
  * @property string|null $savings_gas
@@ -64,6 +67,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice whereCreatedAt($value)
  * @method static Builder|UserActionPlanAdvice whereId($value)
  * @method static Builder|UserActionPlanAdvice whereInputSourceId($value)
+ * @method static Builder|UserActionPlanAdvice whereLoanAvailable($value)
  * @method static Builder|UserActionPlanAdvice whereOrder($value)
  * @method static Builder|UserActionPlanAdvice wherePlanned($value)
  * @method static Builder|UserActionPlanAdvice wherePlannedYear($value)
@@ -71,6 +75,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice whereSavingsGas($value)
  * @method static Builder|UserActionPlanAdvice whereSavingsMoney($value)
  * @method static Builder|UserActionPlanAdvice whereStepId($value)
+ * @method static Builder|UserActionPlanAdvice whereSubsidyAvailable($value)
  * @method static Builder|UserActionPlanAdvice whereUpdatedAt($value)
  * @method static Builder|UserActionPlanAdvice whereUserActionPlanAdvisableId($value)
  * @method static Builder|UserActionPlanAdvice whereUserActionPlanAdvisableType($value)
@@ -78,7 +83,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice whereVisible($value)
  * @method static Builder|UserActionPlanAdvice whereYear($value)
  * @method static Builder|UserActionPlanAdvice withInvisible()
- * @method static Builder|UserActionPlanAdvice withoutDeletedCooperationMeasureApplications(\App\Models\InputSource $inputSource)
  * @mixin \Eloquent
  */
 class UserActionPlanAdvice extends Model implements Auditable
@@ -188,13 +192,18 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $query->where('step_id', $step->id);
     }
 
+    public function scopeCategory(Builder $query, string $category)
+    {
+        return $query->where('category', $category);
+    }
+
     # Relations
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function step()
+    public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
     }
@@ -202,11 +211,6 @@ class UserActionPlanAdvice extends Model implements Auditable
     public function userActionPlanAdvisable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function scopeCategory(Builder $query, string $category)
-    {
-        return $query->where('category', $category);
     }
 
     # Unsorted

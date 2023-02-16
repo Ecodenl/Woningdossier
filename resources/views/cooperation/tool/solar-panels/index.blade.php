@@ -335,9 +335,13 @@
             </div>
         </div>
 
+        @include('cooperation.tool.includes.user-costs', [
+            'userCosts' => $userCosts,
+        ])
+
         @include('cooperation.tool.includes.comment', [
-             'translation' => 'solar-panels.index.specific-situation'
-         ])
+            'translation' => 'solar-panels.index.specific-situation'
+        ])
 
         @component('cooperation.tool.components.panel', [
             'label' => __('default.buttons.download'),
@@ -363,12 +367,22 @@
 
             $('#solar-panels-form').submit(function () {
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
+                // We want the user to be able to see their own old values for user costs. We don't want them submitted
+                // however, as it could interfere with the validation.
+                $('.user-costs input:not(.source-select-input)').each(function () {
+                    // offsetParent is null when hidden
+                    if (null === this.offsetParent) {
+                        $(this).val(null);
+                    }
+                });
                 return true;
             });
 
             $("select, input[type=radio], input[type=text]").change(() => formChange());
 
             function formChange() {
+                checkUserCost();
+
                 var form = $('#solar-panels-form').serialize();
                 $.ajax({
                     type: "POST",
@@ -418,5 +432,13 @@
 
             formChange();
         });
+
+        function checkUserCost() {
+            if ($('.considerable input:checked').val() == 1) {
+                $('.user-costs').show();
+            } else {
+                $('.user-costs').hide();
+            }
+        }
     </script>
 @endpush

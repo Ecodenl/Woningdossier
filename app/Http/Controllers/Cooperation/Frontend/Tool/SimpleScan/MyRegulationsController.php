@@ -37,7 +37,7 @@ class MyRegulationsController extends Controller
 
         return view(
             'cooperation.frontend.tool.simple-scan.my-regulations.index',
-            compact('activeNotification', 'masterInputSource', 'relevantRegulations')
+            compact('scan', 'activeNotification', 'masterInputSource', 'relevantRegulations')
         );
     }
 }

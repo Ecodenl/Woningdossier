@@ -25,6 +25,8 @@ class CreatePermissionTables extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('guard_name');
+            $table->unsignedInteger('input_source_id')->nullable()->default(1);
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('set null');
             $table->timestamps();
         });
 

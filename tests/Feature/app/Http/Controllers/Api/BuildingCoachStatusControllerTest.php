@@ -15,8 +15,7 @@ use Tests\TestCase;
 
 class BuildingCoachStatusControllerTest extends TestCase
 {
-    use WithFaker,
-        RefreshDatabase;
+    use WithFaker, RefreshDatabase;
 
     private array $formData;
     private Cooperation $cooperation;

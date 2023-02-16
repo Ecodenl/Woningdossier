@@ -137,29 +137,32 @@ class Form extends Scannable
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
-                // Define if we should answer this question...
-                /** @var ToolQuestion $toolQuestion */
-                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                // Rules are conditionally unset. We don't want to save unvalidated answers, but don't want to just
+                // clear them either.
+                if (array_key_exists("filledInAnswers.$toolQuestionShort", $this->rules)) {
+                    // Define if we should answer this question...
+                    /** @var ToolQuestion $toolQuestion */
+                    $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+                    if ($this->building->user->account->can('answer', $toolQuestion)) {
+                        $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                        if ($masterAnswer !== $givenAnswer) {
+                            $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        }
 
-                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-                    if ($masterAnswer !== $givenAnswer) {
-                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        ToolQuestionService::init($toolQuestion)
+                            ->building($this->building)
+                            ->currentInputSource($this->currentInputSource)
+                            ->applyExampleBuilding()
+                            ->save($givenAnswer);
+
+
+                        if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
+                            Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
+                            $shouldDoFullRecalculate = true;
+                        }
+
+                        $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                     }
-
-                    ToolQuestionService::init($toolQuestion)
-                        ->building($this->building)
-                        ->currentInputSource($this->currentInputSource)
-                        ->applyExampleBuilding()
-                        ->save($givenAnswer);
-
-
-                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
-                        Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
-                        $shouldDoFullRecalculate = true;
-                    }
-
-                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                 }
             }
         }

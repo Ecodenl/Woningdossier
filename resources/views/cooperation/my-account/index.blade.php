@@ -98,9 +98,9 @@
                                     'inputName' => 'building.number',
                                     'id' => 'number',
                                 ])
-                                    <input type="text" class="form-input" name="building[house_number]"
+                                    <input type="text" class="form-input" name="building[number]"
                                            id="number"
-                                           value="{{ old('building.house_number', $building->number) }}" required
+                                           value="{{ old('building.number', $building->number) }}" required
                                            autofocus>
                                 @endcomponent
                             </div>

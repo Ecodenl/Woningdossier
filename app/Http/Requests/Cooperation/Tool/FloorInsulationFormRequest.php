@@ -47,6 +47,8 @@ class FloorInsulationFormRequest extends FormRequest
             'building_elements.element_value_id' => 'exists:element_values,id',
             'building_features.floor_surface' => 'required|numeric|min:1|max:100000',
             'building_features.insulation_surface' => 'required|numeric|min:0|needs_to_be_lower_or_same_as:building_features.floor_surface',
+            'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
+            'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
         ];
     }
 }

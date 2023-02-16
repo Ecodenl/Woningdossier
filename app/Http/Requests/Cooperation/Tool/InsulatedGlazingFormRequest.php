@@ -41,7 +41,7 @@ class InsulatedGlazingFormRequest extends FormRequest
         /** @var Collection $noInterests */
 
         // m2 and window rules in the withValidator
-        $rules = [
+        return [
             'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             'building_elements.*' => 'required|exists:element_values,id',
             'building_elements.*.*' => 'exists:element_values,id',
@@ -49,9 +49,9 @@ class InsulatedGlazingFormRequest extends FormRequest
             'building_paintwork_statuses.wood_rot_status_id' => 'required|exists:wood_rot_statuses,id',
             'building_paintwork_statuses.paintwork_status_id' => 'required|exists:paintwork_statuses,id',
             'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|between:1990,'.$max,
+            'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
+            'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
         ];
-
-        return $rules;
     }
 
     public function withValidator(Validator $validator)

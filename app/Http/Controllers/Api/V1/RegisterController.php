@@ -13,6 +13,7 @@ use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\ToolQuestion;
+use App\Models\User;
 use App\Services\ToolQuestionService;
 use App\Services\UserService;
 use Illuminate\Support\Arr;
@@ -75,6 +76,7 @@ class RegisterController extends Controller
         // this way the user can set his own password.
         $requestData['password'] = Hash::make(Str::randomPassword());
         $roles = array_unique(($requestData['roles'] ?? [RoleHelper::ROLE_RESIDENT]));
+        $requestData['extension'] = $requestData['house_number_extension'];
         $user = UserService::register($cooperation, $roles, $requestData);
         $account = $user->account;
 

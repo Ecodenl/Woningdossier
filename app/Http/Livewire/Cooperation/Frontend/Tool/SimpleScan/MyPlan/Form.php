@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
+use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
@@ -291,6 +292,7 @@ class Form extends Component
                     'savings_money' => $measureData['savings_money'] ?? 0,
                 ],
             );
+        CustomMeasureApplicationChanged::dispatch($from);
 
         // Append card
         $this->cards[$category][$order] = [
@@ -690,7 +692,6 @@ class Form extends Component
                 $cards[$category][$order] = [
                     'name' => Str::limit($advisable->measure_name, 57),
                     'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
-                    // TODO: Subsidy
                     'info' => nl2br($advisable->measure_info),
                     'route' => $route,
                     'comfort' => $advisable->configurations['comfort'] ?? 0,

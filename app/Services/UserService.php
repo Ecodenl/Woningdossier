@@ -193,29 +193,19 @@ class UserService
             ]
         );
 
-        $addressData = BagService::init()->firstAddress(
-            $data['postal_code'], $data['number'], $data['house_number_extension']
-        );
-
         $features = new BuildingFeature([
             'surface' => $addressData['surface'] ?? null,
             'build_year' => $addressData['build_year'] ?? null,
         ]);
 
         // filter relevant data from the request
-        $buildingData = Arr::only($data, ['street', 'city', 'postal_code', 'number']);
-        $buildingData['bag_woonplaats_id'] = $addressData['bag_woonplaats_id'];
-        $buildingData['bag_addressid'] = $addressData['bag_addressid'];
-        $buildingData['extension'] = $data['house_number_extension'] ?? '';
+        $buildingData = Arr::only($data, ['street', 'city', 'postal_code', 'number', 'extension']);
 
         // create the building for the user
-        $building = Building::create($buildingData);
+        $building = $user->building()->save(new Building());
+        BuildingService::init($building)->updateAddress($buildingData);
         BuildingService::init($building)->attachMunicipality();
 
-        // associate multiple models with each other
-        $building->user()->associate(
-            $user
-        )->save();
 
         $features->building()->associate(
             $building

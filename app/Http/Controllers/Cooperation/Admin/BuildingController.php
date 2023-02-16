@@ -95,7 +95,6 @@ class BuildingController extends Controller
             $validatedData['users']['extra']['contact_id'] = (int) $validatedData['users']['extra']['contact_id'];
         }
 
-
         $buildingService = BuildingService::init($building);
         $buildingService->updateAddress($validatedData['buildings']);
 

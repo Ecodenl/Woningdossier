@@ -36,7 +36,7 @@ class RegisteredUserControllerTest extends TestCase
             "last_name" => "Example",
             "postal_code" => "3255MC",
             "number" => "13",
-            "house_number_extension" => "",
+            "extension" => "",
             "street" => "Boezemweg",
             "city" => "Oudetonge",
             "phone_number" => null,
@@ -59,5 +59,7 @@ class RegisteredUserControllerTest extends TestCase
         $this->assertDatabaseHas('accounts', ['email' => $this->formData['email']]);
         $account = DB::table('accounts')->where('email', $this->formData['email'])->first();
         $this->assertDatabaseHas('users', ['account_id' => $account->id, 'allow_access' => 1]);
+        $user = DB::table('users')->where('account_id', $account->id)->first();
+        $this->assertDatabaseHas('buildings', ['user_id' => $user->id]);
     }
 }

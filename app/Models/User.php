@@ -303,17 +303,12 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function buildingNotes()
+    public function buildingNotes(): HasMany
     {
         return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
     }
 
-    public function userActionPlanAdviceComments()
-    {
-        return $this->hasMany(UserActionPlanAdviceComments::class);
-    }
-
-    public function motivations()
+    public function motivations(): HasMany
     {
         return $this->hasMany(UserMotivation::class);
     }
@@ -330,6 +325,16 @@ class User extends Model implements AuthorizableContract
     public function userActionPlanAdvices(): HasMany
     {
         return $this->hasMany(UserActionPlanAdvice::class);
+    }
+
+    public function userActionPlanAdviceComments(): HasMany
+    {
+        return $this->hasMany(UserActionPlanAdviceComments::class);
+    }
+
+    public function userCosts(): HasMany
+    {
+        return $this->hasMany(UserCost::class);
     }
 
     /**

@@ -4,7 +4,7 @@
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <h5 class="heading-5">
-{{--                    @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)--}}
+                    @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
                 </h5>
             </div>
         </div>

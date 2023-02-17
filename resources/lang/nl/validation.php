@@ -260,6 +260,10 @@ return [
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',
 
+        // User costs
+        'user_costs.*.own_total' => 'eigen kosten',
+        'user_costs.*.subsidy_total' => 'subsidiebedrag',
+
         // Measure applications
         'measure_applications.measure_name' => 'naam',
         'measure_applications.measure_name.*' => 'naam',

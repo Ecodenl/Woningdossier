@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Events\CooperationMeasureApplicationUpdated;
 use App\Events\CustomMeasureApplicationChanged;
 use App\Events\FillingToolForUserEvent;
+use App\Events\NoMappingFoundForBagMunicipality;
 use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
@@ -17,6 +18,7 @@ use App\Events\UserAssociatedWithOtherCooperation;
 use App\Events\UserChangedHisEmailEvent;
 use App\Events\UserRevokedAccessToHisBuilding;
 use App\Listeners\AuditedListener;
+use App\Listeners\CreateTargetlessMappingForMunicipality;
 use App\Listeners\DeleteUserActionPlanAdvicesForStep;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\GiveCoachesBuildingPermission;
@@ -51,6 +53,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        NoMappingFoundForBagMunicipality::class => [
+            CreateTargetlessMappingForMunicipality::class
+        ],
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
         ],

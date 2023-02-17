@@ -52,6 +52,7 @@ class DoUpgrade extends Command
                 ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
                 ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
+            FixContractType::class => [],
             ClearCommand::class => [],
         ];
 

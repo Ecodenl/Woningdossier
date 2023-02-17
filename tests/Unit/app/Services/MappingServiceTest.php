@@ -25,11 +25,11 @@ class MappingServiceTest extends TestCase
     {
         MappingService::init()
             ->from("Hellevoetsluis")
-            ->sync([], MappingHelper::TYPE_MUNICIPALITY);
+            ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
 
         $this->assertDatabaseHas('mappings', [
             'from_value' => 'Hellevoetsluis',
-            'type' => MappingHelper::TYPE_MUNICIPALITY
+            'type' => MappingHelper::TYPE_BAG_MUNICIPALITY
         ]);
     }
 

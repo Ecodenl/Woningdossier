@@ -73,7 +73,7 @@
                                                     </option>
                                                     @foreach($measures as $measure)
                                                         <option value="{{ $measure['Value'] }}"
-                                                                @if(old("cooperation_measure_applications.measure_category", $cooperationMeasureApplication->mapping->target_data['Value'] ?? null) === $measure['Value']) selected @endif>
+                                                                @if(old("cooperation_measure_applications.measure_category", $cooperationMeasureApplication->mappings()->first()->target_data['Value'] ?? null) === $measure['Value']) selected @endif>
                                                             {{ $measure['Label'] }}
                                                         </option>
                                                     @endforeach

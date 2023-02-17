@@ -165,7 +165,7 @@
                 @endcomponent
 
                 {{-- When clicking the button, we disable it. We don't have to do anything fancy, since it won't have pointer events when disabled --}}
-                <button class="btn btn-purple w-full mt-3" type="submit" x-on:click="submitted = true;"
+                <button class="btn btn-purple w-full mt-3" type="submit" x-on:click="setTimeout(() => {submitted = true;});"
                         x-bind:disabled="! allowAccess || alreadyMember || submitted">
                     @lang('auth.register.form.submit')
                 </button>

@@ -5,11 +5,13 @@ namespace App\Http\Livewire\Cooperation\Admin\ExampleBuildings;
 use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\Step;
 use App\Rules\LanguageRequired;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
 
@@ -21,6 +23,7 @@ class Form extends Component
     public $exampleBuildingSteps;
     public $contents = [];
     public $contentStructure;
+    public bool $isSuperAdmin = false;
 
     // technically its available in the exampleBuildingSteps
     // But this is a easy and faster way to access the datatype.
@@ -33,11 +36,31 @@ class Form extends Component
         'is_default' => 0,
     ];
 
+    protected function rules(): array
+    {
+        $rules = [
+            'exampleBuildingValues.name' => new LanguageRequired(),
+            'exampleBuildingValues.building_type_id' => 'required|exists:building_types,id',
+            'exampleBuildingValues.is_default' => 'required|boolean',
+            'exampleBuildingValues.order' => 'nullable|numeric|min:0',
+            'contents.new.build_year' => 'nullable|numeric|min:1800'
+        ];
+
+        if ($this->isSuperAdmin) {
+            $rules['exampleBuildingValues.cooperation_id'] = 'nullable|exists:cooperations,id';
+        }
+
+        return $rules;
+    }
+
     public function mount(ExampleBuilding $exampleBuilding = null)
     {
-        $this->exampleBuilding = $exampleBuilding;
+        $this->isSuperAdmin = HoomdossierSession::currentRole() === RoleHelper::ROLE_SUPER_ADMIN;
+        if ($this->isSuperAdmin) {
+            $this->cooperations = Cooperation::all();
+        }
+
         $this->buildingTypes = BuildingType::all();
-        $this->cooperations = Cooperation::all();
 
         $this->contentStructure = [];
 
@@ -54,7 +77,9 @@ class Form extends Component
             }
         }
 
-        if ($exampleBuilding instanceof ExampleBuilding) {
+        // By type-hinting it as model in the mount, it is auto-created as empty model. We instead check if it
+        // exists.
+        if ($exampleBuilding->exists) {
             $this->exampleBuildingValues = $exampleBuilding->attributesToArray();
             foreach ($exampleBuilding->contents as $exampleBuildingContent) {
                 $content = array_merge($this->contentStructure, $exampleBuildingContent->content);
@@ -114,16 +139,17 @@ class Form extends Component
         // which would then mess up the view due to missing relations..
         $this->hydrateExampleBuildingSteps();
 
-        $this->validate([
-            'exampleBuildingValues.name' => new LanguageRequired(),
-            'exampleBuildingValues.building_type_id' => 'required|exists:building_types,id',
-            'exampleBuildingValues.cooperation_id' => 'nullable|exists:cooperations,id',
-            'exampleBuildingValues.is_default' => 'required|boolean',
-            'exampleBuildingValues.order' => 'nullable|numeric|min:0',
-            'contents.new.build_year' => 'nullable|numeric|min:1800'
-        ]);
-        if (empty($this->exampleBuildingValues['cooperation_id'])) {
-            $this->exampleBuildingValues['cooperation_id'] = null;
+        $this->validate();
+        if ($this->isSuperAdmin) {
+            // If the super-admin wants to create a application wide example building
+            // he keep the input empty
+            if (empty($this->exampleBuildingValues['cooperation_id'])) {
+                $this->exampleBuildingValues['cooperation_id'] = null;
+            }
+        } else {
+            // non super-admin, so the example building will always be related to the users it cooperation
+            // we alter the values for easy saving.
+            $this->exampleBuildingValues['cooperation_id'] = HoomdossierSession::getCooperation();
         }
 
         // update or create

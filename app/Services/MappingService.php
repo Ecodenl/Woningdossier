@@ -33,8 +33,10 @@ class MappingService
 
     public function resolveMapping(): ?Mapping
     {
-        // We don't want to resolve a 'null' from mapping for now.
-        return is_null($this->from) ? null : Mapping::where($this->whereFrom())->first();
+        if ( ! empty($this->from)) {
+            return Mapping::where($this->whereFrom())->first();
+        }
+        return null;
     }
 
     public function exists(): bool

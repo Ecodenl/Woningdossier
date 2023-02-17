@@ -18,14 +18,8 @@ class MappingServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    public $seed = true;
+    public $seed = false;
     public $seeder = DatabaseSeeder::class;
-
-    protected function setUp(): void
-    {
-        Artisan::call('cache:clear');
-        parent::setUp();
-    }
 
     public function test_sync_maps_correct_from_value_to_targetless()
     {
@@ -108,5 +102,26 @@ class MappingServiceTest extends TestCase
             ->resolveTarget();
 
         $this->assertEquals($target, $resolvedTarget);
+    }
+
+    public function test_resolve_target_returns_nothing_when_from_is_empty()
+    {
+        $from = Municipality::factory()->create();
+        $target = ["Label" => "Muur", "Value" => "2933", "Highlight" => false];
+        Mapping::factory()->create([
+            'from_model_type' => $from->getMorphClass(),
+            'from_model_id' => $from->id,
+            'target_data' => $target,
+        ]);
+
+        // first we will want to assert that the database is not empty, else the test is useless.
+        // its not necessary but gives more confidence in the test
+        $this->assertDatabaseCount('mappings', 1);
+
+        $resolvedTarget = MappingService::init()
+            ->from(null)
+            ->resolveTarget();
+
+        $this->assertNull($resolvedTarget);
     }
 }

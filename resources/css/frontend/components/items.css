@@ -26,6 +26,11 @@
     @apply px-4 pb-6 break-words;
 }
 
+/* Safari glitches out when scrolling in the modal. This fixes it. */
+.modal-container * {
+    -webkit-transform: translate3d(0,0,0);
+}
+
 /* Drag and drop cards */
 .card-wrapper {
     @apply rounded-lg bg-blue-100 p-1 lg:p-3 space-y-3;

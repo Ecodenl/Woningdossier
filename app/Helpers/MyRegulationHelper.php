@@ -53,7 +53,9 @@ class MyRegulationHelper
             ->orderByRaw('user_action_plan_advices.id, target_data_value')
             ->get();
 
-        foreach ($payload->transformedPayload as $regulation) {
+        $transformedPayload = $payload->forBuildingContractType($building, $inputSource)->all();
+
+        foreach ($transformedPayload as $regulation) {
             // create an empty key, check further on will be cleaner that way.
             $regulation['advisable_names'] = [];
             $regulationType = $regulation['Type'];

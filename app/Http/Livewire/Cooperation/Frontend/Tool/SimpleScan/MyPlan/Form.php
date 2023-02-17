@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
+use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
@@ -15,12 +16,15 @@ use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
+use App\Services\MappingService;
 use App\Services\UserActionPlanAdviceService;
+use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Database\Eloquent\Collection;
 use App\Helpers\Arr;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class Form extends Component
@@ -60,6 +64,7 @@ class Form extends Component
 
     public Scan $scan;
     public array $custom_measure_application = [];
+    public array $measures;
 
     // Details
     public float $expectedInvestment = 0;
@@ -71,14 +76,19 @@ class Form extends Component
     public int $renewable = 0;
     public int $investment = 0;
 
-
-    protected $rules = [
-        'custom_measure_application.name' => 'required',
-        'custom_measure_application.info' => 'required',
-        'custom_measure_application.costs.from' => 'required|numeric|min:0',
-        'custom_measure_application.costs.to' => 'required|numeric|gte:custom_measure_application.costs.from',
-        'custom_measure_application.savings_money' => 'nullable|numeric|max:999999',
-    ];
+    protected function rules(): array
+    {
+        return [
+            'custom_measure_application.name' => 'required',
+            'custom_measure_application.info' => 'required',
+            'custom_measure_application.measure_category' => [
+                'required', Rule::in(\Illuminate\Support\Arr::pluck($this->measures, 'Value'))
+            ],
+            'custom_measure_application.costs.from' => 'required|numeric|min:0',
+            'custom_measure_application.costs.to' => 'required|numeric|gte:custom_measure_application.costs.from',
+            'custom_measure_application.savings_money' => 'nullable|numeric|max:999999',
+        ];
+    }
 
     private $calculationMap = [
         'comfort' => [
@@ -198,6 +208,8 @@ class Form extends Component
         $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
 
+        $this->measures = RegulationService::init()->getFilters()['Measures'];
+
         // Set cards
         $this->loadVisibleCards();
         $this->loadHiddenCards();
@@ -211,7 +223,7 @@ class Form extends Component
 
     public function updated($field)
     {
-        $this->validateOnly($field, $this->rules);
+        $this->validateOnly($field, $this->rules());
     }
 
     public function submit()
@@ -229,7 +241,7 @@ class Form extends Component
 
         $validator = Validator::make([
             'custom_measure_application' => $this->custom_measure_application
-        ], $this->rules);
+        ], $this->rules());
 
         if ($validator->fails()) {
             // Validator failed, let's put it back as the user format
@@ -249,6 +261,16 @@ class Form extends Component
             'name' => ['nl' => $measureData['name']],
             'info' => ['nl' => $measureData['info']],
         ]);
+
+        // !important! this has to be done before the userActionPlanAdvice relation is made
+        // otherwise the observer will fire when the mapping hasnt been done yet.
+
+        // Add or update mapping to measure category
+        $measureCategory = $measureData['measure_category'];
+        $targetData = \Illuminate\Support\Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
+        // We read from the master. Therefore we need to sync to the master also.
+        $from = $customMeasureApplication->getSibling($this->masterInputSource);
+        MappingService::init()->from($from)->sync([$targetData]);
 
         $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
 
@@ -270,6 +292,7 @@ class Form extends Component
                     'savings_money' => $measureData['savings_money'] ?? 0,
                 ],
             );
+        CustomMeasureApplicationChanged::dispatch($from);
 
         // Append card
         $this->cards[$category][$order] = [
@@ -669,7 +692,6 @@ class Form extends Component
                 $cards[$category][$order] = [
                     'name' => Str::limit($advisable->measure_name, 57),
                     'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
-                    // TODO: Subsidy
                     'info' => nl2br($advisable->measure_info),
                     'route' => $route,
                     'comfort' => $advisable->configurations['comfort'] ?? 0,

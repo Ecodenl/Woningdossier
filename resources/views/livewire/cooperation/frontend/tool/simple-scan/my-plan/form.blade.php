@@ -63,17 +63,25 @@
                                         {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
                                     </p>
                                 </div>
+                                @if($cardCategory !== \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
                                     @if($card['subsidy_available'])
-                                        <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2 w-full"
-                                             style="width: fit-content; width: -moz-fit-content;">
-                                            Subsidie mogelijk
-                                        </div>
+                                        <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('cooperation', 'scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::SUBSIDY }}"
+                                           class="in-text" draggable="false">
+                                            <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2 w-full"
+                                                 style="width: fit-content; width: -moz-fit-content;">
+                                                @lang('cooperation/frontend/tool.my-plan.cards.subsidy.subsidy-available')
+                                            </div>
+                                        </a>
                                     @elseif($card['loan_available'])
-                                        <div class="h-4 rounded-lg text-xs relative text-orange p bg-red bg-opacity-10 flex items-center px-2 w-full"
-                                             style="width: fit-content; width: -moz-fit-content;">
-                                            Lening mogelijk
-                                        </div>
+                                        <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('cooperation', 'scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::LOAN }}"
+                                           class="in-text" draggable="false">
+                                            <div class="h-4 rounded-lg text-xs relative text-orange p bg-red bg-opacity-10 flex items-center px-2 w-full"
+                                                 style="width: fit-content; width: -moz-fit-content;">
+                                                @lang('cooperation/frontend/tool.my-plan.cards.subsidy.loan-available')
+                                            </div>
+                                        </a>
                                     @endif
+                                @endif
                             </div>
                             <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3"
                                  draggable="true" x-on:dragstart.prevent.stop>
@@ -215,7 +223,7 @@
                                 <div class="flex flex-wrap mb-5">
                                     @component('cooperation.frontend.layouts.components.form-group', [
                                        'inputName' => 'custom_measure_application.name',
-                                       'class' => 'w-full -mt-4 mb-4',
+                                       'class' => 'w-full -mt-8 mb-4',
                                        'id' => 'custom-measure-application-name',
                                        'withInputSource' => false,
                                     ])
@@ -230,7 +238,7 @@
                                     </div>
                                     @component('cooperation.frontend.layouts.components.form-group', [
                                        'inputName' => "custom_measure_application.info",
-                                       'class' => 'w-full mb-4',
+                                       'class' => 'w-full -mt-4 mb-4',
                                        'id' => 'custom-measure-application-info',
                                        'withInputSource' => false,
                                     ])
@@ -242,12 +250,39 @@
                                     <div class="w-full flex items-center">
                                         <i class="icon-sm icon-info mr-3"></i>
                                         <h6 class="heading-6">
+                                            @lang('cooperation/frontend/shared.modals.add-measure.measure-category')
+                                        </h6>
+                                    </div>
+                                    @component('cooperation.frontend.layouts.components.form-group', [
+                                       'inputName' => "custom_measure_application.measure_category",
+                                       'class' => 'w-full -mt-4 mb-4',
+                                       'id' => "custom-measure-application-measure-category-wrapper",
+                                       'withInputSource' => false,
+                                    ])
+                                        @component('cooperation.frontend.layouts.components.alpine-select')
+                                            <select class="form-input hidden"
+                                                    wire:model="custom_measure_application.measure_category"
+                                                    id="custom-measure-application-measure-category">
+                                                <option value="">
+                                                    @lang('default.form.dropdown.choose')
+                                                </option>
+                                                @foreach($measures as $measure)
+                                                    <option value="{{ $measure['Value'] }}">
+                                                        {{ $measure['Label'] }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        @endcomponent
+                                    @endcomponent
+                                    <div class="w-full flex items-center">
+                                        <i class="icon-sm icon-info mr-3"></i>
+                                        <h6 class="heading-6">
                                             @lang('cooperation/frontend/shared.modals.add-measure.costs')
                                         </h6>
                                     </div>
                                     @component('cooperation.frontend.layouts.components.form-group', [
                                         'inputName' => 'custom_measure_application.costs.from',
-                                        'class' => 'w-1/2 pr-1 mb-4',
+                                        'class' => 'w-1/2 pr-1 -mt-4 mb-4',
                                         'id' => 'custom-measure-application-costs-from',
                                         'withInputSource' => false,
                                     ])
@@ -256,7 +291,7 @@
                                     @endcomponent
                                     @component('cooperation.frontend.layouts.components.form-group', [
                                         'inputName' => 'custom_measure_application.costs.to',
-                                        'class' => 'w-1/2 pl-1 mb-4',
+                                        'class' => 'w-1/2 pl-1 -mt-4 mb-4',
                                         'id' => 'custom-measure-application-costs-to',
                                         'withInputSource' => false,
                                     ])
@@ -271,7 +306,7 @@
                                     </div>
                                     @component('cooperation.frontend.layouts.components.form-group', [
                                         'inputName' => 'custom_measure_application.savings_money',
-                                        'class' => 'w-full mb-4',
+                                        'class' => 'w-full -mt-4 mb-4',
                                         'id' => 'custom-measure-application-savings-money',
                                         'withInputSource' => false,
                                     ])

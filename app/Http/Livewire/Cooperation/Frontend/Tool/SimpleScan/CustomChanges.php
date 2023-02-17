@@ -6,8 +6,6 @@ use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
-use App\Jobs\RefreshRegulationsForAdvisable;
-use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
@@ -48,7 +46,9 @@ class CustomChanges extends Component
         return [
             'customMeasureApplicationsFormData.*.name' => 'required',
             'customMeasureApplicationsFormData.*.info' => 'required',
-            'customMeasureApplicationsFormData.*.measure_category' => ['required', Rule::in(Arr::pluck($this->measures, 'Value'))],
+            'customMeasureApplicationsFormData.*.measure_category' => [
+                'required', Rule::in(Arr::pluck($this->measures, 'Value')),
+            ],
             'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
             'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
             'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric|max:999999',
@@ -71,8 +71,8 @@ class CustomChanges extends Component
 
         $this->attributes = [
             'customMeasureApplicationsFormData.*.name' => $globalAttributeTranslations['custom_measure_application.name'],
-            'customMeasureApplicationsFormData.*.measure_category' => $globalAttributeTranslations['custom_measure_application.measure_category'],
             'customMeasureApplicationsFormData.*.info' => $globalAttributeTranslations['custom_measure_application.info'],
+            'customMeasureApplicationsFormData.*.measure_category' => $globalAttributeTranslations['custom_measure_application.measure_category'],
             'customMeasureApplicationsFormData.*.costs.from' => $globalAttributeTranslations['custom_measure_application.costs.from'],
             'customMeasureApplicationsFormData.*.costs.to' => $globalAttributeTranslations['custom_measure_application.costs.to'],
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],

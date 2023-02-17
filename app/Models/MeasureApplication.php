@@ -7,6 +7,7 @@ use App\Helpers\KeyFigures\WallInsulation\Temperature as WallInsulationTemperatu
 use App\Scopes\VisibleScope;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -33,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property array|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $info
  * @property-read string $name
  * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
@@ -117,6 +119,12 @@ class MeasureApplication extends Model
     public function getInfoAttribute(): string
     {
         return $this->measure_info;
+    }
+
+    # Scopes
+    public function scopeMeasureType(Builder $query, string $measureType): Builder
+    {
+        return $query->where('measure_type', $measureType);
     }
 
     # Relations

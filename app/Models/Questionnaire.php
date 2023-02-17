@@ -14,9 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property array $name
- * @property int|null $step_id
  * @property int $cooperation_id
- * @property int $order
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -40,8 +38,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereIsActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereStepId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire whereUpdatedAt($value)
  * @mixin \Eloquent
  */

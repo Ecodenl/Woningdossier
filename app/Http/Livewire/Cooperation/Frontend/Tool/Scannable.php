@@ -156,9 +156,7 @@ abstract class Scannable extends Component
 
                     // we will only unset the rules if its a tool question, not relevant for other sub steppables.
                     if ($subSteppablePivot->isToolQuestion()) {
-                        $this->filledInAnswers[$toolQuestion->short] = null;
-
-                        // and unset the validation for the question based on type.
+                        // unset the validation for the question based on type.
                         switch ($toolQuestion->data_type) {
                             case Caster::JSON:
                                 foreach ($toolQuestion->options as $option) {

@@ -20,10 +20,12 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
+use App\Scopes\GetValueScope;
 use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService
@@ -71,7 +73,10 @@ class UserActionPlanAdviceService
             ->forBuilding($userActionPlanAdvice->user->building)
             ->getSearch();
 
-        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()->first();
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()
+            ->withoutGlobalScope(SoftDeletingScope::class)
+            ->withoutGlobalScope(GetValueScope::class)
+            ->first();
 
         // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
         $regulations = $payload

@@ -41,12 +41,17 @@
         @endif
     </div>
 
+    @if($isSuperAdmin)
     <div class="form-group {{ $errors->has('exampleBuildingValues.cooperation_id') ? ' has-error' : '' }}">
         <label for="cooperation">@lang('cooperation/admin/example-buildings.components.cooperation')</label>
         <select id="cooperation" wire:model="exampleBuildingValues.cooperation_id" class="form-control">
-            <option value="" selected="selected">-</option>
+            @if($isSuperAdmin)
+                <option value="" selected="selected">-</option>
+            @endif
             @foreach($cooperations as $cooperation)
-                <option value="{{ $cooperation->id }}">{{ $cooperation->name }}</option>
+                <option value="{{ $cooperation->id }}">
+                    {{ $cooperation->name }}
+                </option>
             @endforeach
         </select>
 
@@ -56,6 +61,7 @@
         </span>
         @endif
     </div>
+    @endif
 
     <div class="form-group {{ $errors->has('exampleBuildingValues.order') ? 'has-error' : '' }}">
         <label for="order">@lang('cooperation/admin/example-buildings.components.order')</label>

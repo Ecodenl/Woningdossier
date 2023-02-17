@@ -28,33 +28,29 @@ class SettingsController extends Controller
 
         $data = $request->all();
 
-        $buildingData = $data['building'];
-        $userData = $data['user'];
-
-        // now get the pico address data.
-        $picoAddressData = BagService::init()->firstAddress(
-            $buildingData['postal_code'], $buildingData['house_number'], $buildingData['extension']
-        );
-
-        $userData['phone_number'] = $userData['phone_number'] ?? '';
-        $buildingData['extension'] = $buildingData['extension'] ?? '';
-        $buildingData['number'] = $buildingData['number'] ?? '';
-
-
-        BuildingService::init($building)->attachMunicipality();
         // update the user stuff
+        $userData = $data['user'];
+        $userData['phone_number'] = $userData['phone_number'] ?? '';
         $user->update($userData);
-        // now update the building itself
-        $building->update($buildingData);
 
-        // and update the building features with the data from pico.
+        $buildingData['number'] = $buildingData['number'] ?? '';
+        $buildingData = $data['building'];
+        $buildingService = BuildingService::init($building);
+        $buildingService->updateAddress($buildingData);
+        $buildingService->attachMunicipality();
+
+        $addressData = BagService::init()->firstAddress(
+            $buildingData['postal_code'], $buildingData['number'], $buildingData['extension']
+        );
+        // here we update the surface and build year IF bag returns it
+        // we will never nullify it, only "correct" it.
         $building->buildingFeatures()->update([
-            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
-            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
+            'surface' => empty($addressData['surface']) ? null : $addressData['surface'],
+            'build_year' => empty($addressData['build_year']) ? null : $addressData['build_year'],
         ]);
 
         return redirect()->route('cooperation.my-account.index')
-                         ->with('success', __('my-account.settings.store.success'));
+            ->with('success', __('my-account.settings.store.success'));
     }
 
     /**
@@ -72,7 +68,7 @@ class SettingsController extends Controller
         UserService::resetUser($user, InputSource::findByShort(InputSource::MASTER_SHORT));
 
         foreach ($inputSourceIds as $inputSourceId) {
-            Log::debug("resetting for input source " . $inputSourceId);
+            Log::debug("resetting for input source ".$inputSourceId);
             UserService::resetUser($user, InputSource::find($inputSourceId));
         }
 
@@ -95,7 +91,7 @@ class SettingsController extends Controller
 
         $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();
         $success = __('my-account.settings.destroy.success.cooperation');
-        if (! $stillActiveForOtherCooperations) {
+        if ( ! $stillActiveForOtherCooperations) {
             $success = __('my-account.settings.destroy.success.full');
         }
 

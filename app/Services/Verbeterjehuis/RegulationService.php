@@ -4,6 +4,7 @@ namespace App\Services\Verbeterjehuis;
 
 use App\Helpers\Cache\BaseCache;
 use App\Models\Building;
+use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Traits\FluentCaller;
 use Carbon\Carbon;
@@ -37,12 +38,20 @@ class RegulationService
             });
     }
 
-    public function getSearch(): Search
+    public function getSearch(): ?Search
     {
-        $building = $this->building;
-        // ofcourse this should be resolved through the mapping service, but thats for when the bag update is done
-        $this->context['cityId'] = 3336;
+        // we will get the user his municipality
+        // then try to resolve the mapping and set it as a city.
+        $municipality = $this->building->municipality;
+        $target = MappingService::init()->from($municipality)->resolveTarget();
 
+        $cityId = $target['Id'] ?? null;
+
+        if (is_null($cityId)) {
+            return null;
+        }
+
+        $this->context['cityId'] = $cityId;
         return Search::init(
             Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {
                 return Verbeterjehuis::init(Client::init())

@@ -2,6 +2,7 @@
 
 namespace App\Services\Models;
 
+use App\Events\BuildingAddressUpdated;
 use App\Events\NoMappingFoundForBagMunicipality;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
@@ -42,6 +43,7 @@ class BuildingService
             return $this->building->hasCompletedScan($scan, InputSource::findByShort(InputSource::MASTER_SHORT));
         }
     }
+
 
     /**
      * Method speaks for itself... however ->
@@ -90,8 +92,13 @@ class BuildingService
                 if ($mappingService->from($municipalityName)->doesntExist()) {
                     NoMappingFoundForBagMunicipality::dispatch($municipalityName);
                 }
+                // remove the relationship.
+                $this->building->municipality()->disassociate()->save();
             }
         }
+        // in the end it doesnt matter if the user dis or associated a municipality
+        // we have to refresh its advices.
+        BuildingAddressUpdated::dispatch($this->building);
     }
 
     /**

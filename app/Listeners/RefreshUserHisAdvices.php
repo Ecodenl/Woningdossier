@@ -2,20 +2,22 @@
 
 namespace App\Listeners;
 
+use App\Models\Municipality;
+use App\Services\MappingService;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class RefreshUserHisAdvices implements ShouldQueue
 {
+    protected $mappingService;
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(MappingService $mappingService)
     {
-        //
+        $this->mappingService = $mappingService;
     }
 
     /**
@@ -26,6 +28,12 @@ class RefreshUserHisAdvices implements ShouldQueue
      */
     public function handle($event)
     {
-        UserActionPlanAdviceService::init()->forUser($event->building->user)->refreshUserRegulations();
+        // refreshing this has no use when there is no municipality and or mapping for it.
+        if ($event->building->municipality instanceof Municipality) {
+            $municipality = $event->building->municipality;
+            if ($this->mappingService->from($municipality)->exists()) {
+                UserActionPlanAdviceService::init()->forUser($event->building->user)->refreshUserRegulations();
+            }
+        }
     }
 }

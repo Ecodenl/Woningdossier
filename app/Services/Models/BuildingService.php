@@ -46,62 +46,6 @@ class BuildingService
 
 
     /**
-     * Method speaks for itself... however ->
-     * The var is prefixed with "request", this is because we want ALL request address data.
-     * (postal_code, number, extension, city, street)
-     * We simply cant rely on external api data, the address data will always be filled with data from the request
-     * we only need it for the id's
-     * @param  array  $requestAddressData
-     * @return void
-     */
-    public function updateAddress(array $requestAddressData)
-    {
-        $addressData = BagService::init()->firstAddress(
-            $requestAddressData['postal_code'], $requestAddressData['number'], $requestAddressData['extension']
-        );
-        // filter relevant data from the request
-        $buildingData = Arr::only($requestAddressData, ['street', 'city', 'postal_code', 'number']);
-        $buildingData['extension'] = $requestAddressData['extension'] ?? '';
-
-        // the only data we really need from the bag
-        $buildingData['bag_woonplaats_id'] = $addressData['bag_woonplaats_id'];
-        $buildingData['bag_addressid'] = $addressData['bag_addressid'];
-
-        $this->building->update($buildingData);
-    }
-
-    public function attachMunicipality()
-    {
-        $municipalityName = BagService::init()
-            ->showCity($this->building->bag_woonplaats_id, ['expand' => 'true'])
-            ->municipalityName();
-
-        // its entirely possible that a municipality is not returned from the bag.
-        if ( ! is_null($municipalityName)) {
-            $mappingService = new MappingService();
-            $municipality = $mappingService
-                ->from($municipalityName)
-                ->resolveTarget();
-
-
-            if ($municipality instanceof Municipality) {
-                $this->building->municipality()->associate($municipality)->save();
-            } else {
-                // so the target is not resolved, thats "fine". We will check if a empty mapping exists
-                // if not we will create it
-                if ($mappingService->from($municipalityName)->doesntExist()) {
-                    NoMappingFoundForBagMunicipality::dispatch($municipalityName);
-                }
-                // remove the relationship.
-                $this->building->municipality()->disassociate()->save();
-            }
-        }
-        // in the end it doesnt matter if the user dis or associated a municipality
-        // we have to refresh its advices.
-        BuildingAddressUpdated::dispatch($this->building);
-    }
-
-    /**
      * Get the answer for a set of questions including the input source that made that answer.
      * The example building will be prioritized if available.
      * Note that this method does not perform evaluation!

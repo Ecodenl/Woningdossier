@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Services;
+
+use App\Events\BuildingAddressUpdated;
+use App\Events\NoMappingFoundForBagMunicipality;
+use App\Helpers\ToolQuestionHelper;
+use App\Models\Building;
+use App\Models\InputSource;
+use App\Models\Municipality;
+use App\Models\Scan;
+use App\Services\Lvbag\BagService;
+use App\Services\MappingService;
+use App\Services\WoonplanService;
+use App\Traits\FluentCaller;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+
+class BuildingAddressService
+{
+    use FluentCaller;
+
+    public ?Building $building;
+    public BagService $bagService;
+    public MappingService $mappingService;
+
+    public function __construct(BagService $bagService, MappingService $mappingService)
+    {
+        $this->bagService = $bagService;
+        $this->mappingService = $mappingService;
+    }
+
+    public function forBuilding(Building $building): self
+    {
+        $this->building = $building;
+        return $this;
+    }
+
+    /**
+     * Method speaks for itself... however ->
+     * The var is prefixed with "fallback", this is because we want address data to use as a fallback.
+     * (postal_code, number, extension, city, street)
+     * We simply cant rely on external api data, the address data will always be filled with data from the request
+     * we only need it for the id's
+     * @param  array  $fallbackAddressData
+     * @return void
+     */
+    public function updateAddress(array $fallbackAddressData)
+    {
+        $addressData = $this
+            ->bagService
+            ->firstAddress(
+                $fallbackAddressData['postal_code'],
+                $fallbackAddressData['number'],
+                $fallbackAddressData['extension']
+            );
+        // some fields will be left empty when there is no result.
+        $addressData = array_filter($addressData);
+
+        // filter relevant data from the request
+        $buildingData = Arr::only($fallbackAddressData, ['street', 'city', 'postal_code', 'number']);
+        $buildingData = array_merge($buildingData, $addressData);
+        // we will ALWAYS pick the extension from the fallback, BAG returns it in a format we dont use.
+        $buildingData['extension'] = $fallbackAddressData['extension'] ?? '';
+
+        // the only data we really need from the bag
+//        $buildingData['bag_woonplaats_id'] = $addressData['bag_woonplaats_id'];
+//        $buildingData['bag_addressid'] = $addressData['bag_addressid'];
+
+        $this->building->update($buildingData);
+    }
+
+    public function attachMunicipality()
+    {
+        $municipalityName = $this->bagService
+            ->showCity($this->building->bag_woonplaats_id, ['expand' => 'true'])
+            ->municipalityName();
+
+        // its entirely possible that a municipality is not returned from the bag.
+        if ( ! is_null($municipalityName)) {
+            $municipality = $this->mappingService
+                ->from($municipalityName)
+                ->resolveTarget();
+
+
+            if ($municipality instanceof Municipality) {
+                $this->building->municipality()->associate($municipality)->save();
+            } else {
+                // so the target is not resolved, thats "fine". We will check if a empty mapping exists
+                // if not we will create it
+                if ($this->mappingService->from($municipalityName)->doesntExist()) {
+                    NoMappingFoundForBagMunicipality::dispatch($municipalityName);
+                }
+                // remove the relationship.
+                $this->building->municipality()->disassociate()->save();
+            }
+        }
+        // in the end it doesnt matter if the user dis or associated a municipality
+        // we have to refresh its advices.
+        BuildingAddressUpdated::dispatch($this->building);
+    }
+}

@@ -203,8 +203,9 @@ class UserService
 
         // create the building for the user
         $building = $user->building()->save(new Building());
-        BuildingService::init($building)->updateAddress($buildingData);
-        BuildingService::init($building)->attachMunicipality();
+        $buildingAddressService = app(BuildingAddressService::class);
+        $buildingAddressService->forBuilding($building)->updateAddress($buildingData);
+        $buildingAddressService->forBuilding($building)->attachMunicipality();
 
 
         $features->building()->associate(

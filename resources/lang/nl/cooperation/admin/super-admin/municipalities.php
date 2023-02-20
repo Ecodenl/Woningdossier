@@ -28,10 +28,19 @@ return [
     'destroy' => [
         'success' => 'Gemeente verwijderd',
     ],
+    'couple' => [
+        'success' => 'Gemeente(n) succesvol gekoppeld',
+    ],
     'form' => [
         'name' => [
             'label' => 'Naam',
             'placeholder' => 'Naam van de gemeente',
+        ],
+        'bag-municipalities' => [
+            'label' => 'BAG gemeente(n)',
+        ],
+        'vbjehuis-municipality' => [
+            'label' => 'VerbeterJeHuis gemeente',
         ],
     ],
 ];

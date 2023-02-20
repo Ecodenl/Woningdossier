@@ -36,18 +36,12 @@ class MappingService
 
     public function resolveMapping(): Collection
     {
-        if (! empty($this->from)) {
-            return Mapping::where($this->whereFrom())->get();
-        }
-        return collect();
+        return Mapping::where($this->whereFrom())->get();
     }
 
     public function retrieveResolvable(): Collection
     {
-        if (! empty($this->target)) {
-            return Mapping::where($this->whereTarget())->get();
-        }
-        return collect();
+        return Mapping::where($this->whereTarget())->get();
     }
 
     public function exists(): bool
@@ -148,14 +142,15 @@ class MappingService
                 "{$column}_model_type" => $this->{$column}->getMorphClass(),
                 "{$column}_model_id" => $this->{$column}->id,
             ];
-        } else {
+        } elseif (! is_null($this->{$column})) {
             $wheres = ["{$column}_value" => $this->{$column}];
         }
 
         if (! is_null($this->type)) {
-            $wheres[] = ['type' => $this->type];
+            $wheres['type'] = $this->type;
         }
 
-        return $wheres;
+        // If no valid values were passed, we return an impossible where.
+        return $wheres ?? ['id' => -1];
     }
 }

@@ -198,7 +198,11 @@ return [
     'custom-rules' => [
         'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute.',
         'max-filename-length' => 'De bestandsnaam van :attribute mag niet langer zijn dan :length karakters.',
-        'rule-unique' => ':Attribute bestaat al.'
+        'rule-unique' => ':Attribute bestaat al.',
+
+        'municipalities' => [
+            'already-coupled' => ':Attribute is al gekoppeld aan een gemeente!',
+        ],
     ],
 
 
@@ -377,6 +381,9 @@ return [
 
         // Municipalities
         'municipalities.name' => 'naam',
+        'bag_municipalities' => 'BAG gemeente(n)',
+        'bag_municipalities.*' => 'BAG gemeente(n)',
+        'vbjehuis_municipality' => 'VerbeterJeHuis gemeente',
     ],
 
     'values' => [

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasMappings;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -29,7 +30,8 @@ use Illuminate\Support\Str;
 class Municipality extends Model
 {
     use HasFactory,
-        HasShortTrait;
+        HasShortTrait,
+        HasMappings;
 
     protected $fillable = [
         'name', 'short',

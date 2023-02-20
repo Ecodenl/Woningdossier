@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use App\Helpers\MappingHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Admin\SuperAdmin\MunicipalityCoupleRequest;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\MunicipalityRequest;
 use App\Models\Cooperation;
+use App\Models\Mapping;
 use App\Models\Municipality;
+use App\Services\MappingService;
 use App\Services\Models\MunicipalityService;
+use App\Services\Verbeterjehuis\RegulationService;
+use Illuminate\Support\Arr;
 
 class MunicipalityController extends Controller
 {
@@ -27,19 +33,20 @@ class MunicipalityController extends Controller
         $data = $request->validated()['municipalities'];
         $municipality = Municipality::create($data);
 
-        return redirect()->route('cooperation.admin.super-admin.municipalities.show', compact('cooperation', 'municipality'))
+        return redirect()->route('cooperation.admin.super-admin.municipalities.show', compact('municipality'))
             ->with('success', __('cooperation/admin/super-admin/municipalities.store.success'));
     }
 
-    public function show(Cooperation $cooperation, Municipality $municipality, MunicipalityService $service)
+    public function show(Cooperation $cooperation, Municipality $municipality, MunicipalityService $municipalityService)
     {
-        $service->forMunicipality($municipality);
-        $bagMunicipalities = $service->retrieveBagMunicipalities();
-        $vbjehuisMunicipality = $service->retrieveVbjehuisMuncipality();
+        $municipalityService->forMunicipality($municipality);
+        $bagMunicipalities = $municipalityService->getAvailableBagMunicipalities();
+        $vbjehuisMunicipalities = $municipalityService->getAvailableVbjehuisMunicipalities();
+        $mappedVbjehuisMunicipality = $municipalityService->retrieveVbjehuisMuncipality();
 
         return view(
             'cooperation.admin.super-admin.municipalities.show',
-            compact('municipality', 'bagMunicipalities', 'vbjehuisMunicipality')
+            compact('municipality', 'bagMunicipalities', 'mappedVbjehuisMunicipality', 'vbjehuisMunicipalities')
         );
     }
 
@@ -63,5 +70,26 @@ class MunicipalityController extends Controller
 
         return redirect()->route('cooperation.admin.super-admin.municipalities.show')
             ->with('success', __('cooperation/admin/super-admin/municipalities.destroy.success'));
+    }
+
+    public function couple(MunicipalityCoupleRequest $request, Cooperation $cooperation, Municipality $municipality)
+    {
+        $data = $request->validated();
+
+        Mapping::whereIn('id', $data['bag_municipalities'])->update([
+            'target_model_type' => Municipality::class,
+            'target_model_id' => $municipality->id,
+        ]);
+
+        if (! empty($data['vbjehuis_municipality'])) {
+            $municipalities = RegulationService::init()->getFilters()['Cities'];
+            $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] === $data['vbjehuis_municipality']));
+            MappingService::init()->from($municipality)->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
+        } else {
+            $municipality->mappings()->forType(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->delete();
+        }
+
+        return redirect()->route('cooperation.admin.super-admin.municipalities.show', compact('municipality'))
+            ->with('success', __('cooperation/admin/super-admin/municipalities.couple.success'));
     }
 }

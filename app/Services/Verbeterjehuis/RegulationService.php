@@ -3,6 +3,7 @@
 namespace App\Services\Verbeterjehuis;
 
 use App\Helpers\Cache\BaseCache;
+use App\Helpers\MappingHelper;
 use App\Models\Building;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Payloads\Search;
@@ -43,7 +44,11 @@ class RegulationService
         // we will get the user his municipality
         // then try to resolve the mapping and set it as a city.
         $municipality = $this->building->municipality;
-        $target = MappingService::init()->from($municipality)->resolveTarget()->first();
+        $target = MappingService::init()
+            ->from($municipality)
+            ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
+            ->resolveTarget()
+            ->first();
 
         $cityId = $target['Id'] ?? null;
 

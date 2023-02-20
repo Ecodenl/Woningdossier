@@ -4,6 +4,7 @@ namespace App\Services\Models;
 
 use App\Events\BuildingAddressUpdated;
 use App\Events\NoMappingFoundForBagMunicipality;
+use App\Helpers\MappingHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -81,6 +82,7 @@ class BuildingService
             $mappingService = new MappingService();
             $municipality = $mappingService
                 ->from($municipalityName)
+                ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
                 ->resolveTarget()
                 ->first();
 

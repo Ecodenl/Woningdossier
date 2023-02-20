@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -61,6 +62,13 @@ class Mapping extends Model
         'target_data' => 'array'
     ];
 
+    # Scopes
+    public function scopeForType(Builder $query, string $type): Builder
+    {
+        return $query->where('type', $type);
+    }
+
+    # Relations
     public function resolvable(): MorphTo
     {
         return $this->morphTo('from_model');

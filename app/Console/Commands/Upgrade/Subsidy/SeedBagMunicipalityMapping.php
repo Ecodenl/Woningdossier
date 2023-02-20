@@ -10,6 +10,7 @@ use App\Services\MappingService;
 use Illuminate\Cache\Console\ClearCommand;
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class SeedBagMunicipalityMapping extends Command
@@ -45,6 +46,9 @@ class SeedBagMunicipalityMapping extends Command
      */
     public function handle()
     {
+        DB::table('mappings')
+            ->where('type', MappingHelper::TYPE_BAG_MUNICIPALITY)
+            ->delete();
         $filename = Storage::path('plaatsnamen.csv');
         $header = null;
         $delimiter = ',';
@@ -53,13 +57,24 @@ class SeedBagMunicipalityMapping extends Command
                 if (is_null($header)) {
                     $header = $row;
                 } else {
-                    $data = array_combine($header, $row);
-                    MappingService::init()
-                        ->from($data['plaatsnaam'])
-                        ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                    if ($this->shouldSeedMunicipality($row)) {
+                        MappingService::init()
+                            ->from($row[2])
+                            ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                    }
                 }
             }
             fclose($handle);
         }
+    }
+
+    private function shouldSeedMunicipality(array $row)
+    {
+        $gemeenteId = $row[3];
+
+        if (empty($gemeenteId)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -64,10 +64,6 @@ class BuildingAddressService
         // we will ALWAYS pick the extension from the fallback, BAG returns it in a format we dont use.
         $buildingData['extension'] = $fallbackAddressData['extension'] ?? '';
 
-        // the only data we really need from the bag
-//        $buildingData['bag_woonplaats_id'] = $addressData['bag_woonplaats_id'];
-//        $buildingData['bag_addressid'] = $addressData['bag_addressid'];
-
         $this->building->update($buildingData);
     }
 

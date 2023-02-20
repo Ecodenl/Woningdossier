@@ -2,18 +2,12 @@
 
 namespace App\Services\Models;
 
-use App\Events\BuildingAddressUpdated;
-use App\Events\NoMappingFoundForBagMunicipality;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\Municipality;
 use App\Models\Scan;
-use App\Services\Lvbag\BagService;
-use App\Services\MappingService;
 use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 

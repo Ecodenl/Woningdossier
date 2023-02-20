@@ -77,11 +77,12 @@ class BuildingService
             ->municipalityName();
 
         // its entirely possible that a municipality is not returned from the bag.
-        if ( ! is_null($municipalityName)) {
+        if (! is_null($municipalityName)) {
             $mappingService = new MappingService();
             $municipality = $mappingService
                 ->from($municipalityName)
-                ->resolveTarget();
+                ->resolveTarget()
+                ->first();
 
 
             if ($municipality instanceof Municipality) {

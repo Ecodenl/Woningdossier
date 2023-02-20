@@ -43,7 +43,7 @@ class RegulationService
         // we will get the user his municipality
         // then try to resolve the mapping and set it as a city.
         $municipality = $this->building->municipality;
-        $target = MappingService::init()->from($municipality)->resolveTarget();
+        $target = MappingService::init()->from($municipality)->resolveTarget()->first();
 
         $cityId = $target['Id'] ?? null;
 

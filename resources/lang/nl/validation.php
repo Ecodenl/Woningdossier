@@ -374,6 +374,9 @@ return [
         'content.savings_money' => 'besparing',
         'content.extra.icon' => 'icoon',
         'content.is_extensive_measure' => 'is grote maatregel',
+
+        // Municipalities
+        'municipalities.name' => 'naam',
     ],
 
     'values' => [

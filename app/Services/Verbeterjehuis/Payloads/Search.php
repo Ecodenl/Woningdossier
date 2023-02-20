@@ -35,15 +35,18 @@ class Search
 
     public function forMeasure(Model $measureModel): self
     {
-        $target = MappingService::init()->from($measureModel)->resolveTarget();
+        $targets = MappingService::init()->from($measureModel)->resolveTarget();
 
-        if (is_array($target)) {
-            $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {
-                $relevantTags = array_filter($regulation['Tags'], fn($tag) => $tag['Value'] === $target['Value']);
-                return ! empty($relevantTags);
-            });
-        }
-        if (is_null($target)) {
+        if ($targets->isNotEmpty()) {
+            foreach ($targets as $target) {
+                if (is_array($target)) {
+                    $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {
+                        $relevantTags = array_filter($regulation['Tags'], fn($tag) => $tag['Value'] === $target['Value']);
+                        return ! empty($relevantTags);
+                    });
+                }
+            }
+        } else {
             // so there is no mapping available
             // which in a sense means that there are no relevant regulations.
             // this is why we clear it.
@@ -70,7 +73,8 @@ class Search
             ->first();
 
 
-        $target = MappingService::init()->from($toolQuestionCustomValue)->resolveTarget();
+        // If we get more measures for one value, we should change this.
+        $target = MappingService::init()->from($toolQuestionCustomValue)->resolveTarget()->first();
 //        Log::debug('contractType', $toolQuestionCustomValue->toArray());
 //        Log::debug('contractType', $target);
         if (is_array($target)) {

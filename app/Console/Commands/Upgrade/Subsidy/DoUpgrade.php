@@ -53,6 +53,7 @@ class DoUpgrade extends Command
                 ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
             FixContractType::class => [],
+            SeedBagMunicipalityMapping::class => [],
             ClearCommand::class => [],
         ];
 

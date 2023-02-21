@@ -64,14 +64,6 @@ class MunicipalityController extends Controller
             ->with('success', __('cooperation/admin/super-admin/municipalities.update.success'));
     }
 
-    public function destroy(Cooperation $cooperation, Municipality $municipality)
-    {
-        $municipality->delete();
-
-        return redirect()->route('cooperation.admin.super-admin.municipalities.show')
-            ->with('success', __('cooperation/admin/super-admin/municipalities.destroy.success'));
-    }
-
     public function couple(MunicipalityCoupleRequest $request, Cooperation $cooperation, Municipality $municipality)
     {
         $data = $request->validated();

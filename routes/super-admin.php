@@ -81,7 +81,8 @@ Route::resource('cooperation-presets.cooperation-preset-contents', Cooperation\A
     ->only('create', 'edit', 'destroy')
     ->parameters(['cooperation-presets' => 'cooperationPreset', 'cooperation-preset-contents' => 'cooperationPresetContent']);
 
-Route::resource('municipalities', Cooperation\Admin\SuperAdmin\MunicipalityController::class);
+Route::resource('municipalities', Cooperation\Admin\SuperAdmin\MunicipalityController::class)
+    ->except('destroy');
 Route::prefix('municipalities')->as('municipalities.')->group(function () {
     Route::put('{municipality}/couple', [Cooperation\Admin\SuperAdmin\MunicipalityController::class, 'couple'])->name('couple');
 });

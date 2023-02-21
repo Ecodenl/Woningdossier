@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Models\UserActionPlanAdvice;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Bus\Queueable;
@@ -13,6 +14,8 @@ use Illuminate\Queue\SerializesModels;
 class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $queue = Queue::REGULATIONS;
 
     public $userActionPlanAdvice;
 

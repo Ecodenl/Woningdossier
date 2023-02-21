@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\MappingService;
@@ -17,6 +18,8 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public Building $building;
+
+    public $queue = Queue::REGULATIONS;
 
     /**
      * Create a new job instance.

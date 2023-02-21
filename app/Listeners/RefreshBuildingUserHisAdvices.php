@@ -25,6 +25,6 @@ class RefreshBuildingUserHisAdvices
      */
     public function handle($event)
     {
-        RefreshRegulationsForBuildingUser::dispatch($event->building)->onQueue(Queue::REGULATIONS);
+        RefreshRegulationsForBuildingUser::dispatch($event->building);
     }
 }

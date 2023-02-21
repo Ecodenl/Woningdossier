@@ -140,6 +140,12 @@ class Form extends Component
         $this->hydrateExampleBuildingSteps();
 
         $this->validate();
+
+        if (! is_numeric($this->exampleBuildingValues['order'] ?? null)) {
+            // Empty string isn't allowed
+            $this->exampleBuildingValues['order'] = null;
+        }
+
         if ($this->isSuperAdmin) {
             // If the super-admin wants to create a application wide example building
             // he keep the input empty

@@ -45,6 +45,15 @@
                                                     </option>
                                                 @endforeach
                                             </select>
+                                            @if($errors->has('bag_municipalities.*'))
+                                                <div class="has-error">
+                                                    <span class="help-block">
+                                                        <strong>
+                                                            {{ $errors->first('bag_municipalities.*') }}
+                                                        </strong>
+                                                    </span>
+                                                </div>
+                                            @endif
                                         @endcomponent
                                     </div>
                                     <div class="col-xs-6">

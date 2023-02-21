@@ -4,7 +4,6 @@ namespace App\Http\Requests\Cooperation\Admin\SuperAdmin;
 
 use App\Models\Mapping;
 use App\Models\Municipality;
-use App\Rules\UniqueSlug;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MunicipalityCoupleRequest extends FormRequest
@@ -53,7 +52,7 @@ class MunicipalityCoupleRequest extends FormRequest
                 'bail',
                 'nullable',
                 function ($attribute, $value, $fail) {
-                    $mapping = Mapping::where('target_data->id', $value)->first();
+                    $mapping = Mapping::where('target_data->Id', $value)->first();
 
                     // If mapping not yet existent, we're good
                     if ($mapping instanceof Mapping) {

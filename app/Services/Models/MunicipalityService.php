@@ -31,10 +31,10 @@ class MunicipalityService
     {
         return Mapping::where(function ($query) {
             $query->whereNull('target_model_id')
-                ->orWhere([
-                    'target_model_type' => Municipality::class,
-                    'target_model_id' => $this->municipality->id,
-                ]);
+                ->orWhere(function ($query) {
+                    $query->where('target_model_type', Municipality::class)
+                        ->where('target_model_id', $this->municipality->id);
+                });
         })->where('type', MappingHelper::TYPE_BAG_MUNICIPALITY)
             ->get();
     }

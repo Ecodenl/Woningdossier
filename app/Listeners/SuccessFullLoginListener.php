@@ -88,8 +88,6 @@ class SuccessFullLoginListener
         ]);
 
         CheckBuildingAddress::dispatchSync($building);
-
-
     }
 
     /**

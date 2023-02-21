@@ -6,12 +6,14 @@ use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncMeasures;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncTargetGroups;
 use App\Helpers\Arr;
 use App\Helpers\MappingHelper;
+use App\Models\Municipality;
 use App\Services\MappingService;
 use Illuminate\Cache\Console\ClearCommand;
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SeedBagMunicipalityMapping extends Command
 {
@@ -46,10 +48,6 @@ class SeedBagMunicipalityMapping extends Command
      */
     public function handle()
     {
-        DB::table('mappings')
-            ->where('type', MappingHelper::TYPE_BAG_MUNICIPALITY)
-            ->delete();
-
         $filename = Storage::path('plaatsnamen.csv');
         $header = null;
         $delimiter = ',';
@@ -59,9 +57,17 @@ class SeedBagMunicipalityMapping extends Command
                     $header = $row;
                 } else {
                     if ($this->shouldSeedMunicipality($row)) {
+                        $municipality = Municipality::updateOrCreate(
+                            [
+                                'short' => Str::slug($row[2])
+                            ],
+                            [
+                                'name' => $row[2],
+                            ]
+                        );
                         MappingService::init()
                             ->from($row[2])
-                            ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
+                            ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
                     }
                 }
             }

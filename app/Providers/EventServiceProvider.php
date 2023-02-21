@@ -34,7 +34,7 @@ use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\RefreshRelatedAdvices;
-use App\Listeners\RefreshUserHisAdvices;
+use App\Listeners\RefreshBuildingUserHisAdvices;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
 use App\Listeners\SendUserAssociatedWithCooperationMail;
 use App\Listeners\SetMessagesReadForBuilding;
@@ -68,7 +68,7 @@ class EventServiceProvider extends ServiceProvider
             RefreshRelatedAdvices::class
         ],
         BuildingAddressUpdated::class => [
-            RefreshUserHisAdvices::class
+            RefreshBuildingUserHisAdvices::class
         ],
         Login::class => [
             SuccessFullLoginListener::class,

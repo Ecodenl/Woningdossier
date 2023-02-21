@@ -13,6 +13,7 @@ use App\Models\PrivateMessage;
 use App\Models\Scan;
 use App\Models\Status;
 use App\Models\User;
+use App\Services\BuildingAddressService;
 use App\Services\BuildingCoachStatusService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
@@ -87,7 +88,7 @@ class BuildingController extends Controller
         return view('cooperation.admin.buildings.edit', compact('building', 'user', 'account'));
     }
 
-    public function update(BuildingFormRequest $request, Cooperation $cooperation, Building $building)
+    public function update(BuildingFormRequest $request, BuildingAddressService $buildingAddressService, Cooperation $cooperation, Building $building)
     {
         $validatedData = $request->validated();
         if (! is_null($validatedData['users']['extra']['contact_id'] ?? null)) {
@@ -95,10 +96,9 @@ class BuildingController extends Controller
             $validatedData['users']['extra']['contact_id'] = (int) $validatedData['users']['extra']['contact_id'];
         }
 
-        $buildingService = BuildingService::init($building);
-        $buildingService->updateAddress($validatedData['buildings']);
+        $buildingAddressService->forBuilding($building)->updateAddress($validatedData['buildings']);
 
-        $buildingService->attachMunicipality();
+        $buildingAddressService->forBuilding($building)->attachMunicipality();
 
         $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';
         $building->user->update($validatedData['users']);

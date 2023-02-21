@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -208,10 +209,9 @@ class UserService
         $buildingData = Arr::only($data, ['street', 'city', 'postal_code', 'number', 'extension']);
 
         // create the building for the user
-        $building = $user->building()->save(new Building());
-        BuildingService::init($building)->updateAddress($buildingData);
-        BuildingService::init($building)->attachMunicipality();
+        $building = $user->building()->save(new Building([$buildingData]));
 
+        CheckBuildingAddress::dispatchSync($building);
 
         $features->building()->associate(
             $building

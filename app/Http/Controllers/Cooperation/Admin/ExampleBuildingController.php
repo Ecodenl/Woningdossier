@@ -66,7 +66,8 @@ class ExampleBuildingController extends Controller
     {
         $exampleBuilding->delete();
 
-        return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building deleted');
+        return redirect()->route('cooperation.admin.example-buildings.index')
+            ->with('success', __('cooperation/admin/example-buildings.destroy.success'));
     }
 
     /**

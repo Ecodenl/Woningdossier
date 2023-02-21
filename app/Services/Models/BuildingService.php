@@ -73,8 +73,11 @@ class BuildingService
 
     public function attachMunicipality()
     {
+        // MUST be string! Empty string is ok.
+        $bagWoonplaatsId = (string) $this->building->bag_woonplaats_id;
+
         $municipalityName = BagService::init()
-            ->showCity($this->building->bag_woonplaats_id, ['expand' => 'true'])
+            ->showCity($bagWoonplaatsId, ['expand' => 'true'])
             ->municipalityName();
 
         // its entirely possible that a municipality is not returned from the bag.

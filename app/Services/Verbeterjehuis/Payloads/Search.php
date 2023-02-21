@@ -37,15 +37,20 @@ class Search
     {
         $targets = MappingService::init()->from($measureModel)->resolveTarget();
 
+        $values = [];
         if ($targets->isNotEmpty()) {
             foreach ($targets as $target) {
                 if (is_array($target)) {
-                    $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($target) {
-                        $relevantTags = array_filter($regulation['Tags'], fn($tag) => $tag['Value'] === $target['Value']);
-                        return ! empty($relevantTags);
-                    });
+                    $values[] = $target['Value'];
                 }
             }
+        }
+
+        if (! empty($values)) {
+            $this->transformedPayload = $this->transformedPayload->filter(function ($regulation) use ($values) {
+                $relevantTags = array_filter($regulation['Tags'], fn($tag) => in_array($tag['Value'], $values));
+                return ! empty($relevantTags);
+            });
         } else {
             // so there is no mapping available
             // which in a sense means that there are no relevant regulations.

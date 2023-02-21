@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Conditions\Evaluators;
 
+use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Services\Verbeterjehuis\RegulationService;
 
 class MeasureHasSubsidy extends ShouldEvaluate
@@ -30,17 +31,26 @@ class MeasureHasSubsidy extends ShouldEvaluate
             ];
         }
 
-        $regulations = RegulationService::init()
+        $payload = $regulations = RegulationService::init()
             ->forBuilding($building)
-            ->getSearch()
-            ->forMeasure($advisable)
-            ->forBuildingContractType($building, $inputSource, $this->getAnswer('building-contract-type'));
+            ->getSearch();
 
-        $bool = $regulations->getSubsidies()->isNotEmpty();
+        if ($payload instanceof Search) {
+            $payload->forMeasure($advisable)
+                ->forBuildingContractType($building, $inputSource, $this->getAnswer('building-contract-type'));
+
+            $bool = $regulations->getSubsidies()->isNotEmpty();
+
+            return [
+                'results' => $bool,
+                'bool' => $bool,
+                'key' => $key,
+            ];
+        }
 
         return [
-            'results' => $bool,
-            'bool' => $bool,
+            'results' => false,
+            'bool' => false,
             'key' => $key,
         ];
     }

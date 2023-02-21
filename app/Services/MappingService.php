@@ -3,21 +3,18 @@
 namespace App\Services;
 
 use App\Models\Mapping;
-use App\Models\User;
 use App\Traits\FluentCaller;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class MappingService
 {
     use FluentCaller;
 
-    public $from;
-    public $target;
-
-    public function __construct()
-    {
-    }
+    protected $from;
+    protected $target;
+    protected ?string $type = null;
 
     public function from($from): self
     {
@@ -31,12 +28,20 @@ class MappingService
         return $this;
     }
 
-    public function resolveMapping(): ?Mapping
+    public function type(string $type): self
     {
-        if ( ! empty($this->from)) {
-            return Mapping::where($this->whereFrom())->first();
-        }
-        return null;
+        $this->type = $type;
+        return $this;
+    }
+
+    public function resolveMapping(): Collection
+    {
+        return Mapping::where($this->whereFrom())->get();
+    }
+
+    public function retrieveResolvable(): Collection
+    {
+        return Mapping::where($this->whereTarget())->get();
     }
 
     public function exists(): bool
@@ -49,32 +54,53 @@ class MappingService
         return ! $this->exists();
     }
 
-    public function resolveTarget()
+    public function resolveFrom(): Collection
     {
-        $mapping = $this->resolveMapping();
-        if ($mapping instanceof Mapping) {
-            if ( ! empty($mapping->target_data)) {
-                return $mapping->target_data;
-            }
-            if ( ! is_null($mapping->target_value)) {
-                return $mapping->target_value;
-            }
-            if ( ! is_null($mapping->target_model_type)) {
-                return $mapping->mapable;
+        $data = [];
+
+        foreach ($this->retrieveResolvable() as $mapping) {
+            if ($mapping instanceof Mapping) {
+                if (! is_null($mapping->from_value)) {
+                    $data[] = $mapping->from_value;
+                }
+                if (! is_null($mapping->from_model_type)) {
+                    $data[] = $mapping->resolvable;
+                }
             }
         }
-        return null;
+
+        return collect($data);
+    }
+
+    public function resolveTarget(): Collection
+    {
+        $data = [];
+
+        foreach ($this->resolveMapping() as $mapping) {
+            if ($mapping instanceof Mapping) {
+                if (! empty($mapping->target_data)) {
+                    $data[] = $mapping->target_data;
+                }
+                if (! is_null($mapping->target_value)) {
+                    $data[] = $mapping->target_value;
+                }
+                if (! is_null($mapping->target_model_type)) {
+                    $data[] = $mapping->mappable;
+                }
+            }
+        }
+
+        return collect($data);
     }
 
     public function whereFrom(): array
     {
-        if ($this->from instanceof Model) {
-            return [
-                'from_model_type' => $this->from->getMorphClass(),
-                'from_model_id' => $this->from->id,
-            ];
-        }
-        return ['from_value' => $this->from];
+        return $this->whereStruct('from');
+    }
+
+    public function whereTarget(): array
+    {
+        return $this->whereStruct('target');
     }
 
     public function sync(array $syncableData = [], ?string $type = null): void
@@ -107,5 +133,24 @@ class MappingService
 
         DB::table((new Mapping())->getTable())
             ->insert($attributes);
+    }
+
+    private function whereStruct(string $column): array
+    {
+        if ($this->{$column} instanceof Model) {
+            $wheres = [
+                "{$column}_model_type" => $this->{$column}->getMorphClass(),
+                "{$column}_model_id" => $this->{$column}->id,
+            ];
+        } elseif (! is_null($this->{$column})) {
+            $wheres = ["{$column}_value" => $this->{$column}];
+        }
+
+        if (! is_null($this->type)) {
+            $wheres['type'] = $this->type;
+        }
+
+        // If no valid values were passed, we return an impossible where.
+        return $wheres ?? ['id' => -1];
     }
 }

@@ -54,6 +54,11 @@
                                     @lang('cooperation/admin/shared.sidebar.cooperation-presets')
                                 </a>
                             </li>
+                            <li class="list-group-item @if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.super-admin.municipalities')) active @endif">
+                                <a href="{{route('cooperation.admin.super-admin.municipalities.index')}}">
+                                    @lang('cooperation/admin/shared.sidebar.municipalities')
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

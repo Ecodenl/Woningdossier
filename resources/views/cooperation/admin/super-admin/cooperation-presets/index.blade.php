@@ -19,9 +19,9 @@
                         <tbody>
                             @foreach($cooperationPresets as $cooperationPreset)
                                 <tr>
-                                    <td>{{$cooperationPreset->title}}</td>
+                                    <td>{{ $cooperationPreset->title }}</td>
                                     <td>
-                                        <a href="{{route('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperationPreset'))}}"
+                                        <a href="{{ route('cooperation.admin.super-admin.cooperation-presets.show', compact('cooperationPreset')) }}"
                                            class="btn btn-success">
                                             @lang('cooperation/admin/super-admin/cooperation-presets.show.title')
                                         </a>

@@ -100,7 +100,7 @@ class BagService
         return $result;
     }
 
-    public function showCity($woonplaatsIdentificatie, array $attributes = []): ?City
+    public function showCity(string $woonplaatsIdentificatie, array $attributes = []): ?City
     {
         return new City($this->wrapCall(function () use ($woonplaatsIdentificatie, $attributes) {
             return Lvbag::init($this->client)

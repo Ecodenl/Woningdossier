@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddMunicipalityColumnToBuildingsTable extends Migration
+class DropMunicipalityColumnFromBuildingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddMunicipalityColumnToBuildingsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('buildings', 'municipality')) {
+        if (Schema::hasColumn('buildings', 'municipality')) {
             Schema::table('buildings', function (Blueprint $table) {
-                $table->string('municipality')->nullable()->default(null)->after('city');
+                $table->dropColumn('municipality');
             });
         }
     }
@@ -27,10 +27,6 @@ class AddMunicipalityColumnToBuildingsTable extends Migration
      */
     public function down()
     {
-        Schema::table('buildings', function (Blueprint $table) {
-            if (Schema::hasColumn('buildings', 'municipality')) {
-                $table->dropColumn('municipality');
-            }
-        });
+        // No
     }
 }

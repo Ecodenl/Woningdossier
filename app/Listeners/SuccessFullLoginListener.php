@@ -89,7 +89,7 @@ class SuccessFullLoginListener
 
         CheckBuildingAddress::dispatchSync($building);
 
-        UserActionPlanAdviceService::init()->forUser($user)->refreshUserRegulations();
+
     }
 
     /**

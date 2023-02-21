@@ -48,10 +48,6 @@ class SeedBagMunicipalityMapping extends Command
      */
     public function handle()
     {
-        DB::table('mappings')
-            ->where('type', MappingHelper::TYPE_BAG_MUNICIPALITY)
-            ->delete();
-
         $filename = Storage::path('plaatsnamen.csv');
         $header = null;
         $delimiter = ',';

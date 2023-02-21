@@ -3,7 +3,9 @@
 namespace App\Services\Verbeterjehuis;
 
 use App\Helpers\Cache\BaseCache;
+use App\Helpers\MappingHelper;
 use App\Models\Building;
+use App\Models\Municipality;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Traits\FluentCaller;
@@ -43,22 +45,30 @@ class RegulationService
         // we will get the user his municipality
         // then try to resolve the mapping and set it as a city.
         $municipality = $this->building->municipality;
-        $target = MappingService::init()->from($municipality)->resolveTarget();
+        if ($municipality instanceof Municipality) {
+            $target = MappingService::init()
+                ->from($municipality)
+                ->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)
+                ->resolveTarget()
+                ->first();
 
-        $cityId = $target['Id'] ?? null;
+            $cityId = $target['Id'] ?? null;
 
-        if (is_null($cityId)) {
-            return null;
+            if (is_null($cityId)) {
+                return null;
+            }
+
+            $this->context['cityId'] = $cityId;
+            return Search::init(
+                Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {
+                    return Verbeterjehuis::init(Client::init())
+                        ->regulation()
+                        ->search($this->context);
+                })
+            );
         }
 
-        $this->context['cityId'] = $cityId;
-        return Search::init(
-            Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {
-                return Verbeterjehuis::init(Client::init())
-                    ->regulation()
-                    ->search($this->context);
-            })
-        );
+        return null;
     }
 
     private function getCacheKey(): string

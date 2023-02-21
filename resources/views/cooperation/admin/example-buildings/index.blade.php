@@ -76,7 +76,6 @@
             $(document).on('click', '.destroy-example-building', function (event) {
                 if (! confirm('@lang('cooperation/admin/example-buildings.destroy.confirm')')) {
                     event.preventDefault();
-                    event.stopImmediatePropagation();
                     return false;
                 }
             });

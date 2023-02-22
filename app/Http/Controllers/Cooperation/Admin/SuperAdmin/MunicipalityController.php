@@ -68,11 +68,47 @@ class MunicipalityController extends Controller
     {
         $data = $request->validated();
 
-        Mapping::whereIn('id', $data['bag_municipalities'])->update([
-            'target_model_type' => Municipality::class,
-            'target_model_id' => $municipality->id,
-        ]);
+        $bagIds = [];
+        $newBags = [];
+        foreach ($data['bag_municipalities'] as $value) {
+            if (is_numeric($value)) {
+                $bagIds[] = $value;
+            } else {
+                // No further validation. We expect the admin to be smart and not fill in already used municipalities.
+                // If they do, it might mess up for the users, but then they are to blame :)
+                $newBags[] = [
+                    'type' => MappingHelper::TYPE_BAG_MUNICIPALITY,
+                    'from_value' => $value,
+                    'target_model_type' => Municipality::class,
+                    'target_model_id' => $municipality->id,
+                ];
+            }
+        }
 
+        // Clear all related first.
+        Mapping::where('target_model_type', Municipality::class)
+            ->where('target_model_id', $municipality->id)
+            ->forType(MappingHelper::TYPE_BAG_MUNICIPALITY)
+            ->update([
+                'target_model_type' => null,
+                'target_model_id' => null,
+            ]);
+
+        // If IDs, link IDs.
+        if (! empty($bagIds)) {
+            Mapping::whereIn('id', $bagIds)->update([
+                'target_model_type' => Municipality::class,
+                'target_model_id' => $municipality->id,
+            ]);
+        }
+
+        // If user input, create new rows.
+        if (! empty($newBags)) {
+            // We don't need model events.
+            Mapping::insert($newBags);
+        }
+
+        // Add or unlink vbjehuis municipality.
         if (! empty($data['vbjehuis_municipality'])) {
             $municipalities = RegulationService::init()->getFilters()['Cities'];
             $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] === $data['vbjehuis_municipality']));

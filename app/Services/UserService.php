@@ -9,6 +9,7 @@ use App\Models\BuildingFeature;
 use App\Models\CompletedQuestionnaire;
 use App\Models\Considerable;
 use App\Models\Cooperation;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\User;
 use App\Services\Lvbag\BagService;
@@ -110,7 +111,12 @@ class UserService
         $building->stepComments()->forInputSource($inputSource)->delete();
         // remove the answers on the custom questionnaires
         $building->questionAnswers()->forInputSource($inputSource)->delete();
-        // remove Custom Measure Applications the user has made
+
+        // Remove all mappings related to custom measure applications
+        DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
+            ->whereIn('from_model_id', $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray())
+            ->delete();
+        // Remove custom measure applications the user has made
         $building->customMeasureApplications()->forInputSource($inputSource)->delete();
 
         // remove the action plan advices from the user

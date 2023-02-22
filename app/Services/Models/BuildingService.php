@@ -4,6 +4,7 @@ namespace App\Services\Models;
 
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Scan;
 use App\Services\WoonplanService;
@@ -198,8 +199,15 @@ class BuildingService
 
         $building->stepComments()->withoutGlobalScopes()->delete();
 
+        // Remove all mappings related to custom measure applications. Custom measures will get "auto deleted" due
+        // to cascade on delete, but mappings are a morph relation without foreign key constraints, so we must
+        // delete them ourselves.
+        DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
+            ->whereIn('from_model_id', $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray())
+            ->delete();
+
         // table will be removed anyways.
-        \DB::table('building_appliances')->whereBuildingId($building->id)->delete();
+        DB::table('building_appliances')->whereBuildingId($building->id)->delete();
 
         $building->forceDelete();
     }

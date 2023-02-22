@@ -8,5 +8,6 @@ return [
             'extensive' => 'Eenvoudige variant grote maatregelen beheren',
             'small' => 'Uitgebreide variant eigen maatregelen beheren',
         ],
+        'municipalities' => 'Gemeenten',
     ],
 ];

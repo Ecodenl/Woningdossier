@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasMappings;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 /**
  * App\Models\Municipality
@@ -27,10 +29,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Municipality extends Model
 {
-    use HasFactory, HasShortTrait;
+    use HasFactory,
+        HasShortTrait,
+        HasMappings;
 
     protected $fillable = [
-        'name',
-        'short'
+        'name', 'short',
     ];
+
+    public static function booted()
+    {
+        static::saving(function (Municipality $municipality) {
+            $municipality->short = Str::slug($municipality->name);
+        });
+    }
 }

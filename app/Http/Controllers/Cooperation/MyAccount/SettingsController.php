@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Account;
 use App\Models\InputSource;
+use App\Services\BuildingAddressService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
 use App\Services\UserService;
@@ -21,7 +22,7 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(MyAccountSettingsFormRequest $request)
+    public function update(BuildingAddressService $buildingAddressService, BagService $bagService, MyAccountSettingsFormRequest $request)
     {
         $user = Hoomdossier::user();
         $building = HoomdossierSession::getBuilding(true);
@@ -35,11 +36,10 @@ class SettingsController extends Controller
 
         $buildingData['number'] = $buildingData['number'] ?? '';
         $buildingData = $data['building'];
-        $buildingService = BuildingService::init($building);
-        $buildingService->updateAddress($buildingData);
-        $buildingService->attachMunicipality();
+        $buildingAddressService->forBuilding($building)->updateAddress($buildingData);
+        $buildingAddressService->forBuilding($building)->attachMunicipality();
 
-        $addressData = BagService::init()->firstAddress(
+        $addressData = $bagService->firstAddress(
             $buildingData['postal_code'], $buildingData['number'], $buildingData['extension']
         );
         // here we update the surface and build year IF bag returns it

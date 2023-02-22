@@ -18,10 +18,8 @@ class BuildingFactory extends Factory
             'number' => $this->faker->numberBetween(3, 22),
             'city' => 'bubba',
             'postal_code' => $this->faker->postcode,
-            'country_code' => $this->faker->countryCode,
             'owner' => $this->faker->boolean,
             'primary' => $this->faker->boolean,
-            'user_id' => \App\Models\User::factory(),
         ];
     }
 }

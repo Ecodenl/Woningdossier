@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
+use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -86,7 +87,7 @@ class SuccessFullLoginListener
             ]),
         ]);
 
-        UserActionPlanAdviceService::init()->forUser($user)->refreshUserRegulations();
+        CheckBuildingAddress::dispatchSync($building);
     }
 
     /**

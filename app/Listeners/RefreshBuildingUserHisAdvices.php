@@ -2,11 +2,10 @@
 
 namespace App\Listeners;
 
-use App\Services\UserActionPlanAdviceService;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Helpers\Queue;
+use App\Jobs\RefreshRegulationsForBuildingUser;
 
-class RefreshUserHisAdvices implements ShouldQueue
+class RefreshBuildingUserHisAdvices
 {
     /**
      * Create the event listener.
@@ -15,7 +14,7 @@ class RefreshUserHisAdvices implements ShouldQueue
      */
     public function __construct()
     {
-        //
+
     }
 
     /**
@@ -26,6 +25,6 @@ class RefreshUserHisAdvices implements ShouldQueue
      */
     public function handle($event)
     {
-        UserActionPlanAdviceService::init()->forUser($event->building->user)->refreshUserRegulations();
+        RefreshRegulationsForBuildingUser::dispatch($event->building);
     }
 }

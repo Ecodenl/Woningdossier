@@ -33,6 +33,10 @@ class AddressExpanded
         if ($this->expendedAddress['endpoint_failure'] == false) {
             $data['bag_addressid'] = $address['nummeraanduidingIdentificatie'] ?? '';
             $data['bag_woonplaats_id'] = $address['woonplaatsIdentificatie'] ?? '';
+
+            if (empty($data['bag_woonplaats_id'])) {
+                $data['municipality_id'] = null;
+            }
         }
 
         return $data;

@@ -2,13 +2,16 @@
 
 namespace App\Listeners;
 
+use App\Helpers\Queue;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\MeasureApplication;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RefreshRelatedAdvices
+class RefreshRelatedAdvices implements ShouldQueue
 {
+    public $queue = Queue::REGULATIONS;
     /**
      * Create the event listener.
      *

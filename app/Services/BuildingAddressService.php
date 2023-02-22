@@ -63,19 +63,21 @@ class BuildingAddressService
 
     public function attachMunicipality()
     {
-        $bagWoonplaatsId = (string) $this->building->bag_woonplaats_id;
+        // MUST be string! Empty string is ok.
+        $bagWoonplaatsId = (string)$this->building->bag_woonplaats_id;
 
-        $municipalityName = $this->bagService
+        $municipalityName = $this
+            ->bagService
             ->showCity($bagWoonplaatsId, ['expand' => 'true'])
             ->municipalityName();
 
         // its entirely possible that a municipality is not returned from the bag.
         if ( ! is_null($municipalityName)) {
             $municipality = $this->mappingService
-                     ->from($municipalityName)
-                     ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
-                     ->resolveTarget()
-                     ->first();
+                ->from($municipalityName)
+                ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
+                ->resolveTarget()
+                ->first();
 
 
             if ($municipality instanceof Municipality) {

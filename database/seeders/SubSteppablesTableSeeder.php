@@ -3156,6 +3156,11 @@ class SubSteppablesTableSeeder extends Seeder
                                         'operator' => Clause::NEQ,
                                         'value' => 0,
                                     ],
+                                    //[
+                                    //    'column' => 'wall-facade-plastered-painted',
+                                    //    'operator' => Clause::NEQ,
+                                    //    'value' => 2,
+                                    //],
                                 ],
                             ], null, null, $cavityWallInsulation),
                         ],

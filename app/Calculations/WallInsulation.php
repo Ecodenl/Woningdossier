@@ -48,6 +48,7 @@ class WallInsulation
         ];
 
         $advice = $cavityWallAdvice[$cavityWall] ?? Temperature::WALL_INSULATION_JOINTS;
+        $result['measure'] = $advice;
 
         $insulationAdvice = MeasureApplication::findByShort($advice);
 
@@ -57,6 +58,7 @@ class WallInsulation
         // 1 = yes
         if ($isPlastered && $cavityWall == 1) {
             $advice = "alerts.description.title";
+            //$result['measure'] = null;
         }
         $result['insulation_advice'] = __('wall-insulation.'.$advice);
 

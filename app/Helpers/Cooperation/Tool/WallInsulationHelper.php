@@ -113,8 +113,8 @@ class WallInsulationHelper extends ToolHelper
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         if ($this->considers($step)) {
-            if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-                $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])->first();
+            if (! is_null($results['measure']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+                $measureApplication = MeasureApplication::findByShort($results['measure']);
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results);
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;

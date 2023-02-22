@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Mail;
 
 class CreateTargetlessMappingForMunicipality implements ShouldQueue
 {
-    public $queue = 'default';
-
     public MappingService $mappingService;
     /**
      * Create the event listener.

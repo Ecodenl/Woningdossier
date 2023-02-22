@@ -8,12 +8,16 @@ use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
 use App\Services\Models\NotificationService;
 use Carbon\Carbon;
+use Ecodenl\LvbagPhpWrapper\Client;
+use Ecodenl\LvbagPhpWrapper\Lvbag;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Application;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
@@ -106,6 +110,18 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrapThree();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        $this->app->bind(Client::class, function(Application $app) {
+            return new Client(
+                config('hoomdossier.services.bag.secret'),
+                'epsg:28992',
+                App::isProduction(),
+            );
+        });
+
+        $this->app->bind(Lvbag::class, function (Application $app) {
+            return new Lvbag($app->make(Client::class));
+        });
     }
 
     /**

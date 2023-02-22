@@ -20,9 +20,7 @@ class AddressExpanded
     public function prepareForBuilding(): array
     {
         $address = $this->expendedAddress;
-        return  [
-            'bag_addressid' => $address['nummeraanduidingIdentificatie'] ?? '',
-            'bag_woonplaats_id' => $address['woonplaatsIdentificatie'] ?? '',
+        $data = [
             'street' => $address['openbareRuimteNaam'] ?? '',
             'number' => $address['huisnummer'] ?? '',
             'postal_code' => $address['postcode'] ?? '',
@@ -30,5 +28,13 @@ class AddressExpanded
             'build_year' => $address['oorspronkelijkBouwjaar'][0] ?? 1930,
             'surface' => $address['oppervlakte'] ?? 0,
         ];
+
+        // when there is no endpoint failure we can get the data from the endpoint.
+        if ($this->expendedAddress['endpoint_failure'] == false) {
+            $data['bag_addressid'] = $address['nummeraanduidingIdentificatie'] ?? '';
+            $data['bag_woonplaats_id'] = $address['woonplaatsIdentificatie'] ?? '';
+        }
+
+        return $data;
     }
 }

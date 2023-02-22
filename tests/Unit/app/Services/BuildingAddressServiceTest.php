@@ -7,15 +7,14 @@ use App\Models\Building;
 use App\Models\Municipality;
 use App\Models\User;
 use App\Services\BuildingAddressService;
-use App\Services\Lvbag\BagService;
+use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\MappingService;
-use App\Services\Models\BuildingService;
 use Database\Seeders\DatabaseSeeder;
+use Ecodenl\LvbagPhpWrapper\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
@@ -35,7 +34,8 @@ class BuildingAddressServiceTest extends TestCase
     public function test_municipality_attaches_when_mapping_available()
     {
         // this woonplaats should be "Goeree-Overflakkee"
-        $building = User::factory()->create()->building;
+        $user = User::factory()->create();
+        $building = Building::factory()->create(['user_id' => $user->id]);
         $building->update([
             'bag_woonplaats_id' => '2134',
         ]);
@@ -50,7 +50,7 @@ class BuildingAddressServiceTest extends TestCase
         $this->assertDatabaseHas('buildings', ['id' => $building->id, 'municipality_id' => $municipality->id]);
     }
 
-    public function test_update_address_uses_fallback_when_bag_down()
+    public function test_update_address_uses_fallback_on_empty_bag_response()
     {
         $fallbackData = [
             'street' => $this->faker->streetName,
@@ -60,31 +60,29 @@ class BuildingAddressServiceTest extends TestCase
             'postal_code' => $this->faker->postcode,
         ];
 
-        $building = User::factory()->create()->building;
+        $user = User::factory()->create();
+        $building = Building::factory()->create([
+            'bag_addressid' => 32443234234,
+            'bag_woonplaats_id' => 2433,
+            'user_id' => $user->id
+        ]);
 
-        $this->mock(
-            BagService::class,
-            function (MockInterface $mock) use ($fallbackData) {
-                return $mock->shouldReceive('firstAddress')
-                    ->once()
-                    ->andReturn([
-                        'bag_addressid' => '',
-                        'bag_woonplaats_id' => '',
-                        'street' => '',
-                        'number' => $fallbackData['number'],
-                        'postal_code' => $fallbackData['postal_code'],
-                        'city' => '',
-                        'build_year' => 1930,
-                        'surface' => 0,
-                    ]);
+        $this->partialMock(
+            Client::class,
+            function (MockInterface $mock) {
+                return $mock
+                    ->shouldReceive('get')
+                    ->andReturn([]);
             }
         );
 
         app(BuildingAddressService::class)->forBuilding($building)->updateAddress($fallbackData);
 
+        $fallbackData['bag_addressid'] = '';
+        $fallbackData['bag_woonplaats_id'] = '';
+
         $this->assertDatabaseHas('buildings', $fallbackData);
     }
-
 
     public function test_update_address_uses_bag_as_thruth_when_available()
     {
@@ -96,33 +94,48 @@ class BuildingAddressServiceTest extends TestCase
             'postal_code' => $this->faker->postcode,
         ];
 
-
-        $building = User::factory()->create()->building;
+        $user = User::factory()->create();
+        $building = Building::factory()->create([
+            'bag_addressid' => 32443234234,
+            'bag_woonplaats_id' => 2433,
+            'user_id' => $user->id
+        ]);
 
         $mockedApiData = [
-            'bag_addressid' => '237984',
-            'bag_woonplaats_id' => '2783',
-            'street' => 'Boezemweg',
-            'number' => $fallbackData['number'],
-            'postal_code' => $fallbackData['postal_code'],
-            'city' => 'Oude-Tonge',
-            'build_year' => 1930,
-            'surface' => 120,
+            "_embedded" => [
+                "adressen" => [
+                    [
+                        "nummeraanduidingIdentificatie" => "1924200000030235",
+                        "woonplaatsIdentificatie" => "2134",
+                        "openbareRuimteNaam" => "Boezemweg",
+                        "huisnummer" => $fallbackData['number'],
+                        "postcode" => $fallbackData['postal_code'],
+                        "woonplaatsNaam" => "Oude-Tonge",
+                        "oorspronkelijkBouwjaar" => [
+                            0 => "2015"
+                        ],
+                        "oppervlakte" => 2666,
+                    ],
+                ],
+            ]
         ];
-        $this->mock(
-            BagService::class,
+        $this->partialMock(
+            Client::class,
             function (MockInterface $mock) use ($mockedApiData) {
-                return $mock->shouldReceive('firstAddress')
-                    ->once()
+                return $mock
+                    ->shouldReceive('get')
                     ->andReturn($mockedApiData);
             }
         );
 
         app(BuildingAddressService::class)->forBuilding($building)->updateAddress($fallbackData);
 
-        $mockedApiData['user_id'] = $building->user_id;
+        $addressExpandedData = $mockedApiData['_embedded']['adressen'][0];
+        $addressExpandedData['endpoint_failure'] = false;
+        $assertableBuildingData = (new AddressExpanded($addressExpandedData))->prepareForBuilding();
+        $assertableBuildingData['user_id'] = $building->user_id;
 
-        $this->assertDatabaseHas('buildings', Arr::except($mockedApiData, ['build_year', 'surface']));
+        $this->assertDatabaseHas('buildings', Arr::except($assertableBuildingData, ['build_year', 'surface']));
         $this->assertDatabaseMissing('buildings', $fallbackData);
     }
 }

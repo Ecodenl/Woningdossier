@@ -10,12 +10,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class CheckBuildingAddress implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $building;
+
+    public $tries = 10;
     /**
      * Create a new job instance.
      *
@@ -45,7 +48,8 @@ class CheckBuildingAddress implements ShouldQueue
          * - Partial error, no municipality string found in woonplaats endpoint
          */
         if (!$building->municipality()->first() instanceof Municipality) {
-            $this->release(60);
+            $this->release(5);
+            Log::debug('release ze queue!');
         }
     }
 }

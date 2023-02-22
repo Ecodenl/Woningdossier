@@ -128,7 +128,13 @@ class MappingServiceTest extends TestCase
         $this->assertNull($resolvedTarget);
     }
 
-    public function test_type_resolving()
+    /**
+     * This test checks that the correct mapping rows are returned based on the given type, whether that would be
+     * in combination with or without a from or target.
+     *
+     * @return void
+     */
+    public function test_using_type_with_or_without_from_or_target_resolves_the_correct_related_mappings()
     {
         $municipality = Municipality::factory()->create([
             'name' => 'Voorne aan Zee',

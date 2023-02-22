@@ -20,7 +20,14 @@ class MunicipalityServiceTest extends TestCase
     public $seed = false;
     public $seeder = DatabaseSeeder::class;
 
-    public function test_we_get_correct_bag_municipalities()
+    /**
+     * This test checks whether the `getAvailableBagMunicipalities` method returns the correct BAG municipalities
+     * saved in the mappings table. All rows that have no target mapping, or where the target is the passed
+     * municipality, should be returned.
+     *
+     * @return void
+     */
+    public function test_we_get_correct_available_bag_municipalities()
     {
         $municipality1 = Municipality::factory()->create([
             'name' => 'Voorne aan Zee',
@@ -61,6 +68,13 @@ class MunicipalityServiceTest extends TestCase
         $this->assertCount(2, $availableBags);
     }
 
+    /**
+     * This test checks whether the `getAvailableVbjehuisMunicipalities` returns the correct VerbeterJeHuis
+     * municipalities, retrieved from the RegulationService. All rows that are in use by another municipality should
+     * be filtered away.
+     *
+     * @return void
+     */
     public function test_we_get_correct_vbjehuis_municipalities()
     {
         $vbjehuisMunicipalities = RegulationService::init()->getFilters()['Cities'];
@@ -91,7 +105,13 @@ class MunicipalityServiceTest extends TestCase
         $this->assertCount(count($vbjehuisMunicipalities) - 1, $availableVbjehuis);
     }
 
-    public function test_retrieve_bag_municipalities()
+    /**
+     * This test checks of the `retrieveBagMunicipalities` method returns all the BAG municipality rows attached to the
+     * passed municipality.
+     *
+     * @return void
+     */
+    public function test_retrieve_bag_municipalities_returns_correct_mapped_municipalities()
     {
         $municipality = Municipality::factory()->create([
             'name' => 'Voorne aan Zee',
@@ -116,7 +136,13 @@ class MunicipalityServiceTest extends TestCase
         $this->assertCount(3, $linkedBagMunicipalities);
     }
 
-    public function test_retrieve_vbjehuis_municipalities()
+    /**
+     * This test checks of the `retrieveVbjehuisMuncipality` method returns the mapping attached to the passed
+     * municipality which links to the Vbjehuis municipality.
+     *
+     * @return void
+     */
+    public function test_retrieve_vbjehuis_municipality_returns_correct_mapped_municipality()
     {
         $municipality = Municipality::factory()->create([
             'name' => 'Voorne aan Zee',

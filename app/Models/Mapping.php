@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * App\Models\Mapping
@@ -20,7 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $target_data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Model|\Eloquent $mapable
+ * @property-read Model|\Eloquent $resolvable
+ * @property-read Model|\Eloquent $mappable
  * @method static \Database\Factories\MappingFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Mapping newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Mapping newQuery()
@@ -59,7 +62,19 @@ class Mapping extends Model
         'target_data' => 'array'
     ];
 
-    public function mapable()
+    # Scopes
+    public function scopeForType(Builder $query, string $type): Builder
+    {
+        return $query->where('type', $type);
+    }
+
+    # Relations
+    public function resolvable(): MorphTo
+    {
+        return $this->morphTo('from_model');
+    }
+
+    public function mappable(): MorphTo
     {
         return $this->morphTo('target_model');
     }

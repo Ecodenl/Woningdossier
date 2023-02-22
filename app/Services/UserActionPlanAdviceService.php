@@ -21,6 +21,7 @@ use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
@@ -63,34 +64,36 @@ class UserActionPlanAdviceService
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        /*
-        Log::debug('Refreshing regulations for ', [
-            'building_id' => $userActionPlanAdvice->user->building->id, 'user_id' => $userActionPlanAdvice->user_id, 'input_source_id' => $userActionPlanAdvice->input_source_id,
-        ]);
-        */
         $payload = RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
             ->getSearch();
 
-        $advisable = $userActionPlanAdvice->userActionPlanAdvisable()
-            ->withoutGlobalScope(SoftDeletingScope::class)
-            ->withoutGlobalScope(GetValueScope::class)
-            ->first();
+        if ($payload instanceof Search) {
+            $advisable = $userActionPlanAdvice->userActionPlanAdvisable()
+                ->withoutGlobalScope(SoftDeletingScope::class)
+                ->withoutGlobalScope(GetValueScope::class)
+                ->first();
 
-        // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
-        $regulations = $payload
-            ->forMeasure($advisable)
-            ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
+            // so this will have to be adjusted when the measure application / category stuff is done for the custom / cooperation measure appelications
+            $regulations = $payload
+                ->forMeasure($advisable)
+                ->forBuildingContractType($userActionPlanAdvice->user->building, $userActionPlanAdvice->inputSource);
 
-        $loanAvailable = $regulations->getLoans()->isNotEmpty();
-        $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
+            $loanAvailable = $regulations->getLoans()->isNotEmpty();
+            $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
 
-        // This method is triggered by the observer, so to avoid a infinite loop we call it without events.
-        UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([
-            'loan_available' => $loanAvailable,
-            'subsidy_available' => $subsidyAvailable,
-        ]));
-        // Log::debug('Action plan advice', $userActionPlanAdvice->only('id', 'loan_available', 'subsidy_available'));
+            // This method is triggered by the observer, so to avoid a infinite loop we call it without events.
+            UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([
+                'loan_available' => $loanAvailable,
+                'subsidy_available' => $subsidyAvailable,
+            ]));
+        } else {
+            // No payload, no regulations
+            UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([
+                'loan_available' => false,
+                'subsidy_available' => false,
+            ]));
+        }
     }
 
     /**

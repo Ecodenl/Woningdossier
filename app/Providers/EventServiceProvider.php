@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Events\BuildingAddressUpdated;
 use App\Events\CooperationMeasureApplicationUpdated;
 use App\Events\CustomMeasureApplicationChanged;
 use App\Events\FillingToolForUserEvent;
@@ -33,6 +34,7 @@ use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\RefreshRelatedAdvices;
+use App\Listeners\RefreshBuildingUserHisAdvices;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
 use App\Listeners\SendUserAssociatedWithCooperationMail;
 use App\Listeners\SetMessagesReadForBuilding;
@@ -64,6 +66,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         CustomMeasureApplicationChanged::class => [
             RefreshRelatedAdvices::class
+        ],
+        BuildingAddressUpdated::class => [
+            RefreshBuildingUserHisAdvices::class
         ],
         Login::class => [
             SuccessFullLoginListener::class,

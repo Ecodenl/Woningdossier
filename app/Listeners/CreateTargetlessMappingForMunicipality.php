@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Mail;
 
 class CreateTargetlessMappingForMunicipality implements ShouldQueue
 {
-    public $queue = 'default';
-
     public MappingService $mappingService;
     /**
      * Create the event listener.
@@ -33,7 +31,7 @@ class CreateTargetlessMappingForMunicipality implements ShouldQueue
     {
         $this->mappingService
             ->from($event->municipalityName)
-            ->sync([], MappingHelper::TYPE_MUNICIPALITY);
+            ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
 
         $recipients = explode(',', config('hoomdossier.admin-emails'));
         foreach ($recipients as $recipient) {

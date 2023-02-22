@@ -2,17 +2,13 @@
 
 namespace App\Services\Models;
 
-use App\Events\NoMappingFoundForBagMunicipality;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
-use App\Models\Municipality;
 use App\Models\Scan;
-use App\Services\Lvbag\BagService;
-use App\Services\MappingService;
 use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -43,56 +39,6 @@ class BuildingService
         }
     }
 
-    /**
-     * Method speaks for itself... however ->
-     * The var is prefixed with "request", this is because we want ALL request address data.
-     * (postal_code, number, extension, city, street)
-     * We simply cant rely on external api data, the address data will always be filled with data from the request
-     * we only need it for the id's
-     * @param  array  $requestAddressData
-     * @return void
-     */
-    public function updateAddress(array $requestAddressData)
-    {
-        $addressData = BagService::init()->firstAddress(
-            $requestAddressData['postal_code'], $requestAddressData['number'], $requestAddressData['extension']
-        );
-        // filter relevant data from the request
-        $buildingData = Arr::only($requestAddressData, ['street', 'city', 'postal_code', 'number']);
-        $buildingData['extension'] = $requestAddressData['extension'] ?? '';
-
-        // the only data we really need from the bag
-        $buildingData['bag_woonplaats_id'] = $addressData['bag_woonplaats_id'];
-        $buildingData['bag_addressid'] = $addressData['bag_addressid'];
-
-        $this->building->update($buildingData);
-    }
-
-    public function attachMunicipality()
-    {
-        $municipalityName = BagService::init()
-            ->showCity($this->building->bag_woonplaats_id, ['expand' => 'true'])
-            ->municipalityName();
-
-        // its entirely possible that a municipality is not returned from the bag.
-        if ( ! is_null($municipalityName)) {
-            $mappingService = new MappingService();
-            $municipality = $mappingService
-                ->from($municipalityName)
-                ->resolveTarget();
-
-
-            if ($municipality instanceof Municipality) {
-                $this->building->municipality()->associate($municipality)->save();
-            } else {
-                // so the target is not resolved, thats "fine". We will check if a empty mapping exists
-                // if not we will create it
-                if ($mappingService->from($municipalityName)->doesntExist()) {
-                    NoMappingFoundForBagMunicipality::dispatch($municipalityName);
-                }
-            }
-        }
-    }
 
     /**
      * Get the answer for a set of questions including the input source that made that answer.
@@ -253,8 +199,15 @@ class BuildingService
 
         $building->stepComments()->withoutGlobalScopes()->delete();
 
+        // Remove all mappings related to custom measure applications. Custom measures will get "auto deleted" due
+        // to cascade on delete, but mappings are a morph relation without foreign key constraints, so we must
+        // delete them ourselves.
+        DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
+            ->whereIn('from_model_id', $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray())
+            ->delete();
+
         // table will be removed anyways.
-        \DB::table('building_appliances')->whereBuildingId($building->id)->delete();
+        DB::table('building_appliances')->whereBuildingId($building->id)->delete();
 
         $building->forceDelete();
     }

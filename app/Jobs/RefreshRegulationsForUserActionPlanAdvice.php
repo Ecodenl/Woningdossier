@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Models\UserActionPlanAdvice;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Bus\Queueable;
@@ -24,6 +25,7 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
     public function __construct(UserActionPlanAdvice $userActionPlanAdvice)
     {
         $this->userActionPlanAdvice = $userActionPlanAdvice;
+        $this->queue = Queue::REGULATIONS;
     }
 
     /**

@@ -189,7 +189,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             Route::prefix('tool')->name('tool.')->middleware('ensure-quick-scan-completed', 'track-visited-url')->group(function () {
                 Route::get('/', function () {
-                    return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index');
+                    // Usually we check the scans. However, the lite scan can't come here anyway.
+                    $scan = \App\Models\Scan::findByShort(\App\Models\Scan::QUICK);
+                    return redirect()->route('cooperation.frontend.tool.simple-scan.my-plan.index', compact('scan'));
                 })->name('index');
 
                 Route::prefix('questionnaire')->name('questionnaire.')->group(function () {

@@ -8,6 +8,7 @@ use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\UserActionPlanAdvice;
+use App\Services\MappingService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -96,11 +97,13 @@ class HandleCooperationMeasureApplicationDeletion implements ShouldQueue
                                 }
 
                                 if (! $processedMapping) {
+                                    $service = MappingService::init()->from($this->cooperationMeasureApplication);
+
                                     // Check if the cooperation has mappings
-                                    if ($this->cooperationMeasureApplication->mappings()->exists()) {
+                                    if ($service->exists()) {
                                         $from = $customMeasure->getSibling($masterInputSource);
 
-                                        foreach ($this->cooperationMeasureApplication->mappings()->get() as $mapping) {
+                                        foreach ($service->resolveMapping() as $mapping) {
                                             $newMapping = $mapping->replicate();
                                             $newMapping->from_model_type = \App\Models\CustomMeasureApplication::class;
                                             $newMapping->from_model_id = $from->id;

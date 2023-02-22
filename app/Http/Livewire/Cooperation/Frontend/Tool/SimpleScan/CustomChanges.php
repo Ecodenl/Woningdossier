@@ -357,7 +357,7 @@ class CustomChanges extends Component
             // Retrieve the user's custom measures
             $customMeasureApplications = $this->building->customMeasureApplications()
                 ->forInputSource($this->masterInputSource)
-                ->with(['userActionPlanAdvices' => fn ($q) => $q->where('user_id', $this->building->user->id)->forInputSource($this->masterInputSource), 'mappings'])
+                ->with(['userActionPlanAdvices' => fn ($q) => $q->where('user_id', $this->building->user->id)->forInputSource($this->masterInputSource)])
                 ->get();
 
             // Set the custom measures
@@ -384,7 +384,7 @@ class CustomChanges extends Component
                 }
 
                 // As of now, a custom measure can only hold ONE mapping
-                $mapping = $customMeasureApplication->mappings()->first();
+                $mapping = MappingService::init()->from($customMeasureApplication)->resolveMapping()->first();
                 if ($mapping instanceof Mapping) {
                     $this->customMeasureApplicationsFormData[$index]['measure_category'] = $mapping->target_data['Value'];
                 }

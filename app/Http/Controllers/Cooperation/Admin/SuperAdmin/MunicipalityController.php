@@ -73,12 +73,14 @@ class MunicipalityController extends Controller
             'target_model_id' => $municipality->id,
         ]);
 
+        $service = MappingService::init()->from($municipality);
+
         if (! empty($data['vbjehuis_municipality'])) {
             $municipalities = RegulationService::init()->getFilters()['Cities'];
             $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] === $data['vbjehuis_municipality']));
-            MappingService::init()->from($municipality)->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
+            $service->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
         } else {
-            $municipality->mappings()->forType(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->delete();
+            $service->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->detach();
         }
 
         return redirect()->route('cooperation.admin.super-admin.municipalities.show', compact('municipality'))

@@ -62,6 +62,9 @@
                                 @if(! $cooperationMeasureApplication->is_extensive_measure)
                                     <div class="row">
                                         <div class="col-sm-6">
+                                            @php
+                                                $currentCategory = \App\Services\MappingService::init()->from($cooperationMeasureApplication)->resolveMapping()->first();
+                                            @endphp
                                             @component('layouts.parts.components.form-group', ['input_name' => 'cooperation_measure_applications.measure_category'])
                                                 <label for="measure-category">
                                                     @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
@@ -73,7 +76,7 @@
                                                     </option>
                                                     @foreach($measures as $measure)
                                                         <option value="{{ $measure['Value'] }}"
-                                                                @if(old("cooperation_measure_applications.measure_category", $cooperationMeasureApplication->mappings()->first()->target_data['Value'] ?? null) === $measure['Value']) selected @endif>
+                                                                @if(old("cooperation_measure_applications.measure_category", $currentCategory->target_data['Value'] ?? null) === $measure['Value']) selected @endif>
                                                             {{ $measure['Label'] }}
                                                         </option>
                                                     @endforeach

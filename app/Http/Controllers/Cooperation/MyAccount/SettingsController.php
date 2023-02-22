@@ -6,10 +6,13 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
+use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\InputSource;
+use App\Models\Municipality;
 use App\Services\BuildingAddressService;
 use App\Services\Lvbag\BagService;
+use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\Models\BuildingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -36,12 +39,16 @@ class SettingsController extends Controller
 
         $buildingData['number'] = $buildingData['number'] ?? '';
         $buildingData = $data['building'];
+
         $buildingAddressService->forBuilding($building)->updateAddress($buildingData);
         $buildingAddressService->forBuilding($building)->attachMunicipality();
 
-        $addressData = $bagService->firstAddress(
+        if (!$building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building);
+        }
+        $addressData = $bagService->addressExpanded(
             $buildingData['postal_code'], $buildingData['number'], $buildingData['extension']
-        );
+        )->prepareForBuilding();
         // here we update the surface and build year IF bag returns it
         // we will never nullify it, only "correct" it.
         $building->buildingFeatures()->update([

@@ -6,6 +6,7 @@ use App\Events\BuildingAddressUpdated;
 use App\Events\NoMappingFoundForBagMunicipality;
 use App\Helpers\MappingHelper;
 use App\Models\Building;
+use App\Models\Log;
 use App\Models\Municipality;
 use App\Services\Lvbag\BagService;
 use App\Traits\FluentCaller;
@@ -42,15 +43,24 @@ class BuildingAddressService
      */
     public function updateAddress(array $fallbackAddressData)
     {
-        $addressData = $this
+        $addressExpended = $this
             ->bagService
-            ->firstAddress(
+            ->addressExpanded(
                 $fallbackAddressData['postal_code'],
                 $fallbackAddressData['number'],
                 $fallbackAddressData['extension']
             );
-        // some fields will be left empty when there is no result.
-        $addressData = array_filter($addressData);
+
+        $addressData = $addressExpended->prepareForBuilding();
+
+        $addressData = array_filter($addressData, function ($value, $key) {
+            // filter out empty results, only for specific keys
+            // we want to clear the bag values.
+            if (!in_array($key, ['bag_addressid', 'bag_woonplaats_id', 'municipality_id'])) {
+                return !empty($value);
+            }
+            return true;
+        }, ARRAY_FILTER_USE_BOTH);
 
         // filter relevant data from the request
         $buildingData = Arr::only($fallbackAddressData, ['street', 'city', 'postal_code', 'number']);

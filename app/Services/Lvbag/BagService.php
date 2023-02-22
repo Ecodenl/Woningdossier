@@ -47,7 +47,7 @@ class BagService
         // first try it as a extension
         // if not found as a houseletter
         // if that does not work we will do a last resort that may not be that accurate..
-        if ( ! empty($houseNumberExtension)) {
+        if (! empty($houseNumberExtension)) {
             $addressExpanded = $this->listAddressExpanded($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
             if ($addressExpanded->isEmpty()) {
                 // if that does not work we will try the huislett
@@ -62,8 +62,9 @@ class BagService
                 $huisletter = array_shift($extensions);
                 $huisnummertoevoeging = implode('', $extensions);
 
-                $addressExpanded = $this->listAddressExpanded($attributes + compact('huisletter',
-                        'huisnummertoevoeging'));
+                $addressExpanded = $this->listAddressExpanded(
+                    $attributes + compact('huisletter', 'huisnummertoevoeging')
+                );
             }
 
             // a last resort..
@@ -114,7 +115,7 @@ class BagService
         return new AddressExpanded($this->wrapCall(function () use ($attributes) {
             $list = Lvbag::init($this->client)
                 ->adresUitgebreid()
-                ->list($attributes);
+                ->list($attributes) ?? [];
             return array_shift($list);
         }));
     }
@@ -126,7 +127,9 @@ class BagService
             $result = $closure();
         } catch (\Exception $exception) {
             if ($exception->getCode() !== 400) {
-                app('sentry')->captureException($exception);
+                if (app()->bound('sentry')) {
+                    app('sentry')->captureException($exception);
+                }
             }
             if ($exception->getCode() === 400) {
                 return $result;

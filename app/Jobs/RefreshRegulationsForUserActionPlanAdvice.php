@@ -15,8 +15,6 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::REGULATIONS;
-
     public $userActionPlanAdvice;
 
     /**
@@ -27,6 +25,7 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
     public function __construct(UserActionPlanAdvice $userActionPlanAdvice)
     {
         $this->userActionPlanAdvice = $userActionPlanAdvice;
+        $this->queue = Queue::REGULATIONS;
     }
 
     /**

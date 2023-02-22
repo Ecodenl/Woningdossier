@@ -7,8 +7,6 @@ use Tests\TestCase;
 
 class StrTest extends TestCase
 {
-    protected bool $usesDatabase = false;
-
     public static function isConsideredEmptyAnswerProvider()
     {
         return [
@@ -205,5 +203,32 @@ class StrTest extends TestCase
     public function testHasReplaceables($string, $expected)
     {
         $this->assertEquals($expected, Str::hasReplaceables($string));
+    }
+
+    public function makeComparableProvider()
+    {
+        return [
+            ['Term and term', 'termenterm'],
+            ['term-and term', 'termenterm'],
+            ['bunches-of terms & cool', 'bunchesoftermsencool'],
+            ['words and words en words & words', 'wordsenwordsenwordsenwords'],
+            ['StrîngÚsingWëirdChâractęrs', 'stringusingweirdcharacters'],
+            ['ThisShouldBe/-com-_parable', 'thisshouldbecomparable'],
+            ['97q83rfsdnvcu`iSRF8vsckm', '97q83rfsdnvcuisrf8vsckm'],
+            ['Hellevoetsluis', 'hellevoetsluis'],
+            ['Oude Tonge', 'oudetonge'],
+            ['Oude-Tonge', 'oudetonge'],
+            ['Oude-tonge', 'oudetonge'],
+            ['Oude tonge', 'oudetonge'],
+            ['oude tonge', 'oudetonge'],
+        ];
+    }
+
+    /**
+     * @dataProvider makeComparableProvider
+     */
+    public function test_make_comparable($term, $expected)
+    {
+        $this->assertEquals($expected, Str::makeComparable($term));
     }
 }

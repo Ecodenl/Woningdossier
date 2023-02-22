@@ -19,7 +19,6 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
 
     public Building $building;
 
-    public $queue = Queue::REGULATIONS;
 
     /**
      * Create a new job instance.
@@ -29,6 +28,7 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
     public function __construct(Building $building)
     {
         $this->building = $building;
+        $this->queue = Queue::REGULATIONS;
     }
 
     /**

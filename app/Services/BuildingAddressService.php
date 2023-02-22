@@ -4,18 +4,12 @@ namespace App\Services;
 
 use App\Events\BuildingAddressUpdated;
 use App\Events\NoMappingFoundForBagMunicipality;
-use App\Helpers\ToolQuestionHelper;
+use App\Helpers\MappingHelper;
 use App\Models\Building;
-use App\Models\InputSource;
 use App\Models\Municipality;
-use App\Models\Scan;
 use App\Services\Lvbag\BagService;
-use App\Services\MappingService;
-use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class BuildingAddressService
 {
@@ -69,15 +63,21 @@ class BuildingAddressService
 
     public function attachMunicipality()
     {
-        $municipalityName = $this->bagService
-            ->showCity($this->building->bag_woonplaats_id, ['expand' => 'true'])
+        // MUST be string! Empty string is ok.
+        $bagWoonplaatsId = (string)$this->building->bag_woonplaats_id;
+
+        $municipalityName = $this
+            ->bagService
+            ->showCity($bagWoonplaatsId, ['expand' => 'true'])
             ->municipalityName();
 
         // its entirely possible that a municipality is not returned from the bag.
         if ( ! is_null($municipalityName)) {
             $municipality = $this->mappingService
                 ->from($municipalityName)
-                ->resolveTarget();
+                ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
+                ->resolveTarget()
+                ->first();
 
 
             if ($municipality instanceof Municipality) {

@@ -49,7 +49,6 @@ class CheckBuildingAddress implements ShouldQueue
          */
         if (!$building->municipality()->first() instanceof Municipality) {
             $this->release(5);
-            Log::debug('release ze queue!');
         }
     }
 }

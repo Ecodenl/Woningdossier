@@ -26,6 +26,7 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
     {
         $this->userActionPlanAdvice = $userActionPlanAdvice;
         $this->queue = Queue::REGULATIONS;
+        \Log::debug('Added to queue');
     }
 
     /**
@@ -35,6 +36,7 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
      */
     public function handle()
     {
+        \Log::debug('Processing...');
         UserActionPlanAdviceService::init()->refreshRegulations($this->userActionPlanAdvice);
     }
 }

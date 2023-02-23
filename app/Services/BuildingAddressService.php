@@ -36,9 +36,11 @@ class BuildingAddressService
      * Method speaks for itself... however ->
      * The var is prefixed with "fallback", this is because we want address data to use as a fallback.
      * (postal_code, number, extension, city, street)
-     * We simply cant rely on external api data, the address data will always be filled with data from the request
-     * we only need it for the id's
-     * @param  array  $fallbackAddressData
+     * We simply cant rely on external API data, the address data will always be filled with data from the request.
+     * We only need it for the IDs.
+     *
+     * @param array $fallbackAddressData
+     *
      * @return void
      */
     public function updateAddress(array $fallbackAddressData)
@@ -56,8 +58,8 @@ class BuildingAddressService
         $addressData = array_filter($addressData, function ($value, $key) {
             // filter out empty results, only for specific keys
             // we want to clear the bag values.
-            if (!in_array($key, ['bag_addressid', 'bag_woonplaats_id', 'municipality_id'])) {
-                return !empty($value);
+            if (! in_array($key, ['bag_addressid', 'bag_woonplaats_id', 'municipality_id'])) {
+                return ! empty($value);
             }
             return true;
         }, ARRAY_FILTER_USE_BOTH);
@@ -74,7 +76,7 @@ class BuildingAddressService
     public function attachMunicipality()
     {
         // MUST be string! Empty string is ok.
-        $bagWoonplaatsId = (string)$this->building->bag_woonplaats_id;
+        $bagWoonplaatsId = (string) $this->building->bag_woonplaats_id;
 
         $municipalityName = $this
             ->bagService
@@ -82,18 +84,17 @@ class BuildingAddressService
             ->municipalityName();
 
         // its entirely possible that a municipality is not returned from the bag.
-        if ( ! is_null($municipalityName)) {
+        if (! is_null($municipalityName)) {
             $municipality = $this->mappingService
                 ->from($municipalityName)
                 ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
                 ->resolveTarget()
                 ->first();
 
-
             if ($municipality instanceof Municipality) {
                 $this->building->municipality()->associate($municipality)->save();
             } else {
-                // so the target is not resolved, thats "fine". We will check if a empty mapping exists
+                // so the target is not resolved, that's "fine". We will check if a empty mapping exists
                 // if not we will create it
                 if ($this->mappingService->from($municipalityName)->doesntExist()) {
                     NoMappingFoundForBagMunicipality::dispatch($municipalityName);

@@ -40,14 +40,14 @@ class CheckBuildingAddress implements ShouldQueue
         $buildingAddressService
             ->forBuilding($building)
             ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
-        $buildingAddressService->forBuilding($building)->attachMunicipality();
+        $buildingAddressService->attachMunicipality();
         /**
          * requery it, no municipality can have multiple causes
          * - Bag is down
          * - Partial error, no bag_woonplaats_id
          * - Partial error, no municipality string found in woonplaats endpoint
          */
-        if (!$building->municipality()->first() instanceof Municipality) {
+        if (! $building->municipality()->first() instanceof Municipality) {
             $this->release(5);
             Log::debug('release ze queue!');
         }

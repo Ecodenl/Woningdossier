@@ -36,9 +36,11 @@ class BuildingAddressService
      * Method speaks for itself... however ->
      * The var is prefixed with "fallback", this is because we want address data to use as a fallback.
      * (postal_code, number, extension, city, street)
-     * We simply cant rely on external api data, the address data will always be filled with data from the request
-     * we only need it for the id's
-     * @param  array  $fallbackAddressData
+     * We simply cant rely on external API data, the address data will always be filled with data from the request.
+     * We only need it for the IDs.
+     *
+     * @param array $fallbackAddressData
+     *
      * @return void
      */
     public function updateAddress(array $fallbackAddressData)
@@ -74,7 +76,7 @@ class BuildingAddressService
     public function attachMunicipality()
     {
         // MUST be string! Empty string is ok.
-        $bagWoonplaatsId = (string)$this->building->bag_woonplaats_id;
+        $bagWoonplaatsId = (string) $this->building->bag_woonplaats_id;
 
         $municipalityName = $this
             ->bagService

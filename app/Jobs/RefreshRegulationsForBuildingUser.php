@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\MappingHelper;
 use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\Municipality;
@@ -41,7 +42,7 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
         // refreshing this has no use when there is no municipality and or mapping for it.
         if ($this->building->municipality instanceof Municipality) {
             $municipality = $this->building->municipality;
-            if ($mappingService->from($municipality)->exists()) {
+            if ($mappingService->from($municipality)->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->mappingExists()) {
                 UserActionPlanAdviceService::init()->forUser($this->building->user)->refreshUserRegulations();
             }
         }

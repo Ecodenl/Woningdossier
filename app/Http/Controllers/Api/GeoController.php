@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FillAddressRequest;
-use App\Services\AddressService;
 use App\Services\Lvbag\BagService;
 
 class GeoController extends Controller

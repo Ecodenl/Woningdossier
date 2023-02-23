@@ -7,6 +7,7 @@ use App\Events\CooperationMeasureApplicationUpdated;
 use App\Events\CustomMeasureApplicationChanged;
 use App\Events\FillingToolForUserEvent;
 use App\Events\NoMappingFoundForBagMunicipality;
+use App\Events\NoMappingFoundForVbjehuisMunicipality;
 use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
@@ -29,6 +30,7 @@ use App\Listeners\LogObservingToolForUserListener;
 use App\Listeners\LogRegisteredUserListener;
 use App\Listeners\LogRevokedAccessToBuilding;
 use App\Listeners\LogUserAssociatedWithOtherCooperation;
+use App\Listeners\MissingVbjehuisMapping;
 use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
@@ -57,6 +59,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         NoMappingFoundForBagMunicipality::class => [
             CreateTargetlessMappingForMunicipality::class
+        ],
+        NoMappingFoundForVbjehuisMunicipality::class => [
+            MissingVbjehuisMapping::class
         ],
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,

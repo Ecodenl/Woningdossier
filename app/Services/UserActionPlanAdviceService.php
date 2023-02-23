@@ -64,14 +64,11 @@ class UserActionPlanAdviceService
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        Log::debug("Refreshing for {$userActionPlanAdvice->id}");
-
         $payload = RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
             ->getSearch();
 
         if ($payload instanceof Search) {
-            Log::debug('Has payload.');
             $advisable = $userActionPlanAdvice->userActionPlanAdvisable()
                 ->withoutGlobalScope(SoftDeletingScope::class)
                 ->withoutGlobalScope(GetValueScope::class)
@@ -84,7 +81,6 @@ class UserActionPlanAdviceService
 
             $loanAvailable = $regulations->getLoans()->isNotEmpty();
             $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
-            Log::debug("Has loan: {$loanAvailable}. Has subsidy: {$subsidyAvailable}.");
 
             // This method is triggered by the observer, so to avoid a infinite loop we call it without events.
             UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([

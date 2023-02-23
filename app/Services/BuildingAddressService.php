@@ -91,11 +91,10 @@ class BuildingAddressService
                 ->resolveTarget()
                 ->first();
 
-
             if ($municipality instanceof Municipality) {
                 $this->building->municipality()->associate($municipality)->save();
             } else {
-                // so the target is not resolved, thats "fine". We will check if a empty mapping exists
+                // so the target is not resolved, that's "fine". We will check if a empty mapping exists
                 // if not we will create it
                 if ($this->mappingService->from($municipalityName)->doesntExist()) {
                     NoMappingFoundForBagMunicipality::dispatch($municipalityName);

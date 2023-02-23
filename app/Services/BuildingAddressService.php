@@ -74,7 +74,7 @@ class BuildingAddressService
     public function attachMunicipality()
     {
         // MUST be string! Empty string is ok.
-        $bagWoonplaatsId = (string)$this->building->bag_woonplaats_id;
+        $bagWoonplaatsId = (string) $this->building->bag_woonplaats_id;
 
         $municipalityName = $this
             ->bagService

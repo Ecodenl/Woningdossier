@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Events\BuildingAddressUpdated;
 use App\Events\NoMappingFoundForBagMunicipality;
+use App\Events\NoMappingFoundForVbjehuisMunicipality;
 use App\Helpers\MappingHelper;
 use App\Models\Building;
-use App\Models\Log;
 use App\Models\Municipality;
 use App\Services\Lvbag\BagService;
 use App\Traits\FluentCaller;
@@ -45,7 +45,7 @@ class BuildingAddressService
      */
     public function updateAddress(array $fallbackAddressData)
     {
-        $addressExpended = $this
+        $addressExpanded = $this
             ->bagService
             ->addressExpanded(
                 $fallbackAddressData['postal_code'],
@@ -53,7 +53,7 @@ class BuildingAddressService
                 $fallbackAddressData['extension']
             );
 
-        $addressData = $addressExpended->prepareForBuilding();
+        $addressData = $addressExpanded->prepareForBuilding();
 
         $addressData = array_filter($addressData, function ($value, $key) {
             // filter out empty results, only for specific keys
@@ -98,10 +98,13 @@ class BuildingAddressService
                     $buildingAddressUpdated = true;
                 }
                 $this->building->municipality()->associate($municipality)->save();
+                if ($this->mappingService->from($municipality)->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->mappingDoesntExist()) {
+                    NoMappingFoundForVbjehuisMunicipality::dispatch($municipality);
+                }
             } else {
                 // so the target is not resolved, that's "fine". We will check if a empty mapping exists
                 // if not we will create it
-                if ($this->mappingService->from($municipalityName)->doesntExist()) {
+                if ($this->mappingService->from($municipalityName)->type(MappingHelper::TYPE_BAG_MUNICIPALITY)->mappingDoesntExist()) {
                     NoMappingFoundForBagMunicipality::dispatch($municipalityName);
                 }
                 // The disassociate only matters when the field was filled before

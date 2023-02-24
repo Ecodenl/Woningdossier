@@ -2,6 +2,6 @@
 
 return [
     'verbeterjehuis' => [
-        'error' => 'VerbeterJeHuis is momenteel niet beschikbaar. Sommige acties kunnen niet voltooid worden.'
+        'error' => 'VerbeterJeHuis is momenteel niet beschikbaar. Sommige acties kunnen (mogelijk) niet uitgevoerd worden.'
     ],
 ];

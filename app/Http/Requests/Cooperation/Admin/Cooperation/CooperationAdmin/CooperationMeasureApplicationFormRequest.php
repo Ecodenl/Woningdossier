@@ -14,6 +14,9 @@ use Illuminate\Validation\Rule;
 
 class CooperationMeasureApplicationFormRequest extends FormRequest
 {
+    protected array $measures = [];
+    protected bool $isExtensive;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -22,6 +25,16 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
     public function authorize()
     {
         return Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole('cooperation-admin');
+    }
+
+    public function prepareForValidation()
+    {
+        // On create, we have a type. On update we have a model.
+        $this->isExtensive = ($measure = $this->route('cooperationMeasureApplication')) instanceof CooperationMeasureApplication
+            ? $measure->is_extensive_measure
+            : $this->route('type') === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
+
+        $this->measures = RegulationService::init()->getFilters()['Measures'] ?? [];
     }
 
     /**
@@ -33,11 +46,6 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
     {
         $evaluateGt = ! is_null($this->input('cooperation_measure_applications.costs.from'));
 
-        // On create, we have a type. On update we have a model.
-        $isExtensive = ($measure = $this->route('cooperationMeasureApplication')) instanceof CooperationMeasureApplication
-            ? $measure->is_extensive_measure
-            : $this->route('type') === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
-
         return [
             'cooperation_measure_applications.name' => [
                 new LanguageRequired('nl'),
@@ -46,8 +54,14 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
                 new LanguageRequired('nl'),
             ],
             'cooperation_measure_applications.measure_category' => [
-                Rule::requiredIf(! $isExtensive),
-                Rule::in(Arr::pluck(RegulationService::init()->getFilters()['Measures'], 'Value')),
+                'bail',
+                function ($attribute, $value, $fail) {
+                    if (empty($this->measures) && ! $this->isExtensive) {
+                        $fail(__('api.verbeterjehuis.error'));
+                    }
+                },
+                Rule::requiredIf(! $this->isExtensive),
+                Rule::in(Arr::pluck($this->measures, 'Value')),
             ],
             'cooperation_measure_applications.costs.from' => [
                 'nullable', 'numeric', 'min:0',

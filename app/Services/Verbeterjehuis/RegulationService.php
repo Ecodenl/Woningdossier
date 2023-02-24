@@ -75,12 +75,29 @@ class RegulationService
             }
 
             $this->context['cityId'] = $cityId;
+            $cacheKey = $this->getCacheKey();
+
+            if (Cache::driver('database')->has($cacheKey)) {
+                return Search::init(
+                    Cache::get($cacheKey)
+                );
+            }
+
+            try {
+                $results = Verbeterjehuis::init(Client::init())
+                    ->regulation()
+                    ->search($this->context);
+            } catch (\Exception $e) {
+                $results = null;
+                report($e);
+            }
+
+            if (is_null($results)) {
+                return null;
+            }
+
             return Search::init(
-                Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {
-                    return Verbeterjehuis::init(Client::init())
-                        ->regulation()
-                        ->search($this->context);
-                })
+                Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), fn () => $results)
             );
         }
 

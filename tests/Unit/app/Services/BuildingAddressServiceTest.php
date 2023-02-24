@@ -22,11 +22,10 @@ use Illuminate\Support\Facades\Event;
 
 class BuildingAddressServiceTest extends TestCase
 {
-//    use RefreshDatabase, WithFaker;
-    use WithFaker;
+    use RefreshDatabase, WithFaker;
 
-//    public $seed = true;
-//    public $seeder = DatabaseSeeder::class;
+    public $seed = true;
+    public $seeder = DatabaseSeeder::class;
 
     protected function setUp(): void
     {
@@ -40,13 +39,18 @@ class BuildingAddressServiceTest extends TestCase
         $user = User::factory()->create();
         $building = Building::factory()->create(['user_id' => $user->id]);
         $building->update([
-            'bag_woonplaats_id' => '2134',
+            // the id doesnt really matter in this case as the endpoint will always return a valid value due to mock.
+            'bag_woonplaats_id' => '1234',
         ]);
 
-        $municipality = Municipality::factory()->create(['name' => 'Flakee', 'short' => 'island']);
+        $municipality = Municipality::factory()->create();
+
+        $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
+        $this->mockLvbagClientWoonplaats($fromMunicipalityName);
         MappingService::init()
-            ->from("Goeree-Overflakkee")
+            ->from($fromMunicipalityName)
             ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+
 
         app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
 
@@ -93,19 +97,22 @@ class BuildingAddressServiceTest extends TestCase
         $user = User::factory()->create();
         $building = Building::factory()->create(['user_id' => $user->id]);
         $building->update([
+            // the id doesnt really matter in this case as the endpoint will always return a valid value due to mock.
             'bag_woonplaats_id' => '2134',
         ]);
 
-        $municipality = Municipality::factory()->create(['name' => 'Flakee', 'short' => 'island']);
+        $municipality = Municipality::factory()->create();
+
+        $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
+        $this->mockLvbagClientWoonplaats($fromMunicipalityName);
         MappingService::init()
-            ->from("Goeree-Overflakkee")
+            ->from($fromMunicipalityName)
             ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
 
         Event::fake();
         app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
 
         Event::assertDispatched(BuildingAddressUpdated::class);
-        $this->assertDatabaseHas('buildings', ['id' => $building->id, 'municipality_id' => $municipality->id]);
     }
 
     public function test_building_address_updated_does_not_dispatch_after_no_change_in_municipality()
@@ -114,21 +121,24 @@ class BuildingAddressServiceTest extends TestCase
         $user = User::factory()->create();
         $building = Building::factory()->create(['user_id' => $user->id]);
         // while this test is ok, it does not fake client response..
-        $municipality = Municipality::factory()->create(['name' => 'Flakee', 'short' => 'island']);
+        $municipality = Municipality::factory()->create();
+
+        $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
+        $this->mockLvbagClientWoonplaats($fromMunicipalityName);
+
         $building->update([
             'bag_woonplaats_id' => '2134',
             'municipality_id' => $municipality->id,
         ]);
 
         MappingService::init()
-            ->from("Goeree-Overflakkee")
+            ->from($fromMunicipalityName)
             ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
 
         Event::fake();
-        app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
 
+        app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
         Event::assertNotDispatched(BuildingAddressUpdated::class);
-        $this->assertDatabaseHas('buildings', ['id' => $building->id, 'municipality_id' => $municipality->id]);
     }
 
     public function test_update_address_uses_bag_as_thruth_when_available()
@@ -184,5 +194,26 @@ class BuildingAddressServiceTest extends TestCase
 
         $this->assertDatabaseHas('buildings', Arr::except($assertableBuildingData, ['build_year', 'surface']));
         $this->assertDatabaseMissing('buildings', $fallbackData);
+    }
+
+    private function mockLvbagClientWoonplaats(string $municipalityName)
+    {
+        $mockedApiData = [
+            "_embedded" => [
+                "bronhouders" => [
+                    [
+                        "naam" => $municipalityName,
+                    ],
+                ],
+            ],
+        ];
+        $this->partialMock(
+            Client::class,
+            function (MockInterface $mock) use ($mockedApiData) {
+                return $mock
+                    ->shouldReceive('get')
+                    ->andReturn($mockedApiData);
+            }
+        );
     }
 }

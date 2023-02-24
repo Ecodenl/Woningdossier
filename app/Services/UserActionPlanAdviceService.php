@@ -68,6 +68,8 @@ class UserActionPlanAdviceService
             ->forBuilding($userActionPlanAdvice->user->building)
             ->getSearch();
 
+        $loanAvailable = false;
+        $subsidyAvailable = false;
         if ($payload instanceof Search) {
             $advisable = $userActionPlanAdvice->userActionPlanAdvisable()
                 ->withoutGlobalScope(SoftDeletingScope::class)
@@ -81,19 +83,12 @@ class UserActionPlanAdviceService
 
             $loanAvailable = $regulations->getLoans()->isNotEmpty();
             $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
-
-            // This method is triggered by the observer, so to avoid a infinite loop we call it without events.
-            UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([
-                'loan_available' => $loanAvailable,
-                'subsidy_available' => $subsidyAvailable,
-            ]));
-        } else {
-            // No payload, no regulations
-            UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([
-                'loan_available' => false,
-                'subsidy_available' => false,
-            ]));
         }
+        // This method is triggered by the observer, so to avoid a infinite loop we call it without events.
+        UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([
+            'loan_available' => $loanAvailable,
+            'subsidy_available' => $subsidyAvailable,
+        ]));
     }
 
     /**

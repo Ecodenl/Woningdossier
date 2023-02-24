@@ -25,8 +25,11 @@ use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
+use Carbon\Carbon;
+use Illuminate\Bus\Batch;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService
@@ -57,9 +60,19 @@ class UserActionPlanAdviceService
             ->withoutGlobalScopes()
             ->get();
 
-        foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
-            RefreshRegulationsForUserActionPlanAdvice::dispatch($userActionPlanAdvice)->onQueue(Queue::ASYNC);
+        $jobs = [];
+
+        foreach ($userActionPlanAdvices as $i => $userActionPlanAdvice) {
+            $jobs[] = new RefreshRegulationsForUserActionPlanAdvice($userActionPlanAdvice, $i);
         }
+        Bus::batch($jobs)
+            ->then(function (Batch $batch) {
+                $this->user->update(['regulations_refreshed_at' => Carbon::now()]);
+            })
+            ->name('Refresh all user his regulations for advices.')
+            ->allowFailures()
+            ->onQueue(Queue::REGULATIONS)
+            ->dispatch();
     }
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)

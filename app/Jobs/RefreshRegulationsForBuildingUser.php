@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Redis;
 
 class RefreshRegulationsForBuildingUser implements ShouldQueue
 {
@@ -36,6 +37,12 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
      */
     public function handle()
     {
-        UserActionPlanAdviceService::init()->forUser($this->building->user)->refreshUserRegulations();
+        Redis::throttle('name')->allow(10)->every(60)->then(function () {
+            UserActionPlanAdviceService::init()->forUser($this->building->user)->refreshUserRegulations();
+            // Lock obtained, process the podcast...
+        }, function () {
+            // Unable to obtain lock...
+            return $this->release(10);
+        });
     }
 }

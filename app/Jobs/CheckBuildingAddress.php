@@ -48,8 +48,7 @@ class CheckBuildingAddress implements ShouldQueue
          * - Partial error, no municipality string found in woonplaats endpoint
          */
         if (! $building->municipality()->first() instanceof Municipality) {
-            $this->release(5);
-            Log::debug('release ze queue!');
+            $this->release(60);
         }
     }
 }

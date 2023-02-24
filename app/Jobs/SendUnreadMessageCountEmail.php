@@ -73,8 +73,6 @@ class SendUnreadMessageCountEmail implements ShouldQueue
         $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         PrivateMessageViewService::markAsReadByUser($messagesToSetRead, $this->user, $inputSource);
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

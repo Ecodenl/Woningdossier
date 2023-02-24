@@ -44,9 +44,7 @@ class RegulationService
                 ->getFilters();
         } catch (\Exception $e) {
             $results = [];
-            if (app()->bound('sentry')) {
-                app('sentry')->captureException($e);
-            }
+            report($e);
         }
 
         // We won't cache the results if they're empty.

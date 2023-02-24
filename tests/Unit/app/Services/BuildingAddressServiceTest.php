@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\app\Services;
 
+use App\Events\BuildingAddressUpdated;
 use App\Helpers\MappingHelper;
 use App\Models\Building;
 use App\Models\Municipality;
@@ -17,13 +18,15 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Mockery\MockInterface;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Event;
 
 class BuildingAddressServiceTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+//    use RefreshDatabase, WithFaker;
+    use WithFaker;
 
-    public $seed = true;
-    public $seeder = DatabaseSeeder::class;
+//    public $seed = true;
+//    public $seeder = DatabaseSeeder::class;
 
     protected function setUp(): void
     {
@@ -82,6 +85,50 @@ class BuildingAddressServiceTest extends TestCase
         $fallbackData['bag_woonplaats_id'] = '';
 
         $this->assertDatabaseHas('buildings', $fallbackData);
+    }
+
+    public function test_building_address_updated_dispatches_after_municipality_changed()
+    {
+        // this woonplaats should be "Goeree-Overflakkee"
+        $user = User::factory()->create();
+        $building = Building::factory()->create(['user_id' => $user->id]);
+        $building->update([
+            'bag_woonplaats_id' => '2134',
+        ]);
+
+        $municipality = Municipality::factory()->create(['name' => 'Flakee', 'short' => 'island']);
+        MappingService::init()
+            ->from("Goeree-Overflakkee")
+            ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+
+        Event::fake();
+        app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
+
+        Event::assertDispatched(BuildingAddressUpdated::class);
+        $this->assertDatabaseHas('buildings', ['id' => $building->id, 'municipality_id' => $municipality->id]);
+    }
+
+    public function test_building_address_updated_does_not_dispatch_after_no_change_in_municipality()
+    {
+        // this woonplaats should be "Goeree-Overflakkee"
+        $user = User::factory()->create();
+        $building = Building::factory()->create(['user_id' => $user->id]);
+        // while this test is ok, it does not fake client response..
+        $municipality = Municipality::factory()->create(['name' => 'Flakee', 'short' => 'island']);
+        $building->update([
+            'bag_woonplaats_id' => '2134',
+            'municipality_id' => $municipality->id,
+        ]);
+
+        MappingService::init()
+            ->from("Goeree-Overflakkee")
+            ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
+
+        Event::fake();
+        app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
+
+        Event::assertNotDispatched(BuildingAddressUpdated::class);
+        $this->assertDatabaseHas('buildings', ['id' => $building->id, 'municipality_id' => $municipality->id]);
     }
 
     public function test_update_address_uses_bag_as_thruth_when_available()

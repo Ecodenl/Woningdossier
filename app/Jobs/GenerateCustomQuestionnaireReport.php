@@ -55,8 +55,6 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
     {
         $this->fileStorage->delete();
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

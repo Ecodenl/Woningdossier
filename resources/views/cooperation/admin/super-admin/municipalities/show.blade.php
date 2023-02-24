@@ -60,10 +60,19 @@
                                         @component('layouts.parts.components.form-group', [
                                             'input_name' => 'vbjehuis_municipality'
                                         ])
-                                            @php $currentMunicipality = $mappedVbjehuisMunicipality->target_data['Id'] ?? null; @endphp
+                                            @php
+                                                $currentMunicipality = $mappedVbjehuisMunicipality->target_data['Id'] ?? null;
+                                                // Usually we can do a simple call on the result set, however here the results are a wrapped call. We do a separate check.
+                                                $vbjehuisAvailable = ! empty(\App\Services\Verbeterjehuis\RegulationService::init()->getFilters()['Cities'] ?? []);
+                                            @endphp
                                             <label for="vbjehuis-municipality">
                                                 @lang('cooperation/admin/super-admin/municipalities.form.vbjehuis-municipality.label')
                                             </label>
+                                            @if(! $vbjehuisAvailable)
+                                                <small class="text-danger">
+                                                    <br> @lang('api.verbeterjehuis.error') @lang('default.form.errors.data-loss')
+                                                </small>
+                                            @endif
                                             <select name="vbjehuis_municipality" id="vbjehuis-municipality"
                                                     class="form-control">
                                                 <option></option>

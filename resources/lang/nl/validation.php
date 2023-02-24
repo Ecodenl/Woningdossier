@@ -203,6 +203,10 @@ return [
         'municipalities' => [
             'already-coupled' => ':Attribute is al gekoppeld aan een gemeente!',
         ],
+
+        'api' => [
+            'incorrect-vbjehuis-value' => ':Attribute is geen geldige VerbeterJeHuis waarde!',
+        ],
     ],
 
 

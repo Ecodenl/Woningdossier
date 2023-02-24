@@ -208,7 +208,7 @@ class Form extends Component
         $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
 
-        $this->measures = RegulationService::init()->getFilters()['Measures'];
+        $this->measures = RegulationService::init()->getFilters()['Measures'] ?? [];
 
         // Set cards
         $this->loadVisibleCards();
@@ -229,6 +229,11 @@ class Form extends Component
     public function submit()
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
+
+        if (empty($this->measures)) {
+            $this->getErrorBag()->add('custom_measure_application.measure_category', __('api.verbeterjehuis.error'));
+            return;
+        }
 
         // Before we can validate, we must convert human format to proper format
         // TODO: Check for later; perhaps we should check if the variable has 1 comma or 2 or more dots to define the used format and set the str_replace only if it's a Dutch format

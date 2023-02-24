@@ -46,7 +46,7 @@ class MunicipalityService
      */
     public function getAvailableVbjehuisMunicipalities(): Collection
     {
-        $municipalities = RegulationService::init()->getFilters()['Cities'];
+        $municipalities = RegulationService::init()->getFilters()['Cities'] ?? [];
 
         $usedIds = Mapping::where('type', MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)
             ->where('from_model_id', '!=', $this->municipality->id)

@@ -26,7 +26,7 @@ class CooperationMeasureApplicationController extends Controller
 
     public function create(Cooperation $cooperation, string $type)
     {
-        $measures = RegulationService::init()->getFilters()['Measures'];
+        $measures = RegulationService::init()->getFilters()['Measures'] ?? [];
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create', compact('type', 'measures'));
     }
 
@@ -45,6 +45,7 @@ class CooperationMeasureApplicationController extends Controller
         $cooperationMeasureApplication = CooperationMeasureApplication::create($measureData);
 
         if (! is_null($measureCategory)) {
+            // The request will cover for us. If not available, the user will be sent back.
             $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
             MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
         }
@@ -56,7 +57,7 @@ class CooperationMeasureApplicationController extends Controller
     public function edit(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
         $type = $cooperationMeasureApplication->getType();
-        $measures = RegulationService::init()->getFilters()['Measures'];
+        $measures = RegulationService::init()->getFilters()['Measures'] ?? [];
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication', 'type', 'measures'));
     }
 
@@ -72,6 +73,7 @@ class CooperationMeasureApplicationController extends Controller
         $cooperationMeasureApplication->update($measureData);
 
         if (! is_null($measureCategory)) {
+            // The request will cover for us. If not available, the user will be sent back.
             $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
             MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
         }

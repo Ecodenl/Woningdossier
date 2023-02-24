@@ -144,8 +144,6 @@ class GenerateToolReport implements ShouldQueue
         $this->fileStorage->delete();
 
         Log::debug("GenerateTotalReport failed: {$this->cooperation->id}");
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

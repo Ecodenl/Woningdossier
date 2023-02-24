@@ -22,6 +22,9 @@ return [
         'dropdown' => [
             'choose' => 'Kies een optie',
         ],
+        'errors' => [
+            'data-loss' => 'Mogelijk gaan er gegevens verloren bij het opslaan.',
+        ],
     ],
 
     'yes' => 'Ja',

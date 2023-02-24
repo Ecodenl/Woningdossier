@@ -78,7 +78,7 @@ class CustomChanges extends Component
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
         ];
 
-        $this->measures = RegulationService::init()->getFilters()['Measures'];
+        $this->measures = RegulationService::init()->getFilters()['Measures'] ?? [];
 
         $this->setMeasureApplications();
     }
@@ -196,6 +196,11 @@ class CustomChanges extends Component
     {
         // unauth the user if this happens, this means the user is just messing around.
         abort_if(HoomdossierSession::isUserObserving(), 403);
+
+        if (empty($this->measures)) {
+            $this->getErrorBag()->add("customMeasureApplicationsFormData.{$index}.measure_category", __('api.verbeterjehuis.error'));
+            return;
+        }
 
         $measure = $this->customMeasureApplicationsFormData[$index] ?? null;
 

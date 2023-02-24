@@ -2,14 +2,10 @@
 
 namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
-use App\Models\Mapping;
 use App\Models\MeasureApplication;
-use App\Models\ToolQuestion;
 use App\Services\DiscordNotifier;
 use App\Services\MappingService;
-use App\Services\Verbeterjehuis\Client;
 use App\Services\Verbeterjehuis\RegulationService;
-use App\Services\Verbeterjehuis\Verbeterjehuis;
 use Illuminate\Console\Command;
 
 class SyncMeasures extends Command
@@ -84,22 +80,29 @@ class SyncMeasures extends Command
             'general' => [4483],
         ];
 
-        $targetGroups = collect(
-            RegulationService::init()->getFilters()['Measures']
-        )->keyBy('Value');
+        $results = RegulationService::init()->getFilters();
 
-        foreach ($map as $measureApplicationShort => $targetMeasureValues) {
-            $syncData = [];
-            foreach ($targetMeasureValues as $targetMeasureValue) {
-                $syncData[] = $targetGroups[$targetMeasureValue];
+        if (empty($results)) {
+            $this->error('Something is going on with VerbeterJeHuis!');
+        } else {
+            $targetGroups = collect(
+                $results['Measures']
+            )->keyBy('Value');
+
+            foreach ($map as $measureApplicationShort => $targetMeasureValues) {
+                $syncData = [];
+                foreach ($targetMeasureValues as $targetMeasureValue) {
+                    $syncData[] = $targetGroups[$targetMeasureValue];
+                }
+                $mappingService
+                    ->from(MeasureApplication::findByShort($measureApplicationShort))
+                    ->sync($syncData);
             }
-            $mappingService
-                ->from(MeasureApplication::findByShort($measureApplicationShort))
-                ->sync($syncData);
+
+            $this->info("Measures mapped to MeasureApplication.");
+            DiscordNotifier::init()->notify('SyncMeasures just ran!');
         }
 
-        $this->info("Measures mapped to MeasureApplication.");
-        DiscordNotifier::init()->notify('SyncMeasures just ran!');
         return 0;
     }
 }

@@ -165,7 +165,7 @@ class UserService
         $account = Account::where('email', $email)->first();
 
         // if its not found we will create a new one.
-        if ( ! $account instanceof Account) {
+        if (! $account instanceof Account) {
             $account = AccountService::create($email, $registerData['password']);
         }
 
@@ -211,14 +211,13 @@ class UserService
         $buildingData = Arr::only($data, ['street', 'city', 'postal_code', 'number', 'extension']);
 
         // create the building for the user
-        $building = $user->building()->save(new Building([$buildingData]));
+        $building = $user->building()->save(new Building($buildingData));
 
         CheckBuildingAddress::dispatchSync($building);
         // check if the connection was successful, if not dispatch it on the regular queue so it retries.
-        if (!$building->municipality()->first() instanceof Municipality) {
+        if (! $building->municipality()->first() instanceof Municipality) {
             CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
         }
-
 
         $features->building()->associate(
             $building

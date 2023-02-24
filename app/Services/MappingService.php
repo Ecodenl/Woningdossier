@@ -44,14 +44,24 @@ class MappingService
         return Mapping::where($this->whereTarget())->get();
     }
 
-    public function exists(): bool
+    public function mappingExists(): bool
     {
-        return $this->resolveMapping() instanceof Mapping;
+        return Mapping::where($this->whereFrom())->exists();
     }
 
-    public function doesntExist(): bool
+    public function mappingDoesntExist(): bool
     {
-        return ! $this->exists();
+        return ! $this->mappingExists();
+    }
+
+    public function resolvableExists(): bool
+    {
+        return Mapping::where($this->whereTarget())->exists();
+    }
+
+    public function resolvableDoesntExist(): bool
+    {
+        return ! $this->resolvableExists();
     }
 
     public function resolveFrom(): Collection

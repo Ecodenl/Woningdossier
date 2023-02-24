@@ -4,7 +4,7 @@ namespace App\Mail\Admin;
 
 use Illuminate\Mail\Mailable;
 
-class NoMappingFoundForBagMunicipalityEmail extends Mailable
+class MissingVbjehuisMunicipalityMappingEmail extends Mailable
 {
     public string $municipalityName;
     /**
@@ -25,7 +25,7 @@ class NoMappingFoundForBagMunicipalityEmail extends Mailable
     public function build()
     {
         return $this
-            ->subject(__('cooperation/mail/admin/no-mapping-found-for-bag-municipality.subject'))
-            ->view('cooperation.mail.admin.no-mapping-found-for-bag-municipality');
+            ->subject(__('cooperation/mail/admin/missing-vbjehuis-municipality-mapping.subject'))
+            ->view('cooperation.mail.admin.missing-vbjehuis-municipality-mapping');
     }
 }

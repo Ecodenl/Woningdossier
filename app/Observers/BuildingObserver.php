@@ -3,14 +3,15 @@
 namespace App\Observers;
 
 use App\Models\Building;
-use App\Models\ExampleBuilding;
-use App\Models\InputSource;
-use App\Models\ToolQuestion;
-use App\Services\ExampleBuildingService;
-use Illuminate\Support\Facades\Log;
 
 class BuildingObserver
 {
+    public function saving(Building $building)
+    {
+        // Not allowed as null
+        $building->extension ??= '';
+    }
+
     public function saved(Building $building)
     {
         \App\Helpers\Cache\Building::wipe($building->id);

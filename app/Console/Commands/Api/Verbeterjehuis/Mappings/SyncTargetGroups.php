@@ -44,25 +44,31 @@ class SyncTargetGroups extends Command
      */
     public function handle(MappingService $mappingService)
     {
-        $map = [
-            'bought' => 'Woningeigenaar',
-            'rented' => 'Huurder',
-            'rented-private' => 'Huurder'
-        ];
+        $results = RegulationService::init()->getFilters();
 
-        $targetGroups = collect(
-            RegulationService::init()->getFilters()['TargetGroups']
-        )->keyBy('Value');
+        if (empty($results)) {
+            $this->error('Something is going on with VerbeterJeHuis!');
+        } else {
+            $map = [
+                'bought' => 'Woningeigenaar',
+                'rented' => 'Huurder',
+                'rented-private' => 'Huurder'
+            ];
 
-        foreach ($map as $from => $target) {
-            $mappingService->from(
-                ToolQuestion::findByShort('building-contract-type')
-                    ->toolQuestionCustomValues()
-                    ->where('short', $from)
-                    ->first()
-            )->sync([$targetGroups[$target]]);
+            $targetGroups = collect(
+                $results['TargetGroups']
+            )->keyBy('Value');
+
+            foreach ($map as $from => $target) {
+                $mappingService->from(
+                    ToolQuestion::findByShort('building-contract-type')
+                        ->toolQuestionCustomValues()
+                        ->where('short', $from)
+                        ->first()
+                )->sync([$targetGroups[$target]]);
+            }
+            DiscordNotifier::init()->notify('SyncTargetGroups just ran!');
         }
-        DiscordNotifier::init()->notify('SyncTargetGroups just ran!');
 
         return 0;
     }

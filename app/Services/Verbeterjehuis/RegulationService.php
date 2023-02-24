@@ -32,12 +32,30 @@ class RegulationService
 
     public function getFilters(): array
     {
+        if (Cache::driver('database')->has('getFilters')) {
+            return Cache::driver('database')->get('getFilters');
+        }
+
+        // We will capture the exception here so the code doesn't get too bloated, however we will return
+        // an empty array, which indicates something is wrong.
+        try {
+            $results = Verbeterjehuis::init(Client::init())
+                ->regulation()
+                ->getFilters();
+        } catch (\Exception $e) {
+            $results = [];
+            if (app()->bound('sentry')) {
+                app('sentry')->captureException($e);
+            }
+        }
+
+        // We won't cache the results if they're empty.
+        if (empty($results)) {
+            return [];
+        }
+
         return Cache::driver('database')
-            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), function () {
-                return Verbeterjehuis::init(Client::init())
-                    ->regulation()
-                    ->getFilters();
-            });
+            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), fn () => $results);
     }
 
     public function getSearch(): ?Search

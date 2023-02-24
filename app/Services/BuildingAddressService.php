@@ -73,10 +73,12 @@ class BuildingAddressService
         $this->building->update($buildingData);
     }
 
-    public function attachMunicipality()
+    public function attachMunicipality(): void
     {
         // MUST be string! Empty string is ok.
         $bagWoonplaatsId = (string) $this->building->bag_woonplaats_id;
+        // we cant rely on isDiry / wasChanged.
+        $buildingAddressUpdated = false;
 
         $municipalityName = $this
             ->bagService
@@ -92,6 +94,9 @@ class BuildingAddressService
                 ->first();
 
             if ($municipality instanceof Municipality) {
+                if ($this->building->municipality_id !== $municipality->id) {
+                    $buildingAddressUpdated = true;
+                }
                 $this->building->municipality()->associate($municipality)->save();
                 if ($this->mappingService->from($municipality)->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->mappingDoesntExist()) {
                     NoMappingFoundForVbjehuisMunicipality::dispatch($municipality);
@@ -102,12 +107,18 @@ class BuildingAddressService
                 if ($this->mappingService->from($municipalityName)->type(MappingHelper::TYPE_BAG_MUNICIPALITY)->mappingDoesntExist()) {
                     NoMappingFoundForBagMunicipality::dispatch($municipalityName);
                 }
+                // The disassociate only matters when the field was filled before
+                if (!is_null($this->building->municipality_id)) {
+                    $buildingAddressUpdated = true;
+                }
                 // remove the relationship.
                 $this->building->municipality()->disassociate()->save();
             }
         }
         // in the end it doesnt matter if the user dis or associated a municipality
         // we have to refresh its advices.
-        BuildingAddressUpdated::dispatch($this->building);
+        if ($buildingAddressUpdated) {
+            BuildingAddressUpdated::dispatch($this->building);
+        }
     }
 }

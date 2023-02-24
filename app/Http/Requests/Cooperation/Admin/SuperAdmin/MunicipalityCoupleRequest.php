@@ -7,7 +7,6 @@ use App\Models\Mapping;
 use App\Models\Municipality;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Arr;
 
 class MunicipalityCoupleRequest extends FormRequest
 {

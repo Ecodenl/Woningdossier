@@ -4,7 +4,9 @@ namespace App\Http\Requests\Cooperation\Admin\SuperAdmin;
 
 use App\Models\Mapping;
 use App\Models\Municipality;
+use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
 
 class MunicipalityCoupleRequest extends FormRequest
 {
@@ -58,6 +60,15 @@ class MunicipalityCoupleRequest extends FormRequest
                     if ($mapping instanceof Mapping) {
                         if (! is_null($mapping->from_model_id) && $mapping->from_model_id !== $this->municipality->id) {
                             $fail(__('validation.custom-rules.municipalities.already-coupled'));
+                        }
+                    } else {
+                        // So the value is not null, but is it valid?
+                        $municipalities = RegulationService::init()->getFilters()['Cities'] ?? [];
+                        $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] === $value));
+
+                        // Incorrect value passed
+                        if (empty($targetData)) {
+                            $fail(__('validation.custom-rules.api.incorrect-vbjehuis-value'));
                         }
                     }
                 },

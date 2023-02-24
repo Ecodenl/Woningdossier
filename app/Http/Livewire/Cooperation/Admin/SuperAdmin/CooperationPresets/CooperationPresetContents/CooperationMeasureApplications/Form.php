@@ -73,7 +73,7 @@ class Form extends Component
             ]);
         }
 
-        $this->measures = RegulationService::init()->getFilters()['Measures'];
+        $this->measures = RegulationService::init()->getFilters()['Measures'] ?? [];
     }
 
     public function render()
@@ -95,6 +95,13 @@ class Form extends Component
 
     public function save()
     {
+        if (! $this->content['is_extensive_measure']) {
+            if (empty($this->measures)) {
+                $this->getErrorBag()->add('content.relations.mapping.measure_category', __('api.verbeterjehuis.error'));
+                return;
+            }
+        }
+
         $content = $this->validate()['content'];
         $content['is_deletable'] = ! $content['is_extensive_measure'];
         if ($content['is_extensive_measure']) {

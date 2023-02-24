@@ -61,7 +61,10 @@
                                             'input_name' => 'vbjehuis_municipality'
                                         ])
                                             @php
-                                                $currentMunicipality = $mappedVbjehuisMunicipality->target_data['Id'] ?? null;
+                                               // Multiple municipalities can have the same ID. We check the name to show the
+                                                // "correct" value.
+                                                $currentMunicipality = $mappedVbjehuisMunicipality->target_data ?? [];
+                                                $currentValue = old('vbjehuis_municipality', ! empty($currentMunicipality) ? $currentMunicipality['Id'] . '-' . $currentMunicipality['Name'] : null);
                                                 // Usually we can do a simple call on the result set, however here the results are a wrapped call. We do a separate check.
                                                 $vbjehuisAvailable = ! empty(\App\Services\Verbeterjehuis\RegulationService::init()->getFilters()['Cities'] ?? []);
                                             @endphp
@@ -77,8 +80,9 @@
                                                     class="form-control">
                                                 <option></option>
                                                 @foreach($vbjehuisMunicipalities as $vbjehuisMunicipality)
-                                                    <option value="{{$vbjehuisMunicipality['Id']}}"
-                                                            @if(old('vbjehuis_municipality', $currentMunicipality) == $vbjehuisMunicipality['Id']) selected="selected" @endif
+                                                    @php $vbjehuisVal = $vbjehuisMunicipality['Id'] . '-' . $vbjehuisMunicipality['Name']; @endphp
+                                                    <option value="{{ $vbjehuisVal }}"
+                                                            @if($vbjehuisVal == $currentValue) selected="selected" @endif
                                                     >
                                                         {{ $vbjehuisMunicipality['Name'] }}
                                                     </option>

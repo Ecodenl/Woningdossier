@@ -79,11 +79,7 @@ class CustomChanges extends Component
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
         ];
 
-        $this->measures = Wrapper::wrapCall(function () {
-            return RegulationService::init()->getFilters()['Measures'];
-        }, function ($exception) {
-            return [];
-        });
+        $this->measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
 
         $this->setMeasureApplications();
     }

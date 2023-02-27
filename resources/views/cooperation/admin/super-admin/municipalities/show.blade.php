@@ -65,13 +65,11 @@
                                                 // "correct" value.
                                                 $currentMunicipality = $mappedVbjehuisMunicipality->target_data ?? [];
                                                 $currentValue = old('vbjehuis_municipality', ! empty($currentMunicipality) ? $currentMunicipality['Id'] . '-' . $currentMunicipality['Name'] : null);
-                                                // Usually we can do a simple call on the result set, however here the results are a wrapped call. We do a separate check.
-                                                $vbjehuisAvailable = ! empty(\App\Services\Verbeterjehuis\RegulationService::init()->getFilters()['Cities'] ?? []);
                                             @endphp
                                             <label for="vbjehuis-municipality">
                                                 @lang('cooperation/admin/super-admin/municipalities.form.vbjehuis-municipality.label')
                                             </label>
-                                            @if(! $vbjehuisAvailable)
+                                            @if(empty($vbjehuisMunicipalities))
                                                 <small class="text-danger">
                                                     <br> @lang('api.verbeterjehuis.error') @lang('default.form.errors.data-loss')
                                                 </small>

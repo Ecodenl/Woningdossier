@@ -99,7 +99,7 @@ class SyncMeasures extends Command
 
             $this->info("Measures mapped to MeasureApplication.");
             DiscordNotifier::init()->notify('SyncMeasures just ran!');
-        }, function () {
+        }, function ($exception) {
             $this->error('Something is going on with VerbeterJeHuis!');
         });
 

@@ -60,7 +60,12 @@
                                         @component('layouts.parts.components.form-group', [
                                             'input_name' => 'vbjehuis_municipality'
                                         ])
-                                            @php $currentMunicipality = $mappedVbjehuisMunicipality->target_data['Id'] ?? null; @endphp
+                                            @php
+                                                // Multiple municipalities can have the same ID. We check the name to show the
+                                                // "correct" value.
+                                                $currentMunicipality = $mappedVbjehuisMunicipality->target_data ?? [];
+                                                $currentValue = old('vbjehuis_municipality', ! empty($currentMunicipality) ? $currentMunicipality['Id'] . '-' . $currentMunicipality['Name'] : null);
+                                            @endphp
                                             <label for="vbjehuis-municipality">
                                                 @lang('cooperation/admin/super-admin/municipalities.form.vbjehuis-municipality.label')
                                             </label>
@@ -68,8 +73,9 @@
                                                     class="form-control">
                                                 <option></option>
                                                 @foreach($vbjehuisMunicipalities as $vbjehuisMunicipality)
-                                                    <option value="{{$vbjehuisMunicipality['Id']}}"
-                                                            @if(old('vbjehuis_municipality', $currentMunicipality) == $vbjehuisMunicipality['Id']) selected="selected" @endif
+                                                    @php $vbjehuisVal = $vbjehuisMunicipality['Id'] . '-' . $vbjehuisMunicipality['Name']; @endphp
+                                                    <option value="{{ $vbjehuisVal }}"
+                                                            @if($vbjehuisVal == $currentValue) selected="selected" @endif
                                                     >
                                                         {{ $vbjehuisMunicipality['Name'] }}
                                                     </option>

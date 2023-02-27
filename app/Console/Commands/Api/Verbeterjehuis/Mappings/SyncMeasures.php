@@ -82,9 +82,8 @@ class SyncMeasures extends Command
         ];
 
         Wrapper::wrapCall(function () use ($map, $mappingService) {
-            $results = RegulationService::init()->getFilters();
             $targetGroups = collect(
-                $results['Measures']
+                RegulationService::init()->getFilters()['Measures']
             )->keyBy('Value');
 
             foreach ($map as $measureApplicationShort => $targetMeasureValues) {

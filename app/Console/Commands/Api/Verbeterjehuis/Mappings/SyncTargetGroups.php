@@ -46,7 +46,6 @@ class SyncTargetGroups extends Command
     public function handle(MappingService $mappingService)
     {
         Wrapper::wrapCall(function () use ($mappingService) {
-            $results = RegulationService::init()->getFilters();
             $map = [
                 'bought' => 'Woningeigenaar',
                 'rented' => 'Huurder',
@@ -54,7 +53,7 @@ class SyncTargetGroups extends Command
             ];
 
             $targetGroups = collect(
-                $results['TargetGroups']
+                RegulationService::init()->getFilters()['TargetGroups']
             )->keyBy('Value');
 
             foreach ($map as $from => $target) {

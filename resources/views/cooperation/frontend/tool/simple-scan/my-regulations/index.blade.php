@@ -9,7 +9,8 @@
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-regulations.loading')])
     @else
         <div class="w-full flex flex-wrap" x-data="{ selected: null }">
-            <div class="w-full flex flex-wrap" x-data="tabs(@if(request()->has('tab')) '{{ request()->get('tab') }}' @endif)">
+
+            <div class="w-full flex flex-wrap justify-between" x-data="tabs(@if(request()->has('tab')) '{{ request()->get('tab') }}' @endif)">
                 <nav class="nav-tabs" x-show="selected === null">
                     @foreach(__('cooperation/frontend/tool.my-regulations.categories') as $key => $category)
                         <a x-bind="tab" href="#" @if($loop->first) x-ref="main-tab" @endif data-tab="{{ $key }}">
@@ -17,6 +18,11 @@
                         </a>
                     @endforeach
                 </nav>
+                @if($building->user->regulations_refreshed_at instanceof DateTime)
+                    <h5 class="heading-5 text-purple">@lang('cooperation/frontend/tool.my-regulations.refreshed.last', ['time' => $building->user->regulations_refreshed_at->format('Y-m-d H:i')])</h5>
+                @else
+                    <h5 class="heading-5 text-purple">@lang('cooperation/frontend/tool.my-regulations.refreshed.not')</h5>
+                @endif
 
                 <div class="w-full border border-blue-500 rounded-r rounded-bl p-4">
                     @foreach($relevantRegulations as $regulationType => $relevantRegulationsForType)

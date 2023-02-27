@@ -18,17 +18,16 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
 
     public $userActionPlanAdvice;
 
-    public $i;
+    public $tries = 3;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(UserActionPlanAdvice $userActionPlanAdvice, $i)
+    public function __construct(UserActionPlanAdvice $userActionPlanAdvice)
     {
         $this->userActionPlanAdvice = $userActionPlanAdvice;
         $this->queue = Queue::REGULATIONS;
-        $this->i = $i;
     }
 
     /**
@@ -39,6 +38,11 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
     public function handle()
     {
         UserActionPlanAdviceService::init()->refreshRegulations($this->userActionPlanAdvice);
+    }
+
+    public function backoff(): array
+    {
+        return [8, 4];
     }
 
 }

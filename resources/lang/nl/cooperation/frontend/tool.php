@@ -132,6 +132,10 @@ return [
         'provider' => [
             'to' => 'Naar aanbieder',
         ],
+        'refreshed' => [
+            'not' => 'Regelingen zijn nog niet opgehaald',
+            'last' => 'Laatst geupdate om :date'
+        ],
         'categories' => [
             RegulationService::SUBSIDY => 'Subsidies (:count)',
             RegulationService::LOAN => 'Leningen (:count)',

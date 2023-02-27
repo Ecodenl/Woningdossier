@@ -81,6 +81,8 @@ class CustomChanges extends Component
 
         $this->measures = Wrapper::wrapCall(function () {
             return RegulationService::init()->getFilters()['Measures'];
+        }, function ($exception) {
+            return [];
         });
 
         $this->setMeasureApplications();

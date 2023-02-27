@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
+use App\Helpers\Wrapper;
 use App\Models\MeasureApplication;
 use App\Services\DiscordNotifier;
 use App\Services\MappingService;
@@ -80,11 +81,8 @@ class SyncMeasures extends Command
             'general' => [4483],
         ];
 
-        $results = RegulationService::init()->getFilters();
-
-        if (empty($results)) {
-            $this->error('Something is going on with VerbeterJeHuis!');
-        } else {
+        Wrapper::wrapCall(function () use ($map, $mappingService) {
+            $results = RegulationService::init()->getFilters();
             $targetGroups = collect(
                 $results['Measures']
             )->keyBy('Value');
@@ -101,7 +99,9 @@ class SyncMeasures extends Command
 
             $this->info("Measures mapped to MeasureApplication.");
             DiscordNotifier::init()->notify('SyncMeasures just ran!');
-        }
+        }, function () {
+            $this->error('Something is going on with VerbeterJeHuis!');
+        });
 
         return 0;
     }

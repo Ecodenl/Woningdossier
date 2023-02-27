@@ -10,12 +10,15 @@ class Wrapper
     {
         $results = null;
         try {
+            // If callback doesn't return anything, results will be null.
             $results = $closure();
         } catch (\Throwable $exception) {
             report($exception);
 
             if (! is_null($uponFailed)) {
-                $uponFailed($results, $exception);
+                // Do something with the exception or change results var. If callback doesn't return anything, results
+                // will be null.
+                $results = $uponFailed($exception);
             }
         }
 

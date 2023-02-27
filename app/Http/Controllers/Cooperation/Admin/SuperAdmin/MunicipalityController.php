@@ -80,7 +80,7 @@ class MunicipalityController extends Controller
             $id = $parts[0] ?? '';
             $name = $parts[1] ?? '';
 
-            $municipalities = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Cities']) ?? [];
+            $municipalities = RegulationService::init()->getFilters()['Cities'];
             $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] == $id && $a['Name'] == $name));
             MappingService::init()->from($municipality)->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
         } else {

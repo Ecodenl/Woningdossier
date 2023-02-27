@@ -79,7 +79,7 @@ class RegulationService
 
             if (Cache::driver('database')->has($cacheKey)) {
                 return Search::init(
-                    Cache::get($cacheKey)
+                    Cache::driver('database')->get($cacheKey)
                 );
             }
 

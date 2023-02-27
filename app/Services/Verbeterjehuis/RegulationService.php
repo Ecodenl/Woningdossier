@@ -32,28 +32,21 @@ class RegulationService
 
     public function getFilters(): array
     {
-        if (Cache::driver('database')->has('getFilters')) {
-            return Cache::driver('database')->get('getFilters');
+        $repository = Cache::driver('database');
+
+        // If cache is empty, reset the cache
+        if ($repository->has('getFilters')) {
+            if (empty($repository->get('getFilters'))) {
+                $repository->forget('getFilters');
+            }
         }
 
-        // We will capture the exception here so the code doesn't get too bloated, however we will return
-        // an empty array, which indicates something is wrong.
-        try {
-            $results = Verbeterjehuis::init(Client::init())
-                ->regulation()
-                ->getFilters();
-        } catch (\Exception $e) {
-            $results = [];
-            report($e);
-        }
-
-        // We won't cache the results if they're empty.
-        if (empty($results)) {
-            return [];
-        }
-
-        return Cache::driver('database')
-            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), fn () => $results);
+        return $repository
+            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), function () {
+                return Verbeterjehuis::init(Client::init())
+                    ->regulation()
+                    ->getFilters();
+            });
     }
 
     public function getSearch(): ?Search
@@ -70,34 +63,18 @@ class RegulationService
 
             $cityId = $target['Id'] ?? null;
 
+            // VerbeterJeHuis doesn't accept a null value.
             if (is_null($cityId)) {
                 return null;
             }
 
             $this->context['cityId'] = $cityId;
-            $cacheKey = $this->getCacheKey();
-
-            if (Cache::driver('database')->has($cacheKey)) {
-                return Search::init(
-                    Cache::get($cacheKey)
-                );
-            }
-
-            try {
-                $results = Verbeterjehuis::init(Client::init())
-                    ->regulation()
-                    ->search($this->context);
-            } catch (\Exception $e) {
-                $results = null;
-                report($e);
-            }
-
-            if (is_null($results)) {
-                return null;
-            }
-
             return Search::init(
-                Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), fn () => $results)
+                Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {
+                    return Verbeterjehuis::init(Client::init())
+                        ->regulation()
+                        ->search($this->context);
+                })
             );
         }
 

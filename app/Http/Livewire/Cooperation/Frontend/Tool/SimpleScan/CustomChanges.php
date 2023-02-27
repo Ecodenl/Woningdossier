@@ -6,6 +6,7 @@ use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
+use App\Helpers\Wrapper;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
@@ -78,7 +79,9 @@ class CustomChanges extends Component
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
         ];
 
-        $this->measures = RegulationService::init()->getFilters()['Measures'] ?? [];
+        $this->measures = Wrapper::wrapCall(function () {
+            return RegulationService::init()->getFilters()['Measures'];
+        });
 
         $this->setMeasureApplications();
     }

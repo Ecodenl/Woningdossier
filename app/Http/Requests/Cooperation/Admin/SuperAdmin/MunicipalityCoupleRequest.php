@@ -52,7 +52,6 @@ class MunicipalityCoupleRequest extends FormRequest
                 },
             ],
             'vbjehuis_municipality' => [
-                'bail',
                 'nullable',
                 function ($attribute, $value, $fail) {
                     $parts = explode('-', $value, 2);
@@ -66,15 +65,6 @@ class MunicipalityCoupleRequest extends FormRequest
                     // Incorrect value passed
                     if (empty($targetData)) {
                         $fail(__('validation.custom-rules.api.incorrect-vbjehuis-value'));
-                    } else {
-                        $mapping = Mapping::where('target_data->Id', $value)->first();
-
-                        // If mapping not yet existent, we're good
-                        if ($mapping instanceof Mapping) {
-                            if (! is_null($mapping->from_model_id) && $mapping->from_model_id !== $this->municipality->id) {
-                                $fail(__('validation.custom-rules.municipalities.already-coupled'));
-                            }
-                        }
                     }
                 },
             ],

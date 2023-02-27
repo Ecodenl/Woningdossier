@@ -41,8 +41,9 @@ class MunicipalityController extends Controller
     {
         $municipalityService->forMunicipality($municipality);
         $bagMunicipalities = $municipalityService->getAvailableBagMunicipalities();
-        $vbjehuisMunicipalities = $municipalityService->getAvailableVbjehuisMunicipalities();
         $mappedVbjehuisMunicipality = $municipalityService->retrieveVbjehuisMuncipality();
+        // TODO: Wrapper::wrapCall
+        $vbjehuisMunicipalities = RegulationService::init()->getFilters()['Cities'];
 
         return view(
             'cooperation.admin.super-admin.municipalities.show',

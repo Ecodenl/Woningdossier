@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Events\CooperationMeasureApplicationUpdated;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
+use App\Helpers\Wrapper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationFormRequest;
 use App\Jobs\HandleCooperationMeasureApplicationDeletion;
@@ -26,7 +27,7 @@ class CooperationMeasureApplicationController extends Controller
 
     public function create(Cooperation $cooperation, string $type)
     {
-        $measures = RegulationService::init()->getFilters()['Measures'] ?? [];
+        $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create', compact('type', 'measures'));
     }
 
@@ -57,7 +58,7 @@ class CooperationMeasureApplicationController extends Controller
     public function edit(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
         $type = $cooperationMeasureApplication->getType();
-        $measures = RegulationService::init()->getFilters()['Measures'] ?? [];
+        $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication', 'type', 'measures'));
     }
 

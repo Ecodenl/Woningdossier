@@ -14,9 +14,9 @@ class MyRegulationHelper
     public static function getRelevantRegulations($building, $inputSource): array
     {
         $relevantRegulations = [];
-        $payload = RegulationService::init()
+        $payload = Wrapper::wrapCall(fn () => RegulationService::init()
             ->forBuilding($building)
-            ->getSearch();
+            ->getSearch());
 
         // Here we will heavily modify the "payload" (regulations).
         // This is all business logic:
@@ -87,7 +87,7 @@ class MyRegulationHelper
                         $regulation['advisable_names'][] = $advisable->name ?? $advisable->measure_name;
                     }
                 }
-                if ( ! empty($regulation['advisable_names'])) {
+                if (! empty($regulation['advisable_names'])) {
                     $relevantRegulations[$regulationType][] = $regulation;
                 }
             }

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
+use App\Helpers\Wrapper;
 use App\Models\Mapping;
 use App\Models\ToolQuestion;
 use App\Services\DiscordNotifier;
@@ -44,11 +45,8 @@ class SyncTargetGroups extends Command
      */
     public function handle(MappingService $mappingService)
     {
-        $results = RegulationService::init()->getFilters();
-
-        if (empty($results)) {
-            $this->error('Something is going on with VerbeterJeHuis!');
-        } else {
+        Wrapper::wrapCall(function () use ($mappingService) {
+            $results = RegulationService::init()->getFilters();
             $map = [
                 'bought' => 'Woningeigenaar',
                 'rented' => 'Huurder',
@@ -68,7 +66,9 @@ class SyncTargetGroups extends Command
                 )->sync([$targetGroups[$target]]);
             }
             DiscordNotifier::init()->notify('SyncTargetGroups just ran!');
-        }
+        }, function ($exception) {
+            $this->error('Something is going on with VerbeterJeHuis!');
+        });
 
         return 0;
     }

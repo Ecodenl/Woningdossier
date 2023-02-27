@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Admin\SuperAdmin\CooperationPresets\CooperationPresetContents\CooperationMeasureApplications;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Wrapper;
 use App\Models\CooperationPreset;
 use App\Models\CooperationPresetContent;
 use App\Rules\LanguageRequired;
@@ -73,7 +74,7 @@ class Form extends Component
             ]);
         }
 
-        $this->measures = RegulationService::init()->getFilters()['Measures'] ?? [];
+        $this->measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
     }
 
     public function render()

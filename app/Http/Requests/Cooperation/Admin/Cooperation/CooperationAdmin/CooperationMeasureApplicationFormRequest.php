@@ -4,6 +4,7 @@ namespace App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
+use App\Helpers\Wrapper;
 use App\Models\CooperationMeasureApplication;
 use App\Rules\LanguageRequired;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -34,7 +35,7 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
             ? $measure->is_extensive_measure
             : $this->route('type') === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
 
-        $this->measures = RegulationService::init()->getFilters()['Measures'] ?? [];
+        $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
     }
 
     /**

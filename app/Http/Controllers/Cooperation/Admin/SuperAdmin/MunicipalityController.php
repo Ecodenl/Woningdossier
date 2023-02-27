@@ -75,8 +75,12 @@ class MunicipalityController extends Controller
 
         if (! empty($data['vbjehuis_municipality'])) {
             // If not empty, then the request has validated it and we know it's available.
-            $municipalities = RegulationService::init()->getFilters()['Cities'];
-            $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] === $data['vbjehuis_municipality']));
+            $parts = explode('-', $data['vbjehuis_municipality'], 2);
+            $id = $parts[0] ?? '';
+            $name = $parts[1] ?? '';
+
+            $municipalities = RegulationService::init()->getFilters()['Cities'] ?? [];
+            $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] == $id && $a['Name'] == $name));
             MappingService::init()->from($municipality)->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
         } else {
             $municipality->mappings()->forType(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->delete();

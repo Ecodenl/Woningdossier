@@ -65,9 +65,9 @@
                                             @php
                                                 $currentCategory = \App\Services\MappingService::init()->from($cooperationMeasureApplication)->resolveMapping()->first();
                                                 $vbjehuisAvailable = ! empty($measures);
-                                                if (! $vbjehuisAvailable) {
+                                                if (! $vbjehuisAvailable && $currentCategory instanceof \App\Models\Mapping) {
                                                     $measures = [
-                                                        // WIP
+                                                        $currentCategory->target_data,
                                                     ];
                                                 }
                                             @endphp
@@ -75,13 +75,13 @@
                                                 <label for="measure-category">
                                                     @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
                                                 </label>
-                                                @if(empty($measures))
+                                                @if(! $vbjehuisAvailable)
                                                     <small class="text-danger">
                                                         <br> @lang('api.verbeterjehuis.error')
                                                     </small>
                                                 @endif
                                                 <select class="form-control" name="cooperation_measure_applications[measure_category]"
-                                                        id="measure-category">
+                                                        id="measure-category" @if(! $vbjehuisAvailable) disabled @endif>
                                                     <option value="">
                                                         @lang('default.form.dropdown.choose')
                                                     </option>

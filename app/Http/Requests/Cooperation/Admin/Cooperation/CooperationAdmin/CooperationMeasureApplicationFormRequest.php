@@ -55,6 +55,8 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
                 new LanguageRequired('nl'),
             ],
             'cooperation_measure_applications.measure_category' => [
+                // When disabled due to empty measures, nothing will be sent through and so this will be null and pass
+                // validation
                 'nullable',
                 Rule::in(Arr::pluck($this->measures, 'Value')),
             ],

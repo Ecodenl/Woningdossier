@@ -116,7 +116,7 @@ class MappingService
     public function sync(array $syncableData = [], ?string $type = null): void
     {
         // first we will remove the current rows.
-        Mapping::where($this->whereFrom())->delete();
+        $this->detach();
 
         // its possible to create target less mappings
         // this is not ideal, however its much easier for the admin to manage.
@@ -143,6 +143,11 @@ class MappingService
 
         DB::table((new Mapping())->getTable())
             ->insert($attributes);
+    }
+
+    public function detach()
+    {
+        Mapping::where($this->whereFrom())->delete();
     }
 
     private function whereStruct(string $column): array

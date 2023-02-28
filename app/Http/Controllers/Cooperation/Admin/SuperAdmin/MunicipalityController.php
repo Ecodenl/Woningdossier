@@ -42,8 +42,9 @@ class MunicipalityController extends Controller
     {
         $municipalityService->forMunicipality($municipality);
         $bagMunicipalities = $municipalityService->getAvailableBagMunicipalities();
-        $vbjehuisMunicipalities = $municipalityService->getAvailableVbjehuisMunicipalities();
         $mappedVbjehuisMunicipality = $municipalityService->retrieveVbjehuisMuncipality();
+        // TODO: Wrapper::wrapCall
+        $vbjehuisMunicipalities = RegulationService::init()->getFilters()['Cities'];
 
         return view(
             'cooperation.admin.super-admin.municipalities.show',
@@ -74,6 +75,8 @@ class MunicipalityController extends Controller
             'target_model_id' => $municipality->id,
         ]);
 
+        $service = MappingService::init()->from($municipality);
+
         if (! empty($data['vbjehuis_municipality'])) {
             // If not empty, then the request has validated it and we know it's available.
             $parts = explode('-', $data['vbjehuis_municipality'], 2);
@@ -82,9 +85,9 @@ class MunicipalityController extends Controller
 
             $municipalities = RegulationService::init()->getFilters()['Cities'];
             $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] == $id && $a['Name'] == $name));
-            MappingService::init()->from($municipality)->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
+            $service->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
         } else {
-            $municipality->mappings()->forType(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->delete();
+            $service->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->detach();
         }
 
         return redirect()->route('cooperation.admin.super-admin.municipalities.show', compact('municipality'))

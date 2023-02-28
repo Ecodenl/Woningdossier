@@ -80,7 +80,7 @@
                                 </h6>
                                 @if(! $vbjehuisAvailable)
                                     <small class="text-red flex w-full">
-                                        <br> @lang('api.verbeterjehuis.error')
+                                        <br> @lang('api.verbeterjehuis.filters.measures.error')
                                     </small>
                                 @endif
                             </div>

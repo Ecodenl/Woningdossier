@@ -77,7 +77,7 @@
                                                 </label>
                                                 @if(! $vbjehuisAvailable)
                                                     <small class="text-danger">
-                                                        <br> @lang('api.verbeterjehuis.error')
+                                                        <br> @lang('api.verbeterjehuis.filters.measures.error')
                                                     </small>
                                                 @endif
                                                 <select class="form-control" name="cooperation_measure_applications[measure_category]"

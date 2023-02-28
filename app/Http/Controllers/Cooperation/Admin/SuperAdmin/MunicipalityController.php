@@ -43,8 +43,7 @@ class MunicipalityController extends Controller
         $municipalityService->forMunicipality($municipality);
         $bagMunicipalities = $municipalityService->getAvailableBagMunicipalities();
         $mappedVbjehuisMunicipality = $municipalityService->retrieveVbjehuisMuncipality();
-        // TODO: Wrapper::wrapCall
-        $vbjehuisMunicipalities = RegulationService::init()->getFilters()['Cities'];
+        $vbjehuisMunicipalities = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Cities']) ?? [];
 
         return view(
             'cooperation.admin.super-admin.municipalities.show',
@@ -76,18 +75,20 @@ class MunicipalityController extends Controller
         ]);
 
         $service = MappingService::init()->from($municipality);
+        $municipalities = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Cities']);
 
-        if (! empty($data['vbjehuis_municipality'])) {
-            // If not empty, then the request has validated it and we know it's available.
-            $parts = explode('-', $data['vbjehuis_municipality'], 2);
-            $id = $parts[0] ?? '';
-            $name = $parts[1] ?? '';
+        if (! empty($municipalities)) {
+            if (! empty($data['vbjehuis_municipality'])) {
+                // If not empty, then the request has validated it and we know it's available.
+                $parts = explode('-', $data['vbjehuis_municipality'], 2);
+                $id = $parts[0] ?? '';
+                $name = $parts[1] ?? '';
 
-            $municipalities = RegulationService::init()->getFilters()['Cities'];
-            $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] == $id && $a['Name'] == $name));
-            $service->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
-        } else {
-            $service->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->detach();
+                $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] == $id && $a['Name'] == $name));
+                $service->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
+            } else {
+                $service->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->detach();
+            }
         }
 
         return redirect()->route('cooperation.admin.super-admin.municipalities.show', compact('municipality'))

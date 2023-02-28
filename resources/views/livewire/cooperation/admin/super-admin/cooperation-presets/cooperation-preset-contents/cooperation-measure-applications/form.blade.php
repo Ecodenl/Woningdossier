@@ -73,7 +73,7 @@
                                     </label>
                                     @if(! $vbjehuisAvailable)
                                         <small class="text-danger">
-                                            <br> @lang('api.verbeterjehuis.error')
+                                            <br> @lang('api.verbeterjehuis.filters.measures.error')
                                         </small>
                                     @endif
                                     <div wire:ignore>

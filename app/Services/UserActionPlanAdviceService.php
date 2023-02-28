@@ -78,9 +78,9 @@ class UserActionPlanAdviceService
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        $payload = Wrapper::wrapCall(fn () => RegulationService::init()
+        $payload = RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
-            ->getSearch());
+            ->getSearch();
 
         $loanAvailable = false;
         $subsidyAvailable = false;

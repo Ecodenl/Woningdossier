@@ -5,6 +5,8 @@ namespace App\Jobs;
 use App\Helpers\Queue;
 use App\Models\UserActionPlanAdvice;
 use App\Services\UserActionPlanAdviceService;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,6 +21,7 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
     public $userActionPlanAdvice;
 
     public $tries = 3;
+
     /**
      * Create a new job instance.
      *
@@ -37,12 +40,10 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
      */
     public function handle()
     {
-        UserActionPlanAdviceService::init()->refreshRegulations($this->userActionPlanAdvice);
+        try {
+            UserActionPlanAdviceService::init()->refreshRegulations($this->userActionPlanAdvice);
+        } catch (ConnectException|ServerException $connectException) {
+            $this->release(10);
+        }
     }
-
-    public function backoff(): array
-    {
-        return [8, 4];
-    }
-
 }

@@ -720,6 +720,10 @@ class Form extends Component
                     'comfort' => $advisable->configurations['comfort'] ?? 0,
                 ];
 
+                // If the advisable has no tool questions (most likely maintenance measure) then it's empty and so the
+                // user for certain doesn't have any costs. Else, it will get the answers, and if not viewable, then
+                // the answer will be null. It will also be null if the user didn't fill it in. So, if all answers
+                // are set, we can guarantee that this has user costs.
                 $userCosts = $userCostService->forAdvisable($advisable)->getAnswers()[$advisable->id] ?? [];
                 $hasUserCosts = ! empty($userCosts);
                 foreach ($userCosts as $tqShort => $answer) {

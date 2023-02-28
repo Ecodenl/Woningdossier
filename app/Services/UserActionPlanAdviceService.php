@@ -26,8 +26,11 @@ use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
+use Carbon\Carbon;
+use Illuminate\Bus\Batch;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService
@@ -58,16 +61,33 @@ class UserActionPlanAdviceService
             ->withoutGlobalScopes()
             ->get();
 
+        $jobs = [];
+
         foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
-            RefreshRegulationsForUserActionPlanAdvice::dispatch($userActionPlanAdvice)->onQueue(Queue::ASYNC);
+            $jobs[] = new RefreshRegulationsForUserActionPlanAdvice($userActionPlanAdvice);
         }
+        Bus::batch($jobs)
+            ->then(function (Batch $batch) {
+                $this->user->update([
+                    'regulations_refreshed_at' => Carbon::now(),
+                ]);
+            })
+            ->finally(function (Batch $batch) {
+                $this->user->update([
+                    'refreshing_regulations' => false,
+                ]);
+            })
+            ->name('Refresh all user his regulations for advices.')
+            ->allowFailures()
+            ->onQueue(Queue::REGULATIONS)
+            ->dispatch();
     }
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        $payload = Wrapper::wrapCall(fn () => RegulationService::init()
+        $payload = RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
-            ->getSearch());
+            ->getSearch();
 
         $loanAvailable = false;
         $subsidyAvailable = false;

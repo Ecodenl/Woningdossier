@@ -77,7 +77,7 @@ class MunicipalityServiceTest extends TestCase
      */
     public function test_we_get_correct_vbjehuis_municipalities()
     {
-        $vbjehuisMunicipalities = RegulationService::init()->getFilters()['Cities'];
+        $vbjehuisMunicipalities = RegulationService::init()->getFilters()['Cities'] ?? [];
 
         if (empty($vbjehuisMunicipalities)) {
             $this->fail('VerbeterJeHuis not available, test could not be resolved.');

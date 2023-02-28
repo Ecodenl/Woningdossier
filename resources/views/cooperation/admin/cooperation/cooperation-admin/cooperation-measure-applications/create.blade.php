@@ -65,6 +65,11 @@
                                                 <label for="measure-category">
                                                     @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
                                                 </label>
+                                                @if(empty($measures))
+                                                    <small class="text-danger">
+                                                        <br> @lang('api.verbeterjehuis.error')
+                                                    </small>
+                                                @endif
                                                 <select class="form-control" name="cooperation_measure_applications[measure_category]"
                                                         id="measure-category">
                                                     <option value="">

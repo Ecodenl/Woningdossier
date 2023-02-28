@@ -71,6 +71,11 @@
                                     <label for="measure-category">
                                         @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
                                     </label>
+                                    @if(empty($measures))
+                                        <small class="text-danger">
+                                            <br> @lang('api.verbeterjehuis.error')
+                                        </small>
+                                    @endif
                                     <div wire:ignore>
                                         {{-- Wire:ignore here so the select2 doesn't die, but still allows error messages --}}
                                         <select class="form-control"

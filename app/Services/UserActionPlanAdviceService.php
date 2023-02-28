@@ -8,6 +8,7 @@ use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Helpers\Queue;
 use App\Helpers\StepHelper;
+use App\Helpers\Wrapper;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
 use App\Models\ElementValue;
@@ -77,9 +78,9 @@ class UserActionPlanAdviceService
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        $payload = RegulationService::init()
+        $payload = Wrapper::wrapCall(fn () => RegulationService::init()
             ->forBuilding($userActionPlanAdvice->user->building)
-            ->getSearch();
+            ->getSearch());
 
         $loanAvailable = false;
         $subsidyAvailable = false;

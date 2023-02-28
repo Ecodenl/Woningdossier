@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
 use App\Helpers\MappingHelper;
+use App\Helpers\Wrapper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\MunicipalityCoupleRequest;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\MunicipalityRequest;
@@ -74,8 +75,13 @@ class MunicipalityController extends Controller
         ]);
 
         if (! empty($data['vbjehuis_municipality'])) {
+            // If not empty, then the request has validated it and we know it's available.
+            $parts = explode('-', $data['vbjehuis_municipality'], 2);
+            $id = $parts[0] ?? '';
+            $name = $parts[1] ?? '';
+
             $municipalities = RegulationService::init()->getFilters()['Cities'];
-            $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] === $data['vbjehuis_municipality']));
+            $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] == $id && $a['Name'] == $name));
             MappingService::init()->from($municipality)->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
         } else {
             $municipality->mappings()->forType(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->delete();

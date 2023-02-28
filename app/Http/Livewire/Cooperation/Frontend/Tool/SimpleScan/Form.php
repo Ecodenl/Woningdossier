@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Str;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\CompletedSubStep;
@@ -137,12 +138,18 @@ class Form extends Scannable
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
+                /** @var ToolQuestion $toolQuestion */
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                 // Rules are conditionally unset. We don't want to save unvalidated answers, but don't want to just
-                // clear them either.
-                if (array_key_exists("filledInAnswers.$toolQuestionShort", $this->rules)) {
+                // clear them either. In the case of a JSON question, the short will have sub-shorts, so we check
+                // at least one starts with the tool question short
+                if (array_key_exists("filledInAnswers.$toolQuestionShort", $this->rules)
+                    || ($toolQuestion->data_type === Caster::JSON && Str::arrKeyStartsWith(
+                        $this->rules,
+                        "filledInAnswers.$toolQuestionShort"
+                    ))
+                ) {
                     // Define if we should answer this question...
-                    /** @var ToolQuestion $toolQuestion */
-                    $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                     if ($this->building->user->account->can('answer', $toolQuestion)) {
                         $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
                         if ($masterAnswer !== $givenAnswer) {

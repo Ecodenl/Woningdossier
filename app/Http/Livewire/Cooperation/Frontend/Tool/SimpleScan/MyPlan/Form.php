@@ -18,6 +18,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\MappingService;
+use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Database\Eloquent\Collection;
@@ -319,6 +320,7 @@ class Form extends Component
             'info' => $customMeasureApplication->info,
             'icon' => 'icon-tools',
             'costs' => $advice->costs,
+            'has_user_costs' => false,
             'subsidy_available' => $advice->subsidy_available,
             'loan_available' => $advice->loan_available,
             'savings' => $advice->savings_money ?? 0,
@@ -693,9 +695,12 @@ class Form extends Component
     private function convertAdvicesToCards(Collection $advices, string $category): array
     {
         $cards = [];
+        $userCostService = UserCostService::init($this->building->user, $this->currentInputSource);
 
         // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
         $order = 0;
+
+        $hasUserCosts = false;
 
         foreach ($advices as $advice) {
             $advisable = $advice->userActionPlanAdvisable;
@@ -714,6 +719,15 @@ class Form extends Component
                     'route' => $route,
                     'comfort' => $advisable->configurations['comfort'] ?? 0,
                 ];
+
+                $userCosts = $userCostService->forAdvisable($advisable)->getAnswers()[$advisable->id] ?? [];
+                $hasUserCosts = ! empty($userCosts);
+                foreach ($userCosts as $tqShort => $answer) {
+                    if (is_null($answer)) {
+                        $hasUserCosts = false;
+                        break;
+                    }
+                }
             } else {
                 // Custom measure has input source so we must fetch the advisable from the master input source
                 if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
@@ -729,6 +743,7 @@ class Form extends Component
                 ];
             }
 
+            $cards[$category][$order]['has_user_costs'] = $hasUserCosts;
             $cards[$category][$order]['subsidy_available'] = $advice->subsidy_available;
             $cards[$category][$order]['loan_available'] = $advice->loan_available;
 

@@ -4,6 +4,7 @@ namespace App\Services\Verbeterjehuis;
 
 use App\Helpers\Cache\BaseCache;
 use App\Helpers\MappingHelper;
+use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\MappingService;
@@ -32,20 +33,17 @@ class RegulationService
 
     public function getFilters(): array
     {
-        $repository = Cache::driver('database');
+        $result = Verbeterjehuis::init(Client::init())
+            ->regulation()
+            ->getFilters();
 
-        // If cache is empty, reset the cache
-        if ($repository->has('getFilters')) {
-            if (empty($repository->get('getFilters'))) {
-                $repository->forget('getFilters');
-            }
+        if (empty($result)) {
+            return [];
         }
 
-        return $repository
-            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), function () {
-                return Verbeterjehuis::init(Client::init())
-                    ->regulation()
-                    ->getFilters();
+        return Cache::driver('database')
+            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), function () use ($result) {
+                return $result;
             });
     }
 
@@ -71,6 +69,7 @@ class RegulationService
             $this->context['cityId'] = $cityId;
             return Search::init(
                 Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {
+                    // note: If the search method throws a exception it wont be cached.
                     return Verbeterjehuis::init(Client::init())
                         ->regulation()
                         ->search($this->context);

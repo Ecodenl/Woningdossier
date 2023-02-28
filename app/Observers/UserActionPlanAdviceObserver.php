@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
+use App\Helpers\Wrapper;
 use App\Jobs\MapQuickScanSituationToExpert;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -13,6 +14,7 @@ use App\Services\ConditionService;
 use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceObserver
 {
@@ -86,7 +88,10 @@ class UserActionPlanAdviceObserver
         // usually we would exclude the master input source, however the refreshRegulations does NOT trigger model events.
         // all other advisables will be triggered in the code itself, the observer can only handle the measure application consistently
         if ($userActionPlanAdvice->user_action_plan_advisable_type === MeasureApplication::class) {
-            UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);
+            Log::debug('Refresh ze regulations.');
+            Wrapper::wrapCall(function () use ($userActionPlanAdvice) {
+                UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);
+            });
         }
     }
 }

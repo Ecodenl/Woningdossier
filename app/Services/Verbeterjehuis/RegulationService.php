@@ -4,6 +4,7 @@ namespace App\Services\Verbeterjehuis;
 
 use App\Helpers\Cache\BaseCache;
 use App\Helpers\MappingHelper;
+use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\MappingService;
@@ -70,6 +71,7 @@ class RegulationService
             $this->context['cityId'] = $cityId;
             return Search::init(
                 Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {
+                    // note: If the search method throws a exception it wont be cached.
                     return Verbeterjehuis::init(Client::init())
                         ->regulation()
                         ->search($this->context);

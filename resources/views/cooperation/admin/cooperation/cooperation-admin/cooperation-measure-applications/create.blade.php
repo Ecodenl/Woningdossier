@@ -61,17 +61,20 @@
                                 @if($type === \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE)
                                     <div class="row">
                                         <div class="col-sm-6">
+                                            @php
+                                                $vbjehuisAvailable = ! empty($measures);
+                                            @endphp
                                             @component('layouts.parts.components.form-group', ['input_name' => 'cooperation_measure_applications.measure_category'])
                                                 <label for="measure-category">
                                                     @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
                                                 </label>
-                                                @if(empty($measures))
+                                                @if(! $vbjehuisAvailable)
                                                     <small class="text-danger">
-                                                        <br> @lang('api.verbeterjehuis.error')
+                                                        <br> @lang('api.verbeterjehuis.filters.measures.error')
                                                     </small>
                                                 @endif
                                                 <select class="form-control" name="cooperation_measure_applications[measure_category]"
-                                                        id="measure-category">
+                                                        id="measure-category" @if(! $vbjehuisAvailable) disabled @endif>
                                                     <option value="">
                                                         @lang('default.form.dropdown.choose')
                                                     </option>

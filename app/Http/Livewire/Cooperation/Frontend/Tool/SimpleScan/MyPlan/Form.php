@@ -66,6 +66,7 @@ class Form extends Component
     public Scan $scan;
     public array $custom_measure_application = [];
     public array $measures;
+    public bool $vbjehuisAvailable = true;
 
     // Details
     public float $expectedInvestment = 0;
@@ -79,16 +80,21 @@ class Form extends Component
 
     protected function rules(): array
     {
-        return [
+        $rules = [
             'custom_measure_application.name' => 'required',
             'custom_measure_application.info' => 'required',
-            'custom_measure_application.measure_category' => [
-                'required', Rule::in(\Illuminate\Support\Arr::pluck($this->measures, 'Value'))
-            ],
             'custom_measure_application.costs.from' => 'required|numeric|min:0',
             'custom_measure_application.costs.to' => 'required|numeric|gte:custom_measure_application.costs.from',
             'custom_measure_application.savings_money' => 'nullable|numeric|max:999999',
         ];
+
+        if ($this->vbjehuisAvailable) {
+            $rules['custom_measure_application.measure_category'] = [
+                'nullable', Rule::in(\Illuminate\Support\Arr::pluck($this->measures, 'Value'))
+            ];
+        }
+
+        return $rules;
     }
 
     private $calculationMap = [
@@ -209,7 +215,13 @@ class Form extends Component
         $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
 
-        $this->measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
+        $this->measures = Wrapper::wrapCall(
+            fn () => RegulationService::init()->getFilters()['Measures'],
+            function () {
+                $this->vbjehuisAvailable = false;
+                return [];
+            }
+        );
 
         // Set cards
         $this->loadVisibleCards();
@@ -230,11 +242,6 @@ class Form extends Component
     public function submit()
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
-
-        if (empty($this->measures)) {
-            $this->getErrorBag()->add('custom_measure_application.measure_category', __('api.verbeterjehuis.error'));
-            return;
-        }
 
         // Before we can validate, we must convert human format to proper format
         // TODO: Check for later; perhaps we should check if the variable has 1 comma or 2 or more dots to define the used format and set the str_replace only if it's a Dutch format
@@ -271,12 +278,17 @@ class Form extends Component
         // !important! this has to be done before the userActionPlanAdvice relation is made
         // otherwise the observer will fire when the mapping hasnt been done yet.
 
-        // Add or update mapping to measure category
-        $measureCategory = $measureData['measure_category'];
-        $targetData = \Illuminate\Support\Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
         // We read from the master. Therefore we need to sync to the master also.
         $from = $customMeasureApplication->getSibling($this->masterInputSource);
-        MappingService::init()->from($from)->sync([$targetData]);
+        if ($this->vbjehuisAvailable) {
+            // Add or update mapping to measure category
+            $measureCategory = $measureData['measure_category'] ?? null;
+            $targetData = \Illuminate\Support\Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
+
+            if (! empty($targetData)) {
+                MappingService::init()->from($from)->sync([$targetData]);
+            }
+        }
 
         $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
 

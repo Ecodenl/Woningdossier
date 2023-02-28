@@ -41,9 +41,12 @@ class CooperationPresetService
         foreach ($relations as $relation => $values) {
             switch ($relation) {
                 case 'mapping':
-                    $measureCategory = $values['measure_category'];
+                    $measureCategory = $values['measure_category']['Value'] ?? null;
                     $targetData = Arr::first(Arr::where(Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [], fn ($a) => $a['Value'] === $measureCategory));
-                    MappingService::init()->from($this->model)->sync([$targetData]);
+
+                    if (! empty($targetData)) {
+                        MappingService::init()->from($this->model)->sync([$targetData]);
+                    }
                     break;
 
                 default:

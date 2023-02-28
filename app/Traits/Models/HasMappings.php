@@ -2,9 +2,8 @@
 
 namespace App\Traits\Models;
 
-use App\Models\Mapping;
+use App\Services\MappingService;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 trait HasMappings
@@ -19,12 +18,7 @@ trait HasMappings
                 }
             }
 
-            $model->mappings()->delete();
+            MappingService::init()->from($model)->detach();
         });
-    }
-
-    public function mappings(): MorphMany
-    {
-        return $this->morphMany(Mapping::class, 'from_model');
     }
 }

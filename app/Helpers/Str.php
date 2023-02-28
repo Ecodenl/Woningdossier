@@ -193,6 +193,20 @@ class Str
     }
 
     /**
+     * Check if a needle is somewhere at the start of the keys in an array.
+     *
+     * @param  array  $array
+     * @param $needle
+     * @param  bool  $ignoreCase
+     *
+     * @return bool
+     */
+    public static function arrKeyStartsWith(array $array, $needle, bool $ignoreCase = false): bool
+    {
+        return static::arrStartsWith(array_keys($array), $needle, $ignoreCase);
+    }
+
+    /**
      * Convert HTML array format to dot
      *
      * @param  string  $htmlArray

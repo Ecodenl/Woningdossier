@@ -71,7 +71,7 @@
                                                     </small>
                                                 @endif
                                                 <select class="form-control" name="cooperation_measure_applications[measure_category]"
-                                                        id="measure-category">
+                                                        id="measure-category" @if(empty($measures)) disabled @endif>
                                                     <option value="">
                                                         @lang('default.form.dropdown.choose')
                                                     </option>

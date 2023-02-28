@@ -2,6 +2,6 @@
 
 return [
     'verbeterjehuis' => [
-        'error' => 'VerbeterJeHuis is momenteel niet beschikbaar. Sommige acties kunnen (mogelijk) niet uitgevoerd worden.'
+        'error' => 'Het is momenteel niet mogelijk een maatregel categorie te selecteren. Probeer dit later opnieuw.'
     ],
 ];

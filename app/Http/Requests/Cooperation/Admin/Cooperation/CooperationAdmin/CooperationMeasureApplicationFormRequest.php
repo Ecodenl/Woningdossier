@@ -35,7 +35,7 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
             ? $measure->is_extensive_measure
             : $this->route('type') === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
 
-        $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
+        $this->measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
     }
 
     /**
@@ -55,13 +55,7 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
                 new LanguageRequired('nl'),
             ],
             'cooperation_measure_applications.measure_category' => [
-                'bail',
-                function ($attribute, $value, $fail) {
-                    if (empty($this->measures) && ! $this->isExtensive) {
-                        $fail(__('api.verbeterjehuis.error'));
-                    }
-                },
-                Rule::requiredIf(! $this->isExtensive),
+                'nullable',
                 Rule::in(Arr::pluck($this->measures, 'Value')),
             ],
             'cooperation_measure_applications.costs.from' => [

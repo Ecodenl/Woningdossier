@@ -33,6 +33,7 @@ class CooperationMeasureApplicationController extends Controller
 
     public function store(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, string $type)
     {
+        dd('');
         $measureData = $request->validated()['cooperation_measure_applications'];
         $measureCategory = $measureData['measure_category'] ?? null;
         unset($measureData['measure_category']);
@@ -64,6 +65,7 @@ class CooperationMeasureApplicationController extends Controller
 
     public function update(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
+        dd('');
         $measureData = $request->validated()['cooperation_measure_applications'];
         $measureCategory = $measureData['measure_category'] ?? null;
         unset($measureData['measure_category']);

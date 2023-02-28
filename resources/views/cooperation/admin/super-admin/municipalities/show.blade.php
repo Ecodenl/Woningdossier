@@ -71,7 +71,7 @@
                                             </label>
                                             @if(empty($vbjehuisMunicipalities))
                                                 <small class="text-danger">
-                                                    <br> @lang('api.verbeterjehuis.error') @lang('default.form.errors.data-loss')
+                                                    <br> @lang('api.verbeterjehuis.error')
                                                 </small>
                                             @endif
                                             <select name="vbjehuis_municipality" id="vbjehuis-municipality"

@@ -62,6 +62,14 @@
                                 @if(! $cooperationMeasureApplication->is_extensive_measure)
                                     <div class="row">
                                         <div class="col-sm-6">
+                                            @php
+                                                $vbjehuisAvailable = ! empty($measures);
+                                                if (! $vbjehuisAvailable) {
+                                                    $measures = [
+                                                        // WIP
+                                                    ];
+                                                }
+                                            @endphp
                                             @component('layouts.parts.components.form-group', ['input_name' => 'cooperation_measure_applications.measure_category'])
                                                 <label for="measure-category">
                                                     @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')

@@ -6,6 +6,7 @@ use App\Helpers\MyRegulationHelper;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class MyRegulations extends Component
@@ -13,12 +14,13 @@ class MyRegulations extends Component
     public array $relevantRegulations;
     public Building $building;
     public bool $isRefreshing;
+    public InputSource $masterInputSource;
 
     public function mount(Building $building)
     {
         $this->building = $building;
-        $masterInputSource = InputSource::master();
-        $this->relevantRegulations = MyRegulationHelper::getRelevantRegulations($building, $masterInputSource);
+        $this->masterInputSource = InputSource::master();
+        $this->relevantRegulations = MyRegulationHelper::getRelevantRegulations($building, $this->masterInputSource);
         $this->isRefreshing = $building->user->refreshing_regulations;
     }
     public function render()
@@ -37,6 +39,12 @@ class MyRegulations extends Component
 
     public function checkIfIsRefreshed()
     {
+        $oldIsRefreshing = $this->isRefreshing;
         $this->isRefreshing = $this->building->user->refreshing_regulations;
+
+        if ($this->isRefreshing === false && $oldIsRefreshing !== $this->isRefreshing) {
+            Log::debug('Regulations refresh');
+            $this->relevantRegulations = MyRegulationHelper::getRelevantRegulations($this->building, $this->masterInputSource);
+        }
     }
 }

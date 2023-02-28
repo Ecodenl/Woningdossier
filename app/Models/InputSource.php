@@ -46,4 +46,9 @@ class InputSource extends Model
     {
         return self::RESIDENT_SHORT == $this->short;
     }
+
+    public static function master(): ?Model
+    {
+        return self::findByShort(static::MASTER_SHORT);
+    }
 }

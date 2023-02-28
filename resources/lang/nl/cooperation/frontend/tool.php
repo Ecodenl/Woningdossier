@@ -134,7 +134,9 @@ return [
         ],
         'refreshed' => [
             'not' => 'Regelingen zijn nog niet opgehaald',
-            'last' => 'Laatst geupdate om :date'
+            'last' => 'Laatst geupdate om :date',
+            'busy' => 'Wordt ververst..',
+            'ready' => 'Ververs regelingen'
         ],
         'categories' => [
             RegulationService::SUBSIDY => 'Subsidies (:count)',

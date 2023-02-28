@@ -68,7 +68,14 @@ class UserActionPlanAdviceService
         }
         Bus::batch($jobs)
             ->then(function (Batch $batch) {
-                $this->user->update(['regulations_refreshed_at' => Carbon::now()]);
+                $this->user->update([
+                    'regulations_refreshed_at' => Carbon::now(),
+                ]);
+            })
+            ->finally(function (Batch $batch) {
+                $this->user->update([
+                    'refreshing_regulations' => false,
+                ]);
             })
             ->name('Refresh all user his regulations for advices.')
             ->allowFailures()

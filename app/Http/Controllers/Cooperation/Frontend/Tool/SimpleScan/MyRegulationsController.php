@@ -33,11 +33,11 @@ class MyRegulationsController extends Controller
                 break;
             }
         }
-        $relevantRegulations = MyRegulationHelper::getRelevantRegulations($building, $masterInputSource);
+
 
         return view(
             'cooperation.frontend.tool.simple-scan.my-regulations.index',
-            compact('scan','activeNotification', 'masterInputSource', 'relevantRegulations', 'building')
+            compact('scan','activeNotification', 'masterInputSource', 'building')
         );
     }
 }

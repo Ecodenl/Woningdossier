@@ -71,14 +71,14 @@
                                     <label for="measure-category">
                                         @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
                                     </label>
-                                    @if(empty($measures))
+                                    @if(! $vbjehuisAvailable)
                                         <small class="text-danger">
-                                            <br> @lang('api.verbeterjehuis.error')
+                                            <br> @lang('api.verbeterjehuis.filters.measures.error')
                                         </small>
                                     @endif
                                     <div wire:ignore>
                                         {{-- Wire:ignore here so the select2 doesn't die, but still allows error messages --}}
-                                        <select class="form-control"
+                                        <select class="form-control" @if(! $vbjehuisAvailable) disabled @endif
                                                 wire:model="content.relations.mapping.measure_category"
                                                 id="measure-category">
                                             <option value="">

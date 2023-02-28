@@ -3360,7 +3360,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       parent.appendChild(newOption);
     },
     setDisabledState: function setDisabledState() {
-      var disabled = !!this.select.getAttribute('disabled');
+      var disabled = this.select.hasAttribute('disabled');
       this.disabled = disabled;
       if (disabled) {
         this.open = false;

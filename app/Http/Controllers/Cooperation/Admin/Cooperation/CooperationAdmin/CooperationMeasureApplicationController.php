@@ -46,10 +46,11 @@ class CooperationMeasureApplicationController extends Controller
         $cooperationMeasureApplication = CooperationMeasureApplication::create($measureData);
 
         if (! is_null($measureCategory)) {
-            // The request will cover for us. If not available, the user will be sent back.
+            // If there is no measure, nothing will be sent to here either.
             $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
             MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
         }
+        CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('type'))
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.store.success'));
@@ -73,10 +74,16 @@ class CooperationMeasureApplicationController extends Controller
 
         $cooperationMeasureApplication->update($measureData);
 
-        if (! is_null($measureCategory)) {
-            // The request will cover for us. If not available, the user will be sent back.
-            $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
-            MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
+        // We want to detach if no measure is selected, but only if vbjehuis is available.
+        $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
+        if (! empty($measures)) {
+            $service = MappingService::init()->from($cooperationMeasureApplication);
+            if (! is_null($measureCategory)) {
+                $targetData = Arr::first(Arr::where($measures, fn ($a) => $a['Value'] === $measureCategory));
+                $service->sync([$targetData]);
+            } else {
+                $service->detach();
+            }
         }
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 

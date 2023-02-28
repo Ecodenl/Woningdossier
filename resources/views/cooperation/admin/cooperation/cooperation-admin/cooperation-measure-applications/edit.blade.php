@@ -62,23 +62,32 @@
                                 @if(! $cooperationMeasureApplication->is_extensive_measure)
                                     <div class="row">
                                         <div class="col-sm-6">
+                                            @php
+                                                $currentCategory = \App\Services\MappingService::init()->from($cooperationMeasureApplication)->resolveMapping()->first();
+                                                $vbjehuisAvailable = ! empty($measures);
+                                                if (! $vbjehuisAvailable && $currentCategory instanceof \App\Models\Mapping) {
+                                                    $measures = [
+                                                        $currentCategory->target_data,
+                                                    ];
+                                                }
+                                            @endphp
                                             @component('layouts.parts.components.form-group', ['input_name' => 'cooperation_measure_applications.measure_category'])
                                                 <label for="measure-category">
                                                     @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
                                                 </label>
-                                                @if(empty($measures))
+                                                @if(! $vbjehuisAvailable)
                                                     <small class="text-danger">
-                                                        <br> @lang('api.verbeterjehuis.error')
+                                                        <br> @lang('api.verbeterjehuis.filters.measures.error')
                                                     </small>
                                                 @endif
                                                 <select class="form-control" name="cooperation_measure_applications[measure_category]"
-                                                        id="measure-category">
+                                                        id="measure-category" @if(! $vbjehuisAvailable) disabled @endif>
                                                     <option value="">
                                                         @lang('default.form.dropdown.choose')
                                                     </option>
                                                     @foreach($measures as $measure)
                                                         <option value="{{ $measure['Value'] }}"
-                                                                @if(old("cooperation_measure_applications.measure_category", $cooperationMeasureApplication->mapping->target_data['Value'] ?? null) === $measure['Value']) selected @endif>
+                                                                @if(old("cooperation_measure_applications.measure_category", $currentCategory->target_data['Value'] ?? null) === $measure['Value']) selected @endif>
                                                             {{ $measure['Label'] }}
                                                         </option>
                                                     @endforeach

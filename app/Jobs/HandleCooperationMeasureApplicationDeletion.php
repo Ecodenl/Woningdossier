@@ -2,11 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Events\CustomMeasureApplicationChanged;
 use App\Models\Building;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\UserActionPlanAdvice;
+use App\Services\MappingService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -77,6 +79,9 @@ class HandleCooperationMeasureApplicationDeletion implements ShouldQueue
                                 'info' => $this->cooperationMeasureApplication->info,
                                 'hash' => $hash,
                             ];
+
+                            // We only save mapping to the master. Therefore, we only need to do this once.
+                            $processedMapping = false;
                             foreach ($inputSourceIds as $inputSourceId) {
                                 $createData['input_source_id'] = $inputSourceId;
 
@@ -89,6 +94,26 @@ class HandleCooperationMeasureApplicationDeletion implements ShouldQueue
                                         'user_action_plan_advisable_type' => CustomMeasureApplication::class,
                                         'user_action_plan_advisable_id' => $customMeasure->id,
                                     ]);
+                                }
+
+                                if (! $processedMapping) {
+                                    $service = MappingService::init()->from($this->cooperationMeasureApplication);
+
+                                    // Check if the cooperation has mappings
+                                    if ($service->exists()) {
+                                        $from = $customMeasure->getSibling($masterInputSource);
+
+                                        foreach ($service->resolveMapping() as $mapping) {
+                                            $newMapping = $mapping->replicate();
+                                            $newMapping->from_model_type = \App\Models\CustomMeasureApplication::class;
+                                            $newMapping->from_model_id = $from->id;
+                                            $newMapping->save();
+                                        }
+
+                                        // Ensure we refresh the regulations for the master
+                                        CustomMeasureApplicationChanged::dispatch($from);
+                                    }
+                                    $processedMapping = true;
                                 }
                             }
 

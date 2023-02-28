@@ -32,16 +32,15 @@ class RegulationService
 
     public function getFilters(): array
     {
-        $repository = Cache::driver('database');
+        $result = Verbeterjehuis::init(Client::init())
+            ->regulation()
+            ->getFilters();
 
-        // If cache is empty, reset the cache
-        if ($repository->has('getFilters')) {
-            if (empty($repository->get('getFilters'))) {
-                $repository->forget('getFilters');
-            }
+        if (empty($result)) {
+            return [];
         }
 
-        return $repository
+        return Cache::driver('database')
             ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), function () {
                 return Verbeterjehuis::init(Client::init())
                     ->regulation()

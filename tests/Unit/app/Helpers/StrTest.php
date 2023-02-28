@@ -140,9 +140,48 @@ class StrTest extends TestCase
     /**
      * @dataProvider arrStartsWithProvider
      */
-    public function testArrStartsWith($array, $needle, $ignoreCase, $expected)
+    public function test_arr_starts_with($array, $needle, $ignoreCase, $expected)
     {
         $this->assertEquals($expected, Str::arrStartsWith($array, $needle, $ignoreCase));
+    }
+
+    public static function arrKeyStartsWithProvider()
+    {
+        return [
+            [[], null, false, false],
+            [[], 'null', false, false],
+            [[], 'null', true, false],
+            [[], null, true, false],
+            [['test'], null, false, false],
+            [['test'], null, true, false],
+            [['test'], 'null', false, false],
+            [['test'], 'null', true, false],
+            [['null' => 'test'], 'null', true, true],
+            [['null' => 'test'], 'null', false, true],
+            [['null' => 'test'], null, false, false],
+            [['null' => 'test'], null, true, false],
+            [['test'], 'test', false, false],
+            [['test', 'hoomdossier'], 'hoom', false, false],
+            [['test', 'hoom' => 'hoomdossier'], 'Hoom', false, false],
+            [['test', 'hoom' => 'hoomdossier'], 'Hoom', true, true],
+            [['test', 'Hoom' => 'hoomdossier'], 'Hoom', false, true],
+            [['test', 'Hoom' => 'hoomdossier'], 'Hoom', true, true],
+            [['test', 'hoomdossier'], '0', false, false], // Non-string values are not evaluated.
+            [['test', 'hoomdossier'], '0', true, false], // The keys of an array are numeric.
+            [['test', 'hoomdossier'], 0, true, false], // Therefore, all these fail.
+            [['test', 'hoomdossier'], 0, false, false],
+            [['test', '1 2 3'], ' ', false, false],
+            [['$r' => 'test'], '$r', true, true],
+            [['$r' => 'test'], '$r', false, true],
+        ];
+    }
+
+    /**
+     * @dataProvider arrKeyStartsWithProvider
+     */
+    public function test_arr_key_starts_with($array, $needle, $ignoreCase, $expected)
+    {
+        $this->assertEquals($expected, Str::arrKeyStartsWith($array, $needle, $ignoreCase));
     }
 
     public static function htmlArrToDotProvider()

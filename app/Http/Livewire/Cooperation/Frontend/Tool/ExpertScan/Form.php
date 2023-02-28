@@ -145,7 +145,6 @@ class Form extends Component
                 // Define if we should answer this question...
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
-
                     // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
                     // so when we actually start saving it we have to format it one more time
                     if ($toolQuestion->data_type === Caster::FLOAT) {

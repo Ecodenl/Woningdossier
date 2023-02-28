@@ -31,6 +31,7 @@ class MyRegulations extends Component
     public function refreshRegulations()
     {
         $this->building->user->update(['refreshing_regulations' => true]);
+        $this->isRefreshing = true;
 
         UserActionPlanAdviceService::init()
             ->forUser($this->building->user)

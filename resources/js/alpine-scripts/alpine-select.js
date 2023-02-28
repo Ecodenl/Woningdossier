@@ -306,7 +306,7 @@ export default (initiallyOpen = false) => ({
         parent.appendChild(newOption);
     },
     setDisabledState() {
-        let disabled = !! this.select.getAttribute('disabled')
+        let disabled = this.select.hasAttribute('disabled')
         this.disabled = disabled;
 
         if (disabled) {

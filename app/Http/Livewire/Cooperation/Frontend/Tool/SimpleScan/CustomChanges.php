@@ -306,10 +306,9 @@ class CustomChanges extends Component
 
                 // We read from the master. Therefore we need to sync to the master also.
                 $from = $customMeasureApplication->getSibling($this->masterInputSource);
-
                 if ($this->vbjehuisAvailable) {
                     // Add or update mapping to measure category
-                    $measureCategory = $measureData['measure_category'];
+                    $measureCategory = $measureData['measure_category'] ?? null;
                     $targetData = Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
 
                     $service = MappingService::init()->from($from);

@@ -42,10 +42,8 @@ class RegulationService
         }
 
         return Cache::driver('database')
-            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), function () {
-                return Verbeterjehuis::init(Client::init())
-                    ->regulation()
-                    ->getFilters();
+            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), function () use ($result) {
+                return $result;
             });
     }
 

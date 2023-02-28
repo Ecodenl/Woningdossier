@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Events\CooperationMeasureApplicationUpdated;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
+use App\Helpers\Wrapper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationFormRequest;
 use App\Jobs\HandleCooperationMeasureApplicationDeletion;
@@ -26,7 +27,7 @@ class CooperationMeasureApplicationController extends Controller
 
     public function create(Cooperation $cooperation, string $type)
     {
-        $measures = RegulationService::init()->getFilters()['Measures'];
+        $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create', compact('type', 'measures'));
     }
 
@@ -45,9 +46,11 @@ class CooperationMeasureApplicationController extends Controller
         $cooperationMeasureApplication = CooperationMeasureApplication::create($measureData);
 
         if (! is_null($measureCategory)) {
+            // If there is no measure, nothing will be sent to here either.
             $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
             MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
         }
+        CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('type'))
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.store.success'));
@@ -56,7 +59,7 @@ class CooperationMeasureApplicationController extends Controller
     public function edit(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
         $type = $cooperationMeasureApplication->getType();
-        $measures = RegulationService::init()->getFilters()['Measures'];
+        $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication', 'type', 'measures'));
     }
 
@@ -71,9 +74,16 @@ class CooperationMeasureApplicationController extends Controller
 
         $cooperationMeasureApplication->update($measureData);
 
-        if (! is_null($measureCategory)) {
-            $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
-            MappingService::init()->from($cooperationMeasureApplication)->sync([$targetData]);
+        // We want to detach if no measure is selected, but only if vbjehuis is available.
+        $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
+        if (! empty($measures)) {
+            $service = MappingService::init()->from($cooperationMeasureApplication);
+            if (! is_null($measureCategory)) {
+                $targetData = Arr::first(Arr::where($measures, fn ($a) => $a['Value'] === $measureCategory));
+                $service->sync([$targetData]);
+            } else {
+                $service->detach();
+            }
         }
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 

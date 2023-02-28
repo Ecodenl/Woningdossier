@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Cooperation\Admin\SuperAdmin;
 
 use App\Helpers\Arr;
+use App\Helpers\Wrapper;
 use App\Models\Mapping;
 use App\Models\Municipality;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -58,7 +59,7 @@ class MunicipalityCoupleRequest extends FormRequest
                     $name = $parts[1] ?? '';
 
                     // So the value is not null, but is it valid?
-                    $municipalities = RegulationService::init()->getFilters()['Cities'] ?? [];
+                    $municipalities = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Cities']) ?? [];
                     $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] == $id && $a['Name'] == $name));
 
                     // Incorrect value passed

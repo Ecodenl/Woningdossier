@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Admin\SuperAdmin\CooperationPresets\CooperationPresetContents\CooperationMeasureApplications;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Wrapper;
 use App\Models\CooperationPreset;
 use App\Models\CooperationPresetContent;
 use App\Rules\LanguageRequired;
@@ -16,6 +17,7 @@ class Form extends Component
     public CooperationPreset $cooperationPreset;
     public ?CooperationPresetContent $cooperationPresetContent;
     public array $measures;
+    public bool $vbjehuisAvailable = true;
 
     public array $content = [
         // Required defaults
@@ -32,13 +34,9 @@ class Form extends Component
     {
         $evaluateGt = ! empty($this->content['costs']['from']);
 
-        return [
+        $rules =  [
             'content.name' => [new LanguageRequired()],
             'content.info' => [new LanguageRequired()],
-            'content.relations.mapping.measure_category' => [
-                Rule::requiredIf(! $this->content['is_extensive_measure']),
-                Rule::in(Arr::pluck($this->measures, 'Value'))
-            ],
             'content.costs.from' => [
                 'nullable', 'numeric', 'min:0',
             ],
@@ -56,6 +54,15 @@ class Form extends Component
                 'boolean',
             ],
         ];
+
+        if ($this->vbjehuisAvailable) {
+            $rules['content.relations.mapping.measure_category'] = [
+                'nullable',
+                Rule::in(Arr::pluck($this->measures, 'Value'))
+            ];
+        }
+
+        return $rules;
     }
 
     protected $listeners = [
@@ -67,13 +74,22 @@ class Form extends Component
         // Normally we can let Livewire set the model for us, however, on create we don't have one. Yet, by casting
         // a model as null, we get a fresh model object, on which we can call things such as ->exists.
         $this->cooperationPresetContent = $cooperationPresetContent;
+        $category = $this->cooperationPresetContent->content['relations']['mapping']['measure_category'] ?? [];
         if ($cooperationPresetContent->exists) {
             $this->fill([
                 'content' => $cooperationPresetContent->content,
             ]);
+
+            $this->content['relations']['mapping']['measure_category'] = $category['Value'] ?? null;
         }
 
-        $this->measures = RegulationService::init()->getFilters()['Measures'];
+        $this->measures = Wrapper::wrapCall(
+            fn () => RegulationService::init()->getFilters()['Measures'],
+            function () use ($category) {
+                $this->vbjehuisAvailable = false;
+                return empty($category) ? [] : [$category];
+            }
+        );
     }
 
     public function render()
@@ -97,11 +113,23 @@ class Form extends Component
     {
         $content = $this->validate()['content'];
         $content['is_deletable'] = ! $content['is_extensive_measure'];
-        if ($content['is_extensive_measure']) {
-            unset($content['relations']['mapping']);
+        $category = $content['relations']['mapping']['measure_category'] ?? null;
+        if ($content['is_extensive_measure'] || ! $this->vbjehuisAvailable || is_null($category)) {
+            unset($content['relations']['mapping']['measure_category']);
+        } else {
+            $content['relations']['mapping']['measure_category'] = Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $category));
         }
 
         if ($this->cooperationPresetContent->exists) {
+            // Reset old value if vbjehuis not available
+            if (! $this->vbjehuisAvailable && ! $content['is_extensive_measure']) {
+                $mapping = $this->cooperationPresetContent->content['relations']['mapping']['measure_category'] ?? [];
+
+                if (! empty($mapping)) {
+                    $content['relations']['mapping']['measure_category'] = $mapping;
+                }
+            }
+
             $this->cooperationPresetContent->update(compact('content'));
             $message = __('cooperation/admin/super-admin/cooperation-preset-contents.update.success');
         } else {

@@ -73,11 +73,16 @@
                                           @if($disabled) disabled="disabled" @endif
                                 ></textarea>
                             @endcomponent
-                            <div class="w-full flex items-center">
+                            <div class="w-full flex flex-wrap items-center">
                                 <i class="icon-sm icon-info mr-3"></i>
                                 <h6 class="heading-6">
                                     @lang('cooperation/frontend/shared.modals.add-measure.measure-category')
                                 </h6>
+                                @if(! $vbjehuisAvailable)
+                                    <small class="text-red flex w-full">
+                                        <br> @lang('api.verbeterjehuis.filters.measures.error')
+                                    </small>
+                                @endif
                             </div>
                             @component('cooperation.frontend.layouts.components.form-group', [
                                'inputName' => "customMeasureApplicationsFormData.{$index}.measure_category",
@@ -86,7 +91,7 @@
                                'withInputSource' => false,
                             ])
                                 @component('cooperation.frontend.layouts.components.alpine-select')
-                                    <select class="form-input hidden"
+                                    <select class="form-input hidden" @if(! $vbjehuisAvailable) disabled @endif
                                             wire:model="customMeasureApplicationsFormData.{{$index}}.measure_category"
                                             id="custom-measure-application-{{$index}}-measure-category"
                                             @if($disabled) disabled="disabled" @endif

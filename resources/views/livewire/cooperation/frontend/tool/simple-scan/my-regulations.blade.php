@@ -9,7 +9,7 @@
                     </a>
                 @endforeach
             </nav>
-            <div class="flex items-center gap-x-2" wire:poll="checkIfIsRefreshed">
+            <div class="flex items-center gap-x-2" @if($isRefreshing) wire:poll="checkIfIsRefreshed" @endif>
                 <button class="btn btn-purple" type="button" @if($isRefreshing) disabled="disabled" @endif wire:click="refreshRegulations">
                     <span class="w-full mx-1 flex justify-between items-center">
                         @if($isRefreshing)

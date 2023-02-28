@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Queue;
 use App\Jobs\CheckBuildingAddress;
+use App\Jobs\RefreshRegulationsForBuildingUser;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -92,6 +93,8 @@ class SuccessFullLoginListener
         // check if the connection was successful, if not dispatch it on the regular queue so it retries.
         if (! $building->municipality()->first() instanceof Municipality) {
             CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
+        } else {
+            RefreshRegulationsForBuildingUser::dispatch($building);
         }
     }
 

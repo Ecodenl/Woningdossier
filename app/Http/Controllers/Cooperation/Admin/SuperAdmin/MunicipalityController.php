@@ -76,8 +76,12 @@ class MunicipalityController extends Controller
         $service = MappingService::init()->from($municipality);
 
         if (! empty($data['vbjehuis_municipality'])) {
-            $municipalities = RegulationService::init()->getFilters()['Cities'];
-            $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] === $data['vbjehuis_municipality']));
+            $parts = explode('-', $data['vbjehuis_municipality'], 2);
+            $id = $parts[0] ?? '';
+            $name = $parts[1] ?? '';
+
+            $municipalities = RegulationService::init()->getFilters()['Cities'] ?? [];
+            $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] == $id && $a['Name'] == $name));
             $service->sync([$targetData], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
         } else {
             $service->type(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)->detach();

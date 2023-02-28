@@ -3,14 +3,15 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Queue;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Log;
+use App\Models\Municipality;
 use App\Models\Role;
 use App\Models\User;
-use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Facades\Auth;
 
 class SuccessFullLoginListener
@@ -88,6 +89,10 @@ class SuccessFullLoginListener
         ]);
 
         CheckBuildingAddress::dispatchSync($building);
+        // check if the connection was successful, if not dispatch it on the regular queue so it retries.
+        if (! $building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
+        }
     }
 
     /**

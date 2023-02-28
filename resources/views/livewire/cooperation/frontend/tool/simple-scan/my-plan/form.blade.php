@@ -69,7 +69,11 @@
                                            class="in-text" draggable="false">
                                             <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2 w-full"
                                                  style="width: fit-content; width: -moz-fit-content;">
-                                                @lang('cooperation/frontend/tool.my-plan.cards.regulations.subsidy-available')
+                                                @if($card['has_user_costs'])
+                                                    @lang('cooperation/frontend/tool.my-plan.cards.regulations.after-subsidy-cut')
+                                                @else
+                                                    @lang('cooperation/frontend/tool.my-plan.cards.regulations.subsidy-available')
+                                                @endif
                                             </div>
                                         </a>
                                     @elseif($card['loan_available'])

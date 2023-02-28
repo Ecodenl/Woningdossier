@@ -57,6 +57,7 @@ return [
             'see-info' => 'Zie info',
             'regulations' => [
                 'subsidy-available' => 'Subsidie mogelijk',
+                'after-subsidy-cut' => 'Na aftrek subsidie',
                 'loan-available' => 'Lening mogelijk',
             ],
             'investment' => 'Investering',

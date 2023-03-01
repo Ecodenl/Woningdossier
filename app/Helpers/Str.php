@@ -5,7 +5,7 @@ namespace App\Helpers;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str as SupportStr;
 
-class Str
+class Str extends \Illuminate\Support\Str
 {
     const CHARACTERS = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
     const CONSIDERED_EMPTY_ANSWERS = ['', null, 'null', '0.00', '0.0', '0', 0, '0,0', '0,00'];
@@ -282,6 +282,7 @@ class Str
      */
     public static function prepareJsonForHtml(string $json): string
     {
+        // TODO: Just use {{ json_encode() }} in blade!
         return str_replace('"', '\'', $json);
     }
 }

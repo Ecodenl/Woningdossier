@@ -7,8 +7,6 @@ use Tests\TestCase;
 
 class StrTest extends TestCase
 {
-    protected bool $usesDatabase = false;
-
     public static function isConsideredEmptyAnswerProvider()
     {
         return [

@@ -41,13 +41,14 @@ class MunicipalityCoupleRequest extends FormRequest
                 'min:1',
             ],
             'bag_municipalities.*' => [
-                'bail',
-                'exists:mappings,id',
+                // User input is always allowed. If existing mapping, it cannot be coupled already.
                 function ($attribute, $value, $fail) {
                     $mapping = Mapping::find($value);
 
-                    if (! is_null($mapping->target_model_id) && $mapping->target_model_id !== $this->municipality->id) {
-                        $fail(__('validation.custom-rules.municipalities.already-coupled'));
+                    if ($mapping instanceof Mapping) {
+                        if (! is_null($mapping->target_model_id) && $mapping->target_model_id !== $this->municipality->id) {
+                            $fail(__('validation.custom-rules.municipalities.already-coupled'));
+                        }
                     }
                 },
             ],

@@ -107,7 +107,9 @@
 @push('js')
     <script>
         $(document).ready(() => {
-            $('#bag-municipalities').select2({});
+            $('#bag-municipalities').select2({
+                tags: true,
+            });
             $('#vbjehuis-municipality').select2({
                 allowClear: true,
                 placeholder: '@lang('default.form.dropdown.choose')'

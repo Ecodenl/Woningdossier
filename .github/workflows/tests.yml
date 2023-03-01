@@ -61,7 +61,8 @@ jobs:
           key: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-${{ hashFiles('composer.lock') }}"
           restore-keys: "php-${{ matrix.php }}-composer-${{ matrix.dependency-version }}-"
 
-
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.actions', '.env.testing'); copy('.env.actions', '.env');" # If .env exist, we use that, if otherwise, copy .env.example to .env and use that instead
       - name: Run composer install
         run: composer install --prefer-dist
       - name: Change Directory Permissions
@@ -71,8 +72,6 @@ jobs:
         run: php artisan key:generate
       - name: Clear Config
         run: php artisan config:clear && php artisan config:cache
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.actions', '.env.testing'); copy('.env.actions', '.env');" # If .env exist, we use that, if otherwise, copy .env.example to .env and use that instead
       - name: Prepare Laravel Application
         run: php artisan migrate
       - name: Run phpunit - Test code

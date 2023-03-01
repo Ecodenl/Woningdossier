@@ -1,7 +1,6 @@
 <?php
 
 
-
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -16,10 +15,17 @@ class ClientFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->randomElement(['groenezang', 'meteropnull', 'greeni', 'neutraallicht', 'geenplastic', 'groenenergieentech']);
-    return [
-        'name' => $name,
-        'short' => \Illuminate\Support\Str::slug($name),
-    ];
+        $name = $this->faker->randomElement([
+            'groenezang',
+            'meteropnull',
+            'greeni',
+            'neutraallicht',
+            'geenplastic',
+            'groenenergieentech'
+        ]);
+        return [
+            'name' => $name,
+            'short' => \Illuminate\Support\Str::slug($name),
+        ];
     }
 }

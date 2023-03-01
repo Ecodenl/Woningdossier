@@ -86,7 +86,7 @@ class PdfReport implements ShouldQueue
             ->inputSource($inputSource)
             ->setMode(DumpService::MODE_PDF)
             ->anonymize() // See comment above unset below
-            ->createHeaderStructure($short, false);
+            ->createHeaderStructure($short);
 
         // Retrieve headers AFTER the dump is done, as conditionally incorrect data will be removed.
         $dump = $dumpService->generateDump();

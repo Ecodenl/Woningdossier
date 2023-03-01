@@ -69,8 +69,10 @@ class GenerateToolReport implements ShouldQueue
 
         $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $dumpService = DumpService::init()->anonymize($this->anonymizeData)
+        $dumpService = DumpService::init()
+            ->anonymize($this->anonymizeData)
             ->inputSource($inputSource)
+            ->setMode(DumpService::MODE_CSV)
             ->createHeaderStructure($short);
 
         $dumpService->setHeaderStructure(

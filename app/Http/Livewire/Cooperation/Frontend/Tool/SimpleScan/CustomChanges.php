@@ -6,6 +6,7 @@ use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
+use App\Helpers\Wrapper;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
@@ -31,6 +32,7 @@ class CustomChanges extends Component
     public array $selectedCooperationMeasureApplications = [];
     public array $previousSelectedState = [];
     public array $measures;
+    public bool $vbjehuisAvailable = true;
 
     public InputSource $masterInputSource;
     public InputSource $currentInputSource;
@@ -43,16 +45,21 @@ class CustomChanges extends Component
 
     protected function rules(): array
     {
-        return [
+        $rules = [
             'customMeasureApplicationsFormData.*.name' => 'required',
             'customMeasureApplicationsFormData.*.info' => 'required',
-            'customMeasureApplicationsFormData.*.measure_category' => [
-                'required', Rule::in(Arr::pluck($this->measures, 'Value')),
-            ],
             'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
             'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
             'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric|max:999999',
         ];
+
+        if ($this->vbjehuisAvailable) {
+            $rules['customMeasureApplicationsFormData.*.measure_category'] = [
+                'nullable', Rule::in(Arr::pluck($this->measures, 'Value')),
+            ];
+        }
+
+        return $rules;
     }
 
     public array $attributes;
@@ -78,7 +85,13 @@ class CustomChanges extends Component
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
         ];
 
-        $this->measures = RegulationService::init()->getFilters()['Measures'];
+        $this->measures = Wrapper::wrapCall(
+            fn () => RegulationService::init()->getFilters()['Measures'],
+            function () {
+                $this->vbjehuisAvailable = false;
+                return [];
+            }
+        );
 
         $this->setMeasureApplications();
     }
@@ -291,12 +304,17 @@ class CustomChanges extends Component
                 // !important! this has to be done before the userActionPlanAdvice relation is made
                 // otherwise the observer will fire when the mapping hasnt been done yet.
 
-                // Add or update mapping to measure category
-                $measureCategory = $measureData['measure_category'];
-                $targetData = Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
                 // We read from the master. Therefore we need to sync to the master also.
                 $from = $customMeasureApplication->getSibling($this->masterInputSource);
-                MappingService::init()->from($from)->sync([$targetData]);
+                if ($this->vbjehuisAvailable) {
+                    // Add or update mapping to measure category
+                    $measureCategory = $measureData['measure_category'] ?? null;
+                    $targetData = Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
+
+                    $service = MappingService::init()->from($from);
+                    // Since nothing else is attached we can safely detach.
+                    empty($targetData) ? $service->detach() : $service->sync([$targetData]);
+                }
 
                 // Update the user action plan advice linked to this custom measure
                 $customMeasureApplication
@@ -357,8 +375,10 @@ class CustomChanges extends Component
             // Retrieve the user's custom measures
             $customMeasureApplications = $this->building->customMeasureApplications()
                 ->forInputSource($this->masterInputSource)
-                ->with(['userActionPlanAdvices' => fn ($q) => $q->where('user_id', $this->building->user->id)->forInputSource($this->masterInputSource), 'mappings'])
+                ->with(['userActionPlanAdvices' => fn ($q) => $q->where('user_id', $this->building->user->id)->forInputSource($this->masterInputSource)])
                 ->get();
+
+            $measures = [];
 
             // Set the custom measures
             /** @var CustomMeasureApplication $customMeasureApplication */
@@ -384,10 +404,18 @@ class CustomChanges extends Component
                 }
 
                 // As of now, a custom measure can only hold ONE mapping
-                $mapping = $customMeasureApplication->mappings()->first();
+                $mapping = MappingService::init()->from($customMeasureApplication)->resolveMapping()->first();
                 if ($mapping instanceof Mapping) {
                     $this->customMeasureApplicationsFormData[$index]['measure_category'] = $mapping->target_data['Value'];
+                    if (empty(Arr::where($measures, fn ($v) => $v['Value'] === $mapping->target_data['Value']))) {
+                        $measures[] = $mapping->target_data;
+                    }
                 }
+            }
+
+            // Set mapped measures
+            if (empty($this->measures)) {
+                $this->measures = $measures;
             }
 
             // Append the option to add a new application

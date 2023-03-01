@@ -57,19 +57,36 @@
                                         @endcomponent
                                     </div>
                                     <div class="col-xs-6">
+                                        @php
+                                            $vbjehuisAvailable = ! empty($vbjehuisMunicipalities);
+                                            if (! $vbjehuisAvailable && $mappedVbjehuisMunicipality instanceof \App\Models\Mapping) {
+                                                $vbjehuisMunicipalities = [
+                                                    $mappedVbjehuisMunicipality->target_data,
+                                                ];
+                                            }
+                                            // Multiple municipalities can have the same ID. We check the name to show
+                                            // the "correct" value.
+                                            $currentMunicipality = $mappedVbjehuisMunicipality->target_data ?? [];
+                                            $currentValue = old('vbjehuis_municipality', ! empty($currentMunicipality) ? $currentMunicipality['Id'] . '-' . $currentMunicipality['Name'] : null);
+                                        @endphp
                                         @component('layouts.parts.components.form-group', [
                                             'input_name' => 'vbjehuis_municipality'
                                         ])
-                                            @php $currentMunicipality = $mappedVbjehuisMunicipality->target_data['Id'] ?? null; @endphp
                                             <label for="vbjehuis-municipality">
                                                 @lang('cooperation/admin/super-admin/municipalities.form.vbjehuis-municipality.label')
                                             </label>
+                                            @if(! $vbjehuisAvailable)
+                                                <small class="text-danger">
+                                                    <br> @lang('api.verbeterjehuis.filters.cities.error')
+                                                </small>
+                                            @endif
                                             <select name="vbjehuis_municipality" id="vbjehuis-municipality"
-                                                    class="form-control">
+                                                    class="form-control" @if(! $vbjehuisAvailable) disabled @endif>
                                                 <option></option>
                                                 @foreach($vbjehuisMunicipalities as $vbjehuisMunicipality)
-                                                    <option value="{{$vbjehuisMunicipality['Id']}}"
-                                                            @if(old('vbjehuis_municipality', $currentMunicipality) == $vbjehuisMunicipality['Id']) selected="selected" @endif
+                                                    @php $vbjehuisVal = $vbjehuisMunicipality['Id'] . '-' . $vbjehuisMunicipality['Name']; @endphp
+                                                    <option value="{{ $vbjehuisVal }}"
+                                                            @if($vbjehuisVal == $currentValue) selected="selected" @endif
                                                     >
                                                         {{ $vbjehuisMunicipality['Name'] }}
                                                     </option>

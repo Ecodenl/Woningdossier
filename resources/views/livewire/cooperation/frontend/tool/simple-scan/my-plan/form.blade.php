@@ -69,7 +69,11 @@
                                            class="in-text" draggable="false">
                                             <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2 w-full"
                                                  style="width: fit-content; width: -moz-fit-content;">
-                                                @lang('cooperation/frontend/tool.my-plan.cards.regulations.subsidy-available')
+                                                @if($card['has_user_costs'])
+                                                    @lang('cooperation/frontend/tool.my-plan.cards.regulations.after-subsidy-cut')
+                                                @else
+                                                    @lang('cooperation/frontend/tool.my-plan.cards.regulations.subsidy-available')
+                                                @endif
                                             </div>
                                         </a>
                                     @elseif($card['loan_available'])
@@ -247,11 +251,16 @@
                                                   placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
                                         ></textarea>
                                     @endcomponent
-                                    <div class="w-full flex items-center">
+                                    <div class="w-full flex flex-wrap items-center">
                                         <i class="icon-sm icon-info mr-3"></i>
                                         <h6 class="heading-6">
                                             @lang('cooperation/frontend/shared.modals.add-measure.measure-category')
                                         </h6>
+                                        @if(! $vbjehuisAvailable)
+                                            <small class="text-red flex w-full">
+                                                <br> @lang('api.verbeterjehuis.filters.measures.error')
+                                            </small>
+                                        @endif
                                     </div>
                                     @component('cooperation.frontend.layouts.components.form-group', [
                                        'inputName' => "custom_measure_application.measure_category",
@@ -262,7 +271,7 @@
                                         @component('cooperation.frontend.layouts.components.alpine-select')
                                             <select class="form-input hidden"
                                                     wire:model="custom_measure_application.measure_category"
-                                                    id="custom-measure-application-measure-category">
+                                                    id="custom-measure-application-measure-category" @if(! $vbjehuisAvailable) disabled @endif>
                                                 <option value="">
                                                     @lang('default.form.dropdown.choose')
                                                 </option>

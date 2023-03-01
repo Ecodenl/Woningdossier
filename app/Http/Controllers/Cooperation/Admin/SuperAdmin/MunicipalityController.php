@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
 use App\Helpers\MappingHelper;
+use App\Helpers\Wrapper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\MunicipalityCoupleRequest;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\MunicipalityRequest;
@@ -41,8 +42,8 @@ class MunicipalityController extends Controller
     {
         $municipalityService->forMunicipality($municipality);
         $bagMunicipalities = $municipalityService->getAvailableBagMunicipalities();
-        $vbjehuisMunicipalities = $municipalityService->getAvailableVbjehuisMunicipalities();
         $mappedVbjehuisMunicipality = $municipalityService->retrieveVbjehuisMuncipality();
+        $vbjehuisMunicipalities = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Cities']) ?? [];
 
         return view(
             'cooperation.admin.super-admin.municipalities.show',

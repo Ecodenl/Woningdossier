@@ -40,26 +40,6 @@ class MunicipalityService
     }
 
     /**
-     * Get all available municipalities from VerbeterJeHuis.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getAvailableVbjehuisMunicipalities(): Collection
-    {
-        $municipalities = RegulationService::init()->getFilters()['Cities'];
-
-        $usedIds = Mapping::where('type', MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)
-            ->where('from_model_id', '!=', $this->municipality->id)
-            ->pluck('target_data')
-            ->pluck('Id')
-            ->toArray();
-
-        return collect($municipalities)->filter(function ($municipality) use ($usedIds) {
-            return ! in_array($municipality['Id'], $usedIds);
-        });
-    }
-
-    /**
      * Retrieve all BAG municipalities belonging to this municipality.
      *
      * @return \Illuminate\Support\Collection

@@ -69,43 +69,6 @@ class MunicipalityServiceTest extends TestCase
     }
 
     /**
-     * This test checks whether the `getAvailableVbjehuisMunicipalities` returns the correct VerbeterJeHuis
-     * municipalities, retrieved from the RegulationService. All rows that are in use by another municipality should
-     * be filtered away.
-     *
-     * @return void
-     */
-    public function test_we_get_correct_vbjehuis_municipalities()
-    {
-        $vbjehuisMunicipalities = RegulationService::init()->getFilters()['Cities'];
-
-        if (empty($vbjehuisMunicipalities)) {
-            $this->fail('VerbeterJeHuis not available, test could not be resolved.');
-        }
-
-        $municipality1 = Municipality::factory()->create([
-            'name' => 'Voorne aan Zee',
-            'short' => 'voorne-aan-zee',
-        ]);
-        $municipality2 = Municipality::factory()->create([
-            'name' => 'Rotterdam',
-            'short' => 'rotterdam',
-        ]);
-
-        $municipalityService = MunicipalityService::init()->forMunicipality($municipality1);
-        $vbjehuis = Arr::first($vbjehuisMunicipalities);
-        MappingService::init()->from($municipality1)->sync([$vbjehuis], MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS);
-
-        // Get municipalities should be all
-        $availableVbjehuis = $municipalityService->getAvailableVbjehuisMunicipalities();
-        $this->assertCount(count($vbjehuisMunicipalities), $availableVbjehuis);
-
-        // In comparison, for the other municipality, all - 1 should be.
-        $availableVbjehuis = $municipalityService->forMunicipality($municipality2)->getAvailableVbjehuisMunicipalities();
-        $this->assertCount(count($vbjehuisMunicipalities) - 1, $availableVbjehuis);
-    }
-
-    /**
      * This test checks of the `retrieveBagMunicipalities` method returns all the BAG municipality rows attached to the
      * passed municipality.
      *

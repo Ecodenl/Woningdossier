@@ -2,6 +2,7 @@
 
 namespace App\Services\Models;
 
+use App\Helpers\Wrapper;
 use App\Models\CooperationPreset;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -40,9 +41,12 @@ class CooperationPresetService
         foreach ($relations as $relation => $values) {
             switch ($relation) {
                 case 'mapping':
-                    $measureCategory = $values['measure_category'];
-                    $targetData = Arr::first(Arr::where(RegulationService::init()->getFilters()['Measures'], fn ($a) => $a['Value'] === $measureCategory));
-                    MappingService::init()->from($this->model)->sync([$targetData]);
+                    $measureCategory = $values['measure_category']['Value'] ?? null;
+                    $targetData = Arr::first(Arr::where(Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [], fn ($a) => $a['Value'] === $measureCategory));
+
+                    if (! empty($targetData)) {
+                        MappingService::init()->from($this->model)->sync([$targetData]);
+                    }
                     break;
 
                 default:

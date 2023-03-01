@@ -44,14 +44,24 @@ class MappingService
         return Mapping::where($this->whereTarget())->get();
     }
 
-    public function exists(): bool
+    public function mappingExists(): bool
     {
-        return $this->resolveMapping() instanceof Mapping;
+        return Mapping::where($this->whereFrom())->exists();
     }
 
-    public function doesntExist(): bool
+    public function mappingDoesntExist(): bool
     {
-        return ! $this->exists();
+        return ! $this->mappingExists();
+    }
+
+    public function resolvableExists(): bool
+    {
+        return Mapping::where($this->whereTarget())->exists();
+    }
+
+    public function resolvableDoesntExist(): bool
+    {
+        return ! $this->resolvableExists();
     }
 
     public function resolveFrom(): Collection
@@ -106,7 +116,7 @@ class MappingService
     public function sync(array $syncableData = [], ?string $type = null): void
     {
         // first we will remove the current rows.
-        Mapping::where($this->whereFrom())->delete();
+        $this->detach();
 
         // its possible to create target less mappings
         // this is not ideal, however its much easier for the admin to manage.
@@ -133,6 +143,11 @@ class MappingService
 
         DB::table((new Mapping())->getTable())
             ->insert($attributes);
+    }
+
+    public function detach()
+    {
+        Mapping::where($this->whereFrom())->delete();
     }
 
     private function whereStruct(string $column): array

@@ -8,6 +8,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
+use App\Helpers\Wrapper;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
@@ -17,6 +18,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\MappingService;
+use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Database\Eloquent\Collection;
@@ -65,6 +67,7 @@ class Form extends Component
     public Scan $scan;
     public array $custom_measure_application = [];
     public array $measures;
+    public bool $vbjehuisAvailable = true;
 
     // Details
     public float $expectedInvestment = 0;
@@ -78,16 +81,21 @@ class Form extends Component
 
     protected function rules(): array
     {
-        return [
+        $rules = [
             'custom_measure_application.name' => 'required',
             'custom_measure_application.info' => 'required',
-            'custom_measure_application.measure_category' => [
-                'required', Rule::in(\Illuminate\Support\Arr::pluck($this->measures, 'Value'))
-            ],
             'custom_measure_application.costs.from' => 'required|numeric|min:0',
             'custom_measure_application.costs.to' => 'required|numeric|gte:custom_measure_application.costs.from',
             'custom_measure_application.savings_money' => 'nullable|numeric|max:999999',
         ];
+
+        if ($this->vbjehuisAvailable) {
+            $rules['custom_measure_application.measure_category'] = [
+                'nullable', Rule::in(\Illuminate\Support\Arr::pluck($this->measures, 'Value'))
+            ];
+        }
+
+        return $rules;
     }
 
     private $calculationMap = [
@@ -208,7 +216,13 @@ class Form extends Component
         $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
 
-        $this->measures = RegulationService::init()->getFilters()['Measures'];
+        $this->measures = Wrapper::wrapCall(
+            fn () => RegulationService::init()->getFilters()['Measures'],
+            function () {
+                $this->vbjehuisAvailable = false;
+                return [];
+            }
+        );
 
         // Set cards
         $this->loadVisibleCards();
@@ -265,12 +279,17 @@ class Form extends Component
         // !important! this has to be done before the userActionPlanAdvice relation is made
         // otherwise the observer will fire when the mapping hasnt been done yet.
 
-        // Add or update mapping to measure category
-        $measureCategory = $measureData['measure_category'];
-        $targetData = \Illuminate\Support\Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
         // We read from the master. Therefore we need to sync to the master also.
         $from = $customMeasureApplication->getSibling($this->masterInputSource);
-        MappingService::init()->from($from)->sync([$targetData]);
+        if ($this->vbjehuisAvailable) {
+            // Add or update mapping to measure category
+            $measureCategory = $measureData['measure_category'] ?? null;
+            $targetData = \Illuminate\Support\Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
+
+            if (! empty($targetData)) {
+                MappingService::init()->from($from)->sync([$targetData]);
+            }
+        }
 
         $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
 
@@ -301,6 +320,7 @@ class Form extends Component
             'info' => $customMeasureApplication->info,
             'icon' => 'icon-tools',
             'costs' => $advice->costs,
+            'has_user_costs' => false,
             'subsidy_available' => $advice->subsidy_available,
             'loan_available' => $advice->loan_available,
             'savings' => $advice->savings_money ?? 0,
@@ -675,9 +695,12 @@ class Form extends Component
     private function convertAdvicesToCards(Collection $advices, string $category): array
     {
         $cards = [];
+        $userCostService = UserCostService::init($this->building->user, $this->currentInputSource);
 
         // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
         $order = 0;
+
+        $hasUserCosts = false;
 
         foreach ($advices as $advice) {
             $advisable = $advice->userActionPlanAdvisable;
@@ -696,6 +719,19 @@ class Form extends Component
                     'route' => $route,
                     'comfort' => $advisable->configurations['comfort'] ?? 0,
                 ];
+
+                // If the advisable has no tool questions (most likely maintenance measure) then it's empty and so the
+                // user for certain doesn't have any costs. Else, it will get the answers, and if not viewable, then
+                // the answer will be null. It will also be null if the user didn't fill it in. So, if all answers
+                // are set, we can guarantee that this has user costs.
+                $userCosts = $userCostService->forAdvisable($advisable)->getAnswers()[$advisable->id] ?? [];
+                $hasUserCosts = ! empty($userCosts);
+                foreach ($userCosts as $tqShort => $answer) {
+                    if (is_null($answer)) {
+                        $hasUserCosts = false;
+                        break;
+                    }
+                }
             } else {
                 // Custom measure has input source so we must fetch the advisable from the master input source
                 if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
@@ -711,6 +747,7 @@ class Form extends Component
                 ];
             }
 
+            $cards[$category][$order]['has_user_costs'] = $hasUserCosts;
             $cards[$category][$order]['subsidy_available'] = $advice->subsidy_available;
             $cards[$category][$order]['loan_available'] = $advice->loan_available;
 

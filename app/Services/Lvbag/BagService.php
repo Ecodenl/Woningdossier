@@ -14,15 +14,11 @@ class BagService
 {
     use FluentCaller;
 
-    public Client $client;
+    public Lvbag $lvbag;
 
-    public function __construct()
+    public function __construct(Lvbag $lvbag)
     {
-        $this->client = Client::init(
-            config('hoomdossier.services.bag.secret'),
-            'epsg:28992',
-            App::isProduction(),
-        );
+        $this->lvbag = $lvbag;
     }
 
     /**
@@ -34,7 +30,7 @@ class BagService
      * @param  null|string  $houseNumberExtension
      * @return array
      */
-    public function firstAddress($postalCode, $number, ?string $houseNumberExtension = ""): array
+    public function addressExpanded($postalCode, $number, ?string $houseNumberExtension = ""): AddressExpanded
     {
         $attributes = [
             'postcode' => $postalCode,
@@ -91,19 +87,17 @@ class BagService
             $addressExpanded = $this->listAddressExpanded($attributes);
         }
 
-        $result = $addressExpanded->prepareForBuilding();
         // so the bag MAY return it, splitted on huisletter and extension.
         // however it doesnt really matter since we will save it as is.
-        $result['house_number_extension'] = $houseNumberExtension;
-        Log::debug(__CLASS__, $result);
+        $addressExpanded->expendedAddress['house_number_extension'] = $houseNumberExtension;
 
-        return $result;
+        return $addressExpanded;
     }
 
     public function showCity(string $woonplaatsIdentificatie, array $attributes = []): ?City
     {
         return new City($this->wrapCall(function () use ($woonplaatsIdentificatie, $attributes) {
-            return Lvbag::init($this->client)
+            return $this->lvbag
                 ->woonplaats()
                 ->show($woonplaatsIdentificatie, $attributes);
         }));
@@ -112,24 +106,24 @@ class BagService
     public function listAddressExpanded(array $attributes): ?AddressExpanded
     {
         return new AddressExpanded($this->wrapCall(function () use ($attributes) {
-            $list = Lvbag::init($this->client)
-                ->adresUitgebreid()
-                ->list($attributes);
+            $list = $this->lvbag
+                    ->adresUitgebreid()
+                    ->list($attributes) ?? [];
+
             return array_shift($list);
         }));
     }
 
     public function wrapCall($closure): ?array
     {
-        $result = null;
+        $result = [];
         try {
             $result = $closure();
+            $result['endpoint_failure'] = false;
         } catch (\Exception $exception) {
-            if ($exception->getCode() !== 400) {
+            if ($exception->getCode() !== 200) {
                 app('sentry')->captureException($exception);
-            }
-            if ($exception->getCode() === 400) {
-                return $result;
+                $result['endpoint_failure'] = true;
             }
         }
         return $result;

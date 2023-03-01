@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests\Cooperation\Admin\SuperAdmin;
 
+use App\Helpers\Arr;
+use App\Helpers\Wrapper;
 use App\Models\Mapping;
 use App\Models\Municipality;
+use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MunicipalityCoupleRequest extends FormRequest
@@ -50,16 +53,19 @@ class MunicipalityCoupleRequest extends FormRequest
                 },
             ],
             'vbjehuis_municipality' => [
-                'bail',
                 'nullable',
                 function ($attribute, $value, $fail) {
-                    $mapping = Mapping::where('target_data->Id', $value)->first();
+                    $parts = explode('-', $value, 2);
+                    $id = $parts[0] ?? '';
+                    $name = $parts[1] ?? '';
 
-                    // If mapping not yet existent, we're good
-                    if ($mapping instanceof Mapping) {
-                        if (! is_null($mapping->from_model_id) && $mapping->from_model_id !== $this->municipality->id) {
-                            $fail(__('validation.custom-rules.municipalities.already-coupled'));
-                        }
+                    // So the value is not null, but is it valid?
+                    $municipalities = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Cities']) ?? [];
+                    $targetData = Arr::first(Arr::where($municipalities, fn ($a) => $a['Id'] == $id && $a['Name'] == $name));
+
+                    // Incorrect value passed
+                    if (empty($targetData)) {
+                        $fail(__('validation.custom-rules.api.incorrect-vbjehuis-value'));
                     }
                 },
             ],

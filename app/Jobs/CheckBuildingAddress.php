@@ -10,12 +10,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class CheckBuildingAddress implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $building;
+
+    public $tries = 10;
     /**
      * Create a new job instance.
      *
@@ -37,14 +40,14 @@ class CheckBuildingAddress implements ShouldQueue
         $buildingAddressService
             ->forBuilding($building)
             ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
-        $buildingAddressService->forBuilding($building)->attachMunicipality();
+        $buildingAddressService->attachMunicipality();
         /**
          * requery it, no municipality can have multiple causes
          * - Bag is down
          * - Partial error, no bag_woonplaats_id
          * - Partial error, no municipality string found in woonplaats endpoint
          */
-        if (!$building->municipality()->first() instanceof Municipality) {
+        if (! $building->municipality()->first() instanceof Municipality) {
             $this->release(60);
         }
     }

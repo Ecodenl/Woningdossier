@@ -8,6 +8,7 @@ use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Helpers\Queue;
 use App\Helpers\StepHelper;
+use App\Helpers\Wrapper;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
 use App\Models\ElementValue;
@@ -25,8 +26,11 @@ use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
+use Carbon\Carbon;
+use Illuminate\Bus\Batch;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService
@@ -57,9 +61,26 @@ class UserActionPlanAdviceService
             ->withoutGlobalScopes()
             ->get();
 
+        $jobs = [];
+
         foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
-            RefreshRegulationsForUserActionPlanAdvice::dispatch($userActionPlanAdvice)->onQueue(Queue::ASYNC);
+            $jobs[] = new RefreshRegulationsForUserActionPlanAdvice($userActionPlanAdvice);
         }
+        Bus::batch($jobs)
+            ->then(function (Batch $batch) {
+                $this->user->update([
+                    'regulations_refreshed_at' => Carbon::now(),
+                ]);
+            })
+            ->finally(function (Batch $batch) {
+                $this->user->update([
+                    'refreshing_regulations' => false,
+                ]);
+            })
+            ->name('Refresh all user his regulations for advices.')
+            ->allowFailures()
+            ->onQueue(Queue::REGULATIONS)
+            ->dispatch();
     }
 
     public function refreshRegulations(UserActionPlanAdvice $userActionPlanAdvice)
@@ -68,6 +89,8 @@ class UserActionPlanAdviceService
             ->forBuilding($userActionPlanAdvice->user->building)
             ->getSearch();
 
+        $loanAvailable = false;
+        $subsidyAvailable = false;
         if ($payload instanceof Search) {
             $advisable = $userActionPlanAdvice->userActionPlanAdvisable()
                 ->withoutGlobalScope(SoftDeletingScope::class)
@@ -81,19 +104,12 @@ class UserActionPlanAdviceService
 
             $loanAvailable = $regulations->getLoans()->isNotEmpty();
             $subsidyAvailable = $regulations->getSubsidies()->isNotEmpty();
-
-            // This method is triggered by the observer, so to avoid a infinite loop we call it without events.
-            UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([
-                'loan_available' => $loanAvailable,
-                'subsidy_available' => $subsidyAvailable,
-            ]));
-        } else {
-            // No payload, no regulations
-            UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([
-                'loan_available' => false,
-                'subsidy_available' => false,
-            ]));
         }
+        // This method is triggered by the observer, so to avoid a infinite loop we call it without events.
+        UserActionPlanAdvice::withoutEvents(fn () => $userActionPlanAdvice->update([
+            'loan_available' => $loanAvailable,
+            'subsidy_available' => $subsidyAvailable,
+        ]));
     }
 
     /**

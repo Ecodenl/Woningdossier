@@ -3360,7 +3360,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       parent.appendChild(newOption);
     },
     setDisabledState: function setDisabledState() {
-      var disabled = !!this.select.getAttribute('disabled');
+      var disabled = this.select.hasAttribute('disabled');
       this.disabled = disabled;
       if (disabled) {
         this.open = false;
@@ -4658,7 +4658,7 @@ $("#postal_code, #number, #house_number_extension").focusout(function () {
       }
 
       // this way the user can fill in the street and will only be forced with api data if it actually returns something
-      if (address.id !== "") {
+      if (address.bag_addressid !== "") {
         street.val(address.street);
         number.val(address.number);
         houseNumberExtension.val(address.house_number_extension);

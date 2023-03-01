@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
+use App\Helpers\Wrapper;
 use App\Models\Mapping;
 use App\Models\ToolQuestion;
 use App\Services\DiscordNotifier;
@@ -44,25 +45,29 @@ class SyncTargetGroups extends Command
      */
     public function handle(MappingService $mappingService)
     {
-        $map = [
-            'bought' => 'Woningeigenaar',
-            'rented' => 'Huurder',
-            'rented-private' => 'Huurder'
-        ];
+        Wrapper::wrapCall(function () use ($mappingService) {
+            $map = [
+                'bought' => 'Woningeigenaar',
+                'rented' => 'Huurder',
+                'rented-private' => 'Huurder'
+            ];
 
-        $targetGroups = collect(
-            RegulationService::init()->getFilters()['TargetGroups']
-        )->keyBy('Value');
+            $targetGroups = collect(
+                RegulationService::init()->getFilters()['TargetGroups']
+            )->keyBy('Value');
 
-        foreach ($map as $from => $target) {
-            $mappingService->from(
-                ToolQuestion::findByShort('building-contract-type')
-                    ->toolQuestionCustomValues()
-                    ->where('short', $from)
-                    ->first()
-            )->sync([$targetGroups[$target]]);
-        }
-        DiscordNotifier::init()->notify('SyncTargetGroups just ran!');
+            foreach ($map as $from => $target) {
+                $mappingService->from(
+                    ToolQuestion::findByShort('building-contract-type')
+                        ->toolQuestionCustomValues()
+                        ->where('short', $from)
+                        ->first()
+                )->sync([$targetGroups[$target]]);
+            }
+            DiscordNotifier::init()->notify('SyncTargetGroups just ran!');
+        }, function ($exception) {
+            $this->error('Something is going on with VerbeterJeHuis!');
+        });
 
         return 0;
     }

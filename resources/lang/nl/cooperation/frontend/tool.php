@@ -57,6 +57,7 @@ return [
             'see-info' => 'Zie info',
             'regulations' => [
                 'subsidy-available' => 'Subsidie mogelijk',
+                'after-subsidy-cut' => 'Na aftrek subsidie',
                 'loan-available' => 'Lening mogelijk',
             ],
             'investment' => 'Investering',
@@ -131,6 +132,12 @@ return [
         'loading' => 'Maatregelen worden berekend...',
         'provider' => [
             'to' => 'Naar aanbieder',
+        ],
+        'refreshed' => [
+            'not' => 'Regelingen zijn nog niet opgehaald',
+            'last' => 'Laatst geupdate om :date',
+            'busy' => 'Wordt ververst..',
+            'ready' => 'Ververs regelingen'
         ],
         'categories' => [
             RegulationService::SUBSIDY => 'Subsidies (:count)',

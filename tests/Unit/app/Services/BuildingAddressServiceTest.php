@@ -17,12 +17,13 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Mockery\MockInterface;
+use Tests\MocksLvbag;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Event;
 
 class BuildingAddressServiceTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase, WithFaker, MocksLvbag;
 
     public $seed = true;
     public $seeder = DatabaseSeeder::class;
@@ -196,24 +197,4 @@ class BuildingAddressServiceTest extends TestCase
         $this->assertDatabaseMissing('buildings', $fallbackData);
     }
 
-    private function mockLvbagClientWoonplaats(string $municipalityName)
-    {
-        $mockedApiData = [
-            "_embedded" => [
-                "bronhouders" => [
-                    [
-                        "naam" => $municipalityName,
-                    ],
-                ],
-            ],
-        ];
-        $this->partialMock(
-            Client::class,
-            function (MockInterface $mock) use ($mockedApiData) {
-                return $mock
-                    ->shouldReceive('get')
-                    ->andReturn($mockedApiData);
-            }
-        );
-    }
 }

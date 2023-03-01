@@ -16,12 +16,12 @@ class AccountFactory extends Factory
     {
         static $password;
 
-    return [
-        'email' => $this->faker->email,
-        'password' => $password ?: Hash::make('secret'),
-        'email_verified_at' => now(),
-        'active' => true,
-        'is_admin' => mt_rand(0, 1),
-    ];
+        return [
+            'email' => $this->faker->email,
+            'password' => $password ?: Hash::make('secret'),
+            'email_verified_at' => now(),
+            'active' => true,
+            'is_admin' => mt_rand(0, 1),
+        ];
     }
 }

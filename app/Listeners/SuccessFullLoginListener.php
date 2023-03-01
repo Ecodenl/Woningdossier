@@ -47,7 +47,7 @@ class SuccessFullLoginListener
 
         $user = $account->user();
 
-        if (! $user instanceof User) {
+        if ( ! $user instanceof User) {
             \Illuminate\Support\Facades\Log::debug('Account has no user, logging out and exiting.');
             Auth::logout();
             $account->setRememberToken(null);
@@ -63,7 +63,7 @@ class SuccessFullLoginListener
         $role = $user->roles->first();
 
         // if the user for some odd reason has no role attached, attach the resident rol to him.
-        if (! $role instanceof Role) {
+        if ( ! $role instanceof Role) {
             $residentRole = Role::findByName('resident');
             $user->assignRole($residentRole);
             $role = $residentRole;
@@ -73,7 +73,7 @@ class SuccessFullLoginListener
         $inputSource = $role->inputSource;
 
         // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-        if (! $role->inputSource instanceof InputSource) {
+        if ( ! $role->inputSource instanceof InputSource) {
             $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         }
 
@@ -91,9 +91,10 @@ class SuccessFullLoginListener
 
         CheckBuildingAddress::dispatchSync($building);
         // check if the connection was successful, if not dispatch it on the regular queue so it retries.
-        if (! $building->municipality()->first() instanceof Municipality) {
+        if ( ! $building->municipality()->first() instanceof Municipality) {
             CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
-        } else {
+        }
+        if ($building->municipality()->first() instanceof Municipality) {
             RefreshRegulationsForBuildingUser::dispatch($building);
         }
     }

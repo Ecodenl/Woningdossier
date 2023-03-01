@@ -32,6 +32,11 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
+      redis:
+        image: redis:7.0
+        ports:
+          - 6379:6379
+        options: --entrypoint redis-server
     steps:
       - name: Verify hoomdossier_test database exists
         run: mysql --host 127.0.0.1 --port 3306 -uroot -e "SHOW DATABASES LIKE 'hoomdossier_test';"

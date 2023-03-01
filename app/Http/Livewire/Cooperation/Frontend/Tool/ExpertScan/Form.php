@@ -12,6 +12,7 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Str;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
@@ -130,14 +131,20 @@ class Form extends Component
         // Answers have been updated, we save them and dispatch a recalculate
         // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
         foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
+            /** @var ToolQuestion $toolQuestion */
+            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             // Rules are conditionally unset. We don't want to save unvalidated answers, but don't want to just
-            // clear them either.
-            if (array_key_exists("filledInAnswers.$toolQuestionShort", $this->rules)) {
+            // clear them either. In the case of a JSON question, the short will have sub-shorts, so we check
+            // at least one starts with the tool question short
+            if (array_key_exists("filledInAnswers.$toolQuestionShort", $this->rules)
+                || ($toolQuestion->data_type === Caster::JSON && Str::arrKeyStartsWith(
+                    $this->rules,
+                    "filledInAnswers.$toolQuestionShort"
+                ))
+            ) {
                 // Define if we should answer this question...
-                /** @var ToolQuestion $toolQuestion */
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
-
                     // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
                     // so when we actually start saving it we have to format it one more time
                     if ($toolQuestion->data_type === Caster::FLOAT) {

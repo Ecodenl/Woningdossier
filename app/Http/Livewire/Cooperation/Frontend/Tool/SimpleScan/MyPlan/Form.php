@@ -281,7 +281,7 @@ class Form extends Component
         ]);
 
         // !important! this has to be done before the userActionPlanAdvice relation is made
-        // otherwise the observer will fire when the mapping hasnt been done yet.
+        // otherwise the observer will fire when the mapping hasn't been done yet.
 
         // We read from the master. Therefore we need to sync to the master also.
         $from = $customMeasureApplication->getSibling($this->masterInputSource);
@@ -302,8 +302,7 @@ class Form extends Component
         $order = count($this->cards[$category]);
 
         // Build user advice
-        $advice = $customMeasureApplication
-            ->userActionPlanAdvices()
+        $customMeasureApplication->userActionPlanAdvices()
             ->create(
                 [
                     'user_id' => $this->building->user->id,
@@ -327,6 +326,7 @@ class Form extends Component
         $this->dispatchBrowserEvent('close-modal');
         // Reset the modal
         $this->custom_measure_application = [];
+        $this->dispatchBrowserEvent('saved-measure');
 
         $this->recalculate();
     }

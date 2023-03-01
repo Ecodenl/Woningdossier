@@ -278,6 +278,7 @@
                             ])
                                 @component('cooperation.frontend.layouts.components.alpine-select')
                                     <select class="form-input hidden"
+                                            x-on:saved-measure.window="triggerEvent($el, 'change');"
                                             wire:model="custom_measure_application.measure_category"
                                             id="custom-measure-application-measure-category" @if(! $vbjehuisAvailable) disabled @endif>
                                         <option value="">

@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\BuildingAddressUpdated;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Queue;
 use App\Jobs\CheckBuildingAddress;
@@ -91,10 +92,12 @@ class SuccessFullLoginListener
 
         CheckBuildingAddress::dispatchSync($building);
         // check if the connection was successful, if not dispatch it on the regular queue so it retries.
-        if ( ! $building->municipality()->first() instanceof Municipality) {
+        // if the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated will be fired from the attachMunicipality method.
+        // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job
+        // so a else is fine.
+        if (!$building->municipality()->first() instanceof Municipality) {
             CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
-        }
-        if ($building->municipality()->first() instanceof Municipality) {
+        } else {
             RefreshRegulationsForBuildingUser::dispatch($building);
         }
     }

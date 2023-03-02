@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDeviceOptionsTable extends Migration
+class AddShortColumnToMeasureCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateDeviceOptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('device_options', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->timestamps();
+        Schema::table('measure_categories', function (Blueprint $table) {
+            $table->string('short')->after('name')->nullable()->default(null);
         });
     }
 
@@ -27,6 +25,8 @@ class CreateDeviceOptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('device_options');
+        Schema::table('measure_categories', function (Blueprint $table) {
+            $table->dropColumn('short');
+        });
     }
 }

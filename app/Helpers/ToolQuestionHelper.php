@@ -326,9 +326,15 @@ class ToolQuestionHelper
 
             // Format answers
             if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                $humanReadableAnswer = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getFormatForUser();
+                $humanReadableAnswer = Caster::init()
+                    ->dataType($toolQuestion->data_type)
+                    ->value($humanReadableAnswer)
+                    ->getFormatForUser();
             } elseif ($toolQuestion->data_type === Caster::JSON) {
-                $humanReadableAnswerArray = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getCast();
+                $humanReadableAnswerArray = Caster::init()
+                    ->dataType($toolQuestion->data_type)
+                    ->value($humanReadableAnswer)
+                    ->getCast();
                 $humanReadableAnswer = [];
                 foreach ($toolQuestion->options as $option) {
                     $humanReadableAnswer[$option['name']] = $humanReadableAnswerArray[$option['short']];

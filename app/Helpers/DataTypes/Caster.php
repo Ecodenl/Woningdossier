@@ -22,10 +22,16 @@ class Caster
     protected $value;
     protected bool $force = false;
 
-    public function __construct(string $dataType, $value)
+    public function dataType(string $dataType): self
     {
         $this->dataType = $dataType;
+        return $this;
+    }
+
+    public function value($value): self
+    {
         $this->value = $value;
+        return $this;
     }
 
     public function force(): self
@@ -87,6 +93,9 @@ class Caster
     {
         // if needed, the cast can be applied per datatype. (like the forUser method)
         $value = $this->value;
+        if (is_null($value) && ! $this->force) {
+            return null;
+        }
 
         switch ($this->dataType) {
             case static::INT:

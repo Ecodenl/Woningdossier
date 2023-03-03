@@ -100,7 +100,8 @@ abstract class Scannable extends Component
             if ($toolQuestion instanceof ToolQuestion) {
                 // If it's an INT, we want to ensure the value set is also an INT
                 if ($toolQuestion->data_type === Caster::INT) {
-                    $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
+                    $caster = Caster::init()->dataType(Caster::INT)->value($value);
+                    $value = $caster->value($caster->reverseFormatted())->getFormatForUser();
                     $this->filledInAnswers[$toolQuestionShort] = $value;
                 }
             }
@@ -207,7 +208,7 @@ abstract class Scannable extends Component
                 $toolQuestion = $this->toolQuestions->where('short', $toolQuestionShort)->first();
                 // Validator failed, let's put it back as the user format
                 if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                    $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
+                    $this->filledInAnswers[$toolQuestion->short] = Caster::init()->dataType($toolQuestion->data_type)->value($this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                 }
 
                 // TODO: Check if this should be subject to $this->automaticallyEvaluate
@@ -304,7 +305,10 @@ abstract class Scannable extends Component
                         // Before we would set sliders and text answers differently. Now, because they are mapped by the
                         // same (by data type) it could be that value is not set.
                         $answer = $answerForInputSource ?? $toolQuestion->options['value'] ?? 0;
-                        $answerForInputSource = Caster::init($toolQuestion->data_type, $answer)->getFormatForUser();
+                        $answerForInputSource = Caster::init()
+                            ->dataType($toolQuestion->data_type)
+                            ->value($answer)
+                            ->getFormatForUser();
                     }
 
                     $this->filledInAnswers[$toolQuestion->short] = $answerForInputSource;

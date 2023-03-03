@@ -48,6 +48,11 @@ class SeedBagMunicipalityMapping extends Command
      */
     public function handle()
     {
+        if (! Storage::exists('plaatsnamen.csv')) {
+            $this->error('plaatsnamen.csv not found in storage!');
+            exit;
+        }
+
         $filename = Storage::path('plaatsnamen.csv');
         $header = null;
         $delimiter = ',';

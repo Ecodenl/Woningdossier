@@ -16,7 +16,7 @@ class Client
 {
     use FluentCaller;
 
-    protected string $baseUrl = "https://test.econobis.nl/api/";
+    protected string $baseUrl = "https://test.econobis.nl/api";
 
     private array $config;
 
@@ -27,9 +27,9 @@ class Client
     public function __construct(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
-
+        $key = config('hoomdossier.services.econobis.api-key');
         $this->config = [
-            'base_uri'        => $this->baseUrl,
+            'base_uri'        => "{$this->baseUrl}/{$key}/",
             'headers'         => [
                 'Accept' => 'application/json',
             ],

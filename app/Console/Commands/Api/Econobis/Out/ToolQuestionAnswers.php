@@ -201,7 +201,15 @@ class ToolQuestionAnswers extends Command
         $client = Client::init($logger);
         $econobis = Econobis::init($client);
 
-        $response = $econobis->hoomdossier()->gebruik($applicableToolQuestions);
+        $response = $econobis->hoomdossier()->gebruik([
+            'account_related' => [
+                'building_id' => $building->id,
+                'user_id' => $building->user->id,
+                'account_id' => $building->user->account_id,
+                'contact_id' => $building->user->extra['contact_id'] ?? null,
+            ],
+            'tool_questions' => $applicableToolQuestions
+        ]);
 
         Log::debug('Response', $response);
 

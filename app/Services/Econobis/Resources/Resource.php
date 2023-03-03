@@ -20,7 +20,7 @@ abstract class Resource
 
     public function uri(string $params = ''): string
     {
-        return implode('/', [$this->uri, $params, config('hoomdossier.services.econobis.api-key')]);
+        return implode('/', [$this->uri, $params]);
     }
 
     protected static function buildQuery(array $attributes): array

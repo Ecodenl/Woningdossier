@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Console\Commands\Api\Econobis\Out;
+namespace App\Console\Commands\Api\Econobis\Out\Building;
 
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Services\Econobis\Client;
 use App\Services\Econobis\Econobis;
-use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +18,7 @@ class ToolQuestionAnswers extends Command
      *
      * @var string
      */
-    protected $signature = 'api:econobis:out:tool-question-answers {building : The id of the building you would like to process.}';
+    protected $signature = 'api:econobis:out:building:tool-question-answers {building : The id of the building you would like to process.}';
 
     /**
      * The console command description.

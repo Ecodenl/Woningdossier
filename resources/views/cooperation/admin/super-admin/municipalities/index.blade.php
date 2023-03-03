@@ -17,6 +17,8 @@
                         <thead>
                             <tr>
                                 <th>@lang('cooperation/admin/super-admin/municipalities.index.table.columns.name')</th>
+                                <th>@lang('cooperation/admin/super-admin/municipalities.index.table.columns.bag')</th>
+                                <th>@lang('cooperation/admin/super-admin/municipalities.index.table.columns.vbjehuis')</th>
                                 <th>@lang('cooperation/admin/super-admin/municipalities.index.table.columns.actions')</th>
                             </tr>
                         </thead>
@@ -24,6 +26,12 @@
                             @foreach($municipalities as $municipality)
                                 <tr>
                                     <td>{{ $municipality->name }}</td>
+                                    <td>
+                                        {{ implode(', ', $bagMunicipalities[$municipality->id] ?? []) }}
+                                    </td>
+                                    <td>
+                                        {{ $vbjehuisMunicipalities[$municipality->id]['Name'] ?? null }}
+                                    </td>
                                     <td>
                                         <a href="{{ route('cooperation.admin.super-admin.municipalities.edit', compact('municipality')) }}"
                                            class="btn btn-default">

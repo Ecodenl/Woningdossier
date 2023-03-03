@@ -37,6 +37,9 @@ return [
         'bag' => [
             'secret' => env('BAG_API_KEY', '')
         ],
+        'econobis' => [
+            'api-key' => env('ECONOBIS_KEY', '')
+        ],
     ],
 
     'webhooks' => [

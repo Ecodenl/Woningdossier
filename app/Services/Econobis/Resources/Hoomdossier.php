@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Services\Econobis\Resources;
+
+use GuzzleHttp\RequestOptions;
+
+class Hoomdossier extends Resource
+{
+    public function gebruik(array $data)
+    {
+
+        return $this->client->post($this->uri('gebruik'), [RequestOptions::JSON => $data]);
+    }
+}

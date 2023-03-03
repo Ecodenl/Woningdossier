@@ -5,8 +5,12 @@ namespace App\Console\Commands\Api\Econobis\Out;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
+use App\Services\Econobis\Client;
+use App\Services\Econobis\Econobis;
+use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class ToolQuestionAnswers extends Command
 {
@@ -192,7 +196,15 @@ class ToolQuestionAnswers extends Command
                 unset($applicableToolQuestions[$situation][$index]);
             }
         }
-        dd($applicableToolQuestions);
+
+        $logger = \Illuminate\Support\Facades\Log::getLogger();
+        $client = Client::init($logger);
+        $econobis = Econobis::init($client);
+
+        $response = $econobis->hoomdossier()->gebruik($applicableToolQuestions);
+
+        Log::debug('Response', $response);
+
         return 0;
     }
 }

@@ -32,13 +32,6 @@ class BuildingCoachStatusFormRequest extends ApiRequest
         ];
     }
 
-    public function messages()
-    {
-        return [
-            'allow_access.required' => __('auth.register.validation.allow_access'),
-        ];
-    }
-
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
@@ -51,6 +44,7 @@ class BuildingCoachStatusFormRequest extends ApiRequest
 
             // Due to above validation we can assume these values are now correct
             if (! empty($coachContactId) && ! empty($residentContactId)) {
+                // By querying on the User model, it is automatically scoped to the cooperation
                 $coach = User::byContact($coachContactId)->first();
                 $resident = User::byContact($residentContactId)->first();
 

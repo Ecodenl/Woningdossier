@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class CasterTest extends TestCase
 {
-    public function valueIsCorrectlyCastedProvider()
+    public function getCastProvider()
     {
         return [
             [Caster::STRING, 10, false, '10'],
@@ -20,6 +20,7 @@ class CasterTest extends TestCase
             [Caster::INT, '10', false, 10],
             [Caster::INT, '10.3', false, 10],
             [Caster::INT, '10.5', false, 11],
+            [Caster::INT, '10.555', false, 11],
             [Caster::INT, '10,5', false, 10],
             [Caster::INT, '-10', false, -10],
             [Caster::INT, '-10.5', false, -11],
@@ -37,6 +38,7 @@ class CasterTest extends TestCase
             [Caster::INT_5, '10', false, 10],
             [Caster::INT_5, '10.3', false, 10],
             [Caster::INT_5, '10.5', false, 10],
+            [Caster::INT_5, '10.555', false, 10],
             [Caster::INT_5, '-10', false, -10],
             [Caster::INT_5, '-10.5', false, -10],
             [Caster::INT_5, '-12.5', false, -15],
@@ -54,6 +56,8 @@ class CasterTest extends TestCase
             [Caster::FLOAT, '10', false, 10.0],
             [Caster::FLOAT, '10.3', false, 10.3],
             [Caster::FLOAT, '10.5', false, 10.5],
+            [Caster::FLOAT, '10.555', false, 10.555],
+            [Caster::FLOAT, '10.554', false, 10.554],
             [Caster::FLOAT, '10,5', false, 10.0],
             [Caster::FLOAT, '-10', false, -10.0],
             [Caster::FLOAT, '-10.5', false, -10.5],
@@ -101,9 +105,9 @@ class CasterTest extends TestCase
     }
 
     /**
-     * @dataProvider valueIsCorrectlyCastedProvider
+     * @dataProvider getCastProvider
      */
-    public function test_value_is_correctly_casted(string $dataType, $value, bool $force, $expected)
+    public function test_get_cast(string $dataType, $value, bool $force, $expected)
     {
         $caster = Caster::init()->dataType($dataType)->value($value);
         if ($force) {
@@ -111,5 +115,112 @@ class CasterTest extends TestCase
         }
 
         $this->assertEquals($expected, $caster->getCast());
+    }
+
+    public function reverseFormattedProvider()
+    {
+        // Provider note: The code only reverse formats ints and floats, as they are the only random user input.
+        // Therefore, this test is limited to these 2 only (in detail).
+        return [
+            // Test cases to prove the noted point.
+            [Caster::STRING, 10, false, 10],
+            [Caster::INT_5, 10, false, 10],
+            [Caster::INT_5, null, false, null],
+            [Caster::INT_5, null, true, null],
+            [Caster::ARRAY, 10, false, 10],
+            [Caster::ARRAY, null, false, null],
+            [Caster::ARRAY, null, true, null],
+            [Caster::JSON, 10, false, 10],
+            [Caster::JSON, null, true, null],
+            // Actual useful tests. Use case: user fills in data, we get something out of it.
+            [Caster::INT, null, false, null],
+            [Caster::INT, null, true, 0],
+            [Caster::INT, '10', false, 10],
+            [Caster::INT, '10.3', false, 103], // Dutch format expected, so "wrong" input gets parsed.
+            [Caster::INT, '10,3', false, 10],
+            [Caster::INT, '10.73', false, 1073],
+            [Caster::INT, '10,73', false, 11],
+            [Caster::INT, '10,7333', false, 11],
+            [Caster::INT, 'AmIANumber?', false, 0],
+            [Caster::FLOAT, null, false, null],
+            [Caster::FLOAT, null, true, 0.0],
+            [Caster::FLOAT, '10', false, 10.0],
+            [Caster::FLOAT, '10.3', false, 103.0],
+            [Caster::FLOAT, '10,3', false, 10.3],
+            [Caster::FLOAT, '10.73', false, 1073.0],
+            [Caster::FLOAT, '10,73', false, 10.73],
+            [Caster::FLOAT, '10,7333', false, 10.73],
+            [Caster::FLOAT, '10,735', false, 10.74],
+            [Caster::FLOAT, 'AmIANumber?', false, 0.0],
+        ];
+    }
+
+    /**
+     * @dataProvider reverseFormattedProvider
+     */
+    public function test_reverse_formatted(string $dataType, $value, bool $force, $expected)
+    {
+        $caster = Caster::init()->dataType($dataType)->value($value);
+        if ($force) {
+            $caster->force();
+        }
+
+        $this->assertEquals($expected, $caster->reverseFormatted());
+    }
+
+    public function getFormatForUserProvider()
+    {
+        // Provider note: The code only formats ints (and bucketed ints) and floats, as they are the only that
+        // (currently) require formatting. The other values apply a `getCast()`. See other tests on those results.
+        return [
+            // Use case: backend returns data, it's formatted for the user.
+            [Caster::INT, null, false, null],
+            [Caster::INT, null, true, '0'],
+            [Caster::INT, '0', false, '0'],
+            [Caster::INT, '10', false, '10'],
+            [Caster::INT, '10.3', false, '10'],
+            [Caster::INT, '10,3', false, '10'],
+            [Caster::INT, '10.73', false, '11'],
+            [Caster::INT, '10,73', false, '10'],
+            [Caster::INT, 'AmIANumber?', false, null],
+            [Caster::INT_5, null, false, null],
+            [Caster::INT_5, null, true, '0'],
+            [Caster::INT_5, '0', false, '0'],
+            [Caster::INT_5, '10', false, '10'],
+            [Caster::INT_5, '10.3', false, '10'],
+            [Caster::INT_5, '10,3', false, '10'],
+            [Caster::INT_5, '10.73', false, '11'],
+            [Caster::INT_5, '12.73', false, '15'],
+            [Caster::INT_5, '13', false, '15'],
+            [Caster::INT_5, '10,73', false, '10'],
+            [Caster::INT_5, 'AmIANumber?', false, null],
+            [Caster::FLOAT, null, false, null],
+            [Caster::FLOAT, null, true, '0'],
+            [Caster::FLOAT, '0', false, '0'],
+            [Caster::FLOAT, '10', false, '10,0'],
+            [Caster::FLOAT, '10.3', false, '10,3'],
+            [Caster::FLOAT, '10,3', false, '10,0'],
+            [Caster::FLOAT, '10.73', false, '10,7'],
+            [Caster::FLOAT, '10,73', false, '10,0'],
+            [Caster::FLOAT, '10,7333', false, '10,0'],
+            [Caster::FLOAT, '10,735', false, '10,0'],
+            [Caster::FLOAT, '10,75', false, '10,0'],
+            [Caster::FLOAT, '10.75', false, '10,8'],
+            [Caster::FLOAT, 'AmIANumber?', false, null],
+        ];
+    }
+
+    /**
+     * @dataProvider getFormatForUserProvider
+     */
+    public function test_get_format_for_user(string $dataType, $value, bool $force, $expected)
+    {
+        $caster = Caster::init()->dataType($dataType)->value($value);
+        if ($force) {
+            $caster->force();
+        }
+
+        // Note: Test currently does not support locale. When we do add a second locale, this will need revisiting.
+        $this->assertEquals($expected, $caster->getFormatForUser());
     }
 }

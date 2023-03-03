@@ -34,6 +34,11 @@ class Caster
         return $this;
     }
 
+    /**
+     * Force defines whether or not converting data should be forced if the value is null.
+     *
+     * @return $this
+     */
     public function force(): self
     {
         $this->force = true;
@@ -56,12 +61,12 @@ class Caster
                 $this->value = (string) $this->value;
                 break;
 
-            case static::INT_5:
-                $this->value = (int) NumberFormatter::round((float) $this->value, 5);
-                break;
-
             case static::INT:
                 $this->value = (int) round((float) $this->value);
+                break;
+
+            case static::INT_5:
+                $this->value = (int) NumberFormatter::round((float) $this->value, 5);
                 break;
 
             case static::FLOAT:
@@ -99,12 +104,12 @@ class Caster
 
         switch ($this->dataType) {
             case static::INT:
+                // Note that the dot is replaced with nothing. We expect a Dutch format.
                 $value = (int) NumberFormatter::mathableFormat(str_replace('.', '', ($value ?? 0)), 0);
                 break;
             case static::FLOAT:
+                // Note that the dot is replaced with nothing. We expect a Dutch format.
                 $value = (float) NumberFormatter::mathableFormat(str_replace('.', '', ($value ?? 0)), 2);
-                break;
-            default:
                 break;
         }
 
@@ -123,11 +128,8 @@ class Caster
         }
 
         switch ($this->dataType) {
-            case static::INT_5:
-                $value = NumberFormatter::formatNumberForUser($value, true, false);
-                break;
-
             case static::INT:
+            case static::INT_5:
                 $value = NumberFormatter::formatNumberForUser($value, true, false);
                 break;
 

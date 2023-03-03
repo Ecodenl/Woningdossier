@@ -179,6 +179,7 @@ class NumberFormatterTest extends TestCase
      */
     public function testFormatNumberForUser($number, $isInteger, $alwaysNumber, $expected)
     {
+        // Note: Test currently does not support locale. When we do add a second locale, this will need revisiting.
         $this->assertEquals($expected, NumberFormatter::formatNumberForUser($number, $isInteger, $alwaysNumber));
     }
 }

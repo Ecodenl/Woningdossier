@@ -6,9 +6,12 @@ use App\Jobs\CloneOpposingInputSource;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
+use App\Services\Econobis\Api\Client;
+use App\Services\Econobis\Api\Econobis;
 use App\Services\Models\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Application;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
@@ -103,6 +106,19 @@ class AppServiceProvider extends ServiceProvider
                     ->deactivate();
             }
         });
+
+        $this->app->bind(Client::class, function(Application $app) {
+            if ($app->isLocal()) {
+                return new Client(Log::getLogger());
+            } else {
+                return new Client();
+            }
+        });
+
+        $this->app->bind(Econobis::class, function (Application $app) {
+            return new Econobis($app->make(Client::class));
+        });
+
 
         Paginator::useBootstrapThree();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);

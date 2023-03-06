@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Api\Econobis\Out\Building;
+namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
 use App\Models\Building;
 use App\Models\InputSource;
@@ -17,7 +17,7 @@ class ScanStatus extends Command
      *
      * @var string
      */
-    protected $signature = 'api:econobis:out:building:scan-status {building : The id of the building you would like to process.}';
+    protected $signature = 'api:econobis:out:hoomdossier:scan-status {building : The id of the building you would like to process.}';
 
     /**
      * The console command description.

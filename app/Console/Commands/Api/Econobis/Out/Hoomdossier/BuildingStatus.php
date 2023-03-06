@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Api\Econobis\Out\Building;
+namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
 use App\Models\Building;
 use App\Services\Econobis\EconobisService;
@@ -8,7 +8,7 @@ use App\Services\Econobis\Api\Client;
 use App\Services\Econobis\Api\Econobis;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use App\Services\Econobis\Payloads\BuildingStatus as BuildingStatusPayload;
+use App\Services\Econobis\Payloads\BuildingStatusPayload as BuildingStatusPayload;
 
 class BuildingStatus extends Command
 {
@@ -17,7 +17,7 @@ class BuildingStatus extends Command
      *
      * @var string
      */
-    protected $signature = 'api:econobis:out:building:status {building : The id of the building you would like to process.}';
+    protected $signature = 'api:econobis:out:hoomdossier:status {building : The id of the building you would like to process.}';
 
     /**
      * The console command description.

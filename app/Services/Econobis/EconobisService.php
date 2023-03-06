@@ -8,7 +8,7 @@ class EconobisService
 {
     public function getPayload(Building $building, ?string $payloadClass = null): array
     {
-        $data = [
+        $defaultPayload = [
             'account_related' => [
                 'building_id' => $building->id,
                 'user_id' => $building->user->id,
@@ -22,6 +22,6 @@ class EconobisService
         if (!is_null($payloadClass) && class_exists($payloadClass, true)) {
             $payload = $payloadClass::init()->forBuilding($building)->buildPayload();
         }
-        return array_merge($data, $payload);
+        return array_merge($defaultPayload, $payload);
     }
 }

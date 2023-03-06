@@ -28,8 +28,8 @@ class Client
         $this->logger = $logger;
         $key = config('hoomdossier.services.econobis.api-key');
         $this->config = [
-            'base_uri'        => "{$this->baseUrl}/{$key}/",
-            'headers'         => [
+            'base_uri' => "{$this->baseUrl}/{$key}/",
+            'headers' => [
                 'Accept' => 'application/json',
             ],
             'allow_redirects' => false,

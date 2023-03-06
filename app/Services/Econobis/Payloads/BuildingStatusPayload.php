@@ -2,7 +2,7 @@
 
 namespace App\Services\Econobis\Payloads;
 
-class BuildingStatus extends EconobisPayload
+class BuildingStatusPayload extends EconobisPayload
 {
     public function buildPayload(): array
     {

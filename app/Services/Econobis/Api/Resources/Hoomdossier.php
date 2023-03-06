@@ -25,6 +25,11 @@ class Hoomdossier extends Resource
         return $this->client->post($this->uri('scan-status'), [RequestOptions::JSON => $data]);
     }
 
+    public function woonplan(array $data)
+    {
+        return $this->client->post($this->uri('woonplan'), [RequestOptions::JSON => $data]);
+    }
+
     public function pdf(array $data)
     {
         return $this->client->post($this->uri('pdf'), [RequestOptions::JSON => $data]);

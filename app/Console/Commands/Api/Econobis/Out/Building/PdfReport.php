@@ -3,21 +3,23 @@
 namespace App\Console\Commands\Api\Econobis\Out\Building;
 
 use App\Models\Building;
+use App\Models\FileType;
+use App\Models\InputSource;
 use App\Services\Econobis\EconobisService;
 use App\Services\Econobis\Api\Client;
 use App\Services\Econobis\Api\Econobis;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use App\Services\Econobis\Payloads\BuildingStatus as BuildingStatusPayload;
+use App\Services\Econobis\Payloads\PdfReport as PdfReportPayload;
 
-class BuildingStatus extends Command
+class PdfReport extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'api:econobis:out:building:status {building : The id of the building you would like to process.}';
+    protected $signature = 'api:econobis:out:building:pdf-report {building : The id of the building you would like to process.}';
 
     /**
      * The console command description.
@@ -49,12 +51,20 @@ class BuildingStatus extends Command
         $client = Client::init($logger);
         $econobis = Econobis::init($client);
 
+        $fileType = FileType::findByShort('pdf-report');
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $fileStorage = $fileType->files()->forBuilding($building)->forInputSource($masterInputSource)->first();
+
+        dd(\Storage::disk('downloads')->get($fileStorage->filename));
+        if (\Storage::disk('downloads')->exists($fileStorage->filename)) {
+            return \Storage::disk('downloads')->get($fileStorage->filename);
+                }
 
 
         $response = $econobis
             ->hoomdossier()
-            ->woningStatus(
-                $econobisService->getPayload($building,BuildingStatusPayload::class)
+            ->pdf(
+
             );
 
         Log::debug('Response', $response);

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Econobis\Resources;
+namespace App\Services\Econobis\Api\Resources;
 
-use App\Services\Econobis\Client;
+use App\Services\Econobis\Api\Client;
 use GuzzleHttp\RequestOptions;
 
 abstract class Resource

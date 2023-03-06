@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Econobis\Resources;
+namespace App\Services\Econobis\Api\Resources;
 
 use GuzzleHttp\RequestOptions;
 

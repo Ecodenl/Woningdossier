@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Services\Econobis;
+namespace App\Services\Econobis\Api;
 
-use App\Services\Verbeterjehuis\Resources\Regulation;
 use App\Traits\FluentCaller;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\CurlHandler;

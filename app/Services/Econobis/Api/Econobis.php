@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Econobis;
+namespace App\Services\Econobis\Api;
 
-use App\Services\Econobis\Resources\Hoomdossier;
+use App\Services\Econobis\Api\Resources\Hoomdossier;
 use App\Traits\FluentCaller;
 
 class Econobis

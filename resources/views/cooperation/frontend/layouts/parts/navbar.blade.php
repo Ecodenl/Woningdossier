@@ -167,6 +167,14 @@
                            class="in-text">
                             @lang('woningdossier.cooperation.navbar.my-account')
                         </a>
+
+                        @if(app()->isLocal())
+                            <p>
+                                B: {{ $building->id }}
+                                <br>
+                                U: {{ $building->user->id }}
+                            </p>
+                        @endif
                     </li>
                     <li>
                         <a href="{{ route('cooperation.privacy.index', compact('cooperation')) }}"

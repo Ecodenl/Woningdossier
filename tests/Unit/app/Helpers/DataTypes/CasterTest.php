@@ -119,8 +119,8 @@ class CasterTest extends TestCase
 
     public function reverseFormattedProvider()
     {
-        // Provider note: The code only reverse formats ints and floats, as they are the only random user input.
-        // Therefore, this test is limited to these 2 only (in detail).
+        // Provider note: The code only reverse formats ints and floats, as they are the only  user input that require
+        // formatting. Therefore, this test is limited to these 2 only (in detail).
         return [
             // Test cases to prove the noted point.
             [Caster::STRING, 10, false, 10],
@@ -189,7 +189,7 @@ class CasterTest extends TestCase
             [Caster::INT_5, '10', false, '10'],
             [Caster::INT_5, '10.3', false, '10'],
             [Caster::INT_5, '10,3', false, '10'],
-            [Caster::INT_5, '10.73', false, '11'],
+            [Caster::INT_5, '10.73', false, '10'],
             [Caster::INT_5, '12.73', false, '15'],
             [Caster::INT_5, '13', false, '15'],
             [Caster::INT_5, '10,73', false, '10'],

@@ -55,7 +55,7 @@ class ScanStatus extends Command
                 'id' => $scan->id,
                 'name' => $scan->name,
                 'short' => $scan->short,
-                'is_compeleted' => $building->hasCompletedScan($scan, $inputSource),
+                'is_completed' => $building->hasCompletedScan($scan, $inputSource),
             ];
         }
         $data = array_merge($data, [

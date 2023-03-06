@@ -71,9 +71,10 @@ class Form extends Scannable
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->data_type === Caster::FLOAT) {
-                $this->filledInAnswers[$toolQuestion->short] = Caster::init(
-                    $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
-                )->reverseFormatted();
+                $this->filledInAnswers[$toolQuestion->short] = Caster::init()
+                    ->dataType($toolQuestion->data_type)
+                    ->value($this->filledInAnswers[$toolQuestion->short])
+                    ->reverseFormatted();
             }
         }
 
@@ -95,7 +96,10 @@ class Form extends Scannable
                 // Validator failed, let's put it back as the user format
                 foreach ($this->toolQuestions as $toolQuestion) {
                     if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                        $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
+                        $this->filledInAnswers[$toolQuestion->short] = Caster::init()
+                            ->dataType($toolQuestion->data_type)
+                            ->value($this->filledInAnswers[$toolQuestion->short])
+                            ->getFormatForUser();
                     }
                 }
 

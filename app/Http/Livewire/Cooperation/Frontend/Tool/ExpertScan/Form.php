@@ -148,9 +148,10 @@ class Form extends Component
                     // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
                     // so when we actually start saving it we have to format it one more time
                     if ($toolQuestion->data_type === Caster::FLOAT) {
-                        $givenAnswer = Caster::init(
-                            $toolQuestion->data_type, $givenAnswer
-                        )->reverseFormatted();
+                        $givenAnswer = Caster::init()
+                            ->dataType($toolQuestion->data_type)
+                            ->value($givenAnswer)
+                            ->reverseFormatted();
                     }
 
                     // TODO: this is a horrible way to trace dirty answers
@@ -260,7 +261,11 @@ class Form extends Component
 
                 // Could be an unused result
                 if ($result instanceof ToolCalculationResult) {
-                    Arr::set($performedCalculations, $resultShort, Caster::init($result->data_type, $value)->getFormatForUser());
+                    Arr::set(
+                        $performedCalculations,
+                        $resultShort,
+                        Caster::init()->dataType($result->data_type)->value($value)->getFormatForUser()
+                    );
                 }
             }
 

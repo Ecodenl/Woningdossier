@@ -30,13 +30,15 @@ trait HasDynamicAnswers
         $answers = is_null($this->answers) ? collect() : $this->answers;
         $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
+        $caster = Caster::init()->force()->dataType($toolQuestion->data_type);
+
         // If the answer exists, we want to ensure we format it correctly for backend use
         if ($answers->has($toolQuestionShort)) {
             // TODO: Answer might be set but perhaps not answerable? Should we evaluate here too?
             $answer = $answers->get($toolQuestionShort);
 
             if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                $answer = Caster::init($toolQuestion->data_type, $answer)->reverseFormatted();
+                $answer = $caster->value($answer)->reverseFormatted();
             }
         } else {
             $answer = $this->getBuildingAnswer($toolQuestionShort, $withEvaluation);
@@ -44,7 +46,7 @@ trait HasDynamicAnswers
 
         // Even if we can't answer the question, we want this cast
         if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-            $answer = Caster::init($toolQuestion->data_type, $answer)->force()->getCast();
+            $answer = $caster->value($answer)->getCast();
         }
 
         return $answer;
@@ -55,16 +57,18 @@ trait HasDynamicAnswers
         $answers = is_null($this->answers) ? collect() : $this->answers;
 
         $toolQuestionAnswers = [];
+        $caster = Caster::init()->force();
 
         foreach ($toolQuestionShorts as $index => $toolQuestionShort) {
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+            $caster->dataType($toolQuestion->data_type);
 
             if ($answers->has($toolQuestionShort)) {
                 // TODO: Answer might be set but perhaps not answerable? Should we evaluate here too?
                 $answer = $answers->get($toolQuestionShort);
 
                 if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                    $answer = Caster::init($toolQuestion->data_type, $answer)->reverseFormatted();
+                    $answer = $caster->value($answer)->reverseFormatted();
                 }
                 $toolQuestionAnswers[$toolQuestionShort] = $answer;
                 unset($toolQuestionShorts[$index]);
@@ -73,15 +77,17 @@ trait HasDynamicAnswers
 
         // Still some answers left unanswered
         if (! empty($toolQuestionShorts)) {
-            $toolQuestionAnswers = array_merge($toolQuestionAnswers,
-                $this->getManyBuildingAnswers($toolQuestionShorts, $withEvaluation));
+            $toolQuestionAnswers = array_merge(
+                $toolQuestionAnswers,
+                $this->getManyBuildingAnswers($toolQuestionShorts, $withEvaluation)
+            );
         }
 
         // Cast data
         foreach ($toolQuestionAnswers as $short => $answer) {
             $toolQuestion = ToolQuestion::findByShort($short);
             if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                $toolQuestionAnswers[$short] = Caster::init($toolQuestion->data_type, $answer)->force()->getCast();
+                $toolQuestionAnswers[$short] = $caster->dataType($toolQuestion->data_type)->value($answer)->getCast();
             }
         }
 

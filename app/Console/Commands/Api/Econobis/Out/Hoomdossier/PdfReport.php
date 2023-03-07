@@ -7,6 +7,8 @@ use App\Models\FileType;
 use App\Models\InputSource;
 use App\Services\Econobis\EconobisService;
 use App\Services\Econobis\Api\Econobis;
+use App\Services\Econobis\Payloads\BuildingStatusPayload;
+use App\Services\Econobis\Payloads\PdfReportPayload;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -44,25 +46,11 @@ class PdfReport extends Command
     public function handle(EconobisService $econobisService, Econobis $econobis)
     {
         $building = Building::findOrFail($this->argument('building'));
-
-        $fileType = FileType::findByShort('pdf-report');
-        // there is no PDF for the master.
-        $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-
-        $fileStorage = $fileType->files()
-            ->forMyCooperation($building->user->cooperation_id)
-            ->forBuilding($building)->forInputSource($inputSource)->first();
-
-
-        if (\Storage::disk('downloads')->exists($fileStorage->filename)) {
-            $file = \Storage::disk('downloads')->get($fileStorage->filename);
-            $econobis->hoomdossier()->pdf([
-                $econobisService->getPayload($building),
-                'pdf' => [
-                    'contents' => base64_encode($file),
-                ],
-            ]);
-        }
+        $econobis
+            ->hoomdossier()
+            ->pdf(
+                $econobisService->getPayload($building, PdfReportPayload::class)
+            );
 
         return 0;
     }

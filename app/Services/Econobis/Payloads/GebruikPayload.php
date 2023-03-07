@@ -1,50 +1,16 @@
 <?php
 
-namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
+namespace App\Services\Econobis\Payloads;
 
-use App\Models\Building;
-use App\Models\InputSource;
 use App\Models\ToolQuestion;
-use App\Services\Econobis\Api\Client;
-use App\Services\Econobis\Api\Econobis;
-use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 
-class ToolQuestionAnswers extends Command
+class GebruikPayload extends EconobisPayload
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'api:econobis:out:hoomdossier:tool-question-answers {building : The id of the building you would like to process.}';
+    use MasterInputSource;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Send all tool question with its answers to Econobis.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function buildPayload(): array
     {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
-    {
-        $building = Building::findOrFail($this->argument('building'));
 
         $applicableToolQuestions = [
             'current' => [
@@ -148,8 +114,6 @@ class ToolQuestionAnswers extends Command
             ],
         ];
 
-
-        $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         foreach ($applicableToolQuestions as $situation => $toolQuestionShorts) {
             foreach ($toolQuestionShorts as $index => $toolQuestionShort) {
                 $answers = [];
@@ -157,7 +121,7 @@ class ToolQuestionAnswers extends Command
 
                 $values = $toolQuestion->getQuestionValues();
 
-                $buildingAnswers = $building->getAnswer($inputSource, $toolQuestion);
+                $buildingAnswers = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
 
                 $applicableToolQuestions[$situation][$toolQuestionShort] = [
                     'id' => $toolQuestion->id,
@@ -196,22 +160,6 @@ class ToolQuestionAnswers extends Command
             }
         }
 
-        $logger = \Illuminate\Support\Facades\Log::getLogger();
-        $client = Client::init($logger);
-        $econobis = Econobis::init($client);
-
-        $response = $econobis->hoomdossier()->gebruik([
-            'account_related' => [
-                'building_id' => $building->id,
-                'user_id' => $building->user->id,
-                'account_id' => $building->user->account_id,
-                'contact_id' => $building->user->extra['contact_id'] ?? null,
-            ],
-            'tool_questions' => $applicableToolQuestions
-        ]);
-
-        Log::debug('Response', $response);
-
-        return 0;
+        return $applicableToolQuestions;
     }
 }

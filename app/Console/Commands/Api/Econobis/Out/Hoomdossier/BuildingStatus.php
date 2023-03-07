@@ -8,7 +8,7 @@ use App\Services\Econobis\Api\Client;
 use App\Services\Econobis\Api\Econobis;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use App\Services\Econobis\Payloads\BuildingStatusPayload as BuildingStatusPayload;
+use App\Services\Econobis\Payloads\BuildingStatusPayload;
 
 class BuildingStatus extends Command
 {

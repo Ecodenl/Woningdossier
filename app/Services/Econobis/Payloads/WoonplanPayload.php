@@ -11,6 +11,8 @@ use App\Services\UserActionPlanAdviceService;
 
 class WoonplanPayload extends EconobisPayload
 {
+    use MasterInputSource;
+
     public function buildPayload(): array
     {
         $payload = [];
@@ -74,18 +76,16 @@ class WoonplanPayload extends EconobisPayload
         ];
         $building = $this->building;
 
-        $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-
         $advices = $building
             ->user
             ->userActionPlanAdvices()
-            ->forInputSource($inputSource)
+            ->forInputSource($this->masterInputSource)
             ->category(UserActionPlanAdviceService::CATEGORY_TO_DO)
             ->get();
 
         /** @var UserActionPlanAdvice $advice */
         foreach ($advices as $advice) {
-            $advisable = $advice->userActionPlanAdvisable()->forInputSource($inputSource)->first();
+            $advisable = $advice->userActionPlanAdvisable()->forInputSource($this->masterInputSource)->first();
             // the simple case.
             $relatedToolQuestion = null;
             foreach ($toolQuestionRelatedMeasureMap as $toolQuestionShort => $mapInfo) {
@@ -95,7 +95,7 @@ class WoonplanPayload extends EconobisPayload
                 }
             }
             if ($relatedToolQuestion instanceof ToolQuestion) {
-                $relatedAnswer = $this->building->getAnswer($inputSource, $relatedToolQuestion);
+                $relatedAnswer = $this->building->getAnswer($this->masterInputSource, $relatedToolQuestion);
                 $type = $toolQuestionRelatedMeasureMap[$relatedToolQuestion->short]['type'];
 
                 $payload['user_action_plan_advices'][] = [
@@ -109,6 +109,7 @@ class WoonplanPayload extends EconobisPayload
                 ];
             }
         }
+        dd($payload);
 
         return $payload;
     }

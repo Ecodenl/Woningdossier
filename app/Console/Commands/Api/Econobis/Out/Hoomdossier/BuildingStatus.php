@@ -49,8 +49,6 @@ class BuildingStatus extends Command
         $client = Client::init($logger);
         $econobis = Econobis::init($client);
 
-
-
         $response = $econobis
             ->hoomdossier()
             ->woningStatus(

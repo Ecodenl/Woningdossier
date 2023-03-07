@@ -46,13 +46,9 @@ class Woonplan extends Command
     {
         $building = Building::findOrFail($this->argument('building'));
 
-        $response = $econobis
+        $econobis
             ->hoomdossier()
-            ->woonplan(
-                $econobisService->getPayload($building,WoonplanPayload::class)
-            );
-
-        Log::debug('Response', $response);
+            ->woonplan($econobisService->getPayload($building,WoonplanPayload::class));
 
         return 0;
     }

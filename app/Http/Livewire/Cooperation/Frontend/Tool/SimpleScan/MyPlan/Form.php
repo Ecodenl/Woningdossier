@@ -2,13 +2,13 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
-use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\Wrapper;
+use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
@@ -18,10 +18,11 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\MappingService;
+use App\Services\Models\NotificationService;
 use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\Verbeterjehuis\RegulationService;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use App\Helpers\Arr;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
@@ -78,6 +79,9 @@ class Form extends Component
     public int $comfort = 0;
     public int $renewable = 0;
     public int $investment = 0;
+
+    // Notifications
+    public array $notifications = [];
 
     protected function rules(): array
     {
@@ -277,7 +281,7 @@ class Form extends Component
         ]);
 
         // !important! this has to be done before the userActionPlanAdvice relation is made
-        // otherwise the observer will fire when the mapping hasnt been done yet.
+        // otherwise the observer will fire when the mapping hasn't been done yet.
 
         // We read from the master. Therefore we need to sync to the master also.
         $from = $customMeasureApplication->getSibling($this->masterInputSource);
@@ -298,8 +302,7 @@ class Form extends Component
         $order = count($this->cards[$category]);
 
         // Build user advice
-        $advice = $customMeasureApplication
-            ->userActionPlanAdvices()
+        $customMeasureApplication->userActionPlanAdvices()
             ->create(
                 [
                     'user_id' => $this->building->user->id,
@@ -311,24 +314,19 @@ class Form extends Component
                     'savings_money' => $measureData['savings_money'] ?? 0,
                 ],
             );
-        CustomMeasureApplicationChanged::dispatch($from);
 
-        // Append card
-        $this->cards[$category][$order] = [
-            'id' => $advice->id,
-            'name' => $customMeasureApplication->name,
-            'info' => $customMeasureApplication->info,
-            'icon' => 'icon-tools',
-            'costs' => $advice->costs,
-            'has_user_costs' => false,
-            'subsidy_available' => $advice->subsidy_available,
-            'loan_available' => $advice->loan_available,
-            'savings' => $advice->savings_money ?? 0,
-        ];
+        // All cards are shown by master source. We will fetch the master, as we need it for the card.
+        $masterAdvice = $from->userActionPlanAdvices()->forInputSource($this->masterInputSource)->first();
+
+        // Normally we would dispatch an event. However, the user "wants" the update to be real time, so we dispatch
+        // the update manually so we can keep track.
+        $this->dispatchRegulationUpdate($masterAdvice);
+        $this->reload($masterAdvice);
 
         $this->dispatchBrowserEvent('close-modal');
         // Reset the modal
         $this->custom_measure_application = [];
+        $this->dispatchBrowserEvent('saved-measure');
 
         $this->recalculate();
     }
@@ -655,6 +653,91 @@ class Form extends Component
         $this->refreshAlerts();
     }
 
+    public function checkNotifications()
+    {
+        $notificationService = NotificationService::init()
+            ->forBuilding($this->building)
+            ->forInputSource($this->masterInputSource);
+
+        foreach ($this->notifications as $index => $notification) {
+            if ($notificationService->setType($notification['type'])->setUuid($notification['uuid'])->isNotActive()) {
+                unset($this->notifications[$index]);
+
+                if (! empty($notification['action'])) {
+                    $parameters = $notification['action']['parameters'] ?? [];
+                    $this->{$notification['action']['method']}(...$parameters);
+                }
+            }
+        }
+    }
+
+    /**
+     * Reload the data of an advice.
+     *
+     * @param $advice
+     *
+     * @return void
+     */
+    public function reload($advice)
+    {
+        if (! $advice instanceof UserActionPlanAdvice) {
+            $advice = UserActionPlanAdvice::allInputSources()->withInvisible()->find($advice);
+        }
+
+        if ($advice instanceof UserActionPlanAdvice) {
+            $card = Arr::first($this->convertAdvicesToCards(collect([$advice]), $advice->category)[$advice->category]);
+
+            $prop = $advice->visible ? 'cards' : 'hiddenCards';
+            $cardData = Arr::where($this->{$prop}[$advice->category], function ($card, $order) use ($advice) {
+                return $card['id'] == $advice->id;
+            });
+
+            if (empty($cardData)) {
+                $newOrder = array_key_last($this->{$prop}[$advice->category]) ?? -1 + 1;
+                $this->{$prop}[$advice->category][$newOrder] = $card;
+            } else {
+                $order = array_key_first($cardData);
+                $this->{$prop}[$advice->category][$order] = $card;
+            }
+        }
+    }
+
+    public function evaluateCalculationResult(string $field, $calculation, bool $setValue = true)
+    {
+        // TODO: This will most likely come from the database at one point
+        $calculationConditions = $this->calculationMap[$field];
+        $value = 0;
+        // TODO: Can we use the evaluator for this?
+        foreach ($calculationConditions as $calculationCondition) {
+            $condition = $calculationCondition['condition'];
+            // Upper range only
+            if (empty($condition['from']) && ! empty($condition['to'])) {
+                if ($calculation < $condition['to']) {
+                    $value = $calculationCondition['value'];
+                    break;
+                }
+            } // Full range
+            elseif (! empty($condition['from']) && ! empty($condition['to'])) {
+                if ($calculation >= $condition['from'] && $calculation < $condition['to']) {
+                    $value = $calculationCondition['value'];
+                    break;
+                }
+            } // Bottom range only
+            elseif (! empty($condition['from']) && empty($condition['to'])) {
+                if ($calculation >= $condition['from']) {
+                    $value = $calculationCondition['value'];
+                    break;
+                }
+            }
+        }
+
+        if ($setValue) {
+            $this->setField($field, $value);
+        }
+
+        return $value;
+    }
+
     protected function refreshAlerts()
     {
         $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts');
@@ -665,8 +748,10 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
-                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE,
-                    $this->masterInputSource)
+                ->cooperationMeasureForType(
+                    CooperationMeasureApplicationHelper::SMALL_MEASURE,
+                    $this->masterInputSource
+                )
                 ->category($category)
                 ->orderBy('order')
                 ->get();
@@ -680,15 +765,19 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->invisible()
-                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE,
-                    $this->masterInputSource)
+                ->cooperationMeasureForType(
+                    CooperationMeasureApplicationHelper::SMALL_MEASURE,
+                    $this->masterInputSource
+                )
                 ->where('user_id', $this->building->user->id)
                 ->category($category)
                 ->orderBy('order')
                 ->get();
 
-            $this->hiddenCards = array_merge($this->hiddenCards,
-                $this->convertAdvicesToCards($hiddenAdvices, $category));
+            $this->hiddenCards = array_merge(
+                $this->hiddenCards,
+                $this->convertAdvicesToCards($hiddenAdvices, $category)
+            );
         }
     }
 
@@ -764,44 +853,30 @@ class Form extends Component
         return $cards;
     }
 
-    public function evaluateCalculationResult(string $field, $calculation, bool $setValue = true)
-    {
-        // TODO: This will most likely come from the database at one point
-        $calculationConditions = $this->calculationMap[$field];
-        $value = 0;
-        // TODO: Can we use the evaluator for this?
-        foreach ($calculationConditions as $calculationCondition) {
-            $condition = $calculationCondition['condition'];
-            // Upper range only
-            if (empty($condition['from']) && ! empty($condition['to'])) {
-                if ($calculation < $condition['to']) {
-                    $value = $calculationCondition['value'];
-                    break;
-                }
-            } // Full range
-            elseif (! empty($condition['from']) && ! empty($condition['to'])) {
-                if ($calculation >= $condition['from'] && $calculation < $condition['to']) {
-                    $value = $calculationCondition['value'];
-                    break;
-                }
-            } // Bottom range only
-            elseif (! empty($condition['from']) && empty($condition['to'])) {
-                if ($calculation >= $condition['from']) {
-                    $value = $calculationCondition['value'];
-                    break;
-                }
-            }
-        }
-
-        if ($setValue) {
-            $this->setField($field, $value);
-        }
-
-        return $value;
-    }
-
     private function setField($field, $value)
     {
         $this->{$field} = $value;
+    }
+
+    private function dispatchRegulationUpdate(UserActionPlanAdvice $advice)
+    {
+        $job = new RefreshRegulationsForUserActionPlanAdvice($advice);
+
+        NotificationService::init()
+            ->forBuilding($this->building)
+            ->forInputSource($this->masterInputSource)
+            ->setType(RefreshRegulationsForUserActionPlanAdvice::class)
+            ->setActive([$job->uuid]);
+
+        dispatch($job);
+
+        $this->notifications[] = [
+            'type' => RefreshRegulationsForUserActionPlanAdvice::class,
+            'uuid' => $job->uuid,
+            'action' => [
+                'method' => 'reload',
+                'parameters' => [$advice->id],
+            ]
+        ];
     }
 }

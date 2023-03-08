@@ -20,8 +20,21 @@ class MunicipalityController extends Controller
     public function index(Cooperation $cooperation)
     {
         $municipalities = Municipality::all();
+        $bagMunicipalities = Mapping::forType(MappingHelper::TYPE_BAG_MUNICIPALITY)
+            ->select('target_model_id', 'from_value')
+            ->get()
+            ->groupBy('target_model_id')
+            ->map(function ($maps, $id) {
+                return $maps->pluck('from_value')->toArray();
+            });
+        $vbjehuisMunicipalities = Mapping::forType(MappingHelper::TYPE_MUNICIPALITY_VBJEHUIS)
+            ->pluck('target_data', 'from_model_id');
 
-        return view('cooperation.admin.super-admin.municipalities.index', compact('municipalities'));
+        return view('cooperation.admin.super-admin.municipalities.index', compact(
+            'municipalities',
+            'bagMunicipalities',
+            'vbjehuisMunicipalities'
+        ));
     }
     
     public function create(Cooperation $cooperation)

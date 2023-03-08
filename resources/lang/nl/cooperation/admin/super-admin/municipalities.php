@@ -6,6 +6,8 @@ return [
         'table' => [
             'columns' => [
                 'name' => 'Naam',
+                'bag' => 'BAG gemeente(n)',
+                'vbjehuis' => 'VerbeterJeHuis gemeente',
                 'actions' => 'Acties',
             ],
         ],

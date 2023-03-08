@@ -105,11 +105,12 @@ class WoonplanPayload extends EconobisPayload
                     'co2_savings' => Calculator::calculateCo2Savings($advice->savings_gas),
                     'measure_id' => $advice->user_action_plan_advisable_id,
                     'measure_type' => $advice->user_action_plan_advisable_type,
+                    // todo implement a new tool question.
+                    'execute_self' => false,
                     $type => $relatedAnswer
                 ];
             }
         }
-        dd($payload);
 
         return $payload;
     }

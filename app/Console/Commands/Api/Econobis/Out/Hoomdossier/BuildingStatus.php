@@ -41,13 +41,9 @@ class BuildingStatus extends Command
      *
      * @return int
      */
-    public function handle(EconobisService $econobisService)
+    public function handle(EconobisService $econobisService, Econobis $econobis)
     {
         $building = Building::findOrFail($this->argument('building'));
-
-        $logger = \Illuminate\Support\Facades\Log::getLogger();
-        $client = Client::init($logger);
-        $econobis = Econobis::init($client);
 
         $response = $econobis
             ->hoomdossier()

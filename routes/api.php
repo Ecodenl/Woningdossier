@@ -29,3 +29,5 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))
 
 Route::get('address-data', [Api\GeoController::class, 'getAddressData'])->name('get-address-data');
 
+
+Route::post('pdf-endpoint', );

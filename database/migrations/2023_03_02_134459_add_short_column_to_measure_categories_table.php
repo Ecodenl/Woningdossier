@@ -13,9 +13,11 @@ class AddShortColumnToMeasureCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::table('measure_categories', function (Blueprint $table) {
-            $table->string('short')->after('name')->nullable()->default(null);
-        });
+        if (!Schema::hasColumn('measure_categories', 'short')) {
+            Schema::table('measure_categories', function (Blueprint $table) {
+                $table->string('short')->after('name')->nullable()->default(null);
+            });
+        }
     }
 
     /**

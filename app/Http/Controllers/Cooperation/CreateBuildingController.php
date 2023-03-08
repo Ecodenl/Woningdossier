@@ -29,7 +29,7 @@ class CreateBuildingController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(CreateBuildingFormRequest $request, Cooperation $cooperation)
+    public function store(CreateBuildingFormRequest $request, Cooperation $cooperation, BagService $bagService)
     {
         $email = $request->get('email');
 
@@ -40,7 +40,7 @@ class CreateBuildingController extends Controller
         $data = $request->all();
 
         // now get the picoaddress data.
-        BagService::init()->addressExpanded($data['postal_code'], $data['number'])->prepareForBuilding();
+        $bagService->addressExpanded($data['postal_code'], $data['number'])->prepareForBuilding();
 
         $data['bag_addressid'] = isset($picoAddressData['bag_adresid']) ? $picoAddressData['bag_adresid'] : '';
 

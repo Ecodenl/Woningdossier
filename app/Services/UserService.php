@@ -134,7 +134,7 @@ class UserService
 
         if ( ! in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
             // re-query the bag
-            $addressData = BagService::init()->addressExpanded(
+            $addressData = app(BagService::class)->addressExpanded(
                 $building->postal_code, $building->number, $building->extension
             )->prepareForBuilding();
 

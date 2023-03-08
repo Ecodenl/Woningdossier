@@ -8,11 +8,11 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
-use App\Helpers\Wrapper;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\MeasureCategory;
 use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
@@ -20,13 +20,11 @@ use App\Scopes\VisibleScope;
 use App\Services\MappingService;
 use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
-use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Database\Eloquent\Collection;
 use App\Helpers\Arr;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class Form extends Component
@@ -66,8 +64,7 @@ class Form extends Component
 
     public Scan $scan;
     public array $custom_measure_application = [];
-    public array $measures;
-    public bool $vbjehuisAvailable = true;
+    public Collection $measures;
 
     // Details
     public float $expectedInvestment = 0;
@@ -81,21 +78,16 @@ class Form extends Component
 
     protected function rules(): array
     {
-        $rules = [
+        return [
             'custom_measure_application.name' => 'required',
             'custom_measure_application.info' => 'required',
+            'custom_measure_application.measure_category' => [
+                'nullable', 'exists:measure_categories,id',
+            ],
             'custom_measure_application.costs.from' => 'required|numeric|min:0',
             'custom_measure_application.costs.to' => 'required|numeric|gte:custom_measure_application.costs.from',
             'custom_measure_application.savings_money' => 'nullable|numeric|max:999999',
         ];
-
-        if ($this->vbjehuisAvailable) {
-            $rules['custom_measure_application.measure_category'] = [
-                'nullable', Rule::in(\Illuminate\Support\Arr::pluck($this->measures, 'Value'))
-            ];
-        }
-
-        return $rules;
     }
 
     private $calculationMap = [
@@ -216,13 +208,7 @@ class Form extends Component
         $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
 
-        $this->measures = Wrapper::wrapCall(
-            fn () => RegulationService::init()->getFilters()['Measures'],
-            function () {
-                $this->vbjehuisAvailable = false;
-                return [];
-            }
-        );
+        $this->measures = MeasureCategory::all();
 
         // Set cards
         $this->loadVisibleCards();
@@ -277,18 +263,13 @@ class Form extends Component
         ]);
 
         // !important! this has to be done before the userActionPlanAdvice relation is made
-        // otherwise the observer will fire when the mapping hasnt been done yet.
+        // otherwise the observer will fire when the mapping hasn't been done yet.
 
         // We read from the master. Therefore we need to sync to the master also.
         $from = $customMeasureApplication->getSibling($this->masterInputSource);
-        if ($this->vbjehuisAvailable) {
-            // Add or update mapping to measure category
-            $measureCategory = $measureData['measure_category'] ?? null;
-            $targetData = \Illuminate\Support\Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
-
-            if (! empty($targetData)) {
-                MappingService::init()->from($from)->sync([$targetData]);
-            }
+        $measureCategory = MeasureCategory::find($measureData['measure_category'] ?? null);
+        if ($measureCategory instanceof MeasureCategory) {
+            MappingService::init()->from($from)->sync([$measureCategory]);
         }
 
         $category = UserActionPlanAdviceService::CATEGORY_TO_DO;

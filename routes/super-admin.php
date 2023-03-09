@@ -13,6 +13,10 @@ Route::resource('tool-calculation-results', Cooperation\Admin\SuperAdmin\ToolCal
     ->parameter('tool-calculation-results', 'toolCalculationResult')
     ->only(['index', 'edit', 'update']);
 
+Route::resource('measure-categories', Cooperation\Admin\SuperAdmin\MeasureCategoryController::class)
+    ->parameter('measure-categories', 'measureCategory')
+    ->except(['show', 'destroy']);
+
 Route::resource('measure-applications', Cooperation\Admin\SuperAdmin\MeasureApplicationController::class)
     ->parameter('measure-applications', 'measureApplication')
     ->only(['index', 'edit', 'update']);

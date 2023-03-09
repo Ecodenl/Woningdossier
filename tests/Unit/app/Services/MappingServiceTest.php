@@ -4,9 +4,11 @@ namespace Tests\Unit\app\Services;
 
 use App\Helpers\MappingHelper;
 use App\Models\Building;
+use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Mapping;
+use App\Models\MeasureApplication;
 use App\Models\Municipality;
 use App\Services\MappingService;
 use Database\Seeders\DatabaseSeeder;
@@ -16,10 +18,10 @@ use Tests\TestCase;
 
 class MappingServiceTest extends TestCase
 {
-    use RefreshDatabase;
+//    use RefreshDatabase;
 
-    public $seed = false;
-    public $seeder = DatabaseSeeder::class;
+//    public $seed = false;
+//    public $seeder = DatabaseSeeder::class;
 
     public function test_sync_maps_correct_from_value_to_targetless()
     {
@@ -86,6 +88,27 @@ class MappingServiceTest extends TestCase
             ->first();
 
         $this->assertEquals($target->attributesToArray(), $resolvedTarget->attributesToArray());
+    }
+
+    public function test_resolve_target_returns_target_model()
+    {
+        $from = Municipality::factory()->create();
+        $target = Municipality::factory()->create();
+
+        Mapping::factory()->create([
+            'from_model_type' => $from->getMorphClass(),
+            'from_model_id' => $from->id,
+            'target_model_type' => $target->getMorphClass(),
+            'target_model_id' => $target->id,
+        ]);
+
+        $resolvedTarget = MappingService::init()
+            ->from($from)
+            ->resolveTarget()
+            ->first();
+
+        $this->assertNotNull($resolvedTarget);
+        $this->assertInstanceOf(Municipality::class, $resolvedTarget);
     }
 
     public function test_resolve_target_returns_target_data()

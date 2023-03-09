@@ -4,6 +4,7 @@ namespace App\Services\Verbeterjehuis\Payloads;
 
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -36,6 +37,13 @@ class Search
     public function forMeasure(Model $measureModel): self
     {
         $targets = MappingService::init()->from($measureModel)->resolveTarget();
+        if (!$measureModel instanceof MeasureApplication) {
+             // when its not a measure application, it will be a cooperation measure or custom measure
+             // those are mapped to a measure category
+             // that means the target is a mapping category
+             // so retrieve the vbjehuis measures from the measure category
+            $targets = MappingService::init()->from($targets->first())->resolveTarget();
+        }
 
         $values = [];
         if ($targets->isNotEmpty()) {

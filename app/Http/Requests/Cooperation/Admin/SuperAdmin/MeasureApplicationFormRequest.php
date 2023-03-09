@@ -50,10 +50,10 @@ class MeasureApplicationFormRequest extends FormRequest
 
         $rules = [
             'measure_applications.measure_name' => [
-                new LanguageRequired('nl'),
+                'required', new LanguageRequired('nl'),
             ],
             'measure_applications.measure_info' => [
-                new LanguageRequired('nl'),
+                'required', new LanguageRequired('nl'),
             ],
             'measure_applications.configurations.icon' => [
                 'required',

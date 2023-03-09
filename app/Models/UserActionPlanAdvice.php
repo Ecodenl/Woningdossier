@@ -96,9 +96,21 @@ class UserActionPlanAdvice extends Model implements Auditable
     protected $fillable = [
         'user_id',
         'input_source_id',
-        'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'category', 'visible', 'order', 'costs',
-        'savings_gas', 'savings_electricity', 'savings_money', 'year', 'planned', 'planned_year', 'step_id',
-        'loan_available', 'subsidy_available'
+        'user_action_plan_advisable_type',
+        'user_action_plan_advisable_id',
+        'category',
+        'visible',
+        'order',
+        'costs',
+        'savings_gas',
+        'savings_electricity',
+        'savings_money',
+        'year',
+        'planned',
+        'planned_year',
+        'step_id',
+        'loan_available',
+        'subsidy_available'
     ];
 
     /**
@@ -115,7 +127,8 @@ class UserActionPlanAdvice extends Model implements Auditable
     ];
 
     protected array $ignoreAttributes = [
-        'loan_available', 'subsidy_available',
+        'loan_available',
+        'subsidy_available',
     ];
 
     public static function boot()
@@ -138,9 +151,9 @@ class UserActionPlanAdvice extends Model implements Auditable
     /**
      * Method to scope the advices without its deleted cooperation measure applications and for given type.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $type
-     * @param \App\Models\InputSource $inputSource
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $type
+     * @param  \App\Models\InputSource  $inputSource
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -176,7 +189,7 @@ class UserActionPlanAdvice extends Model implements Auditable
     /**
      * Method to only scope the invisible rows
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return mixed
      */
     public function scopeInvisible(Builder $query): Builder
@@ -187,7 +200,7 @@ class UserActionPlanAdvice extends Model implements Auditable
     /**
      * Scope a query to only include results for the particular step.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -218,6 +231,7 @@ class UserActionPlanAdvice extends Model implements Auditable
     }
 
     # Unsorted
+
     /**
      * Check if the costs are a valid range.
      *
@@ -259,7 +273,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         if ($range) {
             NumberFormatter::range($costs['from'] ?? 0, $costs['to'] ?? 0, 0, ' - ', $prefix);
         } else {
-            return $prefix . NumberFormatter::format(max($costs['from'] ?? 0, $costs['to'] ?? 0), 0, true);
+            return $prefix.NumberFormatter::format(max($costs['from'] ?? 0, $costs['to'] ?? 0), 0, true);
         }
     }
 }

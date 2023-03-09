@@ -37,7 +37,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BuildingsTableSeeder::class);
         $this->call(ScansTableSeeder::class);
         $this->call(StepsTableSeeder::class);
-        $this->call(MeasureCategoriesTableSeeder::class);
         $this->call(MeasuresTableSeeder::class);
         $this->call(ExampleBuildingsTableSeeder::class);
         $this->call(InterestsTableSeeder::class);

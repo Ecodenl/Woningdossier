@@ -16,6 +16,7 @@ class CreateMeasureCategoriesTable extends Migration
         Schema::create('measure_categories', function (Blueprint $table) {
             $table->increments('id');
             $table->json('name');
+            $table->string('short');
             $table->timestamps();
         });
     }

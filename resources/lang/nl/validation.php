@@ -388,6 +388,10 @@ return [
         'bag_municipalities' => 'BAG gemeente(n)',
         'bag_municipalities.*' => 'BAG gemeente(n)',
         'vbjehuis_municipality' => 'VerbeterJeHuis gemeente',
+
+        // Measure caategories
+        'measure_categories.name' => 'naam',
+        'vbjehuis_measure' => 'VerbeterJeHuis maatregel',
     ],
 
     'values' => [

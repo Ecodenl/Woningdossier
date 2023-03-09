@@ -22,6 +22,7 @@ class MyRegulations extends Component
         $this->masterInputSource = InputSource::master();
         $this->relevantRegulations = MyRegulationHelper::getRelevantRegulations($building, $this->masterInputSource);
         $this->isRefreshing = $building->user->refreshing_regulations;
+
     }
     public function render()
     {

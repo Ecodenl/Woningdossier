@@ -55,6 +55,7 @@ class DoUpgrade extends Command
             ],
             FixContractType::class => [],
             SeedBagMunicipalityMapping::class => [],
+            SeedMeasureCategoryMapping::class => [],
             ClearCommand::class => [],
         ];
 

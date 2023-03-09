@@ -71,22 +71,17 @@
                                     <label for="measure-category">
                                         @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
                                     </label>
-                                    @if(! $vbjehuisAvailable)
-                                        <small class="text-danger">
-                                            <br> @lang('api.verbeterjehuis.filters.measures.error')
-                                        </small>
-                                    @endif
                                     <div wire:ignore>
                                         {{-- Wire:ignore here so the select2 doesn't die, but still allows error messages --}}
-                                        <select class="form-control" @if(! $vbjehuisAvailable) disabled @endif
+                                        <select class="form-control"
                                                 wire:model="content.relations.mapping.measure_category"
                                                 id="measure-category">
                                             <option value="">
                                                 @lang('default.form.dropdown.choose')
                                             </option>
                                             @foreach($measures as $measure)
-                                                <option value="{{ $measure['Value'] }}">
-                                                    {{ $measure['Label'] }}
+                                                <option value="{{ $measure->id }}">
+                                                    {{ $measure->name }}
                                                 </option>
                                             @endforeach
                                         </select>

@@ -2,13 +2,11 @@
 
 namespace App\Services\Models;
 
-use App\Helpers\Wrapper;
 use App\Models\CooperationPreset;
+use App\Models\MeasureCategory;
 use App\Services\MappingService;
-use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 
 class CooperationPresetService
 {
@@ -41,11 +39,9 @@ class CooperationPresetService
         foreach ($relations as $relation => $values) {
             switch ($relation) {
                 case 'mapping':
-                    $measureCategory = $values['measure_category']['Value'] ?? null;
-                    $targetData = Arr::first(Arr::where(Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [], fn ($a) => $a['Value'] === $measureCategory));
-
-                    if (! empty($targetData)) {
-                        MappingService::init()->from($this->model)->sync([$targetData]);
+                    $measureCategory = MeasureCategory::find($values['measure_category'] ?? null);
+                    if ($measureCategory instanceof MeasureCategory) {
+                        MappingService::init()->from($this->model)->sync([$measureCategory]);
                     }
                     break;
 

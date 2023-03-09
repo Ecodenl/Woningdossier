@@ -6,6 +6,7 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Wrapper;
 use App\Jobs\MapQuickScanSituationToExpert;
+use App\Models\CooperationMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\SubStep;
@@ -86,8 +87,8 @@ class UserActionPlanAdviceObserver
         // Triggered from frontend (Woonplan or step), you need it directly. There is no choice to queue it here.
         // Or its triggered from a recalculation, which means the code is already running on a queue.
         // usually we would exclude the master input source, however the refreshRegulations does NOT trigger model events.
-        // all other advisables will be triggered in the code itself, the observer can only handle the measure application consistently
-        if ($userActionPlanAdvice->user_action_plan_advisable_type === MeasureApplication::class) {
+        // We don't do it for the custom measure here, as creating a custom measure will apply its own refresh call.
+        if (in_array($userActionPlanAdvice->user_action_plan_advisable_type, [MeasureApplication::class, CooperationMeasureApplication::class])) {
             Log::debug('Refresh ze regulations.');
             Wrapper::wrapCall(function () use ($userActionPlanAdvice) {
                 UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);

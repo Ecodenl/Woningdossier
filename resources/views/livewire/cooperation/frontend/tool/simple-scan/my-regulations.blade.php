@@ -60,25 +60,25 @@
                                         @for($i = 0; $i < $total; $i++)
                                             <span class="flex as-text bubble"
                                                   @if($i > 2) x-show="selected === '{{ $regulation['Id'] }}'" @endif>
-                                                        {{$regulation['advisable_names'][$i]}}
-                                                    </span>
+                                                {{$regulation['advisable_names'][$i]}}
+                                            </span>
                                         @endfor
                                         @if($total > 3)
                                             <span class="flex as-text bubble" x-show="selected === null">
-                                                        +{{ $total - 3 }}
-                                                    </span>
+                                                +{{ $total - 3 }}
+                                            </span>
                                         @endif
                                     </div>
                                     @if(App::isLocal())
                                         <div class="flex flex-wrap flex-row w-full items-center">
-                                                    <span class="flex as-text mr-1">
-                                                        Verbeterjehuis maatregelen:
-                                                    </span>
+                                            <span class="flex as-text mr-1">
+                                                Verbeterjehuis maatregelen:
+                                            </span>
 
                                             @foreach($regulation['Tags'] as $tag)
                                                 <span class="flex as-text bubble">
-                                                            {{$tag['Label']}}
-                                                        </span>
+                                                    {{$tag['Label']}}
+                                                </span>
                                             @endforeach
                                         </div>
                                     @endif

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Mapping;
+use App\Models\Municipality;
 use App\Traits\FluentCaller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -85,7 +86,6 @@ class MappingService
     public function resolveTarget(): Collection
     {
         $data = [];
-
         foreach ($this->resolveMapping() as $mapping) {
             if ($mapping instanceof Mapping) {
                 if (! empty($mapping->target_data)) {

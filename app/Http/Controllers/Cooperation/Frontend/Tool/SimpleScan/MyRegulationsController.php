@@ -34,10 +34,9 @@ class MyRegulationsController extends Controller
             }
         }
 
-
         return view(
             'cooperation.frontend.tool.simple-scan.my-regulations.index',
-            compact('scan','activeNotification', 'masterInputSource', 'building')
+            compact('scan', 'activeNotification', 'masterInputSource', 'building')
         );
     }
 }

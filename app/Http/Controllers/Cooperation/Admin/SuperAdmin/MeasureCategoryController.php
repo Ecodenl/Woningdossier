@@ -46,7 +46,7 @@ class MeasureCategoryController extends Controller
         }
 
         return redirect()->route('cooperation.admin.super-admin.measure-categories.index')
-            ->with('success', __('cooperation/admin/super-admin/municipalities.store.success'));
+            ->with('success', __('cooperation/admin/super-admin/measure-categories.store.success'));
     }
 
     public function edit(Cooperation $cooperation, MeasureCategory $measureCategory, MappingService $mappingService)
@@ -85,6 +85,6 @@ class MeasureCategoryController extends Controller
         }
 
         return redirect()->route('cooperation.admin.super-admin.measure-categories.index')
-            ->with('success', __('cooperation/admin/super-admin/municipalities.update.success'));
+            ->with('success', __('cooperation/admin/super-admin/measure-categories.update.success'));
     }
 }

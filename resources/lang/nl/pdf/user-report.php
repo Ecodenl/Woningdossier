@@ -37,6 +37,12 @@ return [
             'comment' => 'Toelichting op het woonplan',
         ],
         'info-page' => [
+            'subsidy' => [
+                'title' => 'Subsidie en financiering',
+                'available-for' => 'Je kunt subsidie aanvragen voor de volgende maatregelen:',
+                'none-available' => 'Voor de gekozen maatregelen zijn geen subsidies gevonden.',
+                'text' => 'Meer informatie over de regelingen kun je in de online-versie van jouw Hoomdossier of op de site <a href="https://www.verbeterjehuis.nl/energiesubsidiewijzer" target="_blank" rel="nofollow">https://www.verbeterjehuis.nl/energiesubsidiewijzer</a> vinden.'
+            ],
             'calculations-are-indicative' => [
                 'title' => 'Berekeningen zijn indicatief',
                 'text' => 'Met het Hoomdossier proberen we een zo goed mogelijke inschatting te maken van de kansen en mogelijkheden om jouw huis te verduurzamen. Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier inzicht geeft in de mogelijke impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. De feitelijke kosten en opbrengsten van een investering bepaal je vervolgens op basis van offertes. Je kunt het wel gebruiken als basis voor een keukentafelgesprek of een professioneel advies. Er kan geen garantie worden ontleend aan de resultaten van het Hoomdossier ten aanzien van de daadwerkelijke energieprestaties, berekend energiegebruik of besparingen. De essentie van werken met Hoomdossier is het krijgen van inzicht in de kosten en baten van energiebesparende maatregelen.',

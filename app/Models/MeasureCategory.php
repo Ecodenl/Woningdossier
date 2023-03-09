@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class MeasureCategory extends Model
 {
-    use HasFactory, HasShortTrait, HasTranslations;
+    use HasFactory,
+        HasShortTrait,
+        HasTranslations;
 
-    public $fillable = ['name', 'short'];
+    protected $fillable = ['name', 'short'];
 
-    public $translatable = ['name'];
+    protected $translatable = ['name'];
 }

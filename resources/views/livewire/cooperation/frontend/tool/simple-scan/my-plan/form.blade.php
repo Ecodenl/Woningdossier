@@ -207,74 +207,76 @@
                         @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.help')
                     </p>
 
-                            <ul class="mt-4 w-full text-blue-500 text-sm bg-white rounded-lg border border-blue-500 border-opacity-50 divide-y divide-blue-500 py-2 list-none pl-0">
-                                @foreach(\App\Models\Step::expert()->get() as $step)
-                                    @if(! in_array($step->short, ['high-efficiency-boiler', 'heater', 'heat-pump']))
-                                        <li class="py-1 px-3">
-                                            <a href="{{ route("cooperation.frontend.tool.expert-scan.index", compact('cooperation', 'step')) }}"
-                                               class="in-text">
-                                                <img src="{{ asset("images/icons/{$step->slug}.png") }}"
-                                                     alt="{{ $step->name }}" class="rounded-1/2 inline-block h-8 w-8">
-                                                {{ $step->name }}
-                                            </a>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        @endcomponent
-                    </div>
-                @endif
-                {{-- Modal for custom measures --}}
-                @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! $scan->isLiteScan())
-                    <div x-data="modal()" class="" wire:key="custom-modal">
-                        @component('cooperation.frontend.layouts.components.modal', [
-                            'header' => __('cooperation/frontend/tool.form.subject'),
-                            'id' => 'add',
-                        ])
-                            <form wire:submit.prevent="submit()">
-                                <div class="flex flex-wrap mb-5">
-                                    @component('cooperation.frontend.layouts.components.form-group', [
-                                       'inputName' => 'custom_measure_application.name',
-                                       'class' => 'w-full -mt-8 mb-4',
-                                       'id' => 'custom-measure-application-name',
-                                       'withInputSource' => false,
-                                    ])
-                                        <input class="form-input" wire:model="custom_measure_application.name" id="custom-measure-application-name"
-                                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')">
-                                    @endcomponent
-                                    <div class="w-full flex items-center">
-                                        <i class="icon-sm icon-info mr-3"></i>
-                                        <h6 class="heading-6">
-                                            @lang('cooperation/frontend/shared.modals.add-measure.info')
-                                        </h6>
-                                    </div>
-                                    @component('cooperation.frontend.layouts.components.form-group', [
-                                       'inputName' => "custom_measure_application.info",
-                                       'class' => 'w-full -mt-4 mb-4',
-                                       'id' => 'custom-measure-application-info',
-                                       'withInputSource' => false,
-                                    ])
-                                        <textarea class="form-input" wire:model="custom_measure_application.info"
-                                                  id="custom-measure-application-info"
-                                                  placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
-                                        ></textarea>
-                                    @endcomponent
-                                    <div class="w-full flex flex-wrap items-center">
-                                        <i class="icon-sm icon-info mr-3"></i>
-                                        <h6 class="heading-6">
-                                            @lang('cooperation/frontend/shared.modals.add-measure.measure-category')
-                                        </h6>
-                                    </div>
-                                    @component('cooperation.frontend.layouts.components.form-group', [
-                                       'inputName' => "custom_measure_application.measure_category",
-                                       'class' => 'w-full -mt-4 mb-4',
-                                       'id' => "custom-measure-application-measure-category-wrapper",
-                                       'withInputSource' => false,
-                                    ])
-                                        @component('cooperation.frontend.layouts.components.alpine-select')
-                                            <select class="form-input hidden"
-                                            x-on:saved-measure.window="triggerEvent($el, 'change');"        wire:model="custom_measure_application.measure_category"
-                                                    id="custom-measure-application-measure-category">
+                    <ul class="mt-4 w-full text-blue-500 text-sm bg-white rounded-lg border border-blue-500 border-opacity-50 divide-y divide-blue-500 py-2 list-none pl-0">
+                        @foreach(\App\Models\Step::expert()->get() as $step)
+                            @if(! in_array($step->short, ['high-efficiency-boiler', 'heater', 'heat-pump']))
+                                <li class="py-1 px-3">
+                                    <a href="{{ route("cooperation.frontend.tool.expert-scan.index", compact('cooperation', 'step')) }}"
+                                       class="in-text">
+                                        <img src="{{ asset("images/icons/{$step->slug}.png") }}"
+                                             alt="{{ $step->name }}" class="rounded-1/2 inline-block h-8 w-8">
+                                        {{ $step->name }}
+                                    </a>
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                @endcomponent
+            </div>
+        @endif
+        {{-- Modal for custom measures --}}
+        @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! $scan->isLiteScan())
+            <div x-data="modal()" class="" wire:key="custom-modal">
+                @component('cooperation.frontend.layouts.components.modal', [
+                    'header' => __('cooperation/frontend/tool.form.subject'),
+                    'id' => 'add',
+                ])
+                    <form wire:submit.prevent="submit()">
+                        <div class="flex flex-wrap mb-5">
+                            @component('cooperation.frontend.layouts.components.form-group', [
+                               'inputName' => 'custom_measure_application.name',
+                               'class' => 'w-full -mt-8 mb-4',
+                               'id' => 'custom-measure-application-name',
+                               'withInputSource' => false,
+                            ])
+                                <input class="form-input" wire:model="custom_measure_application.name" id="custom-measure-application-name"
+                                       placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')">
+                            @endcomponent
+                            <div class="w-full flex items-center">
+                                <i class="icon-sm icon-info mr-3"></i>
+                                <h6 class="heading-6">
+                                    @lang('cooperation/frontend/shared.modals.add-measure.info')
+                                </h6>
+                            </div>
+                            @component('cooperation.frontend.layouts.components.form-group', [
+                               'inputName' => "custom_measure_application.info",
+                               'class' => 'w-full -mt-4 mb-4',
+                               'id' => 'custom-measure-application-info',
+                               'withInputSource' => false,
+                            ])
+                                <textarea class="form-input" wire:model="custom_measure_application.info"
+                                          id="custom-measure-application-info"
+                                          placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
+                                ></textarea>
+                            @endcomponent
+                            <div class="w-full flex flex-wrap items-center">
+                                <i class="icon-sm icon-info mr-3"></i>
+                                <h6 class="heading-6">
+                                    @lang('cooperation/frontend/shared.modals.add-measure.measure-category')
+                                </h6>
+
+                            </div>
+                            @component('cooperation.frontend.layouts.components.form-group', [
+                               'inputName' => "custom_measure_application.measure_category",
+                               'class' => 'w-full -mt-4 mb-4',
+                               'id' => "custom-measure-application-measure-category-wrapper",
+                               'withInputSource' => false,
+                            ])
+                                @component('cooperation.frontend.layouts.components.alpine-select')
+                                    <select class="form-input hidden"
+                                            x-on:saved-measure.window="triggerEvent($el, 'change');"
+                                            wire:model="custom_measure_application.measure_category"
+                                            id="custom-measure-application-measure-category" >
                                         <option value="">
                                             @lang('default.form.dropdown.choose')
                                         </option>

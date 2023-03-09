@@ -43,10 +43,10 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
 
         return [
             'cooperation_measure_applications.name' => [
-                new LanguageRequired('nl'),
+                'required', new LanguageRequired('nl'),
             ],
             'cooperation_measure_applications.info' => [
-                new LanguageRequired('nl'),
+                'required', new LanguageRequired('nl'),
             ],
             'cooperation_measure_applications.measure_category' => [
                 'nullable',

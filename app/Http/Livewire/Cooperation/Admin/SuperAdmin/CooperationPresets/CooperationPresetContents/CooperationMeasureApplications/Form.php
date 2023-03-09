@@ -32,8 +32,8 @@ class Form extends Component
         $evaluateGt = ! empty($this->content['costs']['from']);
 
         return  [
-            'content.name' => [new LanguageRequired()],
-            'content.info' => [new LanguageRequired()],
+            'content.name' => ['required', new LanguageRequired()],
+            'content.info' => ['required', new LanguageRequired()],
             'content.relations.mapping.measure_category' => [
                 'nullable', 'exists:measure_categories,id',
             ],

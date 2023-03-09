@@ -11,7 +11,6 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\Step;
 use App\Rules\LanguageRequired;
-use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
 
@@ -87,7 +86,10 @@ class Form extends Component
                 foreach ($content as $toolQuestionShort => $value) {
                     if (array_key_exists($toolQuestionShort, $this->toolQuestionDataType)) {
                         if ($this->toolQuestionDataType[$toolQuestionShort] === \App\Helpers\DataTypes\Caster::FLOAT) {
-                            $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->getFormatForUser();
+                            $content[$toolQuestionShort] = Caster::init()
+                                ->dataType(Caster::FLOAT)
+                                ->value($value)
+                                ->getFormatForUser();
                         }
                     } else {
                         // If it's not found it means it should not be set
@@ -191,7 +193,10 @@ class Form extends Component
 
                     // cast the value to a database value (a int)
                     if ($this->toolQuestionDataType[$toolQuestionShort] === Caster::FLOAT) {
-                        $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->reverseFormatted();
+                        $content[$toolQuestionShort] = Caster::init()
+                            ->dataType(Caster::FLOAT)
+                            ->value($value)
+                            ->reverseFormatted();
                     }
                 }
             }

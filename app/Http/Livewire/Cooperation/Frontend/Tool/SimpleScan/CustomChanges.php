@@ -6,22 +6,21 @@ use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
-use App\Helpers\Wrapper;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Mapping;
+use App\Models\MeasureCategory;
 use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\VisibleScope;
 use App\Services\MappingService;
-use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class CustomChanges extends Component
@@ -31,8 +30,7 @@ class CustomChanges extends Component
     public array $selectedCustomMeasureApplications = [];
     public array $selectedCooperationMeasureApplications = [];
     public array $previousSelectedState = [];
-    public array $measures;
-    public bool $vbjehuisAvailable = true;
+    public Collection $measures;
 
     public InputSource $masterInputSource;
     public InputSource $currentInputSource;
@@ -45,21 +43,16 @@ class CustomChanges extends Component
 
     protected function rules(): array
     {
-        $rules = [
+        return [
             'customMeasureApplicationsFormData.*.name' => 'required',
             'customMeasureApplicationsFormData.*.info' => 'required',
+            'customMeasureApplicationsFormData.*.measure_category' => [
+                'nullable', 'exists:measure_categories,id',
+            ],
             'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
             'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
             'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric|max:999999',
         ];
-
-        if ($this->vbjehuisAvailable) {
-            $rules['customMeasureApplicationsFormData.*.measure_category'] = [
-                'nullable', Rule::in(Arr::pluck($this->measures, 'Value')),
-            ];
-        }
-
-        return $rules;
     }
 
     public array $attributes;
@@ -85,13 +78,7 @@ class CustomChanges extends Component
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
         ];
 
-        $this->measures = Wrapper::wrapCall(
-            fn () => RegulationService::init()->getFilters()['Measures'],
-            function () {
-                $this->vbjehuisAvailable = false;
-                return [];
-            }
-        );
+        $this->measures = MeasureCategory::all();
 
         $this->setMeasureApplications();
     }
@@ -306,15 +293,9 @@ class CustomChanges extends Component
 
                 // We read from the master. Therefore we need to sync to the master also.
                 $from = $customMeasureApplication->getSibling($this->masterInputSource);
-                if ($this->vbjehuisAvailable) {
-                    // Add or update mapping to measure category
-                    $measureCategory = $measureData['measure_category'] ?? null;
-                    $targetData = Arr::first(Arr::where($this->measures, fn ($a) => $a['Value'] === $measureCategory));
-
-                    $service = MappingService::init()->from($from);
-                    // Since nothing else is attached we can safely detach.
-                    empty($targetData) ? $service->detach() : $service->sync([$targetData]);
-                }
+                $measureCategory = MeasureCategory::find($measureData['measure_category'] ?? null);
+                $service = MappingService::init()->from($from);
+                $measureCategory instanceof MeasureCategory ? $service->sync([$measureCategory]) : $service->detach();
 
                 // Update the user action plan advice linked to this custom measure
                 $customMeasureApplication
@@ -406,10 +387,7 @@ class CustomChanges extends Component
                 // As of now, a custom measure can only hold ONE mapping
                 $mapping = MappingService::init()->from($customMeasureApplication)->resolveMapping()->first();
                 if ($mapping instanceof Mapping) {
-                    $this->customMeasureApplicationsFormData[$index]['measure_category'] = $mapping->target_data['Value'];
-                    if (empty(Arr::where($measures, fn ($v) => $v['Value'] === $mapping->target_data['Value']))) {
-                        $measures[] = $mapping->target_data;
-                    }
+                    $this->customMeasureApplicationsFormData[$index]['measure_category'] = optional($mapping->mappable)->id;
                 }
             }
 

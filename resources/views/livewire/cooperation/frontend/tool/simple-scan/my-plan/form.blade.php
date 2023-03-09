@@ -256,11 +256,6 @@
                                         <h6 class="heading-6">
                                             @lang('cooperation/frontend/shared.modals.add-measure.measure-category')
                                         </h6>
-                                        @if(! $vbjehuisAvailable)
-                                            <small class="text-red flex w-full">
-                                                <br> @lang('api.verbeterjehuis.filters.measures.error')
-                                            </small>
-                                        @endif
                                     </div>
                                     @component('cooperation.frontend.layouts.components.form-group', [
                                        'inputName' => "custom_measure_application.measure_category",
@@ -271,13 +266,13 @@
                                         @component('cooperation.frontend.layouts.components.alpine-select')
                                             <select class="form-input hidden"
                                                     wire:model="custom_measure_application.measure_category"
-                                                    id="custom-measure-application-measure-category" @if(! $vbjehuisAvailable) disabled @endif>
+                                                    id="custom-measure-application-measure-category">
                                                 <option value="">
                                                     @lang('default.form.dropdown.choose')
                                                 </option>
                                                 @foreach($measures as $measure)
-                                                    <option value="{{ $measure['Value'] }}">
-                                                        {{ $measure['Label'] }}
+                                                    <option value="{{ $measure->id }}">
+                                                        {{ $measure->name }}
                                                     </option>
                                                 @endforeach
                                             </select>

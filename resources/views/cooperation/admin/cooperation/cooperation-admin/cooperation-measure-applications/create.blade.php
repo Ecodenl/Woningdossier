@@ -61,27 +61,19 @@
                                 @if($type === \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE)
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            @php
-                                                $vbjehuisAvailable = ! empty($measures);
-                                            @endphp
                                             @component('layouts.parts.components.form-group', ['input_name' => 'cooperation_measure_applications.measure_category'])
                                                 <label for="measure-category">
                                                     @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
                                                 </label>
-                                                @if(! $vbjehuisAvailable)
-                                                    <small class="text-danger">
-                                                        <br> @lang('api.verbeterjehuis.filters.measures.error')
-                                                    </small>
-                                                @endif
                                                 <select class="form-control" name="cooperation_measure_applications[measure_category]"
-                                                        id="measure-category" @if(! $vbjehuisAvailable) disabled @endif>
+                                                        id="measure-category" >
                                                     <option value="">
                                                         @lang('default.form.dropdown.choose')
                                                     </option>
                                                     @foreach($measures as $measure)
-                                                        <option value="{{ $measure['Value'] }}"
-                                                                @if(old("cooperation_measure_applications.measure_category") === $measure['Value']) selected @endif>
-                                                            {{ $measure['Label'] }}
+                                                        <option value="{{ $measure->id }}"
+                                                                @if(old("cooperation_measure_applications.measure_category") == $measure->id) selected @endif>
+                                                            {{ $measure->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>

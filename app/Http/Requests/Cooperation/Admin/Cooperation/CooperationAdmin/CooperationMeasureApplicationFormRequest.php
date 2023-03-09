@@ -4,14 +4,10 @@ namespace App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
-use App\Helpers\Wrapper;
 use App\Models\CooperationMeasureApplication;
 use App\Rules\LanguageRequired;
-use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class CooperationMeasureApplicationFormRequest extends FormRequest
 {
@@ -34,8 +30,6 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
         $this->isExtensive = ($measure = $this->route('cooperationMeasureApplication')) instanceof CooperationMeasureApplication
             ? $measure->is_extensive_measure
             : $this->route('type') === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
-
-        $this->measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
     }
 
     /**
@@ -55,10 +49,8 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
                 new LanguageRequired('nl'),
             ],
             'cooperation_measure_applications.measure_category' => [
-                // When disabled due to empty measures, nothing will be sent through and so this will be null and pass
-                // validation
                 'nullable',
-                Rule::in(Arr::pluck($this->measures, 'Value')),
+                'exists:measure_categories,id',
             ],
             'cooperation_measure_applications.costs.from' => [
                 'nullable', 'numeric', 'min:0',

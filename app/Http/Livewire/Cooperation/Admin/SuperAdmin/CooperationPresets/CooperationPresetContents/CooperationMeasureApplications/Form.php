@@ -3,15 +3,11 @@
 namespace App\Http\Livewire\Cooperation\Admin\SuperAdmin\CooperationPresets\CooperationPresetContents\CooperationMeasureApplications;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\Wrapper;
 use App\Models\CooperationPreset;
 use App\Models\CooperationPresetContent;
 use App\Models\MeasureCategory;
 use App\Rules\LanguageRequired;
-use App\Services\Verbeterjehuis\RegulationService;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class Form extends Component

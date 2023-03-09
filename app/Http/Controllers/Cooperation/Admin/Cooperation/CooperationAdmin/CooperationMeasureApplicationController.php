@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Events\CooperationMeasureApplicationUpdated;
+use App\Helpers\MappingHelper;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationFormRequest;
@@ -30,7 +31,7 @@ class CooperationMeasureApplicationController extends Controller
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create', compact('type', 'measures'));
     }
 
-    public function store(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, string $type)
+    public function store(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, string $type, MappingService $mappingService)
     {
         $measureData = $request->validated()['cooperation_measure_applications'];
         $measureCategory = $measureData['measure_category'] ?? null;
@@ -46,7 +47,8 @@ class CooperationMeasureApplicationController extends Controller
 
         $measureCategory = MeasureCategory::find($measureCategory);
         if ($measureCategory instanceof MeasureCategory) {
-            MappingService::init()->from($cooperationMeasureApplication)->sync([$measureCategory]);
+            $mappingService->from($cooperationMeasureApplication)
+                ->sync([$measureCategory], MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY);
         }
 
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
@@ -55,19 +57,22 @@ class CooperationMeasureApplicationController extends Controller
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.store.success'));
     }
 
-    public function edit(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
+    public function edit(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication, MappingService $mappingService)
     {
         $type = $cooperationMeasureApplication->getType();
         $measures = MeasureCategory::all();
         $currentMeasure = null;
-        $mapping = MappingService::init()->from($cooperationMeasureApplication)->resolveMapping()->first();
+        $mapping = $mappingService->from($cooperationMeasureApplication)
+            //->type(MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY)
+            ->resolveMapping()
+            ->first();
         if ($mapping instanceof Mapping) {
             $currentMeasure = optional($mapping->mappable)->id;
         }
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication', 'type', 'measures', 'currentMeasure'));
     }
 
-    public function update(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
+    public function update(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication, MappingService $mappingService)
     {
         $measureData = $request->validated()['cooperation_measure_applications'];
         $measureCategory = $measureData['measure_category'] ?? null;
@@ -79,8 +84,12 @@ class CooperationMeasureApplicationController extends Controller
         $cooperationMeasureApplication->update($measureData);
 
         $measureCategory = MeasureCategory::find($measureCategory);
-        $service = MappingService::init()->from($cooperationMeasureApplication);
-        $measureCategory instanceof MeasureCategory ? $service->sync([$measureCategory]) : $service->detach();
+        $mappingService
+            //->type(MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY)
+            ->from($cooperationMeasureApplication);
+        $measureCategory instanceof MeasureCategory ?
+            $mappingService->sync([$measureCategory], MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY)
+            : $mappingService->detach();
 
         CooperationMeasureApplicationUpdated::dispatch($cooperationMeasureApplication);
 

@@ -41,7 +41,7 @@ class MeasureCategoryController extends Controller
             if (! empty($measure)) {
                 // If not empty, then the request has validated it and we know it's available.
                 $targetData = Arr::first(Arr::where($measures, fn ($a) => $a['Value'] == $measure));
-                $mappingService->from($measureCategory)->sync([$targetData]);
+                $mappingService->from($measureCategory)->sync([$targetData], MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS);
             }
         }
 
@@ -49,10 +49,11 @@ class MeasureCategoryController extends Controller
             ->with('success', __('cooperation/admin/super-admin/municipalities.store.success'));
     }
 
-    public function edit(Cooperation $cooperation, MeasureCategory $measureCategory)
+    public function edit(Cooperation $cooperation, MeasureCategory $measureCategory, MappingService $mappingService)
     {
         $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']) ?? [];
-        $currentMapping = MappingService::init()
+        $currentMapping = $mappingService
+            //->type(MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS)
             ->from($measureCategory)
             ->resolveMapping()
             ->first();
@@ -70,12 +71,14 @@ class MeasureCategoryController extends Controller
 
         $measures = Wrapper::wrapCall(fn () => RegulationService::init()->getFilters()['Measures']);
         if (! empty($measures)) {
-            $mappingService->from($measureCategory);
+            $mappingService
+                //->type(MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS)
+                ->from($measureCategory);
 
             if (! empty($measure)) {
                 // If not empty, then the request has validated it and we know it's available.
                 $targetData = Arr::first(Arr::where($measures, fn ($a) => $a['Value'] == $measure));
-                $mappingService->sync([$targetData]);
+                $mappingService->sync([$targetData], MappingHelper::TYPE_MEASURE_CATEGORY_VBJEHUIS);
             } else {
                 $mappingService->detach();
             }

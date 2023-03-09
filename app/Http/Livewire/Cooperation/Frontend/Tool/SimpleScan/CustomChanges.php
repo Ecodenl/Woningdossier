@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\MappingHelper;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
@@ -294,8 +295,12 @@ class CustomChanges extends Component
                 // We read from the master. Therefore we need to sync to the master also.
                 $from = $customMeasureApplication->getSibling($this->masterInputSource);
                 $measureCategory = MeasureCategory::find($measureData['measure_category'] ?? null);
-                $service = MappingService::init()->from($from);
-                $measureCategory instanceof MeasureCategory ? $service->sync([$measureCategory]) : $service->detach();
+                $service = MappingService::init()
+                    //->type(MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
+                    ->from($from);
+                $measureCategory instanceof MeasureCategory
+                    ? $service->sync([$measureCategory], MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
+                    : $service->detach();
 
                 // Update the user action plan advice linked to this custom measure
                 $customMeasureApplication
@@ -385,7 +390,10 @@ class CustomChanges extends Component
                 }
 
                 // As of now, a custom measure can only hold ONE mapping
-                $mapping = MappingService::init()->from($customMeasureApplication)->resolveMapping()->first();
+                $mapping = MappingService::init()->from($customMeasureApplication)
+                    //->type(MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
+                    ->resolveMapping()
+                    ->first();
                 if ($mapping instanceof Mapping) {
                     $this->customMeasureApplicationsFormData[$index]['measure_category'] = optional($mapping->mappable)->id;
                 }

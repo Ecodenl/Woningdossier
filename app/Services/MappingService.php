@@ -116,6 +116,7 @@ class MappingService
     public function sync(array $syncableData = [], ?string $type = null): void
     {
         // first we will remove the current rows.
+        // TODO: Detach uses whereFrom, which uses $this->type. Perhaps set $this->type for sync also?
         $this->detach();
 
         // its possible to create target less mappings

@@ -63,7 +63,6 @@ class CooperationMeasureApplicationController extends Controller
         $measures = MeasureCategory::all();
         $currentMeasure = null;
         $mapping = $mappingService->from($cooperationMeasureApplication)
-            //->type(MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY)
             ->resolveMapping()
             ->first();
         if ($mapping instanceof Mapping) {
@@ -85,7 +84,6 @@ class CooperationMeasureApplicationController extends Controller
 
         $measureCategory = MeasureCategory::find($measureCategory);
         $mappingService
-            //->type(MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY)
             ->from($cooperationMeasureApplication);
         $measureCategory instanceof MeasureCategory ?
             $mappingService->sync([$measureCategory], MappingHelper::TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY)

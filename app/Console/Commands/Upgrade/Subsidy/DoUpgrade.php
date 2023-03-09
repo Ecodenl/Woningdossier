@@ -8,6 +8,7 @@ use App\Helpers\Arr;
 use Illuminate\Cache\Console\ClearCommand;
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;
+use Illuminate\Support\Facades\Artisan;
 
 class DoUpgrade extends Command
 {
@@ -56,6 +57,8 @@ class DoUpgrade extends Command
             SeedBagMunicipalityMapping::class => [],
             ClearCommand::class => [],
         ];
+
+        Artisan::call('translations:import', ['--only-groups' => 'pdf/user-report']);
 
         foreach ($commands as $command => $variants) {
             if (! is_array(Arr::first($variants))) {

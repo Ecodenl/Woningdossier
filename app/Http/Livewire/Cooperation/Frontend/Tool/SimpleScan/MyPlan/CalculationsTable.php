@@ -114,9 +114,10 @@ class CalculationsTable extends Component
                     $this->tableData[$toolQuestion->short]['source'] = $answers[$toolQuestion->id][$firstKey]['input_source_name'] ?? null;
 
                     if (in_array($toolQuestion->data_type, [Caster::INT, Caster::INT_5, Caster::FLOAT])) {
-                        $this->tableData[$toolQuestion->short]['value'] = Caster::init(
-                            $toolQuestion->data_type, $this->tableData[$toolQuestion->short]['value']
-                        )->getFormatForUser();
+                        $this->tableData[$toolQuestion->short]['value'] = Caster::init()
+                            ->dataType($toolQuestion->data_type)
+                            ->value($this->tableData[$toolQuestion->short]['value'])
+                            ->getFormatForUser();
                     }
 
                     if (! empty($toolQuestion->unit_of_measure)) {

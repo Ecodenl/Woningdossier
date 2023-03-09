@@ -94,6 +94,8 @@ class MyRegulationHelper
                 ->whereIn('user_action_plan_advices.user_action_plan_advisable_type', [CustomMeasureApplication::class, CooperationMeasureApplication::class])
                 ->get();
 
+            $advicesWithAdvisableMapping = $advicesWithAdvisableMappingForMeasureCategoryRelated->merge($advicesWithAdvisableMappingForMeasureApplications);
+
             $transformedPayload = $payload->forBuildingContractType($building, $inputSource)->all();
 
             foreach ($transformedPayload as $regulation) {
@@ -120,8 +122,6 @@ class MyRegulationHelper
                     foreach ($relatedAdvices as $relatedAdvice) {
                         // the morph relation.
                         $advisable = $relatedAdvice->userActionPlanAdvisable;
-                        if ($advisable instanceof CustomMeasureApplication) {
-                        }
                         $regulation['advisable_names'][] = $advisable->name ?? $advisable->measure_name;
                     }
                 }

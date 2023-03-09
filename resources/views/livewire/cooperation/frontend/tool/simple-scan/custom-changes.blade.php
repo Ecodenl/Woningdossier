@@ -78,11 +78,6 @@
                                 <h6 class="heading-6">
                                     @lang('cooperation/frontend/shared.modals.add-measure.measure-category')
                                 </h6>
-                                @if(! $vbjehuisAvailable)
-                                    <small class="text-red flex w-full">
-                                        <br> @lang('api.verbeterjehuis.filters.measures.error')
-                                    </small>
-                                @endif
                             </div>
                             @component('cooperation.frontend.layouts.components.form-group', [
                                'inputName' => "customMeasureApplicationsFormData.{$index}.measure_category",
@@ -91,7 +86,7 @@
                                'withInputSource' => false,
                             ])
                                 @component('cooperation.frontend.layouts.components.alpine-select')
-                                    <select class="form-input hidden" @if(! $vbjehuisAvailable) disabled @endif
+                                    <select class="form-input hidden"
                                             wire:model="customMeasureApplicationsFormData.{{$index}}.measure_category"
                                             id="custom-measure-application-{{$index}}-measure-category"
                                             @if($disabled) disabled="disabled" @endif
@@ -100,8 +95,8 @@
                                             @lang('default.form.dropdown.choose')
                                         </option>
                                         @foreach($measures as $measure)
-                                            <option value="{{ $measure['Value'] }}">
-                                                {{ $measure['Label'] }}
+                                            <option value="{{ $measure->id }}">
+                                                {{ $measure->name }}
                                             </option>
                                         @endforeach
                                     </select>

@@ -2,6 +2,7 @@
 
 return [
     'sidebar' => [
+        'measure-categories' => 'Maatregel categorieën',
         'measure-applications' => 'Maatregelen beheren',
         'cooperation-presets' => 'Cooperatie presets',
         'cooperation-measure-applications' => [

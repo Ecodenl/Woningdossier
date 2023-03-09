@@ -38,7 +38,7 @@ class Form extends Component
     protected function rules(): array
     {
         $rules = [
-            'exampleBuildingValues.name' => new LanguageRequired(),
+            'exampleBuildingValues.name' => ['required', new LanguageRequired()],
             'exampleBuildingValues.building_type_id' => 'required|exists:building_types,id',
             'exampleBuildingValues.is_default' => 'required|boolean',
             'exampleBuildingValues.order' => 'nullable|numeric|min:0',

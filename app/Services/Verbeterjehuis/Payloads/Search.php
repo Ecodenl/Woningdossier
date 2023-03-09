@@ -37,15 +37,13 @@ class Search
     public function forMeasure(Model $measureModel): self
     {
         $targets = MappingService::init()->from($measureModel)->resolveTarget();
-//        dd($targets, $measureModel);
-//        if (!$measureModel instanceof MeasureApplication) {
+        if (!$measureModel instanceof MeasureApplication) {
              // when its not a measure application, it will be a cooperation measure or custom measure
              // those are mapped to a measure category
              // that means the target is a mapping category
              // so retrieve the vbjehuis measures from the measure category
             $targets = MappingService::init()->from($targets->first())->resolveTarget();
-//        }
-//        dd($targets, $measureModel);
+        }
 
         $values = [];
         if ($targets->isNotEmpty()) {

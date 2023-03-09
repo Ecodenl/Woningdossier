@@ -49,10 +49,10 @@ class CooperationMeasureApplicationFormRequest extends FormRequest
 
         return [
             'cooperation_measure_applications.name' => [
-                new LanguageRequired('nl'),
+                'required', new LanguageRequired('nl'),
             ],
             'cooperation_measure_applications.info' => [
-                new LanguageRequired('nl'),
+                'required', new LanguageRequired('nl'),
             ],
             'cooperation_measure_applications.measure_category' => [
                 // When disabled due to empty measures, nothing will be sent through and so this will be null and pass

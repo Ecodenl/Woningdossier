@@ -43,6 +43,11 @@
                                     <div class="col-xs-6">
                                         @php
                                             $vbjehuisAvailable = ! empty($measures);
+                                            if (! $vbjehuisAvailable && $currentMapping instanceof \App\Models\Mapping) {
+                                                $measures = [
+                                                    $currentMapping->target_data,
+                                                ];
+                                            }
                                         @endphp
                                         @component('layouts.parts.components.form-group', [
                                             'input_name' => 'vbjehuis_measure'

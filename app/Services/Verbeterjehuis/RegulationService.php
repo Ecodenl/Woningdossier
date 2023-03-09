@@ -33,6 +33,8 @@ class RegulationService
 
     public function getFilters(): array
     {
+        //TODO: If Vbjehuis is unavailable, but data is in the cache, this will still return nothing. Doesn't seem
+        // like the right approach.
         $result = Verbeterjehuis::init(Client::init())
             ->regulation()
             ->getFilters();

@@ -18,10 +18,10 @@ use Tests\TestCase;
 
 class MappingServiceTest extends TestCase
 {
-//    use RefreshDatabase;
+    use RefreshDatabase;
 
-//    public $seed = false;
-//    public $seeder = DatabaseSeeder::class;
+    public $seed = false;
+    public $seeder = DatabaseSeeder::class;
 
     public function test_sync_maps_correct_from_value_to_targetless()
     {

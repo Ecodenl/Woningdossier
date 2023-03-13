@@ -40,6 +40,10 @@ class Municipality extends Model
     public static function booted()
     {
         static::saving(function (Municipality $municipality) {
+            // Upon creation, this isn't yet set
+            if (! empty($municipality->short)) {
+                $municipality->clearShortCache($municipality->short);
+            }
             $municipality->short = Str::slug($municipality->name);
         });
     }

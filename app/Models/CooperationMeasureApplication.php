@@ -27,7 +27,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Cooperation $cooperation
  * @property-read array $translations
- * @property-read \App\Models\Mapping|null $mapping
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|CooperationMeasureApplication extensiveMeasures()

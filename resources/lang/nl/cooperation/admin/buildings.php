@@ -18,7 +18,7 @@ return [
             'button' => '<i class="glyphicon glyphicon-edit"></i>',
         ],
 
-        'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email, :phone-number',
+        'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :municipality, :email, :phone-number',
 
         'observe-building' => [
             'label' => 'Woning bekijken',

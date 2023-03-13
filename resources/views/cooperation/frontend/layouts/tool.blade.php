@@ -7,7 +7,7 @@
             {{-- Step progress --}}
             @include('cooperation.frontend.layouts.parts.sub-nav')
 
-            @if(! RouteLogic::inMyPlan(Route::currentRouteName()))
+            @if(! RouteLogic::inMyPlan(Route::currentRouteName()) && ! RouteLogic::inMyRegulations(Route::currentRouteName()))
                 {{-- Progress bar --}}
                 <div class="w-full bg-gray h-2 relative z-40 -mt-1">
                     @php

@@ -200,7 +200,15 @@ return [
     'custom-rules' => [
         'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute.',
         'max-filename-length' => 'De bestandsnaam van :attribute mag niet langer zijn dan :length karakters.',
-        'rule-unique' => ':Attribute bestaat al.'
+        'rule-unique' => ':Attribute bestaat al.',
+
+        'municipalities' => [
+            'already-coupled' => ':Attribute is al gekoppeld aan een gemeente!',
+        ],
+
+        'api' => [
+            'incorrect-vbjehuis-value' => ':Attribute is geen geldige VerbeterJeHuis waarde!',
+        ],
     ],
 
 
@@ -252,6 +260,7 @@ return [
 
         // New measure
         'custom_measure_application.name' => 'onderwerp',
+        'custom_measure_application.measure_category' => 'maatregelcategorie',
         'custom_measure_application.info' => 'beschrijving',
         'custom_measure_application.costs.from' => 'investering vanaf',
         'custom_measure_application.costs.to' => 'investering tot',
@@ -260,6 +269,10 @@ return [
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',
+
+        // User costs
+        'user_costs.*.own_total' => 'eigen kosten',
+        'user_costs.*.subsidy_total' => 'subsidiebedrag',
 
         // Measure applications
         'measure_applications.measure_name' => 'naam',
@@ -327,6 +340,7 @@ return [
         // Cooperation measure applications
         'cooperation_measure_applications.name' => 'Naam',
         'cooperation_measure_applications.name.*' => 'Naam',
+        'cooperation_measure_applications.measure_category' => 'maatregelcategorie',
         'cooperation_measure_applications.info' => 'Info',
         'cooperation_measure_applications.info.*' => 'Info',
         'cooperation_measure_applications.costs.from' => 'Investering vanaf',
@@ -357,6 +371,29 @@ return [
         'questionnaires.steps' => 'na stap',
         'questionnaires.steps.*' => 'na stap',
         'questionnaires.name.*' => 'naam',
+
+        // Cooperation presets
+        // Cooperation measure applications
+        'content.name' => 'naam',
+        'content.name.*' => 'naam',
+        'content.info' => 'info',
+        'content.info.*' => 'info',
+        'content.relations.mapping.measure_category' => 'maatregelcategorie',
+        'content.costs.from' => 'investering vanaf',
+        'content.costs.to' => 'investering tot',
+        'content.savings_money' => 'besparing',
+        'content.extra.icon' => 'icoon',
+        'content.is_extensive_measure' => 'is grote maatregel',
+
+        // Municipalities
+        'municipalities.name' => 'naam',
+        'bag_municipalities' => 'BAG gemeente(n)',
+        'bag_municipalities.*' => 'BAG gemeente(n)',
+        'vbjehuis_municipality' => 'VerbeterJeHuis gemeente',
+
+        // Measure caategories
+        'measure_categories.name' => 'naam',
+        'vbjehuis_measure' => 'VerbeterJeHuis maatregel',
     ],
 
     'values' => [

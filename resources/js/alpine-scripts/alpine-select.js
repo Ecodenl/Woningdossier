@@ -70,21 +70,21 @@ export default (initiallyOpen = false) => ({
             if (context.values === null && context.multiple) {
                 context.values = [];
             }
-        });
 
-        if (this.multiple) {
-            // If it's multiple, we will add an event listener to rebuild the input on resizing,
-            // as well as on switching tabs.
-            window.addEventListener('resize', (event) => {
-                this.setInputValue();
-            });
-
-            window.addEventListener('tab-switched', (event) => {
-                setTimeout(() => {
-                    this.setInputValue();
+            if (context.multiple) {
+                // If it's multiple, we will add an event listener to rebuild the input on resizing,
+                // as well as on switching tabs.
+                window.addEventListener('resize', (event) => {
+                    context.setInputValue();
                 });
-            });
-        }
+
+                window.addEventListener('tab-switched', (event) => {
+                    setTimeout(() => {
+                        context.setInputValue();
+                    });
+                });
+            }
+        });
 
         this.$watch('values', (value, oldValue) => {
             this.setInputValue();
@@ -319,7 +319,7 @@ export default (initiallyOpen = false) => ({
         parent.appendChild(newOption);
     },
     setDisabledState() {
-        let disabled = !! this.select.getAttribute('disabled')
+        let disabled = this.select.hasAttribute('disabled')
         this.disabled = disabled;
 
         if (disabled) {

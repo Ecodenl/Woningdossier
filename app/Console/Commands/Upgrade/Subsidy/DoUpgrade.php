@@ -44,7 +44,7 @@ class DoUpgrade extends Command
     public function handle()
     {
         $commands = [
-            DeleteOldMeasureCategories::class,
+            DeleteOldMeasureCategories::class => [],
             SyncMeasures::class => [],
             SyncTargetGroups::class => [],
             SeedCommand::class => [
@@ -55,18 +55,14 @@ class DoUpgrade extends Command
                 ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
             FixContractType::class => [],
-            SeedBagMunicipalityMapping::class => [],
             SeedMeasureCategoryMapping::class => [],
             ClearCommand::class => [],
-            // set the cache again.
-            SyncMeasures::class,
-            SyncTargetGroups::class
         ];
 
         Artisan::call('translations:import', ['--only-groups' => 'pdf/user-report']);
 
         foreach ($commands as $command => $variants) {
-            if (! is_array(Arr::first($variants))) {
+            if ( ! is_array(Arr::first($variants))) {
                 $variants = [$variants];
             }
 

@@ -40,8 +40,11 @@ class MeasureCategory extends Model
     public static function booted()
     {
         static::saving(function (MeasureCategory $measureCategory) {
+            // Upon creation, this isn't yet set
+            if (! empty($measureCategory->short)) {
+                $measureCategory->clearShortCache($measureCategory->short);
+            }
             $measureCategory->short = Str::slug($measureCategory->getTranslation('name', 'nl'));
-            $measureCategory->clearShortCache($measureCategory->short);
         });
     }
 }

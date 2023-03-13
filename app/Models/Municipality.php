@@ -41,6 +41,7 @@ class Municipality extends Model
     {
         static::saving(function (Municipality $municipality) {
             $municipality->short = Str::slug($municipality->name);
+            $municipality->clearShortCache($municipality->short);
         });
     }
 }

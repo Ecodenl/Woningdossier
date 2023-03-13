@@ -36,6 +36,7 @@ use Illuminate\Support\Str;
  * @property int|null $owner
  * @property int $primary
  * @property string $bag_addressid
+ * @property string|null $bag_woonplaats_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -66,6 +67,7 @@ use Illuminate\Support\Str;
  * @property-read \App\Models\BuildingHeater|null $heater
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
  * @property-read int|null $media_count
+ * @property-read \App\Models\Municipality|null $municipality
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
  * @property-read int|null $private_messages_count
  * @property-read \App\Models\BuildingPvPanel|null $pvPanels
@@ -86,6 +88,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Query\Builder|Building onlyTrashed()
  * @method static Builder|Building query()
  * @method static Builder|Building whereBagAddressid($value)
+ * @method static Builder|Building whereBagWoonplaatsId($value)
  * @method static Builder|Building whereCity($value)
  * @method static Builder|Building whereCountryCode($value)
  * @method static Builder|Building whereCreatedAt($value)

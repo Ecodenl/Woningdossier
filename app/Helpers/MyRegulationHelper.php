@@ -42,7 +42,6 @@ class MyRegulationHelper
                 'user_action_plan_advices.subsidy_available'
             ];
 
-            \DB::enableQueryLog();
             $baseQuery = $building
                 ->user
                 ->userActionPlanAdvices()

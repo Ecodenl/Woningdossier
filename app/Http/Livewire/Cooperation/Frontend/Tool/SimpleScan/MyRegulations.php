@@ -6,7 +6,6 @@ use App\Helpers\MyRegulationHelper;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class MyRegulations extends Component
@@ -45,7 +44,6 @@ class MyRegulations extends Component
         $this->isRefreshing = $this->building->user->refreshing_regulations;
 
         if ($this->isRefreshing === false && $oldIsRefreshing !== $this->isRefreshing) {
-            Log::debug('Regulations refresh');
             $this->relevantRegulations = MyRegulationHelper::getRelevantRegulations($this->building, $this->masterInputSource);
         }
     }

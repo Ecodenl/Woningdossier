@@ -55,7 +55,7 @@ class DoUpgrade extends Command
                 ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
             FixContractType::class => [],
-            SeedBagMunicipalityMapping::class => [],
+//            SeedBagMunicipalityMapping::class => [],
             SeedMeasureCategoryMapping::class => [],
             ClearCommand::class => [],
             // set the cache again.

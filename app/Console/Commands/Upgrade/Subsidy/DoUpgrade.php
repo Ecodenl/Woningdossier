@@ -55,12 +55,8 @@ class DoUpgrade extends Command
                 ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
             FixContractType::class => [],
-//            SeedBagMunicipalityMapping::class => [],
             SeedMeasureCategoryMapping::class => [],
             ClearCommand::class => [],
-            // set the cache again.
-            SyncMeasures::class,
-            SyncTargetGroups::class
         ];
 
         Artisan::call('translations:import', ['--only-groups' => 'pdf/user-report']);

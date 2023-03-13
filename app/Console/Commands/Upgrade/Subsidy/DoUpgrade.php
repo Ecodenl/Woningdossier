@@ -58,6 +58,9 @@ class DoUpgrade extends Command
             SeedBagMunicipalityMapping::class => [],
             SeedMeasureCategoryMapping::class => [],
             ClearCommand::class => [],
+            // set the cache again.
+            SyncMeasures::class,
+            SyncTargetGroups::class
         ];
 
         Artisan::call('translations:import', ['--only-groups' => 'pdf/user-report']);

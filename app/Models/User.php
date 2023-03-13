@@ -27,6 +27,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $last_visited_url
  * @property array|null $extra
  * @property bool $allow_access
+ * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
+ * @property bool|null $refreshing_regulations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Account|null $account
@@ -65,6 +67,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $user_action_plan_advice_comments_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserCost[] $userCosts
+ * @property-read int|null $user_costs_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
  * @property-read int|null $user_interests_count
  * @method static Builder|User byContact($contact)
@@ -86,6 +90,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder|User whereLastName($value)
  * @method static Builder|User whereLastVisitedUrl($value)
  * @method static Builder|User wherePhoneNumber($value)
+ * @method static Builder|User whereRefreshingRegulations($value)
+ * @method static Builder|User whereRegulationsRefreshedAt($value)
  * @method static Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */

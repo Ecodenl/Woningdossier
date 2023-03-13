@@ -62,7 +62,7 @@ class DoUpgrade extends Command
         Artisan::call('translations:import', ['--only-groups' => 'pdf/user-report']);
 
         foreach ($commands as $command => $variants) {
-            if (! is_array(Arr::first($variants))) {
+            if ( ! is_array(Arr::first($variants))) {
                 $variants = [$variants];
             }
 

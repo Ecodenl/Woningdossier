@@ -3090,6 +3090,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           context.select.addEventListener('change', function (event) {
             context.updateSelectedValues();
           });
+          if (context.multiple) {
+            // If it's multiple, we will add an event listener to rebuild the input on resizing,
+            // as well as on switching tabs.
+            window.addEventListener('resize', function (event) {
+              context.setInputValue();
+            });
+            window.addEventListener('tab-switched', function (event) {
+              setTimeout(function () {
+                context.setInputValue();
+              });
+            });
+          }
         }
         if (context.livewire && null !== context.select) {
           //TODO: This works for now, but the wire:model can have extra options such as .lazy, which will
@@ -3117,8 +3129,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
     },
     // Construct a fresh custom select
-    constructSelect: function constructSelect(isFirstBoot) {
+    constructSelect: function constructSelect() {
       var _this2 = this;
+      var isFirstBoot = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       var before = this.values;
       var wrapper = this.$refs['select-wrapper'];
       if (wrapper) {

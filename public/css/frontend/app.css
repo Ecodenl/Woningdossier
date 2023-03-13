@@ -521,14 +521,14 @@ samp {
  *    CSS Remedy, with `svg` added as well.
  *
  *    https://github.com/mozdevs/cssremedy/issues/14
- *
+ * 
  * 2. Add `vertical-align: middle` to align replaced elements more
  *    sensibly by default when overriding `display` by adding a
  *    utility like `inline`.
  *
  *    This can trigger a poorly considered linting error in some
  *    tools but is included by design.
- *
+ * 
  *    https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210
  */
 
@@ -178452,7 +178452,7 @@ a:focus {
 
 /* Hyperlink in paragraph */
 
-p a, a.in-text {
+p a, .as-text a, a.in-text {
   font-weight: 500;
   --tw-text-opacity: 1;
   color: rgba(98, 33, 145, var(--tw-text-opacity));
@@ -179161,6 +179161,13 @@ textarea.form-input {
   --tw-bg-opacity: 1;
   background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
   --tw-bg-opacity: 0.5;
+}
+
+.form-input:disabled,
+.radio-wrapper input[type="radio"]:disabled + label,
+.checkbox-wrapper input[type="checkbox"]:disabled + label {
+  /* Safari a worthless browser? Of course! */
+  -webkit-text-fill-color: #647585;
 }
 
 .slider:disabled::-moz-range-thumb, .slider:disabled::-webkit-slider-thumb {
@@ -180049,6 +180056,12 @@ textarea.form-input {
   padding-left: 1rem;
   padding-right: 1rem;
   padding-bottom: 1.5rem;
+}
+
+/* Safari glitches out when scrolling in the modal. This fixes it. */
+
+.modal-container * {
+  -webkit-transform: translate3d(0,0,0);
 }
 
 /* Drag and drop cards */

@@ -44,6 +44,7 @@ class DoUpgrade extends Command
     public function handle()
     {
         $commands = [
+            DeleteOldMeasureCategories::class,
             SyncMeasures::class => [],
             SyncTargetGroups::class => [],
             SeedCommand::class => [

@@ -22,7 +22,6 @@ class MyPlanController extends Controller
     {
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
-
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $woonplanService = WoonplanService::init($building)

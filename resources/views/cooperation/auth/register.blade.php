@@ -80,8 +80,8 @@
                     'inputName' => 'house_number_extension',
                     'attr' => 'x-show="! alreadyMember"',
                 ])
-                    <input class="form-input" type="text" name="house_number_extension"
-                           value="{{ old('house_number_extension') }}"
+                    <input class="form-input" type="text" name="extension"
+                           value="{{ old('extension') }}"
                            placeholder="@lang('auth.register.form.house-number-extension')"
                            x-bind="houseNumberExtension">
                 @endcomponent
@@ -112,7 +112,7 @@
                     <input class="form-input" type="text" name="phone_number" value="{{ old('phone_number') }}"
                            placeholder="@lang('auth.register.form.phone-number')">
                 @endcomponent
-                <div class="flex w-full flex-col">
+                <div class="flex w-full flex-col" x-show="! alreadyMember && ! emailExists">
                     <div class="flex justify-start">
                         <span class="text-green text-sm">@lang('validation.custom.password.min')</span>
                     </div>
@@ -121,7 +121,6 @@
                              'withInputSource' => false,
                              'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                              'inputName' => 'password',
-                             'attr' => 'x-show="! alreadyMember && ! emailExists"',
                         ])
 
                             <div class="flex w-full" x-data="{showPass: false}">
@@ -139,7 +138,6 @@
                             'withInputSource' => false,
                             'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
                             'inputName' => 'password_confirmation',
-                            'attr' => 'x-show="! alreadyMember && ! emailExists"',
                         ])
                             <input class="form-input" type="password" name="password_confirmation"
                                    placeholder="@lang('auth.register.form.password-confirmation')">

@@ -5,10 +5,7 @@ namespace App\Services\Lvbag;
 use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\Lvbag\Payloads\City;
 use App\Traits\FluentCaller;
-use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 
 class BagService
 {
@@ -122,7 +119,7 @@ class BagService
             $result['endpoint_failure'] = false;
         } catch (\Exception $exception) {
             if ($exception->getCode() !== 200) {
-                app('sentry')->captureException($exception);
+                report($exception);
                 $result['endpoint_failure'] = true;
             }
         }

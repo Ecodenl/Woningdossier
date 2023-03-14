@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
 //        $this->call(BuildingCurrentHeatingsTableSeeder::class);
 //        $this->call(HeatSourcesTableSeeder::class);
 //        $this->call(BuildingServiceTypeTableSeeder::class);
+        $this->call(InputSourcesTableSeeder::class);
+        $this->call(RoleTableSeeder::class);
         $this->call(BuildingCategoriesTableSeeder::class);
         $this->call(SpaceCategoriesTableSeeder::class);
         $this->call(AssessmentTypesTableSeeder::class);
@@ -35,7 +37,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BuildingsTableSeeder::class);
         $this->call(ScansTableSeeder::class);
         $this->call(StepsTableSeeder::class);
-        $this->call(MeasureCategoriesTableSeeder::class);
         $this->call(MeasuresTableSeeder::class);
         $this->call(ExampleBuildingsTableSeeder::class);
         $this->call(InterestsTableSeeder::class);
@@ -98,6 +99,11 @@ class DatabaseSeeder extends Seeder
 
         $this->call(KeyFigureHeatPumpCoveragesTableSeeder::class);
         $this->call(HeatPumpCharacteristicsTableSeeder::class);
+
+        $this->call(CooperationPresetSeeder::class);
+        $this->call(CooperationPresetContentSeeder::class);
+
+        $this->call(MunicipalitiesTableSeeder::class);
 
         if ('testing' !== app()->environment()) {
             $this->call(SqlDumpSeeder::class);

@@ -40,9 +40,7 @@ class DiscordNotifier
                     ]
                 ]);
             } catch (ClientException $e) {
-                if (app()->bound('sentry')) {
-                    app('sentry')->captureException($e);
-                }
+                report($e);
             }
         }
     }

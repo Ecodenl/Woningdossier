@@ -2,7 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\BuildingAddressUpdated;
+use App\Events\CooperationMeasureApplicationUpdated;
+use App\Events\CustomMeasureApplicationChanged;
 use App\Events\FillingToolForUserEvent;
+use App\Events\NoMappingFoundForBagMunicipality;
+use App\Events\NoMappingFoundForVbjehuisMunicipality;
 use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
@@ -15,6 +20,7 @@ use App\Events\UserAssociatedWithOtherCooperation;
 use App\Events\UserChangedHisEmailEvent;
 use App\Events\UserRevokedAccessToHisBuilding;
 use App\Listeners\AuditedListener;
+use App\Listeners\CreateTargetlessMappingForMunicipality;
 use App\Listeners\DeleteUserActionPlanAdvicesForStep;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\GiveCoachesBuildingPermission;
@@ -24,10 +30,13 @@ use App\Listeners\LogObservingToolForUserListener;
 use App\Listeners\LogRegisteredUserListener;
 use App\Listeners\LogRevokedAccessToBuilding;
 use App\Listeners\LogUserAssociatedWithOtherCooperation;
+use App\Listeners\MissingVbjehuisMapping;
 use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
+use App\Listeners\RefreshRelatedAdvices;
+use App\Listeners\RefreshBuildingUserHisAdvices;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
 use App\Listeners\SendUserAssociatedWithCooperationMail;
 use App\Listeners\SetMessagesReadForBuilding;
@@ -48,8 +57,23 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        NoMappingFoundForBagMunicipality::class => [
+            CreateTargetlessMappingForMunicipality::class
+        ],
+        NoMappingFoundForVbjehuisMunicipality::class => [
+            MissingVbjehuisMapping::class
+        ],
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
+        ],
+        CooperationMeasureApplicationUpdated::class => [
+            RefreshRelatedAdvices::class,
+        ],
+        CustomMeasureApplicationChanged::class => [
+            RefreshRelatedAdvices::class
+        ],
+        BuildingAddressUpdated::class => [
+            RefreshBuildingUserHisAdvices::class
         ],
         Login::class => [
             SuccessFullLoginListener::class,

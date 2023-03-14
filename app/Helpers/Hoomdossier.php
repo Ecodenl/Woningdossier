@@ -71,6 +71,7 @@ class Hoomdossier
     }
 
     /**
+     * @deprecated
      * Return the most credible value from a given collection.
      *
      * @param string $column

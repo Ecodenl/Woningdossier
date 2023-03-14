@@ -61,13 +61,10 @@ class RecalculateStepForUser implements ShouldQueue
         }
     }
 
-
     public function failed(Throwable $exception)
     {
         $this->deactivateNotification();
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

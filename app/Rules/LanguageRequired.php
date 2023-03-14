@@ -37,7 +37,7 @@ class LanguageRequired implements Rule
         $this->attribute = $attribute;
         $requiredTranslation = $value[$this->requiredLocale] ?? null;
 
-        if (! is_null($requiredTranslation)) {
+        if (! empty($requiredTranslation) && ! is_numeric($requiredTranslation)) {
             return true;
         }
 

@@ -25,7 +25,8 @@ class SimpleScanController extends Controller
             ->setType(CloneOpposingInputSource::class)
             ->isActive();
 
-        return view("cooperation.frontend.tool.simple-scan.index", compact('scan', 'step', 'subStep', 'activeNotification', 'currentInputSource'));
+        return view("cooperation.frontend.tool.simple-scan.index",
+            compact('scan', 'step', 'subStep', 'activeNotification', 'currentInputSource'));
     }
 
 }

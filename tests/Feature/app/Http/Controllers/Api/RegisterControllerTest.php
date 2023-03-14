@@ -6,19 +6,24 @@ use App\Helpers\Arr;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Client;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionType;
 use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
-    use WithFaker,
-        RefreshDatabase;
+    use WithFaker, RefreshDatabase;
+
+    public $seed = true;
+    public $seeder = DatabaseSeeder::class;
 
     private array $formData;
 
@@ -40,6 +45,7 @@ class RegisterControllerTest extends TestCase
             "city" => "Zerocity",
             "phone_number" => null,
         ];
+        Artisan::call('cache:clear');
     }
 
     public function test_valid_data_registers_new_account()
@@ -71,44 +77,29 @@ class RegisterControllerTest extends TestCase
 
         Sanctum::actingAs($client, ['*']);
 
-        $answerShorts = [];
         $formData = $this->formData;
-        foreach (ToolQuestionHelper::SUPPORTED_API_SHORTS as $short) {
-            $toolQuestion = ToolQuestion::factory()->create([
-                'short' => $short,
-                'validation' => [
-                    'required', 'string',
-                ],
-                'save_in' => null,
-                'tool_question_type_id' => ToolQuestionType::findByShort('text')->id,
-            ]);
 
-            $formData['tool_questions'][$short] = 'TestAnswer';
-            $answerShorts[$short] = $toolQuestion->id;
-        }
+        $formData['tool_questions']['amount-gas'] = '2100';
 
         $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), $formData);
 
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('accounts', ['email' => $this->formData['email']]);
+        $account = DB::table('accounts')->where('email', $this->formData['email'])->first();
+        $this->assertDatabaseHas('users', ['account_id' => $account->id, 'allow_access' => 1]);
+        $user = DB::table('users')->where('account_id', $account->id)->first();
+        $this->assertDatabaseHas('buildings', ['user_id' => $user->id]);
 
-        $this->assertCount(1, $cooperation->users);
-
-        $this->assertDatabaseHas('users', ['allow_access' => 1]);
 
         $userId = $response->json('user_id');
         $user = User::find($userId);
 
-        // These tool questions will most likely be saved in another table. However, because of testing purposes,
-        // they do not have a save_in. This means they should end in the tool_question_answers table.
-        foreach ($answerShorts as $toolQuestionShort => $toolQuestionId) {
-            $this->assertDatabaseHas('tool_question_answers', [
-                'building_id' => $user->building->id,
-                'tool_question_id' => $toolQuestionId,
-                'answer' => $formData['tool_questions'][$toolQuestionShort],
-            ]);
-        }
+        $this->assertDatabaseHas('user_energy_habits', [
+            'amount_gas' => $formData['tool_questions']['amount-gas'],
+            'user_id' => $user->id,
+            'input_source_id' => InputSource::findByShort('resident')->id
+        ]);
     }
 
     public function test_restricted_client_cannot_access_cooperation()
@@ -118,7 +109,7 @@ class RegisterControllerTest extends TestCase
 
         $client = Client::factory()->create();
         // now create a token for the client with a cooperation that exists, but the client has no access to
-        $client->createToken($client->name . '-token', ['access:groen-is-gras']);
+        $client->createToken($client->name.'-token', ['access:groen-is-gras']);
 
         /** @var Client $client */
         Sanctum::actingAs($client);
@@ -185,7 +176,8 @@ class RegisterControllerTest extends TestCase
         $client = Client::factory()->create();
         Sanctum::actingAs($client, ['*']);
 
-        $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), Arr::except($this->formData, ['first_name']));
+        $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')),
+            Arr::except($this->formData, ['first_name']));
 
         $response->assertStatus(422);
 

@@ -257,6 +257,11 @@ class Form extends Component
         }
 
         $measureData = $validator->validate()['custom_measure_application'];
+        // If the user has filled in a value for `savings_money` but then removes it again, the value will be an empty
+        // string. This is seen as nullable by Livewire, so validation passes. This will cause an exception if not
+        // caught, since the value in the database MUST be a decimal. It can't be null, nor an empty string.
+        // Null coalescence doesn't apply to an empty string, so we check if it's numeric instead.
+        $measureData['savings_money'] = is_numeric($measureData['savings_money']) ? $measureData['savings_money'] : 0;
 
         // Create custom measure
         $customMeasureApplication = CustomMeasureApplication::create([
@@ -293,7 +298,7 @@ class Form extends Component
                     'visible' => true,
                     'order' => $order,
                     'costs' => $measureData['costs'],
-                    'savings_money' => $measureData['savings_money'] ?? 0,
+                    'savings_money' => $measureData['savings_money'],
                 ],
             );
 

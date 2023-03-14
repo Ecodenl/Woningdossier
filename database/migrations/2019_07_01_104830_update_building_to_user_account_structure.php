@@ -119,13 +119,9 @@ class UpdateBuildingToUserAccountStructure extends Migration
                 $this->copyTableDataForSiblings('questions_answers',
                     $originalBuilding->id, $building->id);
 
-                // ------------- COPY QUESTION TOOL SETTINGS -------------------
-                $this->copyTableDataForSiblings('tool_settings',
-                    $originalBuilding->id, $building->id);
-
                 // ------------- COPY USER PROGRESSES --------------------------
-                $this->copyTableDataForSiblings('user_progresses',
-                    $originalBuilding->id, $building->id);
+                //$this->copyTableDataForSiblings('user_progresses',
+//                    $originalBuilding->id, $building->id);
             }
         }
         // Some special tables (with > 1 foreign keys which should be updated)

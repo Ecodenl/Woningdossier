@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -16,11 +17,19 @@ use Illuminate\Support\Facades\App;
  * @property string $short
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $completedSteps
+ * @property-read int|null $completed_steps_count
  * @property-read array $translations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read int|null $steps_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SubStep[] $subSteps
+ * @property-read int|null $sub_steps_count
  * @method static Builder|Scan bySlug(string $slug, string $locale = 'nl')
+ * @method static Builder|Scan expert()
  * @method static Builder|Scan newModelQuery()
  * @method static Builder|Scan newQuery()
  * @method static Builder|Scan query()
+ * @method static Builder|Scan simple()
  * @method static Builder|Scan whereCreatedAt($value)
  * @method static Builder|Scan whereId($value)
  * @method static Builder|Scan whereName($value)
@@ -31,7 +40,11 @@ use Illuminate\Support\Facades\App;
  */
 class Scan extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasShortTrait;
+
+    const LITE = 'lite-scan';
+    const QUICK = 'quick-scan';
+    const EXPERT = 'expert-scan';
 
     protected $translatable = ['name', 'slug'];
 
@@ -46,9 +59,49 @@ class Scan extends Model
         return $this->slug;
     }
 
+    public function steps()
+    {
+        return $this->hasMany(Step::class);
+    }
+
+    public function subSteps()
+    {
+        return $this->hasManyThrough(SubStep::class, Step::class);
+    }
+
+    public function completedSteps()
+    {
+        return $this->hasManyThrough(CompletedStep::class, Step::class);
+    }
+
+    public function scopeSimple(Builder $query)
+    {
+        return $query->whereIn('short', [static::LITE, static::QUICK]);
+    }
+
+    public function scopeExpert(Builder $query)
+    {
+        return $query->whereIn('short', [static::EXPERT]);
+    }
+
     // TODO: Slug trait?
     public function scopeBySlug(Builder $query, string $slug, string $locale = 'nl'): Builder
     {
         return $query->where("slug->{$locale}", $slug);
+    }
+
+    public function isLiteScan(): bool
+    {
+        return $this->short === self::LITE;
+    }
+
+    public function isQuickScan(): bool
+    {
+        return $this->short === self::QUICK;
+    }
+
+    public function isExpertScan(): bool
+    {
+        return $this->short === self::EXPERT;
     }
 }

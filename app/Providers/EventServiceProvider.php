@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
-use App\Events\DossierResetPerformed;
-use App\Events\ExampleBuildingChanged;
+use App\Events\BuildingAddressUpdated;
+use App\Events\CooperationMeasureApplicationUpdated;
+use App\Events\CustomMeasureApplicationChanged;
 use App\Events\FillingToolForUserEvent;
+use App\Events\NoMappingFoundForBagMunicipality;
+use App\Events\NoMappingFoundForVbjehuisMunicipality;
 use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
@@ -17,8 +20,8 @@ use App\Events\UserAssociatedWithOtherCooperation;
 use App\Events\UserChangedHisEmailEvent;
 use App\Events\UserRevokedAccessToHisBuilding;
 use App\Listeners\AuditedListener;
+use App\Listeners\CreateTargetlessMappingForMunicipality;
 use App\Listeners\DeleteUserActionPlanAdvicesForStep;
-use App\Listeners\DossierResetListener;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\GiveCoachesBuildingPermission;
 use App\Listeners\LogAllowedAccessToBuilding;
@@ -27,12 +30,13 @@ use App\Listeners\LogObservingToolForUserListener;
 use App\Listeners\LogRegisteredUserListener;
 use App\Listeners\LogRevokedAccessToBuilding;
 use App\Listeners\LogUserAssociatedWithOtherCooperation;
+use App\Listeners\MissingVbjehuisMapping;
 use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
-use App\Listeners\PreventChangeNotificationWhenStarting;
 use App\Listeners\PrivateMessageReceiverListener;
-use App\Listeners\RecalculateToolForUserListener;
+use App\Listeners\RefreshRelatedAdvices;
+use App\Listeners\RefreshBuildingUserHisAdvices;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
 use App\Listeners\SendUserAssociatedWithCooperationMail;
 use App\Listeners\SetMessagesReadForBuilding;
@@ -43,7 +47,6 @@ use App\Listeners\SuccessFullLoginListener;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use OwenIt\Auditing\Events\Audited;
-use OwenIt\Auditing\Events\Auditing;
 use Sentry\State\Scope;
 
 class EventServiceProvider extends ServiceProvider
@@ -54,14 +57,23 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        DossierResetPerformed::class => [
-            DossierResetListener::class,
+        NoMappingFoundForBagMunicipality::class => [
+            CreateTargetlessMappingForMunicipality::class
         ],
-        ExampleBuildingChanged::class => [
-            PreventChangeNotificationWhenStarting::class,
+        NoMappingFoundForVbjehuisMunicipality::class => [
+            MissingVbjehuisMapping::class
         ],
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
+        ],
+        CooperationMeasureApplicationUpdated::class => [
+            RefreshRelatedAdvices::class,
+        ],
+        CustomMeasureApplicationChanged::class => [
+            RefreshRelatedAdvices::class
+        ],
+        BuildingAddressUpdated::class => [
+            RefreshBuildingUserHisAdvices::class
         ],
         Login::class => [
             SuccessFullLoginListener::class,
@@ -82,7 +94,6 @@ class EventServiceProvider extends ServiceProvider
             LogObservingToolForUserListener::class,
         ],
         StepDataHasBeenChanged::class => [
-            RecalculateToolForUserListener::class,
             StepDataHasBeenChangedListener::class,
         ],
         UserChangedHisEmailEvent::class => [

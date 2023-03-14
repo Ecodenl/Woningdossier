@@ -2,6 +2,8 @@
 
 namespace App\Helpers\Cache;
 
+use Illuminate\Support\Facades\Cache;
+
 class Account extends BaseCache
 {
     const CACHE_KEY_FIND = 'Account_find_%s';
@@ -14,7 +16,7 @@ class Account extends BaseCache
      */
     public static function find($id)
     {
-        return \Cache::remember(
+        return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),
             config('hoomdossier.cache.times.default'),
             function () use ($id) {
@@ -29,8 +31,8 @@ class Account extends BaseCache
             $account = self::find($account);
         }
 
-        return \Cache::remember(
-            self::getCacheKey(static::CACHE_KEY_USER, $account->id),
+        return Cache::remember(
+            self::getCooperationCacheKey(static::CACHE_KEY_USER, $account->id),
             config('hoomdossier.cache.times.default'),
             function () use ($account) {
                 return $account->users()->first();
@@ -40,7 +42,7 @@ class Account extends BaseCache
 
     public static function wipe($id)
     {
-        \Cache::forget(self::getCacheKey(static::CACHE_KEY_FIND, $id));
-        \Cache::forget(self::getCacheKey(static::CACHE_KEY_USER, $id));
+        static::clear(self::getCacheKey(static::CACHE_KEY_FIND, $id));
+        static::clear(self::getCooperationCacheKey(static::CACHE_KEY_USER, $id));
     }
 }

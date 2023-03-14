@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
-use App\Events\DossierResetPerformed;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
+use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\InputSource;
-use App\Services\AddressService;
+use App\Models\Municipality;
+use App\Services\BuildingAddressService;
+use App\Services\Lvbag\BagService;
+use App\Services\Lvbag\Payloads\AddressExpanded;
+use App\Services\Models\BuildingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -22,40 +25,39 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(MyAccountSettingsFormRequest $request)
+    public function update(BuildingAddressService $buildingAddressService, BagService $bagService, MyAccountSettingsFormRequest $request)
     {
         $user = Hoomdossier::user();
         $building = HoomdossierSession::getBuilding(true);
 
         $data = $request->all();
 
-        $buildingData = $data['building'];
-        $userData = $data['user'];
-
-        // now get the pico address data.
-        $picoAddressData = AddressService::init()->first(
-            $buildingData['postal_code'], $buildingData['house_number'], $buildingData['extension']
-        );
-
-        $userData['phone_number'] = $userData['phone_number'] ?? '';
-        $buildingData['extension'] = $buildingData['extension'] ?? '';
-        $buildingData['number'] = $buildingData['house_number'] ?? '';
-        // try to obtain the address id from the api, else get the one from the request.
-        $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'] ?? '';
-
         // update the user stuff
+        $userData = $data['user'];
+        $userData['phone_number'] = $userData['phone_number'] ?? '';
         $user->update($userData);
-        // now update the building itself
-        $building->update($buildingData);
 
-        // and update the building features with the data from pico.
+        $buildingData['number'] = $buildingData['number'] ?? '';
+        $buildingData = $data['building'];
+
+        $buildingAddressService->forBuilding($building)->updateAddress($buildingData);
+        $buildingAddressService->forBuilding($building)->attachMunicipality();
+
+        if (!$building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building);
+        }
+        $addressData = $bagService->addressExpanded(
+            $buildingData['postal_code'], $buildingData['number'], $buildingData['extension']
+        )->prepareForBuilding();
+        // here we update the surface and build year IF bag returns it
+        // we will never nullify it, only "correct" it.
         $building->buildingFeatures()->update([
-            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
-            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
+            'surface' => empty($addressData['surface']) ? null : $addressData['surface'],
+            'build_year' => empty($addressData['build_year']) ? null : $addressData['build_year'],
         ]);
 
         return redirect()->route('cooperation.my-account.index')
-                         ->with('success', __('my-account.settings.store.success'));
+            ->with('success', __('my-account.settings.store.success'));
     }
 
     /**
@@ -73,11 +75,9 @@ class SettingsController extends Controller
         UserService::resetUser($user, InputSource::findByShort(InputSource::MASTER_SHORT));
 
         foreach ($inputSourceIds as $inputSourceId) {
-            Log::debug("resetting for input source " . $inputSourceId);
+            Log::debug("resetting for input source ".$inputSourceId);
             UserService::resetUser($user, InputSource::find($inputSourceId));
         }
-
-        DossierResetPerformed::dispatch($user->building);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }
@@ -98,7 +98,7 @@ class SettingsController extends Controller
 
         $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();
         $success = __('my-account.settings.destroy.success.cooperation');
-        if (! $stillActiveForOtherCooperations) {
+        if ( ! $stillActiveForOtherCooperations) {
             $success = __('my-account.settings.destroy.success.full');
         }
 

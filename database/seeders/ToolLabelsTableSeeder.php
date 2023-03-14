@@ -81,9 +81,57 @@ class ToolLabelsTableSeeder extends Seeder
                 ],
                 'short' => 'heat-pump-boiler',
             ],
+            [
+                'name' => [
+                    'nl' => 'Verlichting',
+                ],
+                'short' => 'light',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Energiezuinige apparatuur',
+                ],
+                'short' => 'energy-efficient-equipment',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Energiezuinige installaties',
+                ],
+                'short' => 'energy-efficient-installations',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Kierdichting',
+                ],
+                'short' => 'crack-sealing',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Verbeteren van de radiatoren',
+                ],
+                'short' => 'improve-radiators',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Verbeteren van de verwarmingsinstallatie',
+                ],
+                'short' => 'improve-heating-installations',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Besparen op warm tapwater',
+                ],
+                'short' => 'save-warm-tap-water',
+            ],
+            [
+                'name' => [
+                    'nl' => 'Algemeen',
+                ],
+                'short' => 'general',
+            ],
         ];
 
-        foreach($labels as $data) {
+        foreach ($labels as $data) {
             $data['name'] = json_encode($data['name']);
             DB::table('tool_labels')->updateOrInsert(['short' => $data['short']], $data);
         }

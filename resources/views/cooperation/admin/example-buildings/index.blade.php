@@ -2,7 +2,7 @@
 
 @section('content')
     @if(Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin'))
-        @livewire('cooperation.admin.example-buildings.csv-export', ['cooperation' => $cooperation])
+        <livewire:cooperation.admin.example-buildings.csv-export :cooperation="$cooperation"/>
     @endif
 
     <div class="panel panel-default">
@@ -39,10 +39,14 @@
                                         <i class="glyphicon glyphicon-copy"></i>
                                     </a>
                                     <a data-toggle="tooltip" title="Bewerken" href="{{ route('cooperation.admin.example-buildings.edit', compact('exampleBuilding')) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
-                                    <form style="display:inline;" action="{{ route('cooperation.admin.example-buildings.destroy', compact('exampleBuilding')) }}" method="post">
-                                        {{ method_field("DELETE") }}
-                                        {{ csrf_field() }}
-                                        <button data-toggle="tooltip" title="Verwijderen" button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
+                                    <form style="display:inline;" method="POST"
+                                          action="{{ route('cooperation.admin.example-buildings.destroy', compact('exampleBuilding')) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button data-toggle="tooltip" title="@lang('default.buttons.destroy')"
+                                                type="submit" class="btn btn-danger destroy-example-building">
+                                            <i class="glyphicon glyphicon-remove"></i>
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -68,7 +72,13 @@
                     {responsivePriority: 1, targets: 0}
                 ]
             });
+
+            $(document).on('click', '.destroy-example-building', function (event) {
+                if (! confirm('@lang('cooperation/admin/example-buildings.destroy.confirm')')) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
         });
     </script>
 @endpush
-

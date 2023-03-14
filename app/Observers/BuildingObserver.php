@@ -3,14 +3,15 @@
 namespace App\Observers;
 
 use App\Models\Building;
-use App\Models\ExampleBuilding;
-use App\Models\InputSource;
-use App\Models\ToolQuestion;
-use App\Services\ExampleBuildingService;
-use Illuminate\Support\Facades\Log;
 
 class BuildingObserver
 {
+    public function saving(Building $building)
+    {
+        // Not allowed as null
+        $building->extension ??= '';
+    }
+
     public function saved(Building $building)
     {
         \App\Helpers\Cache\Building::wipe($building->id);
@@ -50,13 +51,5 @@ class BuildingObserver
     public function deleted(Building $building)
     {
         \App\Helpers\Cache\Building::wipe($building->id);
-    }
-
-    private function isFirstTimeToolIsFilled(Building $building)
-    {
-        $inputSource      = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $cookTypeQuestion = ToolQuestion::findByShort('cook-type');
-
-        return is_null($building->getAnswer($inputSource, $cookTypeQuestion));
     }
 }

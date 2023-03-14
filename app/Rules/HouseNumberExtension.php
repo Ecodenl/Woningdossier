@@ -7,14 +7,15 @@ use Illuminate\Contracts\Validation\Rule;
 class HouseNumberExtension extends LocaleBasedRule implements Rule
 {
     protected $countryRegexes = [
-        'nl' => '/^(boven|beneden|onder|hs|bis|zw|rd|[\d]{,2}|[0-9]|[\da-z][\da-z]?|[\s]{0})$/',
+        // This regex supports alphanumeric keys up to 5 characters (including spaces and forward slashes), and the word "beneden"
+        'nl' => '/^([a-zA-Z0-9 \/]{0,5}|beneden)$/',
     ];
 
     /**
      * Determine if the validation rule passes.
      *
      * @param string $attribute
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return bool
      */

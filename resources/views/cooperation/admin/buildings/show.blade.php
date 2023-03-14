@@ -7,8 +7,9 @@
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
+                'municipality' => optional($building->municipality)->name,
                 'email' => $user->account->email,
-                'phone-number' => $user->phone_number
+                'phone-number' => $user->phone_number,
             ])
         </div>
 
@@ -36,16 +37,49 @@
                             </button>
                         @endcan
                         @can('access-building', $building)
-                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building'))}}" id="observe-building" class="btn btn-primary">
-                                @lang('cooperation/admin/buildings.show.observe-building.label')
-                                @lang('cooperation/admin/buildings.show.observe-building.button')
-                            </a>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        @lang('cooperation/admin/buildings.show.observe-building.label')
+                                        @lang('cooperation/admin/buildings.show.observe-building.button')
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        @foreach($scans as $scan)
+                                            @php
+                                                $transShort = \App\Services\Models\ScanService::init()
+                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                    ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                            @endphp
+                                            <li>
+                                                <a href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
+                                                    @lang($transShort, ['scan' => $scan->name])
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
-                                <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building'))}}"
-                                   id="edit-building" class="btn btn-warning">
-                                    @lang('cooperation/admin/buildings.show.fill-for-user.label')
-                                    @lang('cooperation/admin/buildings.show.fill-for-user.button')
-                                </a>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        @lang('cooperation/admin/buildings.show.fill-for-user.label')
+                                        @lang('cooperation/admin/buildings.show.fill-for-user.button')
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        @foreach($scans as $scan)
+                                            @php
+                                                $transShort = \App\Services\Models\ScanService::init()
+                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                    ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                            @endphp
+                                            <li>
+                                                <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
+                                                    @lang($transShort, ['scan' => $scan->name])
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             @endif
                         @endcan
                         @can('edit', $building)
@@ -285,7 +319,7 @@
                         </h4>
                     </div>
                     <div class="modal-body" style="margin: 0; padding: 0; height: 100%;">
-                        <iframe src="{{ route('cooperation.frontend.tool.quick-scan.my-plan.media', compact('building')) . "?iframe=1" }}"
+                        <iframe src="{{ route('cooperation.frontend.tool.simple-scan.my-plan.media', compact('building', 'scan')) . "?iframe=1" }}"
                                 style="border: none; width: 100%; height: 100%;"></iframe>
                     </div>
                 </div>
@@ -309,7 +343,7 @@
             var appointmentDate = $('#appointment-date');
 
             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-            $('table').DataTable({
+            $('#log-table').DataTable({
                 'order': [[0, 'desc']]
             });
 
@@ -373,14 +407,14 @@
                 if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {
 
                     $.ajax({
-                        url: '{{route('cooperation.admin.cooperation.users.destroy')}}',
+                        url: '{{route('cooperation.admin.users.destroy')}}',
                         method: 'POST',
                         data: {
                             user_id: userId,
                             _method: 'DELETE'
                         }
                     }).done(function () {
-                        window.location.href = '{{route('cooperation.admin.cooperation.users.index')}}'
+                        window.location.href = '{{route('cooperation.admin.users.index')}}'
                     })
                 }
             });

@@ -10,7 +10,8 @@
 
                 <div class="row">
                     <div class="col-sm-6">
-                        <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index')}}" class="btn btn-warning">
+                        <a id="leave-creation-tool" class="btn btn-warning"
+                           href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', compact('type'))}}">
                             @lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool')
                         </a>
                     </div>
@@ -58,6 +59,28 @@
                                         </div>
                                     </div>
                                 @endforeach
+                                @if(! $cooperationMeasureApplication->is_extensive_measure)
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            @component('layouts.parts.components.form-group', ['input_name' => 'cooperation_measure_applications.measure_category'])
+                                                <label for="measure-category">
+                                                    @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.measure-category.label')
+                                                </label>
+                                                <select class="form-control" name="cooperation_measure_applications[measure_category]"
+                                                        id="measure-category">
+                                                    <option value="">
+                                                        @lang('default.form.dropdown.choose')
+                                                    </option>@foreach($measures as $measure)
+                                                        <option value="{{ $measure->id }}"
+                                                                @if(old("cooperation_measure_applications.measure_category", $currentMeasure) == $measure->id) selected @endif>
+                                                            {{ $measure->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            @endcomponent
+                                        </div>
+                                    </div>
+                                @endif
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group {{ $errors->has('cooperation_measure_applications.costs.from') ? ' has-error' : '' }}">
@@ -139,6 +162,8 @@
 @push('js')
     <script>
         $(document).ready(() => {
+            $('#measure-category').select2();
+
             var $icon = $('#icon');
             $icon.select2();
 

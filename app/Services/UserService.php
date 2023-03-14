@@ -2,16 +2,20 @@
 
 namespace App\Services;
 
-use App\Helpers\PicoHelper;
+use App\Helpers\Queue;
+use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\CompletedQuestionnaire;
 use App\Models\Considerable;
 use App\Models\Cooperation;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
+use App\Models\Municipality;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
+use App\Services\Lvbag\BagService;
+use App\Services\Models\BuildingService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -25,45 +29,52 @@ class UserService
     public static function eagerLoadUserData($userObject, InputSource $inputSource)
     {
         return $userObject->load(
-            ['building' => function ($query) use ($inputSource) {
-                $query->with(
-                    [
-                        'buildingFeatures' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource)
-                                ->with([
-                                    'roofType', 'energyLabel', 'damagedPaintwork', 'plasteredSurface',
-                                    'contaminatedWallJoints', 'wallJoints',
-                                ]);
-                        },
-                        'buildingVentilations' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'currentPaintworkStatus' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'heater' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'pvPanels' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'buildingServices' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'roofTypes' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'buildingElements' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'currentInsulatedGlazing' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                    ]
-                );
-            }, 'energyHabit' => function ($query) use ($inputSource) {
-                $query->forInputSource($inputSource);
-            }]
+            [
+                'building' => function ($query) use ($inputSource) {
+                    $query->with(
+                        [
+                            'buildingFeatures' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource)
+                                    ->with([
+                                        'roofType',
+                                        'energyLabel',
+                                        'damagedPaintwork',
+                                        'plasteredSurface',
+                                        'contaminatedWallJoints',
+                                        'wallJoints',
+                                    ]);
+                            },
+                            'buildingVentilations' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource);
+                            },
+                            'currentPaintworkStatus' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource);
+                            },
+                            'heater' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource);
+                            },
+                            'pvPanels' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource);
+                            },
+                            'buildingServices' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource);
+                            },
+                            'roofTypes' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource);
+                            },
+                            'buildingElements' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource);
+                            },
+                            'currentInsulatedGlazing' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource);
+                            },
+                        ]
+                    );
+                },
+                'energyHabit' => function ($query) use ($inputSource) {
+                    $query->forInputSource($inputSource);
+                }
+            ]
         );
     }
 
@@ -72,7 +83,7 @@ class UserService
      */
     public static function resetUser(User $user, InputSource $inputSource)
     {
-        Log::debug(__METHOD__ . " " . $user->id . " for input source " . $inputSource->short);
+        Log::debug(__METHOD__." ".$user->id." for input source ".$inputSource->short);
         // only remove the example building id from the building
         $building = $user->building;
         $building->buildingFeatures()->forInputSource($inputSource)->update([
@@ -102,7 +113,12 @@ class UserService
         $building->stepComments()->forInputSource($inputSource)->delete();
         // remove the answers on the custom questionnaires
         $building->questionAnswers()->forInputSource($inputSource)->delete();
-        // remove Custom Measure Applications the user has made
+
+        // Remove all mappings related to custom measure applications
+        DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
+            ->whereIn('from_model_id', $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray())
+            ->delete();
+        // Remove custom measure applications the user has made
         $building->customMeasureApplications()->forInputSource($inputSource)->delete();
 
         // remove the action plan advices from the user
@@ -116,17 +132,19 @@ class UserService
         // remove the progress of the completed questionnaires
         CompletedQuestionnaire::forMe($user)->forInputSource($inputSource)->delete();
 
-        if (!in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
-            // re-query pico
-            $addressData = AddressService::init()->first($building->postal_code, $building->number, $building->extension);
+        if ( ! in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
+            // re-query the bag
+            $addressData = app(BagService::class)->addressExpanded(
+                $building->postal_code, $building->number, $building->extension
+            )->prepareForBuilding();
 
-            if ( ! empty(($addressData['id'] ?? null))) {
-                $building->update(['bag_addressid' => $addressData['id']]);
+            if ( ! empty(($addressData['bag_addressid'] ?? null))) {
+                $building->update(['bag_addressid' => $addressData['bag_addressid']]);
             }
 
             $features = new BuildingFeature([
-                'surface'         => $addressData['surface'] ?? null,
-                'build_year'      => $addressData['build_year'] ?? null,
+                'surface' => $addressData['surface'] ?? null,
+                'build_year' => $addressData['build_year'] ?? null,
                 'input_source_id' => $inputSource->id,
             ]);
             $features->building()->associate(
@@ -147,7 +165,7 @@ class UserService
         $account = Account::where('email', $email)->first();
 
         // if its not found we will create a new one.
-        if (!$account instanceof Account) {
+        if (! $account instanceof Account) {
             $account = AccountService::create($email, $registerData['password']);
         }
 
@@ -171,7 +189,7 @@ class UserService
      */
     public static function create(Cooperation $cooperation, array $roles, $account, $data)
     {
-        Log::debug('account id for registration: ' . $account->id);
+        Log::debug('account id for registration: '.$account->id);
 
         // Create the user for an account
         $user = User::create(
@@ -184,27 +202,22 @@ class UserService
             ]
         );
 
-        // now get the picoaddress data.
-        $addressData = AddressService::init()->first(
-            $data['postal_code'], $data['number'], $data['house_number_extension']
-        );
-
-        $data['bag_addressid'] = $addressData['id'] ?? $data['addressid'] ?? '';
-        // Force empty string
-        $data['extension'] = $addressData['huisletter'] ?? $data['house_number_extension'] ?? '';
-
         $features = new BuildingFeature([
             'surface' => $addressData['surface'] ?? null,
             'build_year' => $addressData['build_year'] ?? null,
         ]);
 
-        // create the building for the user
-        $building = Building::create($data);
+        // filter relevant data from the request
+        $buildingData = Arr::only($data, ['street', 'city', 'postal_code', 'number', 'extension']);
 
-        // associate multiple models with each other
-        $building->user()->associate(
-            $user
-        )->save();
+        // create the building for the user
+        $building = $user->building()->save(new Building($buildingData));
+
+        CheckBuildingAddress::dispatchSync($building);
+        // check if the connection was successful, if not dispatch it on the regular queue so it retries.
+        if (! $building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
+        }
 
         $features->building()->associate(
             $building
@@ -225,7 +238,7 @@ class UserService
     /**
      * Method to delete a user and its user info.
      *
-     * @param bool $shouldForceDeleteBuilding
+     * @param  bool  $shouldForceDeleteBuilding
      *
      * @throws \Exception
      */
@@ -307,13 +320,14 @@ class UserService
 
         if ($user1->hasRole('coach')) {
             $tables['coach_id'] = [
-                'building_coach_statuses', 'building_notes',
+                'building_coach_statuses',
+                'building_notes',
             ];
         }
 
         foreach ($tables as $column => $tablesWithColumn) {
             foreach ($tablesWithColumn as $tableWithColumn) {
-                Log::debug('UPDATE ' . $tableWithColumn . ' SET ' . $column . ' = ' . $user1->id . ' WHERE ' . $column . ' = ' . $user2->id . ';');
+                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.';');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->update([$column => $user1->id]);
@@ -335,7 +349,7 @@ class UserService
 
         foreach ($tables as $column => $tablesWithColumn) {
             foreach ($tablesWithColumn as $tableWithColumn) {
-                Log::debug('Checking input sources for ' . $tableWithColumn);
+                Log::debug('Checking input sources for '.$tableWithColumn);
                 $inputSources = DB::table($tableWithColumn)
                     ->where($column, '=', $user1->id)
                     ->select('input_source_id')
@@ -343,7 +357,8 @@ class UserService
                     ->pluck('input_source_id')
                     ->toArray();
 
-                Log::debug('UPDATE ' . $tableWithColumn . ' SET ' . $column . ' = ' . $user1->id . ' WHERE ' . $column . ' = ' . $user2->id . ' AND WHERE input_source NOT IN (' . implode(',', $inputSources) . ');');
+                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.' AND WHERE input_source NOT IN ('.implode(',',
+                        $inputSources).');');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->whereNotIn('input_source_id', $inputSources)

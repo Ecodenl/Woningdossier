@@ -6,7 +6,7 @@ use App\Helpers\Cooperation\Tool\ToolHelper;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
-use App\Services\Models\NotificationService;
+use App\Traits\Queue\HasNotifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,18 +14,20 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Throwable;
 
 class RecalculateStepForUser implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable,
+        InteractsWithQueue,
+        Queueable,
+        SerializesModels,
+        HasNotifications;
 
-    public $user;
-    public $inputSource;
-    public $step;
-    public $withOldAdvices;
+    public User $user;
+    public InputSource $inputSource;
+    public Step $step;
+    public bool $withOldAdvices;
 
     public function __construct(User $user, InputSource $inputSource, Step $step, bool $withOldAdvices = true)
     {
@@ -33,6 +35,8 @@ class RecalculateStepForUser implements ShouldQueue
         $this->inputSource = $inputSource;
         $this->step = $step;
         $this->withOldAdvices = $withOldAdvices;
+
+        $this->setUuid();
     }
 
     /**
@@ -57,17 +61,10 @@ class RecalculateStepForUser implements ShouldQueue
         }
     }
 
-
-    public function Failed(\Throwable $exception)
+    public function failed(Throwable $exception)
     {
-        NotificationService::init()
-            ->forBuilding($this->user->building)
-            ->forInputSource($this->inputSource)
-            ->setType(self::class)
-            ->deactivate(true);
+        $this->deactivateNotification();
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

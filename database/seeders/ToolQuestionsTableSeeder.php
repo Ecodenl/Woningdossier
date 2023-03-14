@@ -91,6 +91,7 @@ class ToolQuestionsTableSeeder extends Seeder
         $stepUsageQuickScan = Step::findByShort('usage-quick-scan');
         $stepLivingRequirements = Step::findByShort('living-requirements');
         $stepResidentialStatus = Step::findByShort('residential-status');
+        $stepSmallMeasures = Step::findByShort('small-measures');
 
         // Expert scan steps
         $hrBoilerStep = Step::findByShort('high-efficiency-boiler');
@@ -105,6 +106,51 @@ class ToolQuestionsTableSeeder extends Seeder
 
         $pitchedRoof = RoofType::findByShort('pitched');
         $flatRoof = RoofType::findByShort('flat');
+
+        #######
+        #
+        # README:
+        # For consistency of small measure questions, these are tool question custom values that get re-used.
+        # - The "main" question will use the $smallMeasureApplyValues. Any tool question short can be used.
+        # - The "sub" question "Hoe wil je het uitvoeren" should use the $smallMeasureExecuteValues. The short should
+        # be the "main" short + '-how'.
+        # - The "sub" question "De energiecoach heeft voor deze maatregel" should use the $smallMeasureCoachHelpValues.
+        # The short should be the "main" short + '-coach-help'.
+        #
+        # Simple example: apply-led-light, apply-led-light-how, apply-led-light-coach-help
+        #
+        #######
+
+        $smallMeasureApplyValues = [
+            'already-do' => [
+                'name' => 'Dat doe ik al',
+            ],
+            'want-to' => [
+                'name' => 'Dat wil ik gaan doen',
+            ],
+            'not-interested' => [
+                'name' => 'Geen interesse'
+            ],
+            'not-applicable' => [
+                'name' => 'Niet van toepassing'
+            ],
+        ];
+        $smallMeasureExecuteValues = [
+            'do-self' => [
+                'name' => 'Dat ga ik zelf doen',
+            ],
+            'let-do' => [
+                'name' => 'Dat wil ik laten doen',
+            ],
+        ];
+        $smallMeasureCoachHelpValues = [
+            'explained' => [
+                'name' => 'Uitleg gegeven',
+            ],
+            'helped' => [
+                'name' => 'Geholpen bij uitvoering (zie omschrijving)',
+            ],
+        ];
 
         $questions = [
             #-------------------------
@@ -177,6 +223,32 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                         11 => [
                             'icon' => 'icon-apartment-mid-floor-corner', // TODO: See below
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'building-contract-type',
+                'translation' => 'Is het een huur- of koopwoning?',
+                'tool_question_custom_values' => [
+                    'bought' => [
+                        'name' => 'Koopwoning',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'rented' => [
+                        'name' => 'Huurwoning corporatie',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
+                        ],
+                    ],
+                    'rented-private' => [
+                        'name' => 'Particuliere huur',
+                        'extra' => [
+                            'icon' => 'icon-placeholder',
                         ],
                     ],
                 ],
@@ -788,11 +860,43 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-central-heater-gas',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'hr-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'kitchen-geyser' => [
                         'name' => 'Bad/keukengeiser',
                         'extra' => [
                             'icon' => 'icon-placeholder',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'kitchen-geyser',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'electric-boiler' => [
@@ -800,11 +904,43 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-placeholder',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'electric-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'heat-pump-boiler' => [
                         'name' => 'Warmtepomp boiler',
                         'extra' => [
                             'icon' => 'icon-placeholder',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'heat-pump-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'heat-pump' => [
@@ -818,6 +954,18 @@ class ToolQuestionsTableSeeder extends Seeder
                                     'column' => 'heat-source',
                                     'operator' => Clause::CONTAINS,
                                     'value' => 'heat-pump',
+                                ],
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'heat-pump',
+                                            'sun-boiler',
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],
@@ -833,11 +981,43 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-district-heating',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'district-heating',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'none' => [
                         'name' => 'Anders...',
                         'extra' => [
                             'icon' => 'icon-other',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'none',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                 ],
@@ -1193,6 +1373,421 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'residential-status-service-comment-coach',
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
             ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'apply-led-light',
+                'translation' => 'Aanbrengen van LED-verlichting',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'apply-led-light-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'apply-led-light-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'turn-off-lights',
+                'translation' => 'Licht uitdoen in ruimtes waar je niet bent',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'replace-old-equipment',
+                'translation' => 'Oude apparaten vervangen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'turn-off-unused-equipment',
+                'translation' => 'Uitzetten van apparaten die niet gebruikt worden',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'turn-off-standby-equipment',
+                'translation' => 'Stand by apparaten uitzetten',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'only-use-full-washing-machine',
+                'translation' => 'Wasmachine alleen aanzetten wanneer die vol is',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'only-use-full-tumble-dryer',
+                'translation' => 'Gebruik de wasdroger alleen wanneer nodig',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'pump-switch-floor-heating',
+                'translation' => 'Pompschakeling vloerverwarming',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'pump-switch-floor-heating-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'pump-switch-floor-heating-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'replace-alternating-current-fan',
+                'translation' => 'Oude wisselstroom ventilator vervangen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'replace-alternating-current-fan-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'replace-alternating-current-fan-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-sealing-windows-doors',
+                'translation' => 'Tochtstrips bij ramen en deuren',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-sealing-windows-doors-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-sealing-windows-doors-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'mailbox-bristles',
+                'translation' => 'Borstels bij de brievenbus',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'mailbox-bristles-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'mailbox-bristles-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'radiator-foil',
+                'translation' => 'Radiatorfolie',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'radiator-foil-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'radiator-foil-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'no-curtains-for-the-radiator',
+                'translation' => 'Geen gordijnen voor radiatoren',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'apply-thermostat-knobs',
+                'translation' => 'Aanbrengen thermostaatknoppen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'apply-thermostat-knobs-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'apply-thermostat-knobs-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'apply-radiator-ventilation',
+                'translation' => 'Aanbrengen van ventilatoren op de radiatoren',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'apply-radiator-ventilation-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'apply-radiator-ventilation-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'vent-radiators-frequently',
+                'translation' => 'Radiatoren regelmatig ontluchten',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'vent-radiators-frequently-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'vent-radiators-frequently-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'lower-comfort-heat',
+                'translation' => 'Verlagen van de stooktemperatuur',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'lower-comfort-heat-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'lower-comfort-heat-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'insulate-hr-boiler-pipes',
+                'translation' => 'Isoleren van de cv-leidingen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'insulate-hr-boiler-pipes-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'insulate-hr-boiler-pipes-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'hydronic-balancing',
+                'translation' => 'Waterzijdig inregelen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'hydronic-balancing-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'hydronic-balancing-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'replace-gas-with-infrared-panels',
+                'translation' => 'Gas vervangen door infraroodpanelen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'replace-gas-with-infrared-panels-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'replace-gas-with-infrared-panels-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'water-saving-shower-head',
+                'translation' => 'Waterbesparende douchekop',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'water-saving-shower-head-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'water-saving-shower-head-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'shower-shorter',
+                'translation' => 'Korter douchen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'turn-off-boiler',
+                'translation' => 'Boiler uitzetten',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'only-heat-used-rooms',
+                'translation' => 'Verwam alleen ruimtes die gebruikt worden',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'use-insulating-curtains',
+                'translation' => 'Gebruik isolerende gordijnen',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'keep-unheated-rooms-closed',
+                'translation' => 'Houd deuren naar onverwarme ruimtes dicht',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'use-door-closers',
+                'translation' => 'Gebruik deurdrangers',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'use-door-closers-how',
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'use-door-closers-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$stepSmallMeasures->id}.comment",
+                'for_specific_input_source_id' => $residentInputSource->id,
+                'short' => 'small-measures-comment-resident',
+                'translation' => 'Toelichting op de kleine maatregelen',
+            ],
+            [
+                'data_type' => Caster::STRING,
+                'validation' => ['nullable', 'string'],
+                'save_in' => "step_comments.{$stepSmallMeasures->id}.comment",
+                'for_specific_input_source_id' => $coachInputSource->id,
+                'short' => 'small-measures-comment-coach',
+                'translation' => 'Toelichting op de kleine maatregelen',
+            ],
             #-------------------------
             # Expert scan questions only
             #-------------------------
@@ -1273,11 +1868,43 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-central-heater-gas',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'hr-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'kitchen-geyser' => [
                         'name' => 'Bad/keukengeiser',
                         'extra' => [
                             'icon' => 'icon-placeholder',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'kitchen-geyser',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'electric-boiler' => [
@@ -1285,11 +1912,43 @@ class ToolQuestionsTableSeeder extends Seeder
                         'extra' => [
                             'icon' => 'icon-placeholder',
                         ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'electric-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'heat-pump-boiler' => [
                         'name' => 'Warmtepomp boiler',
                         'extra' => [
                             'icon' => 'icon-placeholder',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'heat-pump-boiler',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                     'heat-pump' => [
@@ -1304,6 +1963,18 @@ class ToolQuestionsTableSeeder extends Seeder
                                     'operator' => Clause::CONTAINS,
                                     'value' => 'heat-pump',
                                 ],
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'heat-pump',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
                             ],
                         ],
                     ],
@@ -1317,6 +1988,22 @@ class ToolQuestionsTableSeeder extends Seeder
                         'name' => 'Stadsverwarming',
                         'extra' => [
                             'icon' => 'icon-district-heating',
+                        ],
+                        'conditions' => [
+                            [
+                                [
+                                    'column' => 'fn',
+                                    'operator' => 'HasMaximumAnswers',
+                                    'value' => [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'max' => 1,
+                                        'ignore' => [
+                                            'district-heating',
+                                            'sun-boiler',
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                 ],
@@ -1866,6 +2553,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.wall_surface',
                 'translation' => 'Geveloppervlakte van de woning',
                 'short' => 'wall-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -1873,8 +2561,9 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required', 'numeric',
                 ],
                 'save_in' => 'building_features.insulation_wall_surface',
-                'translation' => 'Te isoleren oppervlakte',
+                'translation' => 'Te isoleren geveloppervlakte',
                 'short' => 'insulation-wall-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::STRING,
@@ -1947,7 +2636,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$hrppGlassFrames->id}.is_considering",
                 'translation' => 'HR++ glas + kozijn: Meenemen in berekening',
-                'short' => 'hrpp-glass-frame-considerable',
+                'short' => 'hrpp-glass-frame-considerable', // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -1995,7 +2684,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$hr3pFrames->id}.is_considering",
                 "translation" => "HR+++ glas + kozijn: Meenemen in berekening",
-                "short" => "hr3p-glass-frame-considerable",
+                "short" => "hr3p-glass-frame-considerable", // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2043,7 +2732,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$glassInLead->id}.is_considering",
                 "translation" => "Glas-in-lood vervangen: Meenemen in berekening",
-                "short" => "glass-in-lead-replace-considerable",
+                "short" => "glass-in-lead-replace-considerable", // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2092,6 +2781,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.window_surface',
                 'translation' => 'Totale raamoppervlakte van de woning',
                 'short' => 'total-window-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
@@ -2204,6 +2894,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => 'building_features.floor_surface',
                 'translation' => 'Vloeroppervlak van de woning',
                 'short' => 'floor-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2211,8 +2902,9 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required', 'numeric',
                 ],
                 'save_in' => 'building_features.insulation_surface',
-                'translation' => 'Te isoleren oppervlakte',
+                'translation' => 'Te isoleren vloeroppervlakte',
                 'short' => 'insulation-floor-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::STRING,
@@ -2268,6 +2960,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.roof_surface",
                 'translation' => 'Dakoppervlak hellend dak',
                 'short' => 'pitched-roof-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2277,6 +2970,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.insulation_roof_surface",
                 'translation' => 'Te isoleren oppervlakte van het hellende dak',
                 'short' => 'pitched-roof-insulation-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::INT,
@@ -2344,6 +3038,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_roof_types.{$flatRoof->id}.roof_surface",
                 'translation' => 'Dakoppervlak van platte dak',
                 'short' => 'flat-roof-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::FLOAT,
@@ -2353,6 +3048,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'save_in' => "building_roof_types.{$flatRoof->id}.insulation_roof_surface",
                 'translation' => 'Te isoleren oppervlakte van het platte dak',
                 'short' => 'flat-roof-insulation-surface',
+                'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
                 'data_type' => Caster::INT,
@@ -2424,7 +3120,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "considerables.App\\Models\\Step.{$solarPanelStep->id}.is_considering",
                 'translation' => 'Zonnepanelen: Meenemen in berekening',
-                'short' => 'solar-panels-considerable',
+                'short' => 'solar-panels-considerable', // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2482,11 +3178,43 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
         ];
 
+        #######
+        #
+        # README:
+        # For ease of seeding: user cost questions are related to energy saving measures that have expert related
+        # questions. Therefore, we simply loop through all of them. This means it's easily expanded for future added
+        # measures, as well as being simple in the code. This seeder is large enough already.
+        #
+        #######
+
+        $allExpertEnergySavingMeasures = MeasureApplication::measureType(MeasureApplication::ENERGY_SAVING)
+            ->where('step_id', '!=', $stepSmallMeasures->id)->get();
+
+        foreach ($allExpertEnergySavingMeasures as $measure) {
+            $questions[] = [
+                'data_type' => Caster::INT,
+                'validation' => [
+                    'nullable', 'numeric', 'integer', 'gt:0',
+                ],
+                'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.own_total",
+                'translation' => 'Eigen kosten (voor aftrek subsidie)',
+                'help_text' => 'In het geval dat je al weet hoeveel een maatregel gaat kosten (bijvoorbeeld door een opgevraagde offerte), kun je hier dat bedrag invullen.',
+                'short' => "user-costs-{$measure->short}-own-total",
+            ];
+            $questions[] = [
+                'data_type' => Caster::INT,
+                'validation' => [
+                    'nullable', 'numeric', 'integer', 'gt:0',
+                ],
+                'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.subsidy_total",
+                'translation' => 'Subsidiebedrag (zelf invullen)',
+                'help_text' => 'In het geval dat je al weet hoeveel subsidie je terugkrijgt op een maatregel, kun je dit hier invullen.',
+                'short' => "user-costs-{$measure->short}-subsidy-total",
+            ];
+        }
 
         foreach ($questions as $questionData) {
             if ($questionData['short'] != "") {
-
-
                 // Create the question itself
 
                 // Translation can be a key or text. We compare the results, because if it's a key, then the

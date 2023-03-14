@@ -6,41 +6,55 @@
     </div>
 
     @php
-        $subStepsToSummarize = $step->subSteps()->where('id', '!=', $subStep->id)->orderBy('order')->get();
+        $subStepsToSummarize = $step->subSteps()
+            ->where('id', '!=', $subStep->id)
+            ->with('subSteppables')
+            ->orderBy('order')
+            ->get();
+
+        $allConditions = $subStepsToSummarize->pluck('conditions')
+            ->merge($subStepsToSummarize->pluck('subSteppables.*.conditions')->flatten(1))
+            ->filter()
+            ->flatten(1)
+            ->all();
+
+        $evaluator = \App\Helpers\Conditions\ConditionEvaluator::init()
+            ->building($building)
+            ->inputSource($masterInputSource);
+
+        $answers = $evaluator->getToolAnswersForConditions($allConditions);
     @endphp
 
     {{-- Loop all sub steps except for the current (summary) step --}}
     @foreach($subStepsToSummarize as $subStepToSummarize)
         {{-- Only display sub steps that are valid to the user --}}
-        @can('show', [$subStepToSummarize, $building])
+        @if($evaluator->evaluateCollection($subStepToSummarize->conditions ?? [], $answers))
             @php
-                $subStepRoute = route('cooperation.frontend.tool.quick-scan.index', [
-                    'cooperation' => $cooperation, 'step' => $step, 'subStep' => $subStepToSummarize
+                $subStepRoute = route('cooperation.frontend.tool.simple-scan.index', [
+                    'cooperation' => $cooperation, 'scan' => $scan, 'step' => $step, 'subStep' => $subStepToSummarize
                 ]);
             @endphp
             <div class="flex flex-row flex-wrap w-full space-y-2">
-                @if(app()->environment() === 'local')
-                    @php
-                        $completed = $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStepToSummarize->id)->first();
-                    @endphp
-                    @if(is_null($completed))
-                        <h1>{{$subStepToSummarize->name}} is niet afgerond</h1>
-                    @endif
-                @endif
+                @php
+                    $completed = $building->completedSubSteps()->forInputSource($masterInputSource)->where('sub_step_id', $subStepToSummarize->id)->exists();
+                @endphp
                 {{-- Custom changes has no tool questions, it's basically a whole other story --}}
-                @if($subStepToSummarize->slug === 'welke-zaken-vervangen')
+                @if($subStepToSummarize->subStepTemplate->short === 'template-custom-changes')
                     <div class="flex flex-row flex-wrap w-full">
                         <div class="w-1/2">
                             <a href="{{ $subStepRoute }}" class="no-underline">
-                                <h6 class="as-text font-bold">
-                                    @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label')
+                                <h6 class="as-text font-bold @if(! $completed) text-orange @endif">
+                                    @lang("livewire/cooperation/frontend/tool/simple-scan/custom-changes.question.{$scan->short}.label")
                                 </h6>
                             </a>
                         </div>
 
                         <div class="w-1/2">
-                            <p class="flex items-center">
-                                @php $advisables = []; @endphp
+                            <p class="flex flex-wrap items-center space-y-1">
+                                @php
+                                    $advisables = [];
+                                    $type = \App\Helpers\Models\CooperationMeasureApplicationHelper::getTypeForScan($scan);
+                                @endphp
                                 @foreach($building->user->actionPlanAdvices()->forInputSource($masterInputSource)->get() as $advice)
                                     @php
                                         if ($advice->user_action_plan_advisable_type === \App\Models\CustomMeasureApplication::class) {
@@ -51,16 +65,20 @@
                                             $advisable = $advice->userActionPlanAdvisable;
                                         }
 
-                                        if ($advisable instanceof \App\Models\CustomMeasureApplication) {
+                                        if ($advisable instanceof \App\Models\CustomMeasureApplication && $type === \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE) {
                                             $advisables[] = strip_tags($advisable->name);
                                         } elseif($advisable instanceof \App\Models\CooperationMeasureApplication) {
-                                            $advisableToAppend = strip_tags($advisable->name);
+                                            $shouldBeExtensive = $type === \App\Helpers\Models\CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
 
-                                            if (! empty($advisable->extra['icon'])) {
-                                                $advisableToAppend .= '<i class="ml-1 w-8 h-8 '. $advisable->extra['icon'] . '"></i>';
+                                            if ($advisable->is_extensive_measure == $shouldBeExtensive) {
+                                                $advisableToAppend = strip_tags($advisable->name);
+
+                                                if (! empty($advisable->extra['icon'])) {
+                                                    $advisableToAppend .= '<i class="ml-1 w-8 h-8 '. $advisable->extra['icon'] . '"></i>';
+                                                }
+
+                                                $advisables[] = $advisableToAppend;
                                             }
-
-                                            $advisables[] = $advisableToAppend;
                                         }
                                     @endphp
                                 @endforeach
@@ -69,28 +87,15 @@
                         </div>
                     </div>
                 @else
-                    @php
-                        $answers = [];
-                    @endphp
-                    {{-- We loop twice to first get all answers. We need the answers to ensure whether or not the tool question should be shown --}}
-                    @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
-                        @php
-                            // Answers will contain an array of arrays of all answers for the tool question in this sub step,
-                            // in which the nested array will be short => answer based
-                            $answers[$toolQuestionToSummarize->short] = $building->getAnswer(($toolQuestionToSummarize->forSpecificInputSource ?? $masterInputSource), $toolQuestionToSummarize);
-                        @endphp
-                    @endforeach
-
-                    @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
+                    @foreach($subStepToSummarize->subSteppables->where('sub_steppable_type', \App\Models\ToolQuestion::class) as $subSteppablePivot)
                         {{-- Only display questions that are valid to the user --}}
                         @php
+                            $toolQuestionToSummarize = $subSteppablePivot->subSteppable;
+
                             $showQuestion = true;
 
-                            if (! empty($toolQuestionToSummarize->pivot->conditions)) {
-                                $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
-                                    ->building($building)
-                                    ->inputSource($masterInputSource)
-                                    ->evaluateCollection($toolQuestionToSummarize->pivot->conditions, collect($answers));
+                            if (! empty($subSteppablePivot->conditions)) {
+                                $showQuestion = $evaluator->evaluateCollection($subSteppablePivot->conditions, $answers);
                             }
 
                             // Comments come at the end, and have exceptional logic...
@@ -118,9 +123,9 @@
                             @endphp
 
                             <div class="flex flex-row flex-wrap w-full">
-                                <div class="@if($toolQuestionToSummarize->pivot->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
+                                <div class="@if($subSteppablePivot->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
                                     <a href="{{ $subStepRoute }}" class="no-underline">
-                                        <h6 class="as-text font-bold">
+                                        <h6 class="as-text font-bold @if(! $completed) text-orange @endif">
                                             {{ $toolQuestionToSummarize->name }}
                                         </h6>
                                     </a>
@@ -130,7 +135,7 @@
                                     @foreach($humanReadableAnswer as $name => $answer)
                                         <div class="w-1/2 pl-2">
                                             <a href="{{ $subStepRoute }}" class="no-underline">
-                                                <h6 class="as-text font-bold">
+                                                <h6 class="as-text font-bold @if(! $completed) text-orange @endif">
                                                     {{ $name }}
                                                 </h6>
                                             </a>
@@ -153,12 +158,13 @@
                     @endforeach
                 @endif
             </div>
-        @endcan
+        @endif
     @endforeach
 
     <div class="flex flex-row flex-wrap w-full">
-        @foreach($toolQuestions as $toolQuestion)
+        @foreach($this->substeppables as $subSteppablePivot)
             @php
+                $toolQuestion = $subSteppablePivot->subSteppable;
                 $disabled = ! $building->user->account->can('answer', $toolQuestion);
             @endphp
             @component('cooperation.frontend.layouts.components.form-group', [
@@ -182,7 +188,7 @@
                 @endslot
 
 
-                @include("cooperation.tool-question-type-templates.{$toolQuestion->pivot->toolQuestionType->short}.show", [
+                @include("cooperation.tool-question-type-templates.{$subSteppablePivot->toolQuestionType->short}.show", [
                     'disabled' => $disabled,
                 ])
 

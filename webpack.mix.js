@@ -37,11 +37,6 @@ mix.js('resources/js/app.js', 'public/js')
     )
     .scripts(
         [
-            'resources/js/disable-auto-fill.js'
-        ], 'public/js/disable-auto-fill.js'
-    )
-    .scripts(
-        [
             'resources/js/hoomdossier.js'
         ], 'public/js/hoomdossier.js'
     )

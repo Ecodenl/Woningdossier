@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\InputSource;
+use App\Services\Verbeterjehuis\RegulationService;
 
 return [
     'step-count' => 'Stap :current van :total',
@@ -52,13 +53,12 @@ return [
                         'button' => 'Eigen maatregel toevoegen',
                     ],
                 ],
-
-
-
             ],
             'see-info' => 'Zie info',
-            'subsidy' => [
-                // Todo when constants are available
+            'regulations' => [
+                'subsidy-available' => 'Subsidie mogelijk',
+                'after-subsidy-cut' => 'Na aftrek subsidie',
+                'loan-available' => 'Lening mogelijk',
             ],
             'investment' => 'Investering',
             'savings' => 'Besparing per jaar',
@@ -67,10 +67,22 @@ return [
             InputSource::RESIDENT_SHORT => 'Opmerkingen bewoner',
             InputSource::COACH_SHORT => 'Opmerkingen coach',
         ],
-        'file-is-processing' => 'Rapportage wordt gemaakt..',
-        'download-report' => 'Download bestaande rapportage',
-        'create-report' => 'Maak rapportage',
+
         'loading' => 'Woonplan wordt berekend...',
+
+        'calculations' => [
+            'title' => 'Uitleg berekeningen',
+            'table' => [
+                'info' => 'Vraag / info',
+                'value' => 'Waarde',
+                'source' => 'Oorsprong',
+            ],
+            'description' => "<p>Voor het berekenen van de prijzen maken wij gebruik van de 'Kostenkentallen energiebesparende maatregelen' van RVO. Deze online database kun je via de volgende link vinden: <a target='_blank' rel='nofollow' href='https://digipesis.com/'>Kostenkentallen | RVO</a></p>",
+            'values' => [
+                'gas-cost' => 'Gerekend met kosten voor gas',
+                'electricity-cost' => 'Gerekend met kosten voor elektriciteit',
+            ],
+        ],
 
         'uploader' => [
             'add' => 'Bestanden toevoegen',
@@ -110,5 +122,34 @@ return [
                 ],
             ],
         ],
+        'downloads' => [
+            'file-is-processing' => 'Rapportage wordt gemaakt..',
+            'download-report' => 'Download bestaande rapportage',
+            'create-report' => 'Maak rapportage',
+        ],
+    ],
+    'my-regulations' => [
+        'loading' => 'Maatregelen worden berekend...',
+        'provider' => [
+            'to' => 'Naar aanbieder',
+        ],
+        'refreshed' => [
+            'not' => 'Regelingen zijn nog niet opgehaald',
+            'last' => 'Laatst geupdate om :date',
+            'busy' => 'Wordt ververst..',
+            'ready' => 'Ververs regelingen'
+        ],
+        'categories' => [
+            RegulationService::SUBSIDY => 'Subsidies (:count)',
+            RegulationService::LOAN => 'Leningen (:count)',
+            RegulationService::OTHER => 'Overige (:count)',
+        ],
+        'container' => [
+            'intro' => [
+                RegulationService::SUBSIDY => 'Er zijn de volgende subsidieregelingen beschikbaar voor jouw situatie:',
+                RegulationService::LOAN => 'Er zijn de volgende leningen beschikbaar in jouw gemeente:',
+                RegulationService::OTHER => 'Andere beschikbare regelingen:',
+            ],
+        ]
     ],
 ];

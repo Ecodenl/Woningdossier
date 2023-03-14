@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Events\ExampleBuildingChanged;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
@@ -20,6 +19,7 @@ class ExampleBuildingService
     const NEVER_OVERWRITE_TOOL_QUESTION_SHORTS = [
         'building-type-category',
         // 'building-type',
+        'building-contract-type',
         'build-year',
         'specific-example-building',
         'surface',
@@ -130,13 +130,6 @@ class ExampleBuildingService
             ->building($building)
             ->currentInputSource($inputSource)
             ->save($exampleBuilding->building_type_id);
-
-
-        ExampleBuildingChanged::dispatch(
-            $building,
-            $oldExampleBuilding,
-            $exampleBuilding
-        );
     }
 
     public static function clearBuilding(Building $building, InputSource $inputSource)

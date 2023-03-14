@@ -13,6 +13,7 @@ use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\ToolQuestion;
+use App\Models\User;
 use App\Services\ToolQuestionService;
 use App\Services\UserService;
 use Illuminate\Support\Arr;
@@ -66,11 +67,16 @@ class RegisterController extends Controller
     public function store(RegisterFormRequest $request, Cooperation $cooperation)
     {
         $requestData = $request->all();
+        if (! is_null($requestData['extra']['contact_id'] ?? null)) {
+            // Force as INT
+            $requestData['extra']['contact_id'] = (int) $requestData['extra']['contact_id'];
+        }
 
         // normally we would have a user given password, however we will reset the password right after its created.
         // this way the user can set his own password.
         $requestData['password'] = Hash::make(Str::randomPassword());
         $roles = array_unique(($requestData['roles'] ?? [RoleHelper::ROLE_RESIDENT]));
+        $requestData['extension'] = $requestData['house_number_extension'];
         $user = UserService::register($cooperation, $roles, $requestData);
         $account = $user->account;
 
@@ -85,7 +91,7 @@ class RegisterController extends Controller
         }
 
         // at this point, a user cant register without accepting the privacy terms.
-        UserAllowedAccessToHisBuilding::dispatch($user->building);
+        UserAllowedAccessToHisBuilding::dispatch($user, $user->building);
 
         // Get input sources by name (unique)
         $inputSources = [];

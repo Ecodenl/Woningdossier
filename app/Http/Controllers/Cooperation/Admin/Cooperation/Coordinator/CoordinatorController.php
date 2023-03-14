@@ -9,6 +9,6 @@ class CoordinatorController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        return redirect(route('cooperation.admin.cooperation.users.index'));
+        return redirect()->route('cooperation.admin.users.index');
     }
 }

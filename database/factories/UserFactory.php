@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Helpers\RoleHelper;
+use App\Models\Building;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /*
@@ -25,12 +28,31 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-        'account_id' => \App\Models\Account::factory(),
-        'cooperation_id' => \App\Models\Cooperation::factory(),
-        'first_name' => $this->faker->firstName,
-        'last_name' => $this->faker->lastName,
-        'phone_number' => $this->faker->phoneNumber,
-        'allow_access' => $this->faker->boolean,
-    ];
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'phone_number' => $this->faker->phoneNumber,
+            'allow_access' => $this->faker->boolean,
+        ];
+    }
+
+    public function asCoach()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                // We need this state for an after hook
+            ];
+        })->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COACH));
+    }
+
+    public function asResident()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                // We need this state for an after hook
+            ];
+        })->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_RESIDENT));
     }
 }
+
+
+

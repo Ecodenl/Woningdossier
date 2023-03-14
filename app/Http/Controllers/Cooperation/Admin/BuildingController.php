@@ -6,12 +6,18 @@ use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\PrivateMessage;
+use App\Models\Scan;
 use App\Models\Status;
 use App\Models\User;
+use App\Services\BuildingAddressService;
 use App\Services\BuildingCoachStatusService;
+use App\Services\Lvbag\BagService;
+use App\Services\Models\BuildingService;
+use Illuminate\Support\Arr;
 use Spatie\Permission\Models\Role;
 
 class BuildingController extends Controller
@@ -64,10 +70,13 @@ class BuildingController extends Controller
         // get all the building notes
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
+        $scan = $cooperation->scans()->where('short', '!=', Scan::EXPERT)->first();
+        $scans = $cooperation->load(['scans' => fn($q) => $q->where('short', '!=', Scan::EXPERT)])->scans;
+
         return view('cooperation.admin.buildings.show', compact(
-                'user', 'building', 'roles', 'coaches',
+                'user', 'building', 'roles', 'coaches', 'scans',
                 'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
-                'publicMessages', 'buildingNotes', 'statuses', 'logs'
+                'publicMessages', 'buildingNotes', 'statuses', 'logs', 'scan',
             )
         );
     }
@@ -80,15 +89,19 @@ class BuildingController extends Controller
         return view('cooperation.admin.buildings.edit', compact('building', 'user', 'account'));
     }
 
-    public function update(BuildingFormRequest $request, Cooperation $cooperation, Building $building)
+    public function update(BuildingFormRequest $request, BuildingAddressService $buildingAddressService, Cooperation $cooperation, Building $building)
     {
         $validatedData = $request->validated();
+        if (! is_null($validatedData['users']['extra']['contact_id'] ?? null)) {
+            // Force as INT
+            $validatedData['users']['extra']['contact_id'] = (int) $validatedData['users']['extra']['contact_id'];
+        }
 
-        // cant be null in the table.
-        $validatedData['buildings']['extension'] = $validatedData['buildings']['extension'] ?? '';
+        $buildingAddressService->forBuilding($building)->updateAddress($validatedData['buildings']);
+
+        $buildingAddressService->forBuilding($building)->attachMunicipality();
+
         $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';
-
-        $building->update($validatedData['buildings']);
         $building->user->update($validatedData['users']);
         $building->user->account->update($validatedData['accounts']);
 

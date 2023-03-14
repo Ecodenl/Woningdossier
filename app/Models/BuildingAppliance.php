@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
-use App\Traits\ToolSettingTrait;
+
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -40,7 +40,6 @@ class BuildingAppliance extends Model
 {
     use GetValueTrait;
     use GetMyValuesTrait;
-    use ToolSettingTrait;
 
     public function building()
     {

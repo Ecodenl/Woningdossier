@@ -170,6 +170,9 @@
 .icon-error-cross {
     content: url('/icons/error-cross.svg');
 }
+.icon-euro {
+    content: url('/icons/euro.svg');
+}
 .icon-flat-pitched-roof {
     content: url('/icons/flat-pitched-roof.svg');
 }
@@ -241,6 +244,9 @@
 }
 .icon-house-purple {
     content: url('/icons/house-purple.svg');
+}
+.icon-house-green {
+    content: url('/icons/house-green.svg');
 }
 .icon-hydronic-balance-temperature {
     content: url('/icons/hydronic-balance-temperature.svg');

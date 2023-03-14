@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasCooperationTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Questionnaire
@@ -20,9 +22,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cooperation $cooperation
  * @property-read array $translations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionnaireStep[] $questionnaireSteps
+ * @property-read int|null $questionnaire_steps_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
  * @property-read int|null $questions_count
- * @property-read \App\Models\Step|null $step
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read int|null $steps_count
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire active()
  * @method static \Database\Factories\QuestionnaireFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forAllCooperations()
@@ -42,9 +47,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Questionnaire extends Model
 {
-    use HasFactory;
-
-    use HasCooperationTrait,
+    use HasFactory,
+        HasCooperationTrait,
         HasTranslations;
 
     protected $translatable = [
@@ -62,11 +66,18 @@ class Questionnaire extends Model
     /**
      * Return the step that belongs to this questionnaire.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function step()
+    public function steps(): BelongsToMany
     {
-        return $this->belongsTo(Step::class);
+        return $this->belongsToMany(Step::class)
+            ->using(QuestionnaireStep::class)
+            ->withPivot('order');
+    }
+
+    public function questionnaireSteps(): HasMany
+    {
+        return $this->hasMany(QuestionnaireStep::class);
     }
 
     /**

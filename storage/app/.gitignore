@@ -1,2 +1,4 @@
 *.sql
 livewire-tmp
+mpdf
+plaatsnamen.csv

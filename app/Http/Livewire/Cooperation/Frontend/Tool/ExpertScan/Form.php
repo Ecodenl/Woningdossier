@@ -10,8 +10,11 @@ use App\Helpers\Arr;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Str;
 use App\Helpers\ToolQuestionHelper;
+use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -20,25 +23,27 @@ use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
 use App\Services\Scans\ScanFlowService;
 use App\Services\ToolQuestionService;
-use Artisan;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class Form extends Component
 {
-    public $step;
-    public $subSteps;
-    public $locale;
+    public Step $step;
+    public Collection $subSteps;
+    public string $locale;
 
-    public $filledInAnswers = [];
-    public $building;
-    public $masterInputSource;
-    public $currentInputSource;
+    public array $filledInAnswers = [];
+    public Building $building;
+    public InputSource $masterInputSource;
+    public InputSource $currentInputSource;
 
-    public $succeededSubSteps = [];
-    public $failedValidationForSubSteps = [];
+    public array $rules = [];
+    public array $succeededSubSteps = [];
+    public array $failedValidationForSubSteps = [];
 
-    public $cooperation;
+    public Cooperation $cooperation;
 
     protected $listeners = [
         'subStepValidationSucceeded' => 'subStepSucceeded',
@@ -48,11 +53,8 @@ class Form extends Component
 
     public function mount(Step $step, Cooperation $cooperation)
     {
-        $this->step = $step;
         $this->subSteps = $step->subSteps;
 
-        $this->activeSubStep = $step->subSteps->first()->slug;
-        $this->cooperation = $cooperation;
         $this->locale = app()->getLocale();
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -74,12 +76,13 @@ class Form extends Component
     }
 
     // We will mark the given sub step as succeeded
-    public function subStepSucceeded(array $subStep, array $filledInAnswers)
+    public function subStepSucceeded(array $subStep, array $filledInAnswers, array $rules)
     {
         // Unset failed sub step because it succeeds now
         unset($this->failedValidationForSubSteps[$subStep['slug'][$this->locale]]);
 
         $this->setFilledInAnswers($filledInAnswers);
+        $this->setRules($rules);
         $this->succeededSubSteps[$subStep['slug'][$this->locale]] = $subStep['slug'][$this->locale];
 
         // Save answers if all sub steps have been successfully answered
@@ -94,6 +97,13 @@ class Form extends Component
         // answers. array_merge messes up the keys and addition (array + array) causes weird behaviour
         foreach ($filledInAnswers as $toolQuestionShort => $answer) {
             $this->filledInAnswers[$toolQuestionShort] = $answer;
+        }
+    }
+
+    public function setRules(array $rules)
+    {
+        foreach ($rules as $short => $rule) {
+            $this->rules[$short] = $rule;
         }
     }
 
@@ -118,45 +128,58 @@ class Form extends Component
         $shouldDoFullRecalculate = false;
         $dirtyToolQuestions = [];
 
-        $masterHasCompletedQuickScan = $this->building->hasCompletedQuickScan($this->masterInputSource);
         // Answers have been updated, we save them and dispatch a recalculate
         // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
         foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
-            // Define if we should answer this question...
             /** @var ToolQuestion $toolQuestion */
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-            if ($this->building->user->account->can('answer', $toolQuestion)) {
+            // Rules are conditionally unset. We don't want to save unvalidated answers, but don't want to just
+            // clear them either. In the case of a JSON question, the short will have sub-shorts, so we check
+            // at least one starts with the tool question short
+            if (array_key_exists("filledInAnswers.$toolQuestionShort", $this->rules)
+                || ($toolQuestion->data_type === Caster::JSON && Str::arrKeyStartsWith(
+                    $this->rules,
+                    "filledInAnswers.$toolQuestionShort"
+                ))
+            ) {
+                // Define if we should answer this question...
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                    // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
+                    // so when we actually start saving it we have to format it one more time
+                    if ($toolQuestion->data_type === Caster::FLOAT) {
+                        $givenAnswer = Caster::init()
+                            ->dataType($toolQuestion->data_type)
+                            ->value($givenAnswer)
+                            ->reverseFormatted();
+                    }
 
-                // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
-                // so when we actually start saving it we have to format it one more time
-                if ($toolQuestion->data_type === Caster::FLOAT) {
-                    $givenAnswer = Caster::init(
-                        $toolQuestion->data_type, $givenAnswer
-                    )->reverseFormatted();
+                    // TODO: this is a horrible way to trace dirty answers
+                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                    if ($masterAnswer !== $givenAnswer) {
+                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                    }
+
+                    ToolQuestionService::init($toolQuestion)
+                        ->building($this->building)
+                        ->currentInputSource($this->currentInputSource)
+                        ->applyExampleBuilding()
+                        ->save($givenAnswer);
+
+                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
+                        Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
+                        $shouldDoFullRecalculate = true;
+                    }
+
+                    // get the expert step equivalent
+                    // we will filter out duplicates later on.
+                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                 }
-
-                // TODO: this is a horrible way to trace dirty answers
-                $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-                if ($masterAnswer !== $givenAnswer) {
-                    $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
-                }
-
-                ToolQuestionService::init($toolQuestion)
-                    ->building($this->building)
-                    ->currentInputSource($this->currentInputSource)
-                    ->applyExampleBuilding()
-                    ->save($givenAnswer);
-
-                if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource) && $masterHasCompletedQuickScan) {
-                    Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
-                    $shouldDoFullRecalculate = true;
-                }
-
-                // get the expert step equivalent
-                // we will filter out duplicates later on.
-                $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
             }
         }
+
+        $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+            ->forStep($this->step);
 
         // since we are done saving all the filled in answers, we can safely mark the sub steps as completed
         foreach ($this->subSteps as $subStep) {
@@ -167,18 +190,14 @@ class Form extends Component
                 'input_source_id' => $this->currentInputSource->id
             ]);
 
-            $flowService = ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
-                ->forStep($this->step);
-
             if ($completedSubStep->wasRecentlyCreated) {
                 // No need to check SubSteps that were recently created because they passed conditions
                 $flowService->skipSubstep($subStep);
             }
-
-            $flowService->checkConditionals($dirtyToolQuestions);
         }
 
-        // the INITIAL calculation will be handled by the CompletedSubStepObserver
+        $flowService->checkConditionals($dirtyToolQuestions, Hoomdossier::user());
+
         if ($shouldDoFullRecalculate) {
             // We should do a full recalculate because some base value that has impact on every calculation is changed.
             Log::debug("Dispatching full recalculate..");
@@ -191,8 +210,7 @@ class Form extends Component
             ]);
 
             // only when there are steps to recalculate, otherwise the command would just do a FULL recalculate.
-        } else if ($masterHasCompletedQuickScan && !empty($stepShortsToRecalculate)) {
-            // the user already has completed the quick scan, so we will only recalculate specific parts of the advices.
+        } elseif (! empty($stepShortsToRecalculate)) {
             $stepShortsToRecalculate = array_unique($stepShortsToRecalculate);
             // since we are just re-calculating specific parts of the tool we do it without the old advices
             // it will keep the advices that are not correlated to the steps we are calculating at their current category and order
@@ -205,8 +223,12 @@ class Form extends Component
             ]);
         }
 
-        // TODO: Make FlowService URL workable
-        return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index', ['cooperation' => $this->cooperation]);
+        return redirect()->to(
+            ScanFlowService::init($this->step->scan, $this->building, $this->currentInputSource)
+                ->forStep($this->step)
+                ->forSubStep($this->subSteps->sortByDesc('order')->first()) // Always last, as expert can't have a next SubStep
+                ->resolveNextUrl()
+        );
     }
 
     public function performCalculations()
@@ -239,7 +261,11 @@ class Form extends Component
 
                 // Could be an unused result
                 if ($result instanceof ToolCalculationResult) {
-                    Arr::set($performedCalculations, $resultShort, Caster::init($result->data_type, $value)->getFormatForUser());
+                    Arr::set(
+                        $performedCalculations,
+                        $resultShort,
+                        Caster::init()->dataType($result->data_type)->value($value)->getFormatForUser()
+                    );
                 }
             }
 

@@ -13,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 class GenerateCustomQuestionnaireReport implements ShouldQueue
 {
@@ -50,12 +51,10 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
         $this->fileStorage->isProcessed();
     }
 
-    public function Failed(\Throwable $exception)
+    public function failed(Throwable $exception)
     {
         $this->fileStorage->delete();
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

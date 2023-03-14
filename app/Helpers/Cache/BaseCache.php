@@ -16,7 +16,22 @@ class BaseCache
      *
      * @return string
      */
-    public static function getCacheKey($string, ...$parameters)
+    public static function getCacheKey($string, ...$parameters): string
+    {
+        $prefix = config('hoomdossier.cache.prefix', '');
+
+        return $prefix.sprintf($string, ...$parameters);
+    }
+
+    /**
+     * Returns the cache key for a particular format and parameters, prefixed with the current cooperation.
+     *
+     * @param $string
+     * @param mixed ...$parameters
+     *
+     * @return string
+     */
+    public static function getCooperationCacheKey($string, ...$parameters): string
     {
         $prefix = config('hoomdossier.cache.prefix', '');
 
@@ -42,5 +57,10 @@ class BaseCache
 
         // If the cache has saved "false", we return null. Cache can't save null.
         return $result instanceof Model ? $result : null;
+    }
+
+    public static function clear(string $key)
+    {
+        Cache::forget($key);
     }
 }

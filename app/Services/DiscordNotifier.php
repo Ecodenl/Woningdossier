@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Traits\FluentCaller;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class DiscordNotifier
 {
@@ -38,10 +39,8 @@ class DiscordNotifier
                         'content' => $message
                     ]
                 ]);
-            } catch (\Exception $e) {
-                if (app()->bound('sentry')) {
-                    app('sentry')->captureException($e);
-                }
+            } catch (ClientException $e) {
+                report($e);
             }
         }
     }

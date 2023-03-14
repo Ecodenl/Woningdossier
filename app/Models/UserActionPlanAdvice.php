@@ -3,15 +3,19 @@
 namespace App\Models;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
 use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
+use App\Services\UserActionPlanAdviceService;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
-use App\Traits\ToolSettingTrait;
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Collection;
 use OwenIt\Auditing\Contracts\Auditable;
 
 /**
@@ -24,6 +28,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property int $user_action_plan_advisable_id
  * @property string|null $category
  * @property bool $visible
+ * @property bool $subsidy_available
+ * @property bool $loan_available
  * @property int $order
  * @property array|null $costs
  * @property string|null $savings_gas
@@ -43,12 +49,14 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read Model|\Eloquent $userActionPlanAdvisable
  * @method static Builder|UserActionPlanAdvice allInputSources()
  * @method static Builder|UserActionPlanAdvice category(string $category)
+ * @method static Builder|UserActionPlanAdvice cooperationMeasureForType(string $type, \App\Models\InputSource $inputSource)
  * @method static Builder|UserActionPlanAdvice forAdvisable(\Illuminate\Database\Eloquent\Model $advisable)
  * @method static Builder|UserActionPlanAdvice forBuilding($building)
  * @method static Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder|UserActionPlanAdvice forMe(?\App\Models\User $user = null)
  * @method static Builder|UserActionPlanAdvice forStep(\App\Models\Step $step)
  * @method static Builder|UserActionPlanAdvice forUser($user)
+ * @method static Builder|UserActionPlanAdvice getCategorized()
  * @method static Builder|UserActionPlanAdvice invisible()
  * @method static Builder|UserActionPlanAdvice newModelQuery()
  * @method static Builder|UserActionPlanAdvice newQuery()
@@ -59,6 +67,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice whereCreatedAt($value)
  * @method static Builder|UserActionPlanAdvice whereId($value)
  * @method static Builder|UserActionPlanAdvice whereInputSourceId($value)
+ * @method static Builder|UserActionPlanAdvice whereLoanAvailable($value)
  * @method static Builder|UserActionPlanAdvice whereOrder($value)
  * @method static Builder|UserActionPlanAdvice wherePlanned($value)
  * @method static Builder|UserActionPlanAdvice wherePlannedYear($value)
@@ -66,6 +75,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice whereSavingsGas($value)
  * @method static Builder|UserActionPlanAdvice whereSavingsMoney($value)
  * @method static Builder|UserActionPlanAdvice whereStepId($value)
+ * @method static Builder|UserActionPlanAdvice whereSubsidyAvailable($value)
  * @method static Builder|UserActionPlanAdvice whereUpdatedAt($value)
  * @method static Builder|UserActionPlanAdvice whereUserActionPlanAdvisableId($value)
  * @method static Builder|UserActionPlanAdvice whereUserActionPlanAdvisableType($value)
@@ -73,23 +83,34 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static Builder|UserActionPlanAdvice whereVisible($value)
  * @method static Builder|UserActionPlanAdvice whereYear($value)
  * @method static Builder|UserActionPlanAdvice withInvisible()
- * @method static Builder|UserActionPlanAdvice withoutDeletedCooperationMeasureApplications(\App\Models\InputSource $inputSource)
  * @mixin \Eloquent
  */
 class UserActionPlanAdvice extends Model implements Auditable
 {
     use GetValueTrait,
         GetMyValuesTrait,
-        ToolSettingTrait,
         \App\Traits\Models\Auditable;
 
     protected $table = 'user_action_plan_advices';
 
-    public $fillable = [
+    protected $fillable = [
         'user_id',
         'input_source_id',
-        'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'category', 'visible', 'order', 'costs',
-        'savings_gas', 'savings_electricity', 'savings_money', 'year', 'planned', 'planned_year', 'step_id',
+        'user_action_plan_advisable_type',
+        'user_action_plan_advisable_id',
+        'category',
+        'visible',
+        'order',
+        'costs',
+        'savings_gas',
+        'savings_electricity',
+        'savings_money',
+        'year',
+        'planned',
+        'planned_year',
+        'step_id',
+        'loan_available',
+        'subsidy_available'
     ];
 
     /**
@@ -100,7 +121,14 @@ class UserActionPlanAdvice extends Model implements Auditable
     protected $casts = [
         'planned' => 'boolean',
         'visible' => 'boolean',
+        'subsidy_available' => 'boolean',
+        'loan_available' => 'boolean',
         'costs' => 'array',
+    ];
+
+    protected array $ignoreAttributes = [
+        'loan_available',
+        'subsidy_available',
     ];
 
     public static function boot()
@@ -110,22 +138,40 @@ class UserActionPlanAdvice extends Model implements Auditable
         static::addGlobalScope(new VisibleScope());
     }
 
-    /**
-     * Method to scope the advices without its deleted cooperation measure applications
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeWithoutDeletedCooperationMeasureApplications(Builder $query, InputSource $inputSource): Builder
+    # Scopes
+    public function scopeGetCategorized(Builder $query): Collection
     {
-        // this works because it boots the cooperation measure application model, which has the soft deletes trait
-        return $query->whereHasMorph('userActionPlanAdvisable', [
-            CooperationMeasureApplication::class,
-            MeasureApplication::class,
-            CustomMeasureApplication::class,
-        ],
-            // cant use scopes.
-            fn (Builder $q) => $q->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)
+        $categories = array_values(UserActionPlanAdviceService::getCategories());
+        return $query->get()->groupBy('category')->sortKeysUsing(function ($a, $b) use ($categories) {
+            // https://stackoverflow.com/questions/3737139/reference-what-does-this-symbol-mean-in-php/31298778#31298778
+            return array_search($a, $categories) <=> array_search($b, $categories);
+        });
+    }
+
+    /**
+     * Method to scope the advices without its deleted cooperation measure applications and for given type.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $type
+     * @param  \App\Models\InputSource  $inputSource
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCooperationMeasureForType(Builder $query, string $type, InputSource $inputSource)
+    {
+        $isExtensive = $type === CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE;
+
+        return $query->whereHasMorph(
+            'userActionPlanAdvisable',
+            '*',
+            function (Builder $query, $type) use ($isExtensive, $inputSource) {
+                // We have to do this, else the results are incorrect.
+                // This means that you won't need to call above scope if you're also calling this one.
+                $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id);
+                if ($type === CooperationMeasureApplication::class) {
+                    $query->where('is_extensive_measure', $isExtensive);
+                }
+            }
         );
     }
 
@@ -143,7 +189,7 @@ class UserActionPlanAdvice extends Model implements Auditable
     /**
      * Method to only scope the invisible rows
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return mixed
      */
     public function scopeInvisible(Builder $query): Builder
@@ -154,7 +200,7 @@ class UserActionPlanAdvice extends Model implements Auditable
     /**
      * Scope a query to only include results for the particular step.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -163,12 +209,18 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $query->where('step_id', $step->id);
     }
 
-    public function user()
+    public function scopeCategory(Builder $query, string $category)
+    {
+        return $query->where('category', $category);
+    }
+
+    # Relations
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function step()
+    public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
     }
@@ -178,10 +230,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         return $this->morphTo();
     }
 
-    public function scopeCategory(Builder $query, string $category)
-    {
-        return $query->where('category', $category);
-    }
+    # Unsorted
 
     /**
      * Check if the costs are a valid range.
@@ -224,7 +273,7 @@ class UserActionPlanAdvice extends Model implements Auditable
         if ($range) {
             NumberFormatter::range($costs['from'] ?? 0, $costs['to'] ?? 0, 0, ' - ', $prefix);
         } else {
-            return $prefix . NumberFormatter::format(max($costs['from'] ?? 0, $costs['to'] ?? 0), 0, true);
+            return $prefix.NumberFormatter::format(max($costs['from'] ?? 0, $costs['to'] ?? 0), 0, true);
         }
     }
 }

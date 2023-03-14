@@ -15,55 +15,49 @@ return [
     ],
     'unit'                              => [
         'year'          => [
-            'help'  => '',
             'title' => 'jaar',
         ],
         'wp' => [
             'title' => 'Wp',
         ],
         'liter'         => [
-            'help'  => '',
             'title' => 'liter',
         ],
         'day'           => [
-            'help'  => '',
             'title' => 'dag',
         ],
         'pieces'        => [
-            'help'  => '',
             'title' => 'stuks',
         ],
         'meters'        => [
-            'help'  => '',
             'title' => 'm',
         ],
         'square-meters' => [
-            'help'  => '',
             'title' => 'm<sup>2</sup>',
         ],
         'cubic-meters'  => [
-            'help'  => '',
             'title' => 'm<sup>3</sup>',
         ],
         'co2'           => [
-            'help'  => '',
             'title' => 'CO<sub>2</sub>',
         ],
         'kilograms'     => [
-            'help'  => '',
             'title' => 'kg',
         ],
         'degrees'       => [
-            'help'  => '',
             'title' => 'graden',
         ],
         'kwh'           => [
-            'help'  => '',
             'title' => 'kWh',
         ],
         'hours'         => [
-            'help'  => '',
             'title' => 'uren',
+        ],
+        'gas' => [
+            'title' => 'gas',
+        ],
+        'electric' => [
+            'title' => 'elektra',
         ],
     ],
 ];

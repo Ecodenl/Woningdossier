@@ -87,8 +87,6 @@
 <script src="{{ asset('js/datepicker/datetimepicker.js') }}"></script>
 <!-- datatable -->
 <script src="{{ asset('js/datatables.js') }}"></script>
-<!-- nutty stuff -->
-<script src="{{ asset('js/disable-auto-fill.js') }}"></script>
 <!-- select2 -->
 <script src="{{asset('js/select2.js')}}"></script>
 <!-- tinymce -->
@@ -101,9 +99,11 @@
         pollForMessageCount();
 
         // this will prevent another button from being clicked, or prevent double clicks during form submit.
+        @if(! app()->isLocal())
         $('form').on('submit', function () {
             $('button[type=submit]').prop('disabled', 'disabled')
         });
+        @endif
 
         $('.collapse').on('shown.bs.collapse', function () {
             $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");

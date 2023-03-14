@@ -33,10 +33,8 @@ class ToolQuestionHelper
         'building_roof_types' => ['roof_type_id'],
         'building_services' => ['service_id'],
         'considerables' => ['considerable_type', 'considerable_id'],
-        'step_comments' => [
-            'step_id',
-            'short',
-        ],
+        'user_costs' => ['advisable_type', 'advisable_id'],
+        'step_comments' => ['step_id', 'short'],
     ];
 
     /**
@@ -101,6 +99,35 @@ class ToolQuestionHelper
         'heat-pump-boiler-replace' => ['high-efficiency-boiler', 'heat-pump', 'heater',],
         'sun-boiler-replace' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
         'new-water-comfort' => ['high-efficiency-boiler', 'heater', 'heat-pump'],
+
+        // todo: not sure is this is actually needed..
+        'apply-led-light' => ['small-measures'],
+        'turn-off-lights' => ['small-measures'],
+        'replace-old-equipment' => ['small-measures'],
+        'turn-off-unused-equipment' => ['small-measures'],
+        'turn-off-standby-equipment' => ['small-measures'],
+        'only-use-full-washing-machine' => ['small-measures'],
+        'only-use-full-tumble-dryer' => ['small-measures'],
+        'pump-switch-floor-heating' => ['small-measures'],
+        'replace-alternating-current-fan' => ['small-measures'],
+        'crack-sealing-windows-doors' => ['small-measures'],
+        'mailbox-bristles' => ['small-measures'],
+        'radiator-foil' => ['small-measures'],
+        'no-curtains-for-the-radiator' => ['small-measures'],
+        'apply-thermostat-knobs' => ['small-measures'],
+        'apply-radiator-ventilation' => ['small-measures'],
+        'vent-radiators-frequently' => ['small-measures'],
+        'lower-comfort-heat' => ['small-measures'],
+        'insulate-hr-boiler-pipes' => ['small-measures'],
+        'hydronic-balancing' => ['small-measures'],
+        'replace-gas-with-infrared-panels' => ['small-measures'],
+        'water-saving-shower-head' => ['small-measures'],
+        'shower-shorter' => ['small-measures'],
+        'turn-off-boiler' => ['small-measures'],
+        'only-heat-used-rooms' => ['small-measures'],
+        'use-insulating-curtains' => ['small-measures'],
+        'keep-unheated-rooms-closed' => ['small-measures'],
+        'use-door-closers' => ['small-measures'],
     ];
 
     /**
@@ -162,7 +189,9 @@ class ToolQuestionHelper
 
             // Only return if it passes the conditions (if there are any)
             if (array_key_exists($toolQuestion->short, self::TOOL_RECALCULATE_CONDITIONS)) {
-                $pass = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
+                $pass = ConditionEvaluator::init()
+                    ->building($building)
+                    ->inputSource($inputSource)
                     ->evaluate(self::TOOL_RECALCULATE_CONDITIONS[$toolQuestion->short]);
 
                 $data = $pass ? $data : [];
@@ -184,7 +213,9 @@ class ToolQuestionHelper
 
             // Only return if it passes the conditions (if there are any)
             if (array_key_exists($toolQuestion->short, self::TOOL_RECALCULATE_CONDITIONS)) {
-                $pass = ConditionEvaluator::init()->building($building)->inputSource($inputSource)
+                $pass = ConditionEvaluator::init()
+                    ->building($building)
+                    ->inputSource($inputSource)
                     ->evaluate(self::TOOL_RECALCULATE_CONDITIONS[$toolQuestion->short]);
             }
 
@@ -288,16 +319,22 @@ class ToolQuestionHelper
                 // If there are no question values, then it's user input
                 $humanReadableAnswer = $answer;
 
-                if ($toolQuestion->data_type == Caster::STRING ) {
-                    $humanReadableAnswer = strip_tags($answer);
+                if ($toolQuestion->data_type == Caster::STRING) {
+                    $humanReadableAnswer = htmlspecialchars($answer);
                 }
             }
 
             // Format answers
             if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                $humanReadableAnswer = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getFormatForUser();
+                $humanReadableAnswer = Caster::init()
+                    ->dataType($toolQuestion->data_type)
+                    ->value($humanReadableAnswer)
+                    ->getFormatForUser();
             } elseif ($toolQuestion->data_type === Caster::JSON) {
-                $humanReadableAnswerArray = Caster::init($toolQuestion->data_type, $humanReadableAnswer)->getCast();
+                $humanReadableAnswerArray = Caster::init()
+                    ->dataType($toolQuestion->data_type)
+                    ->value($humanReadableAnswer)
+                    ->getCast();
                 $humanReadableAnswer = [];
                 foreach ($toolQuestion->options as $option) {
                     $humanReadableAnswer[$option['name']] = $humanReadableAnswerArray[$option['short']];

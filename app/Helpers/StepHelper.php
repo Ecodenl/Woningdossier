@@ -7,10 +7,11 @@ use App\Models\Building;
 use App\Models\CompletedStep;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
-use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\StepComment;
 use App\Models\SubStep;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class StepHelper
 {
@@ -23,19 +24,13 @@ class StepHelper
         'roof-insulation' => 'roof-insulation',
     ];
 
+    // TODO: Unused?
     const SERVICE_TO_SHORT = [
         'hr-boiler' => 'high-efficiency-boiler',
         'boiler' => 'high-efficiency-boiler',
         'total-sun-panels' => 'solar-panels',
         'sun-boiler' => 'heater',
         'house-ventilation' => 'ventilation',
-    ];
-
-    const QUICK_SCAN_STEP_SHORTS = [
-        'building-data',
-        'usage-quick-scan',
-        'living-requirements',
-        'residential-status',
     ];
 
     const STEP_COMPLETION_MAP = [
@@ -72,43 +67,6 @@ class StepHelper
         }
 
         return $commentsByStep;
-    }
-
-    /**
-     * Get the next expert step. By default it's a redirect to my plan. If there's a questionnaire, however, we'll
-     * go there first.
-     *
-     * @param  \App\Models\Step  $currentStep
-     * @param  \App\Models\Questionnaire|null  $currentQuestionnaire
-     *
-     * @return string
-     */
-    public static function getNextExpertStep(Step $currentStep, Questionnaire $currentQuestionnaire = null): string
-    {
-        $url = route('cooperation.frontend.tool.expert-scan.index', ['step' => $currentStep]);
-
-        // try to redirect them to a questionnaire that may exist on the step.
-        if ($currentStep->hasActiveQuestionnaires()) {
-            // There are active questionnaires. We just grab the first next questionnaire.
-            $query = $currentStep->questionnaires()
-                ->active()
-                ->orderBy('order');
-
-            if ($currentQuestionnaire instanceof Questionnaire) {
-                // If we're currently on a questionnaire, we grab the next one
-                $query->where('order', '>', $currentQuestionnaire->order);
-            }
-
-            $nextQuestionnaire = $query->first();
-
-            if ($nextQuestionnaire instanceof Questionnaire) {
-                // Next questionnaire exists, let's redirect to there
-                return "{$url}#questionnaire-{$nextQuestionnaire->id}";
-            }
-        }
-
-        // Redirect to my plan.
-        return route('cooperation.frontend.tool.quick-scan.my-plan.index');
     }
 
     /**
@@ -166,14 +124,19 @@ class StepHelper
      * @param \App\Models\Step $step
      * @param \App\Models\Building $building
      * @param \App\Models\InputSource $inputSource
-     * @param bool $triggerRecalculate
+     * @param \App\Models\User $authUser
      *
      * @return bool True if the step can be completed, false if it can't be completed.
      */
-    public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, bool $triggerRecalculate): bool
+    public static function completeStepIfNeeded(Step $step, Building $building, InputSource $inputSource, User $authUser): bool
     {
-        \Log::debug("COMPLETE IF NEEDED {$step->short}");
-        $allCompletedSubStepIds = CompletedSubStep::forInputSource($inputSource)
+        // We want to check if the user has completed the sub steps on master. The sub steps might be completed
+        // in a mixed bag of coach and resident.
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+        Log::debug("Complete step {$step->short} if needed");
+        $scan = $step->scan;
+        $allCompletedSubStepIds = CompletedSubStep::forInputSource($masterInputSource)
             ->forBuilding($building)
             ->whereHas('subStep', function ($query) use ($step) {
                 $query->where('step_id', $step->id);
@@ -186,14 +149,10 @@ class StepHelper
 
         if (empty($diff)) {
             // The sub step that has been completed finished up the set, so we complete the main step
+            Log::debug("Completing step {$step->short}");
             static::complete($step, $building, $inputSource);
 
-            // Trigger a recalculate if the tool is now complete
-            // TODO: Refactor this
-            if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
-                StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
-            }
-
+            StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
             return true;
         } else {
             // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
@@ -209,14 +168,10 @@ class StepHelper
 
             if ($cantSee === $leftoverSubSteps->count()) {
                 // Conditions "passed", so we complete!
+                Log::debug("Completing step {$step->short}");
                 static::complete($step, $building, $inputSource);
 
-                // Trigger a recalculate if the tool is now complete
-                // TODO: Refactor this
-                if ($triggerRecalculate && $building->hasCompletedQuickScan($inputSource)) {
-                    StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
-                }
-
+                StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
                 return true;
             }
         }

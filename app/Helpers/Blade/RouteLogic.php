@@ -7,18 +7,31 @@ use Illuminate\Support\Str;
 
 class RouteLogic
 {
-    public static function inQuickScanTool($route): bool
+    public static function inSimpleScan($route): bool
     {
         $routeName = static::getRouteName($route);
 
-        return Str::startsWith($routeName, 'cooperation.frontend.tool.quick-scan');
+        return Str::startsWith($routeName, 'cooperation.frontend.tool.simple-scan');
+    }
+
+    /** @deprecated use InScanTool instead. */
+    public static function inQuickScanTool($route): bool
+    {
+        return self::inSimpleScan($route);
     }
 
     public static function inMyPlan($route): bool
     {
         $routeName = static::getRouteName($route);
 
-        return Str::contains($routeName, 'my-plan.index');
+        return Str::contains($routeName, 'my-plan.');
+    }
+
+    public static function inMyRegulations($route): bool
+    {
+        $routeName = static::getRouteName($route);
+
+        return Str::contains($routeName, 'my-regulations.index');
     }
 
     public static function inQuestionnaire($route): bool

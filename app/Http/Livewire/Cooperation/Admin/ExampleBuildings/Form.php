@@ -5,11 +5,12 @@ namespace App\Http\Livewire\Cooperation\Admin\ExampleBuildings;
 use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\Step;
-use App\Models\ToolQuestion;
+use App\Rules\LanguageRequired;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
 
@@ -21,6 +22,7 @@ class Form extends Component
     public $exampleBuildingSteps;
     public $contents = [];
     public $contentStructure;
+    public bool $isSuperAdmin = false;
 
     // technically its available in the exampleBuildingSteps
     // But this is a easy and faster way to access the datatype.
@@ -33,11 +35,31 @@ class Form extends Component
         'is_default' => 0,
     ];
 
+    protected function rules(): array
+    {
+        $rules = [
+            'exampleBuildingValues.name' => ['required', new LanguageRequired()],
+            'exampleBuildingValues.building_type_id' => 'required|exists:building_types,id',
+            'exampleBuildingValues.is_default' => 'required|boolean',
+            'exampleBuildingValues.order' => 'nullable|numeric|min:0',
+            'contents.new.build_year' => 'nullable|numeric|min:1800'
+        ];
+
+        if ($this->isSuperAdmin) {
+            $rules['exampleBuildingValues.cooperation_id'] = 'nullable|exists:cooperations,id';
+        }
+
+        return $rules;
+    }
+
     public function mount(ExampleBuilding $exampleBuilding = null)
     {
-        $this->exampleBuilding = $exampleBuilding;
+        $this->isSuperAdmin = HoomdossierSession::currentRole() === RoleHelper::ROLE_SUPER_ADMIN;
+        if ($this->isSuperAdmin) {
+            $this->cooperations = Cooperation::all();
+        }
+
         $this->buildingTypes = BuildingType::all();
-        $this->cooperations = Cooperation::all();
 
         $this->contentStructure = [];
 
@@ -54,16 +76,20 @@ class Form extends Component
             }
         }
 
-        if ($exampleBuilding instanceof ExampleBuilding) {
+        // By type-hinting it as model in the mount, it is auto-created as empty model. We instead check if it
+        // exists.
+        if ($exampleBuilding->exists) {
             $this->exampleBuildingValues = $exampleBuilding->attributesToArray();
             foreach ($exampleBuilding->contents as $exampleBuildingContent) {
-
                 $content = array_merge($this->contentStructure, $exampleBuildingContent->content);
                 // make sure it has all the available tool questions
                 foreach ($content as $toolQuestionShort => $value) {
                     if (array_key_exists($toolQuestionShort, $this->toolQuestionDataType)) {
                         if ($this->toolQuestionDataType[$toolQuestionShort] === \App\Helpers\DataTypes\Caster::FLOAT) {
-                            $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->getFormatForUser();
+                            $content[$toolQuestionShort] = Caster::init()
+                                ->dataType(Caster::FLOAT)
+                                ->value($value)
+                                ->getFormatForUser();
                         }
                     } else {
                         // If it's not found it means it should not be set
@@ -115,22 +141,32 @@ class Form extends Component
         // which would then mess up the view due to missing relations..
         $this->hydrateExampleBuildingSteps();
 
-        $this->validate([
-            'exampleBuildingValues.building_type_id' => 'required|exists:building_types,id',
-            'exampleBuildingValues.cooperation_id' => 'nullable|exists:cooperations,id',
-            'exampleBuildingValues.is_default' => 'required|boolean',
-            'exampleBuildingValues.order' => 'nullable|numeric|min:0',
-            'contents.new.build_year' => 'nullable|numeric|min:0'
-        ]);
-        if (empty($this->exampleBuildingValues['cooperation_id'])) {
-            $this->exampleBuildingValues['cooperation_id'] = null;
+        $this->validate();
+
+        if (! is_numeric($this->exampleBuildingValues['order'] ?? null)) {
+            // Empty string isn't allowed
+            $this->exampleBuildingValues['order'] = null;
         }
+
+        if ($this->isSuperAdmin) {
+            // If the super-admin wants to create a application wide example building
+            // he keep the input empty
+            if (empty($this->exampleBuildingValues['cooperation_id'])) {
+                $this->exampleBuildingValues['cooperation_id'] = null;
+            }
+        } else {
+            // non super-admin, so the example building will always be related to the users it cooperation
+            // we alter the values for easy saving.
+            $this->exampleBuildingValues['cooperation_id'] = HoomdossierSession::getCooperation();
+        }
+
         // update or create
         if ($this->exampleBuilding instanceof ExampleBuilding) {
             $this->exampleBuilding->update($this->exampleBuildingValues);
         } else {
             $this->exampleBuilding = ExampleBuilding::create($this->exampleBuildingValues);
         }
+
         foreach ($this->contents as $buildYear => $content) {
             // the build year will be empty (as a key) when its a newly added one
             // in that case the build year will be manually added in the form.
@@ -146,26 +182,35 @@ class Form extends Component
             // note: dotting and undotting wont work
             // will give the array keys, and wire:model is to dumb to understand that.
             foreach ($content as $toolQuestionShort => $value) {
-
-                if (is_array($value)) {
-                    // multiselects
-                    // we dont need and dont WANT the keys
-                    // just the values, filter out null and only set the values.
-                    $value = array_filter($value, fn($value) => $value !== "null");
-                    $value = array_values($value);
-                    $content[$toolQuestionShort] = $value;
-                }
-                if ($value === null || $value === "null") {
+                if (in_array($toolQuestionShort, ExampleBuildingHelper::UNANSWERABLE_TOOL_QUESTIONS)) {
                     unset($content[$toolQuestionShort]);
-                }
+                } else {
+                    if (is_array($value)) {
+                        // multiselects
+                        // we dont need and dont WANT the keys
+                        // just the values, filter out null and only set the values.
+                        $value = array_filter($value, fn($value) => $value !== "null");
+                        $value = array_values($value);
+                        $content[$toolQuestionShort] = $value;
+                    }
+                    if ($value === null || $value === "null") {
+                        unset($content[$toolQuestionShort]);
+                    }
 
-                // cast the value to a database value (a int)
-                if ($this->toolQuestionDataType[$toolQuestionShort] === Caster::FLOAT) {
-                    $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->reverseFormatted();
+                    // cast the value to a database value (a int)
+                    if ($this->toolQuestionDataType[$toolQuestionShort] === Caster::FLOAT) {
+                        $content[$toolQuestionShort] = Caster::init()
+                            ->dataType(Caster::FLOAT)
+                            ->value($value)
+                            ->reverseFormatted();
+                    }
                 }
             }
 
             if ($buildYear !== "new") {
+                // While we redirect below, it seems Livewire still makes a request to the frontend. We set
+                // the new content, else it throws an undefined index exception.
+                $this->contents[$buildYear] = $content;
                 $this->exampleBuilding->contents()->updateOrCreate(['build_year' => $buildYear], ['content' => $content]);
             }
         }

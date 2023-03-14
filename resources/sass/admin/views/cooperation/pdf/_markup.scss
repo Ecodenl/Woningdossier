@@ -1,143 +1,89 @@
-* {
-  margin: 0;
-  font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
-}
-
 h1 {
-  font-size: 26px;
-  font-weight: bold;
-  color: $color-main;
+    font-family: Helvetice, sans-serif;
+    font-size: $font-size-title;
+    font-weight: bold;
+    color: $color-main;
+    line-height: $universal-line-height;
+    margin: 0 0 4rem;
+    padding: 0;
 }
 
 h2 {
-  font-size: 21.33px;
-  font-weight: bold;
-  color: $color-main;
-}
-
-body {
-  &.new-page {
-    padding-top: 50px;
-  }
-}
-
-
-.step-intro {
-  h2 {
-    display: block;
-    margin: 8px 0 0 0;
-  }
-
-  img {
-    width: 50px;
-    height: 50px;
-    display: block;
-    float: left;
-  }
-
-  p {
-    padding-top: 25px;
+    font-family: Helvetice, sans-serif;
+    font-size: $font-size-sub-heading-1;
     font-weight: bold;
-  }
-
-  margin-bottom: 25px;
+    color: $color-main;
+    line-height: $universal-line-height;
+    margin: 0 0 0.25rem;
+    padding: 0;
 }
 
-ol {
-  li {
+h3 {
+    font-family: Helvetice, sans-serif;
+    font-size: $font-size-sub-heading-2;
     font-weight: bold;
-    color: $color-black;
-    font-size: $font-size-small;
-  }
+    color: $color-main;
+    line-height: $universal-line-height;
+    margin: 0 0 0.25rem;
+    padding: 0;
+}
+
+h4 {
+    font-family: Helvetice, sans-serif;
+    font-size: $font-size-sub-heading-3;
+    font-weight: bold;
+    color: $color-main;
+    line-height: $universal-line-height;
+    margin: 0 0 0.25rem;
+    padding: 0;
+}
+
+h5 {
+    font-family: Helvetice, sans-serif;
+    font-size: $font-size-sub-heading-3;
+    font-weight: bold;
+    color: $color-main;
+    line-height: $universal-line-height;
+    margin: 0.25rem 0 0;
+    padding: 0;
 }
 
 p {
-  color: $color-black;
-  font-size: $font-size-small;
-  line-height: 1.5em;
-
-  &.sub-lead {
-    font-weight: bold;
-    color: $color-main;
-  }
-
-  &.lead {
-    font-weight: bold;
-    color: $color-main;
-    font-size: 16px;
-  }
+    font-family: Helvetice, sans-serif;
+    color: $color-black;
+    font-size: $font-size-normal;
+    line-height: $universal-line-height;
+    margin: 0;
+    padding: 0;
 }
 
-.question-answer-section {
-  margin-top: 15px;
-  margin-bottom: 15px;
-
-  p.lead {
-    margin-bottom: 1px;
-  }
-
-  ul {
-
-    list-style: none;
-    padding-left: 2em;
-
-    li {
-      font-size: $font-size-small;
-
-      &:before {
-        content: "-";
-        text-indent: -2em;
-        display: inline-block;
-      }
-    }
-  }
-
-  .question-answer {
-    p {
-      display: inline-block;
-    }
-  }
+small {
+    font-family: Helvetice, sans-serif;
+    color: $color-black;
+    font-size: $font-size-small;
+    line-height: $universal-line-height;
+    margin: 0;
+    padding: 0;
 }
 
-table {
-  border-collapse: collapse;
-  font-size: $font-size-small;
-  margin-bottom: 5px;
+.comment {
+    word-wrap: break-word !important;
+    white-space: pre-line;
+}
 
-  thead {
-    background-color: $color-main;
-    color: $color-white;
+// Imitate Tailwind
+.text-blue-900 {
+    color: #1122C8;
+}
 
-    &.no-background {
-      background-color: white;
-      color: $color-main;
-    }
+.text-green {
+    color: #2CA982;
+}
 
-    &.lead {
-      font-weight: bold;
-      color: $color-main;
-      font-size: 16px;
-    }
-    th {
-      text-align: left;
-    }
-  }
+.text-orange {
+    color: #FF7F4A;
+}
 
-  tbody {
-    background-color: $color-white;
-
-    tr {
-      vertical-align: top;
-
-      &.border-bottom {
-        &:first-child {
-          border-bottom: 1px solid $color-main;
-        }
-
-        td {
-          border-top: 1px solid $color-main;
-        }
-      }
-    }
-  }
+.text-red {
+    color: #E41440;
 }

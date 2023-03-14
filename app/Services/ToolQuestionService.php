@@ -80,11 +80,7 @@ class ToolQuestionService {
 
         // We can't do a update or create, we just have to delete the old answers and create the new one.
         if ($this->toolQuestion->data_type === Caster::ARRAY) {
-            $this->toolQuestion->toolQuestionAnswers()
-                ->allInputSources()
-                ->where($where)
-                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
-                ->delete();
+            $this->clearAnswer($this->toolQuestion, $where);
 
             foreach ($givenAnswer as $answer) {
                 $toolQuestionCustomValue = ToolQuestionCustomValue::where('tool_question_id', $this->toolQuestion->id)
@@ -114,7 +110,7 @@ class ToolQuestionService {
                 ->updateOrCreate($where, $data);
         }
 
-       $this->checkConditionalAnswers($givenAnswer);
+        $this->checkConditionalAnswers($givenAnswer);
     }
 
     public function saveToolQuestionValuables($givenAnswer)
@@ -182,7 +178,7 @@ class ToolQuestionService {
                 $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
                 // apply the example building for the given changes.
                 // we give him the old building features, otherwise we cant verify the changes
-                ApplyExampleBuildingForChanges::dispatchNow($oldBuildingFeature, $answerData, $this->currentInputSource);
+                ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
             }
         }
 
@@ -221,10 +217,10 @@ class ToolQuestionService {
      */
     private function checkConditionalAnswers($givenAnswer)
     {
-        // TODO: Check the format for rating-slider questions (also in the evaluator itself)
+        // TODO: See how to handle JSON answers in case it ever becomes a conditional (comes back as literal JSON)
         // We build the answers ourselves to make a few less queries
         $answers = collect([
-            $this->toolQuestion->short => is_array($givenAnswer) ? collect($givenAnswer) : $givenAnswer,
+            $this->toolQuestion->short => $givenAnswer,
         ]);
 
         // Now we need to find any conditional answers that might be related to this question
@@ -234,9 +230,17 @@ class ToolQuestionService {
         //$toolQuestionValuables = ToolQuestionValuable::whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"{$this->toolQuestion->short}\""])
         //    ->get();
 
+        $allConditions = [];
+        foreach ($conditionalCustomValues as $conditionalCustomValue) {
+            $allConditions = array_merge($allConditions, $conditionalCustomValue->conditions ?? []);
+        }
+
         $evaluator = ConditionEvaluator::init()
             ->inputSource($this->currentInputSource)
             ->building($this->building);
+
+        // Retrieve all answers because conditions might be based on more than just this tool question.
+        $answers = $evaluator->getToolAnswersForConditions($allConditions, $answers);
 
         $toolQuestionsToUnset = [];
         foreach ($conditionalCustomValues as $conditionalCustomValue) {
@@ -282,24 +286,31 @@ class ToolQuestionService {
         //    }
         //}
 
-        if (! empty($toolQuestionsToUnset)) {
+        // If we have tool questions to unset, and we're not on the example building right now, we will delete the
+        // sub steps
+        if (! empty($toolQuestionsToUnset) && $this->currentInputSource->short !== InputSource::EXAMPLE_BUILDING) {
             $processedIds = [];
+            $processedSubSteps = [];
 
             // Clear (sub) steps
             foreach ($toolQuestionsToUnset as $toolQuestion) {
                 if (! in_array($toolQuestion->id, $processedIds)) {
                     foreach ($toolQuestion->subSteps as $subStep) {
-                        CompletedSubStep::allInputSources()
-                            ->where('building_id', $this->building->id)
-                            ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
-                            ->where('sub_step_id', $subStep->id)
-                            ->delete();
+                        if (! in_array($subStep->id, $processedSubSteps)) {
+                            CompletedSubStep::allInputSources()
+                                ->where('building_id', $this->building->id)
+                                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
+                                ->where('sub_step_id', $subStep->id)
+                                ->delete();
 
-                        CompletedStep::allInputSources()
-                            ->where('building_id', $this->building->id)
-                            ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
-                            ->where('step_id', $subStep->step_id)
-                            ->delete();
+                            CompletedStep::allInputSources()
+                                ->where('building_id', $this->building->id)
+                                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
+                                ->where('step_id', $subStep->step_id)
+                                ->delete();
+
+                            $processedSubSteps[] = $subStep->id;
+                        }
                     }
 
                     $processedIds[] = $toolQuestion->id;
@@ -311,9 +322,14 @@ class ToolQuestionService {
     private function clearAnswer(ToolQuestion $toolQuestion, array $where)
     {
         if (is_null($toolQuestion->save_in)) {
+            // We don't want to mess with the master if it's the example building
+            $whereIn = $this->currentInputSource->short === InputSource::EXAMPLE_BUILDING
+                ? [$this->currentInputSource->id]
+                : [$this->masterInputSource->id, $this->currentInputSource->id];
+
             $toolQuestion->toolQuestionAnswers()
                 ->allInputSources()
-                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
+                ->whereIn('input_source_id', $whereIn)
                 ->where($where)
                 ->delete();
         }

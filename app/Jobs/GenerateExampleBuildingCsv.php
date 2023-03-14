@@ -11,12 +11,14 @@ use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\ToolQuestion;
 use App\Services\ContentStructureService;
+use App\Services\DumpService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 class GenerateExampleBuildingCsv implements ShouldQueue
 {
@@ -46,7 +48,7 @@ class GenerateExampleBuildingCsv implements ShouldQueue
     public function handle()
     {
         $contentStructure = ContentStructureService::init(
-            ToolHelper::getNewContentStructure()
+            ToolHelper::getContentStructure(ToolHelper::STRUCT_TOTAL, DumpService::MODE_CSV)
         )->applicableForExampleBuildings();
 
         // Use array_values because apparently you cannot unpack (...) associative arrays (until PHP 8.1, anyways)
@@ -90,12 +92,10 @@ class GenerateExampleBuildingCsv implements ShouldQueue
         $this->fileStorage->isProcessed();
     }
 
-    public function Failed(\Throwable $exception)
+    public function failed(Throwable $exception)
     {
         $this->fileStorage->delete();
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

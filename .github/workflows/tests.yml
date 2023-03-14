@@ -68,6 +68,8 @@ jobs:
       - name: Change Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
         # REALLY REQUIRED to prevent "environment key not set" issues on unit tests..
+      - name: APP encryption key
+        run: php artisan key:generate
       - name: Clear Config
         run: php artisan config:clear && php artisan config:cache
       - name: Prepare Laravel Application

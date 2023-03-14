@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\InputSource;
+use App\Services\Verbeterjehuis\RegulationService;
 
 return [
     'step-count' => 'Stap :current van :total',
@@ -52,13 +53,12 @@ return [
                         'button' => 'Eigen maatregel toevoegen',
                     ],
                 ],
-
-
-
             ],
             'see-info' => 'Zie info',
-            'subsidy' => [
-                // Todo when constants are available
+            'regulations' => [
+                'subsidy-available' => 'Subsidie mogelijk',
+                'after-subsidy-cut' => 'Na aftrek subsidie',
+                'loan-available' => 'Lening mogelijk',
             ],
             'investment' => 'Investering',
             'savings' => 'Besparing per jaar',
@@ -127,5 +127,29 @@ return [
             'download-report' => 'Download bestaande rapportage',
             'create-report' => 'Maak rapportage',
         ],
+    ],
+    'my-regulations' => [
+        'loading' => 'Maatregelen worden berekend...',
+        'provider' => [
+            'to' => 'Naar aanbieder',
+        ],
+        'refreshed' => [
+            'not' => 'Regelingen zijn nog niet opgehaald',
+            'last' => 'Laatst geupdate om :date',
+            'busy' => 'Wordt ververst..',
+            'ready' => 'Ververs regelingen'
+        ],
+        'categories' => [
+            RegulationService::SUBSIDY => 'Subsidies (:count)',
+            RegulationService::LOAN => 'Leningen (:count)',
+            RegulationService::OTHER => 'Overige (:count)',
+        ],
+        'container' => [
+            'intro' => [
+                RegulationService::SUBSIDY => 'Er zijn de volgende subsidieregelingen beschikbaar voor jouw situatie:',
+                RegulationService::LOAN => 'Er zijn de volgende leningen beschikbaar in jouw gemeente:',
+                RegulationService::OTHER => 'Andere beschikbare regelingen:',
+            ],
+        ]
     ],
 ];

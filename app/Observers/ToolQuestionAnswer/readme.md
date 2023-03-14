@@ -1,5 +1,7 @@
-##ToolQuestionAnswer
+## ToolQuestionAnswers
 
-This namespace will contain classes that match the short of a `ToolQuestion`, these tool questions need some additional code upon saving / updating.
+This namespace will contain classes that match the short of a `ToolQuestion`, these tool questions need some additional 
+code upon saving.
 
-These classes should be triggered by the ToolQuestionAnswerObserver, it's intended to keep the custom code logic separated from the observer itself.  
+These classes should be triggered by the ToolQuestionAnswerObserver. It's intended to keep the custom code logic 
+separated from the observer itself.  

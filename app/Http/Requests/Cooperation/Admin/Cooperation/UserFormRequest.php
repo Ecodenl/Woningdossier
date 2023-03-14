@@ -32,7 +32,7 @@ class UserFormRequest extends FormRequest
     {
         // Add new data field before it gets sent to the validator
         $this->merge([
-            'house_number_extension' => strtolower(preg_replace("/[\s-]+/", '', $this->get('house_number_extension', ''))),
+            'extension' => strtolower(preg_replace("/[\s-]+/", '', $this->get('extension', ''))),
         ]);
     }
 
@@ -52,7 +52,7 @@ class UserFormRequest extends FormRequest
             'last_name' => 'required|string|max:255',
             'postal_code' => ['required', new PostalCode('nl')],
             'number' => ['required', new HouseNumber('nl')],
-            'house_number_extension' => [new HouseNumberExtension('nl')],
+            'extension' => [new HouseNumberExtension('nl')],
             'phone_number' => ['nullable', new PhoneNumber('nl')],
             'street' => 'required|string',
             'city' => 'required|string',

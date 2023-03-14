@@ -297,7 +297,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'maintenance_unit' => [
                     'nl' => 'jaar',
                 ],
-                'step' => 'insulated-glazing',
+                'step' => 'ventilation',
                 'configurations' => [
                     'comfort' => 3,
                     'icon' => 'icon-cracks-seams',

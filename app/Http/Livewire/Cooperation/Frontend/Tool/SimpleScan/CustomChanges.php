@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
+use App\Events\CustomMeasureApplicationChanged;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\MappingHelper;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
@@ -10,10 +12,14 @@ use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
+use App\Models\Mapping;
+use App\Models\MeasureCategory;
 use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\VisibleScope;
+use App\Services\MappingService;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -25,6 +31,7 @@ class CustomChanges extends Component
     public array $selectedCustomMeasureApplications = [];
     public array $selectedCooperationMeasureApplications = [];
     public array $previousSelectedState = [];
+    public Collection $measures;
 
     public InputSource $masterInputSource;
     public InputSource $currentInputSource;
@@ -35,13 +42,19 @@ class CustomChanges extends Component
 
     public string $type;
 
-    protected array $rules = [
-        'customMeasureApplicationsFormData.*.name' => 'required',
-        'customMeasureApplicationsFormData.*.info' => 'required',
-        'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
-        'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
-        'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric|max:999999',
-    ];
+    protected function rules(): array
+    {
+        return [
+            'customMeasureApplicationsFormData.*.name' => 'required',
+            'customMeasureApplicationsFormData.*.info' => 'required',
+            'customMeasureApplicationsFormData.*.measure_category' => [
+                'nullable', 'exists:measure_categories,id',
+            ],
+            'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
+            'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
+            'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric|max:999999',
+        ];
+    }
 
     public array $attributes;
 
@@ -60,10 +73,13 @@ class CustomChanges extends Component
         $this->attributes = [
             'customMeasureApplicationsFormData.*.name' => $globalAttributeTranslations['custom_measure_application.name'],
             'customMeasureApplicationsFormData.*.info' => $globalAttributeTranslations['custom_measure_application.info'],
+            'customMeasureApplicationsFormData.*.measure_category' => $globalAttributeTranslations['custom_measure_application.measure_category'],
             'customMeasureApplicationsFormData.*.costs.from' => $globalAttributeTranslations['custom_measure_application.costs.from'],
             'customMeasureApplicationsFormData.*.costs.to' => $globalAttributeTranslations['custom_measure_application.costs.to'],
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
         ];
+
+        $this->measures = MeasureCategory::all();
 
         $this->setMeasureApplications();
     }
@@ -75,6 +91,7 @@ class CustomChanges extends Component
 
     public function updatedSelectedCooperationMeasureApplications($value)
     {
+        // This triggers when the `$this->selectedCooperationMeasureApplications` is updated.
         abort_if(HoomdossierSession::isUserObserving(), 403);
         $key = 'cooperationMeasureApplications';
 
@@ -82,13 +99,13 @@ class CustomChanges extends Component
         $added = array_diff($value, $this->previousSelectedState[$key]);
         $removed = array_diff($this->previousSelectedState[$key], $value);
 
-        $index = empty ($added) ? Arr::first($removed) : Arr::first($added);
+        $index = empty($added) ? Arr::first($removed) : Arr::first($added);
         // If removed is not empty, it's not visible, if it is empty, it is visible
-        $visible = empty ($removed);
+        $visible = empty($removed);
 
         $measure = $this->cooperationMeasureApplicationsFormData[$index] ?? null;
 
-        if (!empty($measure)) {
+        if (! empty($measure)) {
             $cooperationMeasureApplication = CooperationMeasureApplication::find($measure['id']);
 
             // No bogged data
@@ -125,6 +142,7 @@ class CustomChanges extends Component
 
     public function updatedSelectedCustomMeasureApplications($value)
     {
+        // This triggers when the `$this->selectedCustomMeasureApplications` is updated.
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
         $key = 'customMeasureApplications';
@@ -133,13 +151,13 @@ class CustomChanges extends Component
         $added = array_diff($value, $this->previousSelectedState[$key]);
         $removed = array_diff($this->previousSelectedState[$key], $value);
 
-        $index = empty ($added) ? Arr::first($removed) : Arr::first($added);
+        $index = empty($added) ? Arr::first($removed) : Arr::first($added);
         // If removed is not empty, it's not visible, if it is empty, it is visible
-        $visible = empty ($removed);
+        $visible = empty($removed);
 
         $measure = $this->customMeasureApplicationsFormData[$index] ?? null;
 
-        if (!empty($measure)) {
+        if (! empty($measure)) {
             $masterCustomMeasureApplication = CustomMeasureApplication::forInputSource($this->masterInputSource)
                 ->where('hash', $measure['hash'])
                 ->where('id', $measure['id'])
@@ -186,7 +204,7 @@ class CustomChanges extends Component
         if (! empty($measure)) {
             // We must validate on index base, so we replace the wild card with the current index
             $customRules = [];
-            foreach ($this->rules as $key => $rule) {
+            foreach ($this->rules() as $key => $rule) {
                 $key = str_replace('*', $index, $key);
                 $rule = str_replace('*', $index, $rule);
 
@@ -216,7 +234,7 @@ class CustomChanges extends Component
                 $costs['from'] = NumberFormatter::formatNumberForUser($costs['from']);
                 $costs['to'] = NumberFormatter::formatNumberForUser($costs['to']);
                 $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
-                $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::formatNumberForUser( $this->customMeasureApplicationsFormData[$index]['savings_money']);
+                $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::formatNumberForUser($this->customMeasureApplicationsFormData[$index]['savings_money']);
             }
 
             // Validate, we don't need the data
@@ -231,7 +249,7 @@ class CustomChanges extends Component
             ];
 
             // If a hash and ID are set, then a measure has been edited
-            if (! is_null($measure['hash']) && !is_null($measure['id'])) {
+            if (! is_null($measure['hash']) && ! is_null($measure['id'])) {
                 // ID is set for master input source, so we fetch the master input source custom measure
                 /** @var CustomMeasureApplication $customMeasureApplication */
                 $masterCustomMeasureApplication = CustomMeasureApplication::forInputSource($this->masterInputSource)
@@ -250,8 +268,8 @@ class CustomChanges extends Component
                             'hash' => $masterCustomMeasureApplication->hash,
                         ],
                         [
-                            'name' => ['nl' => strip_tags($measure['name'])],
-                            'info' => ['nl' => strip_tags($measure['info'])],
+                            'name' => ['nl' => $measure['name']],
+                            'info' => ['nl' => $measure['info']],
                         ],
                     );
                 }
@@ -261,8 +279,8 @@ class CustomChanges extends Component
                 $customMeasureApplication = CustomMeasureApplication::create([
                     'building_id' => $this->building->id,
                     'input_source_id' => $this->currentInputSource->id,
-                    'name' => ['nl' => strip_tags($measure['name'])],
-                    'info' => ['nl' => strip_tags($measure['info'])],
+                    'name' => ['nl' => $measure['name']],
+                    'info' => ['nl' => $measure['info']],
                     'hash' => $hash,
                 ]);
 
@@ -271,6 +289,19 @@ class CustomChanges extends Component
 
             // The default "voeg onderdeel toe" also holds data, but the name will be empty. So when name empty; do not save
             if (isset($customMeasureApplication) && $customMeasureApplication instanceof CustomMeasureApplication) {
+                // !important! this has to be done before the userActionPlanAdvice relation is made
+                // otherwise the observer will fire when the mapping hasnt been done yet.
+
+                // We read from the master. Therefore we need to sync to the master also.
+                $from = $customMeasureApplication->getSibling($this->masterInputSource);
+                $measureCategory = MeasureCategory::find($measureData['measure_category'] ?? null);
+                $service = MappingService::init()
+                    //->type(MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
+                    ->from($from);
+                $measureCategory instanceof MeasureCategory
+                    ? $service->sync([$measureCategory], MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
+                    : $service->detach();
+
                 // Update the user action plan advice linked to this custom measure
                 $customMeasureApplication
                     ->userActionPlanAdvices()
@@ -283,6 +314,7 @@ class CustomChanges extends Component
                         ],
                         $updateData
                     );
+                CustomMeasureApplicationChanged::dispatch($from);
             }
         }
 
@@ -294,15 +326,14 @@ class CustomChanges extends Component
     private function setMeasureApplications()
     {
         $this->customMeasureApplicationsFormData = [];
-        // Retrieve the user's custom measures
-        $customMeasureApplications = $this->building->customMeasureApplications()
-            ->forInputSource($this->masterInputSource)->get();
-
         $this->cooperationMeasureApplicationsFormData = [];
 
         // Retrieve the cooperation's custom measures
         $scope = "{$this->type}Measures";
-        $cooperationMeasureApplications = $this->cooperation->cooperationMeasureApplications()->{$scope}()->get();
+        $cooperationMeasureApplications = $this->cooperation->cooperationMeasureApplications()
+            ->{$scope}()
+            ->with(['userActionPlanAdvices' => fn ($q) => $q->where('user_id', $this->building->user->id)->forInputSource($this->masterInputSource)])
+            ->get();
 
         // Set the cooperation measures
         /** @var \App\Models\CooperationMeasureApplication $cooperationMeasureApplication */
@@ -318,27 +349,30 @@ class CustomChanges extends Component
             $this->cooperationMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($cooperationMeasureApplication->savings_money, 1);
 
             // Let's see if a userActionPlanAdvice exists, so we know if it should be checked
-            $userActionPlanAdvice = $cooperationMeasureApplication->userActionPlanAdvices()
-                ->forInputSource($this->masterInputSource)
-                ->where('user_id', $this->building->user->id)
-                ->first();
+            $userActionPlanAdvice = $cooperationMeasureApplication->userActionPlanAdvices->first();
 
             if ($userActionPlanAdvice instanceof UserActionPlanAdvice && $userActionPlanAdvice->visible) {
-                $this->selectedCooperationMeasureApplications[] = (string)$index;
+                $this->selectedCooperationMeasureApplications[] = (string) $index;
             }
         }
 
         // Only set custom measures if we're setting small types
         if ($this->type === CooperationMeasureApplicationHelper::SMALL_MEASURE) {
+            // Retrieve the user's custom measures
+            $customMeasureApplications = $this->building->customMeasureApplications()
+                ->forInputSource($this->masterInputSource)
+                ->with(['userActionPlanAdvices' => fn ($q) => $q->where('user_id', $this->building->user->id)->forInputSource($this->masterInputSource)])
+                ->get();
+
+            $measures = [];
+
             // Set the custom measures
             /** @var CustomMeasureApplication $customMeasureApplication */
             foreach ($customMeasureApplications as $index => $customMeasureApplication) {
                 $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name', 'info',]);
                 $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
 
-                $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices()
-                    ->forInputSource($this->masterInputSource)
-                    ->first();
+                $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices->first();
 
                 if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
                     $costs = $userActionPlanAdvice->costs;
@@ -354,6 +388,20 @@ class CustomChanges extends Component
                         $this->selectedCustomMeasureApplications[] = (string)$index;
                     }
                 }
+
+                // As of now, a custom measure can only hold ONE mapping
+                $mapping = MappingService::init()->from($customMeasureApplication)
+                    //->type(MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
+                    ->resolveMapping()
+                    ->first();
+                if ($mapping instanceof Mapping) {
+                    $this->customMeasureApplicationsFormData[$index]['measure_category'] = optional($mapping->mappable)->id;
+                }
+            }
+
+            // Set mapped measures
+            if (empty($this->measures)) {
+                $this->measures = $measures;
             }
 
             // Append the option to add a new application

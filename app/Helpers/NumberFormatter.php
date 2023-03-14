@@ -47,13 +47,21 @@ class NumberFormatter
      *
      * @return float|int
      */
-    public static function round($number, $bucket = 5)
+    public static function round($number, int $bucket = 5)
     {
+        $bucket = $bucket <= 0 ? 1 : $bucket;
+
         if (! is_numeric($number)) {
             $number = static::reverseFormat($number);
         }
 
-        return round($number / $bucket) * $bucket;
+        $result = round($number / $bucket) * $bucket;
+
+        if (substr($result, 0, 1) === '-' && $result == 0) {
+            return 0;
+        }
+
+        return $result;
     }
 
     /**

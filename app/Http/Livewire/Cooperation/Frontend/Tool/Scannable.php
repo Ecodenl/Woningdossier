@@ -100,7 +100,17 @@ abstract class Scannable extends Component
             if ($toolQuestion instanceof ToolQuestion) {
                 // If it's an INT, we want to ensure the value set is also an INT
                 if ($toolQuestion->data_type === Caster::INT) {
-                    $value = Caster::init(Caster::INT, Caster::init(Caster::INT, $value)->reverseFormatted())->getFormatForUser();
+                    // So, if a value is an empty string, we will nullify it. If it's an empty string, it will get cast
+                    // to a 0. We don't want that. If we do that, a user can never "reset" their answer. It will only
+                    // ever be an empty string, when it's user input.
+
+                    if ($value === '') {
+                        $value = null;
+                        $this->fill([$field => $value]);
+                    }
+
+                    $caster = Caster::init()->dataType(Caster::INT)->value($value);
+                    $value = $caster->value($caster->reverseFormatted())->getFormatForUser();
                     $this->filledInAnswers[$toolQuestionShort] = $value;
                 }
             }
@@ -156,9 +166,7 @@ abstract class Scannable extends Component
 
                     // we will only unset the rules if its a tool question, not relevant for other sub steppables.
                     if ($subSteppablePivot->isToolQuestion()) {
-                        $this->filledInAnswers[$toolQuestion->short] = null;
-
-                        // and unset the validation for the question based on type.
+                        // unset the validation for the question based on type.
                         switch ($toolQuestion->data_type) {
                             case Caster::JSON:
                                 foreach ($toolQuestion->options as $option) {
@@ -209,7 +217,7 @@ abstract class Scannable extends Component
                 $toolQuestion = $this->toolQuestions->where('short', $toolQuestionShort)->first();
                 // Validator failed, let's put it back as the user format
                 if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                    $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
+                    $this->filledInAnswers[$toolQuestion->short] = Caster::init()->dataType($toolQuestion->data_type)->value($this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
                 }
 
                 // TODO: Check if this should be subject to $this->automaticallyEvaluate
@@ -261,7 +269,6 @@ abstract class Scannable extends Component
     {
         // base key where every answer is stored
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-
             // We get all answers, including for the master. This way we reduce amount of queries needed.
             $this->filledInAnswersForAllInputSources[$toolQuestion->short] = $this->building->getAnswerForAllInputSources($toolQuestion, true);
 
@@ -305,8 +312,11 @@ abstract class Scannable extends Component
                     if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                         // Before we would set sliders and text answers differently. Now, because they are mapped by the
                         // same (by data type) it could be that value is not set.
-                        $answer = $answerForInputSource ?? $toolQuestion->options['value'] ?? 0;
-                        $answerForInputSource = Caster::init($toolQuestion->data_type, $answer)->getFormatForUser();
+                        $answer = $answerForInputSource ?? $toolQuestion->options['value'] ?? null;
+                        $answerForInputSource = Caster::init()
+                            ->dataType($toolQuestion->data_type)
+                            ->value($answer)
+                            ->getFormatForUser();
                     }
 
                     $this->filledInAnswers[$toolQuestion->short] = $answerForInputSource;

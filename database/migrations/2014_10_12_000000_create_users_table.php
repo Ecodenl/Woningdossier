@@ -30,8 +30,11 @@ class CreateUsersTable extends Migration
                 $table->text('last_visited_url')->nullable()->default(null);
             }
 
+
             $table->boolean('active')->default(1);
             $table->boolean('is_admin')->default(false);
+            $table->dateTime('regulations_refreshed_at')->nullable()->default(null);
+            $table->boolean('refreshing_regulations')->default(false);
 
             $table->timestamps();
         });

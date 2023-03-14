@@ -21,19 +21,14 @@ use Tests\TestCase;
 
 class AuthenticatedSessionControllerTest extends TestCase
 {
-    use WithFaker, MocksLvbag;
-    use RefreshDatabase;
+    use WithFaker,
+        MocksLvbag,
+        RefreshDatabase;
 
     public $seed = true;
     public $seeder = DatabaseSeeder::class;
-    private array $formData;
 
     protected $followRedirects = true;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
 
     public function test_login_succeeds_with_valid_credentials()
     {
@@ -81,6 +76,14 @@ class AuthenticatedSessionControllerTest extends TestCase
 
     public function test_regulations_refresh_after_municipality_has_been_attached_after_login()
     {
+        $fallbackData = [
+            'street' => $this->faker->streetName,
+            'number' => $this->faker->numberBetween(3, 22),
+            'city' => 'bubba',
+            'extension' => 'd',
+            'postal_code' => $this->faker->postcode,
+        ];
+
         Bus::fake([RefreshRegulationsForBuildingUser::class]);
         $account = Account::factory()->create(['password' => Hash::make('secret')]);
         $cooperation = Cooperation::factory()->create();
@@ -101,7 +104,7 @@ class AuthenticatedSessionControllerTest extends TestCase
         $municipality = Municipality::factory()->create();
 
         $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
-        $this->mockLvbagClientWoonplaats($fromMunicipalityName);
+        $this->mockLvbagClientAdresUitgebreid($fallbackData)->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
 
         MappingService::init()
             ->from($fromMunicipalityName)

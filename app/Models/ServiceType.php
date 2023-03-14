@@ -19,8 +19,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Element[] $elements
  * @property-read int|null $elements_count
  * @property-read array $translations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $measures
- * @property-read int|null $measures_count
  * @method static \Database\Factories\ServiceTypeFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newQuery()

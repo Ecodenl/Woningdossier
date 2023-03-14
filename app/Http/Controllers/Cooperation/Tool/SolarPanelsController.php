@@ -11,8 +11,10 @@ use App\Http\Requests\Cooperation\Tool\SolarPanelFormRequest;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelOrientation;
 use App\Models\Service;
+use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
+use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
 use App\Services\ToolQuestionService;
 use Illuminate\Http\Request;
@@ -56,12 +58,15 @@ class SolarPanelsController extends ToolController
                 ->where('building_id', $building->id)
         )->get();
 
+        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+            ->forAdvisable(Step::findByShort('solar-panels'))
+            ->getAnswers(true);
 
         return view('cooperation.tool.solar-panels.index',
             compact(
                 'building', 'pvPanelOrientations', 'buildingOwner', 'typeIds', 'totalSolarPanelService',
                 'energyHabitsOrderedOnInputSourceCredibility', 'pvPanelsOrderedOnInputSourceCredibility', 'totalSolarPanelBuildingServicesOrderedOnInputSourceCredibility',
-                'hasSolarPanelsToolQuestion', 'hasSolarAnswersOrderedOnInputSourceCredibility'
+                'hasSolarPanelsToolQuestion', 'hasSolarAnswersOrderedOnInputSourceCredibility', 'userCosts'
             )
         );
     }
@@ -87,10 +92,23 @@ class SolarPanelsController extends ToolController
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
+        $considerables = $request->validated()['considerables'];
+        ConsiderableService::save($this->step, $user, $inputSource, $considerables[$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
+
+        $userCosts = $request->validated()['user_costs'];
+        $userCostService = UserCostService::init($user, $inputSource);
+        $userCostValues = [];
+        // Only one. Save if considering
+        if ($considerables[$this->step->id]['is_considering']) {
+            foreach ($userCosts as $measureShort => $costData) {
+                $measureApplication = MeasureApplication::findByShort($measureShort);
+                $userCostService->forAdvisable($measureApplication)->sync($costData);
+                $userCostValues[$measureShort] = $costData;
+            }
+        }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
         $updatedMeasureIds = [];
@@ -123,6 +141,7 @@ class SolarPanelsController extends ToolController
             Arr::set($values, 'building_pv_panels.total_installed_power', null);
         }
         $values['updated_measure_ids'] = $updatedMeasureIds;
+        $values['user_costs'] = $userCostValues;
 
         (new SolarPanelHelper($user, $inputSource))
             ->setValues($values)

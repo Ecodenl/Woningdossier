@@ -6,7 +6,9 @@ use App\Helpers\KeyFigures\FloorInsulation\Temperature as FloorInsulationTempera
 use App\Helpers\KeyFigures\WallInsulation\Temperature as WallInsulationTemperature;
 use App\Scopes\VisibleScope;
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasMappings;
 use App\Traits\Models\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -33,6 +35,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property array|null $configurations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $info
  * @property-read string $name
  * @property-read array $translations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
@@ -40,33 +43,35 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property-read \App\Models\Step $step
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication query()
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereApplication($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereConfigurations($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCostRange($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCostUnit($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCosts($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereHasCalculations($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMaintenanceInterval($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMaintenanceUnit($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureInfo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMinimalCosts($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereSavingsMoney($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereStepId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereUpdatedAt($value)
+ * @method static Builder|MeasureApplication measureType(string $measureType)
+ * @method static Builder|MeasureApplication newModelQuery()
+ * @method static Builder|MeasureApplication newQuery()
+ * @method static Builder|MeasureApplication query()
+ * @method static Builder|MeasureApplication whereApplication($value)
+ * @method static Builder|MeasureApplication whereConfigurations($value)
+ * @method static Builder|MeasureApplication whereCostRange($value)
+ * @method static Builder|MeasureApplication whereCostUnit($value)
+ * @method static Builder|MeasureApplication whereCosts($value)
+ * @method static Builder|MeasureApplication whereCreatedAt($value)
+ * @method static Builder|MeasureApplication whereHasCalculations($value)
+ * @method static Builder|MeasureApplication whereId($value)
+ * @method static Builder|MeasureApplication whereMaintenanceInterval($value)
+ * @method static Builder|MeasureApplication whereMaintenanceUnit($value)
+ * @method static Builder|MeasureApplication whereMeasureInfo($value)
+ * @method static Builder|MeasureApplication whereMeasureName($value)
+ * @method static Builder|MeasureApplication whereMeasureType($value)
+ * @method static Builder|MeasureApplication whereMinimalCosts($value)
+ * @method static Builder|MeasureApplication whereSavingsMoney($value)
+ * @method static Builder|MeasureApplication whereShort($value)
+ * @method static Builder|MeasureApplication whereStepId($value)
+ * @method static Builder|MeasureApplication whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class MeasureApplication extends Model
 {
     use HasTranslations,
-        HasShortTrait;
+        HasShortTrait,
+        HasMappings;
 
     const ENERGY_SAVING = 'energy_saving';
     const MAINTENANCE = 'maintenance';
@@ -117,6 +122,12 @@ class MeasureApplication extends Model
     public function getInfoAttribute(): string
     {
         return $this->measure_info;
+    }
+
+    # Scopes
+    public function scopeMeasureType(Builder $query, string $measureType): Builder
+    {
+        return $query->where('measure_type', $measureType);
     }
 
     # Relations

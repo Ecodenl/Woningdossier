@@ -24,6 +24,10 @@ class CreateUserActionPlanAdvicesTable extends Migration
 
             $table->string('category')->nullable();
             $table->boolean('visible')->default(false);
+
+            $table->boolean('subsidy_available')->default(0);
+            $table->boolean('loan_available')->default(0);
+
             $table->json('costs')->nullable();
             $table->decimal('savings_gas')->nullable();
             $table->decimal('savings_electricity')->nullable();

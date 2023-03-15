@@ -5,10 +5,7 @@ namespace App\Services\Lvbag;
 use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\Lvbag\Payloads\City;
 use App\Traits\FluentCaller;
-use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 
 class BagService
 {
@@ -43,7 +40,7 @@ class BagService
         // first try it as a extension
         // if not found as a houseletter
         // if that does not work we will do a last resort that may not be that accurate..
-        if ( ! empty($houseNumberExtension)) {
+        if (! empty($houseNumberExtension)) {
             $addressExpanded = $this->listAddressExpanded($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
             if ($addressExpanded->isEmpty()) {
                 // if that does not work we will try the huislett
@@ -87,8 +84,8 @@ class BagService
             $addressExpanded = $this->listAddressExpanded($attributes);
         }
 
-        // so the bag MAY return it, splitted on huisletter and extension.
-        // however it doesnt really matter since we will save it as is.
+        // so the bag MAY return it, split on huisletter and extension.
+        // however it doesn't really matter since we will save it as is.
         $addressExpanded->expendedAddress['house_number_extension'] = $houseNumberExtension;
 
         return $addressExpanded;
@@ -122,7 +119,7 @@ class BagService
             $result['endpoint_failure'] = false;
         } catch (\Exception $exception) {
             if ($exception->getCode() !== 200) {
-                app('sentry')->captureException($exception);
+                report($exception);
                 $result['endpoint_failure'] = true;
             }
         }

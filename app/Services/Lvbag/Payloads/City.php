@@ -20,7 +20,7 @@ class City
         $bronhouders = Arr::get($this->city, '_embedded.bronhouders', []);
         // maybe there can be multiple bronhouders for a city / woonplaats
         // we will take the first one.
-        if (!empty($bronhouders)) {
+        if (! empty($bronhouders)) {
             return array_shift($bronhouders)['naam'];
         }
         return null;

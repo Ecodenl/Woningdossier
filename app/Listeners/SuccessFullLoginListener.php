@@ -90,14 +90,19 @@ class SuccessFullLoginListener
             ]),
         ]);
 
+        $currentMunicipality = $building->municipality_id;
         CheckBuildingAddress::dispatchSync($building);
-        // check if the connection was successful, if not dispatch it on the regular queue so it retries.
-        // if the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated will be fired from the attachMunicipality method.
-        // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job
-        // so a else is fine.
-        if (! $building->municipality()->first() instanceof Municipality) {
+        // Get a fresh (and updated) building instance
+        $building = $building->fresh();
+        $newMunicipality = $building->municipality_id;
+
+        // Check if a municipality was attached. If not, dispatch it on the regular queue so it retries.
+        // If the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated will be fired from the attachMunicipality method.
+        // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
+        // If the municipality hasn't changed, however, we will manually dispatch a refresh.
+        if (is_null($newMunicipality)) {
             CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
-        } else {
+        } elseif ($currentMunicipality === $newMunicipality) {
             RefreshRegulationsForBuildingUser::dispatch($building);
         }
     }

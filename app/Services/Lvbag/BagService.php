@@ -40,7 +40,7 @@ class BagService
         // first try it as a extension
         // if not found as a houseletter
         // if that does not work we will do a last resort that may not be that accurate..
-        if ( ! empty($houseNumberExtension)) {
+        if (! empty($houseNumberExtension)) {
             $addressExpanded = $this->listAddressExpanded($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
             if ($addressExpanded->isEmpty()) {
                 // if that does not work we will try the huislett
@@ -84,8 +84,8 @@ class BagService
             $addressExpanded = $this->listAddressExpanded($attributes);
         }
 
-        // so the bag MAY return it, splitted on huisletter and extension.
-        // however it doesnt really matter since we will save it as is.
+        // so the bag MAY return it, split on huisletter and extension.
+        // however it doesn't really matter since we will save it as is.
         $addressExpanded->expendedAddress['house_number_extension'] = $houseNumberExtension;
 
         return $addressExpanded;

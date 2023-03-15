@@ -4,7 +4,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Model;
 
 class ClientFactory extends Factory
 {

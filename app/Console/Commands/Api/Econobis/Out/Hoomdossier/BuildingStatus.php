@@ -47,9 +47,7 @@ class BuildingStatus extends Command
 
         $response = $econobis
             ->hoomdossier()
-            ->woningStatus(
-                $econobisService->getPayload($building,BuildingStatusPayload::class)
-            );
+            ->woningStatus($econobisService->getPayload($building,BuildingStatusPayload::class));
 
         Log::debug('Response', $response);
 

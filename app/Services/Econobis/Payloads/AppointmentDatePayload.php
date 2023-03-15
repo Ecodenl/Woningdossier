@@ -19,7 +19,7 @@ class AppointmentDatePayload extends EconobisPayload
     {
         $building = $this->building;
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
-        $payload = ['appointment_date' => $mostRecentStatus->appointment_date];
+        $payload = ['appointment_date' => $mostRecentStatus->appointment_date->toDateTimeString()];
 
         $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
 
@@ -27,11 +27,13 @@ class AppointmentDatePayload extends EconobisPayload
             $coachUser = User::find($connectedCoach->coach_id);
             if ($this->userService->forUser($coachUser)->isRelatedWithEconobis()) {
                 $payload['coaches'][] = [
-                    'contact_id' => $coachUser->extra['contact_id']
+                    'contact_id' => $coachUser->extra['contact_id'],
+                    'user_id' => $coachUser->id,
+                    'building_id' => $coachUser->building->id,
+                    'account_id' => $coachUser->account_id,
                 ];
             }
         }
-
         return $payload;
     }
 }

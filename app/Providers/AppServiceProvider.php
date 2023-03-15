@@ -112,7 +112,8 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(Client::class, function(Application $app) {
             $useProductionEndpoint = true;
-            if ($app->isLocal()) {
+            // During testing, we should be mocking, but just in case someone forgets to mock...
+            if ($app->isLocal() || $app->environment('testing')) {
                 $useProductionEndpoint = false;
             }
             return new Client(

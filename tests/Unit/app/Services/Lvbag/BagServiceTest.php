@@ -72,7 +72,6 @@ class BagServiceTest extends TestCase
 
     public function test_list_address_expanded_has_bag_ids_on_filled_response()
     {
-
         $mockedApiData = [
             "_embedded" => [
                 "adressen" => [

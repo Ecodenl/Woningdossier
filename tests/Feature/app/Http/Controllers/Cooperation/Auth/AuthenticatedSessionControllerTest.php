@@ -89,6 +89,7 @@ class AuthenticatedSessionControllerTest extends TestCase
         $cooperation = Cooperation::factory()->create();
 
         $user = User::factory()
+            ->asResident()
             ->create([
                 'cooperation_id' => $cooperation->id,
                 'account_id' => $account->id
@@ -120,7 +121,6 @@ class AuthenticatedSessionControllerTest extends TestCase
             ['email' => $account->email, 'password' => 'secret']
         );
         $this->assertAuthenticatedAs($account);
-
         $this->assertDatabaseHas('buildings', [
             'id' => $building->id,
             'municipality_id' => $municipality->id,

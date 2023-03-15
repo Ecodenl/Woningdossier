@@ -20,7 +20,7 @@ class EconobisService
         $payload = [];
         // sometimes there are edge cases, those will be solved in a different manner.
         if (!is_null($payloadClass) && class_exists($payloadClass, true)) {
-            $payload = $payloadClass::init()->forBuilding($building)->buildPayload();
+            $payload = app($payloadClass)->forBuilding($building)->buildPayload();
         }
         return array_merge($defaultPayload, $payload);
     }

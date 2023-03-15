@@ -22,6 +22,23 @@ use Illuminate\Support\Facades\Log;
 
 class UserService
 {
+    public User $user;
+
+    public function forUser(User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    public function isRelatedWithEconobis(): bool
+    {
+        $contactId = $this->user->extra['contact_id'] ?? null;
+        if ( ! empty($contactId)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Method to eager load most of the relationships the model has.
      * We either expect a user collection or a user model.
@@ -116,7 +133,8 @@ class UserService
 
         // Remove all mappings related to custom measure applications
         DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
-            ->whereIn('from_model_id', $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray())
+            ->whereIn('from_model_id',
+                $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray())
             ->delete();
         // Remove custom measure applications the user has made
         $building->customMeasureApplications()->forInputSource($inputSource)->delete();
@@ -165,7 +183,7 @@ class UserService
         $account = Account::where('email', $email)->first();
 
         // if its not found we will create a new one.
-        if (! $account instanceof Account) {
+        if ( ! $account instanceof Account) {
             $account = AccountService::create($email, $registerData['password']);
         }
 
@@ -215,7 +233,7 @@ class UserService
 
         CheckBuildingAddress::dispatchSync($building);
         // check if the connection was successful, if not dispatch it on the regular queue so it retries.
-        if (! $building->municipality()->first() instanceof Municipality) {
+        if ( ! $building->municipality()->first() instanceof Municipality) {
             CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
         }
 

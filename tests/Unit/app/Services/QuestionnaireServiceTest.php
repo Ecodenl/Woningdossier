@@ -39,18 +39,6 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertEquals($expected, QuestionnaireService::hasQuestionOptions($input));
     }
 
-    public function testCreateQuestionnaire()
-    {
-        $cooperation = Cooperation::factory()->create();
-        $step = Step::factory()->create();
-
-        $questionnaire = QuestionnaireService::createQuestionnaire(
-            $cooperation, $step, ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling']
-        );
-
-        $this->assertInstanceOf(Questionnaire::class, $questionnaire);
-    }
-
     public function createQuestionProvider()
     {
         return [

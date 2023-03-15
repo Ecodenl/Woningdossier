@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoofInsulation;
@@ -14,7 +15,9 @@ use App\Models\Element;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
+use App\Models\Step;
 use App\Services\ConsiderableService;
+use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -74,10 +77,24 @@ class RoofInsulationController extends ToolController
             }
         }
 
+        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+            ->forAdvisable(Step::findByShort('roof-insulation'))
+            ->getAnswers(true);
+
+        $userCostsCategorized = [];
+
+        foreach (RoofInsulation::getMeasureApplicationsAdviceMap() as $cat => $measures) {
+            foreach ($measures as $measureApplication) {
+                $userCostsCategorized[$cat][$measureApplication->id] = $userCosts[$measureApplication->id];
+            }
+        }
+
         return view('cooperation.tool.roof-insulation.index', compact(
             'building', 'primaryRoofTypes', 'secondaryRoofTypes', 'typeIds',
             'buildingFeaturesForMe', 'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
-            'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
+            'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe',
+            'userCostsCategorized'
+        ));
     }
 
     public function calculate(Request $request)
@@ -102,11 +119,27 @@ class RoofInsulationController extends ToolController
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        ConsiderableService::save($this->step, $user, $inputSource,
-            $request->validated()['considerables'][$this->step->id]);
+        $considerables = $request->validated()['considerables'];
+        ConsiderableService::save($this->step, $user, $inputSource, $considerables[$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
+
+        $userCosts = $request->validated()['user_costs'];
+        $userCostService = UserCostService::init($user, $inputSource);
+        $userCostValues = [];
+        if ($considerables[$this->step->id]['is_considering']) {
+            $measureIds = array_filter(Arr::pluck($request->validated()['building_roof_types'], 'extra.measure_application_id'));
+
+            foreach ($userCosts as $measureShort => $costData) {
+                $measureApplication = MeasureApplication::findByShort($measureShort);
+                // Only save for selected measures
+                if (in_array($measureApplication->id, $measureIds)) {
+                    $userCostService->forAdvisable($measureApplication)->sync($costData);
+                    $userCostValues[$measureShort] = $costData;
+                }
+            }
+        }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
         $dirtyNames = array_keys($dirtyAttributes);
@@ -143,6 +176,7 @@ class RoofInsulationController extends ToolController
         $values = $request->only('considerables', 'building_roof_type_ids', 'building_features',
             'building_roof_types', 'step_comments');
         $values['updated_measure_ids'] = $updatedMeasureIds;
+        $values['user_costs'] = $userCostValues;
 
         // Usually we let the completeStore function handle the completion, but we NEED the step to be completed
         // BEFORE we can calculate the roof insulation advices.

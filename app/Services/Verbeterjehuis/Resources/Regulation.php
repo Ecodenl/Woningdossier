@@ -21,7 +21,7 @@ class Regulation extends Resource
      *
      * @return array|null
      */
-    public function search(array $attributes): ?array
+    public function search(array $attributes): array
     {
         return $this->client->get($this->uri('search'), static::buildQuery($attributes));
     }

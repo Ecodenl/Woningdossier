@@ -33,7 +33,7 @@
 
 .card-wrapper .card-placeholder,
 .card-wrapper .card {
-    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-24 p-2 lg:p-3 overflow-hidden;
+    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-28 p-2 lg:p-3 overflow-hidden;
 }
 
 .card-wrapper .card-placeholder {
@@ -57,7 +57,7 @@
 }
 
 .card-wrapper .card .info {
-    @apply w-full lg:w-17/20 xl:w-3/4 h-full flex flex-wrap flex-col justify-center;
+    @apply w-full lg:w-17/20 xl:w-3/4 h-full flex flex-col justify-center;
 }
 
 /* Dropdowns */
@@ -76,4 +76,43 @@
 
 .dropdown-wrapper .dropdown > * {
     @apply py-1 px-3
+}
+
+/* Regulation cards */
+.regulation-card-wrapper {
+    @apply w-full my-4;
+}
+
+.regulation-card-wrapper .regulation-card {
+    @apply border border-blue-500 rounded-lg p-4 bg-blue-800 bg-opacity-10;
+    width: 42rem;
+    min-height: 16rem;
+}
+
+.regulation-card-wrapper .regulation-card .bubble {
+    @apply rounded-full py-1 px-4 font-medium bg-white m-1;
+}
+
+.regulation-card-wrapper .detail-wrapper {
+    @apply my-4;
+}
+
+.regulation-card-wrapper .detail-wrapper p {
+    @apply pb-5;
+}
+
+.regulation-card-wrapper .detail-wrapper h4 {
+    @apply font-semibold text-blue text-md; /* .heading-4 */
+}
+
+.regulation-card-wrapper .detail-wrapper ul {
+    @apply mb-5;
+}
+
+.regulation-card-wrapper .detail-wrapper ul li {
+    @apply mt-2;
+}
+
+.regulation-card-wrapper .detail-wrapper ul li:first-of-type {
+    @apply mt-0;
 }

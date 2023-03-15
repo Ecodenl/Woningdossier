@@ -98,6 +98,15 @@ class NumberFormatterTest extends TestCase
             [2541512045, 5, 2541512045.0],
             ['10,5', 5, 10],
             ['108,5', 5, 110.0],
+            ['-0,92', 5, 0.0],
+            ['-0.92', 5, 0.0],
+            ['-0.92', 0, -1.0],
+            ['-0,92', 1, -1.0],
+            [-0.92, 5, 0.0],
+            [-1.2, 5, 0.0],
+            [-1.2, 0, -1],
+            [-1.2, 1, -1],
+            [-1.5, 1, -2],
         ];
     }
 
@@ -179,6 +188,7 @@ class NumberFormatterTest extends TestCase
      */
     public function testFormatNumberForUser($number, $isInteger, $alwaysNumber, $expected)
     {
+        // Note: Test currently does not support locale. When we do add a second locale, this will need revisiting.
         $this->assertEquals($expected, NumberFormatter::formatNumberForUser($number, $isInteger, $alwaysNumber));
     }
 }

@@ -46,6 +46,10 @@ return [
         'discord' => env('DISCORD_WEBHOOK_URL')
     ],
 
+    // email adresses of the admins, those admins should be notified in case something happens.
+    'admin-emails' => env('ADMIN_MAIL_ADDRESS', ''),
+
+
     'media' => [
         'accepted_file_mimes' => env('MEDIA_FILE_MIMES', 'doc,dot,docx,dotx,docm,dotm,pdf,txt'),
         'accepted_image_mimes' => env('MEDIA_IMAGE_MIMES', 'jpg,jpeg,png'),

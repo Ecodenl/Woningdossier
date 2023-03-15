@@ -30,6 +30,7 @@ return [
         'success' => 'API Token en bevoegdheden zijn bijgewerkt',
     ],
     'destroy' => [
+        'confirm' => 'Weet je zeker dat je deze token wilt verwijderen?',
         'success' => 'API Token is verwijderd.'
     ],
 ];

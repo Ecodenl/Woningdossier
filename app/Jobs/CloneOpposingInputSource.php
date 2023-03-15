@@ -49,8 +49,6 @@ class CloneOpposingInputSource implements ShouldQueue
     {
         $this->deactivateNotification();
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

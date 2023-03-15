@@ -73,11 +73,12 @@ class CooperationMeasureApplicationControllerTest extends TestCase
             ->sync([$measureCategory]);
 
         //TODO:
-        // - Create 3 advices using the cooperation measure with 3 different input sources for the resident
+        // - Create another resident
+        // - Create 3 advices using the cooperation measure with 3 different input sources for both residents
         // - Delete the measure
-        // - Assert 3 new custom measures
-        // - Assert 1 advice per measure
-        // - Assert master custom measure has mapping
+        // - Assert 3 new custom measures (per resident)
+        // - Assert 1 advice per measure (per resident)
+        // - Assert master custom measure has mapping (per resident)
         // - Assert cooperation measure deleted
         // - Assert no advices with cooperation measure exist
     }

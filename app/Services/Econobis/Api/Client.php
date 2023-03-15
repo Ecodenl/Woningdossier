@@ -8,6 +8,7 @@ use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\RequestOptions;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -62,6 +63,8 @@ class Client
 
     public function request(string $method, string $uri, array $options = []): array
     {
+        $options = array_merge($options, [RequestOptions::HEADERS => ['Content-Length' => strlen(json_encode($options))]]);
+
         $response = $this->getClient()->request($method, $uri, $options);
 
         $response->getBody()->seek(0);

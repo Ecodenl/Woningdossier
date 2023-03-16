@@ -177,7 +177,9 @@ class CooperationMeasureApplicationControllerTest extends TestCase
             'target_model_id' => $measureCategory->id,
         ]);
 
-        // If this works, then there's some refresh database flow that's borked.
+        // So, during the delete, a job was executed. This job created a mapping. It seems that this mapping does not
+        // get cleared during the transaction revert, causing other tests to fail since the database isn't fully clean.
+        // TODO: Find out why the revert doesn't properly work, then fix it.
         DB::table('mappings')->truncate();
     }
 }

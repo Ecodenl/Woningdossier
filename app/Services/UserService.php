@@ -14,8 +14,11 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Models\User;
+use App\Services\Econobis\Api\Client;
+use App\Services\Econobis\Api\Econobis;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -37,6 +40,11 @@ class UserService
             return true;
         }
         return false;
+    }
+
+    public function toolChanged(): void
+    {
+        $this->user->update(['tool_last_changed_at' => Carbon::now()]);
     }
 
     /**

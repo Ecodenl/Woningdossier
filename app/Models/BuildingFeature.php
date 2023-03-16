@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
+use App\Traits\RecordsLastToolChanged;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -98,6 +99,7 @@ class BuildingFeature extends Model implements Auditable
 {
     use GetValueTrait,
         GetMyValuesTrait,
+        RecordsLastToolChanged,
         \App\Traits\Models\Auditable;
 
     protected $fillable = [

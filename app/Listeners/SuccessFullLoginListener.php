@@ -2,18 +2,14 @@
 
 namespace App\Listeners;
 
-use App\Events\BuildingAddressUpdated;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\Queue;
-use App\Jobs\CheckBuildingAddress;
-use App\Jobs\RefreshRegulationsForBuildingUser;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Log;
-use App\Models\Municipality;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Models\BuildingService;
 use Illuminate\Support\Facades\Auth;
 
 class SuccessFullLoginListener
@@ -34,7 +30,7 @@ class SuccessFullLoginListener
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function handle($event)
+    public function handle($event, BuildingService $buildingService)
     {
         /** @var Account $account */
         $account = $event->user;
@@ -90,21 +86,7 @@ class SuccessFullLoginListener
             ]),
         ]);
 
-        $currentMunicipality = $building->municipality_id;
-        CheckBuildingAddress::dispatchSync($building);
-        // Get a fresh (and updated) building instance
-        $building = $building->fresh();
-        $newMunicipality = $building->municipality_id;
-
-        // Check if a municipality was attached. If not, dispatch it on the regular queue so it retries.
-        // If the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated will be fired from the attachMunicipality method.
-        // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
-        // If the municipality hasn't changed, however, we will manually dispatch a refresh.
-        if (is_null($newMunicipality)) {
-            CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
-        } elseif ($currentMunicipality === $newMunicipality) {
-            RefreshRegulationsForBuildingUser::dispatch($building);
-        }
+        $buildingService->forBuilding($building)->performMunicipalityCheck();
     }
 
     /**

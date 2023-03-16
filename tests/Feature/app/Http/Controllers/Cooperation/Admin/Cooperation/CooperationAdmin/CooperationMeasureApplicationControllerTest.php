@@ -176,5 +176,8 @@ class CooperationMeasureApplicationControllerTest extends TestCase
             'target_model_type' => MeasureCategory::class,
             'target_model_id' => $measureCategory->id,
         ]);
+
+        // If this works, then there's some refresh database flow that's borked.
+        DB::table('mappings')->truncate();
     }
 }

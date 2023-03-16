@@ -14,13 +14,16 @@ use Illuminate\Support\Facades\Auth;
 
 class SuccessFullLoginListener
 {
+    protected BuildingService $buildingService;
+
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BuildingService $buildingService)
     {
+        $this->buildingService = $buildingService;
     }
 
     /**
@@ -30,7 +33,7 @@ class SuccessFullLoginListener
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function handle($event, BuildingService $buildingService)
+    public function handle($event)
     {
         /** @var Account $account */
         $account = $event->user;
@@ -86,7 +89,7 @@ class SuccessFullLoginListener
             ]),
         ]);
 
-        $buildingService->forBuilding($building)->performMunicipalityCheck();
+        $this->buildingService->forBuilding($building)->performMunicipalityCheck();
     }
 
     /**

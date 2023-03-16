@@ -8,13 +8,16 @@ use App\Models\InputSource;
 
 class ObservingToolForUserListener
 {
+    protected BuildingService $buildingService;
+
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BuildingService $buildingService)
     {
+        $this->buildingService = $buildingService;
     }
 
     /**
@@ -24,7 +27,7 @@ class ObservingToolForUserListener
      *
      * @return void
      */
-    public function handle($event, BuildingService $buildingService)
+    public function handle($event)
     {
         // the building we want to observe
         $building = $event->building;
@@ -40,6 +43,6 @@ class ObservingToolForUserListener
         // so the user isn't able to save anything
         HoomdossierSession::setIsObserving(true);
 
-        $buildingService->forBuilding($building)->performMunicipalityCheck();
+        $this->buildingService->forBuilding($building)->performMunicipalityCheck();
     }
 }

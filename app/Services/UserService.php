@@ -14,8 +14,11 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Models\User;
+use App\Services\Econobis\Api\Client;
+use App\Services\Econobis\Api\Econobis;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -37,6 +40,11 @@ class UserService
             return true;
         }
         return false;
+    }
+
+    public function toolChanged(): void
+    {
+        $this->user->update(['tool_last_changed_at' => Carbon::now()]);
     }
 
     /**
@@ -98,11 +106,12 @@ class UserService
     /**
      * Method to reset a user his file for a specific input source.
      */
-    public static function resetUser(User $user, InputSource $inputSource)
+    public function resetUser(InputSource $inputSource)
     {
-        Log::debug(__METHOD__." ".$user->id." for input source ".$inputSource->short);
+        Log::debug(__METHOD__." ".$this->user->id." for input source ".$inputSource->short);
         // only remove the example building id from the building
-        $building = $user->building;
+        $user = $this->user;
+        $building = $this->user->building;
         $building->buildingFeatures()->forInputSource($inputSource)->update([
             'example_building_id' => null,
         ]);

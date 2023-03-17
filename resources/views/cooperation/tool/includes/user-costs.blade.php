@@ -14,7 +14,15 @@
                 @foreach($questions as $short => $answer)
                     @php
                         $toolQuestion = \App\Models\ToolQuestion::findByShort($short);
-                        $name = \App\Helpers\Models\UserCostHelper::resolveNameFromShort($short);
+
+                        if (Str::startsWith($short, 'execute')) {
+                            $isDropdown = true;
+                            preg_match('/execute-(.*)-how/', $short, $matches);
+                            $name = "execute.{$matches[1]}.how";
+                        } else {
+                            $isDropdown = false;
+                            $name = \App\Helpers\Models\UserCostHelper::resolveNameFromShort($short);
+                        }
                     @endphp
                     <div class="w-full sm:w-1/3">
                         @component('cooperation.frontend.layouts.components.form-group', [
@@ -35,8 +43,18 @@
                                 {!! $toolQuestion->help_text !!}
                             @endslot
 
-                            <input name="{{ \App\Helpers\Str::dotToHtml($name) }}" value="{{ old($name, $answer) }}" class="form-input"
-                                   id="{{ $short }}">
+                            @if($isDropdown)
+                                <select name="{{ \App\Helpers\Str::dotToHtml($name) }}">
+                                    @foreach($toolQuestion->toolQuestionCustomValues as $toolQuestionCustomValue)
+                                        <option>
+                                            WIP
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @else
+                                <input name="{{ \App\Helpers\Str::dotToHtml($name) }}" value="{{ old($name, $answer) }}" class="form-input"
+                                       id="{{ $short }}">
+                            @endif
                         @endcomponent
                     </div>
                 @endforeach

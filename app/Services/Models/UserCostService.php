@@ -41,7 +41,7 @@ class UserCostService
 
     public function getAnswers(bool $performLegacyConversion = false): array
     {
-        $shorts = $this->getToolQuestionShorts();
+        $shorts = $this->getToolQuestionShorts($performLegacyConversion);
 
         foreach ($shorts as $measureId => $questionShorts) {
             $shorts[$measureId] = $this->getManyAnswers($questionShorts, ! $performLegacyConversion);
@@ -117,7 +117,7 @@ class UserCostService
         }
     }
 
-    private function getToolQuestionShorts(): array
+    private function getToolQuestionShorts(bool $performLegacyConversion): array
     {
         // TODO: If we add other types, we want to support them. For now, only measure applications.
         $query = MeasureApplication::measureType(MeasureApplication::ENERGY_SAVING);
@@ -133,11 +133,19 @@ class UserCostService
             $query->where('step_id', '!=', $stepSmallMeasures->id);
         }
 
-        return $query->pluck('short', 'id')->map(function ($short, $id) {
-            return [
+        return $query->pluck('short', 'id')->map(function ($short, $id) use ($performLegacyConversion) {
+            $shorts = [
                 "user-costs-{$short}-own-total",
                 "user-costs-{$short}-subsidy-total",
             ];
+
+            // This is a legacy piggy back. We want to get rid of this as soon as possible but because we have the
+            // legacy controllers still, and this mechanism is already in place, this is much easier...
+            if ($performLegacyConversion) {
+                $shorts[] = "execute-{$short}-how";
+            }
+
+            return $shorts;
         })->toArray();
     }
 }

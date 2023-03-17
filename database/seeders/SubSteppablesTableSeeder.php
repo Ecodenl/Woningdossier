@@ -98,6 +98,7 @@ class SubSteppablesTableSeeder extends Seeder
         $fullHeatPumpOutsideAir = MeasureApplication::findByShort('full-heat-pump-outside-air');
         $fullHeatPumpGroundHeat = MeasureApplication::findByShort('full-heat-pump-ground-heat');
         $fullHeatPumpPvtPanels = MeasureApplication::findByShort('full-heat-pump-pvt-panels');
+        $heatPumpBoilerPlaceReplace = MeasureApplication::findByShort('heat-pump-boiler-place-replace');
 
         // Needed conditional elements
         $crawlSpace = Element::findByShort('crawlspace');
@@ -2110,13 +2111,13 @@ class SubSteppablesTableSeeder extends Seeder
                             'conditions' => $this->getExpertSubsidyQuestionConditions('hr-boiler', null, null),
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('user-costs-hybrid-heat-pump-outside-air-subsidy-total'),
+                            'morph' => ToolQuestion::findByShort('user-costs-high-efficiency-boiler-replace-subsidy-total'),
                             'tool_question_type_id' => $textType->id,
                             'size' => 'col-span-2',
                             'conditions' => $this->getExpertSubsidyQuestionConditions('hr-boiler', null, null, $hrBoilerReplace),
                         ],
                         [
-                            'morph' => ToolQuestion::findByShort('execute-hybrid-heat-pump-outside-air-how'),
+                            'morph' => ToolQuestion::findByShort('execute-high-efficiency-boiler-replace-how'),
                             'tool_question_type_id' => $dropdownType->id,
                             'size' => 'col-span-2',
                             'conditions' => $this->getExpertSubsidyQuestionConditions('hr-boiler', null, null),
@@ -2558,11 +2559,6 @@ class SubSteppablesTableSeeder extends Seeder
                                         'operator' => Clause::CONTAINS,
                                         'value' => 'heat-pump-boiler',
                                     ],
-                                    [
-                                        'column' => 'heat-source-warm-tap-water',
-                                        'operator' => Clause::CONTAINS,
-                                        'value' => 'heat-pump-boiler',
-                                    ],
                                 ],
                             ],
                         ],
@@ -2584,6 +2580,114 @@ class SubSteppablesTableSeeder extends Seeder
                                     ],
                                 ],
                             ],
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-heat-pump-boiler-place-replace-own-total'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([
+                                [
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-pump-boiler-replace',
+                                        'operator' => Clause::EQ,
+                                        'value' => true,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::NOT_CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                ],
+                            ], null, null),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('user-costs-heat-pump-boiler-place-replace-subsidy-total'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([
+                                [
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-pump-boiler-replace',
+                                        'operator' => Clause::EQ,
+                                        'value' => true,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::NOT_CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                ],
+                            ], null, null, $heatPumpBoilerPlaceReplace),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('execute-heat-pump-boiler-place-replace-how'),
+                            'tool_question_type_id' => $dropdownType->id,
+                            'size' => 'col-span-2',
+                            'conditions' => $this->getSubsidyQuestionConditions([
+                                [
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-pump-boiler-replace',
+                                        'operator' => Clause::EQ,
+                                        'value' => true,
+                                    ],
+                                ],
+                                [
+                                    [
+                                        'column' => 'new-heat-source-warm-tap-water',
+                                        'operator' => Clause::CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                    [
+                                        'column' => 'heat-source-warm-tap-water',
+                                        'operator' => Clause::NOT_CONTAINS,
+                                        'value' => 'heat-pump-boiler',
+                                    ],
+                                ],
+                            ], null, null),
                         ],
                     ],
                 ],
@@ -5412,6 +5516,8 @@ class SubSteppablesTableSeeder extends Seeder
 
     private function getSubsidyQuestionConditions(array $conditions, ?string $question, ?string $value, $advisable = null): array
     {
+        // This was designed so we can be lazy. There's currently no case where we have an OR case condition AND a
+        // question/value lazy condition. If that DOES happen, this might require revisiting.
         if (! is_null($question)) {
             $conditions[0][] = [
                 'column' => $question,
@@ -5421,7 +5527,7 @@ class SubSteppablesTableSeeder extends Seeder
         }
 
         if (! is_null($advisable)) {
-            $conditions[0][] = [
+            $subsidyConditions = [
                 'column' => 'fn',
                 'operator' => 'MeasureHasSubsidy',
                 'value' => [
@@ -5429,6 +5535,15 @@ class SubSteppablesTableSeeder extends Seeder
                     'advisable_id' => $advisable->id,
                 ],
             ];
+
+            if (empty($conditions)) {
+                $conditions[0][] = $subsidyConditions;
+            } else {
+                foreach ($conditions as $index => $subConditions) {
+                    $subConditions[] = $subsidyConditions;
+                    $conditions[$index] = $subConditions;
+                }
+            }
         }
 
         return $conditions;

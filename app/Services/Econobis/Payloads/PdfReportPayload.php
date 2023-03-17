@@ -13,7 +13,7 @@ class PdfReportPayload extends EconobisPayload
 
         $fileType = FileType::findByShort('pdf-report');
         // there is no PDF for the master.
-        $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         $fileStorage = $fileType
             ->files()

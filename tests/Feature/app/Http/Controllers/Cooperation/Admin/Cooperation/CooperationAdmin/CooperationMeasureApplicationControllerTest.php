@@ -40,6 +40,9 @@ class CooperationMeasureApplicationControllerTest extends TestCase
         // Due to model events, the cooperation might get cooperation measures. We don't want them for this test.
         // We do not use truncate, as that resets the auto increment and borks the transaction.
         DB::table('cooperation_measure_applications')->delete();
+        // Since we are asserting these models as well, we shall clear them also.
+        DB::table('custom_measure_applications')->delete();
+        DB::table('mappings')->delete();
 
         $cooperationAdmin = User::factory()
             ->asCooperationAdmin()

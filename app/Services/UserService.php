@@ -18,6 +18,7 @@ use App\Services\Econobis\Api\Client;
 use App\Services\Econobis\Api\Econobis;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
+use App\Services\Models\BuildingStatusService;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -256,8 +257,7 @@ class UserService
 
         $user->assignRole($roles);
 
-        // turn on when merged
-        $building->setStatus('active');
+        app(BuildingStatusService::class)->forBuilding($building)->setStatus('active');
 
         return $user;
     }

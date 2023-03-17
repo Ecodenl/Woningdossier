@@ -106,11 +106,12 @@ class UserService
     /**
      * Method to reset a user his file for a specific input source.
      */
-    public static function resetUser(User $user, InputSource $inputSource)
+    public function resetUser(InputSource $inputSource)
     {
-        Log::debug(__METHOD__." ".$user->id." for input source ".$inputSource->short);
+        Log::debug(__METHOD__." ".$this->user->id." for input source ".$inputSource->short);
         // only remove the example building id from the building
-        $building = $user->building;
+        $user = $this->user;
+        $building = $this->user->building;
         $building->buildingFeatures()->forInputSource($inputSource)->update([
             'example_building_id' => null,
         ]);

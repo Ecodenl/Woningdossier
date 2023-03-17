@@ -44,13 +44,16 @@
                             @endslot
 
                             @if($isDropdown)
-                                <select name="{{ \App\Helpers\Str::dotToHtml($name) }}">
-                                    @foreach($toolQuestion->toolQuestionCustomValues as $toolQuestionCustomValue)
-                                        <option>
-                                            WIP
-                                        </option>
-                                    @endforeach
-                                </select>
+                                @component('cooperation.frontend.layouts.components.alpine-select')
+                                    <select name="{{ \App\Helpers\Str::dotToHtml($name) }}" class="form-input">
+                                        @foreach($toolQuestion->toolQuestionCustomValues as $toolQuestionCustomValue)
+                                            <option value="{{ $toolQuestionCustomValue->short }}"
+                                                    @if(old($name, $answer)) selected @endif>
+                                                {{ $toolQuestionCustomValue->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                @endcomponent
                             @else
                                 <input name="{{ \App\Helpers\Str::dotToHtml($name) }}" value="{{ old($name, $answer) }}" class="form-input"
                                        id="{{ $short }}">

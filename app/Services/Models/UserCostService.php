@@ -61,6 +61,11 @@ class UserCostService
                         if (! MeasureHasSubsidy::init($this->building, $this->inputSource)->evaluate($value)['bool']) {
                             unset($shorts[$measureId][$short]);
                         }
+                    } elseif (Str::startsWith($short, 'execute-')) {
+                        // LEGACY DEFAULT SUPPORT...
+                        if (is_null($answer)) {
+                            $shorts[$measureId][$short] = 'let-do';
+                        }
                     }
                 }
             }

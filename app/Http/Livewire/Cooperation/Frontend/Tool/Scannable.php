@@ -309,16 +309,15 @@ abstract class Scannable extends Component
                     $this->attributes["filledInAnswers.{$toolQuestion->short}.*"] = $toolQuestion->name;
                     break;
                 default:
+                    $answer = $answerForInputSource ?? $toolQuestion->options['value'] ?? null;
                     if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
                         // Before we would set sliders and text answers differently. Now, because they are mapped by the
                         // same (by data type) it could be that value is not set.
-                        $answer = $answerForInputSource ?? $toolQuestion->options['value'] ?? null;
                         $answerForInputSource = Caster::init()
                             ->dataType($toolQuestion->data_type)
                             ->value($answer)
                             ->getFormatForUser();
                     }
-
                     $this->filledInAnswers[$toolQuestion->short] = $answerForInputSource;
                     $this->attributes["filledInAnswers.{$toolQuestion->short}"] = $toolQuestion->name;
                     break;

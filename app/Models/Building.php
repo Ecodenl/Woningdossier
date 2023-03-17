@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use OwenIt\Auditing\Models\Audit;
 
 /**
  * App\Models\Building

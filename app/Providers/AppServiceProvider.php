@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
+use App\Services\Econobis\Api\Client as EconobisClient;
+use App\Services\Econobis\Api\Econobis;
 use App\Services\Models\NotificationService;
 use App\Traits\Queue\HasNotifications;
 use Carbon\Carbon;
-use Ecodenl\LvbagPhpWrapper\Client;
+use Ecodenl\LvbagPhpWrapper\Client as LvbagClient;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Application;
@@ -107,16 +109,29 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        $this->app->bind(EconobisClient::class, function(Application $app) {
+            if ($app->isLocal()) {
+                return new EconobisClient(Log::getLogger());
+            } else {
+                return new EconobisClient();
+            }
+        });
+
+        $this->app->bind(Econobis::class, function (Application $app) {
+            return new Econobis($app->make(EconobisClient::class));
+        });
+
+
         Paginator::useBootstrapThree();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
-        $this->app->bind(Client::class, function(Application $app) {
+        $this->app->bind(LvbagClient::class, function(Application $app) {
             $useProductionEndpoint = true;
             // During testing, we should be mocking, but just in case someone forgets to mock...
             if ($app->isLocal() || $app->environment('testing')) {
                 $useProductionEndpoint = false;
             }
-            return new Client(
+            return new LvbagClient(
                 config('hoomdossier.services.bag.secret'),
                 'epsg:28992',
                 $useProductionEndpoint,
@@ -124,7 +139,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(Lvbag::class, function (Application $app) {
-            return new Lvbag($app->make(Client::class));
+            return new Lvbag($app->make(LvbagClient::class));
         });
     }
 

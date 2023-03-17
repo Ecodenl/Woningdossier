@@ -14,14 +14,39 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Models\User;
+use App\Services\Econobis\Api\Client;
+use App\Services\Econobis\Api\Econobis;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserService
 {
+    public User $user;
+
+    public function forUser(User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    public function isRelatedWithEconobis(): bool
+    {
+        $contactId = $this->user->extra['contact_id'] ?? null;
+        if ( ! empty($contactId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function toolChanged(): void
+    {
+        $this->user->update(['tool_last_changed_at' => Carbon::now()]);
+    }
+
     /**
      * Method to eager load most of the relationships the model has.
      * We either expect a user collection or a user model.
@@ -81,11 +106,12 @@ class UserService
     /**
      * Method to reset a user his file for a specific input source.
      */
-    public static function resetUser(User $user, InputSource $inputSource)
+    public function resetUser(InputSource $inputSource)
     {
-        Log::debug(__METHOD__." ".$user->id." for input source ".$inputSource->short);
+        Log::debug(__METHOD__." ".$this->user->id." for input source ".$inputSource->short);
         // only remove the example building id from the building
-        $building = $user->building;
+        $user = $this->user;
+        $building = $this->user->building;
         $building->buildingFeatures()->forInputSource($inputSource)->update([
             'example_building_id' => null,
         ]);
@@ -116,7 +142,8 @@ class UserService
 
         // Remove all mappings related to custom measure applications
         DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
-            ->whereIn('from_model_id', $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray())
+            ->whereIn('from_model_id',
+                $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray())
             ->delete();
         // Remove custom measure applications the user has made
         $building->customMeasureApplications()->forInputSource($inputSource)->delete();
@@ -165,7 +192,7 @@ class UserService
         $account = Account::where('email', $email)->first();
 
         // if its not found we will create a new one.
-        if (! $account instanceof Account) {
+        if ( ! $account instanceof Account) {
             $account = AccountService::create($email, $registerData['password']);
         }
 
@@ -215,7 +242,7 @@ class UserService
 
         CheckBuildingAddress::dispatchSync($building);
         // check if the connection was successful, if not dispatch it on the regular queue so it retries.
-        if (! $building->municipality()->first() instanceof Municipality) {
+        if ( ! $building->municipality()->first() instanceof Municipality) {
             CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
         }
 

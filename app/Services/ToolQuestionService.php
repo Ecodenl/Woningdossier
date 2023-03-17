@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
@@ -63,7 +64,7 @@ class ToolQuestionService {
             // this *can't* handle a checkbox / multiselect answer.
             $this->saveToolQuestionValuables($givenAnswer);
         }
-        app(UserService::class)->forUser($this->building->user)->toolChanged();
+        UserToolDataChanged::dispatch($this->building->user);
     }
 
     public function saveToolQuestionCustomValues($givenAnswer)

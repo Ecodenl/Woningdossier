@@ -6,6 +6,7 @@ use App\Events\BuildingAppointmentDateUpdated;
 use App\Events\BuildingStatusUpdated;
 use App\Jobs\Econobis\Out\SendAppointmentDateToEconobis;
 use App\Jobs\Econobis\Out\SendBuildingStatusToEconobis;
+use App\Models\BuildingStatus;
 use App\Services\UserService;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Artisan;
@@ -25,7 +26,7 @@ class EconobisEventSubscriber
             SendAppointmentDateToEconobis::dispatch($event->building);
         }
     }
-    public function sendBuildingStatusToEconobis(BuildingAppointmentDateUpdated $event)
+    public function sendBuildingStatusToEconobis(BuildingStatusUpdated $event)
     {
         if ($event->building->user->account->can('send-user-information-to-econobis', [$event->building->user])) {
             SendBuildingStatusToEconobis::dispatch($event->building);

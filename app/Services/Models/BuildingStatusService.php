@@ -3,6 +3,7 @@
 namespace App\Services\Models;
 
 use App\Events\BuildingAppointmentDateUpdated;
+use App\Events\BuildingStatusUpdated;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
@@ -13,6 +14,7 @@ use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BuildingStatusService
 {
@@ -43,18 +45,20 @@ class BuildingStatusService
     /**
      * convenient way of setting a status on a building.
      *
-     * @param string|Status $status
+     * @param  string|Status  $status
      *
      * @return void
      */
     public function setStatus($status)
     {
+        Log::debug(__CLASS__);
         $statusModel = $this->resolveStatusModel($status);
 
         $this->building->buildingStatuses()->create([
             'status_id' => $statusModel->id,
             'appointment_date' => $this->building->getAppointmentDate(),
         ]);
-    }
 
+        BuildingStatusUpdated::dispatch($this->building);
+    }
 }

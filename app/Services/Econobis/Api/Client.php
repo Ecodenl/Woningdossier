@@ -9,6 +9,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -65,10 +66,11 @@ class Client
     {
         $options = array_merge($options, [RequestOptions::HEADERS => ['Content-Length' => strlen(json_encode($options))]]);
 
+//        Log::debug("requesting {$uri}", $options);
         $response = $this->getClient()->request($method, $uri, $options);
-
+//
         $response->getBody()->seek(0);
-
+//
         $contents = $response->getBody()->getContents();
 
         return json_decode($contents, true);

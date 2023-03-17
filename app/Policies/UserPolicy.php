@@ -35,7 +35,7 @@ class UserPolicy
     public function sendUserInformationToEconobis(Account $account, User $user)
     {
         $userRelatedToEconobis = app(UserService::class)->forUser($user)->isRelatedWithEconobis();
-        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($user->building->id);
+        $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($user->building->id)->isNotEmpty();
         if ($userRelatedToEconobis && $userHasConnectedCoaches) {
             return true;
         }

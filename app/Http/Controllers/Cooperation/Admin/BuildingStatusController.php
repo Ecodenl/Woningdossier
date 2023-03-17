@@ -29,7 +29,6 @@ class BuildingStatusController extends Controller
         $this->authorize('set-status', $building);
 
         $buildingStatusService->forBuilding($building)->setStatus($status);
-
     }
 
     /**

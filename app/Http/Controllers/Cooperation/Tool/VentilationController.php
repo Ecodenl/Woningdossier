@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Ventilation;
+use App\Events\UserToolDataChanged;
 use App\Helpers\Conditions\Evaluators\MeasureHasSubsidy;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\HoomdossierSession;
@@ -93,17 +94,10 @@ class VentilationController extends ToolController
         StepCommentService::save($building, $inputSource, $step, $stepComments['comment']);
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        if (!empty($dirtyAttributes)) {
+            UserToolDataChanged::dispatch($buildingOwner);
+        }
         $updatedMeasureIds = [];
-
-        // Currently, nothing on this page is relevant to the ventilation calculations. Therefore, there is
-        // no benefit to recalculate from here
-//        if (! empty($dirtyAttributes)) {
-//            $updatedMeasureIds = MeasureApplication::findByShorts([
-//                'ventilation-balanced-wtw', 'ventilation-decentral-wtw', 'ventilation-demand-driven', 'crack-sealing',
-//            ])
-//                ->pluck('id')
-//                ->toArray();
-//        }
 
         $values = $request->only('building_ventilations');
         $values['considerables'] = $considerables;

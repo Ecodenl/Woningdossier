@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Ventilation;
-use App\Helpers\Conditions\Evaluators\MeasureHasSubsidy;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Tool\VentilationFormRequest;
@@ -16,7 +15,6 @@ use App\Services\ConsiderableService;
 use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class VentilationController extends ToolController
 {
@@ -25,7 +23,7 @@ class VentilationController extends ToolController
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(UserCostService $userCostService)
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
@@ -41,7 +39,8 @@ class VentilationController extends ToolController
         $livingSituationValues = VentilationHelper::getLivingSituationValues();
         $usageValues = VentilationHelper::getUsageValues();
 
-        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+        $userCosts = $userCostService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
             ->forAdvisable(Step::findByShort('ventilation'))
             ->getAnswers(true);
 
@@ -55,7 +54,7 @@ class VentilationController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(VentilationFormRequest $request)
+    public function store(VentilationFormRequest $request, UserCostService $userCostService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -78,7 +77,7 @@ class VentilationController extends ToolController
         }
 
         $userCosts = $request->validated()['user_costs'];
-        $userCostService = UserCostService::init($buildingOwner, $inputSource);
+        $userCostService->user($buildingOwner)->inputSource($inputSource);
         $userCostValues = [];
         foreach ($userCosts as $measureShort => $costData) {
             $measureApplication = MeasureApplication::findByShort($measureShort);

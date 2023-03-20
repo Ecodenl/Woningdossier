@@ -26,7 +26,7 @@ class SolarPanelsController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(UserCostService $userCostService)
     {
         $typeIds = [7];
 
@@ -58,7 +58,8 @@ class SolarPanelsController extends ToolController
                 ->where('building_id', $building->id)
         )->get();
 
-        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+        $userCosts = $userCostService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
             ->forAdvisable(Step::findByShort('solar-panels'))
             ->getAnswers(true);
 
@@ -86,7 +87,7 @@ class SolarPanelsController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(SolarPanelFormRequest $request)
+    public function store(SolarPanelFormRequest $request, UserCostService $userCostService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -99,7 +100,7 @@ class SolarPanelsController extends ToolController
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $userCosts = $request->validated()['user_costs'];
-        $userCostService = UserCostService::init($user, $inputSource);
+        $userCostService->user($user)->inputSource($inputSource);
         $userCostValues = [];
         // Only one. Save if considering
         if ($considerables[$this->step->id]['is_considering']) {

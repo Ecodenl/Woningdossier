@@ -29,7 +29,7 @@ class RoofInsulationController extends ToolController
      *
      * return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(UserCostService $userCostService)
     {
         $typeIds = [5];
 
@@ -77,7 +77,8 @@ class RoofInsulationController extends ToolController
             }
         }
 
-        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+        $userCosts = $userCostService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
             ->forAdvisable(Step::findByShort('roof-insulation'))
             ->getAnswers(true);
 
@@ -113,7 +114,7 @@ class RoofInsulationController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(RoofInsulationFormRequest $request)
+    public function store(RoofInsulationFormRequest $request, UserCostService $userCostService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -126,7 +127,7 @@ class RoofInsulationController extends ToolController
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $userCosts = $request->validated()['user_costs'];
-        $userCostService = UserCostService::init($user, $inputSource);
+        $userCostService->user($user)->inputSource($inputSource);
         $userCostValues = [];
         if ($considerables[$this->step->id]['is_considering']) {
             $measureIds = array_filter(Arr::pluck($request->validated()['building_roof_types'], 'extra.measure_application_id'));

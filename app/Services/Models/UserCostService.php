@@ -25,12 +25,22 @@ class UserCostService
     protected InputSource $currentInputSource;
     protected Model $advisable;
 
-    public function __construct(User $user, InputSource $currentInputSource)
+    public function __construct()
+    {
+        $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+    }
+
+    public function user(User $user): self
     {
         $this->user = $user;
         $this->building = $user->building;
-        $this->currentInputSource = $currentInputSource;
-        $this->inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        return $this;
+    }
+
+    public function inputSource(InputSource $inputSource): self
+    {
+        $this->currentInputSource = $inputSource;
+        return $this;
     }
 
     public function forAdvisable(Model $advisable): self

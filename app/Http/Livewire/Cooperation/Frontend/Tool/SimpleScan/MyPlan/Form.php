@@ -771,7 +771,7 @@ class Form extends Component
     private function convertAdvicesToCards(Collection $advices, string $category): array
     {
         $cards = [];
-        $userCostService = UserCostService::init($this->building->user, $this->currentInputSource);
+        $userCostService = UserCostService::init()->user($this->building->user)->inputSource($this->currentInputSource);
 
         // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
         $order = 0;

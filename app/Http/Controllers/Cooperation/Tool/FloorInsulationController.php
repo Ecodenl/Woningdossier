@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
-use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -24,7 +23,7 @@ class FloorInsulationController extends ToolController
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(UserCostService $userCostService)
     {
         $typeIds = [4];
         /** @var Building $building */
@@ -55,7 +54,8 @@ class FloorInsulationController extends ToolController
             $building->buildingFeatures()
         )->get();
 
-        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+        $userCosts = $userCostService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
             ->forAdvisable(Step::findByShort('floor-insulation'))
             ->getAnswers(true);
 
@@ -90,7 +90,7 @@ class FloorInsulationController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(FloorInsulationFormRequest $request)
+    public function store(FloorInsulationFormRequest $request, UserCostService $userCostService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
@@ -103,7 +103,7 @@ class FloorInsulationController extends ToolController
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $userCosts = $request->validated()['user_costs'];
-        $userCostService = UserCostService::init($user, $inputSource);
+        $userCostService->user($user)->inputSource($inputSource);
         $userCostValues = [];
         if ($considerables[$this->step->id]['is_considering'] && ($request->validated()['building_elements']['extra']['has_crawlspace'] ?? null) !== 'no') {
             $crawlSpace = Element::findByShort('crawlspace');

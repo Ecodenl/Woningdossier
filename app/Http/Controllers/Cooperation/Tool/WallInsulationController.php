@@ -21,7 +21,6 @@ use App\Scopes\GetValueScope;
 use App\Services\ConsiderableService;
 use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
-use Illuminate\Support\Facades\Log;
 
 class WallInsulationController extends ToolController
 {
@@ -30,7 +29,7 @@ class WallInsulationController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(UserCostService $userCostService)
     {
         $typeIds = [3];
 
@@ -52,7 +51,8 @@ class WallInsulationController extends ToolController
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
 
-        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+        $userCosts = $userCostService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
             ->forAdvisable(Step::findByShort('wall-insulation'))
             ->getAnswers(true);
 
@@ -71,7 +71,7 @@ class WallInsulationController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(WallInsulationRequest $request)
+    public function store(WallInsulationRequest $request, UserCostService $userCostService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -104,7 +104,7 @@ class WallInsulationController extends ToolController
         $advice = $cavityWallAdvice[$request->validated()['building_features']['cavity_wall']] ?? Temperature::WALL_INSULATION_JOINTS;
 
         $userCosts = $request->validated()['user_costs'];
-        $userCostService = UserCostService::init($user, $inputSource);
+        $userCostService->user($user)->inputSource($inputSource);
         $userCostValues = [];
         if ($considerables[$this->step->id]['is_considering']) {
             foreach ($userCosts as $measureShort => $costData) {

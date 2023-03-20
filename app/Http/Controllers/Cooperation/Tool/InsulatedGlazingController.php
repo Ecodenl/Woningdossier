@@ -31,7 +31,7 @@ class InsulatedGlazingController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(UserCostService $userCostService)
     {
         /**
          * @var Building
@@ -88,7 +88,8 @@ class InsulatedGlazingController extends ToolController
 
         $myBuildingElements = BuildingElement::forMe()->get();
 
-        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
+        $userCosts = $userCostService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
             ->forAdvisable(Step::findByShort('insulated-glazing'))
             ->getAnswers(true);
 
@@ -120,7 +121,7 @@ class InsulatedGlazingController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(InsulatedGlazingFormRequest $request)
+    public function store(InsulatedGlazingFormRequest $request, UserCostService $userCostService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -136,7 +137,7 @@ class InsulatedGlazingController extends ToolController
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $userCosts = $request->validated()['user_costs'];
-        $userCostService = UserCostService::init($user, $inputSource);
+        $userCostService->user($user)->inputSource($inputSource);
         $userCostValues = [];
         foreach ($userCosts as $measureShort => $costData) {
             $measureApplication = MeasureApplication::findByShort($measureShort);

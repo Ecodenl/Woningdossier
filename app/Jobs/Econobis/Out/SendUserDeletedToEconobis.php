@@ -5,29 +5,26 @@ namespace App\Jobs\Econobis\Out;
 use App\Models\Building;
 use App\Services\Econobis\Api\Econobis;
 use App\Services\Econobis\EconobisService;
-use App\Services\Econobis\Payloads\AppointmentDatePayload;
-use App\Services\Econobis\Payloads\BuildingStatusPayload;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SendBuildingStatusToEconobis implements ShouldQueue
+class SendUserDeletedToEconobis implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public Building $building;
+    public array $accountRelated;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Building $building)
+    public function __construct($accountRelated)
     {
-        $this->building = $building;
+        $this->accountRelated = $accountRelated;
     }
 
     /**
@@ -39,6 +36,10 @@ class SendBuildingStatusToEconobis implements ShouldQueue
     {
         $econobis
             ->hoomdossier()
-            ->woningStatus($econobisService->forBuilding($this->building)->getPayload(BuildingStatusPayload::class));
+            ->delete(
+                $econobisService
+                    ->setAccountRelated($this->accountRelated)
+                    ->getPayload()
+            );
     }
 }

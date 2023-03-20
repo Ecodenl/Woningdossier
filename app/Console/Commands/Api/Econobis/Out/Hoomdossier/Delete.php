@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
+use App\Jobs\Econobis\Out\SendBuildingStatusToEconobis;
+use App\Jobs\Econobis\Out\SendUserDeletedToEconobis;
 use App\Models\Building;
 use App\Services\Econobis\EconobisService;
 use App\Services\Econobis\Api\Econobis;
@@ -40,15 +42,13 @@ class Delete extends Command
      *
      * @return int
      */
-    public function handle(EconobisService $econobisService, Econobis $econobis)
+    public function handle(EconobisService $econobisService)
     {
-        $building = Building::findOrFail($this->argument('building'));
-
-        $response = $econobis
-            ->hoomdossier()
-            ->delete($econobisService->getPayload($building));
-
-        Log::debug('Response', $response);
+        SendUserDeletedToEconobis::dispatch(
+            $econobisService->forBuilding(
+                Building::find($this->argument('building'))
+            )->resolveAccountRelated()
+        );
 
         return 0;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\UserDeleted;
 use App\Helpers\Queue;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
@@ -16,6 +17,7 @@ use App\Models\Municipality;
 use App\Models\User;
 use App\Services\Econobis\Api\Client;
 use App\Services\Econobis\Api\Econobis;
+use App\Services\Econobis\EconobisService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
 use App\Services\Models\BuildingStatusService;
@@ -273,6 +275,7 @@ class UserService
     {
         $accountId = $user->account_id;
         $building = $user->building;
+        $accountRelated = app(EconobisService::class)->forBuilding($building)->resolveAccountRelated();
 
         if ($building instanceof Building) {
             if ($shouldForceDeleteBuilding) {
@@ -316,6 +319,7 @@ class UserService
                 $account->delete();
             }
         }
+        UserDeleted::dispatch($accountRelated['account_related']);
     }
 
     /**

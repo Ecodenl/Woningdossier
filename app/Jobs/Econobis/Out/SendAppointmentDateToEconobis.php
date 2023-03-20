@@ -38,6 +38,6 @@ class SendAppointmentDateToEconobis implements ShouldQueue
     {
         $econobis
             ->hoomdossier()
-            ->afspraak($econobisService->getPayload($this->building, AppointmentDatePayload::class));
+            ->afspraak($econobisService->forBuilding($this->building)->getPayload(AppointmentDatePayload::class));
     }
 }

@@ -39,7 +39,7 @@
                                     <form method="post" action="{{route('cooperation.admin.super-admin.clients.personal-access-tokens.destroy', compact('client', 'personalAccessToken'))}}" style="display: inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">
+                                        <button type="submit" class="btn btn-danger destroy">
                                             @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.delete')
                                         </button>
                                     </form>
@@ -69,7 +69,13 @@
                     {responsivePriority: 1, targets: 0}
                 ],
             });
-        });
 
+            $(document).on('click', '.destroy', function (event) {
+                if (! confirm('@lang('cooperation/admin/super-admin/clients/personal-access-tokens.destroy.confirm')')) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
     </script>
 @endpush

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Models\HasMappings;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Scopes\VisibleScope;
 use App\Traits\GetMyValuesTrait;
@@ -51,7 +52,8 @@ class CustomMeasureApplication extends Model
 
     use HasTranslations,
         GetMyValuesTrait,
-        GetValueTrait;
+        GetValueTrait,
+        HasMappings;
 
     public $translatable = [
         'name', 'info',

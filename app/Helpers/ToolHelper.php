@@ -2,31 +2,12 @@
 
 namespace App\Helpers;
 
-use App\Helpers\Cooperation\Tool\VentilationHelper;
-use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
-use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
-use App\Helpers\KeyFigures\RoofInsulation\Temperature;
-use App\Models\BuildingHeating;
-use App\Models\BuildingHeatingApplication;
-use App\Models\ComfortLevelTapWater;
-use App\Models\Element;
-use App\Models\EnergyLabel;
-use App\Models\FacadeDamagedPaintwork;
-use App\Models\FacadePlasteredSurface;
-use App\Models\FacadeSurface;
-use App\Models\InsulatingGlazing;
+use App\Helpers\Models\UserCostHelper;
 use App\Models\MeasureApplication;
-use App\Models\PaintworkStatus;
-use App\Models\PvPanelOrientation;
-use App\Models\RoofTileStatus;
-use App\Models\RoofType;
-use App\Models\Service;
 use App\Models\Step;
 use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
-use App\Models\WoodRotStatus;
 use App\Services\DumpService;
-use Illuminate\Support\Collection;
 
 class ToolHelper
 {
@@ -141,13 +122,19 @@ class ToolHelper
                             $modelName .= " ({$model->forSpecificInputSource->name})";
                         }
 
-                        if ($stepShort === 'heating' && ! $isToolQuestion && ! $isToolLabel && $mode === DumpService::MODE_CSV) {
-                            // Calculation fields have a repeated name, which can be confusing in only the heating
-                            // step (as of now). Might need to be expanded later on. We add the tool label matched
-                            // by the step short hidden in the result short
-                            $labelShort = explode('.', $model->short)[0];
-                            $label = ToolLabel::findByShort($labelShort);
-                            $modelName .= " ({$label->name})";
+                        if ($mode === DumpService::MODE_CSV) {
+                            if ($stepShort === 'heating' && ! $isToolQuestion && ! $isToolLabel) {
+                                // Calculation fields have a repeated name, which can be confusing in only the heating
+                                // step (as of now). Might need to be expanded later on. We add the tool label matched
+                                // by the step short hidden in the result short
+                                $labelShort = explode('.', $model->short)[0];
+                                $label = ToolLabel::findByShort($labelShort);
+                                $modelName .= " ({$label->name})";
+                            } elseif (Str::startsWith($model->short, 'user-costs')) {
+                                $measureShort = UserCostHelper::resolveMeasureAndTypeFromShort($model->short)[0];
+                                $measure = MeasureApplication::findByShort($measureShort);
+                                $modelName .= " ({$measure->measure_name})";
+                            }
                         }
 
                         $structure[$stepShort][$shortToSave] = $modelName;

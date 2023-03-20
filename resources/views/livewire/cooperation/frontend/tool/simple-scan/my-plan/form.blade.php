@@ -92,7 +92,9 @@
                                 @if(! empty($card['info']))
                                     <i class="icon-md icon-info-light clickable" x-on:click="toggle()"></i>
                                     @component('cooperation.frontend.layouts.components.modal')
-                                        {!! $card['info'] !!}
+                                        <div class="as-text">
+                                            {!! $card['info'] !!}
+                                        </div>
                                     @endcomponent
                                 @endif
                             </div>

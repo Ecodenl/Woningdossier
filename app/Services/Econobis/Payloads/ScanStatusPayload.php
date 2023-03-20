@@ -34,7 +34,6 @@ class ScanStatusPayload extends EconobisPayload
                 'name' => $scan->name,
                 'short' => $scan->short,
                 'has_made_progress' => $hasMadeProgress,
-                'is_completed' => $this->building->hasCompletedScan($scan, $this->masterInputSource),
             ];
         }
         return $data;

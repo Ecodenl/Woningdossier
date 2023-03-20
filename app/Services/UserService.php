@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\UserDeleted;
+use App\Events\UserResetHisBuilding;
 use App\Helpers\Queue;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
@@ -181,6 +182,7 @@ class UserService
                 $building
             )->save();
         }
+        UserResetHisBuilding::dispatch($building);
     }
 
     /**

@@ -19,8 +19,13 @@ class CreateUserActionPlanAdvicesTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
-            $table->integer('measure_application_id')->unsigned();
-            $table->foreign('measure_application_id')->references('id')->on('measure_applications')->onDelete('restrict');
+            $table->integer('input_source_id')->unsigned()->nullable()->default(1);
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('set null');
+
+            $table->string('user_action_plan_advisable_type');
+            $table->unsignedBigInteger('user_action_plan_advisable_id');
+            $table->index('user_action_plan_advisable_id', 'user_action_plan_advisable_id_index');
+            $table->index('user_action_plan_advisable_type', 'user_action_plan_advisable_type_index');
 
             $table->string('category')->nullable();
             $table->boolean('visible')->default(false);

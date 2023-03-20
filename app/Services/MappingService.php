@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Mapping;
-use App\Models\Municipality;
 use App\Traits\FluentCaller;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -35,14 +35,24 @@ class MappingService
         return $this;
     }
 
+    public function resolveMappingRaw(): Builder
+    {
+        return Mapping::where($this->whereFrom());
+    }
+
     public function resolveMapping(): Collection
     {
-        return Mapping::where($this->whereFrom())->get();
+        return $this->resolveMappingRaw()->get();
+    }
+
+    public function retrieveResolvableRaw(): Builder
+    {
+        return Mapping::where($this->whereTarget());
     }
 
     public function retrieveResolvable(): Collection
     {
-        return Mapping::where($this->whereTarget())->get();
+        return $this->retrieveResolvableRaw()->get();
     }
 
     public function mappingExists(): bool

@@ -62,6 +62,7 @@ class SolarPanelFormRequest extends FormRequest
             'user_energy_habits.amount_electricity' => 'required|numeric|max:25000',
             'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
             'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
+            'execute.*.how' => ['required', 'exists:tool_question_custom_values,short'],
         ];
     }
 }

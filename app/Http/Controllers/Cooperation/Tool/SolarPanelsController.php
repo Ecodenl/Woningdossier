@@ -102,12 +102,18 @@ class SolarPanelsController extends ToolController
         $userCosts = $request->validated()['user_costs'];
         $userCostService->user($user)->inputSource($inputSource);
         $userCostValues = [];
+        $executeHow = $request->validated()['execute'];
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
         // Only one. Save if considering
         if ($considerables[$this->step->id]['is_considering']) {
             foreach ($userCosts as $measureShort => $costData) {
                 $measureApplication = MeasureApplication::findByShort($measureShort);
                 $userCostService->forAdvisable($measureApplication)->sync($costData);
                 $userCostValues[$measureShort] = $costData;
+            }
+            foreach ($executeHow as $measureShort => $howData) {
+                $toolQuestionService->toolQuestion(ToolQuestion::findByShort("execute-{$measureShort}-how"))
+                    ->save($howData['how']);
             }
         }
 

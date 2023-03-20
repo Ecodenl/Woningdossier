@@ -34,6 +34,7 @@ class VentilationFormRequest extends FormRequest
             'building_ventilations.usage' => ['nullable', 'array', Rule::in(array_keys(VentilationHelper::getUsageValues()))],
             'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
             'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
+            'execute.*.how' => ['required', 'exists:tool_question_custom_values,short'],
         ];
     }
 

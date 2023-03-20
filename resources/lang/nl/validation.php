@@ -244,6 +244,15 @@ return [
         'email' => 'E-mailadres',
         'password' => 'Wachtwoord',
 
+        ########## START LEGACY
+        // User costs
+        'user_costs.*.own_total' => 'eigen kosten',
+        'user_costs.*.subsidy_total' => 'subsidiebedrag',
+
+        // Execute how
+        'execute.*.how' => 'hoe wil je het uitvoeren',
+        ########## END LEGACY
+
         // Register fields
         'number' => 'Huisnummer',
         'postal_code' => 'Postcode',
@@ -267,10 +276,6 @@ return [
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',
-
-        // User costs
-        'user_costs.*.own_total' => 'eigen kosten',
-        'user_costs.*.subsidy_total' => 'subsidiebedrag',
 
         // Measure applications
         'measure_applications.measure_name' => 'naam',

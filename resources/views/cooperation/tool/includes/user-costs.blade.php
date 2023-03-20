@@ -46,9 +46,12 @@
                             @if($isDropdown)
                                 @component('cooperation.frontend.layouts.components.alpine-select')
                                     <select name="{{ \App\Helpers\Str::dotToHtml($name) }}" class="form-input">
+                                        <option value="">
+                                            @lang('default.form.dropdown.choose')
+                                        </option>
                                         @foreach($toolQuestion->toolQuestionCustomValues as $toolQuestionCustomValue)
                                             <option value="{{ $toolQuestionCustomValue->short }}"
-                                                    @if(old($name, $answer)) selected @endif>
+                                                    @if(old($name, $answer) == $toolQuestionCustomValue->short) selected @endif>
                                                 {{ $toolQuestionCustomValue->name }}
                                             </option>
                                         @endforeach

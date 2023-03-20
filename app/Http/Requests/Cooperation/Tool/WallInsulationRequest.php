@@ -56,6 +56,7 @@ class WallInsulationRequest extends FormRequest
             'building_features.insulation_wall_surface' => 'required|numeric|min:0|needs_to_be_lower_or_same_as:building_features.wall_surface',
             'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
             'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
+            'execute.*.how' => ['required', 'exists:tool_question_custom_values,short'],
         ];
     }
 }

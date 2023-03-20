@@ -11,9 +11,11 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
 use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
+use App\Services\ToolQuestionService;
 use Illuminate\Http\Request;
 
 class VentilationController extends ToolController
@@ -54,7 +56,7 @@ class VentilationController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(VentilationFormRequest $request, UserCostService $userCostService)
+    public function store(VentilationFormRequest $request, UserCostService $userCostService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -85,6 +87,16 @@ class VentilationController extends ToolController
             if ($considerables[$measureApplication->id]['is_considering']) {
                 $userCostService->forAdvisable($measureApplication)->sync($costData);
                 $userCostValues[$measureShort] = $costData;
+            }
+        }
+        $executeHow = $request->validated()['execute'];
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
+        foreach ($executeHow as $measureShort => $howData) {
+            $measureApplication = MeasureApplication::findByShort($measureShort);
+            // Only save for considered measures
+            if ($considerables[$measureApplication->id]['is_considering']) {
+                $toolQuestionService->toolQuestion(ToolQuestion::findByShort("execute-{$measureShort}-how"))
+                    ->save($howData['how']);
             }
         }
 

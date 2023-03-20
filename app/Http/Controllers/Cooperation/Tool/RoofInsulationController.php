@@ -16,9 +16,11 @@ use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
 use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
+use App\Services\ToolQuestionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -114,7 +116,7 @@ class RoofInsulationController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(RoofInsulationFormRequest $request, UserCostService $userCostService)
+    public function store(RoofInsulationFormRequest $request, UserCostService $userCostService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -129,6 +131,8 @@ class RoofInsulationController extends ToolController
         $userCosts = $request->validated()['user_costs'];
         $userCostService->user($user)->inputSource($inputSource);
         $userCostValues = [];
+        $executeHow = $request->validated()['execute'];
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
         if ($considerables[$this->step->id]['is_considering']) {
             $measureIds = array_filter(Arr::pluck($request->validated()['building_roof_types'], 'extra.measure_application_id'));
 
@@ -138,6 +142,14 @@ class RoofInsulationController extends ToolController
                 if (in_array($measureApplication->id, $measureIds)) {
                     $userCostService->forAdvisable($measureApplication)->sync($costData);
                     $userCostValues[$measureShort] = $costData;
+                }
+            }
+            foreach ($executeHow as $measureShort => $howData) {
+                $measureApplication = MeasureApplication::findByShort($measureShort);
+                // Only save for selected measures
+                if (in_array($measureApplication->id, $measureIds)) {
+                    $toolQuestionService->toolQuestion(ToolQuestion::findByShort("execute-{$measureShort}-how"))
+                        ->save($howData['how']);
                 }
             }
         }

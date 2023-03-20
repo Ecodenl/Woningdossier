@@ -12,9 +12,11 @@ use App\Models\Building;
 use App\Models\Element;
 use App\Models\MeasureApplication;
 use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
 use App\Services\Models\UserCostService;
 use App\Services\StepCommentService;
+use App\Services\ToolQuestionService;
 
 class FloorInsulationController extends ToolController
 {
@@ -90,7 +92,7 @@ class FloorInsulationController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(FloorInsulationFormRequest $request, UserCostService $userCostService)
+    public function store(FloorInsulationFormRequest $request, UserCostService $userCostService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
@@ -105,6 +107,8 @@ class FloorInsulationController extends ToolController
         $userCosts = $request->validated()['user_costs'];
         $userCostService->user($user)->inputSource($inputSource);
         $userCostValues = [];
+        $executeHow = $request->validated()['execute'];
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
         if ($considerables[$this->step->id]['is_considering'] && ($request->validated()['building_elements']['extra']['has_crawlspace'] ?? null) !== 'no') {
             $crawlSpace = Element::findByShort('crawlspace');
             $crawlSpaceHigh = $crawlSpace->elementValues()->where('calculate_value', 45)->first();
@@ -126,6 +130,13 @@ class FloorInsulationController extends ToolController
                     $measureApplication = MeasureApplication::findByShort($measureShort);
                     $userCostService->forAdvisable($measureApplication)->sync($costData);
                     $userCostValues[$measureShort] = $costData;
+                }
+            }
+            foreach ($executeHow as $measureShort => $howData) {
+                // Only save for connected type
+                if ($measureShort === $advice) {
+                    $toolQuestionService->toolQuestion(ToolQuestion::findByShort("execute-{$measureShort}-how"))
+                        ->save($howData['how']);
                 }
             }
         }

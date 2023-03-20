@@ -66,6 +66,7 @@ class RoofInsulationFormRequest extends FormRequest
             'building_roof_types.roof_type_id' => 'exists:roof_types,id',
             'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
             'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
+            'execute.*.how' => ['required', 'exists:tool_question_custom_values,short'],
         ];
     }
 

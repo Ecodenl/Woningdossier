@@ -51,6 +51,7 @@ class InsulatedGlazingFormRequest extends FormRequest
             'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|between:1990,'.$max,
             'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
             'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
+            'execute.*.how' => ['required', 'exists:tool_question_custom_values,short'],
         ];
     }
 

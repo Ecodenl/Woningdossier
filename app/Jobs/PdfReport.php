@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
+use App\Helpers\MyRegulationHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolHelper;
@@ -19,6 +20,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\Models\AlertService;
 use App\Services\UserActionPlanAdviceService;
+use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -86,7 +88,7 @@ class PdfReport implements ShouldQueue
             ->inputSource($inputSource)
             ->setMode(DumpService::MODE_PDF)
             ->anonymize() // See comment above unset below
-            ->createHeaderStructure($short, false);
+            ->createHeaderStructure($short);
 
         // Retrieve headers AFTER the dump is done, as conditionally incorrect data will be removed.
         $dump = $dumpService->generateDump();
@@ -263,6 +265,11 @@ class PdfReport implements ShouldQueue
             ->building($building)
             ->getAlerts();
 
+        $subsidyRegulations = MyRegulationHelper::getRelevantRegulations(
+            $building,
+            $inputSource
+        )[RegulationService::SUBSIDY] ?? [];
+
         // https://github.com/mccarlosen/laravel-mpdf
         // To style container margins of the PDF, see config/pdf.php
         $pdf = LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
@@ -281,6 +288,7 @@ class PdfReport implements ShouldQueue
             'smallMeasureAdvices',
             'adviceComments',
             'alerts',
+            'subsidyRegulations',
         ))->output();
 
         // save the pdf report
@@ -293,8 +301,6 @@ class PdfReport implements ShouldQueue
     {
         $this->fileStorage->delete();
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

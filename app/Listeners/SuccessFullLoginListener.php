@@ -2,11 +2,16 @@
 
 namespace App\Listeners;
 
+use App\Events\BuildingAddressUpdated;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Queue;
+use App\Jobs\CheckBuildingAddress;
+use App\Jobs\RefreshRegulationsForBuildingUser;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Log;
+use App\Models\Municipality;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +53,7 @@ class SuccessFullLoginListener
             Auth::logout();
             $account->setRememberToken(null);
             $account->save();
-            header('Location: '.route('cooperation.welcome'));
+            header('Location: ' . route('cooperation.welcome'));
             exit;
         }
 
@@ -84,6 +89,17 @@ class SuccessFullLoginListener
                 'full_name' => $user->getFullName(),
             ]),
         ]);
+
+        CheckBuildingAddress::dispatchSync($building);
+        // check if the connection was successful, if not dispatch it on the regular queue so it retries.
+        // if the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated will be fired from the attachMunicipality method.
+        // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job
+        // so a else is fine.
+        if (! $building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
+        } else {
+            RefreshRegulationsForBuildingUser::dispatch($building);
+        }
     }
 
     /**

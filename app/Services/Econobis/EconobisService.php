@@ -45,7 +45,6 @@ class EconobisService
         if ( ! is_null($payloadClass) && class_exists($payloadClass, true) && $this->building instanceof Building) {
             $payload = app($payloadClass)->forBuilding($this->building)->buildPayload();
         }
-        dd( array_merge($defaultPayload, $payload));
         return array_merge($defaultPayload, $payload);
     }
 }

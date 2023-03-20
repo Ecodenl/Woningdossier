@@ -44,4 +44,9 @@ class UserFactory extends Factory
     {
         return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_RESIDENT));
     }
+
+    public function asCooperationAdmin()
+    {
+        return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COOPERATION_ADMIN));
+    }
 }

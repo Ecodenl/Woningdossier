@@ -87,7 +87,7 @@ class SolarPanelsController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(SolarPanelFormRequest $request, UserCostService $userCostService)
+    public function store(SolarPanelFormRequest $request, UserCostService $userCostService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -122,11 +122,11 @@ class SolarPanelsController extends ToolController
                 ->toArray();
         }
 
+        $toolQuestionService->building($building)
+            ->currentInputSource($inputSource);
         // now attempt to save the "dynamic" questions.
         foreach ($request->validated()['filledInAnswers'] as $toolQuestionId => $givenAnswer) {
-            ToolQuestionService::init(ToolQuestion::find($toolQuestionId))
-                ->building($building)
-                ->currentInputSource($inputSource)
+            $toolQuestionService->toolQuestion(ToolQuestion::find($toolQuestionId))
                 ->saveToolQuestionCustomValues($givenAnswer);
         }
 

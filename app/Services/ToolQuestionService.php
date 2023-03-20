@@ -17,8 +17,8 @@ use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-class ToolQuestionService {
-
+class ToolQuestionService
+{
     use FluentCaller;
 
     public ?Building $building;
@@ -27,10 +27,15 @@ class ToolQuestionService {
     public ?InputSource $currentInputSource;
     public bool $applyExampleBuilding = false;
 
-    public function __construct(ToolQuestion $toolQuestion)
+    public function __construct()
+    {
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+    }
+
+    public function toolQuestion(ToolQuestion $toolQuestion): self
     {
         $this->toolQuestion = $toolQuestion;
-        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        return $this;
     }
 
     public function building(Building $building): self

@@ -255,7 +255,8 @@ abstract class Scannable extends Component
                 /** @var ToolQuestion $toolQuestion */
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
                 if ($this->building->user->account->can('answer', $toolQuestion)) {
-                    ToolQuestionService::init($toolQuestion)
+                    ToolQuestionService::init()
+                        ->toolQuestion($toolQuestion)
                         ->building($this->building)
                         ->currentInputSource($this->currentInputSource)
                         ->applyExampleBuilding()

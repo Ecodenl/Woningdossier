@@ -126,7 +126,9 @@ class UserCostService
             $short = str_replace('_', '-', $short);
             $toolQuestionShort = "user-costs-{$this->advisable->short}-{$short}";
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-            ToolQuestionService::init($toolQuestion)->building($this->building)
+            ToolQuestionService::init()
+                ->toolQuestion($toolQuestion)
+                ->building($this->building)
                 ->currentInputSource($this->currentInputSource)
                 ->save($answer);
         }

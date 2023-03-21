@@ -9,9 +9,12 @@ class BuildingContractType implements ShouldApply
 {
     public static function apply(ToolQuestionAnswer $toolQuestionAnswer)
     {
+        $user = $toolQuestionAnswer->building->user;
+        $user->update(['refreshing_regulations' => true]);
+
         // We don't need to do this for master, else it triggers twice. The service already handles ALL advices
         UserActionPlanAdviceService::init()
-            ->forUser($toolQuestionAnswer->building->user)
+            ->forUser($user)
             ->refreshUserRegulations();
     }
 }

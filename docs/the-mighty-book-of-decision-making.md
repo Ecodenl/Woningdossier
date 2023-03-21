@@ -1,5 +1,5 @@
 # Decisions
-#### This file will contain important decisions being made throughout the development of Hoomdossier. This will mainly contain decisions made by Hoom itself. 
+#### This file will contain important decisions being made throughout the development of Hoomdossier. 
 
 ## Internal logic
 ### Answer structure
@@ -8,6 +8,13 @@ based on _another_ question. This made us wonder whether or not we should reset 
 conditions consider earlier set answers. During the `upgrade:quick-scan` we had a similar situation, with the 
 `hr-boiler`. We then also applied the same logic as we are doing now. Any future condition/calculations should 
 **always** check the answers for any related conditional answers.
+
+## Notifications
+### RefreshRegulations
+Most notifications run using our notification service. However, during regulation refreshing, the jobs
+are based on the input source of the UserActionPlanAdvice related. This causes the notifications to not be cleared 
+as expected, since there's a mixed batch of input sources. Instead we use the `refreshing_regulations` column on the 
+users table.
 
 ## Formatting
 ### Costs JSON formatting
@@ -56,7 +63,8 @@ In odd cases a build year can be `null`, if that happens we have a fallback.
 
 ## Reports
 ### CSV Total report.
-The total-report contains all the data from a cooperation. On 12-11-2021 we decided to only show master input source data. Previously we would show the coach or resident data based on what was available.
+The total-report contains all the data from a cooperation. On 12-11-2021 we decided to only show master input source
+data. Previously we would show the coach or resident data based on what was available.
 
 ### PDF Report
 #### Input source

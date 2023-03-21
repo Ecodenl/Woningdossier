@@ -4,23 +4,16 @@ namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Helpers\ConsiderableHelper;
 use App\Http\Requests\DecimalReplacementTrait;
+use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Rules\ValidateElementKey;
+use App\Services\LegacyService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class WallInsulationRequest extends FormRequest
 {
     use DecimalReplacementTrait;
-
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return \Auth::check();
-    }
 
     public function getValidatorInstance()
     {
@@ -36,7 +29,9 @@ class WallInsulationRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $measureRelatedShorts = LegacyService::init()->getToolQuestionShorts(Step::findByShort('wall-insulation'));
+
+        $rules = [
             'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             // heeft deze woning spouwmuur / huidige staat
             'element' => ['exists:element_values,id', 'required', new ValidateElementKey('wall-insulation')],
@@ -54,9 +49,15 @@ class WallInsulationRequest extends FormRequest
             'building_features.wall_surface' => 'required|numeric|min:1|max:100000',
             // te isoleren oppervlakte
             'building_features.insulation_wall_surface' => 'required|numeric|min:0|needs_to_be_lower_or_same_as:building_features.wall_surface',
-            'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
-            'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
-            'execute.*.how' => ['required', 'exists:tool_question_custom_values,short'],
         ];
+
+        foreach ($measureRelatedShorts as $tqShorts) {
+            $toolQuestions = ToolQuestion::findByShorts($tqShorts);
+            foreach ($toolQuestions as $toolQuestion) {
+                $rules[$toolQuestion->short] = $toolQuestion->validation;
+            }
+        }
+
+        return $rules;
     }
 }

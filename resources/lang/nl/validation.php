@@ -244,15 +244,6 @@ return [
         'email' => 'E-mailadres',
         'password' => 'Wachtwoord',
 
-        ########## START LEGACY
-        // User costs
-        'user_costs.*.own_total' => 'eigen kosten',
-        'user_costs.*.subsidy_total' => 'subsidiebedrag',
-
-        // Execute how
-        'execute.*.how' => 'hoe wil je het uitvoeren',
-        ########## END LEGACY
-
         // Register fields
         'number' => 'Huisnummer',
         'postal_code' => 'Postcode',

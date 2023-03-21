@@ -5,6 +5,9 @@ namespace App\Http\Requests\Cooperation\Tool;
 use App\Helpers\ConsiderableHelper;
 use App\Http\Requests\DecimalReplacementTrait;
 use App\Models\Interest;
+use App\Models\Step;
+use App\Models\ToolQuestion;
+use App\Services\LegacyService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
@@ -40,8 +43,10 @@ class InsulatedGlazingFormRequest extends FormRequest
         $max = Carbon::now()->year;
         /** @var Collection $noInterests */
 
+        $measureRelatedShorts = LegacyService::init()->getToolQuestionShorts(Step::findByShort('insulated-glazing'));
+
         // m2 and window rules in the withValidator
-        return [
+        $rules = [
             'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             'building_elements.*' => 'required|exists:element_values,id',
             'building_elements.*.*' => 'exists:element_values,id',
@@ -49,10 +54,16 @@ class InsulatedGlazingFormRequest extends FormRequest
             'building_paintwork_statuses.wood_rot_status_id' => 'required|exists:wood_rot_statuses,id',
             'building_paintwork_statuses.paintwork_status_id' => 'required|exists:paintwork_statuses,id',
             'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|between:1990,'.$max,
-            'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
-            'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
-            'execute.*.how' => ['required', 'exists:tool_question_custom_values,short'],
         ];
+
+        foreach ($measureRelatedShorts as $tqShorts) {
+            $toolQuestions = ToolQuestion::findByShorts($tqShorts);
+            foreach ($toolQuestions as $toolQuestion) {
+                $rules[$toolQuestion->short] = $toolQuestion->validation;
+            }
+        }
+
+        return $rules;
     }
 
     public function withValidator(Validator $validator)

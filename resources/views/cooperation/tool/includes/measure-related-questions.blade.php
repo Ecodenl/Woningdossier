@@ -1,7 +1,7 @@
-<div class="user-costs">
-    @foreach($userCosts as $measureId => $questions)
+<div class="measure-related-questions">
+    @foreach($measureRelatedAnswers as $measureId => $questions)
         @php $measureApplication = \App\Models\MeasureApplication::find($measureId); @endphp
-        <div class="flex flex-row flex-wrap w-full mt-2" id="user-cost-{{$measureId}}">
+        <div class="flex flex-row flex-wrap w-full mt-2" id="measure-related-question-{{$measureId}}">
             @if(($withHeader ?? false))
                 <div class="section-title w-full">
                     <h4 class="heading-4">
@@ -14,19 +14,11 @@
                 @foreach($questions as $short => $answer)
                     @php
                         $toolQuestion = \App\Models\ToolQuestion::findByShort($short);
-
-                        if (Str::startsWith($short, 'execute')) {
-                            $isDropdown = true;
-                            preg_match('/execute-(.*)-how/', $short, $matches);
-                            $name = "execute.{$matches[1]}.how";
-                        } else {
-                            $isDropdown = false;
-                            $name = \App\Helpers\Models\UserCostHelper::resolveNameFromShort($short);
-                        }
+                        $isDropdown = $toolQuestion->data_type === Caster::IDENTIFIER;
                     @endphp
                     <div class="w-full sm:w-1/3">
                         @component('cooperation.frontend.layouts.components.form-group', [
-                            'inputName' => $name,
+                            'inputName' => $short,
                             'label' => $toolQuestion->name,
                             'id' => $short,
                             'modalId' => $short . '-info',
@@ -45,20 +37,20 @@
 
                             @if($isDropdown)
                                 @component('cooperation.frontend.layouts.components.alpine-select')
-                                    <select name="{{ \App\Helpers\Str::dotToHtml($name) }}" class="form-input">
+                                    <select name="{{ $short }}" class="form-input">
                                         <option value="">
                                             @lang('default.form.dropdown.choose')
                                         </option>
                                         @foreach($toolQuestion->toolQuestionCustomValues as $toolQuestionCustomValue)
                                             <option value="{{ $toolQuestionCustomValue->short }}"
-                                                    @if(old($name, $answer) == $toolQuestionCustomValue->short) selected @endif>
+                                                    @if(old($short, $answer ?? $toolQuestion->options['value'] ?? null) == $toolQuestionCustomValue->short) selected @endif>
                                                 {{ $toolQuestionCustomValue->name }}
                                             </option>
                                         @endforeach
                                     </select>
                                 @endcomponent
                             @else
-                                <input name="{{ \App\Helpers\Str::dotToHtml($name) }}" value="{{ old($name, $answer) }}" class="form-input"
+                                <input name="{{ $short }}" value="{{ old($short, $answer) }}" class="form-input"
                                        id="{{ $short }}">
                             @endif
                         @endcomponent

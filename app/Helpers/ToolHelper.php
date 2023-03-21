@@ -7,7 +7,7 @@ use App\Models\Step;
 use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
 use App\Services\DumpService;
-use App\Services\MappingService;
+use App\Services\RelatedModelService;
 
 class ToolHelper
 {
@@ -67,7 +67,7 @@ class ToolHelper
     public static function getContentStructure(string $short, string $mode): array
     {
         $stepOrder = static::getStepOrder($short);
-        $mappingService = MappingService::init()->type(MappingHelper::TYPE_RELATED_MODEL);
+        $relatedModelService = RelatedModelService::init();
 
         $structure = [];
 
@@ -136,8 +136,8 @@ class ToolHelper
                                 $label = ToolLabel::findByShort($labelShort);
                                 $modelName .= " ({$label->name})";
                             } else {
-                                $query = $mappingService->from($model)
-                                    ->resolveMappingRaw()
+                                $query = $relatedModelService->from($model)
+                                    ->resolveTargetRaw()
                                     ->whereIn('target_model_type', static::SUPPORTED_RELATED_MODELS);
 
                                 if ($query->exists()) {

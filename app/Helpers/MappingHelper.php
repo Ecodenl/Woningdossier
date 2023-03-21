@@ -12,6 +12,4 @@ class MappingHelper
     const TYPE_MEASURE_APPLICATION_MEASURE_CATEGORY = 'measure-application-measure-category';
     const TYPE_COOPERATION_MEASURE_APPLICATION_MEASURE_CATEGORY = 'cooperation-measure-application-measure-category';
     const TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY = 'custom-measure-application-measure-category';
-
-    const TYPE_RELATED_MODEL = 'related-model';
 }

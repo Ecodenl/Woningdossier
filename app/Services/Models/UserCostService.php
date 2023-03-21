@@ -2,7 +2,6 @@
 
 namespace App\Services\Models;
 
-use App\Helpers\Conditions\Evaluators\MeasureHasSubsidy;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Step;
@@ -10,11 +9,9 @@ use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserCost;
 use App\Services\ConditionService;
-use App\Services\ToolQuestionService;
 use App\Traits\FluentCaller;
 use App\Traits\RetrievesAnswers;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class UserCostService
 {
@@ -49,36 +46,12 @@ class UserCostService
         return $this;
     }
 
-    public function getAnswers(bool $performLegacyConversion = false): array
+    public function getAnswers(): array
     {
-        $shorts = $this->getToolQuestionShorts($performLegacyConversion);
+        $shorts = $this->getToolQuestionShorts();
 
         foreach ($shorts as $measureId => $questionShorts) {
-            $shorts[$measureId] = $this->getManyAnswers($questionShorts, ! $performLegacyConversion);
-        }
-
-        if ($performLegacyConversion) {
-            // Remove subsidies if conditions not matched. This is not ideal but hopefully only temporary until we
-            // refactor these static expert scan controllers
-            foreach ($shorts as $measureId => $questions) {
-                foreach ($questions as $short => $answer) {
-                    if (Str::contains($short, 'subsidy-total')) {
-                        $measure = MeasureApplication::find($measureId);
-                        $value = [
-                            'advisable_type' => get_class($measure),
-                            'advisable_id' => $measure->id,
-                        ];
-                        if (! MeasureHasSubsidy::init($this->building, $this->inputSource)->evaluate($value)['bool']) {
-                            unset($shorts[$measureId][$short]);
-                        }
-                    } elseif (Str::startsWith($short, 'execute-')) {
-                        // LEGACY DEFAULT SUPPORT...
-                        if (is_null($answer)) {
-                            $shorts[$measureId][$short] = 'let-do';
-                        }
-                    }
-                }
-            }
+            $shorts[$measureId] = $this->getManyAnswers($questionShorts);
         }
 
         return $shorts;
@@ -119,22 +92,7 @@ class UserCostService
         return null;
     }
 
-    public function sync(array $answers): void
-    {
-        // TODO: If we add other types, we want to support them. For now, only measure applications.
-        foreach ($answers as $short => $answer) {
-            $short = str_replace('_', '-', $short);
-            $toolQuestionShort = "user-costs-{$this->advisable->short}-{$short}";
-            $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-            ToolQuestionService::init()
-                ->toolQuestion($toolQuestion)
-                ->building($this->building)
-                ->currentInputSource($this->currentInputSource)
-                ->save($answer);
-        }
-    }
-
-    private function getToolQuestionShorts(bool $performLegacyConversion): array
+    private function getToolQuestionShorts(): array
     {
         // TODO: If we add other types, we want to support them. For now, only measure applications.
         $query = MeasureApplication::measureType(MeasureApplication::ENERGY_SAVING);
@@ -150,19 +108,11 @@ class UserCostService
             $query->where('step_id', '!=', $stepSmallMeasures->id);
         }
 
-        return $query->pluck('short', 'id')->map(function ($short, $id) use ($performLegacyConversion) {
-            $shorts = [
+        return $query->pluck('short', 'id')->map(function ($short, $id) {
+            return [
                 "user-costs-{$short}-own-total",
                 "user-costs-{$short}-subsidy-total",
             ];
-
-            // This is a legacy piggy back. We want to get rid of this as soon as possible but because we have the
-            // legacy controllers still, and this mechanism is already in place, this is much easier...
-            if ($performLegacyConversion) {
-                $shorts[] = "execute-{$short}-how";
-            }
-
-            return $shorts;
         })->toArray();
     }
 }

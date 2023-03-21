@@ -33,19 +33,22 @@ class RegulationService
 
     public function getFilters(): array
     {
-        //TODO: If Vbjehuis is unavailable, but data is in the cache, this will still return nothing. Doesn't seem
-        // like the right approach.
-        $result = app(Verbeterjehuis::class)
-            ->regulation()
-            ->getFilters();
+        $cacheKey = BaseCache::getCacheKey('getFilters');
+        $repository = Cache::driver('database');
 
-        if (empty($result)) {
-            return [];
+        // If cache is empty, reset the cache. We do it like this to limit the required calls to the external API.
+        // When the key has expired, `has()` will return false!
+        if ($repository->has($cacheKey)) {
+            if (empty($repository->get($cacheKey))) {
+                $repository->forget($cacheKey);
+            }
         }
 
-        return Cache::driver('database')
-            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), function () use ($result) {
-                return $result;
+        return $repository
+            ->remember($cacheKey, Carbon::now()->addDay(), function () {
+                return Verbeterjehuis::init(Client::init())
+                    ->regulation()
+                    ->getFilters();
             });
     }
 

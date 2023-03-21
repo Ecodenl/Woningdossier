@@ -35,7 +35,7 @@ class RegulationService
     {
         //TODO: If Vbjehuis is unavailable, but data is in the cache, this will still return nothing. Doesn't seem
         // like the right approach.
-        $result = Verbeterjehuis::init(Client::init())
+        $result = app(Verbeterjehuis::class)
             ->regulation()
             ->getFilters();
 
@@ -72,7 +72,7 @@ class RegulationService
             return Search::init(
                 Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {
                     // note: If the search method throws a exception it wont be cached.
-                    return Verbeterjehuis::init(Client::init())
+                    return app(Verbeterjehuis::class)
                         ->regulation()
                         ->search($this->context);
                 })

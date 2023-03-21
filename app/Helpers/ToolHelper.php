@@ -141,8 +141,9 @@ class ToolHelper
                                     ->whereIn('target_model_type', static::SUPPORTED_RELATED_MODELS);
 
                                 if ($query->exists()) {
-                                    foreach ($query->get() as $mapping) {
-                                        $relatedModel = $mapping->mappable;
+                                    /** @var \App\Models\RelatedModel $relatedModel */
+                                    foreach ($query->get() as $relatedModel) {
+                                        $relatedModel = $relatedModel->targetable;
                                         $relatedModelName = $relatedModel->name ?? $relatedModel->title;
                                         $modelName .= " ({$relatedModelName})";
                                     }

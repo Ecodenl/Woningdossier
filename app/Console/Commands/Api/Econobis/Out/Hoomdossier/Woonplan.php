@@ -54,6 +54,7 @@ class Woonplan extends Command
         // and get the advices that have been older than 30 minutes
         // than send it.
         User::econobisContacts()
+
             ->where('allow_access', 1);
         return 0;
     }

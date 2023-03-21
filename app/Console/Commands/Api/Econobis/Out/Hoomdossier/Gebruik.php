@@ -2,16 +2,10 @@
 
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
-use App\Models\Building;
-use App\Models\InputSource;
-use App\Models\ToolQuestion;
-use App\Services\Econobis\Api\Client;
-use App\Services\Econobis\Api\Econobis;
-use App\Services\Econobis\EconobisService;
-use App\Services\Econobis\Payloads\GebruikPayload;
+use App\Jobs\Econobis\Out\SendBuildingFilledInAnswersToEconobis;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 
 class Gebruik extends Command
 {
@@ -20,14 +14,14 @@ class Gebruik extends Command
      *
      * @var string
      */
-    protected $signature = 'api:econobis:out:hoomdossier:gebruik {building : The id of the building you would like to process.}';
+    protected $signature = 'api:econobis:out:hoomdossier:gebruik';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Send all tool question with its answers to Econobis.';
+    protected $description = 'Send the "gebruik" (filled in answers) to Econobis, will take all users that have changed their tool in the last 12 hours.';
 
     /**
      * Create a new command instance.
@@ -44,12 +38,18 @@ class Gebruik extends Command
      *
      * @return int
      */
-    public function handle(EconobisService $econobisService, Econobis $econobis)
+    public function handle()
     {
-        $building = Building::findOrFail($this->argument('building'));
-
-        $econobis->hoomdossier()->gebruik($econobisService->getPayload($building, GebruikPayload::class));
-
+        $relevantLastChangedDate = Carbon::now()->subHours(12)->toDateTimeString();
+        // we dont have to use any policy, because we do this in the query itself.
+        User::where('tool_last_changed_at', '>=', $relevantLastChangedDate)
+            ->econobisContacts()
+            ->where('allow_access', 1)
+            ->chunkById(50, function ($users) {
+                foreach ($users as $user) {
+                    SendBuildingFilledInAnswersToEconobis::dispatch($user->building);
+                }
+            });
         return 0;
     }
 }

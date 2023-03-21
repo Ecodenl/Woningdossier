@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\CooperationRequest;
 use App\Models\Cooperation;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Crypt;
 
 class CooperationController extends Controller
 {
@@ -27,7 +28,12 @@ class CooperationController extends Controller
     {
         $this->authorize('create', Cooperation::class);
 
-        Cooperation::create($request->all());
+        $data = $request->all();
+        if (! empty($data['cooperations']['econobis_api_key'])) {
+            $data['econobis_api_key'] = Crypt::encrypt($data['cooperations']['econobis_api_key']);
+        }
+        unset($data['cooperations']['econobis_api_key']);
+        Cooperation::create($data);
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.store.success'));
@@ -48,7 +54,12 @@ class CooperationController extends Controller
 
         $this->authorize('update', $cooperationToUpdate);
         if ($cooperationToUpdate instanceof Cooperation) {
-            $cooperationToUpdate->fill($request->all());
+            $data = $request->all();
+            if (! empty($data['cooperations']['econobis_api_key'])) {
+                $data['econobis_api_key'] = Crypt::encrypt($data['cooperations']['econobis_api_key']);
+            }
+            unset($data['cooperations']['econobis_api_key']);
+            $cooperationToUpdate->fill($data);
             $cooperationToUpdate->save();
         }
 

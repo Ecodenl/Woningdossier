@@ -7,6 +7,7 @@ use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\Cooperation
@@ -59,7 +60,11 @@ class Cooperation extends Model
     use HasFactory, HasMedia;
 
     public $fillable = [
-        'name', 'website_url', 'slug', 'cooperation_email',
+        'name', 'website_url', 'slug', 'cooperation_email', 'econobis_api_key',
+    ];
+
+    protected $hidden = [
+        'econobis_api_key',
     ];
 
     /**
@@ -74,7 +79,6 @@ class Cooperation extends Model
     {
         return $this->belongsToMany(Scan::class)->using(CooperationScan::class);
     }
-
 
     public function cooperationMeasureApplications(): HasMany
     {
@@ -129,7 +133,7 @@ class Cooperation extends Model
     public function getUsersWithRole(Role $role): Collection
     {
         return User::hydrate(
-            \DB::table(config('permission.table_names.model_has_roles'))
+            DB::table(config('permission.table_names.model_has_roles'))
                 ->where('cooperation_id', $this->id)
                 ->where('role_id', $role->id)
                 ->leftJoin('users', config('permission.table_names.model_has_roles').'.'.config('permission.column_names.model_morph_key'), '=', 'users.id')

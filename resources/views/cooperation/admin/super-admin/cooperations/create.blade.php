@@ -55,7 +55,18 @@
                             @endif
                         </div>
 
-
+                        @component('layouts.parts.components.form-group', [
+                            'input_name' => 'cooperation.econobis_api_key'
+                        ])
+                            <label for="econobis-api-key" class="control-label">
+                                @lang('cooperation/admin/super-admin/cooperations.form.econobis-api-key.label')
+                            </label>
+                            <input id="econobis-api-key" type="text" class="form-control"
+                                   placeholder="@lang('cooperation/admin/super-admin/cooperations.form.econobis-api-key.placeholder')"
+                                   name="cooperations[econobis_api_key]"
+                                   value="{{ old('cooperations.econobis_api_key') }}">
+                        @endcomponent
+                        
                         <button class="btn btn-success" type="submit">@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.create')</button>
                     </form>
                 </div>

@@ -30,6 +30,7 @@ class CooperationRequest extends FormRequest
             'name' => 'required',
             'slug' => ['required', Rule::unique('cooperations', 'slug')->ignore($cooperationId)],
             'website_url' => 'nullable|url',
+            'cooperations.econobis_api_key' => ['nullable', 'string'],
         ];
     }
 }

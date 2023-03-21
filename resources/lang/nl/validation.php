@@ -370,6 +370,8 @@ return [
         'questionnaires.steps.*' => 'na stap',
         'questionnaires.name.*' => 'naam',
 
+        'cooperation.econobis_api_key' => 'Econobis API key',
+
         // Cooperation presets
         // Cooperation measure applications
         'content.name' => 'naam',

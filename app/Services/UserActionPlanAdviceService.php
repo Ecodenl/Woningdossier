@@ -109,6 +109,10 @@ class UserActionPlanAdviceService
             'loan_available' => $loanAvailable,
             'subsidy_available' => $subsidyAvailable,
         ]));
+
+        $this->user->update([
+            'regulations_refreshed_at' => Carbon::now(),
+        ]);
     }
 
     /**

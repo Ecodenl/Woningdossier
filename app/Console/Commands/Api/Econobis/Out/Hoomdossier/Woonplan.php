@@ -2,11 +2,14 @@
 
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
+use App\Jobs\Econobis\Out\SendBuildingFilledInAnswersToEconobis;
 use App\Models\Building;
+use App\Models\User;
 use App\Services\Econobis\EconobisService;
 use App\Services\Econobis\Api\Client;
 use App\Services\Econobis\Api\Econobis;
 use App\Services\Econobis\Payloads\WoonplanPayload;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\Services\Econobis\Payloads\BuildingStatusPayload as BuildingStatusPayload;
@@ -44,12 +47,14 @@ class Woonplan extends Command
      */
     public function handle(EconobisService $econobisService, Econobis $econobis)
     {
-        $building = Building::findOrFail($this->argument('building'));
+        $relevantLastChangedDate = Carbon::now()->subHours(12)->toDateTimeString();
+        // we dont have to use any policy, because we do this in the query itself.
 
-        $econobis
-            ->hoomdossier()
-            ->woonplan($econobisService->getPayload($building,WoonplanPayload::class));
-
+        // now left join the user action pla nadvices
+        // and get the advices that have been older than 30 minutes
+        // than send it.
+        User::econobisContacts()
+            ->where('allow_access', 1);
         return 0;
     }
 }

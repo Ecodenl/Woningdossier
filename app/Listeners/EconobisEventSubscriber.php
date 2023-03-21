@@ -75,7 +75,6 @@ class EconobisEventSubscriber
             UserDeleted::class => 'sendUserDeletedToEconobis',
             BuildingCompletedHisFirstSubStep::class => 'sendScanStatusToEconobis',
             UserResetHisBuilding::class => ['sendScanStatusToEconobis', 'sendBuildingFilledInAnswersToEconobis'],
-
         ];
     }
 

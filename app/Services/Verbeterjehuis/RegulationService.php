@@ -74,7 +74,7 @@ class RegulationService
             $this->context['cityId'] = $cityId;
             return Search::init(
                 Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {
-                    // note: If the search method throws a exception it wont be cached.
+                    // Note: If the search method throws a exception it won't be cached.
                     return app(Verbeterjehuis::class)
                         ->regulation()
                         ->search($this->context);

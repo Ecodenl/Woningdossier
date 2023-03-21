@@ -4,7 +4,6 @@ namespace App\Services\Verbeterjehuis;
 
 use App\Helpers\Cache\BaseCache;
 use App\Helpers\MappingHelper;
-use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\MappingService;
@@ -46,7 +45,7 @@ class RegulationService
 
         return $repository
             ->remember($cacheKey, Carbon::now()->addDay(), function () {
-                return Verbeterjehuis::init(Client::init())
+                return app(Verbeterjehuis::class)
                     ->regulation()
                     ->getFilters();
             });
@@ -71,6 +70,7 @@ class RegulationService
                 return null;
             }
 
+            // TODO: If result is empty, it will be cached... Should we assume results are always correct?
             $this->context['cityId'] = $cityId;
             return Search::init(
                 Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {

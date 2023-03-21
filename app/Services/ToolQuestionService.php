@@ -9,6 +9,7 @@ use App\Helpers\DataTypes\Caster;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\CompletedStep;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
@@ -183,9 +184,14 @@ class ToolQuestionService {
                 Log::debug($answerData);
 
                 $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
-                // apply the example building for the given changes.
-                // we give him the old building features, otherwise we cant verify the changes
-                ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
+                // There are some cases where there is no building feature, for example if the BAG was unavailable
+                // after an account was reset. In 99% of the times, this check will pass. Saving a new question WILL
+                // create the building feature.
+                if ($oldBuildingFeature instanceof BuildingFeature) {
+                    // apply the example building for the given changes.
+                    // we give him the old building features, otherwise we cant verify the changes
+                    ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
+                }
             }
         }
 

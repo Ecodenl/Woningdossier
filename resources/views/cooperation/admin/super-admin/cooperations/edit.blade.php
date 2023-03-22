@@ -68,7 +68,6 @@
                                 @lang("cooperation/admin/super-admin/cooperations.form.econobis-api-key.{$transKey}")
                             </label>
                             <input id="econobis-api-key" type="text" class="form-control"
-                                   placeholder="@lang('cooperation/admin/super-admin/cooperations.form.econobis-api-key.placeholder')"
                                    name="cooperations[econobis_api_key]"
                                    value="{{ old('cooperations.econobis_api_key') }}">
                         @endcomponent

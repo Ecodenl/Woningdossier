@@ -104,6 +104,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CooperationPresetContentSeeder::class);
 
         $this->call(MunicipalitiesTableSeeder::class);
+        $this->call(IntegrationsTableSeeder::class);
 
         if ('testing' !== app()->environment()) {
             $this->call(SqlDumpSeeder::class);

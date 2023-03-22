@@ -33,7 +33,7 @@ class SolarPanelFormRequest extends FormRequest
         $hasSolarPanelsToolQuestion = ToolQuestion::findByShort('has-solar-panels');
         $question = "filledInAnswers.{$hasSolarPanelsToolQuestion['id']}";
 
-        $measureRelatedShorts = LegacyService::init()->getToolQuestionShorts(Step::findByShort('solar-panels'));
+        $measureRelatedShorts = app(LegacyService::class)->getToolQuestionShorts(Step::findByShort('solar-panels'));
 
         $rules = [
             $question => $hasSolarPanelsToolQuestion->validation,

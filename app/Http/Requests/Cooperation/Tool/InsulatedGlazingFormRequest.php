@@ -43,7 +43,7 @@ class InsulatedGlazingFormRequest extends FormRequest
         $max = Carbon::now()->year;
         /** @var Collection $noInterests */
 
-        $measureRelatedShorts = LegacyService::init()->getToolQuestionShorts(Step::findByShort('insulated-glazing'));
+        $measureRelatedShorts = app(LegacyService::class)->getToolQuestionShorts(Step::findByShort('insulated-glazing'));
 
         // m2 and window rules in the withValidator
         $rules = [

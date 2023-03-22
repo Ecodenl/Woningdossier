@@ -11,6 +11,7 @@ use App\Services\Models\MunicipalityService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class MunicipalityServiceTest extends TestCase
@@ -29,6 +30,9 @@ class MunicipalityServiceTest extends TestCase
      */
     public function test_we_get_correct_available_bag_municipalities()
     {
+        // DB seeding also seeds mappings. We clear them since we're asserting a count.
+        DB::table('mappings')->delete();
+
         $municipality1 = Municipality::factory()->create([
             'name' => 'Voorne aan Zee',
             'short' => 'voorne-aan-zee',
@@ -76,6 +80,9 @@ class MunicipalityServiceTest extends TestCase
      */
     public function test_retrieve_bag_municipalities_returns_correct_mapped_municipalities()
     {
+        // DB seeding also seeds mappings. We clear them since we're asserting a count.
+        DB::table('mappings')->delete();
+
         $municipality = Municipality::factory()->create([
             'name' => 'Voorne aan Zee',
             'short' => 'voorne-aan-zee',

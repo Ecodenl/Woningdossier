@@ -13,6 +13,12 @@ class Temperature implements KeyFiguresInterface
     // Gemiddelde temperatuur normberekening
     const AVERAGE_TEMPERATURE_NORM = 13.5; // degrees
 
+    const CAVITY_WALL_ADVICE = [
+        1 => self::WALL_INSULATION_JOINTS,
+        2 => self::WALL_INSULATION_FACADE,
+        0 => self::WALL_INSULATION_RESEARCH,
+    ];
+
     protected static $calculationValues = [
         self::WALL_INSULATION_JOINTS => [
             'default' => 6.46,

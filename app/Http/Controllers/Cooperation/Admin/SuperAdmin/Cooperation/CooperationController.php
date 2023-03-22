@@ -51,6 +51,9 @@ class CooperationController extends Controller
         $data = $request->validated()['cooperations'];
         if (! empty($data['econobis_api_key'])) {
             $data['econobis_api_key'] = Crypt::encrypt($data['econobis_api_key']);
+        } else {
+            // If it's empty we want to unset it, because we don't want to nullify the API key.
+            unset($data['econobis_api_key']);
         }
         $cooperationToUpdate->update($data);
 

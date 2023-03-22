@@ -15,8 +15,7 @@ class AddEconobisApiKeyColumnToCooperationsTable extends Migration
     {
         if (! Schema::hasColumn('cooperations', 'econobis_api_key')) {
             Schema::table('cooperations', function (Blueprint $table) {
-                $column = Schema::hasColumn('cooperations', 'econobis_wildcard') ? 'econobis_wildcard' : 'website_url';
-                $table->longText('econobis_api_key')->nullable()->after($column);
+                $table->longText('econobis_api_key')->nullable()->after('econobis_wildcard');
             });
         }
     }

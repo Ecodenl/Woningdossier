@@ -32,29 +32,9 @@ class RelatedModelService
         return RelatedModel::where($this->whereFrom());
     }
 
-    public function resolveTarget(): Collection
-    {
-        return $this->resolveTargetRaw()->get();
-    }
-
-    public function retrieveFromRaw(): Builder
-    {
-        return RelatedModel::where($this->whereTarget());
-    }
-
-    public function retrieveFrom(): Collection
-    {
-        return $this->retrieveFromRaw()->get();
-    }
-
     public function whereFrom(): array
     {
         return $this->whereStruct('from');
-    }
-
-    public function whereTarget(): array
-    {
-        return $this->whereStruct('target');
     }
 
     private function whereStruct(string $column): array

@@ -40,14 +40,14 @@ class MappingService
         return Mapping::where($this->whereFrom());
     }
 
-    public function resolveMapping(): Collection
-    {
-        return $this->resolveMappingRaw()->get();
-    }
-
     public function retrieveResolvableRaw(): Builder
     {
         return Mapping::where($this->whereTarget());
+    }
+
+    public function resolveMapping(): Collection
+    {
+        return $this->resolveMappingRaw()->get();
     }
 
     public function retrieveResolvable(): Collection
@@ -57,40 +57,12 @@ class MappingService
 
     public function mappingExists(): bool
     {
-        return Mapping::where($this->whereFrom())->exists();
+        return$this->resolveMappingRaw()->exists();
     }
 
     public function mappingDoesntExist(): bool
     {
         return ! $this->mappingExists();
-    }
-
-    public function resolvableExists(): bool
-    {
-        return Mapping::where($this->whereTarget())->exists();
-    }
-
-    public function resolvableDoesntExist(): bool
-    {
-        return ! $this->resolvableExists();
-    }
-
-    public function resolveFrom(): Collection
-    {
-        $data = [];
-
-        foreach ($this->retrieveResolvable() as $mapping) {
-            if ($mapping instanceof Mapping) {
-                if (! is_null($mapping->from_value)) {
-                    $data[] = $mapping->from_value;
-                }
-                if (! is_null($mapping->from_model_type)) {
-                    $data[] = $mapping->resolvable;
-                }
-            }
-        }
-
-        return collect($data);
     }
 
     public function resolveTarget(): Collection

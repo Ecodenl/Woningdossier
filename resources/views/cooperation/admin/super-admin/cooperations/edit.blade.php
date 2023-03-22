@@ -55,8 +55,6 @@
                         @endcomponent
 
                         @php
-                            // Changed in other branch, so backwards compatible until merged
-                            $cooperationToUpdate ??= $cooperationToEdit;
                             $transKey = empty($cooperationToUpdate->econobis_api_key) ? 'label' : 'label-replace';
                         @endphp
                         @component('layouts.parts.components.form-group', [

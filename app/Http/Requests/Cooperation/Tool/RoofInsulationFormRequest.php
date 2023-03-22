@@ -57,9 +57,9 @@ class RoofInsulationFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(LegacyService $legacyService)
     {
-        $measureRelatedShorts = app(LegacyService::class)->getToolQuestionShorts(Step::findByShort('roof-insulation'));
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('roof-insulation'));
 
         $rules = [
             'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],

@@ -38,11 +38,11 @@ class FloorInsulationFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(LegacyService $legacyService)
     {
         $noDatabaseSelectOptions = ['yes', 'no', 'unknown'];
 
-        $measureRelatedShorts = app(LegacyService::class)->getToolQuestionShorts(Step::findByShort('floor-insulation'));
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('floor-insulation'));
 
         $rules = [
             'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],

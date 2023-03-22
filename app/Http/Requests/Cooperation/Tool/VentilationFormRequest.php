@@ -20,9 +20,9 @@ class VentilationFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(LegacyService $legacyService)
     {
-        $measureRelatedShorts = app(LegacyService::class)->getToolQuestionShorts(Step::findByShort('ventilation'));
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('ventilation'));
 
         $rules = [
             'building_ventilations.living_situation' => ['nullable', 'array', Rule::in(array_keys(VentilationHelper::getLivingSituationValues()))],

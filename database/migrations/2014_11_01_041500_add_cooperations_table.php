@@ -20,6 +20,7 @@ class AddCooperationsTable extends Migration
             $table->string('cooperation_email')->nullable();
             $table->string('website_url')->nullable();
             $table->string('econobis_wildcard')->nullable();
+            $table->longText('econobis_api_key')->nullable();
             $table->timestamps();
         });
     }

@@ -371,6 +371,7 @@ return [
         'cooperations.cooperation_email' => 'contact e-mailadres',
         'cooperations.website_url' => 'website URL',
         'cooperations.econobis_wildcard' => 'Econobis Domein Wildcard',
+        'cooperation.econobis_api_key' => 'Econobis API key',
 
         // Cooperation presets
         // Cooperation measure applications

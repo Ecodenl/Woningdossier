@@ -30,6 +30,7 @@ class CooperationRequest extends FormRequest
             'cooperations.website_url' => 'nullable|url',
             'cooperations.cooperation_email' => 'nullable|email',
             'cooperations.econobis_wildcard' => 'nullable',
+            'cooperations.econobis_api_key' => ['nullable', 'string'],
         ];
     }
 }

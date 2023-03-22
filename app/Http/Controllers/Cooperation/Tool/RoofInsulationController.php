@@ -17,9 +17,11 @@ use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
-use App\Services\Models\UserCostService;
+use App\Services\LegacyService;
 use App\Services\StepCommentService;
+use App\Services\ToolQuestionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -30,7 +32,7 @@ class RoofInsulationController extends ToolController
      *
      * return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(LegacyService $legacyService)
     {
         $typeIds = [5];
 
@@ -78,15 +80,15 @@ class RoofInsulationController extends ToolController
             }
         }
 
-        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
-            ->forAdvisable(Step::findByShort('roof-insulation'))
-            ->getAnswers(true);
+        $measureRelatedAnswers = $legacyService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
+            ->getMeasureRelatedAnswers(Step::findByShort('roof-insulation'));
 
-        $userCostsCategorized = [];
+        $measureRelatedAnswersCategorized = [];
 
         foreach (RoofInsulation::getMeasureApplicationsAdviceMap() as $cat => $measures) {
             foreach ($measures as $measureApplication) {
-                $userCostsCategorized[$cat][$measureApplication->id] = $userCosts[$measureApplication->id];
+                $measureRelatedAnswersCategorized[$cat][$measureApplication->id] = $measureRelatedAnswers[$measureApplication->id];
             }
         }
 
@@ -94,7 +96,7 @@ class RoofInsulationController extends ToolController
             'building', 'primaryRoofTypes', 'secondaryRoofTypes', 'typeIds',
             'buildingFeaturesForMe', 'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
             'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe',
-            'userCostsCategorized'
+            'measureRelatedAnswersCategorized'
         ));
     }
 
@@ -114,7 +116,7 @@ class RoofInsulationController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(RoofInsulationFormRequest $request)
+    public function store(RoofInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -126,18 +128,20 @@ class RoofInsulationController extends ToolController
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $userCosts = $request->validated()['user_costs'];
-        $userCostService = UserCostService::init($user, $inputSource);
-        $userCostValues = [];
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('roof-insulation'));
         if ($considerables[$this->step->id]['is_considering']) {
             $measureIds = array_filter(Arr::pluck($request->validated()['building_roof_types'], 'extra.measure_application_id'));
 
-            foreach ($userCosts as $measureShort => $costData) {
-                $measureApplication = MeasureApplication::findByShort($measureShort);
-                // Only save for selected measures
-                if (in_array($measureApplication->id, $measureIds)) {
-                    $userCostService->forAdvisable($measureApplication)->sync($costData);
-                    $userCostValues[$measureShort] = $costData;
+            foreach ($measureRelatedShorts as $measureId => $tqShorts) {
+                if (in_array($measureId, $measureIds)) {
+                    foreach ($tqShorts as $tqShort) {
+                        // Subsidy question might have been removed and thus not saveable.
+                        if (array_key_exists($tqShort, $request->validated())) {
+                            $tq = ToolQuestion::findByShort($tqShort);
+                            $toolQuestionService->toolQuestion($tq)->save($request->validated()[$tqShort]);
+                        }
+                    }
                 }
             }
         }
@@ -180,7 +184,6 @@ class RoofInsulationController extends ToolController
         $values = $request->only('considerables', 'building_roof_type_ids', 'building_features',
             'building_roof_types', 'step_comments');
         $values['updated_measure_ids'] = $updatedMeasureIds;
-        $values['user_costs'] = $userCostValues;
 
         // Usually we let the completeStore function handle the completion, but we NEED the step to be completed
         // BEFORE we can calculate the roof insulation advices.

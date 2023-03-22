@@ -771,7 +771,7 @@ class Form extends Component
     private function convertAdvicesToCards(Collection $advices, string $category): array
     {
         $cards = [];
-        $userCostService = UserCostService::init($this->building->user, $this->currentInputSource);
+        $userCostService = UserCostService::init()->user($this->building->user)->inputSource($this->currentInputSource);
 
         // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
         $order = 0;
@@ -800,6 +800,8 @@ class Form extends Component
                 // user for certain doesn't have any costs. Else, it will get the answers, and if not viewable, then
                 // the answer will be null. It will also be null if the user didn't fill it in. So, if all answers
                 // are set, we can guarantee that this has user costs.
+                // For added clarification: has user costs means that subsidy was deducted from the own total, meaning
+                // both own_total and subsidy_total need to be filled in.
                 $userCosts = $userCostService->forAdvisable($advisable)->getAnswers()[$advisable->id] ?? [];
                 $hasUserCosts = ! empty($userCosts);
                 foreach ($userCosts as $tqShort => $answer) {

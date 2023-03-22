@@ -71,7 +71,8 @@ class UserActionPlanAdviceObserver
 
             // Check if we should apply user costs
             if ($advisable instanceof Model) {
-                $cost = UserCostService::init($userActionPlanAdvice->user, $userActionPlanAdvice->inputSource)
+                $cost = UserCostService::init()->user($userActionPlanAdvice->user)
+                    ->inputSource($userActionPlanAdvice->inputSource)
                     ->forAdvisable($advisable)
                     ->getCost();
 

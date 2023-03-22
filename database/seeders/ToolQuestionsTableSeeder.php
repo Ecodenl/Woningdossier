@@ -135,6 +135,8 @@ class ToolQuestionsTableSeeder extends Seeder
                 'name' => 'Niet van toepassing'
             ],
         ];
+        // Note: These are also used for the expert execute-{measure}-how questions since they use the same values.
+        // Take note of this if there needs to be a change on only one scan.
         $smallMeasureExecuteValues = [
             'do-self' => [
                 'name' => 'Dat ga ik zelf doen',
@@ -3210,6 +3212,14 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Subsidiebedrag (zelf invullen)',
                 'help_text' => 'In het geval dat je al weet hoeveel subsidie je terugkrijgt op een maatregel, kun je dit hier invullen.',
                 'short' => "user-costs-{$measure->short}-subsidy-total",
+            ];
+            $questions[] = [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => "execute-{$measure->short}-how",
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+                'options' => ['value' => 'let-do'],
             ];
         }
 

@@ -24,12 +24,13 @@ class CooperationRequest extends FormRequest
      */
     public function rules()
     {
-        $cooperationId = $this->request->get('cooperation_id');
-
         return [
-            'name' => 'required',
-            'slug' => ['required', Rule::unique('cooperations', 'slug')->ignore($cooperationId)],
-            'website_url' => 'nullable|url',
+            'cooperations.name' => 'required',
+            'cooperations.slug' => ['required', Rule::unique('cooperations', 'slug')->ignore($this->route('cooperationToUpdate'))],
+            'cooperations.website_url' => 'nullable|url',
+            'cooperations.cooperation_email' => 'nullable|email',
+            'cooperations.econobis_wildcard' => 'nullable',
+            'cooperations.econobis_api_key' => ['nullable', 'string'],
         ];
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Ventilation;
 use App\Events\UserToolDataChanged;
-use App\Helpers\Conditions\Evaluators\MeasureHasSubsidy;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Tool\VentilationFormRequest;
@@ -13,11 +12,12 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
-use App\Services\Models\UserCostService;
+use App\Services\LegacyService;
 use App\Services\StepCommentService;
+use App\Services\ToolQuestionService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class VentilationController extends ToolController
 {
@@ -26,7 +26,7 @@ class VentilationController extends ToolController
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(LegacyService $legacyService)
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
@@ -42,12 +42,12 @@ class VentilationController extends ToolController
         $livingSituationValues = VentilationHelper::getLivingSituationValues();
         $usageValues = VentilationHelper::getUsageValues();
 
-        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
-            ->forAdvisable(Step::findByShort('ventilation'))
-            ->getAnswers(true);
+        $measureRelatedAnswers = $legacyService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
+            ->getMeasureRelatedAnswers(Step::findByShort('ventilation'));
 
         return view('cooperation.tool.ventilation.index', compact(
-            'building', 'buildingVentilation', 'howValues', 'livingSituationValues', 'usageValues', 'userCosts',
+            'building', 'buildingVentilation', 'howValues', 'livingSituationValues', 'usageValues', 'measureRelatedAnswers',
         ));
     }
 
@@ -56,7 +56,7 @@ class VentilationController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(VentilationFormRequest $request)
+    public function store(VentilationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -78,15 +78,17 @@ class VentilationController extends ToolController
             ConsiderableService::save(MeasureApplication::findOrFail($considerableId), $buildingOwner, $inputSource, $considerableData);
         }
 
-        $userCosts = $request->validated()['user_costs'];
-        $userCostService = UserCostService::init($buildingOwner, $inputSource);
-        $userCostValues = [];
-        foreach ($userCosts as $measureShort => $costData) {
-            $measureApplication = MeasureApplication::findByShort($measureShort);
-            // Only save for considered measures
-            if ($considerables[$measureApplication->id]['is_considering']) {
-                $userCostService->forAdvisable($measureApplication)->sync($costData);
-                $userCostValues[$measureShort] = $costData;
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('ventilation'));
+        foreach ($measureRelatedShorts as $measureId => $tqShorts) {
+            if ($considerables[$measureId]['is_considering']) {
+                foreach ($tqShorts as $tqShort) {
+                    // Subsidy question might have been removed and thus not saveable.
+                    if (array_key_exists($tqShort, $request->validated())) {
+                        $tq = ToolQuestion::findByShort($tqShort);
+                        $toolQuestionService->toolQuestion($tq)->save($request->validated()[$tqShort]);
+                    }
+                }
             }
         }
 
@@ -102,7 +104,6 @@ class VentilationController extends ToolController
         $values = $request->only('building_ventilations');
         $values['considerables'] = $considerables;
         $values['updated_measure_ids'] = $updatedMeasureIds;
-        $values['user_costs'] = $userCostValues;
 
         (new VentilationHelper($buildingOwner, $inputSource))
             ->setValues($values)

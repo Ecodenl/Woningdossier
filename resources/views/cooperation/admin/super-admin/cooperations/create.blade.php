@@ -10,51 +10,60 @@
             <div class="row">
                 <div class="col-sm-12">
                     <form action="{{route('cooperation.admin.super-admin.cooperations.store')}}" method="post">
-                        {{csrf_field()}}
-                        <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
+                        @csrf
+
+                        {{-- TODO: Convert translations to cooperations file --}}
+                        @component('layouts.parts.components.form-group', [
+                            'input_name' => 'cooperations.name'
+                        ])
                             <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.name')</label>
-                            <input value="{{old('name')}}" required type="text" class="form-control" name="name" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.name')">
+                            <input value="{{old('cooperations.name')}}" required type="text" class="form-control" name="cooperations[name]" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.name')">
+                        @endcomponent
 
-                            @if ($errors->has('name'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('name') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-
-                        <div class="form-group {{ $errors->has('slug') ? ' has-error' : '' }}">
+                        @component('layouts.parts.components.form-group', [
+                            'input_name' => 'cooperations.slug'
+                        ])
                             <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.slug')</label>
-                            <input value="{{old('slug')}}" required type="text" class="form-control" name="slug" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.slug')">
+                            <input value="{{old('cooperations.slug')}}" required type="text" class="form-control" name="cooperations[slug]" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.slug')">
+                        @endcomponent
 
-                            @if ($errors->has('slug'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('slug') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-
-                        <div class="form-group {{ $errors->has('cooperation_email') ? ' has-error' : '' }}">
+                        @component('layouts.parts.components.form-group', [
+                            'input_name' => 'cooperations.cooperation_email'
+                        ])
                             <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.cooperation_email')</label>
-                            <input value="{{old('cooperation_email')}}" type="text" class="form-control" name="cooperation_email" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.cooperation_email')">
+                            <input value="{{old('cooperations.cooperation_email')}}" type="text" class="form-control" name="cooperations[cooperation_email]" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.cooperation_email')">
+                        @endcomponent
 
-                            @if ($errors->has('cooperation_email'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('cooperation_email') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-
-                        <div class="form-group {{ $errors->has('website_url') ? ' has-error' : '' }}">
+                        @component('layouts.parts.components.form-group', [
+                            'input_name' => 'cooperations.website_url'
+                        ])
                             <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.website_url')</label>
-                            <input value="{{old('website_url')}}" type="text" class="form-control" name="website_url" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.website_url')">
+                            <input value="{{old('cooperations.website_url')}}" type="text" class="form-control" name="cooperations[website_url]" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.website_url')">
+                        @endcomponent
 
-                            @if ($errors->has('website_url'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('website_url') }}</strong>
-                                </span>
-                            @endif
-                        </div>
+                        @component('layouts.parts.components.form-group', [
+                            'input_name' => 'cooperation.econobis_wildcard'
+                        ])
+                            <label for="econobis-wildcard" class="control-label">
+                                @lang('cooperation/admin/super-admin/cooperations.form.econobis-wildcard.label')
+                            </label>
+                            <input id="econobis-wildcard" type="text" class="form-control"
+                                   placeholder="@lang('cooperation/admin/super-admin/cooperations.form.econobis-wildcard.placeholder')"
+                                   name="cooperations[econobis_wildcard]"
+                                   value="{{ old('cooperations.econobis_wildcard') }}">
+                        @endcomponent
 
+                        @component('layouts.parts.components.form-group', [
+                            'input_name' => 'cooperation.econobis_api_key'
+                        ])
+                            <label for="econobis-api-key" class="control-label">
+                                @lang('cooperation/admin/super-admin/cooperations.form.econobis-api-key.label')
+                            </label>
+                            <input id="econobis-api-key" type="text" class="form-control"
+                                   placeholder="@lang('cooperation/admin/super-admin/cooperations.form.econobis-api-key.placeholder')"
+                                   name="cooperations[econobis_api_key]"
+                                   value="{{ old('cooperations.econobis_api_key') }}">
+                        @endcomponent
 
                         <button class="btn btn-success" type="submit">@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.create')</button>
                     </form>

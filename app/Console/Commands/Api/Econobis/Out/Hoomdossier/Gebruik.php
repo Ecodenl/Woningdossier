@@ -3,7 +3,9 @@
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
 use App\Jobs\Econobis\Out\SendBuildingFilledInAnswersToEconobis;
+use App\Models\Integration;
 use App\Models\User;
+use App\Services\IntegrationProcessService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -38,14 +40,15 @@ class Gebruik extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(IntegrationProcessService $integrationProcessService)
     {
-        $relevantLastChangedDate = Carbon::now()->subHours(12)->toDateTimeString();
+        $relevantLastChangedDate = Carbon::now()->subHours(12);
+
         // we dont have to use any policy, because we do this in the query itself.
         User::where('tool_last_changed_at', '>=', $relevantLastChangedDate)
             ->econobisContacts()
             ->where('allow_access', 1)
-            ->chunkById(50, function ($users) {
+            ->chunkById(50, function ($users) use ($integrationProcessService) {
                 foreach ($users as $user) {
                     SendBuildingFilledInAnswersToEconobis::dispatch($user->building);
                 }

@@ -3,16 +3,13 @@
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
 use App\Jobs\Econobis\Out\SendBuildingFilledInAnswersToEconobis;
-use App\Models\Building;
+use App\Jobs\Econobis\Out\SendUserActionPlanAdvicesToEconobis;
+use App\Models\Integration;
 use App\Models\User;
-use App\Services\Econobis\EconobisService;
-use App\Services\Econobis\Api\Client;
-use App\Services\Econobis\Api\Econobis;
-use App\Services\Econobis\Payloads\WoonplanPayload;
+use App\Services\IntegrationProcessService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use App\Services\Econobis\Payloads\BuildingStatusPayload as BuildingStatusPayload;
+use Illuminate\Database\Query\JoinClause;
 
 class Woonplan extends Command
 {
@@ -21,14 +18,14 @@ class Woonplan extends Command
      *
      * @var string
      */
-    protected $signature = 'api:econobis:out:hoomdossier:woonplan {building : The id of the building you would like to process.}';
+    protected $signature = 'api:econobis:out:hoomdossier:woonplan';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Send the current woonplan of the building.';
+    protected $description = 'Send the "woonplan" (user action plan advices) to Econobis, will take all users that have changed their tool in the last 12 hours.';
 
     /**
      * Create a new command instance.
@@ -45,17 +42,47 @@ class Woonplan extends Command
      *
      * @return int
      */
-    public function handle(EconobisService $econobisService, Econobis $econobis)
+    public function handle(IntegrationProcessService $integrationProcessService)
     {
-        $relevantLastChangedDate = Carbon::now()->subHours(12)->toDateTimeString();
-        // we dont have to use any policy, because we do this in the query itself.
+        $integrationProcessService = $integrationProcessService
+            ->forIntegration(Integration::findByShort('econobis'))
+            ->forProcess(SendBuildingFilledInAnswersToEconobis::class);
 
-        // now left join the user action pla nadvices
-        // and get the advices that have been older than 30 minutes
-        // than send it.
-        User::econobisContacts()
 
-            ->where('allow_access', 1);
+        // first get all advices that have been updated in the past 30 minutes
+        // than check if the user his advices werent synced in the past 30 minutes
+        $relevantLastChangedDate = Carbon::now()->subMinutes(30);
+
+        $usersWhoRecentlyMadeChangesToAdvices = User::econobisContacts()
+            ->select(['users.*'])
+            ->where('allow_access', 1)
+            ->join('user_action_plan_advices', function (JoinClause $join) use ($relevantLastChangedDate) {
+                $join
+                    ->on('user_action_plan_advices.user_id', '=', 'users.id')
+                    ->where(
+                        'user_action_plan_advices.created_at',
+                        '>=',
+                        $relevantLastChangedDate
+                    );
+            })
+            ->groupBy(['users.id'])
+            ->chunkById(50, function ($users) use ($integrationProcessService, $relevantLastChangedDate) {
+                foreach ($users as $user) {
+                    $lastSyncedAt = $integrationProcessService->forBuilding($user->building)->lastSyncedAt();
+
+                    $shouldSync = false;
+                    if (is_null($lastSyncedAt)) {
+                        $shouldSync = true;
+                    } elseif ($relevantLastChangedDate->gt($lastSyncedAt)) {
+                        $shouldSync = true;
+                    }
+
+                    if ($shouldSync) {
+                        SendUserActionPlanAdvicesToEconobis::dispatch($user->building);
+                    }
+                }
+            });
+
         return 0;
     }
 }

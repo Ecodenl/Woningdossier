@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
 use App\Helpers\HoomdossierSession;
@@ -146,6 +147,9 @@ class RoofInsulationController extends ToolController
         }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        if (!empty($dirtyAttributes)) {
+            UserToolDataChanged::dispatch($user);
+        }
         $dirtyNames = array_keys($dirtyAttributes);
         $updatedMeasureIds = [];
 

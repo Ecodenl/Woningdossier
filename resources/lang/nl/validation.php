@@ -366,6 +366,12 @@ return [
         'questionnaires.steps.*' => 'na stap',
         'questionnaires.name.*' => 'naam',
 
+        'cooperations.name' => 'naam van de coöperatie',
+        'cooperations.slug' => 'slug',
+        'cooperations.cooperation_email' => 'contact e-mailadres',
+        'cooperations.website_url' => 'website URL',
+        'cooperations.econobis_wildcard' => 'Econobis Domein Wildcard',
+
         // Cooperation presets
         // Cooperation measure applications
         'content.name' => 'naam',

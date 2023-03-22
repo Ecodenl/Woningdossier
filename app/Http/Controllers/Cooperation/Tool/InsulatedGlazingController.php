@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\InsulatedGlazing;
+use App\Events\UserToolDataChanged;
 use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -152,6 +153,9 @@ class InsulatedGlazingController extends ToolController
         }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
+        if (!empty($dirtyAttributes)) {
+            UserToolDataChanged::dispatch($user);
+        }
 
         // Time to check for building_insulated_glazings in the dirtyAttributes
         // We don't care for the values attached, if they're here, it means the user has messed with them

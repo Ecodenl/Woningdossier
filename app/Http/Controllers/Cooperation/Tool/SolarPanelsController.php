@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\SolarPanel;
+use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\SolarPanelHelper;
 use App\Helpers\Hoomdossier;
@@ -122,6 +123,8 @@ class SolarPanelsController extends ToolController
             ])
                 ->pluck('id')
                 ->toArray();
+
+            UserToolDataChanged::dispatch($user);
         }
 
         $toolQuestionService->building($building)

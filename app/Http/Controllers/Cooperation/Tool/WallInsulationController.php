@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\WallInsulation;
+use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\Hoomdossier;
@@ -94,6 +95,7 @@ class WallInsulationController extends ToolController
             ])
                 ->pluck('id')
                 ->toArray();
+            UserToolDataChanged::dispatch($user);
         }
 
         $cavityWallAdvice = Temperature::CAVITY_WALL_ADVICE;

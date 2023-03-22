@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
+use App\Events\UserToolDataChanged;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -143,11 +144,12 @@ class FloorInsulationController extends ToolController
             ])
                 ->pluck('id')
                 ->toArray();
+            UserToolDataChanged::dispatch($user);
         }
 
         $values = $request->validated();
         $values['updated_measure_ids'] = $updatedMeasureIds;
-        
+
         (new FloorInsulationHelper($user, $inputSource))
             ->setValues($values)
             ->saveValues()

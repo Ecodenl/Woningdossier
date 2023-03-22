@@ -6,6 +6,7 @@ use App\Scopes\AvailableScope;
 use App\Scopes\CooperationScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
+use App\Traits\HasCooperationTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -56,15 +57,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class FileStorage extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
+    use GetValueTrait, GetMyValuesTrait, HasCooperationTrait;
 
     public static function boot()
     {
         parent::boot();
 
         static::addGlobalScope(new AvailableScope());
-        static::addGlobalScope(new CooperationScope());
     }
 
     protected $fillable = [

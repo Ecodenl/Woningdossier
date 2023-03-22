@@ -28,40 +28,31 @@ class CooperationController extends Controller
     {
         $this->authorize('create', Cooperation::class);
 
-        $data = $request->all();
-        if (! empty($data['cooperations']['econobis_api_key'])) {
-            $data['econobis_api_key'] = Crypt::encrypt($data['cooperations']['econobis_api_key']);
+        $data = $request->validated()['cooperations'];
+        if (! empty($data['econobis_api_key'])) {
+            $data['econobis_api_key'] = Crypt::encrypt($data['econobis_api_key']);
         }
-        unset($data['cooperations']['econobis_api_key']);
         Cooperation::create($data);
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.store.success'));
     }
 
-    public function edit(Cooperation $currentCooperation, Cooperation $cooperationToEdit)
+    public function edit(Cooperation $cooperation, Cooperation $cooperationToUpdate)
     {
-        $this->authorize('edit', $cooperationToEdit);
+        $this->authorize('edit', $cooperationToUpdate);
 
-        return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToEdit'));
+        return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToUpdate'));
     }
 
-    public function update(Cooperation $cooperation, CooperationRequest $request)
+    public function update(Cooperation $cooperation, CooperationRequest $request, Cooperation $cooperationToUpdate)
     {
-        $cooperationId = $request->get('cooperation_id');
-
-        $cooperationToUpdate = Cooperation::find($cooperationId);
-
         $this->authorize('update', $cooperationToUpdate);
-        if ($cooperationToUpdate instanceof Cooperation) {
-            $data = $request->all();
-            if (! empty($data['cooperations']['econobis_api_key'])) {
-                $data['econobis_api_key'] = Crypt::encrypt($data['cooperations']['econobis_api_key']);
-            }
-            unset($data['cooperations']['econobis_api_key']);
-            $cooperationToUpdate->fill($data);
-            $cooperationToUpdate->save();
+        $data = $request->validated()['cooperations'];
+        if (! empty($data['econobis_api_key'])) {
+            $data['econobis_api_key'] = Crypt::encrypt($data['econobis_api_key']);
         }
+        $cooperationToUpdate->update($data);
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.update.success'));

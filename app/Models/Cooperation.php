@@ -59,8 +59,8 @@ class Cooperation extends Model
 {
     use HasFactory, HasMedia;
 
-    public $fillable = [
-        'name', 'website_url', 'slug', 'cooperation_email', 'econobis_api_key',
+    protected $fillable = [
+        'name', 'slug', 'cooperation_email', 'website_url', 'econobis_wildcard', 'econobis_api_key',
     ];
 
     protected $hidden = [

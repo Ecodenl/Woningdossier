@@ -47,7 +47,7 @@ class Woonplan extends Command
     {
         $integrationProcessService = $integrationProcessService
             ->forIntegration(Integration::findByShort('econobis'))
-            ->forProcess(SendBuildingFilledInAnswersToEconobis::class);
+            ->forProcess(SendUserActionPlanAdvicesToEconobis::class);
 
 
         // first get all advices that have been updated in the past 30 minutes

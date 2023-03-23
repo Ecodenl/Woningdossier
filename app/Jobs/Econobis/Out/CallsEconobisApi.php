@@ -23,7 +23,7 @@ trait CallsEconobisApi
                 app(IntegrationProcessService::class)
                     ->forIntegration(Integration::findByShort('econobis'))
                     ->forBuilding($this->building)
-                    ->forProcess(SendBuildingFilledInAnswersToEconobis::class)
+                    ->forProcess(__CLASS__)
                     ->syncedNow();
             },
             function (\Throwable $exception) {

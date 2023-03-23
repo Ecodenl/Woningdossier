@@ -46,7 +46,7 @@
                                     <ul class="dropdown-menu">
                                         @foreach($scans as $scan)
                                             @php
-                                                $transShort = \App\Services\Models\ScanService::init()
+                                                $transShort = app(\App\Services\Models\ScanService::class)
                                                     ->scan($scan)->building($building)->hasMadeScanProgress()
                                                     ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                             @endphp
@@ -68,7 +68,7 @@
                                     <ul class="dropdown-menu">
                                         @foreach($scans as $scan)
                                             @php
-                                                $transShort = \App\Services\Models\ScanService::init()
+                                                $transShort = app(\App\Services\Models\ScanService::class)
                                                     ->scan($scan)->building($building)->hasMadeScanProgress()
                                                     ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                             @endphp

@@ -31,7 +31,6 @@ class CompletedSubStepObserver
                 ->completedSubSteps()
                 ->forInputSource($inputSource)
                 ->whereIn('sub_step_id', $scanRelatedSubStepIds)
-                ->where('sub_step_id', '!=', 35)
                 ->count();
 
             // so the sub step thats completed right now is the first one

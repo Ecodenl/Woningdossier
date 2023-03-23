@@ -285,4 +285,13 @@ class Str extends \Illuminate\Support\Str
         // TODO: Just use {{ json_encode() }} in blade!
         return str_replace('"', '\'', $json);
     }
+
+    public static function makeComparable(string $term)
+    {
+        // Matches with "and" and "&".
+        // https://regex101.com/r/mvkK7V/1
+        $andPattern = '/(&|(?<![\w])and(?![\w]))/';
+
+        return str_replace('-', '', trim(static::slug(preg_replace($andPattern, 'en', $term))));
+    }
 }

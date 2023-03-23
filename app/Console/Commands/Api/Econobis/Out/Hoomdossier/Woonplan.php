@@ -61,7 +61,7 @@ class Woonplan extends Command
                 $join
                     ->on('user_action_plan_advices.user_id', '=', 'users.id')
                     ->where(
-                        'user_action_plan_advices.created_at',
+                        'user_action_plan_advices.updated_at',
                         '>=',
                         $relevantLastChangedDate
                     );

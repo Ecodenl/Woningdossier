@@ -48,7 +48,7 @@ class PdfReport extends Command
         $building = Building::findOrFail($this->argument('building'));
         $econobis
             ->hoomdossier()
-            ->pdf($econobisService->getPayload($building, PdfReportPayload::class));
+            ->pdf($econobisService->forBuilding($building)->getPayload(PdfReportPayload::class));
 
         return 0;
     }

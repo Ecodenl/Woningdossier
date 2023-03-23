@@ -19,8 +19,6 @@ class SendBuildingFilledInAnswersToEconobis implements ShouldQueue
 
     public Building $building;
 
-    public $tries = 3;
-
     /**
      * Create a new job instance.
      *

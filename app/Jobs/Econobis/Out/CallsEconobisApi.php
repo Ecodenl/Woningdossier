@@ -15,6 +15,8 @@ use Predis\Response\ServerException;
 
 trait CallsEconobisApi
 {
+    public $tries = 3;
+
     public function wrapCall(\Closure $function)
     {
         Wrapper::wrapCall(

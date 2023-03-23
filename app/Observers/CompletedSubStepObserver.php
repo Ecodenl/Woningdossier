@@ -27,12 +27,14 @@ class CompletedSubStepObserver
             $scan = $step->scan;
             $scanRelatedSubStepIds = $scan->subSteps->pluck('id');
 
+            \DB::enableQueryLog();
             $otherCompletedSubStepsForScan = $building
                 ->completedSubSteps()
                 ->forInputSource($inputSource)
                 ->whereIn('sub_step_id', $scanRelatedSubStepIds)
+                ->where('sub_step_id', '!=', $completedSubStep->sub_step_id)
                 ->count();
-
+            // dd($otherCompletedSubStepsForScan, \DB::getQueryLog());
             // so the sub step thats completed right now is the first one
             // the first progress has been made, so we will notify Econobis.
             if($otherCompletedSubStepsForScan === 0) {

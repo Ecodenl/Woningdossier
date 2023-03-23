@@ -47,7 +47,7 @@
                                         @foreach($scans as $scan)
                                             @php
                                                 $transShort = app(\App\Services\Models\ScanService::class)
-                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                                                     ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                             @endphp
                                             <li>
@@ -69,7 +69,7 @@
                                         @foreach($scans as $scan)
                                             @php
                                                 $transShort = app(\App\Services\Models\ScanService::class)
-                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                                                     ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                             @endphp
                                             <li>

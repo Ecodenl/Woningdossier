@@ -14,11 +14,11 @@ class InputSourceFactory extends Factory
     public function definition()
     {
         $name = $this->faker->word;
-    $short = \Illuminate\Support\Str::slug($name);
-    return [
-        'name' => $name,
-        'short' => $short,
-        'order' => $this->faker->randomNumber(2),
-    ];
+        $short = \Illuminate\Support\Str::slug($name);
+        return [
+            'name' => $name,
+            'short' => $short,
+            'order' => $this->faker->randomNumber(2),
+        ];
     }
 }

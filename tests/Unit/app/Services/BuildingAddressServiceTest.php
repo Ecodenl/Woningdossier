@@ -8,35 +8,33 @@ use App\Models\Building;
 use App\Models\Municipality;
 use App\Models\User;
 use App\Services\BuildingAddressService;
+use App\Services\Lvbag\BagService;
 use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\MappingService;
 use Database\Seeders\DatabaseSeeder;
-use Ecodenl\LvbagPhpWrapper\Client;
+use Ecodenl\LvbagPhpWrapper\Lvbag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Artisan;
-use Mockery\MockInterface;
 use Tests\MocksLvbag;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Event;
+use Mockery;
 
 class BuildingAddressServiceTest extends TestCase
 {
-    use RefreshDatabase, WithFaker, MocksLvbag;
+    use RefreshDatabase,
+        WithFaker,
+        MocksLvbag;
 
     public $seed = true;
     public $seeder = DatabaseSeeder::class;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        Artisan::call('cache:clear');
-    }
-
     public function test_municipality_attaches_when_mapping_available()
     {
-        // this woonplaats should be "Goeree-Overflakkee"
+        // We don't want to send emails, etc.
+        $this->withoutEvents();
+
         $user = User::factory()->create();
         $building = Building::factory()->create(['user_id' => $user->id]);
         $building->update([
@@ -47,11 +45,10 @@ class BuildingAddressServiceTest extends TestCase
         $municipality = Municipality::factory()->create();
 
         $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
-        $this->mockLvbagClientWoonplaats($fromMunicipalityName);
+        $this->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
         MappingService::init()
             ->from($fromMunicipalityName)
             ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
-
 
         app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
 
@@ -75,14 +72,7 @@ class BuildingAddressServiceTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $this->partialMock(
-            Client::class,
-            function (MockInterface $mock) {
-                return $mock
-                    ->shouldReceive('get')
-                    ->andReturn([]);
-            }
-        );
+        $this->createLvbagMock();
 
         app(BuildingAddressService::class)->forBuilding($building)->updateAddress($fallbackData);
 
@@ -105,7 +95,7 @@ class BuildingAddressServiceTest extends TestCase
         $municipality = Municipality::factory()->create();
 
         $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
-        $this->mockLvbagClientWoonplaats($fromMunicipalityName);
+        $this->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
         MappingService::init()
             ->from($fromMunicipalityName)
             ->sync([$municipality], MappingHelper::TYPE_BAG_MUNICIPALITY);
@@ -125,7 +115,7 @@ class BuildingAddressServiceTest extends TestCase
         $municipality = Municipality::factory()->create();
 
         $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
-        $this->mockLvbagClientWoonplaats($fromMunicipalityName);
+        $this->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
 
         $building->update([
             'bag_woonplaats_id' => '2134',
@@ -158,33 +148,9 @@ class BuildingAddressServiceTest extends TestCase
             'bag_woonplaats_id' => 2433,
             'user_id' => $user->id
         ]);
-
-        $mockedApiData = [
-            "_embedded" => [
-                "adressen" => [
-                    [
-                        "nummeraanduidingIdentificatie" => "1924200000030235",
-                        "woonplaatsIdentificatie" => "2134",
-                        "openbareRuimteNaam" => "Boezemweg",
-                        "huisnummer" => $fallbackData['number'],
-                        "postcode" => $fallbackData['postal_code'],
-                        "woonplaatsNaam" => "Oude-Tonge",
-                        "oorspronkelijkBouwjaar" => [
-                            0 => "2015"
-                        ],
-                        "oppervlakte" => 2666,
-                    ],
-                ],
-            ]
-        ];
-        $this->partialMock(
-            Client::class,
-            function (MockInterface $mock) use ($mockedApiData) {
-                return $mock
-                    ->shouldReceive('get')
-                    ->andReturn($mockedApiData);
-            }
-        );
+        
+        $this->mockLvbagClientAdresUitgebreid($fallbackData)->createLvbagMock();
+        $mockedApiData = $this->getMockedApiData();
 
         app(BuildingAddressService::class)->forBuilding($building)->updateAddress($fallbackData);
 
@@ -197,4 +163,44 @@ class BuildingAddressServiceTest extends TestCase
         $this->assertDatabaseMissing('buildings', $fallbackData);
     }
 
+    public function test_empty_bag_woonplaats_id_doesnt_call_bag()
+    {
+        $user = User::factory()->create();
+        $building = Building::factory()->create([
+            'user_id' => $user->id,
+            'bag_woonplaats_id' => null, // Force null!
+        ]);
+
+        $this->createLvbagMock();
+
+        $spy = $this->spy(BagService::class);
+
+        app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
+
+        // Assert the method was not called.
+        $spy->shouldNotHaveReceived('showCity');
+    }
+
+    public function test_wrong_bag_woonplaats_id_throws_error()
+    {
+        $user = User::factory()->create();
+        $building = Building::factory()->create([
+            'user_id' => $user->id,
+            'bag_woonplaats_id' => 100, // BAG is ALWAYS 4 digits, so this is wrong.
+        ]);
+
+        $this->createLvbagMock();
+
+        // Build spy with constructor args, else the constructor is skipped.
+        $spy = Mockery::spy(BagService::class, [app(Lvbag::class)]);
+        $this->instance(BagService::class, $spy);
+
+        app(BuildingAddressService::class)->forBuilding($building)->attachMunicipality();
+
+        // Assert the method was called with given parameters. We cannot check if the return value is anything useful,
+        // since we cannot test external services.
+        $spy->shouldHaveReceived('showCity')
+            ->with(100, ['expand' => 'true'])
+            ->once();
+    }
 }

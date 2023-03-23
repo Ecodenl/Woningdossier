@@ -7,6 +7,7 @@ use App\Scopes\VisibleScope;
 use App\Traits\Models\HasMappings;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -53,7 +54,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class CooperationMeasureApplication extends Model
 {
-    use HasTranslations,
+    use HasFactory,
+        HasTranslations,
         SoftDeletes,
         HasMappings;
 

@@ -18,12 +18,12 @@ class ToolQuestionFactory extends Factory
     public function definition()
     {
         return [
-        'name' => json_encode(['nl' => $this->faker->text(60)]),
-        'help_text' => json_encode(['nl' => $this->faker->text(240)]),
-        'save_in' => null,
-        'unit_of_measure' => $this->faker->randomElement(['m2', 'graden']),
-        'coach' => $this->faker->boolean,
-        'resident' => $this->faker->boolean,
-    ];
+            'name' => json_encode(['nl' => $this->faker->text(60)]),
+            'help_text' => json_encode(['nl' => $this->faker->text(240)]),
+            'save_in' => null,
+            'unit_of_measure' => $this->faker->randomElement(['m2', 'graden']),
+            'coach' => $this->faker->boolean,
+            'resident' => $this->faker->boolean,
+        ];
     }
 }

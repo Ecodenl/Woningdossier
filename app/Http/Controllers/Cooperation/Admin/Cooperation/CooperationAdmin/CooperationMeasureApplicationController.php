@@ -99,7 +99,7 @@ class CooperationMeasureApplicationController extends Controller
     {
         $this->authorize('delete', $cooperationMeasureApplication);
 
-        // first we soft delete it, this makes it! impossible for users to add it.
+        // First we soft delete it, this makes it impossible for users to add it.
         $cooperationMeasureApplication->delete();
 
         HandleCooperationMeasureApplicationDeletion::dispatch($cooperationMeasureApplication);

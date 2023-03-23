@@ -75,17 +75,19 @@ class BuildingAddressService
 
     public function attachMunicipality(): void
     {
-        // MUST be string! Empty string is ok.
-        $bagWoonplaatsId = (string) $this->building->bag_woonplaats_id;
-        // we cant rely on isDiry / wasChanged.
+        $bagWoonplaatsId = $this->building->bag_woonplaats_id;
+        // We can't rely on isDirty / wasChanged.
         $buildingAddressUpdated = false;
 
-        $municipalityName = $this
-            ->bagService
-            ->showCity($bagWoonplaatsId, ['expand' => 'true'])
-            ->municipalityName();
-
-        // its entirely possible that a municipality is not returned from the bag.
+        $municipalityName = null;
+        if (! empty($bagWoonplaatsId)) {
+            // The BAG woonplaats ID cannot be empty. The value passed should be valid (a 4 digit code from BAG), but
+            // that should be the only value ever passed, since we save directly from the BAG.
+            $municipalityName = optional($this->bagService
+                ->showCity($bagWoonplaatsId, ['expand' => 'true']))
+                ->municipalityName();
+        }
+        // It's entirely possible that a municipality is not returned from the bag.
         if (! is_null($municipalityName)) {
             $municipality = $this->mappingService
                 ->from($municipalityName)
@@ -108,14 +110,15 @@ class BuildingAddressService
                     NoMappingFoundForBagMunicipality::dispatch($municipalityName);
                 }
                 // The disassociate only matters when the field was filled before
-                if (!is_null($this->building->municipality_id)) {
+                if (! is_null($this->building->municipality_id)) {
                     $buildingAddressUpdated = true;
                 }
                 // remove the relationship.
                 $this->building->municipality()->disassociate()->save();
             }
         }
-        // in the end it doesnt matter if the user dis or associated a municipality
+
+        // in the end it doesnt matter if the user dis- or associated a municipality
         // we have to refresh its advices.
         if ($buildingAddressUpdated) {
             BuildingAddressUpdated::dispatch($this->building);

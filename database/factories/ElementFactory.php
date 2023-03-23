@@ -14,13 +14,13 @@ class ElementFactory extends Factory
     public function definition()
     {
         $name = $this->faker->word;
-    $short = \Illuminate\Support\Str::slug($name);
-    return [
-        'name' => json_encode(['nl' => $name]),
-        'short' => $short,
-        'service_type_id' => \App\Models\ServiceType::factory(),
-        'order' => $this->faker->randomNumber(2),
-        'info' => json_encode(['nl' => $this->faker->sentence]),
-    ];
+        $short = \Illuminate\Support\Str::slug($name);
+        return [
+            'name' => json_encode(['nl' => $name]),
+            'short' => $short,
+            'service_type_id' => \App\Models\ServiceType::factory(),
+            'order' => $this->faker->randomNumber(2),
+            'info' => json_encode(['nl' => $this->faker->sentence]),
+        ];
     }
 }

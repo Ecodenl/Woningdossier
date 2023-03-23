@@ -15,10 +15,10 @@ class PvPanelOrientationFactory extends Factory
     {
         $name = $this->faker->word;
 
-    return [
-        'name' => json_encode(['nl' => $name]),
-        'short' => strtolower($name[0]),
-        'order' => $this->faker->randomNumber(2),
-    ];
+        return [
+            'name' => json_encode(['nl' => $name]),
+            'short' => strtolower($name[0]),
+            'order' => $this->faker->randomNumber(2),
+        ];
     }
 }

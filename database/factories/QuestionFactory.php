@@ -14,12 +14,12 @@ class QuestionFactory extends Factory
     public function definition()
     {
         return [
-        'type' => 'text',
-        'name' => [
-            'nl' => $this->faker->text(80),
-        ],
-        'required' => $this->faker->boolean,
-        'validation' => [],
-    ];
+            'type' => 'text',
+            'name' => [
+                'nl' => $this->faker->text(80),
+            ],
+            'required' => $this->faker->boolean,
+            'validation' => [],
+        ];
     }
 }

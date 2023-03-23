@@ -14,10 +14,10 @@ class BuildingHeaterFactory extends Factory
     public function definition()
     {
         return [
-        'building_id' => \App\Models\Building::factory(),
-        'input_source_id' => \App\Models\InputSource::factory(),
-        'pv_panel_orientation_id' => \App\Models\PvPanelOrientation::factory(),
-        'angle' => 10 * mt_rand(1, 9),
-    ];
+            'building_id' => \App\Models\Building::factory(),
+            'input_source_id' => \App\Models\InputSource::factory(),
+            'pv_panel_orientation_id' => \App\Models\PvPanelOrientation::factory(),
+            'angle' => 10 * mt_rand(1, 9),
+        ];
     }
 }

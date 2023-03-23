@@ -10,8 +10,8 @@ use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
-
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -87,7 +87,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 class UserActionPlanAdvice extends Model implements Auditable
 {
-    use GetValueTrait,
+    use HasFactory,
+        GetValueTrait,
         GetMyValuesTrait,
         \App\Traits\Models\Auditable;
 

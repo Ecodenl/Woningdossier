@@ -37,22 +37,16 @@ class UserFactory extends Factory
 
     public function asCoach()
     {
-        return $this->state(function (array $attributes) {
-            return [
-                // We need this state for an after hook
-            ];
-        })->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COACH));
+        return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COACH));
     }
 
     public function asResident()
     {
-        return $this->state(function (array $attributes) {
-            return [
-                // We need this state for an after hook
-            ];
-        })->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_RESIDENT));
+        return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_RESIDENT));
+    }
+
+    public function asCooperationAdmin()
+    {
+        return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COOPERATION_ADMIN));
     }
 }
-
-
-

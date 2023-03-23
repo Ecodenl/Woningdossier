@@ -1,10 +1,12 @@
 <?php
 
+
 namespace Database\Factories;
 
+use App\Helpers\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ServiceTypeFactory extends Factory
+class MeasureCategoryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -13,9 +15,11 @@ class ServiceTypeFactory extends Factory
      */
     public function definition()
     {
+        $name = $this->faker->randomElement(['Isolatie', 'Aardgas vrije woning', 'Besparing']);
+
         return [
-            'name' => json_encode(['nl' => $this->faker->word]),
-            'iso' => "M" . $this->faker->randomDigit,
+            'name' => ['nl' => $name],
+            'short' => Str::slug($name),
         ];
     }
 }

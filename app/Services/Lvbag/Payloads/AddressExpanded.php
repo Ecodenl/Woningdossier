@@ -4,7 +4,7 @@ namespace App\Services\Lvbag\Payloads;
 
 class AddressExpanded
 {
-
+    // TODO: Fix typo, should be expAnded
     public ?array $expendedAddress = null;
 
     public function __construct(?array $expendedAddress)

@@ -111,10 +111,15 @@ class AppServiceProvider extends ServiceProvider
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
         $this->app->bind(Client::class, function(Application $app) {
+            $useProductionEndpoint = true;
+            // During testing, we should be mocking, but just in case someone forgets to mock...
+            if ($app->isLocal() || $app->environment('testing')) {
+                $useProductionEndpoint = false;
+            }
             return new Client(
                 config('hoomdossier.services.bag.secret'),
                 'epsg:28992',
-                App::isProduction(),
+                $useProductionEndpoint,
             );
         });
 

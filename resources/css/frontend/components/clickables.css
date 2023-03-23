@@ -8,6 +8,7 @@ a {
 
 /* Hyperlink in paragraph */
 p a,
+.as-text a,
 a.in-text {
     @apply text-purple no-underline font-medium;
 }

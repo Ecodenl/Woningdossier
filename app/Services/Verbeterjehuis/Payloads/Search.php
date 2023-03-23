@@ -37,7 +37,7 @@ class Search
     public function forMeasure(Model $measureModel): self
     {
         $targets = MappingService::init()->from($measureModel)->resolveTarget();
-        if (!$measureModel instanceof MeasureApplication) {
+        if (! $measureModel instanceof MeasureApplication) {
              // when its not a measure application, it will be a cooperation measure or custom measure
              // those are mapped to a measure category
              // that means the target is a mapping category
@@ -84,7 +84,6 @@ class Search
                 $answer ?? $building->getAnswer($inputSource, $toolQuestion)
             )
             ->first();
-
 
         // If we get more measures for one value, we should change this.
         $target = MappingService::init()->from($toolQuestionCustomValue)->resolveTarget()->first();

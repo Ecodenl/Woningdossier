@@ -39,9 +39,13 @@ return [
         'is-considering' => 'Meenemen in berekening',
     ],
     'store' => [
-        'success' => 'Voorbeeld woning toegevoegd',
+        'success' => 'Voorbeeldwoning toegevoegd',
     ],
     'update' => [
-        'success' => 'Voorbeeld woning bijgewerkt',
+        'success' => 'Voorbeeldwoning bijgewerkt',
+    ],
+    'destroy' => [
+        'confirm' => 'Weet je zeker dat je deze voorbeeldwoning wilt verwijderen?',
+        'success' => 'Voorbeeldwoning verwijderd',
     ],
 ];

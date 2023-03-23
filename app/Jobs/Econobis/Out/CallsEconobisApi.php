@@ -38,16 +38,15 @@ trait CallsEconobisApi
                 // anyway, this wont succeed in the next request, so we just fail the job.
                 if ($exception instanceof ClientException) {
                     $this->log($exception);
-                    $this->fail();
                 } elseif ($exception instanceof TooManyRedirectsException) {
                     $this->log($exception);
-                    $this->fail();
                 } elseif ($exception instanceof RequestException) {
                     $this->log($exception);
-                    $this->fail();
-                }
 
+                }
             }, false);
+
+        return;
     }
 
     private function log(\Throwable $exception)

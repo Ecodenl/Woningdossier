@@ -3,7 +3,9 @@
 namespace App\Jobs\Econobis\Out;
 
 use App\Helpers\Wrapper;
+use App\Models\Integration;
 use App\Services\DiscordNotifier;
+use App\Services\IntegrationProcessService;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
@@ -16,7 +18,14 @@ trait CallsEconobisApi
     public function wrapCall(\Closure $function)
     {
         Wrapper::wrapCall(
-            fn() => $function(),
+            function () use ($function) {
+                $function();
+                app(IntegrationProcessService::class)
+                    ->forIntegration(Integration::findByShort('econobis'))
+                    ->forBuilding($this->building)
+                    ->forProcess(SendBuildingFilledInAnswersToEconobis::class)
+                    ->syncedNow();
+            },
             function (\Throwable $exception) {
                 if ($exception instanceof ServerException) {
                     // try again in 2 minutes
@@ -48,7 +57,7 @@ trait CallsEconobisApi
         $class = __CLASS__;
         DiscordNotifier::init()->notify(get_class($exception)." Failed to send '{$class}' building_id: {$this->building->id}");
 
-        Log::error(get_class($exception) . ' ' .$exception->getCode() . ' ' . $exception->getMessage());
+        Log::error(get_class($exception).' '.$exception->getCode().' '.$exception->getMessage());
         Log::error($stream->getContents());
     }
 }

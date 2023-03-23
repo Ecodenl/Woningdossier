@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
+use App\Helpers\Hoomdossier;
 use App\Jobs\Econobis\Out\SendBuildingFilledInAnswersToEconobis;
 use App\Jobs\Econobis\Out\SendUserActionPlanAdvicesToEconobis;
 use App\Models\Integration;
@@ -51,9 +52,9 @@ class Woonplan extends Command
 
         // first get all advices that have been updated in the past 30 minutes
         // than check if the user his advices werent synced in the past 30 minutes
-        $relevantLastChangedDate = Carbon::now()->subMinutes(30);
+        $relevantLastChangedDate = Carbon::now()->subMinutes(config('hoomdossier.services.econobis.send_woonplan_after_change'));
 
-        $usersWhoRecentlyMadeChangesToAdvices = User::econobisContacts()
+        User::econobisContacts()
             ->select(['users.*'])
             ->where('allow_access', 1)
             ->join('user_action_plan_advices', function (JoinClause $join) use ($relevantLastChangedDate) {

@@ -2,21 +2,15 @@
 
 namespace App\Jobs\Econobis\Out;
 
-use App\Helpers\Wrapper;
 use App\Models\Building;
-use App\Services\DiscordNotifier;
 use App\Services\Econobis\Api\Econobis;
 use App\Services\Econobis\EconobisService;
-use App\Services\Econobis\Payloads\GebruikPayload;
 use App\Services\Econobis\Payloads\WoonplanPayload;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
-use Predis\Response\ServerException;
 
 class SendUserActionPlanAdvicesToEconobis implements ShouldQueue
 {

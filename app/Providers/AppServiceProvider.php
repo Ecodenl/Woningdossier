@@ -110,11 +110,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(EconobisClient::class, function(Application $app) {
-            if ($app->isLocal()) {
-                return new EconobisClient(Log::getLogger());
-            } else {
+//            if ($app->isLocal()) {
+//                return new EconobisClient(Log::getLogger());
+//            } else {
                 return new EconobisClient();
-            }
+//            }
         });
 
         $this->app->bind(Econobis::class, function (Application $app) {

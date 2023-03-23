@@ -3,9 +3,7 @@
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
 use App\Jobs\Econobis\Out\SendBuildingFilledInAnswersToEconobis;
-use App\Models\Integration;
 use App\Models\User;
-use App\Services\IntegrationProcessService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -40,7 +38,7 @@ class Gebruik extends Command
      *
      * @return int
      */
-    public function handle(IntegrationProcessService $integrationProcessService)
+    public function handle()
     {
         $relevantLastChangedDate = Carbon::now()->subHours(12);
 
@@ -48,7 +46,7 @@ class Gebruik extends Command
         User::where('tool_last_changed_at', '>=', $relevantLastChangedDate)
             ->econobisContacts()
             ->where('allow_access', 1)
-            ->chunkById(50, function ($users) use ($integrationProcessService) {
+            ->chunkById(50, function ($users) {
                 foreach ($users as $user) {
                     SendBuildingFilledInAnswersToEconobis::dispatch($user->building);
                 }

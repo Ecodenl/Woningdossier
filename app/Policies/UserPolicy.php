@@ -34,11 +34,7 @@ class UserPolicy
 
     public function sendUserInformationToEconobis(Account $account, User $user)
     {
-        $userRelatedToEconobis = app(UserService::class)->forUser($user)->isRelatedWithEconobis();
-        if ($userRelatedToEconobis) {
-            return true;
-        }
-        return false;
+        return app(UserService::class)->forUser($user)->isRelatedWithEconobis();
     }
 
     /**

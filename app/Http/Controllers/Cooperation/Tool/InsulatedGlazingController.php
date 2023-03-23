@@ -18,10 +18,12 @@ use App\Models\InsulatingGlazing;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Models\WoodRotStatus;
 use App\Services\ConsiderableService;
-use App\Services\Models\UserCostService;
+use App\Services\LegacyService;
 use App\Services\StepCommentService;
+use App\Services\ToolQuestionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str as SupportStr;
 
@@ -32,7 +34,7 @@ class InsulatedGlazingController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(LegacyService $legacyService)
     {
         /**
          * @var Building
@@ -89,16 +91,16 @@ class InsulatedGlazingController extends ToolController
 
         $myBuildingElements = BuildingElement::forMe()->get();
 
-        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
-            ->forAdvisable(Step::findByShort('insulated-glazing'))
-            ->getAnswers(true);
+        $measureRelatedAnswers = $legacyService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
+            ->getMeasureRelatedAnswers(Step::findByShort('insulated-glazing'));
 
         return view('cooperation.tool.insulated-glazing.index', compact(
             'building', 'myBuildingElements', 'buildingOwner',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility',
-            'userCosts'
+            'measureRelatedAnswers'
         ));
     }
 
@@ -121,7 +123,7 @@ class InsulatedGlazingController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(InsulatedGlazingFormRequest $request)
+    public function store(InsulatedGlazingFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -136,15 +138,17 @@ class InsulatedGlazingController extends ToolController
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $userCosts = $request->validated()['user_costs'];
-        $userCostService = UserCostService::init($user, $inputSource);
-        $userCostValues = [];
-        foreach ($userCosts as $measureShort => $costData) {
-            $measureApplication = MeasureApplication::findByShort($measureShort);
-            // Only save for considered measures
-            if ($considerables[$measureApplication->id]['is_considering']) {
-                $userCostService->forAdvisable($measureApplication)->sync($costData);
-                $userCostValues[$measureShort] = $costData;
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('insulated-glazing'));
+        foreach ($measureRelatedShorts as $measureId => $tqShorts) {
+            if ($considerables[$measureId]['is_considering']) {
+                foreach ($tqShorts as $tqShort) {
+                    // Subsidy question might have been removed and thus not saveable.
+                    if (array_key_exists($tqShort, $request->validated())) {
+                        $tq = ToolQuestion::findByShort($tqShort);
+                        $toolQuestionService->toolQuestion($tq)->save($request->validated()[$tqShort]);
+                    }
+                }
             }
         }
 
@@ -182,7 +186,6 @@ class InsulatedGlazingController extends ToolController
         $values = $request->only('considerables', 'building_insulated_glazings', 'building_features',
             'building_elements', 'building_paintwork_statuses');
         $values['updated_measure_ids'] = $updatedMeasureIds;
-        $values['user_costs'] = $userCostValues;
 
         (new InsulatedGlazingHelper($user, $inputSource))
             ->setValues($values)

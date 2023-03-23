@@ -13,6 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        //TODO: Convert "PluralModelNameTableSeeder" into "SingularModelNameSeeder"
+        // as per L7 convention: UsersTableSeeder to > UserSeeder
+
         ////        $this->call(MovingPartsOfWindowAndDoorIsolatedsTableSeeder::class);
         ////        $this->call(WoodElementsTableSeeder::class);
         ////        $this->call(HouseFramesTableSeeder::class);
@@ -105,6 +108,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(MunicipalitiesTableSeeder::class);
         $this->call(IntegrationsTableSeeder::class);
+
+        $this->call(RelatedModelSeeder::class);
 
         if ('testing' !== app()->environment()) {
             $this->call(SqlDumpSeeder::class);

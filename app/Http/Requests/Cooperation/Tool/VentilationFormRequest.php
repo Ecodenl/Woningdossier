@@ -5,6 +5,9 @@ namespace App\Http\Requests\Cooperation\Tool;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\HoomdossierSession;
 use App\Models\InputSource;
+use App\Models\Step;
+use App\Models\ToolQuestion;
+use App\Services\LegacyService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Fluent;
 use Illuminate\Validation\Rule;
@@ -13,28 +16,27 @@ use Illuminate\Validation\Validator;
 class VentilationFormRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-    public function rules()
+    public function rules(LegacyService $legacyService)
     {
-        return [
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('ventilation'));
+
+        $rules = [
             'building_ventilations.living_situation' => ['nullable', 'array', Rule::in(array_keys(VentilationHelper::getLivingSituationValues()))],
             'building_ventilations.usage' => ['nullable', 'array', Rule::in(array_keys(VentilationHelper::getUsageValues()))],
-            'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
-            'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
         ];
+
+        foreach ($measureRelatedShorts as $tqShorts) {
+            $toolQuestions = ToolQuestion::findByShorts($tqShorts);
+            foreach ($toolQuestions as $toolQuestion) {
+                $rules[$toolQuestion->short] = $toolQuestion->validation;
+            }
+        }
+
+        return $rules;
     }
 
     public function withValidator(Validator $validator)

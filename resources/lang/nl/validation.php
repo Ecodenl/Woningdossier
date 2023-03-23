@@ -268,10 +268,6 @@ return [
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',
 
-        // User costs
-        'user_costs.*.own_total' => 'eigen kosten',
-        'user_costs.*.subsidy_total' => 'subsidiebedrag',
-
         // Measure applications
         'measure_applications.measure_name' => 'naam',
         'measure_applications.measure_name.*' => 'naam',
@@ -375,6 +371,7 @@ return [
         'cooperations.cooperation_email' => 'contact e-mailadres',
         'cooperations.website_url' => 'website URL',
         'cooperations.econobis_wildcard' => 'Econobis Domein Wildcard',
+        'cooperation.econobis_api_key' => 'Econobis API key',
 
         // Cooperation presets
         // Cooperation measure applications

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\CooperationRequest;
 use App\Models\Cooperation;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Crypt;
 
 class CooperationController extends Controller
 {
@@ -27,7 +28,11 @@ class CooperationController extends Controller
     {
         $this->authorize('create', Cooperation::class);
 
-        Cooperation::create($request->validated()['cooperations']);
+        $data = $request->validated()['cooperations'];
+        if (! empty($data['econobis_api_key'])) {
+            $data['econobis_api_key'] = Crypt::encrypt($data['econobis_api_key']);
+        }
+        Cooperation::create($data);
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.store.success'));
@@ -43,7 +48,14 @@ class CooperationController extends Controller
     public function update(Cooperation $cooperation, CooperationRequest $request, Cooperation $cooperationToUpdate)
     {
         $this->authorize('update', $cooperationToUpdate);
-        $cooperationToUpdate->update($request->validated()['cooperations']);
+        $data = $request->validated()['cooperations'];
+        if (! empty($data['econobis_api_key'])) {
+            $data['econobis_api_key'] = Crypt::encrypt($data['econobis_api_key']);
+        } else {
+            // If it's empty we want to unset it, because we don't want to nullify the API key.
+            unset($data['econobis_api_key']);
+        }
+        $cooperationToUpdate->update($data);
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.update.success'));

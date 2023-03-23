@@ -23,5 +23,9 @@ return [
             'label' => 'Econobis Domein Wildcard',
             'placeholder' => 'Hoom',
         ],
+        'econobis-api-key' => [
+            'label' => 'Econobis API key toevoegen',
+            'label-replace' => 'Bestaande Econobis API key overschrijven',
+        ],
     ],
 ];

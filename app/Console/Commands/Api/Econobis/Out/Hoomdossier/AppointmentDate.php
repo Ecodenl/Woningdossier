@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
+use App\Jobs\Econobis\Out\SendAppointmentDateToEconobis;
 use App\Models\Building;
 use App\Services\Econobis\EconobisService;
 use App\Services\Econobis\Api\Econobis;
@@ -40,15 +41,11 @@ class AppointmentDate extends Command
      *
      * @return int
      */
-    public function handle(EconobisService $econobisService, Econobis $econobis)
+    public function handle()
     {
-        $building = Building::findOrFail($this->argument('building'));
-
-        $response = $econobis
-            ->hoomdossier()
-            ->afspraak($econobisService->getPayload($building,AppointmentDatePayload::class));
-
-        Log::debug('Response', $response);
+        SendAppointmentDateToEconobis::dispatch(
+            Building::findOrFail($this->argument('building'))
+        );
 
         return 0;
     }

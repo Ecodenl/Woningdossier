@@ -44,7 +44,12 @@ class InputSource extends Model
      */
     public function isResident(): bool
     {
-        return self::RESIDENT_SHORT == $this->short;
+        return self::RESIDENT_SHORT ==   $this->short;
+    }
+
+    public function isMaster(): bool
+    {
+        return self::MASTER_SHORT == $this->short;
     }
 
     public static function master(): ?Model

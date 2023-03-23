@@ -107,6 +107,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CooperationPresetContentSeeder::class);
 
         $this->call(MunicipalitiesTableSeeder::class);
+        $this->call(IntegrationsTableSeeder::class);
 
         $this->call(RelatedModelSeeder::class);
 

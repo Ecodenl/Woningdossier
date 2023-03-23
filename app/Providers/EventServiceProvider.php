@@ -22,6 +22,7 @@ use App\Events\UserRevokedAccessToHisBuilding;
 use App\Listeners\AuditedListener;
 use App\Listeners\CreateTargetlessMappingForMunicipality;
 use App\Listeners\DeleteUserActionPlanAdvicesForStep;
+use App\Listeners\EconobisEventSubscriber;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\GiveCoachesBuildingPermission;
 use App\Listeners\LogAllowedAccessToBuilding;
@@ -130,7 +131,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $subscribe = [
-        UserEventSubscriber::class
+        UserEventSubscriber::class,
+        EconobisEventSubscriber::class,
     ];
 
     /**

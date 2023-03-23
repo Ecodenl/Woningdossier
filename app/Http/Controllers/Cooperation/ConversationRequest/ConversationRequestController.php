@@ -10,6 +10,7 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Scan;
+use App\Services\Models\BuildingStatusService;
 use App\Services\PrivateMessageService;
 
 class ConversationRequestController extends Controller
@@ -49,11 +50,11 @@ class ConversationRequestController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(ConversationRequest $request, Cooperation $cooperation)
+    public function store(BuildingStatusService $buildingStatusService, ConversationRequest $request, Cooperation $cooperation)
     {
         PrivateMessageService::createConversationRequest(HoomdossierSession::getBuilding(true), Hoomdossier::user(), $request);
 
-        HoomdossierSession::getBuilding(true)->setStatus('pending');
+        $buildingStatusService->forBuilding(HoomdossierSession::getBuilding(true))->setStatus('pending');
 
         $successMessage = __('conversation-requests.store.success.'.InputSource::COACH_SHORT);
 

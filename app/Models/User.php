@@ -136,6 +136,11 @@ class User extends Model implements AuthorizableContract
         return $query->where('extra->contact_id', $contact);
     }
 
+    public function scopeEconobisContacts(Builder $query): Builder
+    {
+        return $query->whereNotNull('extra->contact_id');
+    }
+
     # Relations
     public function logs(): MorphMany
     {

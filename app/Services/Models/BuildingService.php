@@ -2,6 +2,7 @@
 
 namespace App\Services\Models;
 
+use App\Events\BuildingAppointmentDateUpdated;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
@@ -23,6 +24,23 @@ class BuildingService
         $this->building = $building;
     }
 
+    /**
+     * convenient way of setting a appointment date on a building.
+     *
+     * @param string
+     *
+     * @return void
+     */
+    public function setAppointmentDate($appointmentDate): void
+    {
+        $this->building->buildingStatuses()->create([
+            'status_id' => $this->building->getMostRecentBuildingStatus()->status_id,
+            'appointment_date' => $appointmentDate,
+        ]);
+
+        BuildingAppointmentDateUpdated::dispatch($this->building);
+    }
+
     public function canCalculate(Scan $scan): bool
     {
         if ($scan->isQuickScan()) {
@@ -38,7 +56,6 @@ class BuildingService
             return $this->building->hasCompletedScan($scan, InputSource::findByShort(InputSource::MASTER_SHORT));
         }
     }
-
 
     /**
      * Get the answer for a set of questions including the input source that made that answer.

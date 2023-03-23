@@ -31,10 +31,12 @@ class Client
         $key = config('hoomdossier.services.econobis.api-key');
         $this->config = [
             'base_uri' => "{$this->baseUrl}/{$key}/",
-            'headers' => [
+            RequestOptions::HEADERS => [
                 'Accept' => 'application/json',
             ],
-            'allow_redirects' => false,
+            RequestOptions::ALLOW_REDIRECTS => [
+                'max' => 5,
+            ],
         ];
     }
 

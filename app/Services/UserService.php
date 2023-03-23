@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Events\UserDeleted;
+use App\Events\UserResetHisBuilding;
 use App\Helpers\Queue;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
@@ -16,8 +18,10 @@ use App\Models\Municipality;
 use App\Models\User;
 use App\Services\Econobis\Api\Client;
 use App\Services\Econobis\Api\Econobis;
+use App\Services\Econobis\EconobisService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
+use App\Services\Models\BuildingStatusService;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -178,6 +182,7 @@ class UserService
                 $building
             )->save();
         }
+        UserResetHisBuilding::dispatch($building);
     }
 
     /**
@@ -256,8 +261,7 @@ class UserService
 
         $user->assignRole($roles);
 
-        // turn on when merged
-        $building->setStatus('active');
+        app(BuildingStatusService::class)->forBuilding($building)->setStatus('active');
 
         return $user;
     }
@@ -273,6 +277,7 @@ class UserService
     {
         $accountId = $user->account_id;
         $building = $user->building;
+        $accountRelated = app(EconobisService::class)->forBuilding($building)->resolveAccountRelated();
 
         if ($building instanceof Building) {
             if ($shouldForceDeleteBuilding) {
@@ -316,6 +321,7 @@ class UserService
                 $account->delete();
             }
         }
+        UserDeleted::dispatch($accountRelated['account_related']);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Gebruik;
+use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Woonplan;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncMeasures;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncTargetGroups;
 use App\Console\Commands\SendNotifications;
@@ -32,6 +34,10 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(SyncTargetGroups::class)->daily();
         $schedule->command(SyncMeasures::class)->daily();
+
+        $schedule->command(Gebruik::class)->dailyAt('00:00');
+        $schedule->command(Woonplan::class)->everyFiveMinutes();
+
 
         // $schedule->command('inspire')
         //          ->hourly();

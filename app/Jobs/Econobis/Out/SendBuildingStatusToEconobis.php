@@ -16,7 +16,7 @@ use Illuminate\Queue\SerializesModels;
 
 class SendBuildingStatusToEconobis implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CallsEconobisApi;
 
     public Building $building;
 
@@ -37,8 +37,10 @@ class SendBuildingStatusToEconobis implements ShouldQueue
      */
     public function handle(EconobisService $econobisService, Econobis $econobis)
     {
-        $econobis
-            ->hoomdossier()
-            ->woningStatus($econobisService->forBuilding($this->building)->getPayload(BuildingStatusPayload::class));
+        $this->wrapCall(function () use ($econobis, $econobisService) {
+            $econobis
+                ->hoomdossier()
+                ->woningStatus($econobisService->forBuilding($this->building)->getPayload(BuildingStatusPayload::class));
+        });
     }
 }

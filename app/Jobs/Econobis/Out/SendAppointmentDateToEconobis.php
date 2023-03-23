@@ -15,7 +15,7 @@ use Illuminate\Queue\SerializesModels;
 
 class SendAppointmentDateToEconobis implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CallsEconobisApi;
 
     public Building $building;
 
@@ -36,8 +36,10 @@ class SendAppointmentDateToEconobis implements ShouldQueue
      */
     public function handle(EconobisService $econobisService, Econobis $econobis)
     {
-        $econobis
-            ->hoomdossier()
-            ->afspraak($econobisService->forBuilding($this->building)->getPayload(AppointmentDatePayload::class));
+        $this->wrapCall(function () use ($econobis, $econobisService) {
+            $econobis
+                ->hoomdossier()
+                ->afspraak($econobisService->forBuilding($this->building)->getPayload(AppointmentDatePayload::class));
+        });
     }
 }

@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 
 class SendUserDeletedToEconobis implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CallsEconobisApi;
 
     public array $accountRelated;
 
@@ -34,12 +34,14 @@ class SendUserDeletedToEconobis implements ShouldQueue
      */
     public function handle(EconobisService $econobisService, Econobis $econobis)
     {
-        $econobis
-            ->hoomdossier()
-            ->delete(
-                $econobisService
-                    ->setAccountRelated($this->accountRelated)
-                    ->getPayload()
-            );
+        $this->wrapCall(function () use ($econobis, $econobisService) {
+            $econobis
+                ->hoomdossier()
+                ->delete(
+                    $econobisService
+                        ->setAccountRelated($this->accountRelated)
+                        ->getPayload()
+                );
+        });
     }
 }

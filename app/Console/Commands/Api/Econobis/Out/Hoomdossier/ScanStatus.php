@@ -6,7 +6,7 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Scan;
 use App\Services\Econobis\Api\Client;
-use App\Services\Econobis\Api\Econobis;
+use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\EconobisService;
 use App\Services\Econobis\Payloads\ScanStatusPayload;
 use Illuminate\Console\Command;
@@ -43,7 +43,7 @@ class ScanStatus extends Command
      *
      * @return int
      */
-    public function handle(EconobisService $econobisService, Econobis $econobis)
+    public function handle(EconobisService $econobisService, EconobisApi $econobis)
     {
         $building = Building::findOrFail($this->argument('building'));
 

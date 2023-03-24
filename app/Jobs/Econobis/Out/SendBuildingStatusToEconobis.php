@@ -3,7 +3,7 @@
 namespace App\Jobs\Econobis\Out;
 
 use App\Models\Building;
-use App\Services\Econobis\Api\Econobis;
+use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\EconobisService;
 use App\Services\Econobis\Payloads\AppointmentDatePayload;
 use App\Services\Econobis\Payloads\BuildingStatusPayload;
@@ -35,10 +35,11 @@ class SendBuildingStatusToEconobis implements ShouldQueue
      *
      * @return void
      */
-    public function handle(EconobisService $econobisService, Econobis $econobis)
+    public function handle(EconobisService $econobisService, EconobisApi $econobis)
     {
         $this->wrapCall(function () use ($econobis, $econobisService) {
             $econobis
+                ->forCooperation($this->building->user->cooperation)
                 ->hoomdossier()
                 ->woningStatus($econobisService->forBuilding($this->building)->getPayload(BuildingStatusPayload::class));
         });

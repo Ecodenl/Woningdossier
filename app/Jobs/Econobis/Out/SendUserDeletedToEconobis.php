@@ -3,7 +3,7 @@
 namespace App\Jobs\Econobis\Out;
 
 use App\Models\Building;
-use App\Services\Econobis\Api\Econobis;
+use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\EconobisService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,10 +32,11 @@ class SendUserDeletedToEconobis implements ShouldQueue
      *
      * @return void
      */
-    public function handle(EconobisService $econobisService, Econobis $econobis)
+    public function handle(EconobisService $econobisService, EconobisApi $econobis)
     {
         $this->wrapCall(function () use ($econobis, $econobisService) {
             $econobis
+                ->forCooperation($this->building->user->cooperation)
                 ->hoomdossier()
                 ->delete(
                     $econobisService

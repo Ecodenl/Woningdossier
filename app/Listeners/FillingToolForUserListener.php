@@ -3,18 +3,20 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
-use App\Jobs\CheckBuildingAddress;
-use App\Jobs\RefreshRegulationsForBuildingUser;
+use App\Services\Models\BuildingService;
 
 class FillingToolForUserListener
 {
+    protected BuildingService $buildingService;
+
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BuildingService $buildingService)
     {
+        $this->buildingService = $buildingService;
     }
 
     /**
@@ -35,16 +37,6 @@ class FillingToolForUserListener
         HoomdossierSession::setBuilding($building);
         HoomdossierSession::setInputSourceValue($inputSourceValue);
 
-        $currentMunicipality = $building->municipality_id;
-        CheckBuildingAddress::dispatchSync($building);
-        // Get a fresh (and updated) building instance
-        $building = $building->fresh();
-        $newMunicipality = $building->municipality_id;
-
-        // If the municipality hasn't changed, we will manually dispatch a refresh. Otherwise, it will happen in the
-        // CheckBuildingAddress logic train. We won't dispatch if no municipality is present.
-        if (! is_null($newMunicipality) && $currentMunicipality === $newMunicipality) {
-            RefreshRegulationsForBuildingUser::dispatch($building);
-        }
+        $this->buildingService->forBuilding($building)->performMunicipalityCheck();
     }
 }

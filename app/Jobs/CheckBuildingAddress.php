@@ -10,7 +10,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class CheckBuildingAddress implements ShouldQueue
 {
@@ -43,8 +42,8 @@ class CheckBuildingAddress implements ShouldQueue
         $buildingAddressService->attachMunicipality();
         /**
          * requery it, no municipality can have multiple causes
-         * - Bag is down
-         * - Partial error, no bag_woonplaats_id
+         * - BAG is down
+         * - Partial error, no bag_woonplaats_id (might be caused by faulty address from user or due to BAG outage)
          * - Partial error, no municipality string found in woonplaats endpoint
          */
         if (! $building->municipality()->first() instanceof Municipality) {

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
-class ClientTest extends TestCase
+class EconobisApiTest extends TestCase
 {
     use WithFaker;
 
@@ -21,8 +21,8 @@ class ClientTest extends TestCase
         Artisan::call('cache:clear');
     }
 
-    public function test_on_production_it_only_uses_cooperation_defined_settings()
+    public function test_on_production_it_only_uses_cooperation_defined_api_endpoint_values()
     {
-
+        dd(env('APP_ENV'));
     }
 }

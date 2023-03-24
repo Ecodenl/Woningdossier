@@ -3,7 +3,10 @@
 namespace App\Services\Models;
 
 use App\Events\BuildingAppointmentDateUpdated;
+use App\Helpers\Queue;
 use App\Helpers\ToolQuestionHelper;
+use App\Jobs\CheckBuildingAddress;
+use App\Jobs\RefreshRegulationsForBuildingUser;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
@@ -19,7 +22,7 @@ class BuildingService
 
     public ?Building $building;
 
-    public function __construct(Building $building)
+    public function __construct(?Building $building = null)
     {
         $this->building = $building;
     }
@@ -39,6 +42,12 @@ class BuildingService
         ]);
 
         BuildingAppointmentDateUpdated::dispatch($this->building);
+    }
+
+    public function forBuilding(Building $building): self
+    {
+        $this->building = $building;
+        return $this;
     }
 
     public function canCalculate(Scan $scan): bool
@@ -207,6 +216,26 @@ class BuildingService
         return $answersForTqa->union($answersForSaveIn);
     }
 
+    public function performMunicipalityCheck ()
+    {
+        $building = $this->building;
+
+        $currentMunicipality = $building->municipality_id;
+        CheckBuildingAddress::dispatchSync($building);
+        // Get a fresh (and updated) building instance
+        $building = $building->fresh();
+        $newMunicipality = $building->municipality_id;
+
+        // Check if a municipality was attached. If not, dispatch it on the regular queue so it retries.
+        // If the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated will be fired from the attachMunicipality method.
+        // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
+        // If the municipality hasn't changed, however, we will manually dispatch a refresh.
+        if (is_null($newMunicipality)) {
+            CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
+        } elseif ($currentMunicipality === $newMunicipality) {
+            RefreshRegulationsForBuildingUser::dispatch($building);
+        }
+    }
 
     public static function deleteBuilding(Building $building)
     {

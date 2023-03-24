@@ -4,6 +4,7 @@ namespace App\Console\Commands\Upgrade\Econobis;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;
+use Illuminate\Support\Arr;
 
 class DoUpgrade extends Command
 {

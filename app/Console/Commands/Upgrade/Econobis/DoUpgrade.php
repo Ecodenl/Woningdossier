@@ -39,11 +39,22 @@ class DoUpgrade extends Command
     public function handle()
     {
         $commands = [
-            SeedCommand::class => ['--class' => 'IntegrationsTableSeeder', '--force' => true],
+            SeedCommand::class => [
+                ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
+                ['--class' => 'RelatedModelSeeder', '--force' => true],
+                ['--class' => 'IntegrationsTableSeeder', '--force' => true],
+            ],
         ];
 
-        foreach ($commands as $command => $arguments) {
-            $this->call($command, $arguments);
+        foreach ($commands as $command => $variants) {
+            if ( ! is_array(Arr::first($variants))) {
+                $variants = [$variants];
+            }
+
+            foreach ($variants as $params) {
+                $this->info("Running command: {$command}");
+                $this->call($command, $params);
+            }
         }
     }
 }

@@ -6,9 +6,11 @@ use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\BuildingAddressService;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 
 class CheckBuildingAddress implements ShouldQueue
@@ -49,5 +51,15 @@ class CheckBuildingAddress implements ShouldQueue
         if (! $building->municipality()->first() instanceof Municipality) {
             $this->release(60);
         }
+    }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array
+     */
+    public function middleware()
+    {
+        return [new WithoutOverlapping(sprintf('%s-%s', "CheckBuildingAddress", $this->building->id))];
     }
 }

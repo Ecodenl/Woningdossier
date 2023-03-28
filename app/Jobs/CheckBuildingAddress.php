@@ -47,7 +47,7 @@ class CheckBuildingAddress implements ShouldQueue
 
             $buildingAddressService->attachMunicipality();
         }
-        catch(\Exception $e) {
+        catch(ClientException $e) {
             Log::debug("Exception: {$e->getMessage()}");
             // When there's a client exception there's no point in retrying.
             $this->fail($e);

@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\BuildingAddressService;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class CheckBuildingAddress implements ShouldQueue
 {
@@ -38,10 +40,20 @@ class CheckBuildingAddress implements ShouldQueue
     public function handle(BuildingAddressService $buildingAddressService)
     {
         $building = $this->building;
-        $buildingAddressService
-            ->forBuilding($building)
-            ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
-        $buildingAddressService->attachMunicipality();
+        try {
+            $buildingAddressService
+                ->forBuilding($building)
+                ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
+
+            $buildingAddressService->attachMunicipality();
+        }
+        catch(\Exception $e) {
+            Log::debug("Exception: {$e->getMessage()}");
+            // When there's a client exception there's no point in retrying.
+            $this->fail($e);
+            return;
+        }
+
         /**
          * requery it, no municipality can have multiple causes
          * - BAG is down

@@ -60,6 +60,6 @@ class CheckBuildingAddress implements ShouldQueue
      */
     public function middleware()
     {
-        return [new WithoutOverlapping(sprintf('%s-%s', "CheckBuildingAddress", $this->building->id))];
+        return [(new WithoutOverlapping(sprintf('%s-%s', "CheckBuildingAddress", $this->building->id)))->releaseAfter(10)];
     }
 }

@@ -49,9 +49,8 @@ class Woonplan extends Command
             ->forIntegration(Integration::findByShort('econobis'))
             ->forProcess(SendUserActionPlanAdvicesToEconobis::class);
 
-
         // first get all advices that have been updated in the past 30 minutes
-        // than check if the user his advices werent synced in the past 30 minutes
+        // than check if the user his advices weren't synced in the past 30 minutes
         $relevantLastChangedDate = Carbon::now()->subMinutes(config('hoomdossier.services.econobis.send_woonplan_after_change'));
 
         User::econobisContacts()
@@ -79,6 +78,7 @@ class Woonplan extends Command
                     }
 
                     if ($shouldSync) {
+                        SendBuildingFilledInAnswersToEconobis::dispatch($user->building);
                         SendUserActionPlanAdvicesToEconobis::dispatch($user->building);
                     }
                 }

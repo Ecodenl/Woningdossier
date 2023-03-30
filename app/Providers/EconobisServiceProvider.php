@@ -19,7 +19,7 @@ class EconobisServiceProvider extends ServiceProvider implements DeferrableProvi
     public function register()
     {
         $this->app->singleton(Client::class, function (Application $app) {
-            if ($app->isLocal()) {
+            if ($app->isLocal() || config('hoomdossier.services.econobis.debug', false)) {
                 return new Client(Log::getLogger());
             } else {
                 return new Client();

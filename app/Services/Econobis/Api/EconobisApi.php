@@ -28,7 +28,8 @@ class EconobisApi
             $apiKey = $cooperation->econobis_api_key;
         }
 
-        if (is_null($wildcard) && is_null($apiKey)) {
+        // When one is null, just use the test environment.
+        if (is_null($wildcard) || is_null($apiKey)) {
             $wildcard = 'test';
             $apiKey = config('hoomdossier.services.econobis.api-key');
         }

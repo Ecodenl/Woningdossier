@@ -81,7 +81,6 @@ class Client
     {
         $options = array_merge($options, [RequestOptions::HEADERS => ['Content-Length' => strlen(json_encode($options))]]);
 
-        dd($this->config, $this->getClient());
         $response = $this->getClient()->request($method, $uri, $options);
 
         $response->getBody()->seek(0);

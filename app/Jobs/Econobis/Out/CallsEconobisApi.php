@@ -45,6 +45,7 @@ trait CallsEconobisApi
 
                 }
 
+                // TODO: Are we considering something synced if an exception was thrown???
                 app(IntegrationProcessService::class)
                     ->forIntegration(Integration::findByShort('econobis'))
                     ->forBuilding($this->building)

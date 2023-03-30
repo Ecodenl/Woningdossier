@@ -60,6 +60,7 @@ class PdfReport extends Command
         // than check if the user his advices werent synced in the past 30 minutes
         $interval = Carbon::now()->subMinutes(config("hoomdossier.services.econobis.interval.".SendPdfReportToEconobis::class));
 
+        // TODO: This should check all file storages that are in the interval, OR older and NOT yet synced.
         FileStorage::where('updated_at', '>=', $interval)
             // we query on the coach, the payload itself only includes the coach
             // so makes sense to do it here aswell

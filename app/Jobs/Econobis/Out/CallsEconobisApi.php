@@ -44,6 +44,12 @@ trait CallsEconobisApi
                     $this->log($exception);
 
                 }
+
+                app(IntegrationProcessService::class)
+                    ->forIntegration(Integration::findByShort('econobis'))
+                    ->forBuilding($this->building)
+                    ->forProcess(__CLASS__)
+                    ->syncedNow();
             }, false);
 
         return;

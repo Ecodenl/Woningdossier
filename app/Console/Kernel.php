@@ -7,6 +7,7 @@ use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Woonplan;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncMeasures;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncTargetGroups;
 use App\Console\Commands\SendNotifications;
+use App\Services\Econobis\Payloads\PdfReportPayload;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -36,10 +37,13 @@ class Kernel extends ConsoleKernel
         $schedule->command(SyncMeasures::class)->daily();
 
         $schedule->command(Gebruik::class)->dailyAt('00:00');
+
         if (\App::environment() == 'accept') {
             $schedule->command(Woonplan::class)->everyMinute()->withoutOverlapping();
+            $schedule->command(PdfReportPayload::class)->everyMinute()->withoutOverlapping();
         } else {
             $schedule->command(Woonplan::class)->everyFiveMinutes()->withoutOverlapping();
+            $schedule->command(PdfReportPayload::class)->everyFiveMinutes()->withoutOverlapping();
         }
 
 

@@ -142,7 +142,13 @@ class FileStorage extends Model
      */
     public function user(): BelongsTo
     {
+        // todo: this isnt used / CANT be used ? no user_id column on this tbale.
         return $this->belongsTo(User::class);
+    }
+
+    public function building(): BelongsTo
+    {
+        return $this->belongsTo(Building::class);
     }
 
     /**

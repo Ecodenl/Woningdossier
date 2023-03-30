@@ -26,6 +26,7 @@ return [
         'econobis-api-key' => [
             'label' => 'Econobis API key toevoegen',
             'label-replace' => 'Bestaande Econobis API key overschrijven',
+            'clear' => 'API key verwijderen',
         ],
     ],
 ];

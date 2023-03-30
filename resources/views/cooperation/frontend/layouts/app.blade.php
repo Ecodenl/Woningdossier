@@ -24,6 +24,23 @@
     </style>
     @stack('css')
 
+    <script>
+        function agentHas(keyword) {
+            return navigator.userAgent.toLowerCase().search(keyword.toLowerCase()) > -1;
+        }
+
+        // Safari glitches out when scrolling in the modal. This fixes it using hardware acceleration.
+        // It also ruins z-index. So we make it relative PURELY for safari...
+        if ((!!window.ApplePaySetupFeature || !!window.safari) && agentHas("Safari") && !agentHas("Chrome") && !agentHas("CriOS")) {
+            let style = document.createElement('style');
+            document.head.appendChild(style);
+            style.appendChild(
+                document.createTextNode(
+                    `.modal-container * { -webkit-transform: translate3d(0,0,0); } .modal .select-dropdown { position: relative; }`
+                )
+            );
+        }
+    </script>
 </head>
 <body id="app-body" style="overflow: auto;">
 @if(! request()->input('iframe', false))

@@ -2,12 +2,13 @@
 
 namespace App\Listeners;
 
+use App\Jobs\InsertLogEntry;
 use App\Models\Log;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class StepDataHasBeenChangedListener implements ShouldQueue
+class StepDataHasBeenChangedListener
 {
     /**
      * Create the event listener.
@@ -27,14 +28,9 @@ class StepDataHasBeenChangedListener implements ShouldQueue
      */
     public function handle($event)
     {
-        Log::create([
-            'loggable_type' => User::class,
-            'loggable_id' => $event->user->id,
-            'building_id' => $event->building->id,
-            'message' => __('woningdossier.log-messages.step-data-has-been-changed', [
-                'full_name' => $event->user->getFullName(),
-                'time' => Carbon::now(),
-            ]),
-        ]);
+        dispatch(new InsertLogEntry(User::class, $event->user->id, $event->building->id, __('woningdossier.log-messages.step-data-has-been-changed', [
+            'full_name' => $event->user->getFullName(),
+            'time' => Carbon::now(),
+        ])));
     }
 }

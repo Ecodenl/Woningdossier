@@ -5,6 +5,7 @@ namespace App\Services\Econobis\Api;
 use App\Models\Cooperation;
 use App\Services\Econobis\Api\Resources\Hoomdossier;
 use App\Traits\FluentCaller;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
 
 class EconobisApi
@@ -21,7 +22,13 @@ class EconobisApi
     public function forCooperation(Cooperation $cooperation): self
     {
         $wildcard = $cooperation->econobis_wildcard;
-        $apiKey = Crypt::decrypt($cooperation->econobis_api_key);
+        try {
+            $apiKey = Crypt::decrypt($cooperation->econobis_api_key);
+        }
+        catch(DecryptException $decryptException) {
+            report($decryptException);
+            $apiKey = null;
+        }
 
         // When one is null, just use the test environment.
         if (empty($wildcard) || empty($apiKey)) {

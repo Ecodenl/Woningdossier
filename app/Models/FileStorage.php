@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Scopes\AvailableScope;
-use App\Scopes\CooperationScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\HasCooperationTrait;
@@ -28,7 +27,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \App\Models\FileType $fileType
  * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\User $user
  * @method static Builder|FileStorage allInputSources()
  * @method static Builder|FileStorage beingProcessed()
  * @method static Builder|FileStorage forBuilding($building)
@@ -67,7 +65,8 @@ class FileStorage extends Model
     }
 
     protected $fillable = [
-        'cooperation_id', 'questionnaire_id', 'filename', 'building_id', 'input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
+        'cooperation_id', 'questionnaire_id', 'filename', 'building_id', 'input_source_id', 'file_type_id',
+        'is_being_processed', 'available_until',
     ];
 
     /**
@@ -135,15 +134,6 @@ class FileStorage extends Model
     public function fileType()
     {
         return $this->belongsTo(FileType::class, 'file_type_id');
-    }
-
-    /**
-     * Return the belongsto relationship on a user.
-     */
-    public function user(): BelongsTo
-    {
-        // todo: this isnt used / CANT be used ? no user_id column on this tbale.
-        return $this->belongsTo(User::class);
     }
 
     public function building(): BelongsTo

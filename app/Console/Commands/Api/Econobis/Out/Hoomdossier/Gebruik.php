@@ -42,7 +42,7 @@ class Gebruik extends Command
     {
         $relevantLastChangedDate = Carbon::now()->subHours(24);
 
-        // we dont have to use any policy, because we do this in the query itself.
+        // we don't have to use any policy, because we do this in the query itself.
         User::where('tool_last_changed_at', '>=', $relevantLastChangedDate)
             ->econobisContacts()
             ->where('allow_access', 1)

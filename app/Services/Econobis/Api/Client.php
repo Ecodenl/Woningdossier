@@ -9,7 +9,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\RequestOptions;
-use Illuminate\Support\Facades\Crypt;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -70,7 +69,8 @@ class Client
 
                 $this->config['handler'] = $stack;
             }
-            $this->config['base_uri'] = sprintf($this->baseUrl, $this->wildcard, Crypt::decrypt($this->apiKey));
+            $this->config['base_uri'] = sprintf($this->baseUrl, $this->wildcard, $this->apiKey);
+
             $this->client = new GuzzleClient($this->config);
         }
 

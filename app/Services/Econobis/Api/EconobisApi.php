@@ -5,7 +5,7 @@ namespace App\Services\Econobis\Api;
 use App\Models\Cooperation;
 use App\Services\Econobis\Api\Resources\Hoomdossier;
 use App\Traits\FluentCaller;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Crypt;
 
 class EconobisApi
 {
@@ -25,7 +25,7 @@ class EconobisApi
 
         if ( ! is_null($cooperation->econobis_api_key) && ! is_null($cooperation->econobis_wildcard)) {
             $wildcard = $cooperation->econobis_wildcard;
-            $apiKey = $cooperation->econobis_api_key;
+            $apiKey = Crypt::decrypt($cooperation->econobis_api_key);
         }
 
         // When one is null, just use the test environment.

@@ -38,6 +38,7 @@ return [
             'secret' => env('BAG_API_KEY', '')
         ],
         'econobis' => [
+            'wildcard' => env('ECONOBIS_WILDCARD', 'test'),
             'debug' => env('ECONOBIS_DEBUG', false),
             'api-key' => env('ECONOBIS_KEY', ''),
             // after how many minutes may the woonplan be send to econobis?

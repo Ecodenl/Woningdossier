@@ -20,17 +20,12 @@ class EconobisApi
 
     public function forCooperation(Cooperation $cooperation): self
     {
-        $wildcard = null;
-        $apiKey = null;
-
-        if ( ! is_null($cooperation->econobis_api_key) && ! is_null($cooperation->econobis_wildcard)) {
-            $wildcard = $cooperation->econobis_wildcard;
-            $apiKey = Crypt::decrypt($cooperation->econobis_api_key);
-        }
+        $wildcard = $cooperation->econobis_wildcard;
+        $apiKey = Crypt::decrypt($cooperation->econobis_api_key);
 
         // When one is null, just use the test environment.
-        if (is_null($wildcard) || is_null($apiKey)) {
-            $wildcard = 'test';
+        if (empty($wildcard) || empty($apiKey)) {
+            $wildcard = config('hoomdossier.services.econobis.wildcard', 'test');
             $apiKey = config('hoomdossier.services.econobis.api-key');
         }
 

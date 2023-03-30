@@ -38,6 +38,7 @@ return [
             'secret' => env('BAG_API_KEY', '')
         ],
         'econobis' => [
+            'debug' => env('ECONOBIS_DEBUG', false),
             'api-key' => env('ECONOBIS_KEY', ''),
             // after how many minutes may the woonplan be send to econobis?
             'send_woonplan_after_change' => env('ECONOBIS_SEND_WOONPLAN_AFTER_CHANGE', 30)

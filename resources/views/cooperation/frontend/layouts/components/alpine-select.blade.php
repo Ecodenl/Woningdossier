@@ -22,7 +22,7 @@
         <i x-show="open == false" class="icon-sm icon-arrow-down"></i>
         <i x-show="open == true" class="icon-sm icon-arrow-up"></i>
     </div>
-    <style>.select-dropdown {display: contents;}</style>
+
     <div x-cloak x-ref="select-options" class="select-dropdown" x-show="open" x-on:click.outside="close()" wire:ignore>
         <!-- Will be populated by Alpine -->
     </div>

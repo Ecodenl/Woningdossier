@@ -32,6 +32,11 @@ class RelatedModelService
         return RelatedModel::where($this->whereFrom());
     }
 
+    public function whereTarget(): array
+    {
+        return $this->whereStruct('target');
+    }
+
     public function whereFrom(): array
     {
         return $this->whereStruct('from');

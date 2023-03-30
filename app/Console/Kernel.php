@@ -35,8 +35,13 @@ class Kernel extends ConsoleKernel
         $schedule->command(SyncTargetGroups::class)->daily();
         $schedule->command(SyncMeasures::class)->daily();
 
-        $schedule->command(Gebruik::class)->dailyAt('00:00');
-        $schedule->command(Woonplan::class)->everyFiveMinutes();
+        $schedule->command(Gebruik::class)->daily();
+
+        if (\App::environment() == 'accept') {
+            $schedule->command(Woonplan::class)->everyMinute()->withoutOverlapping();
+        } else {
+            $schedule->command(Woonplan::class)->everyFiveMinutes()->withoutOverlapping();
+        }
 
 
         // $schedule->command('inspire')

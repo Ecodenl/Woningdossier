@@ -3,11 +3,11 @@
 namespace App\Console;
 
 use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Gebruik;
+use App\Console\Commands\Api\Econobis\Out\Hoomdossier\PdfReport;
 use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Woonplan;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncMeasures;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncTargetGroups;
 use App\Console\Commands\SendNotifications;
-use App\Services\Econobis\Payloads\PdfReportPayload;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -40,10 +40,10 @@ class Kernel extends ConsoleKernel
 
         if (\App::environment() == 'accept') {
             $schedule->command(Woonplan::class)->everyMinute()->withoutOverlapping();
-            $schedule->command(PdfReportPayload::class)->everyMinute()->withoutOverlapping();
+            $schedule->command(PdfReport::class)->everyMinute()->withoutOverlapping();
         } else {
             $schedule->command(Woonplan::class)->everyFiveMinutes()->withoutOverlapping();
-            $schedule->command(PdfReportPayload::class)->everyFiveMinutes()->withoutOverlapping();
+            $schedule->command(PdfReport::class)->everyFiveMinutes()->withoutOverlapping();
         }
 
 

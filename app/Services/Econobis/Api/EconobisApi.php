@@ -23,23 +23,14 @@ class EconobisApi
         $wildcard = null;
         $apiKey = null;
 
-        if (App::isLocal()) {
-            $wildcard = 'test';
-            $apiKey = config('hoomdossier.services.econobis.api-key');
-        }
-
-        if (App::environment() === 'accept') {
-            $wildcard = 'test';
-            $apiKey = config('hoomdossier.services.econobis.api-key');
-            if ( ! is_null($cooperation->econobis_api_key) && ! is_null($cooperation->econobis_wildcard)) {
-                $wildcard = $cooperation->econobis_wildcard;
-                $apiKey = $cooperation->econobis_api_key;
-            }
-        }
-
-        if (App::isProduction()) {
+        if ( ! is_null($cooperation->econobis_api_key) && ! is_null($cooperation->econobis_wildcard)) {
             $wildcard = $cooperation->econobis_wildcard;
             $apiKey = $cooperation->econobis_api_key;
+        }
+
+        if (is_null($wildcard) && is_null($apiKey)) {
+            $wildcard = 'test';
+            $apiKey = config('hoomdossier.services.econobis.api-key');
         }
 
         $this->client = $this->client->usesApiKey($apiKey)->usesWildcard($wildcard);

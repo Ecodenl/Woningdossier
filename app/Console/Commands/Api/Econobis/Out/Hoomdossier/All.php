@@ -4,7 +4,7 @@ namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
 use App\Models\Building;
 use App\Services\Econobis\EconobisService;
-use App\Services\Econobis\Api\Econobis;
+use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\Payloads\AppointmentDatePayload;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;

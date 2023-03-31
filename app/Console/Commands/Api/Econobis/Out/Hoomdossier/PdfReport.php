@@ -6,7 +6,7 @@ use App\Models\Building;
 use App\Models\FileType;
 use App\Models\InputSource;
 use App\Services\Econobis\EconobisService;
-use App\Services\Econobis\Api\Econobis;
+use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\Payloads\BuildingStatusPayload;
 use App\Services\Econobis\Payloads\PdfReportPayload;
 use Illuminate\Console\Command;
@@ -43,7 +43,7 @@ class PdfReport extends Command
      *
      * @return int
      */
-    public function handle(EconobisService $econobisService, Econobis $econobis)
+    public function handle(EconobisService $econobisService, EconobisApi $econobis)
     {
         $building = Building::findOrFail($this->argument('building'));
         $econobis

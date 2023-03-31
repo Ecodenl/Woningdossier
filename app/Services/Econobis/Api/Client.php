@@ -9,7 +9,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\RequestOptions;
-use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -17,7 +16,7 @@ class Client
 {
     use FluentCaller;
 
-    protected string $baseUrl = "https://test.econobis.nl/api";
+    protected string $baseUrl = "https://%s.econobis.nl/api/%s/";
 
     private array $config;
 
@@ -25,12 +24,13 @@ class Client
 
     private ?LoggerInterface $logger;
 
+    public string $wildcard;
+    public string $apiKey;
+
     public function __construct(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
-        $key = config('hoomdossier.services.econobis.api-key');
         $this->config = [
-            'base_uri' => "{$this->baseUrl}/{$key}/",
             RequestOptions::HEADERS => [
                 'Accept' => 'application/json',
             ],
@@ -38,6 +38,18 @@ class Client
                 'max' => 5,
             ],
         ];
+    }
+
+    public function usesWildcard(string $wildcard): self
+    {
+        $this->wildcard = $wildcard;
+        return $this;
+    }
+
+    public function usesApiKey(string $apiKey): self
+    {
+        $this->apiKey = $apiKey;
+        return $this;
     }
 
     public function getClient()
@@ -57,6 +69,7 @@ class Client
 
                 $this->config['handler'] = $stack;
             }
+            $this->config['base_uri'] = sprintf($this->baseUrl, $this->wildcard, $this->apiKey);
 
             $this->client = new GuzzleClient($this->config);
         }
@@ -68,11 +81,10 @@ class Client
     {
         $options = array_merge($options, [RequestOptions::HEADERS => ['Content-Length' => strlen(json_encode($options))]]);
 
-//        Log::debug("requesting {$uri}", $options);
         $response = $this->getClient()->request($method, $uri, $options);
-//
+
         $response->getBody()->seek(0);
-//
+
         $contents = $response->getBody()->getContents();
 
         return json_decode($contents, true);

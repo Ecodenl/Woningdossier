@@ -39,6 +39,7 @@ class SendPdfReportToEconobis implements ShouldQueue
         Log::debug("Processing PDF report payload to Econobis for building {$this->building->id}");
         $this->wrapCall(function () use ($econobis, $econobisService) {
             $econobis
+                ->forCooperation($this->building->user->cooperation)
                 ->hoomdossier()
                 ->pdf($econobisService->forBuilding($this->building)->getPayload(PdfReportPayload::class));
         });

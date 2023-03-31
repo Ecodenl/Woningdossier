@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
 use App\Services\Econobis\Api\Client as EconobisClient;
-use App\Services\Econobis\Api\Econobis;
+use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Models\NotificationService;
 use App\Traits\Queue\HasNotifications;
 use Carbon\Carbon;
@@ -108,19 +108,6 @@ class AppServiceProvider extends ServiceProvider
                     ->deactivate();
             }
         });
-
-        $this->app->bind(EconobisClient::class, function(Application $app) {
-//            if ($app->isLocal()) {
-//                return new EconobisClient(Log::getLogger());
-//            } else {
-                return new EconobisClient();
-//            }
-        });
-
-        $this->app->bind(Econobis::class, function (Application $app) {
-            return new Econobis($app->make(EconobisClient::class));
-        });
-
 
         Paginator::useBootstrapThree();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);

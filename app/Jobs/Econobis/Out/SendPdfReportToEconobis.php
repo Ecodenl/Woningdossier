@@ -10,6 +10,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
@@ -43,5 +44,15 @@ class SendPdfReportToEconobis implements ShouldQueue
                 ->hoomdossier()
                 ->pdf($econobisService->forBuilding($this->building)->getPayload(PdfReportPayload::class));
         });
+    }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array
+     */
+    public function middleware()
+    {
+        return [(new WithoutOverlapping(sprintf('%s-%s', __CLASS__, $this->building->id)))->dontRelease()];
     }
 }

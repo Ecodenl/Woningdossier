@@ -22,7 +22,6 @@ trait CallsEconobisApi
         Wrapper::wrapCall(
             function () use ($function) {
                 $function();
-                \Log::debug('Completed function');
                 app(IntegrationProcessService::class)
                     ->forIntegration(Integration::findByShort('econobis'))
                     ->forBuilding($this->building)

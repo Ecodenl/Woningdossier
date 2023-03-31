@@ -12,9 +12,7 @@ class Wrapper
         try {
             // If callback doesn't return anything, results will be null.
             $results = $closure();
-            \Log::debug('Completed callback');
         } catch (\Throwable $exception) {
-            \Log::debug('Exception in the wrapper!');
             if ($defaultExceptionReporting) {
                 report($exception);
             }

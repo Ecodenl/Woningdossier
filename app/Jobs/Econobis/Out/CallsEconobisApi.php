@@ -22,6 +22,7 @@ trait CallsEconobisApi
         Wrapper::wrapCall(
             function () use ($function) {
                 $function();
+                \Log::debug('Completed function');
                 app(IntegrationProcessService::class)
                     ->forIntegration(Integration::findByShort('econobis'))
                     ->forBuilding($this->building)
@@ -29,7 +30,6 @@ trait CallsEconobisApi
                     ->syncedNow();
             },
             function (\Throwable $exception) {
-                Log::debug('Econobis Exception!');
                 $this->log($exception);
                 if ($exception instanceof ServerException) {
                     // try again in 2 minutes

@@ -82,7 +82,7 @@ class Client
         $options = array_merge($options, [RequestOptions::HEADERS => ['Content-Length' => strlen(json_encode($options))]]);
 
         $response = $this->getClient()->request($method, $uri, $options);
-        \Log::debug('Status of Econobis call: ' . $response->getStatusCode());
+
         $response->getBody()->seek(0);
 
         $contents = $response->getBody()->getContents();

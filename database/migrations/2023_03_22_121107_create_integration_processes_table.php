@@ -15,8 +15,8 @@ class CreateIntegrationProcessesTable extends Migration
     {
         Schema::create('integration_processes', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Integration::class, 'integration_id');
-            $table->foreignIdFor(\App\Models\Building::class, 'building_id');
+            $table->foreignIdFor(\App\Models\Integration::class, 'integration_id')->constrained();
+            $table->foreignIdFor(\App\Models\Building::class, 'building_id')->constrained();
             $table->string('process');
             $table->dateTime('synced_at')->nullable()->default(null);
             $table->timestamps();

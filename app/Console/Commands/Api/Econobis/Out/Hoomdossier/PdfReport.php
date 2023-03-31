@@ -10,6 +10,7 @@ use App\Models\Integration;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Facades\Log;
 
 class PdfReport extends Command
 {
@@ -71,6 +72,7 @@ class PdfReport extends Command
             ->with('building')
             ->chunkById(50, function ($fileStorages) {
                 foreach ($fileStorages as $fileStorage) {
+                    Log::debug("Sending PDF report to Econobis for building {$fileStorage->building_id}");
                     SendPdfReportToEconobis::dispatch($fileStorage->building);
                 }
             });

@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SendPdfReportToEconobis implements ShouldQueue
 {
@@ -35,6 +36,7 @@ class SendPdfReportToEconobis implements ShouldQueue
      */
     public function handle(EconobisService $econobisService, Econobis $econobis)
     {
+        Log::debug("Processing PDF report payload to Econobis for building {$this->building->id}");
         $this->wrapCall(function () use ($econobis, $econobisService) {
             $econobis
                 ->hoomdossier()

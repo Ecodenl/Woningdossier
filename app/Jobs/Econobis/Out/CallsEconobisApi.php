@@ -29,6 +29,7 @@ trait CallsEconobisApi
                     ->syncedNow();
             },
             function (\Throwable $exception) {
+                Log::debug('Econobis Exception!');
                 $this->log($exception);
                 if ($exception instanceof ServerException) {
                     // try again in 2 minutes

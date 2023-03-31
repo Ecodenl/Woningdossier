@@ -56,14 +56,16 @@ class PdfReport extends Command
             ->forIntegration(Integration::findByShort('econobis'))
             ->forProcess(SendPdfReportToEconobis::class);
 
+
+
         // first get all file storages that have been updated in the past 30 minutes
-        // than check if the user his advices werent synced in the past 30 minutes
+        // than check if the user his advices weren't synced in the past 30 minutes
         $interval = Carbon::now()->subMinutes(config("hoomdossier.services.econobis.interval.".SendPdfReportToEconobis::class));
 
         // TODO: This should check all file storages that are in the interval, OR older and NOT yet synced.
         FileStorage::where('updated_at', '>=', $interval)
             // we query on the coach, the payload itself only includes the coach
-            // so makes sense to do it here aswell
+            // so makes sense to do it here as well
             ->forInputSource(InputSource::coach())
             ->where('file_type_id', FileType::findByShort('pdf-report')->id)
             ->forAllCooperations()

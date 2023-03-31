@@ -6,7 +6,6 @@ use App\Models\Building;
 use App\Services\Econobis\Api\Econobis;
 use App\Services\Econobis\EconobisService;
 use App\Services\Econobis\Payloads\PdfReportPayload;
-use App\Services\Econobis\Payloads\WoonplanPayload;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

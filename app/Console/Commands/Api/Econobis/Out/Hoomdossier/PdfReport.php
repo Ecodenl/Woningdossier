@@ -3,21 +3,13 @@
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
 use App\Jobs\Econobis\Out\SendPdfReportToEconobis;
-use App\Jobs\Econobis\Out\SendUserActionPlanAdvicesToEconobis;
-use App\Models\Building;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\Integration;
-use App\Services\Econobis\EconobisService;
-use App\Services\Econobis\Api\Econobis;
-use App\Services\Econobis\Payloads\BuildingStatusPayload;
-use App\Services\Econobis\Payloads\PdfReportPayload;
-use App\Services\FileTypeService;
-use App\Services\IntegrationProcessService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Query\JoinClause;
 
 class PdfReport extends Command
 {
@@ -26,14 +18,15 @@ class PdfReport extends Command
      *
      * @var string
      */
-    protected $signature = 'api:econobis:out:hoomdossier:pdf-report';
+    protected $signature = 'api:econobis:out:hoomdossier:pdf-report
+    {--interval= : A custom interval, in minutes}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Send the "woonplan" (user action plan advices) to Econobis, will take all users that have changed their tool in the last configured interval.';
+    protected $description = 'Send the PDF to Econobis for all buildings that either haven\'t send it yet, or have changed.';
 
     /**
      * Create a new command instance.
@@ -50,41 +43,35 @@ class PdfReport extends Command
      *
      * @return int
      */
-    public function handle(IntegrationProcessService $integrationProcessService)
+    public function handle()
     {
-        $integrationProcessService = $integrationProcessService
-            ->forIntegration(Integration::findByShort('econobis'))
-            ->forProcess(SendPdfReportToEconobis::class);
+        $interval = $this->option('interval');
+        $interval = is_numeric($interval) ? (int) $interval : null;
+        $interval = is_null($interval) ? config("hoomdossier.services.econobis.interval." . SendPdfReportToEconobis::class) : $interval;
+        $datetime = Carbon::now()->subMinutes($interval);
 
-
-
-        // first get all file storages that have been updated in the past 30 minutes
-        // than check if the user his advices weren't synced in the past 30 minutes
-        $interval = Carbon::now()->subMinutes(config("hoomdossier.services.econobis.interval.".SendPdfReportToEconobis::class));
-
-        // TODO: This should check all file storages that are in the interval, OR older and NOT yet synced.
-        FileStorage::where('updated_at', '>=', $interval)
-            // we query on the coach, the payload itself only includes the coach
-            // so makes sense to do it here as well
+        // Applies available_until global scope
+        FileStorage::select(['file_storages.id', 'file_storages.input_source_id', 'file_storages.building_id'])
+            ->join('buildings AS b', 'file_storages.building_id', '=', 'b.id')
+            ->join('users AS u', 'b.user_id', '=', 'u.id')
+            ->leftJoin('integration_processes AS ip', function (JoinClause $join) {
+                $join->on('b.id', '=', 'ip.building_id')
+                    ->where('ip.process', SendPdfReportToEconobis::class)
+                    ->where('integration_id', Integration::findByShort('econobis')->id);
+            })
             ->forInputSource(InputSource::coach())
-            ->where('file_type_id', FileType::findByShort('pdf-report')->id)
-            ->forAllCooperations()
-            ->chunkById(50, function ($fileStorages) use ($integrationProcessService, $interval) {
+            ->whereNotNull('u.extra->contact_id')
+            ->where('u.allow_access', 1)
+            ->where('file_storages.file_type_id', FileType::findByShort('pdf-report')->id)
+            ->where(function ($query) {
+                $query->whereNull('ip.synced_at')
+                    ->orWhereRaw('file_storages.updated_at > ip.synced_at');
+            })
+            ->where('file_storages.updated_at', '<=', $datetime)
+            ->with('building')
+            ->chunkById(50, function ($fileStorages) {
                 foreach ($fileStorages as $fileStorage) {
-                    $lastSyncedAt = $integrationProcessService->forBuilding($fileStorage->building)->lastSyncedAt();
-
-                    $shouldSync = false;
-                    if (is_null($lastSyncedAt)) {
-                        $shouldSync = true;
-                    } elseif ($fileStorage->updated_at->greaterThan($lastSyncedAt)) {
-                        $shouldSync = true;
-                    }
-
-                    dd($shouldSync);
-
-                    if ($shouldSync) {
-                        SendPdfReportToEconobis::dispatch($fileStorage->building);
-                    }
+                    SendPdfReportToEconobis::dispatch($fileStorage->building);
                 }
             });
 

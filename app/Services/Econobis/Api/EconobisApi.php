@@ -28,7 +28,6 @@ class EconobisApi
                 $apiKey = Crypt::decrypt($cooperation->econobis_api_key);
             } catch (DecryptException $decryptException) {
                 report($decryptException);
-                $apiKey = null;
             }
         }
 

@@ -53,12 +53,13 @@ trait CallsEconobisApi
 
     private function log(\Throwable $exception)
     {
-        /** @var Stream $stream */
-        $stream = $exception->getResponse()->getBody();
-        $stream->rewind();
-
         Log::error(get_class($exception).' '.$exception->getCode().' '.$exception->getMessage());
-        Log::error($stream->getContents());
+        if (method_exists($exception, 'getResponse')) {
+            /** @var Stream $stream */
+            $stream = $exception->getResponse()->getBody();
+            $stream->rewind();
+            Log::error($stream->getContents());
+        }
 
         $class = __CLASS__;
         DiscordNotifier::init()->notify(get_class($exception)." Failed to send '{$class}' building_id: {$this->building->id}");

@@ -34,8 +34,8 @@ trait CallsEconobisApi
                     $this->release(120);
                 }
 
-                // Econobis throws a 404 when something isnt right (could be a validation thing where a account id does not match the contact id)
-                // anyway, this wont succeed in the next request, so we just fail the job.
+                // Econobis throws a 404 when something isn't right (could be a validation thing where a account id does not match the contact id)
+                // anyway, this won't succeed in the next request, so we just fail the job.
                 if ($exception instanceof ClientException) {
                     $this->log($exception);
                 } elseif ($exception instanceof TooManyRedirectsException) {
@@ -44,6 +44,13 @@ trait CallsEconobisApi
                     $this->log($exception);
 
                 }
+
+                // TODO: Are we considering something synced if an exception was thrown??? No.
+//                app(IntegrationProcessService::class)
+//                    ->forIntegration(Integration::findByShort('econobis'))
+//                    ->forBuilding($this->building)
+//                    ->forProcess(__CLASS__)
+//                    ->syncedNow();
             }, false);
 
         return;

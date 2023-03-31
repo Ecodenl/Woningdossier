@@ -4,6 +4,7 @@ namespace App\Services\Econobis\Payloads;
 
 use App\Models\FileType;
 use App\Models\InputSource;
+use Illuminate\Support\Facades\Storage;
 
 class PdfReportPayload extends EconobisPayload
 {
@@ -22,8 +23,8 @@ class PdfReportPayload extends EconobisPayload
             ->forInputSource($inputSource)
             ->first();
 
-        if (\Storage::disk('downloads')->exists($fileStorage->filename)) {
-            $file = \Storage::disk('downloads')->get($fileStorage->filename);
+        if (Storage::disk('downloads')->exists($fileStorage->filename)) {
+            $file = Storage::disk('downloads')->get($fileStorage->filename);
             return [
                 'pdf' => [
                     'contents' => base64_encode($file),

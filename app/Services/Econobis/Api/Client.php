@@ -4,7 +4,6 @@ namespace App\Services\Econobis\Api;
 
 use App\Traits\FluentCaller;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
@@ -56,8 +55,7 @@ class Client
     {
         if (is_null($this->client)) {
             if ($this->logger instanceof LoggerInterface) {
-                $stack = new HandlerStack();
-                $stack->setHandler(new CurlHandler());
+                $stack = HandlerStack::create();
 
                 $stack->push(
                     Middleware::log(

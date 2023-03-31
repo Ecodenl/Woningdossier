@@ -47,7 +47,10 @@ class ScanStatus extends Command
     {
         $building = Building::findOrFail($this->argument('building'));
 
-        $response = $econobis->hoomdossier()->scanStatus($econobisService->forBuilding($building)->getPayload(ScanStatusPayload::class));
+        $response = $econobis
+            ->forCooperation($building->user->cooperation)
+            ->hoomdossier()
+            ->scanStatus($econobisService->forBuilding($building)->getPayload(ScanStatusPayload::class));
 
         Log::debug('Response', $response);
 

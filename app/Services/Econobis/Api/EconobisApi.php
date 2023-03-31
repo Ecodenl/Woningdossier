@@ -22,12 +22,14 @@ class EconobisApi
     public function forCooperation(Cooperation $cooperation): self
     {
         $wildcard = $cooperation->econobis_wildcard;
-        try {
-            $apiKey = Crypt::decrypt($cooperation->econobis_api_key);
-        }
-        catch(DecryptException $decryptException) {
-            report($decryptException);
-            $apiKey = null;
+        $apiKey = null;
+        if (! empty($cooperation->econobis_api_key)) {
+            try {
+                $apiKey = Crypt::decrypt($cooperation->econobis_api_key);
+            } catch (DecryptException $decryptException) {
+                report($decryptException);
+                $apiKey = null;
+            }
         }
 
         // When one is null, just use the test environment.

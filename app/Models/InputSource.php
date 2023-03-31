@@ -56,4 +56,9 @@ class InputSource extends Model
     {
         return self::findByShort(static::MASTER_SHORT);
     }
+
+    public static function coach(): ?Model
+    {
+        return self::findByShort(static::COACH_SHORT);
+    }
 }

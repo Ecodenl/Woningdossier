@@ -49,12 +49,18 @@ class CooperationController extends Controller
     {
         $this->authorize('update', $cooperationToUpdate);
         $data = $request->validated()['cooperations'];
-        if (! empty($data['econobis_api_key'])) {
-            $data['econobis_api_key'] = Crypt::encrypt($data['econobis_api_key']);
+
+        if ($request->input('clear_econobis_api_key')) {
+            $data['econobis_api_key'] = null;
         } else {
-            // If it's empty we want to unset it, because we don't want to nullify the API key.
-            unset($data['econobis_api_key']);
+            if (! empty($data['econobis_api_key'])) {
+                $data['econobis_api_key'] = Crypt::encrypt($data['econobis_api_key']);
+            } else {
+                // If it's empty we want to unset it, because we don't want to nullify the API key.
+                unset($data['econobis_api_key']);
+            }
         }
+
         $cooperationToUpdate->update($data);
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')

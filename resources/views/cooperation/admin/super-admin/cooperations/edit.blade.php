@@ -43,7 +43,7 @@
                         @endcomponent
 
                         @component('layouts.parts.components.form-group', [
-                            'input_name' => 'cooperation.econobis_wildcard'
+                            'input_name' => 'cooperations.econobis_wildcard'
                         ])
                             <label for="econobis-wildcard" class="control-label">
                                 @lang('cooperation/admin/super-admin/cooperations.form.econobis-wildcard.label')
@@ -58,7 +58,7 @@
                             $transKey = empty($cooperationToUpdate->econobis_api_key) ? 'label' : 'label-replace';
                         @endphp
                         @component('layouts.parts.components.form-group', [
-                            'input_name' => 'cooperation.econobis_api_key'
+                            'input_name' => 'cooperations.econobis_api_key'
                         ])
                             <label for="econobis-api-key" class="control-label">
                                 @lang("cooperation/admin/super-admin/cooperations.form.econobis-api-key.{$transKey}")
@@ -68,7 +68,23 @@
                                    value="{{ old('cooperations.econobis_api_key') }}">
                         @endcomponent
 
-                        <button class="btn btn-success" type="submit">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.update')</button>
+                        @if(! empty($cooperationToUpdate->econobis_api_key))
+                            @component('layouts.parts.components.form-group', [
+                                'input_name' => 'clear_econobis_api_key'
+                            ])
+                                <label for="clear-econobis-api-key" class="control-label">
+                                    @lang("cooperation/admin/super-admin/cooperations.form.econobis-api-key.clear")
+                                    <input id="clear-econobis-api-key" type="checkbox" class="text-danger"
+                                           name="clear_econobis_api_key" autocomplete="off"
+                                           @if(old('clear_econobis_api_key')) checked @endif
+                                           value="1">
+                                </label>
+                            @endcomponent
+                        @endif
+
+                        <button class="btn btn-success" type="submit">
+                            @lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.update')
+                        </button>
                     </form>
                 </div>
             </div>
@@ -87,7 +103,17 @@
                     {responsivePriority: 1, targets: 0}
                 ],
             });
-        }):
 
+            let clearKey = $('#clear-econobis-api-key');
+            clearKey.change(() => {
+                if (clearKey.prop('checked')) {
+                    $('#econobis-api-key').attr('disabled', 'disabled');
+                } else {
+                    $('#econobis-api-key').removeAttr('disabled');
+                }
+            });
+
+            clearKey.trigger('change');
+        });
     </script>
 @endpush

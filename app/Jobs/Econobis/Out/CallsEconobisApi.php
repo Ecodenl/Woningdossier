@@ -29,6 +29,7 @@ trait CallsEconobisApi
                     ->syncedNow();
             },
             function (\Throwable $exception) {
+                $this->log($exception);
                 if ($exception instanceof ServerException) {
                     // try again in 2 minutes
                     $this->release(120);
@@ -36,21 +37,15 @@ trait CallsEconobisApi
 
                 // Econobis throws a 404 when something isn't right (could be a validation thing where a account id does not match the contact id)
                 // anyway, this won't succeed in the next request, so we just fail the job.
-                if ($exception instanceof ClientException) {
-                    $this->log($exception);
-                } elseif ($exception instanceof TooManyRedirectsException) {
-                    $this->log($exception);
-                } elseif ($exception instanceof RequestException) {
-                    $this->log($exception);
+//                if ($exception instanceof ClientException) {
+//                    $this->log($exception);
+//                } elseif ($exception instanceof TooManyRedirectsException) {
+//                    $this->log($exception);
+//                } elseif ($exception instanceof RequestException) {
+//                    $this->log($exception);
+//
+//                }
 
-                }
-
-                // TODO: Are we considering something synced if an exception was thrown??? No.
-//                app(IntegrationProcessService::class)
-//                    ->forIntegration(Integration::findByShort('econobis'))
-//                    ->forBuilding($this->building)
-//                    ->forProcess(__CLASS__)
-//                    ->syncedNow();
             }, false);
 
         return;
@@ -62,10 +57,10 @@ trait CallsEconobisApi
         $stream = $exception->getResponse()->getBody();
         $stream->rewind();
 
-        $class = __CLASS__;
-        DiscordNotifier::init()->notify(get_class($exception)." Failed to send '{$class}' building_id: {$this->building->id}");
-
         Log::error(get_class($exception).' '.$exception->getCode().' '.$exception->getMessage());
         Log::error($stream->getContents());
+
+        $class = __CLASS__;
+        DiscordNotifier::init()->notify(get_class($exception)." Failed to send '{$class}' building_id: {$this->building->id}");
     }
 }

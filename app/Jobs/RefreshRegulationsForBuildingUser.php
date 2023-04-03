@@ -36,6 +36,11 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
      */
     public function handle()
     {
-        UserActionPlanAdviceService::init()->forUser($this->building->user)->refreshUserRegulations();
+        $user = $this->building->user;
+        $user->update(['refreshing_regulations' => true]);
+
+        UserActionPlanAdviceService::init()
+            ->forUser($user)
+            ->refreshUserRegulations();
     }
 }

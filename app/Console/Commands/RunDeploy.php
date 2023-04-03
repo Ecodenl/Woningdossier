@@ -2,11 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Console\Commands\Deploys\FixMeasureCommand;
-use App\Console\Commands\Fixes\CorrectHasSolarPanelsToolQuestionAnswer;
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;
-use Illuminate\Support\Facades\DB;
 
 class RunDeploy extends Command
 {
@@ -45,7 +42,6 @@ class RunDeploy extends Command
     {
         $commands = [
             SeedCommand::class => ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
-            FixMeasureCommand::class => [],
         ];
 
         foreach ($commands as $command => $arguments) {

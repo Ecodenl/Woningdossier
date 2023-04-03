@@ -2,6 +2,7 @@
 
 namespace App\Services\Lvbag;
 
+use App\Helpers\Str;
 use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\Lvbag\Payloads\City;
 use App\Traits\FluentCaller;
@@ -41,6 +42,8 @@ class BagService
         // if not found as a houseletter
         // if that does not work we will do a last resort that may not be that accurate..
         if (! empty($houseNumberExtension)) {
+            $houseNumberExtension = $this->convertHouseNumberExtension($houseNumberExtension);
+
             $addressExpanded = $this->listAddressExpanded($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
             if ($addressExpanded->isEmpty()) {
                 // if that does not work we will try the huislett
@@ -124,5 +127,17 @@ class BagService
             }
         }
         return $result;
+    }
+
+    public function convertHouseNumberExtension(string $extension): string
+    {
+        // The BAG only allows 4 letter extensions, however people don't always know the BAG named shorthand.
+        // We convert the extension manually.
+        $conversion = [
+            'zwart' => 'zw',
+        ];
+
+        $key = Str::makeComparable($extension);
+        return $conversion[$key] ?? $extension;
     }
 }

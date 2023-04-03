@@ -19,7 +19,7 @@ class Regulation extends Resource
      *
      * @param  array  $attributes
      *
-     * @return array|null
+     * @return array
      */
     public function search(array $attributes): array
     {

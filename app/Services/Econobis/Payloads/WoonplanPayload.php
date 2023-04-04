@@ -13,6 +13,7 @@ use App\Models\RoofType;
 use App\Models\ToolQuestion;
 use App\Models\UserActionPlanAdvice;
 use App\Services\DiscordNotifier;
+use App\Services\LegacyService;
 use App\Services\MappingService;
 use App\Services\RelatedModelService;
 use App\Services\UserActionPlanAdviceService;
@@ -129,16 +130,12 @@ class WoonplanPayload extends EconobisPayload
             if ($relatedToolQuestion instanceof ToolQuestion && $advisable instanceof MeasureApplication) {
                 $relatedAnswer = $this->building->getAnswer($this->masterInputSource, $relatedToolQuestion);
                 $type = $toolQuestionRelatedMeasureMap[$relatedToolQuestion->short]['type'];
+                // reverse build the where for the related model query
                 $whereTarget = app(RelatedModelService::class)->target($advisable)->whereTarget();
 
                 $executeHowToolQuestion = RelatedModel::with(['resolvable'])
-                    ->whereHas('resolvable', function ($query) {
-                        // so ofcourse this isnt exactly the most solid way
-                        // maybe we cancollect al the how shorts omewhere and do a wherein
-                        // as we already query PER measure application
-                        // "Maar dat is voor morgen" ~ John F. Kennedy
-                        $query->where('short', 'LIKE', "%how%");
-
+                    ->whereHas('resolvable', function ($query) use ($advisable) {
+                        $query->where('short', LegacyService::getExecuteHowToolQuestionShort($advisable->short));
                     })->where($whereTarget)->first()->from_model;
 
                 $answer = $building->getAnswer($this->masterInputSource, $executeHowToolQuestion);

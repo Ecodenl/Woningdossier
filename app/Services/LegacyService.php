@@ -73,8 +73,13 @@ class LegacyService
             return [
                 "user-costs-{$short}-own-total",
                 "user-costs-{$short}-subsidy-total",
-                "execute-{$short}-how",
+                static::getExecuteHowToolQuestionShort($short),
             ];
         })->toArray();
+    }
+
+    public static function getExecuteHowToolQuestionShort(string $measureApplicationShort): string
+    {
+        return "execute-{$measureApplicationShort}-how";
     }
 }

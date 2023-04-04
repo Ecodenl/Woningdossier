@@ -2,6 +2,7 @@
 
 namespace App\Services\Verbeterjehuis;
 
+use App\Services\DiscordNotifier;
 use App\Traits\FluentCaller;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\CurlHandler;
@@ -68,7 +69,14 @@ class Client
 
         $contents = $response->getBody()->getContents();
 
-        return json_decode($contents, true);
+        $result = json_decode($contents, true);
+
+        if (! is_array($result)) {
+            DiscordNotifier::init()->notify("Vbjehuis Search result is not an array! URI: {$uri}, Options: " . json_encode($options) . " Result: " . json_encode($result) . " Code: {$response->getStatusCode()}");
+            $result = [];
+        }
+
+        return $result;
     }
 
     public function get(string $uri, array $options = []): array

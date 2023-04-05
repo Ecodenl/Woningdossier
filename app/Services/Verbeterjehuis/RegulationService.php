@@ -4,7 +4,6 @@ namespace App\Services\Verbeterjehuis;
 
 use App\Helpers\Cache\BaseCache;
 use App\Helpers\MappingHelper;
-use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\MappingService;
@@ -33,19 +32,22 @@ class RegulationService
 
     public function getFilters(): array
     {
-        //TODO: If Vbjehuis is unavailable, but data is in the cache, this will still return nothing. Doesn't seem
-        // like the right approach.
-        $result = Verbeterjehuis::init(Client::init())
-            ->regulation()
-            ->getFilters();
+        $cacheKey = BaseCache::getCacheKey('getFilters');
+        $repository = Cache::driver('database');
 
-        if (empty($result)) {
-            return [];
+        // If cache is empty, reset the cache. We do it like this to limit the required calls to the external API.
+        // When the key has expired, `has()` will return false!
+        if ($repository->has($cacheKey)) {
+            if (empty($repository->get($cacheKey))) {
+                $repository->forget($cacheKey);
+            }
         }
 
-        return Cache::driver('database')
-            ->remember(BaseCache::getCacheKey('getFilters'), Carbon::now()->addDay(), function () use ($result) {
-                return $result;
+        return $repository
+            ->remember($cacheKey, Carbon::now()->addDay(), function () {
+                return app(Verbeterjehuis::class)
+                    ->regulation()
+                    ->getFilters();
             });
     }
 
@@ -68,11 +70,12 @@ class RegulationService
                 return null;
             }
 
+            // TODO: If result is empty, it will be cached... Should we assume results are always correct?
             $this->context['cityId'] = $cityId;
             return Search::init(
                 Cache::driver('database')->remember($this->getCacheKey(), Carbon::now()->addDay(), function () {
-                    // note: If the search method throws a exception it wont be cached.
-                    return Verbeterjehuis::init(Client::init())
+                    // Note: If the search method throws a exception it won't be cached.
+                    return app(Verbeterjehuis::class)
                         ->regulation()
                         ->search($this->context);
                 })

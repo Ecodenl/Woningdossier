@@ -58,10 +58,10 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         NoMappingFoundForBagMunicipality::class => [
-            CreateTargetlessMappingForMunicipality::class
+            CreateTargetlessMappingForMunicipality::class,
         ],
         NoMappingFoundForVbjehuisMunicipality::class => [
-            MissingVbjehuisMapping::class
+            MissingVbjehuisMapping::class,
         ],
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
@@ -70,10 +70,10 @@ class EventServiceProvider extends ServiceProvider
             RefreshRelatedAdvices::class,
         ],
         CustomMeasureApplicationChanged::class => [
-            RefreshRelatedAdvices::class
+            RefreshRelatedAdvices::class,
         ],
         BuildingAddressUpdated::class => [
-            RefreshBuildingUserHisAdvices::class
+            RefreshBuildingUserHisAdvices::class,
         ],
         Login::class => [
             SuccessFullLoginListener::class,

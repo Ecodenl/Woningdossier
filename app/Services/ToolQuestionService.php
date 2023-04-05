@@ -184,6 +184,8 @@ class ToolQuestionService {
                     // apply the example building for the given changes.
                     // we give him the old building features, otherwise we cant verify the changes
                     ApplyExampleBuildingForChanges::dispatchSync($oldBuildingFeature, $answerData, $this->currentInputSource);
+                } else {
+                    DiscordNotifier::init()->notify("No master building feature for building {$this->building->id}");
                 }
             }
         }

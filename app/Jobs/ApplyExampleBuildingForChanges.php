@@ -191,7 +191,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         // just use the lowest available one.
         $contentForLowestBuildYear = $exampleBuilding->contents()->orderBy('build_year')->first();
         if ($buildYear < $contentForLowestBuildYear->build_year) {
-            Log::debug("Building BUILDYEAR {$buildYear} altered build year {$contentForLowestBuildYear->build_year} ");
+            Log::debug("Building id: {$this->building->id} filled in build year: {$buildYear} altered to lowest available build year {$contentForLowestBuildYear->build_year}");
             $buildYear = $contentForLowestBuildYear->build_year;
         }
 

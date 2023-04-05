@@ -91,7 +91,9 @@ class UserActionPlanAdviceObserver
         if (in_array($userActionPlanAdvice->user_action_plan_advisable_type, [MeasureApplication::class, CooperationMeasureApplication::class])) {
             Log::debug('Refresh ze regulations.');
             Wrapper::wrapCall(function () use ($userActionPlanAdvice) {
-                UserActionPlanAdviceService::init()->refreshRegulations($userActionPlanAdvice);
+                UserActionPlanAdviceService::init()
+                    ->forUser($userActionPlanAdvice->user)
+                    ->refreshRegulations($userActionPlanAdvice);
             });
         }
     }

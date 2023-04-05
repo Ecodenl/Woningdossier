@@ -97,7 +97,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
 
 
             if (!$exampleBuilding instanceof ExampleBuilding) {
-                // No example building, so can't change then.
+                // No example building for the building type, so can't change then.
                 return null;
             }
 
@@ -107,6 +107,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             }
 
             if (array_key_exists('build_year', $changes)) {
+                // when there is no change in the given build year there is no point in applying it again.
                 if ($currentBuildYearValue === $changedBuildYear) {
                     return null;
                 }
@@ -163,6 +164,14 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
 
         if (array_key_exists('build_year', $this->changes)) {
             $buildYear = $this->changes['build_year'];
+        }
+
+        // alter the buildYear when needed (extra business logic)
+        // when the user filled in a build year thats lower than the lowest available example building content
+        // just use the lowest available one.
+        $contentForLowestBuildYear = $exampleBuilding->contents()->orderBy('build_year')->first();
+        if ($buildYear < $contentForLowestBuildYear->build_year) {
+            $buildYear = $contentForLowestBuildYear->build_year;
         }
 
         // We apply the example building only if the user has not proceeded further than the example building

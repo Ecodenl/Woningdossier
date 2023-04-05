@@ -56,7 +56,9 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
     public function handle()
     {
         try {
-            UserActionPlanAdviceService::init()->refreshRegulations($this->userActionPlanAdvice);
+            UserActionPlanAdviceService::init()
+                ->forUser($this->userActionPlanAdvice->user)
+                ->refreshRegulations($this->userActionPlanAdvice);
         } catch (ConnectException|ServerException $connectException) {
             $this->release(10);
         }

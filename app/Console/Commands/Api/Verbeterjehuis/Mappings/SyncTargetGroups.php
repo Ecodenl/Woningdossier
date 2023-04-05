@@ -3,13 +3,10 @@
 namespace App\Console\Commands\Api\Verbeterjehuis\Mappings;
 
 use App\Helpers\Wrapper;
-use App\Models\Mapping;
 use App\Models\ToolQuestion;
 use App\Services\DiscordNotifier;
 use App\Services\MappingService;
-use App\Services\Verbeterjehuis\Client;
 use App\Services\Verbeterjehuis\RegulationService;
-use App\Services\Verbeterjehuis\Verbeterjehuis;
 use Illuminate\Console\Command;
 
 class SyncTargetGroups extends Command

@@ -80,11 +80,14 @@ class GenerateToolReport implements ShouldQueue
         );
 
         $cooperation = $this->cooperation;
+
+        // note: not ideal, However doing this in the correct place takes time.
         if ($this->fileType->short === 'total-report') {
             $dumpService->headerStructure[] = 'Account id';
             $dumpService->headerStructure[] = 'User id';
             $dumpService->headerStructure[] = 'Building id';
         }
+
         $rows[] = $dumpService->headerStructure;
         $chunkNo = 1;
 

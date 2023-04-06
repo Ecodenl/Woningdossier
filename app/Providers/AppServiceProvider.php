@@ -7,6 +7,8 @@ use App\Rules\MaxFilenameLength;
 use App\Services\Econobis\Api\Client as EconobisClient;
 use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Models\NotificationService;
+use App\Services\Verbeterjehuis\Client as VerbeterJeHuisClient;
+use App\Services\Verbeterjehuis\Verbeterjehuis;
 use App\Traits\Queue\HasNotifications;
 use Carbon\Carbon;
 use Ecodenl\LvbagPhpWrapper\Client as LvbagClient;
@@ -18,7 +20,6 @@ use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
@@ -112,7 +113,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapThree();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
-        $this->app->bind(LvbagClient::class, function(Application $app) {
+        $this->app->bind(LvbagClient::class, function (Application $app) {
             $useProductionEndpoint = true;
             // During testing, we should be mocking, but just in case someone forgets to mock...
             if ($app->isLocal() || $app->environment('testing')) {
@@ -127,6 +128,14 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(Lvbag::class, function (Application $app) {
             return new Lvbag($app->make(LvbagClient::class));
+        });
+
+        $this->app->bind(VerbeterJeHuisClient::class, function (Application $app) {
+            return new VerbeterJeHuisClient();
+        });
+
+        $this->app->bind(Verbeterjehuis::class, function (Application $app) {
+            return new Verbeterjehuis($app->make(VerbeterJeHuisClient::class));
         });
     }
 

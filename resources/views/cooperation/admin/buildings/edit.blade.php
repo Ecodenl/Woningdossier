@@ -7,11 +7,11 @@
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
+                'municipality' => optional($building->municipality)->name ?? __('cooperation/admin/buildings.show.unknown-municipality'),
                 'email' => $user->account->email,
                 'phone-number' => $user->phone_number
             ])
         </div>
-
 
         <div class="panel-body">
             {{-- delete a user --}}

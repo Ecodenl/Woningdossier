@@ -111,6 +111,9 @@ class GenerateToolReport implements ShouldQueue
             ->chunkById(100, function($users) use ($dumpService, &$rows, &$chunkNo) {
                 foreach ($users as $user) {
                     $rows[$user->building->id] = $dumpService->user($user)->generateDump();
+                    $rows[$user->building->id]['Account id'] = $user->account_id;
+                    $rows[$user->building->id]['User id'] = $user->id;
+                    $rows[$user->building->id]['Building id'] = $user->building->id;
                 }
 
                 Log::debug('GenerateTotalReport - Putting chunk ' . $chunkNo);

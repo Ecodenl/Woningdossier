@@ -325,10 +325,6 @@ class DumpService
             }
         }
 
-        $data['Account id'] = $this->user->account_id;
-        $data['User id'] = $this->user->id;
-        $data['Building id'] = $this->building->id;
-
         return $data;
     }
 

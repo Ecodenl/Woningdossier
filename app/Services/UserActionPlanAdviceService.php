@@ -8,7 +8,6 @@ use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\Cooperation\Tool\SmallMeasureHelper;
 use App\Helpers\Queue;
 use App\Helpers\StepHelper;
-use App\Helpers\Wrapper;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
 use App\Models\ElementValue;
@@ -109,6 +108,10 @@ class UserActionPlanAdviceService
             'loan_available' => $loanAvailable,
             'subsidy_available' => $subsidyAvailable,
         ]));
+
+        $this->user->update([
+            'regulations_refreshed_at' => Carbon::now(),
+        ]);
     }
 
     /**

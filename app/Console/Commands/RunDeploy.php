@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Console\Commands\Fixes\CorrectHasSolarPanelsToolQuestionAnswer;
 use Illuminate\Console\Command;
 use Illuminate\Database\Console\Seeds\SeedCommand;
-use Illuminate\Support\Facades\DB;
 
 class RunDeploy extends Command
 {
@@ -22,8 +20,8 @@ class RunDeploy extends Command
      * @var string
      */
     protected $description = '
-    This command contains code that should be ran during deployment.
-    It also MUST contain atomic code to prevent problems in case this command isnt cleared for a new deployment.';
+    This command contains code that should be ran during deployment. 
+    It also MUST contain atomic code to prevent problems in case this command isn\'t cleared for a new deployment.';
 
     /**
      * Create a new command instance.
@@ -42,7 +40,6 @@ class RunDeploy extends Command
      */
     public function handle()
     {
-
         $commands = [
             SeedCommand::class => ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
         ];

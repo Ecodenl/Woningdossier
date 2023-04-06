@@ -21,9 +21,9 @@
                     </span>
                 </button>
                 @if($building->user->regulations_refreshed_at instanceof DateTime)
-                    <h5 class="heading-5 text-purple">@lang('cooperation/frontend/tool.my-regulations.refreshed.last', ['date' => $building->user->regulations_refreshed_at->format('Y-m-d H:i')])</h5>
+                    <h6 class="heading-6 text-purple">@lang('cooperation/frontend/tool.my-regulations.refreshed.last', ['date' => $building->user->regulations_refreshed_at->format('Y-m-d H:i')])</h6>
                 @else
-                    <h5 class="heading-5 text-purple">@lang('cooperation/frontend/tool.my-regulations.refreshed.not')</h5>
+                    <h6 class="heading-6 text-purple">@lang('cooperation/frontend/tool.my-regulations.refreshed.not')</h6>
                 @endif
             </div>
 

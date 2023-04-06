@@ -80,13 +80,18 @@ class GenerateToolReport implements ShouldQueue
         );
 
         $cooperation = $this->cooperation;
-
+        if ($this->fileType->short === 'total-report') {
+            $dumpService->headerStructure[] = 'Account id';
+            $dumpService->headerStructure[] = 'User id';
+            $dumpService->headerStructure[] = 'Building id';
+        }
         $rows[] = $dumpService->headerStructure;
         $chunkNo = 1;
 
         // Get all users with a building and who have completed the quick scan
         $cooperation->users()
             ->whereHas('building.buildingStatuses')
+            ->where('id', 1)
             ->with(['building' => function ($query) use ($inputSource) {
                 $query->with(
                     [

@@ -94,7 +94,6 @@ class GenerateToolReport implements ShouldQueue
         // Get all users with a building and who have completed the quick scan
         $cooperation->users()
             ->whereHas('building.buildingStatuses')
-            ->where('id', 1)
             ->with(['building' => function ($query) use ($inputSource) {
                 $query->with(
                     [

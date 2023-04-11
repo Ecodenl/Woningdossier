@@ -16,6 +16,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use phpDocumentor\Reflection\Types\Null_;
 
 class ApplyExampleBuildingForChanges implements ShouldQueue
 {
@@ -97,7 +98,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
 
 
             if (!$exampleBuilding instanceof ExampleBuilding) {
-                // No example building, so can't change then.
+                // No example building for the building type, so can't change then.
                 return null;
             }
 
@@ -107,30 +108,50 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             }
 
             if (array_key_exists('build_year', $changes)) {
+                // when there is no change in the given build year there is no point in applying it again.
                 if ($currentBuildYearValue === $changedBuildYear) {
                     return null;
                 }
 
-                // if the build_year is dirty:
-                // check the combination of example_building_id with new build_year
-                // against the combination of example_building_id with old build_year
-                $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
-                $newContents = $exampleBuilding->getContentForYear($changedBuildYear);
-
-                if ($newContents instanceof ExampleBuildingContent) {
-                    if ($oldContents instanceof ExampleBuildingContent) {
-                        if ($oldContents->id !== $newContents->id) {
-                            return $exampleBuilding;
-                        }
-                    } else {
-                        return $exampleBuilding;
-                    }
+                // there is a last resort for (mostly) old buildings.
+                if ($this->getExampleBuildingIfContentChanged($exampleBuilding, $currentBuildYearValue, $changedBuildYear) instanceof ExampleBuilding) {
+                    return $exampleBuilding;
                 }
+
+                // a last resort to check if there is some content, could be that the user has a building which is below
+                // the lowest available example building content its build year.
+                $contentForLowestBuildYear = $exampleBuilding->contents()->orderBy('build_year')->first();
+                if ($changedBuildYear < $contentForLowestBuildYear->build_year) {
+                    return $this->getExampleBuildingIfContentChanged($exampleBuilding, $currentBuildYearValue, $contentForLowestBuildYear->build_year);
+                }
+
             }
         } else {
             Log::debug(__CLASS__." Build year not set for building {$this->building->id}");
         }
 
+        return null;
+    }
+
+    private function getExampleBuildingIfContentChanged(ExampleBuilding $exampleBuilding, $currentBuildYearValue, $changedBuildYear): ?ExampleBuilding
+    {
+        // if the build_year is dirty:
+        // check the combination of example_building_id with new build_year
+        // against the combination of example_building_id with old build_year
+        $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
+        $newContents = $exampleBuilding->getContentForYear($changedBuildYear);
+
+        if ($newContents instanceof ExampleBuildingContent) {
+            if ($oldContents instanceof ExampleBuildingContent) {
+                // old content exists, check if the new one actually differs.
+                if ($oldContents->id !== $newContents->id) {
+                    return $exampleBuilding;
+                }
+            } else {
+                // no old content, so its the first time a example building is applied.
+                return $exampleBuilding;
+            }
+        }
         return null;
     }
 
@@ -163,6 +184,15 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
 
         if (array_key_exists('build_year', $this->changes)) {
             $buildYear = $this->changes['build_year'];
+        }
+
+        // alter the buildYear when needed (extra business logic)
+        // when the user filled in a build year thats lower than the lowest available example building content
+        // just use the lowest available one.
+        $contentForLowestBuildYear = $exampleBuilding->contents()->orderBy('build_year')->first();
+        if ($buildYear < $contentForLowestBuildYear->build_year) {
+            Log::debug("Building id: {$this->building->id} filled in build year: {$buildYear} altered to lowest available build year {$contentForLowestBuildYear->build_year}");
+            $buildYear = $contentForLowestBuildYear->build_year;
         }
 
         // We apply the example building only if the user has not proceeded further than the example building

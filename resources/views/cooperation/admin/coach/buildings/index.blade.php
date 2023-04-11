@@ -37,6 +37,7 @@
                                 }
 
                                 $appointmentDateStrotime = strtotime($appointmentDateFormatted);
+
                             ?>
                             <tr>
                                 <td data-sort="{{$appointmentDateStrotime ?? '-'}}">
@@ -55,7 +56,7 @@
                                 <td>
                                     {{$building->city}}
                                 </td>
-                                <td data-sort="{{$appointmentDateStrotime ?? '-'}}">
+                                <td data-sort="{{$userCreatedAtStrotime ?? '-'}}">
                                     {{$userCreatedAtFormatted ?? '-'}}
                                 </td>
                             </tr>

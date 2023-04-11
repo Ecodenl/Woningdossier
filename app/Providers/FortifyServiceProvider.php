@@ -15,7 +15,10 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Contracts\TwoFactorLoginResponse;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Http\Responses\FailedTwoFactorLoginResponse;
 use Laravel\Fortify\Http\Responses\LoginResponse as FortifyLoginResponse;
 use Laravel\Fortify\Http\Responses\LogoutResponse as FortifyLogoutResponse;
 use Laravel\Fortify\Http\Responses\PasswordResetResponse as FortifyPasswordResetResponse;
@@ -30,7 +33,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Fortify::ignoreRoutes();
+         Fortify::ignoreRoutes();
 
         $this->app->bind(
             FortifyRegisterResponse::class,
@@ -48,6 +51,16 @@ class FortifyServiceProvider extends ServiceProvider
             FortifyLogoutResponse::class,
             LogoutResponse::class
         );
+
+        $this->app->bind(
+            FailedTwoFactorLoginResponse::class,
+            \App\Responses\FailedTwoFactorLoginResponse::class
+        );
+
+        $this->app->bind(
+            TwoFactorLoginResponse::class,
+            \App\Responses\TwoFactorLoginResponse::class
+        );
     }
 
     /**
@@ -58,19 +71,22 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot()
     {
         Fortify::createUsersUsing(CreateNewUser::class);
+
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+
+
+        $this->app->singleton(
+            RedirectIfTwoFactorAuthenticatable::class,
+            \App\Actions\Fortify\RedirectIfTwoFactorAuthenticatable::class
+        );
 
         RateLimiter::for('login', function (Request $request) {
             return app()->isLocal()
                 ? Limit::none()
                 : Limit::perMinute(50)->by($request->email . $request->ip());
         });
-
-//        RateLimiter::for('two-factor', function (Request $request) {
-//            return Limit::perMinute(5)->by($request->session()->get('login.id'));
-//        });
 
         Fortify::registerView(function () {
             return view('cooperation.auth.register');
@@ -81,6 +97,9 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(function () {
             return view('cooperation.auth.login');
         });
+        Fortify::confirmPasswordView(function () {
+            return view('cooperation.auth.confirm-password');
+        });
         Fortify::requestPasswordResetLinkView(function () {
             return view('cooperation.auth.passwords.request.index');
         });
@@ -88,8 +107,15 @@ class FortifyServiceProvider extends ServiceProvider
             $token = $request->route('token');
             return view('cooperation.auth.passwords.reset.show', compact('token'));
         });
+
+        Fortify::twoFactorChallengeView(function () {
+            return view('cooperation.auth.two-factor-challenge');
+        });
         ResetPassword::createUrlUsing(function ($user, string $token) {
             return route('cooperation.auth.password.reset', compact('token'));
+        });
+        RateLimiter::for('two-factor', function (Request $request) {
+            return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
     }
 }

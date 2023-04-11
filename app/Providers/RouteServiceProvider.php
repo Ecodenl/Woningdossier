@@ -34,6 +34,7 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapApiRoutes();
 
             $this->mapWebRoutes();
+
         });
         Route::model('cooperation', Cooperation::class);
 

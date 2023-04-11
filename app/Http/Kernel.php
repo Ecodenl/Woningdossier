@@ -56,6 +56,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'verified' =>  \App\Http\Middleware\EnsureEmailIsVerified::class,
         'cooperation' => \App\Http\Middleware\CooperationMiddleware::class,

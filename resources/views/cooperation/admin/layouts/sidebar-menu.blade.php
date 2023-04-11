@@ -54,23 +54,24 @@
                             <li class="list-group-item @if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications') && optional(Route::current())->parameter('type') === \App\Helpers\Models\CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE) active @endif">
                                 <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => \App\Helpers\Models\CooperationMeasureApplicationHelper::EXTENSIVE_MEASURE])}}">
                                     @lang('cooperation/admin/shared.sidebar.cooperation-measure-applications.extensive')
-                            </a>
-                        </li>
-                        <li class="list-group-item @if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications') && optional(Route::current())->parameter('type') === \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE) active @endif">
-                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE])}}">
-                                @lang('cooperation/admin/shared.sidebar.cooperation-measure-applications.small')
+                                </a>
+                            </li>
+                            <li class="list-group-item @if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications') && optional(Route::current())->parameter('type') === \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE) active @endif">
+                                <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index', ['type' => \App\Helpers\Models\CooperationMeasureApplicationHelper::SMALL_MEASURE])}}">
+                                    @lang('cooperation/admin/shared.sidebar.cooperation-measure-applications.small')
                                 </a>
                             </li>
                             <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.settings.index'])) active @endif">
                                 <a href="{{route('cooperation.admin.cooperation.cooperation-admin.settings.index')}}">
                                     @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.settings')
-                            </a>
-                        </li>
-                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.scans.index'])) active @endif">
-                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.scans.index')}}">
-                                @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.scans')
                                 </a>
                             </li>
+                            <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.scans.index'])) active @endif">
+                                <a href="{{route('cooperation.admin.cooperation.cooperation-admin.scans.index')}}">
+                                    @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.scans')
+                                </a>
+                            </li>
+                            @include('cooperation.admin.layouts.parts.sidebar.manuals-li')
                         </ul>
                     </div>
                 </div>
@@ -110,6 +111,7 @@
                             <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.reports.index'])) active @endif">
                                 <a href="{{route('cooperation.admin.cooperation.reports.index')}}">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.reports')</a>
                             </li>
+                            @include('cooperation.admin.layouts.parts.sidebar.manuals-li')
                         </ul>
                     </div>
                 </div>
@@ -143,6 +145,7 @@
                             <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.coach.buildings.index', 'cooperation.admin.buildings.show'])) active @endif">
                                 <a href="{{route('cooperation.admin.coach.buildings.index')}}">@lang('woningdossier.cooperation.admin.coach.side-nav.buildings')</a>
                             </li>
+                            @include('cooperation.admin.layouts.parts.sidebar.manuals-li')
                         </ul>
                     </div>
                 </div>

@@ -81,6 +81,13 @@ class GenerateToolReport implements ShouldQueue
 
         $cooperation = $this->cooperation;
 
+        // note: not ideal, However doing this in the correct place takes time.
+        if ($this->fileType->short === 'total-report') {
+            $dumpService->headerStructure[] = 'Account id';
+            $dumpService->headerStructure[] = 'User id';
+            $dumpService->headerStructure[] = 'Building id';
+        }
+
         $rows[] = $dumpService->headerStructure;
         $chunkNo = 1;
 
@@ -111,6 +118,11 @@ class GenerateToolReport implements ShouldQueue
             ->chunkById(100, function($users) use ($dumpService, &$rows, &$chunkNo) {
                 foreach ($users as $user) {
                     $rows[$user->building->id] = $dumpService->user($user)->generateDump();
+                    if ($this->fileType->short === 'total-report') {
+                        $rows[$user->building->id]['Account id'] = $user->account_id;
+                        $rows[$user->building->id]['User id'] = $user->id;
+                        $rows[$user->building->id]['Building id'] = $user->building->id;
+                    }
                 }
 
                 Log::debug('GenerateTotalReport - Putting chunk ' . $chunkNo);

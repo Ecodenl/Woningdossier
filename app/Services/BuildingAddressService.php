@@ -94,23 +94,21 @@ class BuildingAddressService
 
         $updateableBuildingFeatureData = [];
         // we only set the data from the bag when its empty, we will never overwrite previous filled in data
-        if (is_null($buildYear)) {
+        if (empty($buildYear)) {
             $updateableBuildingFeatureData['build_year'] = $addressData['build_year'];
         }
-        if (is_null($surface)) {
+        if (empty($surface)) {
             $updateableBuildingFeatureData['surface'] = $addressData['surface'];
         }
 
         BuildingFeature::withoutGlobalScopes()
-        ->updateOrCreate(
-            [
-                'building_id' => $this->building->id,
-                'input_source_id' => InputSource::resident()->id
-            ],
-            [
+            ->updateOrCreate(
+                [
+                    'building_id' => $this->building->id,
+                    'input_source_id' => InputSource::resident()->id
+                ],
                 $updateableBuildingFeatureData
-            ]
-        );
+            );
     }
 
     public function attachMunicipality(): void

@@ -202,6 +202,7 @@ class UserService
             ]
         );
 
+
         $features = new BuildingFeature([
             'surface' => $addressData['surface'] ?? null,
             'build_year' => $addressData['build_year'] ?? null,

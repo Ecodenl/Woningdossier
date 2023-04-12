@@ -7,6 +7,7 @@ use App\Events\NoMappingFoundForBagMunicipality;
 use App\Events\NoMappingFoundForVbjehuisMunicipality;
 use App\Helpers\MappingHelper;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Models\ToolQuestion;
@@ -100,11 +101,16 @@ class BuildingAddressService
             $updateableBuildingFeatureData['surface'] = $addressData['surface'];
         }
 
-        $this->building
-            ->buildingFeatures()
-            ->forInputSource(InputSource::resident())
-            ->first()
-            ->update($updateableBuildingFeatureData);
+        BuildingFeature::withoutGlobalScopes()
+        ->updateOrCreate(
+            [
+                'building_id' => $this->building->id,
+                'input_source_id' => InputSource::resident()->id
+            ],
+            [
+                $updateableBuildingFeatureData
+            ]
+        );
     }
 
     public function attachMunicipality(): void

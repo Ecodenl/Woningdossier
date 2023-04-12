@@ -41,11 +41,10 @@ class CheckBuildingAddress implements ShouldQueue
     {
         $building = $this->building;
         try {
-            $buildingAddressService
-                ->forBuilding($building)
-                ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
-
+            $buildingAddressService->forBuilding($building);
+            $buildingAddressService->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
             $buildingAddressService->attachMunicipality();
+            $buildingAddressService->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
         }
         catch(ClientException $e) {
             Log::debug("Exception: {$e->getMessage()}");

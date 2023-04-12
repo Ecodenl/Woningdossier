@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
@@ -17,6 +19,7 @@ use App\Services\BuildingAddressService;
 use App\Services\BuildingCoachStatusService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Spatie\Permission\Models\Role;
 
@@ -50,9 +53,12 @@ class BuildingController extends Controller
 
         $buildingId = $building->id;
 
-        $roles = Role::whereNotIn('name',
-            [RoleHelper::ROLE_SUPERUSER, RoleHelper::ROLE_SUPER_ADMIN, RoleHelper::ROLE_COOPERATION_ADMIN])
-            ->get();
+        $manageableRoles = [RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH, RoleHelper::ROLE_COORDINATOR];
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN)) {
+            $manageableRoles[] = RoleHelper::ROLE_COOPERATION_ADMIN;
+        }
+
+        $roles = Role::whereIn('name', $manageableRoles)->get();
 
         $coaches = $cooperation->getCoaches()->get();
 

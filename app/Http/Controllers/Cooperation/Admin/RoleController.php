@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Role;
@@ -37,15 +38,25 @@ class RoleController extends Controller
 
     public function removeRole(Cooperation $cooperation, Request $request)
     {
+        $currentUser = Hoomdossier::user();
         // the user id to assign the role to
         $userId = $request->get('user_id');
-        // the role we want to assign to a user
+        // the role we want to remove from the a user
         $roleId = $request->get('role_id');
-
         $role = Role::findById($roleId);
 
+        $userIsCooperationAdmin = $currentUser->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN);
+        $editedUserIsCurrentUser = $userId === $currentUser->id;
+        $removedRoleIsCooperationAdmin = $role->name == RoleHelper::ROLE_COOPERATION_ADMIN;
+
+        // the cooperation admin can do anything
+        // but he can't remove the cooperation admin role on himself
+        abort_if($userIsCooperationAdmin && $editedUserIsCurrentUser && $removedRoleIsCooperationAdmin, 403);
+
+
+
         // if the user is a super-admin, then hey may be removing roles from a user from a other cooperation, so we remove the scope.
-        if (Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin')) {
+        if ($currentUser->hasRoleAndIsCurrentRole('super-admin')) {
             $user = User::withoutGlobalScopes()->find($userId);
         } else {
             $user = User::find($userId);

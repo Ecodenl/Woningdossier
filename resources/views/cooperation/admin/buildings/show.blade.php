@@ -158,11 +158,34 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
-                        <select @if($building->id == \App\Helpers\HoomdossierSession::getBuilding() || Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif
+                        @php
+                            $canManageRoles = true;
+                            if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
+                                $canManageRoles = false;
+                            }
+                            if (!Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN)) {
+                                if (\App\Helpers\HoomdossierSession::getBuilding() == $building->id) {
+                                    $canManageRoles = false;
+                                }
+                            }
+                        @endphp
+                        <select @if($canManageRoles === false) disabled @endif
                                 class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
-                                <option @if($user->hasNotMultipleRoles()) locked="locked"
-                                        @endif @if($user->hasRole($role)) selected="selected"
+                                @php
+                                $shouldLockRole = false;
+                                if (Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN) && $role->name == RoleHelper::ROLE_COOPERATION_ADMIN) {
+                                    $shouldLockRole = true;
+                                }
+                                @endphp
+                                <option @if($user->hasNotMultipleRoles())
+                                            locked="locked"
+                                        @endif
+                                                @if($shouldLockRole)
+                                                    disabled="disabled" locked="locked"
+                                                @endif
+                                        @if($user->hasRole($role))
+                                            selected="selected"
                                         @endif value="{{$role->id}}">
                                     {{$role->human_readable_name}}
                                 </option>

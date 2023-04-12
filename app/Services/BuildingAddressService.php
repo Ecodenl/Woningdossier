@@ -103,6 +103,7 @@ class BuildingAddressService
         $this->building
             ->buildingFeatures()
             ->forInputSource(InputSource::resident())
+            ->first()
             ->update($updateableBuildingFeatureData);
     }
 

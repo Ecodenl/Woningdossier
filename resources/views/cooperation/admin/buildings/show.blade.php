@@ -135,6 +135,7 @@
                     </div>
                 </div>
             </div>
+
             {{--coaches and role--}}
             <div class="row">
                 @if($publicMessages->isNotEmpty())
@@ -155,7 +156,8 @@
                         </div>
                     </div>
                 @endif
-                <div class="col-sm-6">
+
+                    <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
                         @php
@@ -169,26 +171,22 @@
                                 }
                             }
                         @endphp
-                        <select @if($canManageRoles === false) disabled @endif
-                                class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+                        <select @if($canManageRoles === false) disabled @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
-                                @php
-                                $shouldLockRole = false;
-                                if (Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN) && $role->name == RoleHelper::ROLE_COOPERATION_ADMIN) {
-                                    $shouldLockRole = true;
-                                }
-                                @endphp
-                                <option @if($user->hasNotMultipleRoles())
+                                @can('show', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)])
+                                <option
+                                        @cannot('destroy',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
+                                            locked="locked" disabled="disabled"
+                                        @endcannot
+                                        @if($user->hasNotMultipleRoles())
                                             locked="locked"
                                         @endif
-                                                @if($shouldLockRole)
-                                                    disabled="disabled" locked="locked"
-                                                @endif
                                         @if($user->hasRole($role))
                                             selected="selected"
                                         @endif value="{{$role->id}}">
                                     {{$role->human_readable_name}}
                                 </option>
+                                @endcan
                             @endforeach
                         </select>
                     </div>

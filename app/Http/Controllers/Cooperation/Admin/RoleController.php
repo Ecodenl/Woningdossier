@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\UserRoleService;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -27,16 +29,18 @@ class RoleController extends Controller
         } else {
             $user = User::find($userId);
         }
-        $this->authorize('assign-role', $role);
+//        $this->authorize('assign-role', $role);
+//        abort_if($user->id === Hoomdossier::user()->id, 403);
 
-        abort_if($user->id === Hoomdossier::user()->id, 403);
+        $this->authorize('store',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
+
 
         $user->assignRole($role);
 
         return redirect()->back();
     }
 
-    public function removeRole(Cooperation $cooperation, Request $request)
+    public function removeRole(UserRoleService $userRoleService, Cooperation $cooperation, Request $request)
     {
         $currentUser = Hoomdossier::user();
         // the user id to assign the role to
@@ -45,22 +49,14 @@ class RoleController extends Controller
         $roleId = $request->get('role_id');
         $role = Role::findById($roleId);
 
-        $userIsCooperationAdmin = $currentUser->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN);
-        $editedUserIsCurrentUser = $userId === $currentUser->id;
-        $removedRoleIsCooperationAdmin = $role->name == RoleHelper::ROLE_COOPERATION_ADMIN;
-
-        // the cooperation admin can do anything
-        // but he can't remove the cooperation admin role on himself
-        abort_if($userIsCooperationAdmin && $editedUserIsCurrentUser && $removedRoleIsCooperationAdmin, 403);
-
-
-
         // if the user is a super-admin, then hey may be removing roles from a user from a other cooperation, so we remove the scope.
         if ($currentUser->hasRoleAndIsCurrentRole('super-admin')) {
             $user = User::withoutGlobalScopes()->find($userId);
         } else {
             $user = User::find($userId);
         }
+
+        $this->authorize('destroy',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
 
         // we cant delete a role if the user only has 1 role.
         if ($user->hasMultipleRoles()) {

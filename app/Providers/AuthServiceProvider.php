@@ -8,6 +8,7 @@ use App\Models\FileStorage;
 use App\Models\Media;
 use App\Models\PrivateMessage;
 use App\Models\Questionnaire;
+use App\Models\Role;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\User;
@@ -18,6 +19,7 @@ use App\Policies\FileStoragePolicy;
 use App\Policies\MediaPolicy;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
+use App\Policies\RolePolicy;
 use App\Policies\SubStepPolicy;
 use App\Policies\ToolQuestionPolicy;
 use App\Policies\UserActionPlanAdvicePolicy;
@@ -43,6 +45,7 @@ class AuthServiceProvider extends ServiceProvider
         FileStorage::class => FileStoragePolicy::class,
         UserActionPlanAdvice::class => UserActionPlanAdvicePolicy::class,
         Media::class => MediaPolicy::class,
+        Role::class => RolePolicy::class
     ];
 
     /**

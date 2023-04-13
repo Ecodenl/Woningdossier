@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
 use App\Models\Building;
-use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\PrivateMessage;
@@ -17,11 +14,8 @@ use App\Models\Status;
 use App\Models\User;
 use App\Services\BuildingAddressService;
 use App\Services\BuildingCoachStatusService;
-use App\Services\Lvbag\BagService;
-use App\Services\Models\BuildingService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Spatie\Permission\Models\Role;
+use App\Services\UserRoleService;
+use App\Models\Role;
 
 class BuildingController extends Controller
 {
@@ -34,7 +28,7 @@ class BuildingController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
-    public function show(Cooperation $cooperation, $buildingId)
+    public function show(UserRoleService $userRoleService, Cooperation $cooperation, $buildingId)
     {
         // retrieve the user from the building within the current cooperation;
         $user = $cooperation->users()->whereHas('building', function ($query) use ($buildingId) {
@@ -53,12 +47,7 @@ class BuildingController extends Controller
 
         $buildingId = $building->id;
 
-        $manageableRoles = [RoleHelper::ROLE_RESIDENT, RoleHelper::ROLE_COACH, RoleHelper::ROLE_COORDINATOR];
-        if (Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN)) {
-            $manageableRoles[] = RoleHelper::ROLE_COOPERATION_ADMIN;
-        }
-
-        $roles = Role::whereIn('name', $manageableRoles)->get();
+        $roles = Role::all();
 
         $coaches = $cooperation->getCoaches()->get();
 

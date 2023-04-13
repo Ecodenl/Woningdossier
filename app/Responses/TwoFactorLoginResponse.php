@@ -2,6 +2,7 @@
 
 namespace App\Responses;
 
+use App\Helpers\RoleHelper;
 use Illuminate\Http\JsonResponse;
 use Laravel\Fortify\Contracts\TwoFactorLoginResponse as TwoFactorLoginResponseContract;
 use Spatie\Permission\Models\Role;

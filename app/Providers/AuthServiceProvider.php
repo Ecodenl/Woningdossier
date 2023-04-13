@@ -67,5 +67,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('access-admin', UserPolicy::class.'@accessAdmin');
         Gate::define('delete-user', UserPolicy::class.'@deleteUser');
         Gate::define('remove-participant-from-chat', UserPolicy::class.'@removeParticipantFromChat');
+
+        Gate::define('editAny', [RolePolicy::class, 'editAny']);
     }
 }

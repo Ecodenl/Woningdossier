@@ -67,8 +67,10 @@ class BuildingController extends Controller
 
         $scan = $cooperation->scans()->where('short', '!=', Scan::EXPERT)->first();
         $scans = $cooperation->load(['scans' => fn($q) => $q->where('short', '!=', Scan::EXPERT)])->scans;
+        $userCurrentRole = HoomdossierSession::getRole(true);
 
         return view('cooperation.admin.buildings.show', compact(
+            'userRoleService', 'userCurrentRole',
                 'user', 'building', 'roles', 'coaches', 'scans',
                 'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
                 'publicMessages', 'buildingNotes', 'statuses', 'logs', 'scan',

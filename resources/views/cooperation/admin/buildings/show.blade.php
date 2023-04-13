@@ -157,25 +157,15 @@
                     </div>
                 @endif
 
-                    <div class="col-sm-6">
+                <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
-                        @php
-                            $canManageRoles = true;
-                            if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
-                                $canManageRoles = false;
-                            }
-                            if (!Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_COOPERATION_ADMIN)) {
-                                if (\App\Helpers\HoomdossierSession::getBuilding() == $building->id) {
-                                    $canManageRoles = false;
-                                }
-                            }
-                        @endphp
-                        <select @if($canManageRoles === false) disabled @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+
+                        <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
-                                @can('show', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)])
+                                @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
                                 <option
-                                        @cannot('destroy',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
+                                        @cannot('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
                                             locked="locked" disabled="disabled"
                                         @endcannot
                                         @if($user->hasNotMultipleRoles())

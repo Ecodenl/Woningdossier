@@ -29,8 +29,6 @@ class RoleController extends Controller
         } else {
             $user = User::find($userId);
         }
-//        $this->authorize('assign-role', $role);
-//        abort_if($user->id === Hoomdossier::user()->id, 403);
 
         $this->authorize('store',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
 
@@ -56,7 +54,7 @@ class RoleController extends Controller
             $user = User::find($userId);
         }
 
-        $this->authorize('destroy',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
+        $this->authorize('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
 
         // we cant delete a role if the user only has 1 role.
         if ($user->hasMultipleRoles()) {

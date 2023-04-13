@@ -25,10 +25,19 @@ class RolePolicy
         $this->userRoleService = $userRoleService;
     }
 
-    public function show(Account $account, Role $role, User $user, Role $currentUserRole)
+    public function view(Account $account, Role $role, User $user, Role $currentUserRole)
     {
-        return $this->userRoleService->forCurrentRole($currentUserRole)->canManage($role);
+        return $this->userRoleService->forCurrentRole($currentUserRole)->canView($role);
     }
+
+    public function editAny(Account $account, Role $currentUserRole)
+    {
+        if ($currentUserRole->name === RoleHelper::ROLE_COACH) {
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * @param  Account  $account
@@ -36,11 +45,17 @@ class RolePolicy
      * @param  User  $user  the authenticated user
      * @param  Role  $currentUserRole  the current role of the authenticated user.
      * @param  User  $userToGiveRole  the user that would receive the role
-     * @return void
      */
     public function store(Account $account, Role $role, User $user, Role $currentUserRole, User $userToGiveRole)
     {
-        $this->userRoleService->forCurrentRole($currentUserRole)->canManage($role);
+        if($this->userRoleService->forCurrentRole($currentUserRole)->canManage($role)) {
+            // the cooperation-admin is the only one who can give himself other roles.
+            if ($user->id === $userToGiveRole->id && $currentUserRole->name === RoleHelper::ROLE_COOPERATION_ADMIN) {
+                return true;
+            }
+            return true;
+        }
+        return false;
 
         // this is the legacy of "assign-role" this can and should be removed when rewritten in a ok manner
 //        if ($user->hasRoleAndIsCurrentRole('super-admin')) {
@@ -55,7 +70,7 @@ class RolePolicy
 
     }
 
-    public function destroy(Account $account, Role $role, User $user, Role $currentUserRole, User $userToGiveRole)
+    public function delete(Account $account, Role $role, User $user, Role $currentUserRole, User $userToGiveRole)
     {
         if ($this->userRoleService->forCurrentRole($currentUserRole)->canManage($role)) {
             // a cooperation admin is not allowed to remove his own cooperation admin role.

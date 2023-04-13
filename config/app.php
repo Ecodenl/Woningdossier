@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use Illuminate\Support\Facades\Route;
 
@@ -207,6 +207,7 @@ return [
         'RouteLogic' => \App\Helpers\Blade\RouteLogic::class,
 //        'NumberFormatter' => \App\Helpers\NumberFormatter::class, // We cannot alias NumberFormatter due to the native PHP class (https://www.php.net/manual/en/class.numberformatter.php)
         'Hoomdossier' => \App\Helpers\Hoomdossier::class,
+        'HoomdossierSession' => \App\Helpers\HoomdossierSession::class,
         'CooperationSettingHelper' => \App\Helpers\Models\CooperationSettingHelper::class,
         'Kengetallen' => \App\Helpers\Kengetallen::class,
         'Caster' => \App\Helpers\DataTypes\Caster::class,

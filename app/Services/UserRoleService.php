@@ -15,6 +15,40 @@ class UserRoleService
         return $this;
     }
 
+    public function getViewableRoles(): array
+    {
+        // a simple map, from which role can manage what.
+        return [
+            RoleHelper::ROLE_COACH => [
+                RoleHelper::ROLE_RESIDENT,
+                RoleHelper::ROLE_COACH,
+                RoleHelper::ROLE_COORDINATOR,
+                RoleHelper::ROLE_COOPERATION_ADMIN,
+            ],
+            RoleHelper::ROLE_COORDINATOR => [
+                RoleHelper::ROLE_RESIDENT,
+                RoleHelper::ROLE_COACH,
+                RoleHelper::ROLE_COORDINATOR,
+                RoleHelper::ROLE_COOPERATION_ADMIN,
+            ],
+            RoleHelper::ROLE_COOPERATION_ADMIN => [
+                RoleHelper::ROLE_RESIDENT,
+                RoleHelper::ROLE_COACH,
+                RoleHelper::ROLE_COORDINATOR,
+                RoleHelper::ROLE_COOPERATION_ADMIN
+            ],
+        ][$this->currentRole->name] ?? [];
+    }
+
+    public function canView(Role $roleToView): bool
+    {
+        $roles = $this->getViewableRoles();
+        if (in_array($roleToView->name, $roles)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Method returns the roles the user can manage
      *
@@ -24,18 +58,18 @@ class UserRoleService
     {
         // a simple map, from which role can manage what.
         return [
-            RoleHelper::ROLE_COORDINATOR => [
-                RoleHelper::ROLE_RESIDENT,
-                RoleHelper::ROLE_COACH,
-                RoleHelper::ROLE_COORDINATOR
-            ],
-            RoleHelper::ROLE_COOPERATION_ADMIN => [
-                RoleHelper::ROLE_RESIDENT,
-                RoleHelper::ROLE_COACH,
-                RoleHelper::ROLE_COORDINATOR,
-                RoleHelper::ROLE_COOPERATION_ADMIN
-            ],
-        ][$this->currentRole->name];
+                RoleHelper::ROLE_COORDINATOR => [
+                    RoleHelper::ROLE_RESIDENT,
+                    RoleHelper::ROLE_COACH,
+                    RoleHelper::ROLE_COORDINATOR
+                ],
+                RoleHelper::ROLE_COOPERATION_ADMIN => [
+                    RoleHelper::ROLE_RESIDENT,
+                    RoleHelper::ROLE_COACH,
+                    RoleHelper::ROLE_COORDINATOR,
+                    RoleHelper::ROLE_COOPERATION_ADMIN
+                ],
+            ][$this->currentRole->name] ?? [];
     }
 
     public function canManage(Role $roleToManage): bool

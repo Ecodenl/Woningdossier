@@ -12,6 +12,7 @@ use App\Models\RelatedModel;
 use App\Models\RoofType;
 use App\Models\ToolQuestion;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserActionPlanAdviceComments;
 use App\Services\DiscordNotifier;
 use App\Services\LegacyService;
 use App\Services\MappingService;
@@ -115,13 +116,17 @@ class WoonplanPayload extends EconobisPayload
             ];
 
             if ($advisable instanceof CustomMeasureApplication || $advisable instanceof CooperationMeasureApplication) {
-                $measureCategory =  app(MappingService::class)
+                $measureCategory = app(MappingService::class)
                     ->from($advisable)
                     ->resolveTarget()
                     ->first();
 
                 if ($measureCategory instanceof MeasureCategory) {
-                    $payload['user_action_plan_advices'][$advice->id]['measure_category'] = $measureCategory->only(['id', 'short', 'name']);
+                    $payload['user_action_plan_advices'][$advice->id]['measure_category'] = $measureCategory->only([
+                        'id',
+                        'short',
+                        'name'
+                    ]);
                 } else {
                     unset($payload['user_action_plan_advices'][$advice->id]);
                 }
@@ -145,6 +150,15 @@ class WoonplanPayload extends EconobisPayload
                 $payload['user_action_plan_advices'][$advice->id]['execute_self'] = $answer !== 'let-do';
             }
         }
+
+        $userActionPlanAdviceComments = UserActionPlanAdviceComments::allInputSources()
+            ->whereIn('input_source_id', [InputSource::resident()->id, InputSource::coach()->id])
+            ->where('user_id', $this->building->user_id)
+            ->get();
+
+        $payload['user_action_plan_advice_comments'] = $userActionPlanAdviceComments
+            ->pluck('comment', 'inputSource.short')
+            ->all();
 
         return $payload;
     }

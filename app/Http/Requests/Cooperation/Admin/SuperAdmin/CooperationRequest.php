@@ -24,12 +24,6 @@ class CooperationRequest extends FormRequest
      */
     public function rules()
     {
-        $cooperationId = $this->request->get('cooperation_id');
 
-        return [
-            'name' => 'required',
-            'slug' => ['required', Rule::unique('cooperations', 'slug')->ignore($cooperationId)],
-            'website_url' => 'nullable|url',
-        ];
     }
 }

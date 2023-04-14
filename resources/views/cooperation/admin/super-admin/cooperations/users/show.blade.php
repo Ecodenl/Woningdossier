@@ -14,13 +14,23 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show.role.label')</label>
-                        <select class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+
+                        <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
-                                <option value="{{$role->id}}"
-                                        @if(! in_array($role->name, ['cooperation-admin', 'coordinator'])) locked="locked" disabled @endif
-                                        @if($user->hasRole($role, $cooperationToManage->id)) selected="selected" @endif>
-                                    {{$role->human_readable_name}}
-                                </option>
+                                @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
+                                    <option
+                                            @cannot('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
+                                            locked="locked" disabled="disabled"
+                                            @endcannot
+                                            @if($user->hasNotMultipleRoles())
+                                                locked="locked"
+                                            @endif
+                                            @if($user->hasRole($role))
+                                                selected="selected"
+                                            @endif value="{{$role->id}}">
+                                        {{$role->human_readable_name}}
+                                    </option>
+                                @endcan
                             @endforeach
                         </select>
                     </div>
@@ -77,7 +87,7 @@
                         }
                     }).done(function () {
                         // just reload the page
-                        // location.reload();
+                        location.reload();
                     });
                 } else {
                     event.preventDefault();
@@ -96,7 +106,7 @@
                         }
                     }).done(function () {
                         // just reload the page
-                        // location.reload();
+                        location.reload();
                     });
                 } else {
                     event.preventDefault();

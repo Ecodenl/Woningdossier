@@ -15,11 +15,21 @@ class UserRoleService
         return $this;
     }
 
+    /**
+     * Method returns the roles a specific role is allowed to see
+     *
+     * @return array
+     */
     public function getViewableRoles(): array
     {
-        // a simple map, from which role can manage what.
         return [
             RoleHelper::ROLE_COACH => [
+                RoleHelper::ROLE_RESIDENT,
+                RoleHelper::ROLE_COACH,
+                RoleHelper::ROLE_COORDINATOR,
+                RoleHelper::ROLE_COOPERATION_ADMIN,
+            ],
+            RoleHelper::ROLE_SUPER_ADMIN => [
                 RoleHelper::ROLE_RESIDENT,
                 RoleHelper::ROLE_COACH,
                 RoleHelper::ROLE_COORDINATOR,
@@ -56,8 +66,11 @@ class UserRoleService
      */
     public function getManageableRoles(): array
     {
-        // a simple map, from which role can manage what.
         return [
+                RoleHelper::ROLE_SUPER_ADMIN => [
+                    RoleHelper::ROLE_COORDINATOR,
+                    RoleHelper::ROLE_COOPERATION_ADMIN,
+                ],
                 RoleHelper::ROLE_COORDINATOR => [
                     RoleHelper::ROLE_RESIDENT,
                     RoleHelper::ROLE_COACH,

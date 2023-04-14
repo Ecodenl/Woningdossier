@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Models\Account;
@@ -71,12 +72,12 @@ class UserController extends Controller
     public function show(Cooperation $currentCooperation, Cooperation $cooperationToManage, $userId)
     {
         $user = User::withoutGlobalScopes()->findOrFail($userId);
-        $roles = Role::where('name', '!=', 'superuser')
-            ->where('name', '!=', 'super-admin')
-            ->orderByDesc('level')->get();
+        $building = $user->building;
+        $roles = Role::all();
+        $userCurrentRole = HoomdossierSession::getRole(true);
 
         return view('cooperation.admin.super-admin.cooperations.users.show',
-            compact('user', 'cooperationToManage', 'roles'));
+            compact('user', 'cooperationToManage', 'roles', 'userCurrentRole', 'building'));
     }
 
     public function confirm(Cooperation $currentCooperation, Cooperation $cooperationToManage, $accountId)

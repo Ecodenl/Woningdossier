@@ -14,14 +14,16 @@
                 <h4 class="heading-4">
                     {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
                 </h4>
-                <p>
-                    @lang('cooperation/frontend/tool.my-plan.help')
-                </p>
+
             </div>
-            <div class="w-full flex flex-wrap mb-5">
+            <div class="w-full flex flex-wrap mb-5 justify-between">
                 {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", [
                     'link' => route('cooperation.conversation-requests.index', ['cooperation' => $cooperation, 'requestType' => \App\Services\PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION])
                 ]) !!}
+                <p>
+                    @lang('cooperation/frontend/tool.my-plan.help')
+                </p>
+
             </div>
 
             <livewire:cooperation.frontend.tool.simple-scan.my-plan.form :scan="$scan" :building="$building"/>

@@ -125,6 +125,8 @@ class UserService
         $user->actionPlanAdvices()->withInvisible()->forInputSource($inputSource)->delete();
         // remove the energy habits from a user
         $user->energyHabit()->forInputSource($inputSource)->delete();
+
+        $user->userCosts()->forInputSource($inputSource)->delete();
         // remove the considerables for the user
         Considerable::forUser($user)->forInputSource($inputSource)->delete();
         // remove all the tool question anders for the building

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\SuperAdmin\CooperationRequest;
 use App\Models\Cooperation;
 use App\Services\UserService;
 

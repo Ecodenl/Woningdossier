@@ -66,8 +66,4 @@ class InputSource extends Model
     {
         return self::findByShort(static::COACH_SHORT);
     }
-    public static function resident(): ?Model
-    {
-        return self::findByShort(static::RESIDENT_SHORT);
-    }
 }

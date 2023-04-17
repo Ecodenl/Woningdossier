@@ -3,7 +3,7 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.header', ['name' => $cooperationToUpdate->name])
+            @lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.header', ['name' => $cooperationToEdit->name])
         </div>
 
         <div class="panel-body">

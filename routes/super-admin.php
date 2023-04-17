@@ -54,8 +54,7 @@ Route::prefix('cooperations')->name('cooperations.')->group(function () {
     Route::get('', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'index'])->name('index');
     Route::get('create', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'create'])->name('create');
     Route::post('', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'store'])->name('store');
-    Route::get('{cooperationToUpdate}/edit', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'edit'])->name('edit');
-    Route::put('{cooperationToUpdate}', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'update'])->name('update');
+    Route::get('{cooperationToEdit}/edit', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'edit'])->name('edit');
     Route::delete('{cooperationToDestroy}', [Cooperation\Admin\SuperAdmin\Cooperation\CooperationController::class, 'destroy'])->name('destroy');
 
     /* Actions that will be done per cooperation */

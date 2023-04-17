@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\SuperAdmin\CooperationRequest;
 use App\Models\Cooperation;
 use App\Services\UserService;
-use Illuminate\Support\Facades\Crypt;
 
 class CooperationController extends Controller
 {
@@ -19,53 +17,19 @@ class CooperationController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Cooperation::class);
+        $this->authorize('updateOrCreate', Cooperation::class);
 
         return view('cooperation.admin.super-admin.cooperations.create');
     }
 
-    public function store(Cooperation $cooperation, CooperationRequest $request)
+
+    public function edit(Cooperation $cooperation, Cooperation $cooperationToEdit)
     {
-        $this->authorize('create', Cooperation::class);
+        $this->authorize('updateOrCreate', $cooperationToEdit);
 
-        $data = $request->validated()['cooperations'];
-        if (! empty($data['econobis_api_key'])) {
-            $data['econobis_api_key'] = Crypt::encrypt($data['econobis_api_key']);
-        }
-        Cooperation::create($data);
-
-        return redirect()->route('cooperation.admin.super-admin.cooperations.index')
-            ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.store.success'));
+        return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToEdit'));
     }
 
-    public function edit(Cooperation $cooperation, Cooperation $cooperationToUpdate)
-    {
-        $this->authorize('edit', $cooperationToUpdate);
-
-        return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToUpdate'));
-    }
-
-    public function update(Cooperation $cooperation, CooperationRequest $request, Cooperation $cooperationToUpdate)
-    {
-        $this->authorize('update', $cooperationToUpdate);
-        $data = $request->validated()['cooperations'];
-
-        if ($request->input('clear_econobis_api_key')) {
-            $data['econobis_api_key'] = null;
-        } else {
-            if (! empty($data['econobis_api_key'])) {
-                $data['econobis_api_key'] = Crypt::encrypt($data['econobis_api_key']);
-            } else {
-                // If it's empty we want to unset it, because we don't want to nullify the API key.
-                unset($data['econobis_api_key']);
-            }
-        }
-
-        $cooperationToUpdate->update($data);
-
-        return redirect()->route('cooperation.admin.super-admin.cooperations.index')
-            ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.update.success'));
-    }
 
     public function destroy(Cooperation $cooperation, Cooperation $cooperationToDestroy)
     {

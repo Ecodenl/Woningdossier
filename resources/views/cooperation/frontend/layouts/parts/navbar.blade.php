@@ -176,6 +176,12 @@
                             </p>
                         @endif
                     </li>
+                        <li>
+                        <a href="{{ route('cooperation.my-account.two-factor-authentication.index', compact('cooperation')) }}"
+                           class="in-text">
+                            @lang('woningdossier.cooperation.navbar.two-factor-authentication')
+                        </a>
+                    </li>
                     <li>
                         <a href="{{ route('cooperation.privacy.index', compact('cooperation')) }}"
                            class="in-text">

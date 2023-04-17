@@ -2,6 +2,7 @@
 
 return [
     'show' => [
+        'unknown-municipality' => 'Gemeente onbekend',
         'user-disallowed-access' => 'Deze woning kan niet worden bewerkt of worden bekeken, de gebruiker heeft het toestemmings vinkje uit staan in zijn instellingen',
         'give-role' => 'Weet u zeker dat u deze rol aan deze gebruiker wilt toevoegen?',
         'remove-role' => 'Weet u zeker dat u deze rol van deze gebruiker wilt verwijderen?',
@@ -59,7 +60,20 @@ return [
         'set-appointment-date' => 'Weet u zeker dat u deze datum wilt zetten voor het huidige gebouw?',
         'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
 
+
         'tabs' => [
+            '2fa' => [
+                'title' => '2FA instellingen',
+                'status' => [
+                    'inactive' => [
+                        'title' => '2FA is uitgeschakeld',
+                    ],
+                    'active' => [
+                        'title' => '2FA is ingeschakeld',
+                        'button' => '2FA Uitschakelen voor gebruiker'
+                    ],
+                ],
+            ],
             'messages-public' => [
                 'user-notification' => [
                     'yes' => 'Gebruiker heeft notificaties aanstaan, hij zal op de hoogte worden gesteld van de verstuurde berichten.',

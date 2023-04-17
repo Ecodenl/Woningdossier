@@ -45,6 +45,7 @@ class BuildingController extends Controller
         }
 
         $building = $user->building;
+
         $this->authorize('show', [$building]);
 
         $buildingId = $building->id;

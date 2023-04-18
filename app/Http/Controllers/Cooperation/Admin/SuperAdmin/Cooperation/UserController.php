@@ -46,17 +46,11 @@ class UserController extends Controller
 
     public function create(Cooperation $cooperation, Cooperation $cooperationToManage)
     {
-        $possibleRoles = \Spatie\Permission\Models\Role::orderByDesc('level')->get();
-        $roles = [];
-        foreach ($possibleRoles as $possibleRole) {
-            if (Hoomdossier::account()->can('assign-role', $possibleRole)) {
-                $roles[] = $possibleRole;
-            }
-        }
-        $roles = collect($roles);
+        $userCurrentRole = HoomdossierSession::getRole(true);
+        $roles = Role::orderByDesc('level')->get();
         $coaches = $cooperationToManage->getCoaches()->get();
 
-        return view('cooperation.admin.users.create', compact('roles', 'coaches', 'cooperationToManage'));
+        return view('cooperation.admin.users.create', compact('userCurrentRole', 'roles', 'coaches', 'cooperationToManage'));
     }
 
     public function store(UserFormRequest $request, Cooperation $cooperation, Cooperation $cooperationToManage)
@@ -73,7 +67,7 @@ class UserController extends Controller
     {
         $user = User::withoutGlobalScopes()->findOrFail($userId);
         $building = $user->building;
-        $roles = Role::all();
+        $roles = Role::orderByDesc('level')->get();
         $userCurrentRole = HoomdossierSession::getRole(true);
 
         return view('cooperation.admin.super-admin.cooperations.users.show',

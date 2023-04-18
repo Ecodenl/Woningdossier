@@ -68,6 +68,8 @@ class UserRoleService
     {
         return [
                 RoleHelper::ROLE_SUPER_ADMIN => [
+                    RoleHelper::ROLE_RESIDENT,
+                    RoleHelper::ROLE_COACH,
                     RoleHelper::ROLE_COORDINATOR,
                     RoleHelper::ROLE_COOPERATION_ADMIN,
                 ],

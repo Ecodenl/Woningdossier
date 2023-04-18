@@ -168,9 +168,6 @@
                                         @cannot('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
                                             locked="locked" disabled="disabled"
                                         @endcannot
-                                        @if($user->hasNotMultipleRoles())
-                                            locked="locked"
-                                        @endif
                                         @if($user->hasRole($role))
                                             selected="selected"
                                         @endif value="{{$role->id}}">

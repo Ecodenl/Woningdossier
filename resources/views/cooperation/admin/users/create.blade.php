@@ -79,12 +79,13 @@
                                        'input_name' => 'roles',
                                     ])
                                         <label for="roles">@lang('cooperation/admin/users.create.form.roles')</label>
-                                        <select name="roles[]" class="roles form-control" id="roles"
-                                                multiple="multiple">
+                                        <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control roles" name="roles" id="role-select" multiple="multiple">
                                             @foreach($roles as $role)
-                                                <option value="{{$role->id}}">
-                                                    {{$role->human_readable_name}}
-                                                </option>
+                                                @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
+                                                    <option>
+                                                        {{$role->human_readable_name}}
+                                                    </option>
+                                                @endcan
                                             @endforeach
                                         </select>
                                     @endcomponent

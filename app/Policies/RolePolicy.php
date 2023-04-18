@@ -70,11 +70,15 @@ class RolePolicy
 
     }
 
-    public function delete(Account $account, Role $role, User $user, Role $currentUserRole, User $userToGiveRole)
+    public function delete(Account $account, Role $role, User $user, Role $currentUserRole, User $userToRemoveRoleFrom)
     {
+        // its not possible to delete the user its only available role
+        if ($userToRemoveRoleFrom->hasNotMultipleRoles() && $role->id === $userToRemoveRoleFrom->roles->first()->id) {
+            return false;
+        }
         if ($this->userRoleService->forCurrentRole($currentUserRole)->canManage($role)) {
             // a cooperation admin is not allowed to remove his own cooperation admin role.
-            if ($user->id === $userToGiveRole->id && $role->name === RoleHelper::ROLE_COOPERATION_ADMIN) {
+            if ($user->id === $userToRemoveRoleFrom->id && $role->name === RoleHelper::ROLE_COOPERATION_ADMIN) {
                 return false;
             }
             return true;

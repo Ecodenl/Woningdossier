@@ -1,4 +1,4 @@
-@extends('cooperation.admin.layouts.app')
+    @extends('cooperation.admin.layouts.app')
 
 @section('content')
 
@@ -19,12 +19,9 @@
                             @foreach($roles as $role)
                                 @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
                                     <option
-                                            @cannot('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
+                                            @cannot('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]))
                                             locked="locked" disabled="disabled"
                                             @endcannot
-                                            @if($user->hasNotMultipleRoles())
-                                                locked="locked"
-                                            @endif
                                             @if($user->hasRole($role))
                                                 selected="selected"
                                             @endif value="{{$role->id}}">

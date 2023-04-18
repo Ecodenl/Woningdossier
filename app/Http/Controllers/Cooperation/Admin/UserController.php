@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Models\Cooperation;

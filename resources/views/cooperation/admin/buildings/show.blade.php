@@ -98,7 +98,7 @@
                                         @foreach($scans as $scan)
                                             <a class="btn btn-warning" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
                                                 @php
-                                                    $transShort = \App\Services\Models\ScanService::init()
+                                                    $transShort = app(\App\Services\Models\ScanService::class)
                                                         ->scan($scan)->building($building)->hasMadeScanProgress()
                                                         ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                                 @endphp

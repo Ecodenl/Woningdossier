@@ -1,4 +1,5 @@
 <div>
+
     {{-- Header row --}}
     <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3">
         <div class="flex flex-wrap items-center justify-between">

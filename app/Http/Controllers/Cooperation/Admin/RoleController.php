@@ -30,7 +30,7 @@ class RoleController extends Controller
             $user = User::find($userId);
         }
 
-        $this->authorize('store',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $user]);
+        $this->authorize('view', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)]);
 
 
         $user->assignRole($role);

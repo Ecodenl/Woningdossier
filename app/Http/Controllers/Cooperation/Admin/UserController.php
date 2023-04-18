@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Models\Cooperation;
@@ -10,7 +11,7 @@ use App\Models\User;
 use App\Services\UserService;
 use App\Traits\Http\CreatesUsers;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 
 class UserController extends Controller
 {
@@ -35,17 +36,11 @@ class UserController extends Controller
 
     public function create(Cooperation $cooperation)
     {
-        $possibleRoles = Role::orderByDesc('level')->get();
-        $roles = [];
-        foreach ($possibleRoles as $possibleRole) {
-            if (Hoomdossier::account()->can('assign-role', $possibleRole)) {
-                $roles[] = $possibleRole;
-            }
-        }
-        $roles = collect($roles);
+        $userCurrentRole = HoomdossierSession::getRole(true);
+        $roles = Role::orderByDesc('level')->get();
         $coaches = $cooperation->getCoaches()->get();
 
-        return view('cooperation.admin.users.create', compact('roles', 'coaches'));
+        return view('cooperation.admin.users.create', compact('userCurrentRole', 'roles', 'coaches'));
     }
 
     public function store(UserFormRequest $request, Cooperation $cooperation)

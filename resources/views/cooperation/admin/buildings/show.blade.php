@@ -161,6 +161,7 @@
                     </div>
                 </div>
             </div>
+
             {{--coaches and role--}}
             <div class="row">
                 @if($publicMessages->isNotEmpty())
@@ -181,17 +182,24 @@
                         </div>
                     </div>
                 @endif
+
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
-                        <select @if($building->id == \App\Helpers\HoomdossierSession::getBuilding() || Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif
-                                class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+
+                        <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
-                                <option @if($user->hasNotMultipleRoles()) locked="locked"
-                                        @endif @if($user->hasRole($role)) selected="selected"
+                                @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
+                                <option
+                                        @cannot('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
+                                            locked="locked" disabled="disabled"
+                                        @endcannot
+                                        @if($user->hasRole($role))
+                                            selected="selected"
                                         @endif value="{{$role->id}}">
                                     {{$role->human_readable_name}}
                                 </option>
+                                @endcan
                             @endforeach
                         </select>
                     </div>

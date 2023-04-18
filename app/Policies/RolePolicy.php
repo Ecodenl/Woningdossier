@@ -32,7 +32,7 @@ class RolePolicy
 
     public function editAny(Account $account, Role $currentUserRole)
     {
-        if ($currentUserRole->name === RoleHelper::ROLE_COACH) {
+        if (in_array($currentUserRole->name, [RoleHelper::ROLE_COACH, RoleHelper::ROLE_RESIDENT])) {
             return false;
         }
         return true;

@@ -72,7 +72,6 @@
                                     @endcomponent
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-sm-12">
                                     @component('layouts.parts.components.form-group', [
@@ -81,7 +80,7 @@
                                         <label for="roles">@lang('cooperation/admin/users.create.form.roles')</label>
                                         <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control roles" name="roles" id="role-select" multiple="multiple">
                                             @foreach($roles as $role)
-                                                @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
+                                                @can('view', [$role, Hoomdossier::user(), $userCurrentRole])
                                                     <option>
                                                         {{$role->human_readable_name}}
                                                     </option>

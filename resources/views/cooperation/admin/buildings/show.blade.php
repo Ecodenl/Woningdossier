@@ -99,7 +99,7 @@
                                             <a class="btn btn-warning" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
                                                 @php
                                                     $transShort = app(\App\Services\Models\ScanService::class)
-                                                        ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                        ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                                                         ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                                 @endphp
                                                 @lang($transShort, ['scan' => $scan->name])

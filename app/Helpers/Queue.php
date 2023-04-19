@@ -7,4 +7,10 @@ class Queue
     public const DEFAULT = 'default';
     public const ASYNC = 'async';
     public const REGULATIONS = 'regulations';
+
+    public const APP = 'app';
+    public const APP_HIGH = 'app_high';
+    public const APP_EXTERNAL = 'app_external';
+    public const LOGS = 'logs';
+    public const EXPORTS = 'exports';
 }

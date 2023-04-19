@@ -15,6 +15,8 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $queue = Queue::APP_HIGH;
+
     public Building $building;
 
 

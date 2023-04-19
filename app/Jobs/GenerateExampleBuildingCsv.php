@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Exports\Cooperation\CsvExport;
+use App\Helpers\Queue;
 use App\Helpers\ToolHelper;
 use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Cooperation;
@@ -23,6 +24,8 @@ use Throwable;
 class GenerateExampleBuildingCsv implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $queue = Queue::EXPORTS;
 
     public $cooperation;
     public $fileType;

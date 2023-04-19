@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Econobis\Out;
 
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\EconobisService;
@@ -15,6 +16,8 @@ use Illuminate\Queue\SerializesModels;
 class SendScanStatusToEconobis implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CallsEconobisApi;
+
+    public $queue = Queue::APP_EXTERNAL;
 
     public Building $building;
 

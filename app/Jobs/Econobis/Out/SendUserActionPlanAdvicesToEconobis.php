@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Econobis\Out;
 
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\EconobisService;
@@ -17,6 +18,8 @@ class SendUserActionPlanAdvicesToEconobis implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CallsEconobisApi;
 
     public Building $building;
+
+    public $queue = Queue::APP_EXTERNAL;
 
     /**
      * Create a new job instance.

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\SubStep;
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\Log;
 class CompleteRelatedSubStep implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $queue = Queue::APP_HIGH;
 
     public SubStep $subStep;
     public Building $building;

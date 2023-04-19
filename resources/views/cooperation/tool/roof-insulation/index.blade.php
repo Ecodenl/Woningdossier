@@ -169,29 +169,29 @@
                                 </div>
                             </div>
 
-                            <div class="flex flex-row flex-wrap w-full">
-                                <div class="w-full">
-                                    @component('cooperation.tool.components.step-question', [
-                                        'id' => 'building_roof_types.' . $roofCat . '.extra.zinc_replaced_date',
-                                        'translation' => 'roof-insulation.current-situation.zinc-replaced',
-                                        'required' => false
-                                    ])
+{{--                            <div class="flex flex-row flex-wrap w-full">--}}
+{{--                                <div class="w-full">--}}
+{{--                                    @component('cooperation.tool.components.step-question', [--}}
+{{--                                        'id' => 'building_roof_types.' . $roofCat . '.extra.zinc_replaced_date',--}}
+{{--                                        'translation' => 'roof-insulation.current-situation.zinc-replaced',--}}
+{{--                                        'required' => false--}}
+{{--                                    ])--}}
 
-                                        @slot('sourceSlot')
-                                            @include('cooperation.tool.components.source-list', [
-                                                'inputType' => 'input',
-                                                'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat],
-                                                'userInputColumn' => 'extra.zinc_replaced_date'
-                                            ])
-                                        @endslot
+{{--                                        @slot('sourceSlot')--}}
+{{--                                            @include('cooperation.tool.components.source-list', [--}}
+{{--                                                'inputType' => 'input',--}}
+{{--                                                'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat],--}}
+{{--                                                'userInputColumn' => 'extra.zinc_replaced_date'--}}
+{{--                                            ])--}}
+{{--                                        @endslot--}}
 
-                                        <span class="input-group-prepend">@lang('general.unit.year.title')</span>
-                                        <input type="text" class="form-input"
-                                               name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]"
-                                               value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'extra.zinc_replaced_date')) }}">
-                                    @endcomponent
-                                </div>
-                            </div>
+{{--                                        <span class="input-group-prepend">@lang('general.unit.year.title')</span>--}}
+{{--                                        <input type="text" class="form-input"--}}
+{{--                                               name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]"--}}
+{{--                                               value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'extra.zinc_replaced_date')) }}">--}}
+{{--                                    @endcomponent--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                             <div class="flex flex-row flex-wrap w-full cover-bitumen">
                                 <div class="w-full">
                                     @component('cooperation.tool.components.step-question', [

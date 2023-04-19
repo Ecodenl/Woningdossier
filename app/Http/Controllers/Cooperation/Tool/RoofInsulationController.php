@@ -156,19 +156,21 @@ class RoofInsulationController extends ToolController
             $updatedMeasureIds = MeasureApplication::findByShorts([
                 'roof-insulation-pitched-inside', 'roof-insulation-pitched-replace-tiles',
                 'roof-insulation-flat-current', 'roof-insulation-flat-replace-current',
-                'replace-tiles', 'replace-roof-insulation', 'replace-zinc-pitched',
-                'replace-zinc-flat',
+                'replace-tiles', 'replace-roof-insulation',
+                //'replace-zinc-pitched',
+                //'replace-zinc-flat',
             ])->pluck('id')->toArray();
         } else {
             if ($dirtyFlat) {
                 $updatedMeasureIds = MeasureApplication::findByShorts([
                     'roof-insulation-flat-current', 'roof-insulation-flat-replace-current', 'replace-roof-insulation',
-                    'replace-zinc-flat',
+                    //'replace-zinc-flat',
                 ])->pluck('id')->toArray();
             } elseif ($dirtyPitched) {
                 $updatedMeasureIds = MeasureApplication::findByShorts([
                     'roof-insulation-pitched-inside', 'roof-insulation-pitched-replace-tiles',
-                    'replace-tiles', 'replace-zinc-pitched',
+                    'replace-tiles',
+                    //'replace-zinc-pitched',
                 ])->pluck('id')->toArray();
             }
         }

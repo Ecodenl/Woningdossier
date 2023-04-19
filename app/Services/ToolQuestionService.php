@@ -17,8 +17,8 @@ use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-class ToolQuestionService {
-
+class ToolQuestionService
+{
     use FluentCaller;
 
     public ?Building $building;

@@ -44,8 +44,7 @@ class MapQuickScanSituationToExpert implements ShouldQueue
      */
     public function handle()
     {
-        $boilerService = Service::findByShort('boiler');
-        $boilerValues = $boilerService->values;
+        $boilerValues = Service::findByShort('boiler')->values;
 
         // Convert (heat pump) measure application scenario to expert scan.
         // Note: currently only triggered if a user gets a heat pump measure application in their action plan,
@@ -195,10 +194,7 @@ class MapQuickScanSituationToExpert implements ShouldQueue
         }
 
         // As last step, calculate required power to save as desired power...........
-        $answers['new-heat-pump-type'] = ToolQuestion::findByShort('new-heat-pump-type')
-            ->toolQuestionCustomValues()
-            ->where('extra->calculate_value', $calculateValue)
-            ->first()->short;
+        $answers['new-heat-pump-type'] = $type;
 
         // If we're not in expert yet, we need the heating temp for the calculations
         $heatingTemp = $this->building->getAnswer($this->masterInputSource, ToolQuestion::findByShort('boiler-setting-comfort-heat'));

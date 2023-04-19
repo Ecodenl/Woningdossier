@@ -155,7 +155,19 @@ class MapQuickScanSituationToExpert implements ShouldQueue
 
         // Force replace
         $this->saveAnswer(ToolQuestion::findByShort('heat-pump-replace'), true);
-        $this->saveAnswer(ToolQuestion::findByShort('hr-boiler-replace'), true);
+
+        $boilerAgeQuestion = ToolQuestion::findByShort('boiler-placed-date');
+        $viewable = ConditionService::init()->building($this->building)->inputSource($this->masterInputSource)
+            ->forModel($boilerAgeQuestion)->isViewable();
+
+        if ($viewable) {
+            $answer = $this->building->getAnswer($this->masterInputSource, $boilerAgeQuestion);
+
+            if (is_numeric($answer)) {
+                $diff = now()->format('Y') - $answer;
+                $this->saveAnswer(ToolQuestion::findByShort('hr-boiler-replace'), ! ($diff < 10));
+            }
+        }
 
         foreach ($mapping as $tqShort => $data) {
             $toolQuestion = ToolQuestion::findByShort($tqShort);

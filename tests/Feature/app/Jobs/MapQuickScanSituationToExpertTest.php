@@ -5,6 +5,7 @@ namespace Tests\Feature\app\Jobs;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
 use App\Helpers\RoleHelper;
 use App\Jobs\MapQuickScanSituationToExpert;
+use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -13,6 +14,7 @@ use App\Models\Service;
 use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Services\ToolQuestionService;
+use Carbon\Carbon;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -26,14 +28,19 @@ class MapQuickScanSituationToExpertTest extends TestCase
     public $seed = true;
     public $seeder = DatabaseSeeder::class;
 
+    protected Building $building;
+    protected InputSource $inputSource;
+
     public function test_job_maps_all_cases_correctly()
     {
         // One user is seeded, we'll just use it.
         $user = User::first();
         $user->assignRole(Role::findByName(RoleHelper::ROLE_RESIDENT));
         $building = $user->building;
+        $this->building = $building;
 
         $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->inputSource = $inputSource;
 
         $heatPumpType = Service::findByShort('heat-pump')->values()->orderBy('calculate_value')->first()->id;
         $advisable = MeasureApplication::findByShort(array_flip(HeatPumpHelper::MEASURE_SERVICE_LINK)[$heatPumpType]);
@@ -67,7 +74,7 @@ class MapQuickScanSituationToExpertTest extends TestCase
             'new-heat-source' => ['hr-boiler', 'heat-pump'],
             'new-heat-source-warm-tap-water' => ['hr-boiler'],
             'heat-pump-replace' => true,
-            'hr-boiler-replace' => true,//null, // No placing year currently
+            'hr-boiler-replace' => null, // No placing year currently
             'new-building-heating-application' => ['radiators', 'floor-heating', 'low-temperature-heater'],
             'new-water-comfort' => 'standard',
             'new-cook-type' => 'gas',
@@ -75,12 +82,7 @@ class MapQuickScanSituationToExpertTest extends TestCase
             'new-boiler-setting-comfort-heat' => 'temp-high',
         ];
 
-        foreach ($answersExpected as $short => $answer) {
-            $this->assertEquals(
-                $answer,
-                $building->getAnswer($inputSource, ToolQuestion::findByShort($short))
-            );
-        }
+        $this->checkAnswers($answersExpected);
 
         // Boiler type is not viewable, so ensure it's handled as "null" if boiler type isn't in the heat source.
         $boilerValues = Service::findByShort('boiler')->values;
@@ -97,8 +99,7 @@ class MapQuickScanSituationToExpertTest extends TestCase
             $advisable
         );
 
-        $this->assertEquals('hr107', $building->getAnswer($inputSource, ToolQuestion::findByShort('new-boiler-type')));
-
+        $this->checkAnswers($answersExpected);
 
         // Retry mapping with all possible boiler types, after adding to heat-source.
         ToolQuestionService::init(
@@ -126,12 +127,7 @@ class MapQuickScanSituationToExpertTest extends TestCase
                 ->first()
                 ->short;
 
-            foreach ($answersExpected as $short => $answer) {
-                $this->assertEquals(
-                    $answer,
-                    $building->getAnswer($inputSource, ToolQuestion::findByShort($short))
-                );
-            }
+            $this->checkAnswers($answersExpected);
         }
 
         // Change advisable to non-hybrid.
@@ -154,12 +150,7 @@ class MapQuickScanSituationToExpertTest extends TestCase
         $answersExpected['new-heat-source'] = ['heat-pump'];
         $answersExpected['new-heat-source-warm-tap-water'] = ['heat-pump'];
 
-        foreach ($answersExpected as $short => $answer) {
-            $this->assertEquals(
-                $answer,
-                $building->getAnswer($inputSource, ToolQuestion::findByShort($short))
-            );
-        }
+        $this->checkAnswers($answersExpected);
 
         // Change mapping just once more.
         $updateAnswers = [
@@ -186,10 +177,50 @@ class MapQuickScanSituationToExpertTest extends TestCase
         $answersExpected['new-cook-type'] = 'electric';
         $answersExpected['new-water-comfort'] = 'extra-comfortable';
 
+        $this->checkAnswers($answersExpected);
+
+        // Add placing year.
+        $year = (int) Carbon::now()->format('Y');
+
+        ToolQuestionService::init(
+            ToolQuestion::findByShort('boiler-placed-date')
+        )->building($building)
+            ->currentInputSource($inputSource)
+            ->save(($year - 9)); // Younger than 10 years, so should be no
+
+        MapQuickScanSituationToExpert::dispatchSync(
+            $building,
+            $inputSource,
+            $advisable
+        );
+
+        $answersExpected['hr-boiler-replace'] = false;
+
+        $this->checkAnswers($answersExpected);
+
+        ToolQuestionService::init(
+            ToolQuestion::findByShort('boiler-placed-date')
+        )->building($building)
+            ->currentInputSource($inputSource)
+            ->save(($year - 10)); // Older or equal to 10 years, so should be yes
+
+        MapQuickScanSituationToExpert::dispatchSync(
+            $building,
+            $inputSource,
+            $advisable
+        );
+
+        $answersExpected['hr-boiler-replace'] = true;
+
+        $this->checkAnswers($answersExpected);
+    }
+
+    private function checkAnswers(array $answersExpected)
+    {
         foreach ($answersExpected as $short => $answer) {
             $this->assertEquals(
                 $answer,
-                $building->getAnswer($inputSource, ToolQuestion::findByShort($short))
+                $this->building->getAnswer($this->inputSource, ToolQuestion::findByShort($short))
             );
         }
     }

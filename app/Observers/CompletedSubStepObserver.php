@@ -47,7 +47,7 @@ class CompletedSubStepObserver
                 // Master is handled by GetMyValuesTrait
                 if (!$inputSource->isMaster()) {
                     StepHelper::completeStepIfNeeded($step, $building, $inputSource, $building->user);
-                    CompleteRelatedSubStep::dispatch($subStep, $building, $inputSource)->onQueue(Queue::ASYNC);
+                    CompleteRelatedSubStep::dispatch($subStep, $building, $inputSource);
                 }
             }
         }

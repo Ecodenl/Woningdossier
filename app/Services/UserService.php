@@ -246,7 +246,7 @@ class UserService
         CheckBuildingAddress::dispatchSync($building);
         // check if the connection was successful, if not dispatch it on the regular queue so it retries.
         if ( ! $building->municipality()->first() instanceof Municipality) {
-            CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
+            CheckBuildingAddress::dispatch($building);
         }
 
         $features->building()->associate(

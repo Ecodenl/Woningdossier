@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('send:notifications --type=private-message')->everyFifteenMinutes();
 
         $schedule->command('avg:cleanup-audits')->daily();
-        $schedule->command(CleanupExpiredFileStorages::class)->dailyAt('02:00');
+        $schedule->command(CleanupExpiredFileStorages::class)->hourly();
 
         $schedule->command(SyncTargetGroups::class)->daily();
         $schedule->command(SyncMeasures::class)->daily();

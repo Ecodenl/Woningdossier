@@ -48,8 +48,6 @@ class CleanupExpiredFileStorages extends Command
                 if (Storage::disk('downloads')->exists($fileStorage->filename)) {
                     Storage::disk('downloads')->delete($fileStorage->filename);
                     $fileStorage->delete();
-                } else {
-                    app(DiscordNotifier::class)->notify("FileStorageName: {$fileStorage->filename} not found!");
                 }
             }
         });

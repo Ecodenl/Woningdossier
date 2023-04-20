@@ -7,6 +7,7 @@ use App\Console\Commands\Api\Econobis\Out\Hoomdossier\PdfReport;
 use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Woonplan;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncMeasures;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncTargetGroups;
+use App\Console\Commands\CleanupExpiredFileStorages;
 use App\Console\Commands\SendNotifications;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -32,6 +33,7 @@ class Kernel extends ConsoleKernel
 //        $schedule->command('send:notifications --type=private-message')->everyFifteenMinutes();
 
         $schedule->command('avg:cleanup-audits')->daily();
+        $schedule->command(CleanupExpiredFileStorages::class)->hourly();
 
         $schedule->command(SyncTargetGroups::class)->daily();
         $schedule->command(SyncMeasures::class)->daily();

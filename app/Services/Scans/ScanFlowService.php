@@ -78,7 +78,6 @@ class ScanFlowService
      */
     public function checkConditionals(array $filledInAnswers, User $authUser)
     {
-        // TODO: Find a way we can test this behaviour
         Log::debug("Checking conditionals..");
         $building = $this->building;
         $currentInputSource = $this->currentInputSource;

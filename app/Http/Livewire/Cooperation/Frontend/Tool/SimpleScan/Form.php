@@ -129,7 +129,7 @@ class Form extends Scannable
                     // Master input source is important. Ensure both are set
                     if (is_null($currentAnswer) || is_null($masterAnswer)) {
                         $this->setDirty(true);
-                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        $dirtyToolQuestions[$toolQuestion->short] = $givenAnswer;
                         break;
                     }
                 }

@@ -157,7 +157,7 @@ class Form extends Component
                     // TODO: this is a horrible way to trace dirty answers
                     $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
                     if ($masterAnswer !== $givenAnswer) {
-                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        $dirtyToolQuestions[$toolQuestion->short] = $givenAnswer;
                     }
 
                     ToolQuestionService::init($toolQuestion)

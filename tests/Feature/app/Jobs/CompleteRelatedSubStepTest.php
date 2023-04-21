@@ -17,14 +17,12 @@ use App\Models\User;
 use Database\Seeders\ScansTableSeeder;
 use Database\Seeders\ToolQuestionTypesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class CompleteRelatedSubStepTest extends TestCase
 {
-    use WithFaker,
-        RefreshDatabase;
+    use RefreshDatabase;
 
     public function test_related_sub_steps_get_completed()
     {

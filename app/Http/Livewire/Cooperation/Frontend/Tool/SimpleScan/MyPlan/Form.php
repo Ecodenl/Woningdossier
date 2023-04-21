@@ -680,7 +680,7 @@ class Form extends Component
             });
 
             if (empty($cardData)) {
-                $newOrder = array_key_last($this->{$prop}[$advice->category]) ?? -1 + 1;
+                $newOrder = (array_key_last($this->{$prop}[$advice->category]) ?? -1) + 1;
                 $this->{$prop}[$advice->category][$newOrder] = $card;
             } else {
                 $order = array_key_first($cardData);

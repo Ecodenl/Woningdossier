@@ -81,7 +81,7 @@ class SubStep extends Model
         return $this->slug;
     }
 
-    # Scopes
+    // Scopes
     public function scopeOrdered(Builder $query)
     {
         return $query->orderBy('order');
@@ -100,7 +100,7 @@ class SubStep extends Model
         });
     }
 
-    # Relations
+    // Relations
     public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);

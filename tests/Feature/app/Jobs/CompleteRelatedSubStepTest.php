@@ -30,14 +30,20 @@ class CompleteRelatedSubStepTest extends TestCase
         $this->seed(ScansTableSeeder::class);
 
         // First set up our needed tool structure.
-        $step = Step::factory()->create([
-            'scan_id' => Scan::first()->id,
+        $quickScan = Scan::quick();
+        $expertScan = Scan::expert();
+        $quickStep = Step::factory()->create([
+            'scan_id' => $quickScan->id,
         ]);
-        $baseSubStep = SubStep::factory()->create(['step_id' => $step->id]);
-        $completableRelatedSubStep = SubStep::factory()->create(['step_id' => $step->id]);
-        $incompletableRelatedSubStep = SubStep::factory()->create(['step_id' => $step->id]);
-        $completableSubRelatedSubStep = SubStep::factory()->create(['step_id' => $step->id]);
-        $incompletableSubRelatedSubStep = SubStep::factory()->create(['step_id' => $step->id]);
+        $expertStep = Step::factory()->create([
+            'scan_id' => $expertScan->id,
+        ]);
+        $baseSubStep = SubStep::factory()->create(['step_id' => $quickStep->id]);
+        $completableRelatedSubStep = SubStep::factory()->create(['step_id' => $quickStep->id]);
+        $incompletableRelatedSubStep = SubStep::factory()->create(['step_id' => $quickStep->id]);
+        $completableSubRelatedSubStep = SubStep::factory()->create(['step_id' => $quickStep->id]);
+        $incompletableSubRelatedSubStep = SubStep::factory()->create(['step_id' => $quickStep->id]);
+        $completableExpertRelatedSubStep = SubStep::factory()->create(['step_id' => $expertStep->id]);
 
         $firstCompletedTq = ToolQuestion::factory()->create();
         $secondCompletedTq = ToolQuestion::factory()->create();
@@ -97,6 +103,13 @@ class CompleteRelatedSubStepTest extends TestCase
             [
                 'sub_step_id' => $incompletableSubRelatedSubStep->id,
                 'sub_steppable_id' => $anotherRandomTq->id,
+                'sub_steppable_type' => ToolQuestion::class,
+                'tool_question_type_id' => $inputType->id,
+            ],
+            // Expert sub steppable, will be ignored
+            [
+                'sub_step_id' => $completableExpertRelatedSubStep->id,
+                'sub_steppable_id' => $firstCompletedTq->id,
                 'sub_steppable_type' => ToolQuestion::class,
                 'tool_question_type_id' => $inputType->id,
             ],
@@ -178,6 +191,11 @@ class CompleteRelatedSubStepTest extends TestCase
             ]);
             $this->assertDatabaseMissing('completed_sub_steps', [
                 'sub_step_id' => $incompletableSubRelatedSubStep->id,
+                'building_id' => $building->id,
+                'input_source_id' => $inputSource->id,
+            ]);
+            $this->assertDatabaseMissing('completed_sub_steps', [
+                'sub_step_id' => $completableExpertRelatedSubStep->id,
                 'building_id' => $building->id,
                 'input_source_id' => $inputSource->id,
             ]);

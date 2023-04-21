@@ -282,16 +282,16 @@ class ScanFlowServiceTest extends TestCase
             ]);
 
             // Assert expert missing
-            //$this->assertDatabaseMissing('completed_steps', [
-            //    'building_id' => $building->id,
-            //    'input_source_id' => $inputSource->id,
-            //    'step_id' => $expertStep->id,
-            //]);
-            //$this->assertDatabaseMissing('completed_sub_steps', [
-            //    'building_id' => $building->id,
-            //    'input_source_id' => $inputSource->id,
-            //    'sub_step_id' => $expertStepConditionalSubStep->id,
-            //]);
+            $this->assertDatabaseMissing('completed_steps', [
+                'building_id' => $building->id,
+                'input_source_id' => $inputSource->id,
+                'step_id' => $expertStep->id,
+            ]);
+            $this->assertDatabaseMissing('completed_sub_steps', [
+                'building_id' => $building->id,
+                'input_source_id' => $inputSource->id,
+                'sub_step_id' => $expertStepConditionalSubStep->id,
+            ]);
         }
 
         // Test 2:
@@ -345,16 +345,16 @@ class ScanFlowServiceTest extends TestCase
             ]);
 
             // Assert expert missing
-            //$this->assertDatabaseMissing('completed_steps', [
-            //    'building_id' => $building->id,
-            //    'input_source_id' => $inputSource->id,
-            //    'step_id' => $expertStep->id,
-            //]);
-            //$this->assertDatabaseMissing('completed_sub_steps', [
-            //    'building_id' => $building->id,
-            //    'input_source_id' => $inputSource->id,
-            //    'sub_step_id' => $expertStepConditionalSubStep->id,
-            //]);
+            $this->assertDatabaseMissing('completed_steps', [
+                'building_id' => $building->id,
+                'input_source_id' => $inputSource->id,
+                'step_id' => $expertStep->id,
+            ]);
+            $this->assertDatabaseMissing('completed_sub_steps', [
+                'building_id' => $building->id,
+                'input_source_id' => $inputSource->id,
+                'sub_step_id' => $expertStepConditionalSubStep->id,
+            ]);
         }
 
         // Test 3:
@@ -411,16 +411,16 @@ class ScanFlowServiceTest extends TestCase
             ]);
 
             // Assert expert missing
-            //$this->assertDatabaseMissing('completed_steps', [
-            //    'building_id' => $building->id,
-            //    'input_source_id' => $inputSource->id,
-            //    'step_id' => $expertStep->id,
-            //]);
-            //$this->assertDatabaseMissing('completed_sub_steps', [
-            //    'building_id' => $building->id,
-            //    'input_source_id' => $inputSource->id,
-            //    'sub_step_id' => $expertStepConditionalSubStep->id,
-            //]);
+            $this->assertDatabaseMissing('completed_steps', [
+                'building_id' => $building->id,
+                'input_source_id' => $inputSource->id,
+                'step_id' => $expertStep->id,
+            ]);
+            $this->assertDatabaseMissing('completed_sub_steps', [
+                'building_id' => $building->id,
+                'input_source_id' => $inputSource->id,
+                'sub_step_id' => $expertStepConditionalSubStep->id,
+            ]);
         }
     }
 }

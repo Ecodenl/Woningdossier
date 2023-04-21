@@ -88,6 +88,8 @@ class ScanFlowService
             ->building($building)
             ->inputSource($currentInputSource);
 
+        $expertScan = Scan::expert();
+        // Get all conditionally related sub steps that are not from expert steps.
         $subStepsRelated = SubStep::where(function ($query) use ($filledInAnswers) {
             $query->whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"fn\""]);
             foreach ($filledInAnswers as $toolQuestionShort => $answer) {
@@ -95,9 +97,11 @@ class ScanFlowService
             }
         })
             ->whereNotIn('id', $this->skipSubSteps)
+            ->whereHas('step', fn ($q) => $q->where('scan_id', '!=', $expertScan->id))
             ->with('toolQuestions')
             ->get();
 
+        // Get all conditionally related sub steppables that are not from expert steps.
         $subSteppableRelated = SubSteppable::where(function ($query) use ($filledInAnswers) {
             $query->whereRaw('JSON_CONTAINS(conditions->"$**.column", ?, "$")', ["\"fn\""]);
             foreach ($filledInAnswers as $toolQuestionShort => $answer) {
@@ -107,6 +111,7 @@ class ScanFlowService
             ->where('sub_steppable_type', ToolQuestion::class)
             ->whereNotIn('sub_step_id', $this->skipSubSteps)
             ->whereNotIn('sub_step_id', $subStepsRelated->pluck('id')->toArray())
+            ->whereHas('subStep', fn ($q) => $q->whereHas('step', fn ($q) => $q->where('scan_id', '!=', $expertScan->id)))
             ->with('subStep')
             ->get();
 

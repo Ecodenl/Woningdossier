@@ -17,12 +17,12 @@ class SubStepFactory extends Factory
         $name = $this->faker->word;
 
         return [
-            'name' => json_encode([
+            'name' => [
                 'nl' => $name,
-            ]),
-            'slug' => json_encode([
+            ],
+            'slug' => [
                 'nl' => Str::slug($name),
-            ]),
+            ],
             'order' => $this->faker->randomNumber(1),
             'conditions' => null,
             //'step_id'

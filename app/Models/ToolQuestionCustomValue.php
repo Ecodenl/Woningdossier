@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -42,7 +43,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ToolQuestionCustomValue extends Model
 {
-    use HasTranslations, HasShortTrait;
+    use HasFactory,
+        HasTranslations,
+        HasShortTrait;
 
     protected $translatable = [
         'name'

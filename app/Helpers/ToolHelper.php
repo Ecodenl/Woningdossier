@@ -109,6 +109,11 @@ class ToolHelper
                 foreach ($subSteppables as $subSteppable) {
                     $model = $subSteppable->subSteppable;
 
+                    // Hide zinc.
+                    if (Str::contains($model->short, 'zinc')) {
+                        $processedShorts[$model->short][] = $subSteppable->sub_steppable_type;
+                    }
+
                     if (! array_key_exists($model->short, $processedShorts)
                         || ! in_array($subSteppable->sub_steppable_type, $processedShorts[$model->short])) {
                         $isToolQuestion = $subSteppable->sub_steppable_type === ToolQuestion::class;

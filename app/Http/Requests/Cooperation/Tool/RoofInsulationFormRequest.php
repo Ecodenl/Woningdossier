@@ -45,9 +45,10 @@ class RoofInsulationFormRequest extends FormRequest
         if (2 == $roofType->calculate_value) {
             return 'bitumen';
         }
-        if (4 == $roofType->calculate_value) {
-            return 'zinc';
-        }
+        // There isn't even a roof type with calculate value 4 atm...
+        //if (4 == $roofType->calculate_value) {
+        //    return 'zinc';
+        //}
 
         return '';
     }
@@ -110,7 +111,7 @@ class RoofInsulationFormRequest extends FormRequest
                 $validator->addRules([
                     $brt.'.'.$roofTypeCategory.'.roof_surface' => 'required|numeric|min:0',
                     $brt.'.'.$roofTypeCategory.'.insulation_roof_surface' => 'required|numeric|min:0|needs_to_be_lower_or_same_as:'.$brt.'.'.$roofTypeCategory.'.roof_surface',
-                    $brt.'.'.$roofTypeCategory.'.extra.zinc_replaced_date' => 'nullable|numeric|between:1960,'.$max,
+                    //$brt.'.'.$roofTypeCategory.'.extra.zinc_replaced_date' => 'nullable|numeric|between:1960,'.$max,
                 ]);
 
                 // bitumen is only possible on a flat roof

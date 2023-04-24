@@ -34,18 +34,6 @@ trait CallsEconobisApi
                     // try again in 2 minutes
                     $this->release(120);
                 }
-
-                // Econobis throws a 404 when something isn't right (could be a validation thing where a account id does not match the contact id)
-                // anyway, this won't succeed in the next request, so we just fail the job.
-//                if ($exception instanceof ClientException) {
-//                    $this->log($exception);
-//                } elseif ($exception instanceof TooManyRedirectsException) {
-//                    $this->log($exception);
-//                } elseif ($exception instanceof RequestException) {
-//                    $this->log($exception);
-//
-//                }
-
             }, false);
 
         return;

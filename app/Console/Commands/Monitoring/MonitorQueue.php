@@ -4,6 +4,7 @@ namespace App\Console\Commands\Monitoring;
 
 use App\Helpers\Queue;
 use App\Models\QueueLog;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Queue as QueueFacade;
 
@@ -46,6 +47,10 @@ class MonitorQueue extends Command
                 'size' => QueueFacade::size($queueName),
             ]);
         }
+
+        QueueLog::whereIn('queue', Queue::getQueueNames())
+            ->where('created_at', '<=', Carbon::now()->subDays(7))
+            ->delete();
 
         return 0;
     }

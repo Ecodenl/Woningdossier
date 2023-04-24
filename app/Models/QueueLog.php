@@ -10,7 +10,8 @@ class QueueLog extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = null;
+    // If we set this to null it causes an exception... Table has NO primary key.
+    //protected $primaryKey = null;
 
     protected $fillable = [
         'queue', 'size',

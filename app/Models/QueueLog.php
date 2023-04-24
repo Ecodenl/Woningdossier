@@ -10,6 +10,8 @@ class QueueLog extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = null;
+
     protected $fillable = [
         'queue', 'size',
     ];

@@ -14,7 +14,6 @@ class CreateQueueLogsTable extends Migration
     public function up()
     {
         Schema::create('queue_logs', function (Blueprint $table) {
-            $table->id();
             $table->string('queue')->default(\App\Helpers\Queue::DEFAULT);
             $table->unsignedInteger('size')->default(0);
             $table->timestamps();

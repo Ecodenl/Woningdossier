@@ -3,7 +3,8 @@
 namespace Database\Factories;
 
 use App\Helpers\RoleHelper;
-use App\Models\Building;
+use App\Models\Account;
+use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -35,18 +36,36 @@ class UserFactory extends Factory
         ];
     }
 
-    public function asCoach()
+    public function asCoach(): UserFactory
     {
         return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COACH));
     }
 
-    public function asResident()
+    public function asResident(): UserFactory
     {
         return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_RESIDENT));
     }
 
-    public function asCooperationAdmin()
+    public function asCooperationAdmin(): UserFactory
     {
         return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COOPERATION_ADMIN));
+    }
+
+    public function withAccount(): UserFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'account_id' => Account::factory()->create()->id,
+            ];
+        });
+    }
+
+    public function withCooperation(): UserFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'cooperation_id' => Cooperation::factory()->create()->id,
+            ];
+        });
     }
 }

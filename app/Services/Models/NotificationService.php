@@ -92,6 +92,10 @@ class NotificationService
         $query = Notification::forBuilding($this->building)
             ->forType($this->type);
 
+        // Master gets created automatically due to GetMyValuesTrait, even if input source is null. Therefore, if you
+        // explicitly want to check for master, ensure so via static::forInputSource, otherwise we will ignore master,
+        // so we get the row with non-master/null input source (since even when deleting a null input source row, it
+        // will delete the master due to uuid).
         $this->inputSource instanceof InputSource
             ? $query->forInputSource($this->inputSource)->where('input_source_id', '!=', InputSource::master()->id)
             : $query->allInputSources();

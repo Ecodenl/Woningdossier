@@ -5,6 +5,8 @@ namespace Tests\Unit\app\Services;
 use App\Events\BuildingAddressUpdated;
 use App\Helpers\MappingHelper;
 use App\Models\Building;
+use App\Models\BuildingFeature;
+use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Models\User;
 use App\Services\BuildingAddressService;
@@ -23,9 +25,9 @@ use Mockery;
 
 class BuildingAddressServiceTest extends TestCase
 {
-    use RefreshDatabase,
-        WithFaker,
-        MocksLvbag;
+    use WithFaker,
+        MocksLvbag,
+        RefreshDatabase;
 
     public $seed = true;
     public $seeder = DatabaseSeeder::class;
@@ -44,7 +46,12 @@ class BuildingAddressServiceTest extends TestCase
 
         $municipality = Municipality::factory()->create();
 
-        $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
+        $fromMunicipalityName = $this->faker->randomElement([
+            'Hatsikidee-Flakkee',
+            'Hellevoetsluis',
+            'Haarlem',
+            'Hollywood'
+        ]);
         $this->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
         MappingService::init()
             ->from($fromMunicipalityName)
@@ -94,7 +101,12 @@ class BuildingAddressServiceTest extends TestCase
 
         $municipality = Municipality::factory()->create();
 
-        $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
+        $fromMunicipalityName = $this->faker->randomElement([
+            'Hatsikidee-Flakkee',
+            'Hellevoetsluis',
+            'Haarlem',
+            'Hollywood'
+        ]);
         $this->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
         MappingService::init()
             ->from($fromMunicipalityName)
@@ -114,7 +126,12 @@ class BuildingAddressServiceTest extends TestCase
         // while this test is ok, it does not fake client response..
         $municipality = Municipality::factory()->create();
 
-        $fromMunicipalityName = $this->faker->randomElement(['Hatsikidee-Flakkee', 'Hellevoetsluis', 'Haarlem', 'Hollywood']);
+        $fromMunicipalityName = $this->faker->randomElement([
+            'Hatsikidee-Flakkee',
+            'Hellevoetsluis',
+            'Haarlem',
+            'Hollywood'
+        ]);
         $this->mockLvbagClientWoonplaats($fromMunicipalityName)->createLvbagMock();
 
         $building->update([
@@ -148,7 +165,7 @@ class BuildingAddressServiceTest extends TestCase
             'bag_woonplaats_id' => 2433,
             'user_id' => $user->id
         ]);
-        
+
         $this->mockLvbagClientAdresUitgebreid($fallbackData)->createLvbagMock();
         $mockedApiData = $this->getMockedApiData();
 
@@ -202,5 +219,98 @@ class BuildingAddressServiceTest extends TestCase
         $spy->shouldHaveReceived('showCity')
             ->with(100, ['expand' => 'true'])
             ->once();
+    }
+
+    public function test_update_building_features_does_not_overwrite_present_data_with_bag()
+    {
+        $fallbackData = [
+            'street' => $this->faker->streetName,
+            'number' => $this->faker->numberBetween(3, 22),
+            'city' => 'bubba',
+            'extension' => 'd',
+            'postal_code' => $this->faker->postcode,
+        ];
+
+        $user = User::factory()->create();
+        $building = Building::factory()->create([
+            'bag_addressid' => 32443234234,
+            'bag_woonplaats_id' => 2433,
+            'user_id' => $user->id
+        ]);
+
+        $this->mockLvbagClientAdresUitgebreid($fallbackData)->createLvbagMock();
+        $mockedApiData = $this->getMockedApiData();
+
+        $addressExpandedData = $mockedApiData['_embedded']['adressen'][0];
+        $addressExpandedData['endpoint_failure'] = false;
+        $assertableBuildingData = (new AddressExpanded($addressExpandedData))->prepareForBuilding();
+
+        BuildingFeature::factory()->create([
+            'building_id' => $building->id,
+            'input_source_id' => InputSource::resident()->id,
+            'build_year' => 1300,
+            'surface' => 120,
+        ]);
+
+        app(BuildingAddressService::class)->forBuilding($building)->updateBuildingFeatures($fallbackData);
+
+        $this->assertDatabaseHas('building_features', [
+            'building_id' => $building->id,
+            'input_source_id' => InputSource::resident()->id,
+            'build_year' => 1300,
+            'surface' => 120,
+        ]);
+        $this->assertDatabaseMissing('building_features', [
+            'building_id' => $building->id,
+            'input_source_id' => InputSource::resident()->id,
+            'build_year' => $assertableBuildingData['build_year'],
+            'surface' => $assertableBuildingData['surface'],
+        ]);
+    }
+
+    public function test_update_building_features_sets_data_from_bag_when_data_empty()
+    {
+        $fallbackData = [
+            'street' => $this->faker->streetName,
+            'number' => $this->faker->numberBetween(3, 22),
+            'city' => 'bubba',
+            'extension' => 'd',
+            'postal_code' => $this->faker->postcode,
+        ];
+
+        $user = User::factory()->create();
+        $building = Building::factory()->create([
+            'bag_addressid' => 32443234234,
+            'bag_woonplaats_id' => 2433,
+            'user_id' => $user->id
+        ]);
+
+        $this->mockLvbagClientAdresUitgebreid($fallbackData)->createLvbagMock();
+        $mockedApiData = $this->getMockedApiData();
+
+        $addressExpandedData = $mockedApiData['_embedded']['adressen'][0];
+        $addressExpandedData['endpoint_failure'] = false;
+        $assertableBuildingData = (new AddressExpanded($addressExpandedData))->prepareForBuilding();
+
+        BuildingFeature::factory()->create([
+            'building_id' => $building->id,
+            'input_source_id' => InputSource::resident()->id,
+        ]);
+
+        app(BuildingAddressService::class)->forBuilding($building)->updateBuildingFeatures($fallbackData);
+
+        $this->assertDatabaseHas('building_features', [
+            'building_id' => $building->id,
+            'input_source_id' => InputSource::resident()->id,
+            'build_year' => $assertableBuildingData['build_year'],
+            'surface' => $assertableBuildingData['surface'],
+        ]);
+
+        $this->assertDatabaseMissing('building_features', [
+            'building_id' => $building->id,
+            'input_source_id' => InputSource::resident()->id,
+            'build_year' => null,
+            'surface' => null,
+        ]);
     }
 }

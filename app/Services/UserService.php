@@ -154,6 +154,8 @@ class UserService
         $user->actionPlanAdvices()->withInvisible()->forInputSource($inputSource)->delete();
         // remove the energy habits from a user
         $user->energyHabit()->forInputSource($inputSource)->delete();
+
+        $user->userCosts()->forInputSource($inputSource)->delete();
         // remove the considerables for the user
         Considerable::forUser($user)->forInputSource($inputSource)->delete();
         // remove all the tool question anders for the building
@@ -232,11 +234,6 @@ class UserService
             ]
         );
 
-        $features = new BuildingFeature([
-            'surface' => $addressData['surface'] ?? null,
-            'build_year' => $addressData['build_year'] ?? null,
-        ]);
-
         // filter relevant data from the request
         $buildingData = Arr::only($data, ['street', 'city', 'postal_code', 'number', 'extension']);
 
@@ -248,10 +245,6 @@ class UserService
         if ( ! $building->municipality()->first() instanceof Municipality) {
             CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
         }
-
-        $features->building()->associate(
-            $building
-        )->save();
 
         $user->cooperation()->associate(
             $cooperation

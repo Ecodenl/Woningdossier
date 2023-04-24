@@ -46,6 +46,7 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
 
         $this->queue = Queue::REGULATIONS;
         $this->setUuid();
+        $this->ignoreNotificationInputSource();
     }
 
     /**

@@ -3,8 +3,10 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 
 use App\Helpers\MyRegulationHelper;
+use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Services\Models\NotificationService;
 use App\Services\UserActionPlanAdviceService;
 use Livewire\Component;
 
@@ -20,7 +22,7 @@ class MyRegulations extends Component
         $this->building = $building;
         $this->masterInputSource = InputSource::master();
         $this->relevantRegulations = MyRegulationHelper::getRelevantRegulations($building, $this->masterInputSource);
-        $this->isRefreshing = $building->user->refreshing_regulations;
+        $this->checkNotifications();
     }
 
     public function render()
@@ -30,18 +32,25 @@ class MyRegulations extends Component
 
     public function refreshRegulations()
     {
-        $this->building->user->update(['refreshing_regulations' => true]);
-        $this->isRefreshing = true;
-
         UserActionPlanAdviceService::init()
             ->forUser($this->building->user)
             ->refreshUserRegulations();
+
+        $this->isRefreshing = true;
+    }
+
+    public function checkNotifications()
+    {
+        $this->isRefreshing = NotificationService::init()
+            ->forBuilding($this->building)
+            ->setType(RefreshRegulationsForUserActionPlanAdvice::class)
+            ->isActive();
     }
 
     public function checkIfIsRefreshed()
     {
         $oldIsRefreshing = $this->isRefreshing;
-        $this->isRefreshing = $this->building->user->refreshing_regulations;
+        $this->checkNotifications();
 
         if ($this->isRefreshing === false && $oldIsRefreshing !== $this->isRefreshing) {
             $this->relevantRegulations = MyRegulationHelper::getRelevantRegulations($this->building, $this->masterInputSource);

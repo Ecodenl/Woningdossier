@@ -28,7 +28,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property array|null $extra
  * @property bool $allow_access
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
- * @property bool|null $refreshing_regulations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Account|null $account
@@ -112,14 +111,13 @@ class User extends Model implements AuthorizableContract
      */
     protected $fillable = [
         'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access', 'regulations_refreshed_at',
-        'last_visited_url', 'refreshing_regulations'
+        'last_visited_url',
     ];
 
     protected $casts = [
         'allow_access' => 'boolean',
         'extra' => 'array',
         'regulations_refreshed_at' => 'datetime:Y-m-d H:i:s',
-        'refreshing_regulations' => 'boolean',
     ];
 
     // We can't eager load roles by default because if the admin changes them, they don't refresh

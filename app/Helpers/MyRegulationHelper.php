@@ -32,7 +32,6 @@ class MyRegulationHelper
         // First get all user action plan advices that have an advisable mapping.
         /** @var Collection $advicesWithAdvisableMapping */
         if ($payload instanceof Search) {
-
             $selectColumns = [
                 'user_action_plan_advices.id',
                 'user_action_plan_advices.input_source_id',
@@ -47,9 +46,10 @@ class MyRegulationHelper
                 ->userActionPlanAdvices()
                 ->forInputSource($inputSource)
                 ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE, $inputSource)
-                // so the advisable MAY have a input source id
-                // this would the case for the custom measure application
-                // since each input source has its own unique row, we already know we have the correct one when comming from the advices. (since thats filtered on input source already)
+                // So the advisable MAY have a input source id.
+                // This would the case for the custom measure application.
+                // Since each input source has its own unique row, we already know we have the correct one when coming
+                // from the advices (since that's filtered on input source already).
                 ->with([
                     'userActionPlanAdvisable' => function ($query) {
                         $query->withoutGlobalScope(GetValueScope::class);
@@ -124,7 +124,7 @@ class MyRegulationHelper
                         $regulation['advisable_names'][] = $advisable->name ?? $advisable->measure_name;
                     }
                 }
-                if ( ! empty($regulation['advisable_names'])) {
+                if (! empty($regulation['advisable_names'])) {
                     $relevantRegulations[$regulationType][] = $regulation;
                 }
             }

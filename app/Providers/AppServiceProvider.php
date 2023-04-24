@@ -16,6 +16,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Queue\Jobs\Job;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -80,6 +81,8 @@ class AppServiceProvider extends ServiceProvider
             }, $boolean);
         });
 
+
+        // is this still nodig or is it only loggin?
         Queue::before(function (JobProcessing $event) {
             $payload = $event->job->payload();
             $command = unserialize($payload['data']['command']);

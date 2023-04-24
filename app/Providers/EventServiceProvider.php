@@ -35,6 +35,7 @@ use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
+use App\Listeners\QueueEventSubscriber;
 use App\Listeners\RefreshRelatedAdvices;
 use App\Listeners\RefreshBuildingUserHisAdvices;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
@@ -129,7 +130,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $subscribe = [
-        // subscribers
+        QueueEventSubscriber::class,
     ];
 
     /**

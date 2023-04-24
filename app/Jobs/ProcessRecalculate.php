@@ -27,6 +27,7 @@ class ProcessRecalculate implements ShouldQueue
      */
     public function handle()
     {
+        dispatch()
         Log::debug('Processing recalculates...');
     }
 }

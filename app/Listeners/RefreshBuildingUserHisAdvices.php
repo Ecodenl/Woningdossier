@@ -2,8 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Events\BuildingAddressUpdated;
-use App\Helpers\Queue;
 use App\Jobs\RefreshRegulationsForBuildingUser;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -27,7 +25,6 @@ class RefreshBuildingUserHisAdvices implements ShouldQueue
      */
     public function handle($event)
     {
-        dd('Event handler '. __CLASS__);
         RefreshRegulationsForBuildingUser::dispatch($event->building);
     }
 }

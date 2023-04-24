@@ -17,7 +17,14 @@ class QueueEventSubscriber
     {
         // i think we can use this for the cache key, we will also retrieve
         $id = $event->id;
-        $queuedClass = $event->job->class;
+        Cache::set($id, date('Y-m-d h:i:s'));
+        Log::debug("Caching payloadId: {$id} time: ".date('Y-m-d h:i:s'));
+    }
+
+    public function checkForReset($event)
+    {
+        $id = $event->job->payload()['id'];
+        Log::debug("Checking for reset payloadId: {$id} cached time: ".Cache::get($id));
     }
 
     public function logBefore($event)
@@ -49,11 +56,12 @@ class QueueEventSubscriber
                 ->deactivate();
         }
     }
+
     public function subscribe(Dispatcher $events): array
     {
         return [
             JobQueued::class => ['cacheTimeOfQueued'],
-            JobProcessing::class => ['logBefore'],
+            JobProcessing::class => ['logBefore', 'checkForReset'],
             JobProcessed::class => ['deactivateNotification']
         ];
     }

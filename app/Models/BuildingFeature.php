@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -98,7 +99,8 @@ class BuildingFeature extends Model implements Auditable
 {
     use GetValueTrait,
         GetMyValuesTrait,
-        \App\Traits\Models\Auditable;
+        \App\Traits\Models\Auditable,
+        HasFactory;
 
     protected $fillable = [
         'example_building_id',

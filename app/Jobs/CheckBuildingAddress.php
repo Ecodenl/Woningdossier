@@ -36,10 +36,11 @@ class CheckBuildingAddress implements ShouldQueue
     public function handle(BuildingAddressService $buildingAddressService)
     {
         $building = $this->building;
-        $buildingAddressService
-            ->forBuilding($building)
-            ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
+        $buildingAddressService->forBuilding($building);
+        $buildingAddressService->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
         $buildingAddressService->attachMunicipality();
+        $buildingAddressService->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
+
         /**
          * requery it, no municipality can have multiple causes
          * - BAG is down

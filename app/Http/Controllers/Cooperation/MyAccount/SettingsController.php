@@ -10,12 +10,9 @@ use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\InputSource;
 use App\Models\Municipality;
-use App\Services\BuildingAddressService;
-use App\Services\Lvbag\BagService;
-use App\Services\Lvbag\Payloads\AddressExpanded;
-use App\Services\Models\BuildingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
@@ -25,7 +22,7 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(BuildingAddressService $buildingAddressService, BagService $bagService, MyAccountSettingsFormRequest $request)
+    public function update(MyAccountSettingsFormRequest $request)
     {
         $user = Hoomdossier::user();
         $building = HoomdossierSession::getBuilding(true);
@@ -40,21 +37,12 @@ class SettingsController extends Controller
         $buildingData['number'] = $buildingData['number'] ?? '';
         $buildingData = $data['building'];
 
-        $buildingAddressService->forBuilding($building)->updateAddress($buildingData);
-        $buildingAddressService->forBuilding($building)->attachMunicipality();
+        $building->update(Arr::only($buildingData, ['street', 'city', 'postal_code', 'number', 'extension']));
 
-        if (!$building->municipality()->first() instanceof Municipality) {
-            CheckBuildingAddress::dispatch($building);
-        }
-        $addressData = $bagService->addressExpanded(
-            $buildingData['postal_code'], $buildingData['number'], $buildingData['extension']
-        )->prepareForBuilding();
-        // here we update the surface and build year IF bag returns it
-        // we will never nullify it, only "correct" it.
-        $building->buildingFeatures()->update([
-            'surface' => empty($addressData['surface']) ? null : $addressData['surface'],
-            'build_year' => empty($addressData['build_year']) ? null : $addressData['build_year'],
-        ]);
+         CheckBuildingAddress::dispatchSync($building);
+         if (!$building->municipality()->first() instanceof Municipality) {
+             CheckBuildingAddress::dispatch($building);
+         }
 
         return redirect()->route('cooperation.my-account.index')
             ->with('success', __('my-account.settings.store.success'));

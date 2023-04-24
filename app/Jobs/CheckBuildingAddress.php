@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\BuildingAddressService;
@@ -9,7 +10,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\RateLimited;
+use Illuminate\Queue\Middleware\ThrottlesExceptions;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class CheckBuildingAddress implements ShouldQueue
 {
@@ -40,6 +45,10 @@ class CheckBuildingAddress implements ShouldQueue
             ->forBuilding($building)
             ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
         $buildingAddressService->attachMunicipality();
+        Log::debug('Job handle running');
+        Log::debug('Job handle running');
+        Log::debug('Job handle running');
+        Log::debug('Job handle running ');
         /**
          * requery it, no municipality can have multiple causes
          * - BAG is down
@@ -49,5 +58,10 @@ class CheckBuildingAddress implements ShouldQueue
         if (! $building->municipality()->first() instanceof Municipality) {
             $this->release(60);
         }
+    }
+
+    public function middleware(): array
+    {
+        return [new CheckLastResetAt($this->building)];
     }
 }

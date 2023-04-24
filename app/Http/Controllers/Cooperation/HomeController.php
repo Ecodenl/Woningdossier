@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
+use App\Jobs\CheckBuildingAddress;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Scan;
 
@@ -18,6 +20,7 @@ class HomeController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
+        CheckBuildingAddress::dispatchSync(Building::first());
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
 

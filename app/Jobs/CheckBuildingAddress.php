@@ -45,10 +45,6 @@ class CheckBuildingAddress implements ShouldQueue
             ->forBuilding($building)
             ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
         $buildingAddressService->attachMunicipality();
-        Log::debug('Job handle running');
-        Log::debug('Job handle running');
-        Log::debug('Job handle running');
-        Log::debug('Job handle running ');
         /**
          * requery it, no municipality can have multiple causes
          * - BAG is down

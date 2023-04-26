@@ -13,7 +13,7 @@
                    wire:model="customMeasureApplicationsFormData.{{$index}}.name"
                    id="custom-measure-application-{{$index}}-name"
                    placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')"
-                   @if($disabled) disabled="disabled" @endif
+                   @if($disabled) disabled @endif
             >
         @endcomponent
         <div class="w-full flex items-center">
@@ -32,8 +32,8 @@
                       wire:model="customMeasureApplicationsFormData.{{$index}}.info"
                       id="custom-measure-application-{{$index}}-info"
                       placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
-                      @if($disabled) disabled="disabled" @endif
-                                ></textarea>
+                      @if($disabled) disabled @endif
+            ></textarea>
         @endcomponent
         <div class="w-full flex flex-wrap items-center">
             <i class="icon-sm icon-info mr-3"></i>
@@ -51,7 +51,7 @@
                 <select class="form-input hidden"
                         wire:model="customMeasureApplicationsFormData.{{$index}}.measure_category"
                         id="custom-measure-application-{{$index}}-measure-category"
-                        @if($disabled) disabled="disabled" @endif
+                        @if($disabled) disabled @endif
                 >
                     <option value="">
                         @lang('default.form.dropdown.choose')
@@ -78,7 +78,7 @@
         ])
             <input class="form-input"
                    wire:model="customMeasureApplicationsFormData.{{$index}}.costs.from"
-                   @if($disabled) disabled="disabled" @endif
+                   @if($disabled) disabled @endif
                    id="custom-measure-application-{{$index}}-costs-from" placeholder="@lang('default.from')">
         @endcomponent
         @component('cooperation.frontend.layouts.components.form-group', [
@@ -89,7 +89,7 @@
         ])
             <input class="form-input"
                    wire:model="customMeasureApplicationsFormData.{{$index}}.costs.to"
-                   @if($disabled) disabled="disabled" @endif
+                   @if($disabled) disabled @endif
                    id="custom-measure-application-{{$index}}-costs-to" placeholder="@lang('default.to')">
         @endcomponent
         <div class="w-full flex items-center">
@@ -107,13 +107,14 @@
             <input class="form-input"
                    wire:model="customMeasureApplicationsFormData.{{$index}}.savings_money"
                    id="custom-measure-application-{{$index}}-savings-money"
-                   @if($disabled) disabled="disabled" @endif
+                   @if($disabled) disabled @endif
                    placeholder="@lang('cooperation/frontend/shared.modals.add-measure.savings-money')">
         @endcomponent
     </div>
     <div class="w-full border border-gray fixed left-0"></div>
     <div class="flex flex-wrap justify-center mt-14">
-        <button wire:loading.attr="disabled" wire:click="save({{$index}})"
+        <button wire:click="save({{$index}})"
+                @if($disabled) disabled @else wire:loading.attr="disabled" @endif
                 class="btn btn-purple w-full">
             <i class="icon-xs icon-plus-purple mr-3"></i>
             @if($isNew)

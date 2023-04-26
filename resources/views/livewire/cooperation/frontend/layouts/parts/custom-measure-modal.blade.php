@@ -71,14 +71,14 @@
             </h6>
         </div>
          @component('cooperation.frontend.layouts.components.form-group', [
-           'inputName' => "customMeasureApplicationsFormData.{$index}.costs.from",
+           'inputName' => "customMeasureApplicationsFormData.{$index}.show_costs",
            'class' => 'w-full -mt-4',
            'id' => "custom-measure-application-{$index}-show-costs-wrapper",
            'withInputSource' => false,
         ])
             <div class="checkbox-wrapper @if($customMeasureApplicationsFormData[$index]['show_costs']) mb-0 @endif">
                 <input type="checkbox" id="custom-measure-application-{{$index}}-show-costs"
-                       @if($disabled) disabled @endif
+                       @if($disabled) disabled @endif value="1"
                        wire:model="customMeasureApplicationsFormData.{{$index}}.show_costs">
                 <label for="custom-measure-application-{{$index}}-show-costs">
                     <span class="checkmark"></span>

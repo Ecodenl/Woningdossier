@@ -40,8 +40,8 @@ abstract class CustomMeasureForm extends Component
             'customMeasureApplicationsFormData.*.measure_category' => [
                 'nullable', 'exists:measure_categories,id',
             ],
-            'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
-            'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
+            'customMeasureApplicationsFormData.*.costs.from' => 'nullable|numeric|min:0',
+            'customMeasureApplicationsFormData.*.costs.to' => 'nullable|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
             'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric|max:999999',
         ];
     }
@@ -115,6 +115,10 @@ abstract class CustomMeasureForm extends Component
 
             // Validate, we don't need the data
             $measureData = $validator->validate()['customMeasureApplicationsFormData'][$index];
+
+            if (! $this->customMeasureApplicationsFormData[$index]['show_costs']) {
+                $measureData['costs'] = null;
+            }
 
             // If the user has filled in a value for `savings_money` but then removes it again, the value will be an empty
             // string. This is seen as nullable by Livewire, so validation passes. This will cause an exception if not
@@ -223,6 +227,7 @@ abstract class CustomMeasureForm extends Component
         foreach ($customMeasureApplications as $index => $customMeasureApplication) {
             $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name', 'info',]);
             $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
+            $this->customMeasureApplicationsFormData[$index]['show_costs'] = true;
 
             $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices->first();
 
@@ -234,10 +239,14 @@ abstract class CustomMeasureForm extends Component
                     'to' => NumberFormatter::format($costs['to'] ?? '', 1),
                 ];
 
+                if (is_null($costs)) {
+                    $this->customMeasureApplicationsFormData[$index]['show_costs'] = false;
+                }
+
                 $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
 
                 if ($userActionPlanAdvice->visible && property_exists($this, 'selectedCustomMeasureApplications')) {
-                    $this->selectedCustomMeasureApplications[] = (string)$index;
+                    $this->selectedCustomMeasureApplications[] = (string) $index;
                 }
             }
 
@@ -257,6 +266,7 @@ abstract class CustomMeasureForm extends Component
             'hash' => null,
             'name' => null,
             'info' => null,
+            'show_costs' => true,
             'costs' => [
                 'from' => null,
                 'to' => null,

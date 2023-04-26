@@ -18,7 +18,7 @@ return [
             'info' => 'Beschrijving',
             'info-placeholder' => 'Beschrijving over de maatregel',
             'costs' => 'Kosten in €',
-            'show-costs' => 'Kosten tonen',
+            'hide-costs' => 'Geen kosten',
             'savings-money' => 'Verwachte besparing in €',
             'save' => 'Voeg maatregel toe',
             'update' => 'Werk maatregel bij',

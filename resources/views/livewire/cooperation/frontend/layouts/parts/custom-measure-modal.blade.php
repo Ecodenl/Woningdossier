@@ -71,24 +71,24 @@
             </h6>
         </div>
          @component('cooperation.frontend.layouts.components.form-group', [
-           'inputName' => "customMeasureApplicationsFormData.{$index}.show_costs",
+           'inputName' => "customMeasureApplicationsFormData.{$index}.hide_costs",
            'class' => 'w-full -mt-4',
-           'id' => "custom-measure-application-{$index}-show-costs-wrapper",
+           'id' => "custom-measure-application-{$index}-hide-costs-wrapper",
            'withInputSource' => false,
         ])
-            <div class="checkbox-wrapper @if($customMeasureApplicationsFormData[$index]['show_costs']) mb-0 @endif">
-                <input type="checkbox" id="custom-measure-application-{{$index}}-show-costs"
-                       @if($disabled) disabled @endif value="1"
-                       wire:model="customMeasureApplicationsFormData.{{$index}}.show_costs">
-                <label for="custom-measure-application-{{$index}}-show-costs">
+            <div class="checkbox-wrapper @if(! $customMeasureApplicationsFormData[$index]['hide_costs']) mb-0 @endif">
+                <input type="checkbox" id="custom-measure-application-{{$index}}-hide-costs"
+                       @if($disabled) disabled @endif
+                       wire:model="customMeasureApplicationsFormData.{{$index}}.hide_costs">
+                <label for="custom-measure-application-{{$index}}-hide-costs">
                     <span class="checkmark"></span>
-                    <span>@lang('cooperation/frontend/shared.modals.add-measure.show-costs')</span>
+                    <span>@lang('cooperation/frontend/shared.modals.add-measure.hide-costs')</span>
                 </label>
             </div>
         @endcomponent
         @component('cooperation.frontend.layouts.components.form-group', [
            'inputName' => "customMeasureApplicationsFormData.{$index}.costs.from",
-           'class' => 'w-1/2 pr-1 -mt-4 mb-4' . ($customMeasureApplicationsFormData[$index]['show_costs'] ? '' : ' hidden'),
+           'class' => 'w-1/2 pr-1 -mt-4 mb-4' . ($customMeasureApplicationsFormData[$index]['hide_costs'] ? ' hidden' : ''),
            'id' => "custom-measure-application-{$index}-costs-from-wrapper",
            'withInputSource' => false,
         ])
@@ -99,7 +99,7 @@
         @endcomponent
         @component('cooperation.frontend.layouts.components.form-group', [
             'inputName' => "customMeasureApplicationsFormData.{$index}.costs.to",
-            'class' => 'w-1/2 pl-1 -mt-4 mb-4' . ($customMeasureApplicationsFormData[$index]['show_costs'] ? '' : ' hidden'),
+            'class' => 'w-1/2 pl-1 -mt-4 mb-4' . ($customMeasureApplicationsFormData[$index]['hide_costs'] ? ' hidden' : ''),
             'id' => "custom-measure-application-{$index}-costs-to-wrapper",
             'withInputSource' => false,
         ])

@@ -40,7 +40,7 @@ abstract class CustomMeasureForm extends Component
             'customMeasureApplicationsFormData.*.measure_category' => [
                 'nullable', 'exists:measure_categories,id',
             ],
-            'customMeasureApplicationsFormData.*.costs.from' => 'required_if:customMeasureApplicationsFormData.*.show_costs,1|numeric|min:0',
+            'customMeasureApplicationsFormData.*.costs.from' => 'required_if:customMeasureApplicationsFormData.*.hide_costs,false|numeric|min:0',
             'customMeasureApplicationsFormData.*.costs.to' => 'nullable|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
             'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric|max:999999',
         ];
@@ -59,7 +59,7 @@ abstract class CustomMeasureForm extends Component
             'customMeasureApplicationsFormData.*.name' => $globalAttributeTranslations['custom_measure_application.name'],
             'customMeasureApplicationsFormData.*.info' => $globalAttributeTranslations['custom_measure_application.info'],
             'customMeasureApplicationsFormData.*.measure_category' => $globalAttributeTranslations['custom_measure_application.measure_category'],
-            'customMeasureApplicationsFormData.*.show_costs' => $globalAttributeTranslations['custom_measure_application.show_costs'],
+            'customMeasureApplicationsFormData.*.hide_costs' => $globalAttributeTranslations['custom_measure_application.hide_costs'],
             'customMeasureApplicationsFormData.*.costs.from' => $globalAttributeTranslations['custom_measure_application.costs.from'],
             'customMeasureApplicationsFormData.*.costs.to' => $globalAttributeTranslations['custom_measure_application.costs.to'],
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
@@ -117,7 +117,7 @@ abstract class CustomMeasureForm extends Component
             // Validate, we don't need the data
             $measureData = $validator->validate()['customMeasureApplicationsFormData'][$index];
 
-            if (! $this->customMeasureApplicationsFormData[$index]['show_costs']) {
+            if ($this->customMeasureApplicationsFormData[$index]['hide_costs']) {
                 $measureData['costs'] = null;
             }
 
@@ -228,7 +228,7 @@ abstract class CustomMeasureForm extends Component
         foreach ($customMeasureApplications as $index => $customMeasureApplication) {
             $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name', 'info',]);
             $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
-            $this->customMeasureApplicationsFormData[$index]['show_costs'] = '1';
+            $this->customMeasureApplicationsFormData[$index]['hide_costs'] = false;
 
             $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices->first();
 
@@ -241,7 +241,7 @@ abstract class CustomMeasureForm extends Component
                 ];
 
                 if (is_null($costs)) {
-                    $this->customMeasureApplicationsFormData[$index]['show_costs'] = false;
+                    $this->customMeasureApplicationsFormData[$index]['hide_costs'] = true;
                 }
 
                 $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
@@ -267,7 +267,7 @@ abstract class CustomMeasureForm extends Component
             'hash' => null,
             'name' => null,
             'info' => null,
-            'show_costs' => '1',
+            'hide_costs' => false,
             'costs' => [
                 'from' => null,
                 'to' => null,

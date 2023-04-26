@@ -15,7 +15,7 @@
             <div class="flex items-center">
                 <h5 class="heading-5">
                     @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO)
-                </h5>
+                </h5>2
             </div>
         </div>
         <div class="flex flex-wrap items-center justify-between">
@@ -27,12 +27,12 @@
         </div>
     </div>
     <div class="w-full flex flex-wrap flex-row justify-center items-center"
-         @if(! $disabled) x-data="draggables()" @endif>
+         @if($disabled) x-data @else x-data="draggables()" @endif>
         <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10">
             @foreach($cards as $cardCategory => $cardCollection)
                 <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
                     @foreach($cardCollection as $order => $card)
-                        <div class="card @if($disabled) disabled @endif"
+                        <div class="card @if($disabled) disabled pointer-events-auto @endif"
                              id="{{ $card['id'] }}" wire:key="card-{{$card['id']}}"
                              wire:loading.class="disabled" wire:target="cardMoved, cardTrashed, addHiddenCardToBoard"
                              {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
@@ -43,12 +43,12 @@
                             </div>
                             <div class="info">
                                 @if(! empty($card['route']))
-                                    <a href="{{ $card['route'] }}" class="no-underline" draggable="false">
+                                    <a href="{{ $card['route'] }}" class="no-underline w-fit" draggable="false">
                                         <h6 class="heading-6 text-purple max-w-17/20">
                                             {{ $card['name'] }}
                                         </h6>
                                     </a>
-                                @elseif(array_key_exists('index', $card) && ! $disabled)
+                                @elseif(array_key_exists('index', $card))
                                     <a href="#" class="no-underline" draggable="false"
                                        x-on:click="$event.preventDefault(); window.triggerEvent(document.querySelector('#edit-{{$card['index']}}'), 'open-modal');">
                                         <h6 class="heading-6 text-purple max-w-17/20">
@@ -76,9 +76,8 @@
                                 @if($cardCategory !== \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
                                     @if($card['subsidy_available'])
                                         <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('cooperation', 'scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::SUBSIDY }}"
-                                           class="in-text" draggable="false" style="width: fit-content;">
-                                            <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2 w-full"
-                                                 style="width: fit-content; width: -moz-fit-content;">
+                                           class="in-text w-fit" draggable="false">
+                                            <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2">
                                                 @if($card['has_user_costs'])
                                                     @lang('cooperation/frontend/tool.my-plan.cards.regulations.after-subsidy-cut')
                                                 @else
@@ -88,9 +87,8 @@
                                         </a>
                                     @elseif($card['loan_available'])
                                         <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('cooperation', 'scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::LOAN }}"
-                                           class="in-text" draggable="false">
-                                            <div class="h-4 rounded-lg text-xs relative text-orange p bg-red bg-opacity-10 flex items-center px-2 w-full"
-                                                 style="width: fit-content; width: -moz-fit-content;">
+                                           class="in-text w-fit" draggable="false">
+                                            <div class="h-4 rounded-lg text-xs relative text-orange p bg-red bg-opacity-10 flex items-center px-2">
                                                 @lang('cooperation/frontend/tool.my-plan.cards.regulations.loan-available')
                                             </div>
                                         </a>
@@ -238,7 +236,7 @@
             </div>
         @endif
         {{-- Modal for custom measures --}}
-        @if(! $disabled && ! $scan->isLiteScan())
+        @if(! $scan->isLiteScan())
             {{-- We put the modals here, else it's included in the draggable card which causes weird behaviour. --}}
             @foreach($customMeasureApplicationsFormData as $index => $data)
                 <div x-data="modal">
@@ -246,6 +244,7 @@
                         'index' => $index,
                         'isNew' => $loop->last,
                         'id' => "edit-{$index}",
+                        'disabled' => $disabled,
                     ])
                 </div>
             @endforeach

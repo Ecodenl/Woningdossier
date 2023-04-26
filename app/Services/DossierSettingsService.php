@@ -7,6 +7,8 @@ use App\Models\InputSource;
 use App\Traits\Services\HasBuilding;
 use App\Traits\Services\HasInputSources;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class DossierSettingsService
 {
@@ -42,6 +44,9 @@ class DossierSettingsService
             ->where('type', $this->type)
             ->first();
 
+        Log::debug("Checking for reset payloadId reset done at: ".$dossierSetting->done_at);
+
+        Log::debug("befor? ".$datetime->isBefore($dossierSetting->done_at));
         if ($datetime->isBefore($dossierSetting->done_at)) {
             return true;
         }

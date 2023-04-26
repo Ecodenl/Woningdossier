@@ -38,11 +38,10 @@ trait CheckLastResetAt
                 ->forBuilding($building)
                 ->lastDoneAfter($jobQueuedAt);
 
-            Log::debug('ResetDone after job queued: '.$resetIsDoneAfterThisJobHasBeenQueued);
             if ($resetIsDoneAfterThisJobHasBeenQueued) {
                 return;
             } else {
-                $closure();
+                return $closure();
             }
         }
     }

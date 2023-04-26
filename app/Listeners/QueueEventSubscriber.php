@@ -27,7 +27,7 @@ class QueueEventSubscriber
                 $displayName = get_class($event->job);
             }
 
-            $date = Carbon::now()->format('Y-m-d h:i:s');
+            $date = Carbon::now()->format('Y-m-d H:i:s');
             Log::debug("Caching payloadId: {$displayName} [{$id}] time: {$date}");
             Cache::set($id, $date);
         }

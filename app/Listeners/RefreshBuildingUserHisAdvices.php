@@ -20,9 +20,9 @@ class RefreshBuildingUserHisAdvices implements ShouldQueue
      */
     public function handle($event)
     {
-        $this->checkLastResetAt(
-            fn() => RefreshRegulationsForBuildingUser::dispatch($event->building),
-            $event->building,
-        );
+        $this->checkLastResetAt(function () use ($event) {
+            Log::debug('Closure has been executed.');
+            RefreshRegulationsForBuildingUser::dispatch($event->building);
+        }, $event->building);
     }
 }

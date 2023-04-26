@@ -37,7 +37,7 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
      */
     public function handle()
     {
-        Log::debug('handle');
+        Log::debug('Handle of refresh regulations for building user');
         $user = $this->building->user;
         $user->update(['refreshing_regulations' => true]);
 

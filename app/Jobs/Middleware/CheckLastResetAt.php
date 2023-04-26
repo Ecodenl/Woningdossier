@@ -2,11 +2,11 @@
 
 namespace App\Jobs\Middleware;
 
+use App\Jobs\ResetDossierForUser;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\DossierSettingsService;
 use Carbon\Carbon;
-use Illuminate\Queue\Jobs\SyncJob;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -35,6 +35,7 @@ class CheckLastResetAt
             $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
 
             $resetIsDoneAfterThisJobHasBeenQueued = app(DossierSettingsService::class)
+                ->forType(ResetDossierForUser::class)
                 ->forBuilding($this->building)
                 ->forInputSource(InputSource::master())
                 ->lastDoneAfter($jobQueuedAt);

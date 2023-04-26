@@ -9,7 +9,9 @@ use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
+use App\Models\Mapping;
 use App\Models\MeasureCategory;
+use App\Models\UserActionPlanAdvice;
 use App\Scopes\VisibleScope;
 use App\Services\MappingService;
 use Illuminate\Support\Collection;
@@ -67,7 +69,7 @@ abstract class CustomMeasureForm extends Component
 
     abstract public function save(int $index);
 
-    public function submit(int $index): ?CustomMeasureApplication
+    public function submit(int $index, bool $dispatchRegulationUpdate = true): ?CustomMeasureApplication
     {
         // unauth the user if this happens, this means the user is just messing around.
         abort_if(HoomdossierSession::isUserObserving(), 403);
@@ -114,12 +116,18 @@ abstract class CustomMeasureForm extends Component
             // Validate, we don't need the data
             $measureData = $validator->validate()['customMeasureApplicationsFormData'][$index];
 
+            // If the user has filled in a value for `savings_money` but then removes it again, the value will be an empty
+            // string. This is seen as nullable by Livewire, so validation passes. This will cause an exception if not
+            // caught, since the value in the database MUST be a decimal. It can't be null, nor an empty string.
+            // Null coalescence doesn't apply to an empty string, so we check if it's numeric instead.
+            $savingsMoney = $measureData['savings_money'] ?? 0;
+
             // Set update data for user action plan advice
             $updateData = [
                 'category' => 'to-do',
                 'costs' => $measureData['costs'] ?? null,
                 'input_source_id' => $this->currentInputSource->id,
-                'savings_money' => $measureData['savings_money'] ?? 0,
+                'savings_money' => is_numeric($savingsMoney) ? $savingsMoney : 0
             ];
 
             // If a hash and ID are set, then a measure has been edited
@@ -159,6 +167,8 @@ abstract class CustomMeasureForm extends Component
                 ]);
 
                 $updateData['visible'] = true;
+                $updateData['order'] = (UserActionPlanAdvice::forUser($this->building->user)
+                    ->allInputSources()->max('order') ?? -1) + 1;
             }
 
             // The default "voeg onderdeel toe" also holds data, but the name will be empty. So when name empty; do not save
@@ -188,12 +198,71 @@ abstract class CustomMeasureForm extends Component
                         ],
                         $updateData
                     );
-                CustomMeasureApplicationChanged::dispatch($from);
+
+                if ($dispatchRegulationUpdate) {
+                    CustomMeasureApplicationChanged::dispatch($from);
+                }
 
                 return $customMeasureApplication;
             }
         }
 
         return null;
+    }
+
+    protected function loadCustomMeasures()
+    {
+        // Retrieve the user's custom measures
+        $customMeasureApplications = $this->building->customMeasureApplications()
+            ->forInputSource($this->masterInputSource)
+            ->with(['userActionPlanAdvices' => fn ($q) => $q->where('user_id', $this->building->user->id)->forInputSource($this->masterInputSource)])
+            ->get();
+
+        // Set the custom measures
+        /** @var CustomMeasureApplication $customMeasureApplication */
+        foreach ($customMeasureApplications as $index => $customMeasureApplication) {
+            $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name', 'info',]);
+            $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
+
+            $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices->first();
+
+            if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
+                $costs = $userActionPlanAdvice->costs;
+
+                $this->customMeasureApplicationsFormData[$index]['costs'] = [
+                    'from' => NumberFormatter::format($costs['from'] ?? '', 1),
+                    'to' => NumberFormatter::format($costs['to'] ?? '', 1),
+                ];
+
+                $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
+
+                if ($userActionPlanAdvice->visible && property_exists($this, 'selectedCustomMeasureApplications')) {
+                    $this->selectedCustomMeasureApplications[] = (string)$index;
+                }
+            }
+
+            // As of now, a custom measure can only hold ONE mapping
+            $mapping = MappingService::init()->from($customMeasureApplication)
+                //->type(MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
+                ->resolveMapping()
+                ->first();
+            if ($mapping instanceof Mapping) {
+                $this->customMeasureApplicationsFormData[$index]['measure_category'] = optional($mapping->mappable)->id;
+            }
+        }
+
+        // Append the option to add a new application
+        $this->customMeasureApplicationsFormData[] = [
+            'id' => null,
+            'hash' => null,
+            'name' => null,
+            'info' => null,
+            'costs' => [
+                'from' => null,
+                'to' => null,
+            ],
+            'savings_money' => null,
+            'extra' => ['icon' => 'icon-tools'],
+        ];
     }
 }

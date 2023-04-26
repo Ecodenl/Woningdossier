@@ -1,4 +1,7 @@
-@component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
+@component('cooperation.frontend.layouts.components.modal', [
+    'header' => __('cooperation/frontend/tool.form.subject'),
+    'id' => $id ?? '',
+])
     <div class="flex flex-wrap mb-5">
         @component('cooperation.frontend.layouts.components.form-group', [
            'inputName' => "customMeasureApplicationsFormData.{$index}.name",
@@ -113,7 +116,7 @@
         <button wire:loading.attr="disabled" wire:click="save({{$index}})"
                 class="btn btn-purple w-full">
             <i class="icon-xs icon-plus-purple mr-3"></i>
-            @if($loop->last)
+            @if($isNew)
                 @lang('cooperation/frontend/shared.modals.add-measure.save')
             @else
                 @lang('cooperation/frontend/shared.modals.add-measure.update')

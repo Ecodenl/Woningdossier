@@ -39,7 +39,10 @@
                     @endif
                 </label>
                 @if(! $disabled)
-                    @include('livewire.cooperation.frontend.layouts.parts.custom-measure-modal')
+                    @include('livewire.cooperation.frontend.layouts.parts.custom-measure-modal', [
+                        'isNew' => $loop->last,
+                        'index' => $index,
+                    ])
                 @endif
             </div>
         @endforeach

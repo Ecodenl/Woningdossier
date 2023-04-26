@@ -8,10 +8,8 @@ use App\Helpers\NumberFormatter;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
-use App\Models\Mapping;
 use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
-use App\Services\MappingService;
 use Illuminate\Support\Arr;
 
 class CustomChanges extends CustomMeasureForm
@@ -189,65 +187,7 @@ class CustomChanges extends CustomMeasureForm
 
         // Only set custom measures if we're setting small types
         if ($this->type === CooperationMeasureApplicationHelper::SMALL_MEASURE) {
-            // Retrieve the user's custom measures
-            $customMeasureApplications = $this->building->customMeasureApplications()
-                ->forInputSource($this->masterInputSource)
-                ->with(['userActionPlanAdvices' => fn ($q) => $q->where('user_id', $this->building->user->id)->forInputSource($this->masterInputSource)])
-                ->get();
-
-            $measures = [];
-
-            // Set the custom measures
-            /** @var CustomMeasureApplication $customMeasureApplication */
-            foreach ($customMeasureApplications as $index => $customMeasureApplication) {
-                $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name', 'info',]);
-                $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
-
-                $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices->first();
-
-                if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
-                    $costs = $userActionPlanAdvice->costs;
-
-                    $this->customMeasureApplicationsFormData[$index]['costs'] = [
-                        'from' => NumberFormatter::format($costs['from'] ?? '', 1),
-                        'to' => NumberFormatter::format($costs['to'] ?? '', 1),
-                    ];
-
-                    $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
-
-                    if ($userActionPlanAdvice->visible) {
-                        $this->selectedCustomMeasureApplications[] = (string)$index;
-                    }
-                }
-
-                // As of now, a custom measure can only hold ONE mapping
-                $mapping = MappingService::init()->from($customMeasureApplication)
-                    //->type(MappingHelper::TYPE_CUSTOM_MEASURE_APPLICATION_MEASURE_CATEGORY)
-                    ->resolveMapping()
-                    ->first();
-                if ($mapping instanceof Mapping) {
-                    $this->customMeasureApplicationsFormData[$index]['measure_category'] = optional($mapping->mappable)->id;
-                }
-            }
-
-            // Set mapped measures
-            if (empty($this->measures)) {
-                $this->measures = $measures;
-            }
-
-            // Append the option to add a new application
-            $this->customMeasureApplicationsFormData[] = [
-                'id' => null,
-                'hash' => null,
-                'name' => null,
-                'info' => null,
-                'costs' => [
-                    'from' => null,
-                    'to' => null,
-                ],
-                'savings_money' => null,
-                'extra' => ['icon' => 'icon-tools'],
-            ];
+            $this->loadCustomMeasures();
         }
 
         // We're done, let's define our selected state

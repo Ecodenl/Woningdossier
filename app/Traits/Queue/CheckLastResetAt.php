@@ -2,7 +2,10 @@
 
 namespace App\Traits\Queue;
 
+use App\Jobs\ResetDossierForUser;
+use App\Models\InputSource;
 use App\Services\DossierSettingsService;
+use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -20,17 +23,27 @@ trait CheckLastResetAt
 
     public function checkLastResetAt(\Closure $closure, $building)
     {
-        if (!empty($this->job->payload()))
-        if ($this->job->connection !== "sync") {
-            $id = $this->job->job->payload()['id'];
-            Log::debug("Checking for reset payloadId: ".$job->job->payload()['displayName']." [{$id}] cached time: ".Cache::get($id));
+        if ($this->job->getConnectionName() !== "sync") {
+            $payload = $this->job->payload();
+            $id = $payload['id'];
+            $displayName = $payload['displayName'];
 
-            $this->dossierSettingsService
-                ->forInputSource()
+            Log::debug("Checking for reset payloadId: {$displayName} [{$id}] cached time: ".Cache::get($id));
+            $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
+
+            $resetIsDoneAfterThisJobHasBeenQueued = $this
+                ->dossierSettingsService
+                ->forType(ResetDossierForUser::class)
+                ->forInputSource(InputSource::master())
                 ->forBuilding($building)
-                ->lastDoneBefore();
-            $next($job);
-            $closure();
+                ->lastDoneAfter($jobQueuedAt);
+
+            Log::debug('ResetDone after job queued: '.$resetIsDoneAfterThisJobHasBeenQueued);
+            if ($resetIsDoneAfterThisJobHasBeenQueued) {
+                return;
+            } else {
+                $closure();
+            }
         }
     }
 

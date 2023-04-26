@@ -3,6 +3,7 @@
 namespace App\Jobs\Middleware;
 
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Services\DossierSettingsService;
 use Carbon\Carbon;
 use Illuminate\Queue\Jobs\SyncJob;
@@ -29,15 +30,21 @@ class CheckLastResetAt
     {
         if ($job->connection !== "sync") {
             $id = $job->job->payload()['id'];
-            Log::debug("Checking for reset payloadId: ".$job->job->payload()['displayName']." [{$id}] cached time: ".Cache::get($id));
+            $displayName = get_class($job->job);
+            Log::debug("Checking for reset payloadId: {$displayName} [{$id}] cached time: ".Cache::get($id));
+            $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
 
-    //        dd($x->getDatabaseJob());
-    //        $dossierSettingService = app(DossierSettingsService::class)
-    //            ->forBuilding($this->building)
-    //            ->lastDoneBefore();
-            $next($job);
+            $resetIsDoneAfterThisJobHasBeenQueued = app(DossierSettingsService::class)
+                ->forBuilding($this->building)
+                ->forInputSource(InputSource::master())
+                ->lastDoneAfter($jobQueuedAt);
+
+            Log::debug('ResetDone after job queued: '.$resetIsDoneAfterThisJobHasBeenQueued);
+            if ($resetIsDoneAfterThisJobHasBeenQueued) {
+                return;
+            } else {
+                $next($job);
+            }
         }
-
-        Log::debug('Job done');
     }
 }

@@ -7,6 +7,7 @@ use App\Helpers\MyRegulationHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolHelper;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\CooperationMeasureApplication;
 use App\Models\FileStorage;
 use App\Models\FileType;
@@ -302,5 +303,10 @@ class PdfReport implements ShouldQueue
         $this->fileStorage->delete();
 
         report($exception);
+    }
+
+    public function middleware(): array
+    {
+        return [new CheckLastResetAt($this->user->building)];
     }
 }

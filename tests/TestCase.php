@@ -12,6 +12,6 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Artisan::call('cache:clear');
+        $this->artisan('cache:clear');
     }
 }

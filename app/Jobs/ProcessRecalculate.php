@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Middleware\CheckLastResetAt;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,7 +28,6 @@ class ProcessRecalculate implements ShouldQueue
      */
     public function handle()
     {
-        dispatch()
         Log::debug('Processing recalculates...');
     }
 }

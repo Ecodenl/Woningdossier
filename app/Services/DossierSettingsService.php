@@ -20,16 +20,32 @@ class DossierSettingsService
         return $this;
     }
 
-    public function justDone(string $type): void
+    public function justDone(): void
     {
         $where = [
             'building_id' => $this->building->id,
+            'type' => $this->type,
         ];
         if ($this->inputSource instanceof InputSource) {
             $where['input_source_id'] = $this->inputSource->id;
         }
+
         DossierSetting::withoutGlobalScopes()
             ->updateOrCreate($where, ['done_at' => Carbon::now()]);
+    }
+
+    public function lastDoneAfter(Carbon $datetime)
+    {
+        $dossierSetting = DossierSetting::withoutGlobalScopes()
+            ->forInputSource($this->inputSource)
+            ->forBuilding($this->building)
+            ->where('type', $this->type)
+            ->first();
+
+        if ($datetime->isBefore($dossierSetting->done_at)) {
+            return true;
+        }
+        return false;
     }
 }
 

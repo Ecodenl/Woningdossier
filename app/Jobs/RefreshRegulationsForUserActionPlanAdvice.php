@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\Queue;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\UserActionPlanAdvice;
@@ -67,5 +68,10 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
     public function failed(Throwable $exception)
     {
         $this->deactivateNotification();
+    }
+
+    public function middleware(): array
+    {
+        return [new CheckLastResetAt($this->userActionPlanAdvice->user->building)];
     }
 }

@@ -3,19 +3,14 @@
 namespace App\Listeners;
 
 use App\Jobs\RefreshRegulationsForBuildingUser;
+use App\Traits\Queue\CheckLastResetAt;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
 
 class RefreshBuildingUserHisAdvices implements ShouldQueue
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-    }
+    use CheckLastResetAt;
 
     /**
      * Handle the event.
@@ -25,6 +20,9 @@ class RefreshBuildingUserHisAdvices implements ShouldQueue
      */
     public function handle($event)
     {
-        RefreshRegulationsForBuildingUser::dispatch($event->building);
+        $this->checkLastResetAt(
+            fn() => RefreshRegulationsForBuildingUser::dispatch($event->building),
+            $event->building,
+        );
     }
 }

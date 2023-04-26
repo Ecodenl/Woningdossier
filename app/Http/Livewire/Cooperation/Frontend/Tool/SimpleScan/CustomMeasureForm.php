@@ -40,8 +40,8 @@ abstract class CustomMeasureForm extends Component
             'customMeasureApplicationsFormData.*.measure_category' => [
                 'nullable', 'exists:measure_categories,id',
             ],
-            'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
-            'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
+            'customMeasureApplicationsFormData.*.costs.from' => 'required_if:customMeasureApplicationsFormData.*.show_costs,1|numeric|min:0',
+            'customMeasureApplicationsFormData.*.costs.to' => 'nullable|numeric|gte:customMeasureApplicationsFormData.*.costs.from',
             'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric|max:999999',
         ];
     }
@@ -59,6 +59,7 @@ abstract class CustomMeasureForm extends Component
             'customMeasureApplicationsFormData.*.name' => $globalAttributeTranslations['custom_measure_application.name'],
             'customMeasureApplicationsFormData.*.info' => $globalAttributeTranslations['custom_measure_application.info'],
             'customMeasureApplicationsFormData.*.measure_category' => $globalAttributeTranslations['custom_measure_application.measure_category'],
+            'customMeasureApplicationsFormData.*.show_costs' => $globalAttributeTranslations['custom_measure_application.show_costs'],
             'customMeasureApplicationsFormData.*.costs.from' => $globalAttributeTranslations['custom_measure_application.costs.from'],
             'customMeasureApplicationsFormData.*.costs.to' => $globalAttributeTranslations['custom_measure_application.costs.to'],
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
@@ -115,6 +116,10 @@ abstract class CustomMeasureForm extends Component
 
             // Validate, we don't need the data
             $measureData = $validator->validate()['customMeasureApplicationsFormData'][$index];
+
+            if (! $this->customMeasureApplicationsFormData[$index]['show_costs']) {
+                $measureData['costs'] = null;
+            }
 
             // If the user has filled in a value for `savings_money` but then removes it again, the value will be an empty
             // string. This is seen as nullable by Livewire, so validation passes. This will cause an exception if not
@@ -223,6 +228,7 @@ abstract class CustomMeasureForm extends Component
         foreach ($customMeasureApplications as $index => $customMeasureApplication) {
             $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name', 'info',]);
             $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
+            $this->customMeasureApplicationsFormData[$index]['show_costs'] = '1';
 
             $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices->first();
 
@@ -234,10 +240,14 @@ abstract class CustomMeasureForm extends Component
                     'to' => NumberFormatter::format($costs['to'] ?? '', 1),
                 ];
 
+                if (is_null($costs)) {
+                    $this->customMeasureApplicationsFormData[$index]['show_costs'] = false;
+                }
+
                 $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
 
                 if ($userActionPlanAdvice->visible && property_exists($this, 'selectedCustomMeasureApplications')) {
-                    $this->selectedCustomMeasureApplications[] = (string)$index;
+                    $this->selectedCustomMeasureApplications[] = (string) $index;
                 }
             }
 
@@ -257,6 +267,7 @@ abstract class CustomMeasureForm extends Component
             'hash' => null,
             'name' => null,
             'info' => null,
+            'show_costs' => '1',
             'costs' => [
                 'from' => null,
                 'to' => null,

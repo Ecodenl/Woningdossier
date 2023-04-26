@@ -7,66 +7,44 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
-use App\Helpers\Wrapper;
+use App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\CustomMeasureForm;
 use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
-use App\Models\MeasureCategory;
 use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
-use App\Services\MappingService;
 use App\Services\Models\NotificationService;
 use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Collection;
 use App\Helpers\Arr;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Livewire\Component;
 
-class Form extends Component
+class Form extends CustomMeasureForm
 {
     use AuthorizesRequests;
 
     public array $cards = [
-        UserActionPlanAdviceService::CATEGORY_COMPLETE => [
-
-        ],
-        UserActionPlanAdviceService::CATEGORY_TO_DO => [
-
-        ],
-        UserActionPlanAdviceService::CATEGORY_LATER => [
-
-        ],
+        UserActionPlanAdviceService::CATEGORY_COMPLETE => [],
+        UserActionPlanAdviceService::CATEGORY_TO_DO => [],
+        UserActionPlanAdviceService::CATEGORY_LATER => [],
     ];
 
     public array $hiddenCards = [
-        UserActionPlanAdviceService::CATEGORY_COMPLETE => [
-
-        ],
-        UserActionPlanAdviceService::CATEGORY_TO_DO => [
-
-        ],
-        UserActionPlanAdviceService::CATEGORY_LATER => [
-
-        ],
+        UserActionPlanAdviceService::CATEGORY_COMPLETE => [],
+        UserActionPlanAdviceService::CATEGORY_TO_DO => [],
+        UserActionPlanAdviceService::CATEGORY_LATER => [],
     ];
 
-    public Building $building;
-
-    public InputSource $masterInputSource;
-    public InputSource $currentInputSource;
     public InputSource $residentInputSource;
     public InputSource $coachInputSource;
 
     public Scan $scan;
-    public array $custom_measure_application = [];
-    public Collection $measures;
 
     // Details
     public float $expectedInvestment = 0;
@@ -81,141 +59,15 @@ class Form extends Component
     // Notifications
     public array $notifications = [];
 
-    protected function rules(): array
-    {
-        return [
-            'custom_measure_application.name' => 'required',
-            'custom_measure_application.info' => 'required',
-            'custom_measure_application.measure_category' => [
-                'nullable', 'exists:measure_categories,id',
-            ],
-            'custom_measure_application.costs.from' => 'required|numeric|min:0',
-            'custom_measure_application.costs.to' => 'required|numeric|gte:custom_measure_application.costs.from',
-            'custom_measure_application.savings_money' => 'nullable|numeric|max:999999',
-        ];
-    }
-
-    private $calculationMap = [
-        'comfort' => [
-            [
-                'condition' => [
-                    'to' => 5,
-                ],
-                'value' => 1,
-            ],
-            [
-                'condition' => [
-                    'from' => 5,
-                    'to' => 10,
-                ],
-                'value' => 2,
-            ],
-            [
-                'condition' => [
-                    'from' => 10,
-                    'to' => 15,
-                ],
-                'value' => 3,
-            ],
-            [
-                'condition' => [
-                    'from' => 15,
-                    'to' => 20,
-                ],
-                'value' => 4,
-            ],
-            [
-                'condition' => [
-                    'from' => 20,
-                ],
-                'value' => 5,
-            ],
-        ],
-        'renewable' => [
-            [
-                'condition' => [
-                    'to' => 15,
-                ],
-                'value' => 1,
-            ],
-            [
-                'condition' => [
-                    'from' => 15,
-                    'to' => 30,
-                ],
-                'value' => 2,
-            ],
-            [
-                'condition' => [
-                    'from' => 30,
-                    'to' => 45,
-                ],
-                'value' => 3,
-            ],
-            [
-                'condition' => [
-                    'from' => 45,
-                    'to' => 60,
-                ],
-                'value' => 4,
-            ],
-            [
-                'condition' => [
-                    'from' => 60,
-                ],
-                'value' => 5,
-            ],
-        ],
-        'investment' => [
-            [
-                'condition' => [
-                    'to' => 0.5,
-                ],
-                'value' => 1,
-            ],
-            [
-                'condition' => [
-                    'from' => 0.5,
-                    'to' => 2.5,
-                ],
-                'value' => 2,
-            ],
-            [
-                'condition' => [
-                    'from' => 2.5,
-                    'to' => 4.5,
-                ],
-                'value' => 3,
-            ],
-            [
-                'condition' => [
-                    'from' => 4.5,
-                    'to' => 6.5,
-                ],
-                'value' => 4,
-            ],
-            [
-                'condition' => [
-                    'from' => 6.5,
-                ],
-                'value' => 5,
-            ],
-        ],
-    ];
-
     public function mount(Building $building)
     {
-        $this->building = $building;
-        // Set needed input sources
-        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $this->currentInputSource = HoomdossierSession::getInputSource(true);
-
+        $this->build($building);
+        
         $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
 
-        $this->measures = MeasureCategory::all();
-
         // Set cards
+        $this->loadCustomMeasures();
         $this->loadVisibleCards();
         $this->loadHiddenCards();
         $this->recalculate();
@@ -226,81 +78,12 @@ class Form extends Component
         return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.form');
     }
 
-    public function updated($field)
+    public function save(int $index)
     {
-        $this->validateOnly($field, $this->rules());
-    }
+        $customMeasureApplication = $this->submit($index, false);
+        $this->loadCustomMeasures();
 
-    public function submit()
-    {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
-
-        // Before we can validate, we must convert human format to proper format
-        // TODO: Check for later; perhaps we should check if the variable has 1 comma or 2 or more dots to define the used format and set the str_replace only if it's a Dutch format
-        $costs = $this->custom_measure_application['costs'] ?? [];
-        $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
-        $costs['to'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['to'] ?? ''), 2);
-        $this->custom_measure_application['costs'] = $costs;
-        $this->custom_measure_application['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '',
-            $this->custom_measure_application['savings_money'] ?? 0), 2);
-
-        $validator = Validator::make([
-            'custom_measure_application' => $this->custom_measure_application
-        ], $this->rules());
-
-        if ($validator->fails()) {
-            // Validator failed, let's put it back as the user format
-            $costs['from'] = NumberFormatter::formatNumberForUser($costs['from']);
-            $costs['to'] = NumberFormatter::formatNumberForUser($costs['to']);
-            $this->custom_measure_application['costs'] = $costs;
-            $this->custom_measure_application['savings_money'] = NumberFormatter::formatNumberForUser($this->custom_measure_application['savings_money']);
-        }
-
-        $measureData = $validator->validate()['custom_measure_application'];
-        // If the user has filled in a value for `savings_money` but then removes it again, the value will be an empty
-        // string. This is seen as nullable by Livewire, so validation passes. This will cause an exception if not
-        // caught, since the value in the database MUST be a decimal. It can't be null, nor an empty string.
-        // Null coalescence doesn't apply to an empty string, so we check if it's numeric instead.
-        $measureData['savings_money'] = is_numeric($measureData['savings_money']) ? $measureData['savings_money'] : 0;
-
-        // Create custom measure
-        $customMeasureApplication = CustomMeasureApplication::create([
-            'building_id' => $this->building->id,
-            'input_source_id' => $this->currentInputSource->id,
-            'hash' => Str::uuid(),
-            'name' => ['nl' => $measureData['name']],
-            'info' => ['nl' => $measureData['info']],
-        ]);
-
-        // !important! this has to be done before the userActionPlanAdvice relation is made
-        // otherwise the observer will fire when the mapping hasn't been done yet.
-
-        // We read from the master. Therefore we need to sync to the master also.
         $from = $customMeasureApplication->getSibling($this->masterInputSource);
-        $measureCategory = MeasureCategory::find($measureData['measure_category'] ?? null);
-        if ($measureCategory instanceof MeasureCategory) {
-            MappingService::init()->from($from)->sync([$measureCategory]);
-        }
-
-        $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
-
-        // Get order based on current total (we don't have to add or subtract since count gives us the total, which
-        // is equal to indexable order + 1)
-        $order = count($this->cards[$category]);
-
-        // Build user advice
-        $customMeasureApplication->userActionPlanAdvices()
-            ->create(
-                [
-                    'user_id' => $this->building->user->id,
-                    'input_source_id' => $this->currentInputSource->id,
-                    'category' => $category,
-                    'visible' => true,
-                    'order' => $order,
-                    'costs' => $measureData['costs'],
-                    'savings_money' => $measureData['savings_money'],
-                ],
-            );
 
         // All cards are shown by master source. We will fetch the master, as we need it for the card.
         $masterAdvice = $from->userActionPlanAdvices()->forInputSource($this->masterInputSource)->first();
@@ -311,9 +94,6 @@ class Form extends Component
         $this->reload($masterAdvice);
 
         $this->dispatchBrowserEvent('close-modal');
-        // Reset the modal
-        $this->custom_measure_application = [];
-        $this->dispatchBrowserEvent('saved-measure');
 
         $this->recalculate();
     }
@@ -816,6 +596,10 @@ class Form extends Component
                     $advisable = $advice->userActionPlanAdvisable()
                         ->forInputSource($this->masterInputSource)
                         ->first();
+
+                    $index = array_key_first(Arr::where($this->customMeasureApplicationsFormData, function ($measure) use ($advisable) {
+                        return $measure['id'] === $advisable->id;
+                    }));
                 }
 
                 $cards[$category][$order] = [
@@ -823,6 +607,10 @@ class Form extends Component
                     'icon' => $advisable->extra['icon'] ?? 'icon-tools',
                     'info' => nl2br($advisable->info),
                 ];
+
+                if (isset($index)) {
+                    $cards[$category][$order]['index'] = $index;
+                }
             }
 
             $cards[$category][$order]['has_user_costs'] = $hasUserCosts;
@@ -868,4 +656,112 @@ class Form extends Component
             ]
         ];
     }
+
+    private array $calculationMap = [
+        'comfort' => [
+            [
+                'condition' => [
+                    'to' => 5,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 5,
+                    'to' => 10,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 10,
+                    'to' => 15,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 15,
+                    'to' => 20,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 20,
+                ],
+                'value' => 5,
+            ],
+        ],
+        'renewable' => [
+            [
+                'condition' => [
+                    'to' => 15,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 15,
+                    'to' => 30,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 30,
+                    'to' => 45,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 45,
+                    'to' => 60,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 60,
+                ],
+                'value' => 5,
+            ],
+        ],
+        'investment' => [
+            [
+                'condition' => [
+                    'to' => 0.5,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 0.5,
+                    'to' => 2.5,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 2.5,
+                    'to' => 4.5,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 4.5,
+                    'to' => 6.5,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 6.5,
+                ],
+                'value' => 5,
+            ],
+        ],
+    ];
 }

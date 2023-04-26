@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\SubStep;
@@ -85,5 +86,10 @@ class CompleteRelatedSubStep implements ShouldQueue
             ScanFlowService::init($subStep->step->scan, $building, $inputSource)
                 ->evaluateSubSteps($subStepsToCheck, $evaluator);
         }
+    }
+
+    public function middleware(): array
+    {
+        return [new CheckLastResetAt($this->building)];
     }
 }

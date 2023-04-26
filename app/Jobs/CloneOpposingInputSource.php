@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\Cloning\CloneDataService;
@@ -50,5 +51,10 @@ class CloneOpposingInputSource implements ShouldQueue
         $this->deactivateNotification();
 
         report($exception);
+    }
+
+    public function middleware(): array
+    {
+        return [new CheckLastResetAt($this->building)];
     }
 }

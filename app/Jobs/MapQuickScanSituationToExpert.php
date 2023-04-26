@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Calculations\HeatPump;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\InputSource;
@@ -265,5 +266,10 @@ class MapQuickScanSituationToExpert implements ShouldQueue
             ->building($this->building)
             ->currentInputSource($this->inputSource)
             ->save($answer);
+    }
+
+    public function middleware(): array
+    {
+        return [new CheckLastResetAt($this->building)];
     }
 }

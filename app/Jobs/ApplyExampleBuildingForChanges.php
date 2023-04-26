@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\ExampleBuildingHelper;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingType;
@@ -221,5 +222,10 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             $this->building,
             InputSource::findByShort(InputSource::EXAMPLE_BUILDING),
         );
+    }
+
+    public function middleware(): array
+    {
+        return [new CheckLastResetAt($this->building)];
     }
 }

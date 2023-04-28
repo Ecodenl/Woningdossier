@@ -1,23 +1,28 @@
-export default (addressUrl, tailwind = true) => ({
+export default (checks, tailwind = true) => ({
     showPossibleError: false,
-    apiUrl: addressUrl,
+    checks: checks,
 
+    init() {
+        if (! this.checks instanceof Object) {
+            this.checks = {};
+        }
+    },
     postcode: {
         ['x-ref']: 'postcode',
         ['x-on:change']() {
-            this.getAddressData();
+            this.performChecks();
         },
     },
     houseNumber: {
         ['x-ref']: 'houseNumber',
         ['x-on:change']() {
-            this.getAddressData();
+            this.performChecks();
         },
     },
     houseNumberExtension: {
         ['x-ref']: 'houseNumberExtension',
         ['x-on:change']() {
-            this.getAddressData();
+            this.performChecks();
         },
     },
     city: {
@@ -29,7 +34,15 @@ export default (addressUrl, tailwind = true) => ({
     addressId: {
         ['x-ref']: 'addressId',
     },
-    getAddressData() {
+    performChecks() {
+        if (Object.hasOwn(this.checks, 'correct_address')) {
+            this.getAddressData(this.checks['correct_address']);
+        }
+        if (Object.hasOwn(this.checks, 'duplicates')) {
+            this.checkDuplicates(this.checks['duplicates']);
+        }
+    },
+    getAddressData(apiUrl) {
         // Get inputs from refs
         let postcode = this.$refs['postcode'];
         let houseNumber = this.$refs['houseNumber'];
@@ -38,14 +51,7 @@ export default (addressUrl, tailwind = true) => ({
         let street = this.$refs['street'];
         let addressId = this.$refs['addressId'];
 
-        let url = null;
-        if (this.apiUrl) {
-            try {
-                url = new URL(this.apiUrl);
-            } catch (e) {
-                this.apiUrl = null
-            }
-        }
+        let url = this.getUrl(apiUrl);
 
         // We can't do anything if we don't have these
         if (typeof postcode !== 'undefined' && typeof houseNumber !== 'undefined') {
@@ -112,6 +118,15 @@ export default (addressUrl, tailwind = true) => ({
             }
         }
     },
+    checkDuplicates(apiUrl) {
+        let postcode = this.$refs['postcode'];
+        let houseNumber = this.$refs['houseNumber'];
+        let houseNumberExtension = this.$refs['houseNumberExtension'];
+
+        let url = this.getUrl(apiUrl);
+
+        // TODO:
+    },
     setValue(input, value) {
         if (typeof input !== 'undefined' && input && value) {
             input.value = value;
@@ -145,5 +160,17 @@ export default (addressUrl, tailwind = true) => ({
                 }
             }
         }
+    },
+    getUrl(apiUrl) {
+        let url = null;
+        if (apiUrl) {
+            try {
+                url = new URL(apiUrl);
+            } catch (e) {
+                //apiUrl = null
+            }
+        }
+
+        return url;
     }
 });

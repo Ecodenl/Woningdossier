@@ -75,11 +75,11 @@ class Cooperation extends Model
     /**
      * Return the coaches from the current cooperation.
      *
-     * @return $this
+     * @return \Illuminate\Support\Collection
      */
-    public function getCoaches()
+    public function getCoaches(): Collection
     {
-        return $this->users()->forAllCooperations()->role('coach');
+        return $this->users()->forAllCooperations()->role('coach')->get();
     }
 
     /**

@@ -57,7 +57,7 @@ class ToolQuestionsTableSeeder extends Seeder
 
         // Wall insulation
         $wallInsulation = Element::findByShort('wall-insulation');
-        $energyLabels = EnergyLabel::ordered()->get();
+        $energyLabels = EnergyLabel::ordered('desc')->get();
         $comfortLevelsTapWater = ComfortLevelTapWater::where('calculate_value', '<=', 3)->get();
 
         // Insulated glazing
@@ -373,6 +373,9 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                         '?' => [
                             'icon' => 'icon-label-unknown',
+                        ],
+                        'X' => [
+                            'icon' => 'icon-label-none',
                         ],
                     ],
                 ],

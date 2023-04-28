@@ -119,7 +119,6 @@
                 // scroll to top off page for less clunky behaviour
                 window.scrollTo(0, 0);
 
-                compareInputSourceValues();
                 whenObservingDisableInputs();
             });
 
@@ -159,66 +158,8 @@
                 }
             });
 
-
-            function isUserComparingInputSources() {
-                let isUserComparingInputSources = '{{\App\Helpers\HoomdossierSession::isUserComparingInputSources()}}';
-                return !!isUserComparingInputSources;
-            }
-
             function inputType(input) {
                 return input.prop('type');
-            }
-
-            function compareInputSourceValues() {
-                if (isUserComparingInputSources()) {
-                    {{-- TODO: Check these classes --}}
-                    var formGroups = $('.input-source-group');
-
-                    $(formGroups).each(function () {
-                        var formGroup = $(this);
-                        var ul = formGroup.find('ul');
-                        // get the value from the current user
-                        var userInputValues = [];
-                        var input = formGroup.find('input');
-
-                        switch (inputType(input)) {
-                            case 'radio':
-                                userInputValues.push(formGroup.find('input[type=radio]:checked').val());
-                                break;
-                            case 'checkbox':
-                                formGroup.find('input[type=checkbox]:checked').each(function () {
-                                    userInputValues.push($(this).val());
-                                });
-                                break;
-                            default:
-                                userInputValues.push(formGroup.find('.form-control').val());
-                                break;
-                        }
-
-                        var bestCssUGGSDesignStyle = {'background-color': 'red', 'color': 'white'};
-                        // get the value from the compare input source
-                        var compareInputSourceValue = ul.find('li[data-input-source-short="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}"]').attr('data-input-value');
-
-                        if (typeof compareInputSourceValue !== "undefined") {
-
-                            if (!userInputValues.includes(compareInputSourceValue)) {
-
-                                switch (inputType(input)) {
-                                    case 'radio':
-                                        input.parent().css(bestCssUGGSDesignStyle);
-                                        break;
-                                    case 'checkbox':
-                                        input.parent().css(bestCssUGGSDesignStyle);
-                                        break;
-                                    default:
-                                        formGroup.find('.form-control').css(bestCssUGGSDesignStyle);
-                                        break;
-                                }
-                            }
-                        }
-
-                    })
-                }
             }
         </script>
         <script src="{{ asset('js/are-you-sure.js') }}"></script>

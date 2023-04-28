@@ -272,7 +272,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             Route::prefix('admin')->name('admin.')->middleware('role:cooperation-admin|coordinator|coach|super-admin|superuser', 'restore-building-session-if-filling-for-other-building')->group(function () {
                 Route::get('/', [Cooperation\Admin\AdminController::class, 'index'])->name('index');
-                Route::get('stop-session', [Cooperation\Admin\AdminController::class, 'stopSession'])->name('stop-session');
+                Route::get('stop-session', [Cooperation\Admin\AdminController::class, 'stopSession'])
+                    ->withoutMiddleware('restore-building-session-if-filling-for-other-building')
+                    ->name('stop-session');
                 Route::get('/switch-role/{role}', [Cooperation\Admin\SwitchRoleController::class, 'switchRole'])->name('switch-role');
 
                 Route::prefix('roles')->name('roles.')->group(function () {

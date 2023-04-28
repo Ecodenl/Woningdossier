@@ -333,7 +333,5 @@ class HoomdossierSession extends Session
         static::setBuilding($building);
         static::setIsObserving(false);
         static::setIsUserComparingInputSources(false);
-
-        return redirect(RoleHelper::getUrlByRole($role));
     }
 }

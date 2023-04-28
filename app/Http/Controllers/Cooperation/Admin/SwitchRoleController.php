@@ -34,12 +34,12 @@ class SwitchRoleController extends Controller
             return redirect()->route('cooperation.admin.index');
         }
 
-        $redirect = HoomdossierSession::switchRole($building, $role);
+        HoomdossierSession::switchRole($building, $role);
 
         if ($request->has('return')) {
             return redirect()->back();
         }
-        
-        return $redirect;
+
+        return redirect(RoleHelper::getUrlByRole($role));
     }
 }

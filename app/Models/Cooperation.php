@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Model;
@@ -101,12 +102,15 @@ class Cooperation extends Model
     // Relations
     public function users(): HasMany
     {
+        //TODO: Check if we can do this without cooperation global scope; the relation is called from the
+        // cooperation so a session based cooperation scope seems pointless.
         return $this->hasMany(User::class);
     }
 
     public function buildings(): HasManyThrough
     {
-        return $this->hasManyThrough(Building::class, User::class);
+        return $this->hasManyThrough(Building::class, User::class)
+            ->withoutGlobalScope(CooperationScope::class);
     }
 
     public function scans(): BelongsToMany

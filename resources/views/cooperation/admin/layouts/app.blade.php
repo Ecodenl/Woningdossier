@@ -61,7 +61,7 @@
         @endif
 
         <div class="row">
-            @if(($menu ?? false))
+            @if(($menu ?? true))
                 @include('cooperation.admin.layouts.sidebar-menu')
                 <div class="col-md-10">
                     @yield('content')

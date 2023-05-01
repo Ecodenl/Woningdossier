@@ -1,5 +1,6 @@
 export default (checks, tailwind = true) => ({
-    showPossibleError: false,
+    showPostalCodeError: false,
+    showDuplicateError: false,
     checks: checks,
 
     init() {
@@ -52,80 +53,57 @@ export default (checks, tailwind = true) => ({
         let addressId = this.$refs['addressId'];
 
         let url = this.getUrl(apiUrl);
+        url = this.appendAddressData(url);
 
-        // We can't do anything if we don't have these
-        if (typeof postcode !== 'undefined' && typeof houseNumber !== 'undefined') {
-            // We need these to make ajax calls
-            if ((window.XMLHttpRequest || window.ActiveXObject) && url) {
-                let request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP");
-                // We need to be able to access this context
-                let context = this;
-                request.onreadystatechange =function () {
-                    // Ajax finished and ready
-                    if (request.readyState == window.XMLHttpRequest.DONE) {
-                        context.removeError(postcode);
-                        context.removeError(houseNumber);
-                        context.removeError(city);
-                        context.removeError(street);
-                        context.showPossibleError = false;
+        let context = this;
+        performRequest({
+            'url': url,
+            'done': function (request) {
+                context.removeError(postcode);
+                context.removeError(houseNumber);
+                context.removeError(city);
+                context.removeError(street);
+                context.showPostalCodeError = false;
 
-                        let response = request.response;
+                let response = request.response;
 
-                        // If the request was successful, we fill the data in the field
-                        if (request.status == 200) {
-                            if (response.postal_code === '') {
-                                context.showPossibleError = true;
-                            }
+                // If the request was successful, we fill the data in the field
+                if (request.status == 200) {
+                    if (response.postal_code === '') {
+                        context.showPostalCodeError = true;
+                    }
 
-                            context.setValue(houseNumber, response.number)
-                            context.setValue(houseNumberExtension, response.house_number_extension)
-                            context.setValue(street, response.street)
-                            context.setValue(city, response.city)
-                            context.setValue(addressId, response.id)
+                    context.setValue(houseNumber, response.number)
+                    context.setValue(houseNumberExtension, response.house_number_extension)
+                    context.setValue(street, response.street)
+                    context.setValue(city, response.city)
+                    context.setValue(addressId, response.id)
+                } else {
+                    // Else we add errors
+                    let errors = response.errors;
+                    for (let error in errors) {
+                        if (errors.hasOwnProperty(error)) {
+                            let errorMessage = errors[error][0]; // Grab first message
 
-                        } else {
-                            // Else we add errors
-                            let errors = response.errors;
-                            for (let error in errors) {
-                                if(errors.hasOwnProperty(error)) {
-                                    let errorMessage = errors[error][0]; // Grab first message
-
-                                    let input = document.querySelector(`input[name="${error}"]`);
-                                    context.appendError(input, errorMessage);
-                                }
-                            }
+                            let input = document.querySelector(`input[name="${error}"]`);
+                            context.appendError(input, errorMessage);
                         }
                     }
-                };
-
-                let params = url.searchParams;
-
-                if (postcode.value) {
-                    params.append('postal_code', postcode.value)
                 }
-
-                if (houseNumber.value) {
-                    params.append('number', houseNumber.value)
-                }
-
-                if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
-                    params.append('house_number_extension', houseNumberExtension.value)
-                }
-                request.open('GET', url.toString());
-                request.setRequestHeader('Accept', 'application/json');
-                request.responseType = 'json';
-                request.send();
             }
-        }
+        });
     },
     checkDuplicates(apiUrl) {
-        let postcode = this.$refs['postcode'];
-        let houseNumber = this.$refs['houseNumber'];
-        let houseNumberExtension = this.$refs['houseNumberExtension'];
-
         let url = this.getUrl(apiUrl);
+        url = this.appendAddressData(url);
 
-        // TODO:
+        let context = this;
+        performRequest({
+            'url': url,
+            'done': function (request) {
+                context.showDuplicateError = request.response.count > 0;
+            }
+        });
     },
     setValue(input, value) {
         if (typeof input !== 'undefined' && input && value) {
@@ -142,7 +120,7 @@ export default (checks, tailwind = true) => ({
             if (! input.parentElement.querySelector('.form-error-label')) {
                 let newError = document.createElement(tag);
                 newError.appendChild(document.createTextNode(text));
-                newError.classList.add('pico-address-error', className);
+                newError.classList.add('address-error', className);
 
                 input.parentElement.appendChild(newError);
                 input.parentElement.classList.add(parentClassName);
@@ -151,7 +129,7 @@ export default (checks, tailwind = true) => ({
     },
     removeError(input) {
         if (typeof input !== 'undefined' && input) {
-            let errors = input.parentElement.getElementsByClassName('pico-address-error');
+            let errors = input.parentElement.getElementsByClassName('address-error');
             if (errors.length > 0) {
                 input.parentElement.classList.remove((tailwind ? 'form-error' : 'has-error'));
 
@@ -168,6 +146,27 @@ export default (checks, tailwind = true) => ({
                 url = new URL(apiUrl);
             } catch (e) {
                 //apiUrl = null
+            }
+        }
+
+        return url;
+    },
+    appendAddressData(url) {
+        if (url instanceof URL) {
+            let postcode = this.$refs['postcode'];
+            let houseNumber = this.$refs['houseNumber'];
+            let houseNumberExtension = this.$refs['houseNumberExtension'];
+
+            if (postcode.value) {
+                url.searchParams.append('postal_code', postcode.value)
+            }
+
+            if (houseNumber.value) {
+                url.searchParams.append('number', houseNumber.value)
+            }
+
+            if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
+                url.searchParams.append('extension', houseNumberExtension.value)
             }
         }
 

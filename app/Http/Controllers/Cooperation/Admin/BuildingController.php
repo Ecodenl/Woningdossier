@@ -49,7 +49,7 @@ class BuildingController extends Controller
 
         $roles = Role::all();
 
-        $coaches = $cooperation->getCoaches()->get();
+        $coaches = $cooperation->getCoaches();
 
         $statuses = Status::ordered()->get();
 

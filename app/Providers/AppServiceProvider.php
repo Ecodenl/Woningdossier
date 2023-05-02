@@ -101,12 +101,18 @@ class AppServiceProvider extends ServiceProvider
             if (in_array(HasNotifications::class, $commandTraits)) {
                 $building = $command->building ?? $command->user->building;
                 Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-                NotificationService::init()
+
+                $service = NotificationService::init()
                     ->forBuilding($building)
-                    ->forInputSource($command->inputSource)
                     ->setType($jobName)
-                    ->setUuid($command->uuid)
-                    ->deactivate();
+                    ->setUuid($command->uuid);
+
+                // The command might not care about the input source, and so in that case we don't want to query on it.
+                if ($command->caresForInputSource) {
+                    $service->forInputSource($command->inputSource);
+                }
+
+                $service->deactivate();
             }
         });
 

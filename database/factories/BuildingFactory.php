@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BuildingFactory extends Factory
@@ -21,5 +22,14 @@ class BuildingFactory extends Factory
             'owner' => $this->faker->boolean,
             'primary' => $this->faker->boolean,
         ];
+    }
+
+    public function withUser(): BuildingFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'user_id' => User::factory()->withAccount()->withCooperation()->create()->id,
+            ];
+        });
     }
 }

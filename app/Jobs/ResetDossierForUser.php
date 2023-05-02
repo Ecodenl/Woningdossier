@@ -30,8 +30,8 @@ class ResetDossierForUser
      *
      * @return void
      */
-    public function handle()
+    public function handle(UserService $userService)
     {
-        UserService::resetUser($this->user, $this->inputSource);
+        $userService->forUser($this->user)->resetUser($this->inputSource);
     }
 }

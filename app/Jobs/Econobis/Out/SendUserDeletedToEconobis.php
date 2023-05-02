@@ -36,6 +36,7 @@ class SendUserDeletedToEconobis implements ShouldQueue
     {
         $this->wrapCall(function () use ($econobis, $econobisService) {
             $econobis
+                // this cant work right ?
                 ->forCooperation($this->building->user->cooperation)
                 ->hoomdossier()
                 ->delete(

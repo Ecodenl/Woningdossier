@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Econobis\Out;
 
+use App\Jobs\Middleware\EnsureCooperationHasEconobisLink;
 use App\Models\Building;
 use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\EconobisService;
@@ -51,8 +52,11 @@ class SendPdfReportToEconobis implements ShouldQueue
      *
      * @return array
      */
-    public function middleware()
+    public function middleware(): array
     {
-        return [(new WithoutOverlapping(sprintf('%s-%s', __CLASS__, $this->building->id)))->dontRelease()];
+        return [
+            new EnsureCooperationHasEconobisLink($this->building->user->cooperation),
+            (new WithoutOverlapping(sprintf('%s-%s', __CLASS__, $this->building->id)))->dontRelease()
+        ];
     }
 }

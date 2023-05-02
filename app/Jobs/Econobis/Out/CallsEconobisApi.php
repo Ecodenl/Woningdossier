@@ -3,12 +3,10 @@
 namespace App\Jobs\Econobis\Out;
 
 use App\Helpers\Wrapper;
+use App\Jobs\Middleware\EnsureCooperationHasEconobisLink;
 use App\Models\Integration;
 use App\Services\DiscordNotifier;
 use App\Services\IntegrationProcessService;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\TooManyRedirectsException;
 use GuzzleHttp\Psr7\Stream;
 use Illuminate\Support\Facades\Log;
 use Predis\Response\ServerException;
@@ -51,5 +49,10 @@ trait CallsEconobisApi
 
         $class = __CLASS__;
         DiscordNotifier::init()->notify(get_class($exception)." Failed to send '{$class}' building_id: {$this->building->id}");
+    }
+
+    public function middleware(): array
+    {
+        return [new EnsureCooperationHasEconobisLink($this->building->user->cooperation)];
     }
 }

@@ -49,8 +49,13 @@ class QueueEventSubscriber
                 ->setUuid($command->uuid)
                 ->deactivate();
         }
+    }
 
-        Cache::forget($event->job->payload()['id']);
+    public function forgetCachedQueuedTime($event)
+    {
+        if ($event->connectionName !== "sync") {
+            Cache::forget($event->job->payload()['id']);
+        }
     }
 
     public function subscribe($events): array
@@ -58,7 +63,7 @@ class QueueEventSubscriber
         return [
             JobQueued::class => ['cacheTimeOfQueued'],
 //            JobProcessing::class => ['logBefore'],
-            JobProcessed::class => ['deactivateNotification']
+            JobProcessed::class => ['deactivateNotification', 'forgetCachedQueuedTime']
         ];
     }
 }

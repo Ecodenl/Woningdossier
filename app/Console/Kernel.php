@@ -8,6 +8,7 @@ use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Woonplan;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncMeasures;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncTargetGroups;
 use App\Console\Commands\CleanupExpiredFileStorages;
+use App\Console\Commands\Monitoring\MonitorQueue;
 use App\Console\Commands\SendNotifications;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -31,6 +32,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 //        $schedule->command('send:notifications --type=private-message')->everyFifteenMinutes();
+
+        $schedule->command(MonitorQueue::class)->everyFiveMinutes();
 
         $schedule->command('avg:cleanup-audits')->daily();
         $schedule->command(CleanupExpiredFileStorages::class)->hourly();

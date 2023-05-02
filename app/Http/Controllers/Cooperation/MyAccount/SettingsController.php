@@ -3,14 +3,21 @@
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Events\UserToolDataChanged;
+use App\Events\UserToolDataChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Jobs\CheckBuildingAddress;
+use App\Jobs\ResetDossierForUser;
 use App\Models\Account;
 use App\Models\InputSource;
 use App\Models\Municipality;
+use App\Services\BuildingAddressService;
+use App\Services\DossierSettingsService;
+use App\Services\Lvbag\BagService;
+use App\Services\Lvbag\Payloads\AddressExpanded;
+use App\Services\Models\BuildingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -54,20 +61,26 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile(UserService $userService, Request $request)
+    public function resetFile(Request $request, DossierSettingsService $dossierSettingsService)
     {
         $user = Hoomdossier::user();
 
         $inputSourceIds = $request->input('input_sources.id');
 
-        // Reset master first.
-        $userService->forUser($user)->resetUser(InputSource::master());
-
+        $masterInputSource = InputSource::master();
+        ResetDossierForUser::dispatchSync($user, $masterInputSource);
         foreach ($inputSourceIds as $inputSourceId) {
             Log::debug("resetting for input source ".$inputSourceId);
-            $userService->forUser($user)->resetUser(InputSource::find($inputSourceId));
+            $relevantInputSource = InputSource::find($inputSourceId);
+            ResetDossierForUser::dispatchSync($user, $relevantInputSource);
         }
+
         UserToolDataChanged::dispatch($user);
+        $dossierSettingsService
+            ->forType(ResetDossierForUser::class)
+            ->forBuilding($user->building)
+            ->forInputSource($masterInputSource)
+            ->justDone();
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\Queue;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Bus\Queueable;
@@ -10,13 +11,13 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class RefreshRegulationsForBuildingUser implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public Building $building;
-
 
     /**
      * Create a new job instance.
@@ -36,10 +37,16 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
      */
     public function handle()
     {
+        Log::debug('Handle of refresh regulations for building user');
         $user = $this->building->user;
 
         UserActionPlanAdviceService::init()
             ->forUser($user)
             ->refreshUserRegulations();
+    }
+
+    public function middleware(): array
+    {
+        return [new CheckLastResetAt($this->building)];
     }
 }

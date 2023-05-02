@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\Cooperation\Tool\ToolHelper;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
@@ -66,5 +67,10 @@ class RecalculateStepForUser implements ShouldQueue
         $this->deactivateNotification();
 
         report($exception);
+    }
+
+    public function middleware(): array
+    {
+        return [new CheckLastResetAt($this->user->building)];
     }
 }

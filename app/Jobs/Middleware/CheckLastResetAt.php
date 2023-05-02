@@ -31,7 +31,7 @@ class CheckLastResetAt
         if ($job->connection !== "sync") {
             $id = $job->job->payload()['id'];
             $displayName = get_class($job->job);
-            Log::debug("Checking for reset payloadId: {$displayName} [{$id}] cached time: ".Cache::get($id));
+            Log::debug("{$displayName} [{$id}] Checking for reset cached time: ".Cache::get($id));
             $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
 
             $resetIsDoneAfterThisJobHasBeenQueued = app(DossierSettingsService::class)
@@ -40,7 +40,9 @@ class CheckLastResetAt
                 ->forInputSource(InputSource::master())
                 ->lastDoneAfter($jobQueuedAt);
 
-            Log::debug('ResetDone after job queued: '.$resetIsDoneAfterThisJobHasBeenQueued);
+
+            $yesONo = $resetIsDoneAfterThisJobHasBeenQueued ? 'yes!' : 'no!';
+            Log::debug("ResetDone after job queued: {$yesONo}");
             if ($resetIsDoneAfterThisJobHasBeenQueued) {
                 return;
             } else {

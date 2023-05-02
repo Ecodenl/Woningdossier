@@ -28,7 +28,7 @@ class QueueEventSubscriber
             }
 
             $date = Carbon::now()->format('Y-m-d H:i:s');
-            Log::debug("Caching payloadId: {$displayName} [{$id}] time: {$date}");
+            Log::debug("{$displayName} [{$id}] Caching time: {$date}");
             Cache::set($id, $date);
         }
     }
@@ -41,7 +41,7 @@ class QueueEventSubscriber
         $jobName = get_class($command);
         if (in_array(HasNotifications::class, $commandTraits)) {
             $building = $command->building ?? $command->user->building;
-//            Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
+            Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
             NotificationService::init()
                 ->forBuilding($building)
                 ->forInputSource($command->inputSource)
@@ -49,6 +49,8 @@ class QueueEventSubscriber
                 ->setUuid($command->uuid)
                 ->deactivate();
         }
+
+        Cache::forget($event->job->payload()['id']);
     }
 
     public function subscribe($events): array

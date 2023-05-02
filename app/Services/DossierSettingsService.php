@@ -44,9 +44,8 @@ class DossierSettingsService
             ->where('type', $this->type)
             ->first();
 
-        Log::debug("Checking for reset payloadId reset done at: ".$dossierSetting->done_at);
+        Log::debug("Checking for reset building [{$this->building->id}] reset done at: ".$dossierSetting->done_at);
 
-        Log::debug("befor? ".$datetime->isBefore($dossierSetting->done_at));
         if ($datetime->isBefore($dossierSetting->done_at)) {
             return true;
         }

@@ -28,7 +28,7 @@ trait CheckLastResetAt
             $id = $payload['id'];
             $displayName = $payload['displayName'];
 
-            Log::debug("Checking for reset payloadId: {$displayName} [{$id}] cached time: ".Cache::get($id));
+            Log::debug("{$displayName} [{$id}] Checking for reset cached time: ".Cache::get($id));
             $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
 
             $resetIsDoneAfterThisJobHasBeenQueued = $this

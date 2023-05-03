@@ -2,7 +2,9 @@
 
 namespace App\Jobs\Econobis\Out;
 
+use App\Jobs\Middleware\EnsureCooperationHasEconobisLink;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\EconobisService;
 use Illuminate\Bus\Queueable;
@@ -16,14 +18,16 @@ class SendUserDeletedToEconobis implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CallsEconobisApi;
 
     public array $accountRelated;
+    public Cooperation $cooperation;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($accountRelated)
+    public function __construct(Cooperation $cooperation, $accountRelated)
     {
+        $this->cooperation = $cooperation;
         $this->accountRelated = $accountRelated;
     }
 
@@ -37,7 +41,7 @@ class SendUserDeletedToEconobis implements ShouldQueue
         $this->wrapCall(function () use ($econobis, $econobisService) {
             $econobis
                 // this cant work right ?
-                ->forCooperation($this->building->user->cooperation)
+                ->forCooperation($this->cooperation)
                 ->hoomdossier()
                 ->delete(
                     $econobisService
@@ -45,5 +49,10 @@ class SendUserDeletedToEconobis implements ShouldQueue
                         ->getPayload()
                 );
         });
+    }
+
+    public function middleware(): array
+    {
+        return [new EnsureCooperationHasEconobisLink($this->cooperation)];
     }
 }

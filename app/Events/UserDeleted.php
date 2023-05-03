@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Cooperation;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -18,7 +19,7 @@ class UserDeleted
      *
      * @return void
      */
-    public function __construct($accountRelated)
+    public function __construct(Cooperation $cooperation, $accountRelated)
     {
         $this->accountRelated = $accountRelated;
     }

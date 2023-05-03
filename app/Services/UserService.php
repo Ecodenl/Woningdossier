@@ -268,6 +268,7 @@ class UserService
     {
         $accountId = $user->account_id;
         $building = $user->building;
+        $cooperation = $user->cooperation;
         $accountRelated = app(EconobisService::class)->forBuilding($building)->resolveAccountRelated();
 
         if ($building instanceof Building) {
@@ -312,7 +313,7 @@ class UserService
                 $account->delete();
             }
         }
-        UserDeleted::dispatch($accountRelated['account_related']);
+        UserDeleted::dispatch($cooperation, $accountRelated['account_related']);
     }
 
     /**

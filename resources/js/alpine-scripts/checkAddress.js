@@ -1,6 +1,7 @@
 export default (checks, tailwind = true) => ({
     showPostalCodeError: false,
     checks: checks,
+    oldValues: {},
 
     init() {
         if (! this.checks instanceof Object) {
@@ -11,12 +12,14 @@ export default (checks, tailwind = true) => ({
         ['x-ref']: 'postcode',
         ['x-on:change']() {
             this.performChecks();
+            this.oldValues['postcode'] = this.$el.value;
         },
     },
     houseNumber: {
         ['x-ref']: 'houseNumber',
         ['x-on:change']() {
             this.performChecks();
+            this.oldValues['houseNumber'] = this.$el.value;
         },
     },
     houseNumberExtension: {
@@ -40,6 +43,10 @@ export default (checks, tailwind = true) => ({
         }
     },
     getAddressData(apiUrl) {
+        //TODO: Trace old house number + postcode. Only perform request if not dirty and both are filled.
+        // No request needed on changed extension. On dirty, hide extension. Ignore also in request. Extra parameter
+        // in call to request the extensions.
+
         // Get inputs from refs
         let postcode = this.$refs['postcode'];
         let houseNumber = this.$refs['houseNumber'];

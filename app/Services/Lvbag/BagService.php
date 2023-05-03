@@ -2,6 +2,7 @@
 
 namespace App\Services\Lvbag;
 
+use App\Helpers\Arr;
 use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\Lvbag\Payloads\City;
 use App\Traits\FluentCaller;
@@ -18,6 +19,18 @@ class BagService
         $this->lvbag = $lvbag;
     }
 
+    public function getHouseNumberExtensions(string $postalCode, string $number)
+    {
+        $attributes = [
+            'postcode' => $postalCode,
+            'huisnummer' => $number,
+            'exacteMatch' => false,
+        ];
+
+        $list = $this->wrapCall(fn() => $this->lvbag->adresUitgebreid()->list($attributes) ?? []);
+        return Arr::pluck($list, 'huisletter');
+    }
+
     /**
      * Returns the address data from the wrapper in the way we want
      * Will always return the FIRST result
@@ -32,7 +45,6 @@ class BagService
         $attributes = [
             'postcode' => $postalCode,
             'huisnummer' => $number,
-            // we always want a exact match, rather no result than wrong one.
             'exacteMatch' => true,
         ];
 

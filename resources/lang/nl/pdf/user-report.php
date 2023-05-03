@@ -54,11 +54,11 @@ return [
             ],
         ],
         'simple-scan-answers' => [
-            'title' => 'Bijlage 1',
+            'title' => 'Samenvatting woongegevens',
             'text' => 'De volgende gegevens heb je ingevuld in het Hoomdossier:',
         ],
         'expert-scan-answers' => [
-            'title' => 'Bijlage 2',
+            'title' => 'Dit is de uitkomst van jouw :scan woonplan',
             'text' => 'Op de volgende bladzijden zie je voor de maatregelen die in jouw woonplan staan een samenvatting van de ingevoerde gegevens en de gedetailleerde uitkomst van de berekeningen. Meer informatie over de maatregelen kun je ook vinden op de website van Milieucentraal <a href="www.milieucentraal.nl" target="_blank" rel="nofollow">www.milieucentraal.nl</a>.',
             'action-plan' => 'In deze bijlage vind je de gegevens van de volgende maatregelen',
         ],

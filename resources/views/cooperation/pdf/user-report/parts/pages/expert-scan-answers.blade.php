@@ -1,7 +1,7 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'expert-scan-answers'])
-    <h2>
-        @lang('pdf/user-report.pages.expert-scan-answers.title')
-    </h2>
+    <h3>
+        @lang('pdf/user-report.pages.expert-scan-answers.title', ['scan' => strtolower(\App\Models\Scan::findByShort($scanShort)->name)])
+    </h3>
     <p>
         @lang('pdf/user-report.pages.expert-scan-answers.text')
     </p>

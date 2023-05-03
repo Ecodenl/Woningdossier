@@ -14,7 +14,7 @@
                 @endcomponent
             @endif
             <form class="w-full flex flex-wrap justify-center" method="POST" id="register"
-                  action="{{ route('cooperation.register') }}"
+                  action="{{ route('cooperation.register') }}" autocomplete="off"
                   x-data="checkAddress({'correct_address': '{{ route('api.get-address-data') }}'})">
                 @csrf
                 <input type="hidden" name="addressid" x-bind="addressId" value="{{ old('addressid') }}">

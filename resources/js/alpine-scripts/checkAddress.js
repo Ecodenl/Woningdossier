@@ -43,10 +43,6 @@ export default (checks, tailwind = true) => ({
         }
     },
     getAddressData(apiUrl) {
-        //TODO: Trace old house number + postcode. Only perform request if not dirty and both are filled.
-        // No request needed on changed extension. On dirty, hide extension. Ignore also in request. Extra parameter
-        // in call to request the extensions.
-
         // Get inputs from refs
         let postcode = this.$refs['postcode'];
         let houseNumber = this.$refs['houseNumber'];
@@ -55,46 +51,63 @@ export default (checks, tailwind = true) => ({
         let street = this.$refs['street'];
         let addressId = this.$refs['addressId'];
 
-        let url = this.getUrl(apiUrl);
-        url = this.appendAddressData(url);
+        // So we only want to make a request if both postcode and house number are set.
+        if (postcode.value && houseNumber.value) {
+            let url = this.getUrl(apiUrl);
+            url = this.appendAddressData(url);
 
-        let context = this;
-        performRequest({
-            'url': url,
-            'done': function (request) {
-                context.removeError(postcode);
-                context.removeError(houseNumber);
-                context.removeError(city);
-                context.removeError(street);
-                context.showPostalCodeError = false;
+            // We also only want to make requests if there's actually something that's changed.
+            let makeRequest = false;
+            if (this.isDirty('postcode', postcode.value) || this.isDirty('houseNumber', houseNumber.value)) {
+                makeRequest = true;
+                url.searchParams.append('fetch_extensions', '1');
+                url.searchParams.delete('extension');
+            // } else if (this.isDirty('houseNumberExtension', houseNumberExtension.value)) {
+            //     makeRequest = true;
+            }
 
-                let response = request.response;
+            console.log(makeRequest);
 
-                // If the request was successful, we fill the data in the field
-                if (request.status == 200) {
-                    if (response.postal_code === '') {
-                        context.showPostalCodeError = true;
-                    }
+            if (makeRequest) {
+                let context = this;
+                performRequest({
+                    'url': url,
+                    'done': function (request) {
+                        context.removeError(postcode);
+                        context.removeError(houseNumber);
+                        context.removeError(city);
+                        context.removeError(street);
+                        context.showPostalCodeError = false;
 
-                    context.setValue(houseNumber, response.number)
-                    context.setValue(houseNumberExtension, response.house_number_extension)
-                    context.setValue(street, response.street)
-                    context.setValue(city, response.city)
-                    context.setValue(addressId, response.id)
-                } else {
-                    // Else we add errors
-                    let errors = response.errors;
-                    for (let error in errors) {
-                        if (errors.hasOwnProperty(error)) {
-                            let errorMessage = errors[error][0]; // Grab first message
+                        let response = request.response;
+console.log(response);
+                        // If the request was successful, we fill the data in the field
+                        if (request.status == 200) {
+                            if (response.postal_code === '') {
+                                context.showPostalCodeError = true;
+                            }
 
-                            let input = document.querySelector(`input[name="${error}"]`);
-                            context.appendError(input, errorMessage);
+                            context.setValue(houseNumber, response.number)
+                            context.setValue(houseNumberExtension, response.house_number_extension)
+                            context.setValue(street, response.street)
+                            context.setValue(city, response.city)
+                            context.setValue(addressId, response.id)
+                        } else {
+                            // Else we add errors
+                            let errors = response.errors;
+                            for (let error in errors) {
+                                if (errors.hasOwnProperty(error)) {
+                                    let errorMessage = errors[error][0]; // Grab first message
+
+                                    let input = document.querySelector(`input[name="${error}"]`);
+                                    context.appendError(input, errorMessage);
+                                }
+                            }
                         }
                     }
-                }
+                });
             }
-        });
+        }
     },
     setValue(input, value) {
         if (typeof input !== 'undefined' && input && value) {
@@ -143,6 +156,8 @@ export default (checks, tailwind = true) => ({
         return url;
     },
     appendAddressData(url) {
+        // URL is an object, and so changes made are in reference to the original object. Technically we don't have to
+        // return the URL variable.
         if (url instanceof URL) {
             let postcode = this.$refs['postcode'];
             let houseNumber = this.$refs['houseNumber'];
@@ -156,11 +171,23 @@ export default (checks, tailwind = true) => ({
                 url.searchParams.append('number', houseNumber.value)
             }
 
-            if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
-                url.searchParams.append('extension', houseNumberExtension.value)
-            }
+            // if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
+            //     url.searchParams.append('extension', houseNumberExtension.value)
+            // }
         }
 
         return url;
+    },
+    isDirty(name, newValue) {
+        console.log(this.oldValues[name], newValue, this.makeComparable(this.oldValues[name]) !== this.makeComparable(newValue));
+
+        return this.makeComparable(this.oldValues[name]) !== this.makeComparable(newValue);
+    },
+    makeComparable(value) {
+        // If we use String(value) it will become "null"/"undefined"...
+        if (value === null || value === undefined) {
+            value = '';
+        }
+        return String(value).replace(/(\s|-|_)/g, '').toLowerCase();
     }
 });

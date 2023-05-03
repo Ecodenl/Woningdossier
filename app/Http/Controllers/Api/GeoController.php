@@ -20,8 +20,8 @@ class GeoController extends Controller
             ->addressExpanded($postalCode, $number, $houseNumberExtension)
             ->prepareForBuilding();
 
-        if (empty($address)) {
-            $address = $request->all();
+        if ($request->has('fetch_extensions')) {
+            $address['available_extensions'] = $bagService->getHouseNumberExtensions($postalCode, $number);
         }
 
         return response()->json($address);

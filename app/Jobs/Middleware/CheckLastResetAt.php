@@ -35,10 +35,10 @@ class CheckLastResetAt
             $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
 
             $resetIsDoneAfterThisJobHasBeenQueued = app(DossierSettingsService::class)
-                ->forType(ResetDossierForUser::class)
                 ->forBuilding($this->building)
                 ->forInputSource(InputSource::master())
-                ->lastDoneAfter($jobQueuedAt);
+                ->forType(ResetDossierForUser::class)
+                ->isDoneAfter($jobQueuedAt);
 
 
             $yesONo = $resetIsDoneAfterThisJobHasBeenQueued ? 'yes!' : 'no!';

@@ -33,10 +33,10 @@ trait CheckLastResetAt
 
             $resetIsDoneAfterThisJobHasBeenQueued = $this
                 ->dossierSettingsService
-                ->forType(ResetDossierForUser::class)
                 ->forInputSource(InputSource::master())
                 ->forBuilding($building)
-                ->lastDoneAfter($jobQueuedAt);
+                ->forType(ResetDossierForUser::class)
+                ->isDoneAfter($jobQueuedAt);
 
             if ($resetIsDoneAfterThisJobHasBeenQueued) {
                 return;

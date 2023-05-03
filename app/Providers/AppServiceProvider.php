@@ -4,23 +4,16 @@ namespace App\Providers;
 
 use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
-use App\Services\Models\NotificationService;
 use App\Services\Verbeterjehuis\Client as VerbeterJeHuisClient;
 use App\Services\Verbeterjehuis\Verbeterjehuis;
-use App\Traits\Queue\HasNotifications;
 use Carbon\Carbon;
 use Ecodenl\LvbagPhpWrapper\Client as LvbagClient;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Application;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Queue\Events\JobProcessed;
-use Illuminate\Queue\Events\JobProcessing;
-use Illuminate\Queue\Jobs\Job;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
@@ -80,7 +73,6 @@ class AppServiceProvider extends ServiceProvider
                 }
             }, $boolean);
         });
-
 
 //        // is this still nodig or is it only loggin?
 //        Queue::before(function (JobProcessing $event) {

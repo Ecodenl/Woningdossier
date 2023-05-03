@@ -7,6 +7,7 @@ use App\Models\InputSource;
 use App\Services\DossierSettingsService;
 use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Jobs\DatabaseJob;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -25,7 +26,7 @@ trait CheckLastResetAt
     {
         if ($this->job->getConnectionName() !== "sync") {
             $payload = $this->job->payload();
-            $id = $payload['id'];
+            $id = $this->job->getJobId();
             $displayName = $payload['displayName'];
 
             Log::debug("{$displayName} [{$id}] Checking for reset cached time: ".Cache::get($id));

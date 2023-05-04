@@ -32,9 +32,12 @@ class CheckLastResetAt
      */
     public function handle($job, $next)
     {
-
         if ($job->connection !== "sync") {
             if ($this->isBatchedJob($job)) {
+                if ($job->batch()->cancelled()) {
+                    Log::debug('Batch has been cancelled!, skipping job.');
+                    return;
+                }
                 $id = $job->batch()->id;
                 $displayName = $job->batch()->name;
             } else {
@@ -55,12 +58,12 @@ class CheckLastResetAt
             $yesONo = $resetIsDoneAfterThisJobHasBeenQueued ? 'yes!' : 'no!';
             Log::debug("ResetDone after job queued: {$yesONo}");
             if ($resetIsDoneAfterThisJobHasBeenQueued) {
+                // notify that the batch is cancelled.
                 if ($this->isBatchedJob($job)) {
-                    // so this SHOULD cancel the batch, but does it?
                     $job->batch()->cancel();
-                } else {
-                    return;
                 }
+                // cancel the execution of the job itself
+                return;
             } else {
                 $next($job);
             }

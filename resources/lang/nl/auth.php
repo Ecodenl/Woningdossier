@@ -54,7 +54,7 @@ return [
             ],
 
             'possible-wrong-email' => 'Het lijkt er op dat er een fout in het e-mailadres zit, weet je zeker dat het opgegeven e-mailadres juist is ?',
-            'possible-wrong-postal-code' => 'De postcode die is opgegeven lijkt fout te zijn, weet u zeker dat deze correct is ingevuld ? Als u hiervan zeker bent kunt u doorgaan.',
+            'possible-wrong-postal-code' => 'Het opgegeven adres hebben wij niet herkend. Controleer uw postcode en huisnummer. Bij twijfel kunt u contact opnemen met uw cooperatie.',
         ],
         'validation' => [
             'allow_access' => 'U moet toestemming geven om het Hoomdossier te gebruiken.',

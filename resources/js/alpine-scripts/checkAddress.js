@@ -130,7 +130,7 @@ export default (checks, tailwind = true) => ({
 
                         // If the request was successful, we fill the data in the field
                         if (request.status == 200) {
-                            if (response.postal_code === '') {
+                            if (response.postal_code === '' && context.bagAvailable) {
                                 context.showPostalCodeError = true;
                             }
 

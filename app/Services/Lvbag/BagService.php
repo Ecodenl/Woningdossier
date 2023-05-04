@@ -98,7 +98,7 @@ class BagService
 
         // so the bag MAY return it, split on huisletter and extension.
         // however it doesn't really matter since we will save it as is.
-        $addressExpanded->expendedAddress['house_number_extension'] = $houseNumberExtension;
+        $addressExpanded->expandedAddress['house_number_extension'] = $houseNumberExtension;
 
         return $addressExpanded;
     }

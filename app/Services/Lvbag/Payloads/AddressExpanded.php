@@ -4,22 +4,21 @@ namespace App\Services\Lvbag\Payloads;
 
 class AddressExpanded
 {
-    // TODO: Fix typo, should be expAnded
-    public ?array $expendedAddress = null;
+    public ?array $expandedAddress = null;
 
-    public function __construct(?array $expendedAddress)
+    public function __construct(?array $expandedAddress)
     {
-        $this->expendedAddress = $expendedAddress;
+        $this->expandedAddress = $expandedAddress;
     }
 
     public function isEmpty(): bool
     {
-        return empty($this->expendedAddress);
+        return empty($this->expandedAddress);
     }
 
     public function prepareForBuilding(): array
     {
-        $address = $this->expendedAddress;
+        $address = $this->expandedAddress;
         $data = [
             'street' => $address['openbareRuimteNaam'] ?? '',
             'number' => $address['huisnummer'] ?? '',
@@ -30,7 +29,7 @@ class AddressExpanded
         ];
 
         // when there is no endpoint failure we can get the data from the endpoint.
-        if ($this->expendedAddress['endpoint_failure'] == false) {
+        if ($this->expandedAddress['endpoint_failure'] == false) {
             $data['bag_addressid'] = $address['nummeraanduidingIdentificatie'] ?? '';
             $data['bag_woonplaats_id'] = $address['woonplaatsIdentificatie'] ?? '';
 

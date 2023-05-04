@@ -1,13 +1,10 @@
 export default (checks, tailwind = true) => ({
+    bagAvailable: true,
     showPostalCodeError: false,
     checks: checks,
     oldValues: {},
+    availableExtensions: [],
 
-    init() {
-        if (! this.checks instanceof Object) {
-            this.checks = {};
-        }
-    },
     postcode: {
         ['x-ref']: 'postcode',
         ['x-on:change']() {
@@ -23,9 +20,9 @@ export default (checks, tailwind = true) => ({
         },
     },
     houseNumberExtension: {
-        ['x-ref']: 'houseNumberExtension',
+        // Conditionally setting x-ref seems to not work as expected, so it's set in the init
         ['x-on:change']() {
-            this.performChecks();
+            this.oldValues['houseNumberExtension'] = this.$el.value;
         },
     },
     city: {
@@ -37,6 +34,35 @@ export default (checks, tailwind = true) => ({
     addressId: {
         ['x-ref']: 'addressId',
     },
+    init() {
+        if (! this.checks instanceof Object) {
+            this.checks = {};
+        }
+
+        // Because conditionally setting x-ref doesn' work...
+        Array.from(document.querySelectorAll('[x-bind="houseNumberExtension"]')).forEach((extensionField) => {
+            let ref = '';
+            switch (extensionField.tagName) {
+                case 'INPUT':
+                    ref = 'houseNumberExtensionField';
+                    break;
+                case 'SELECT':
+                    ref = 'houseNumberExtensionSelect';
+                    break;
+            }
+            if (ref) {
+                extensionField.setAttribute('x-ref', ref);
+            }
+        });
+
+        // Another thread wait, else the refs have not yet been bound
+        setTimeout(() => {
+            this.switchAvailability();
+
+            // After a form request, data might be filled from old values, so we will perform a check.
+            this.performChecks();
+        });
+    },
     performChecks() {
         if (Object.hasOwn(this.checks, 'correct_address')) {
             this.getAddressData(this.checks['correct_address']);
@@ -46,13 +72,16 @@ export default (checks, tailwind = true) => ({
         // Get inputs from refs
         let postcode = this.$refs['postcode'];
         let houseNumber = this.$refs['houseNumber'];
-        let houseNumberExtension = this.$refs['houseNumberExtension'];
         let city = this.$refs['city'];
         let street = this.$refs['street'];
         let addressId = this.$refs['addressId'];
 
         // So we only want to make a request if both postcode and house number are set.
         if (postcode.value && houseNumber.value) {
+            // Note: the code was written this way so a change to the house number extension could also be easily made
+            // to trigger an update. However, since the address should be correct anyway, just with a different
+            // extension, it won't trigger an update to save on requests.
+
             let url = this.getUrl(apiUrl);
             url = this.appendAddressData(url);
 
@@ -62,11 +91,7 @@ export default (checks, tailwind = true) => ({
                 makeRequest = true;
                 url.searchParams.append('fetch_extensions', '1');
                 url.searchParams.delete('extension');
-            // } else if (this.isDirty('houseNumberExtension', houseNumberExtension.value)) {
-            //     makeRequest = true;
             }
-
-            console.log(makeRequest);
 
             if (makeRequest) {
                 let context = this;
@@ -80,18 +105,43 @@ export default (checks, tailwind = true) => ({
                         context.showPostalCodeError = false;
 
                         let response = request.response;
-console.log(response);
+
+                        // Restore old value
+                        let oldOption = context.$refs['houseNumberExtensionSelect'].querySelector('option.old');
+                        let oldValue = null;
+                        if (oldOption) {
+                            oldValue = oldOption.value;
+                            oldOption.remove();
+                        }
+
+                        if (response.available_extensions) {
+                            context.availableExtensions = response.available_extensions;
+                        }
+
+                        // So, if no BAG address ID was returned, there was a BAG endpoint failure.
+                        context.bagAvailable = typeof response.bag_addressid !== 'undefined';
+                        context.switchAvailability();
+
+                        if (oldValue !== null) {
+                            setTimeout(() => {
+                                context.$refs['houseNumberExtensionSelect'].value = oldValue;
+                            });
+                        }
+
                         // If the request was successful, we fill the data in the field
                         if (request.status == 200) {
                             if (response.postal_code === '') {
                                 context.showPostalCodeError = true;
                             }
 
-                            context.setValue(houseNumber, response.number)
-                            context.setValue(houseNumberExtension, response.house_number_extension)
-                            context.setValue(street, response.street)
-                            context.setValue(city, response.city)
-                            context.setValue(addressId, response.id)
+                            // Don't want to overwrite user data with nothing
+                            if (context.bagAvailable) {
+                                // If BAG is available we want to reset the street/city so the user
+                                // cannot spoof the validation
+                                street.value =  response.street;
+                                city.value =  response.city;
+                                addressId.value =  response.bag_addressid;
+                            }
                         } else {
                             // Else we add errors
                             let errors = response.errors;
@@ -107,11 +157,6 @@ console.log(response);
                     }
                 });
             }
-        }
-    },
-    setValue(input, value) {
-        if (typeof input !== 'undefined' && input && value) {
-            input.value = value;
         }
     },
     appendError(input, text) {
@@ -161,7 +206,9 @@ console.log(response);
         if (url instanceof URL) {
             let postcode = this.$refs['postcode'];
             let houseNumber = this.$refs['houseNumber'];
-            let houseNumberExtension = this.$refs['houseNumberExtension'];
+            let houseNumberExtension = this.bagAvailable
+                ? this.$refs['houseNumberExtensionSelect']
+                : this.$refs['houseNumberExtensionField'];
 
             if (postcode.value) {
                 url.searchParams.append('postal_code', postcode.value)
@@ -171,16 +218,14 @@ console.log(response);
                 url.searchParams.append('number', houseNumber.value)
             }
 
-            // if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
-            //     url.searchParams.append('extension', houseNumberExtension.value)
-            // }
+            if (houseNumberExtension.value) {
+                url.searchParams.append('extension', houseNumberExtension.value)
+            }
         }
 
         return url;
     },
     isDirty(name, newValue) {
-        console.log(this.oldValues[name], newValue, this.makeComparable(this.oldValues[name]) !== this.makeComparable(newValue));
-
         return this.makeComparable(this.oldValues[name]) !== this.makeComparable(newValue);
     },
     makeComparable(value) {
@@ -189,5 +234,27 @@ console.log(response);
             value = '';
         }
         return String(value).replace(/(\s|-|_)/g, '').toLowerCase();
-    }
+    },
+    switchAvailability() {
+        // Always hide, conditionally unhidden.
+        this.$refs['houseNumberExtensionSelect'].style.display = 'none';
+        this.$refs['houseNumberExtensionSelect'].setAttribute('disabled', 'disabled');
+
+        if (this.bagAvailable) {
+            this.$refs['street'].setAttribute('readonly', 'readonly');
+            this.$refs['city'].setAttribute('readonly', 'readonly');
+            this.$refs['houseNumberExtensionField'].style.display = 'none';
+            this.$refs['houseNumberExtensionField'].setAttribute('disabled', 'disabled');
+
+            if (this.availableExtensions.length > 0) {
+                this.$refs['houseNumberExtensionSelect'].style.display = '';
+                this.$refs['houseNumberExtensionSelect'].removeAttribute('disabled');
+            }
+        } else {
+            this.$refs['street'].removeAttribute('readonly');
+            this.$refs['city'].removeAttribute('readonly');
+            this.$refs['houseNumberExtensionField'].style.display = '';
+            this.$refs['houseNumberExtensionField'].removeAttribute('disabled');
+        }
+    },
 });

@@ -28,7 +28,7 @@ class BagService
         ];
 
         $list = $this->wrapCall(fn() => $this->lvbag->adresUitgebreid()->list($attributes) ?? []);
-        return array_filter(Arr::pluck($list, 'huisletter'));
+        return array_values(array_filter(Arr::pluck($list, 'huisletter')));
     }
 
     /**

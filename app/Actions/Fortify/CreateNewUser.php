@@ -5,7 +5,6 @@ namespace App\Actions\Fortify;
 use App\Helpers\RoleHelper;
 use App\Models\Account;
 use App\Rules\HouseNumber;
-use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
 use App\Services\UserService;
@@ -61,7 +60,7 @@ class CreateNewUser implements CreatesNewUsers
             'last_name' => 'required|string|max:255',
             'postal_code' => ['required', new PostalCode('nl')],
             'number' => ['required', 'integer', new HouseNumber('nl')],
-            'extension' => [new HouseNumberExtension('nl')],
+            'extension' => ['nullable'], // Should be returned from the BAG so it doesn't need further validation
             'street' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'phone_number' => ['nullable', new PhoneNumber('nl')],

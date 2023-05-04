@@ -84,6 +84,22 @@
                            value="{{ old('extension') }}"
                            placeholder="@lang('auth.register.form.house-number-extension')"
                            x-bind="houseNumberExtension">
+                        {{-- We are not using a custom select here. Because it defines its own x-data, it makes the x-ref invisible for the parent x-data --}}
+                        <select class="form-input" name="extension" x-cloak
+                                x-bind="houseNumberExtension">
+                            {{-- Values will be bound from JS --}}
+                            <option value="null">
+                                @lang('auth.register.form.no-extension')
+                            </option>
+                            @if(old('extension'))
+                                <option value="{{ old('extension') }}" selected class="old">
+                                    {{ old('extension') }}
+                                </option>
+                            @endif
+                            <template x-for="extension in availableExtensions">
+                                <option x-bind:value="extension" x-text="extension"></option>
+                            </template>
+                        </select>
                 @endcomponent
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
@@ -122,7 +138,6 @@
                              'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                              'inputName' => 'password',
                         ])
-
                             <div class="flex w-full" x-data="{showPass: false}">
                                 <input class="form-input" type="password" name="password"
                                        placeholder="@lang('auth.register.form.password')" x-ref="password-input">

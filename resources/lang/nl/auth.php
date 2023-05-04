@@ -43,6 +43,7 @@ return [
             'postal-code' => 'Postcode',
             'number' => 'Huisnummer',
             'house-number-extension' => 'Toevoeging',
+            'no-extension' => 'Geen toevoeging',
             'street' => 'Straat',
             'city' => 'Plaats',
             'phone-number' => 'Telefoonnummer',

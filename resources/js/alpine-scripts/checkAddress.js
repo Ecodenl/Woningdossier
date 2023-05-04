@@ -59,7 +59,7 @@ export default (checks, tailwind = true) => ({
         setTimeout(() => {
             this.switchAvailability();
 
-            // After a form request, data might be filled from old values, so we will perform a check.
+            // After a form request, data might be filled from old values, so we will perform a  check.
             this.performChecks();
         });
     },

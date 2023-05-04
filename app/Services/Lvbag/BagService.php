@@ -19,7 +19,7 @@ class BagService
         $this->lvbag = $lvbag;
     }
 
-    public function getHouseNumberExtensions(string $postalCode, string $number)
+    public function getHouseNumberExtensions(string $postalCode, string $number): array
     {
         $attributes = [
             'postcode' => $postalCode,

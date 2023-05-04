@@ -54,6 +54,7 @@
 
                 @include('cooperation.layouts.address', [
                     'attr' => 'x-show="! alreadyMember"',
+                    'withLabels' => false,
                 ])
 
                 @component('cooperation.frontend.layouts.components.form-group', [

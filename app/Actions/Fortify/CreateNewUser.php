@@ -3,10 +3,9 @@
 namespace App\Actions\Fortify;
 
 use App\Helpers\RoleHelper;
+use App\Http\Requests\AddressFormRequest;
 use App\Models\Account;
-use App\Rules\HouseNumber;
 use App\Rules\PhoneNumber;
-use App\Rules\PostalCode;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -47,7 +46,7 @@ class CreateNewUser implements CreatesNewUsers
 
     private function rules(): array
     {
-        $rules = [
+        $rules = array_merge([
             'email' => [
                 'required',
                 'string',
@@ -58,14 +57,9 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'postal_code' => ['required', new PostalCode('nl')],
-            'number' => ['required', 'integer', new HouseNumber('nl')],
-            'extension' => ['nullable'], // Should be returned from the BAG so it doesn't need further validation
-            'street' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
             'phone_number' => ['nullable', new PhoneNumber('nl')],
             'allow_access' => 'required|accepted',
-        ];
+        ], (new AddressFormRequest())->rules());
 
         // try to get the account
         $account = Account::where('email', $this->get('email'))->first();

@@ -27,8 +27,11 @@ class BagService
             'exacteMatch' => false,
         ];
 
-        $list = $this->wrapCall(fn() => $this->lvbag->adresUitgebreid()->list($attributes) ?? []);
-        return array_values(array_filter(Arr::pluck($list, 'huisletter')));
+        $list = $this->wrapCall(fn () => $this->lvbag->adresUitgebreid()->list($attributes) ?? []);
+        return array_values(array_filter(array_unique(array_merge(
+            Arr::pluck($list, 'huisletter'),
+            Arr::pluck($list, 'huisnummertoevoeging')
+        ))));
     }
 
     /**

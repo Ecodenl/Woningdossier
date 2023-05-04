@@ -1,13 +1,23 @@
+@php
+    $withLabels ??= false;
+    // Any object that has the correct columns
+    $defaults ??= new stdClass();
+@endphp
+
 <div class="{{ $class ?? 'flex flex-wrap w-full' }}" @if(! empty($attr)) {!! $attr !!} @endif
      x-data="checkAddress({'correct_address': '{{ route('api.get-address-data') }}'})">
-    <input type="hidden" name="addressid" x-bind="addressId" value="{{ old('addressid') }}">
+    
+    <input type="hidden" name="address[addressid]" x-bind="addressId"
+           value="{{ old('addressid', $defaults->bag_addressid ?? '') }}">
 
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
+        'label' => $withLabels ? __('auth.register.form.postal-code') : '',
         'class' => 'w-full -mt-5  lg:w-1/2 lg:pr-3',
-        'inputName' => 'postal_code',
+        'inputName' => 'address.postal_code',
     ])
-        <input class="form-input" type="text" name="postal_code" value="{{ old('postal_code') }}"
+        <input class="form-input" type="text" name="address[postal_code]"
+               value="{{ old('postal_code', $defaults->postal_code ?? '') }}"
                placeholder="@lang('auth.register.form.postal-code')" x-bind="postcode">
         <p class="text-blue-800 -mt-2 w-full" x-show="showPostalCodeError">
             @lang('auth.register.form.possible-wrong-postal-code')
@@ -15,31 +25,33 @@
     @endcomponent
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
+        'label' => $withLabels ? __('auth.register.form.number') : '',
         'class' => 'w-full -mt-5  lg:w-1/4 lg:px-3',
-        'inputName' => 'number',
+        'inputName' => 'address.number',
     ])
-        <input class="form-input" type="text" name="number" value="{{ old('number') }}"
+        <input class="form-input" type="text" name="address[number]" value="{{ old('number', $defaults->number ?? '') }}"
                placeholder="@lang('auth.register.form.number')" x-bind="houseNumber">
     @endcomponent
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
+        'label' => $withLabels ? __('auth.register.form.house-number-extension') : '',
         'class' => 'w-full -mt-5 lg:w-1/4 lg:pl-3',
-        'inputName' => 'house_number_extension',
+        'inputName' => 'address.house_number_extension',
     ])
-        <input class="form-input" type="text" name="extension"
-               value="{{ old('extension') }}"
+        <input class="form-input" type="text" name="address[extension]"
+               value="{{ old('extension', $defaults->extension ?? '') }}"
                placeholder="@lang('auth.register.form.house-number-extension')"
                x-bind="houseNumberExtension">
         {{-- We are not using a custom select here. Because it defines its own x-data, it makes the x-ref invisible for the parent x-data --}}
-        <select class="form-input" name="extension" x-cloak
+        <select class="form-input" name="address[extension]" x-cloak
                 x-bind="houseNumberExtension">
             {{-- Values will be bound from JS --}}
             <option value="null">
                 @lang('auth.register.form.no-extension')
             </option>
-            @if(old('extension'))
-                <option value="{{ old('extension') }}" selected class="old">
-                    {{ old('extension') }}
+            @if(old('extension', $defaults->extension ?? ''))
+                <option value="{{ old('extension', $defaults->extension ?? '') }}" selected class="old">
+                    {{ old('extension', $defaults->extension ?? '') }}
                 </option>
             @endif
             <template x-for="extension in availableExtensions">
@@ -49,18 +61,20 @@
     @endcomponent
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
+        'label' => $withLabels ? __('auth.register.form.street') : '',
         'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
-        'inputName' => 'street',
+        'inputName' => 'address.street',
     ])
-        <input class="form-input" type="text" name="street" value="{{ old('street') }}"
+        <input class="form-input" type="text" name="address[street]" value="{{ old('street', $defaults->street ?? '') }}"
                placeholder="@lang('auth.register.form.street')" x-bind="street">
     @endcomponent
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
+        'label' => $withLabels ? __('auth.register.form.city') : '',
         'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
-        'inputName' => 'city',
+        'inputName' => 'address.city',
     ])
-        <input class="form-input" type="text" name="city" value="{{ old('city') }}"
+        <input class="form-input" type="text" name="address[city]" value="{{ old('city', $defaults->city ?? '') }}"
                placeholder="@lang('auth.register.form.city')" x-bind="city">
     @endcomponent
 </div>

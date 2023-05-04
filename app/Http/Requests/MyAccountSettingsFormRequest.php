@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\HouseNumber;
-use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
-use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MyAccountSettingsFormRequest extends FormRequest
@@ -27,16 +24,10 @@ class MyAccountSettingsFormRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        return array_merge([
             'user.first_name' => 'required|string|max:255',
             'user.last_name' => 'required|string|max:255',
             'user.phone_number' => ['nullable', new PhoneNumber()],
-
-            'building.postal_code' => ['required', new PostalCode('nl')],
-            'building.number' => ['required', 'numeric', new HouseNumber('nl')],
-            'building.extension' => ['nullable', new HouseNumberExtension('nl')],
-            'building.street' => 'required|string|max:255',
-            'building.city' => 'required|string|max:255',
-        ];
+        ], (new AddressFormRequest())->rules());
     }
 }

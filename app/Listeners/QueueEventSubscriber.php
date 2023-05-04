@@ -2,35 +2,49 @@
 
 namespace App\Listeners;
 
+use App\Jobs\PdfReport;
 use App\Services\Models\NotificationService;
 use App\Traits\Queue\HasNotifications;
 use Carbon\Carbon;
+use Illuminate\Bus\Events\BatchDispatched;
 use Illuminate\Events\CallQueuedListener;
-use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\Events\JobProcessed;
-use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\JobQueued;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class QueueEventSubscriber
 {
-    public function cacheTimeOfQueued($event)
+    public function cacheTimeOfQueuedJob($event)
     {
+        Log::debug('JOB QUEUED EVENT HIT');
         // i think we can use this for the cache key, we will also retrieve
         if ($event->connectionName !== "sync") {
             $id = $event->id;
+            $job = $event->job;
 
             if ($event->job instanceof CallQueuedListener) {
-                $displayName = $event->job->class;
+                $displayName = $job->class;
             } else {
-                $displayName = get_class($event->job);
+                $displayName = get_class($job);
             }
 
             $date = Carbon::now()->format('Y-m-d H:i:s');
             Log::debug("{$displayName} [{$id}] Caching time: {$date}");
             Cache::set($id, $date);
         }
+    }
+
+    public function cacheTimeOfQueuedBatchedJob(BatchDispatched $event)
+    {
+            $id = $event->batch->toArray()['id'];
+
+            // the name is optional when dispatching.
+            $displayName = $event->batch->toArray()['name'] ?? 'Unknown batched job';
+
+            $date = Carbon::now()->format('Y-m-d H:i:s');
+            Log::debug("{$displayName} [{$id}] Caching time: {$date}");
+            Cache::set($id, $date);
     }
 
     public function deactivateNotification($event)
@@ -60,15 +74,15 @@ class QueueEventSubscriber
     public function forgetCachedQueuedTime($event)
     {
         if ($event->connectionName !== "sync") {
-            Cache::forget($event->job->payload()['id']);
+            Cache::forget($event->job->getJobId());
         }
     }
 
     public function subscribe($events): array
     {
         return [
-            JobQueued::class => ['cacheTimeOfQueued'],
-//            JobProcessing::class => ['logBefore'],
+            BatchDispatched::class => ['cacheTimeOfQueuedBatchedJob'],
+            JobQueued::class => ['cacheTimeOfQueuedJob'],
             JobProcessed::class => ['deactivateNotification', 'forgetCachedQueuedTime']
         ];
     }

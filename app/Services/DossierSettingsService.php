@@ -36,7 +36,7 @@ class DossierSettingsService
             ->updateOrCreate($where, ['done_at' => Carbon::now()]);
     }
 
-    public function lastDoneAfter(Carbon $datetime)
+    public function isDoneAfter(Carbon $datetime)
     {
         $dossierSetting = DossierSetting::withoutGlobalScopes()
             ->forInputSource($this->inputSource)
@@ -44,10 +44,12 @@ class DossierSettingsService
             ->where('type', $this->type)
             ->first();
 
-        Log::debug("Checking for reset building [{$this->building->id}] reset done at: ".$dossierSetting->done_at);
+        if ($dossierSetting instanceof DossierSetting) {
+            Log::debug("Checking for reset building [{$this->building->id}] reset done at: ".$dossierSetting->done_at);
 
-        if ($datetime->isBefore($dossierSetting->done_at)) {
-            return true;
+            if ($datetime->isBefore($dossierSetting->done_at)) {
+                return true;
+            }
         }
         return false;
     }

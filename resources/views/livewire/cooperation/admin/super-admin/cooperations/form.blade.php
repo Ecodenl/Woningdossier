@@ -19,7 +19,7 @@
 
     <div class="form-group {{ $errors->has('cooperationToEditFormData.slug') ? ' has-error' : '' }}">
         <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.slug')</label>
-        <input x-model="slugged" wire:model.lazy="cooperationToEditFormData.slug"  required type="text" class="form-control" name="slug"
+        <input x-model="slugged" wire:model.lazy="cooperationToEditFormData.slug"  required type="text" class="form-control"
                placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.slug')">
 
         @if ($errors->has('cooperationToEditFormData.slug'))
@@ -31,7 +31,7 @@
 
     <div class="form-group {{ $errors->has('cooperationToEditFormData.cooperation_email') ? ' has-error' : '' }}">
         <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.cooperation_email')</label>
-        <input wire:model="cooperationToEditFormData.cooperation_email"  type="text" class="form-control" name="cooperation_email"
+        <input wire:model="cooperationToEditFormData.cooperation_email"  type="text" class="form-control"
                placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.create.form.cooperation_email')">
 
         @if ($errors->has('cooperationToEditFormData.cooperation_email'))

@@ -16,7 +16,11 @@ class CreateIntegrationProcessesTable extends Migration
         Schema::create('integration_processes', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Integration::class, 'integration_id')->constrained();
-            $table->foreignIdFor(\App\Models\Building::class, 'building_id')->constrained();
+            // Can't use foreignIdFor for building, as the building has an unsignedInteger, and foreignIdFor
+            // automates to unsignedBigInteger.
+            //$table->foreignIdFor(\App\Models\Building::class, 'building_id')->constrained();
+            $table->unsignedInteger('building_id');
+            $table->foreign('building_id')->references('id')->on('buildings')->cascadeOnDelete();
             $table->string('process');
             $table->dateTime('synced_at')->nullable()->default(null);
             $table->timestamps();

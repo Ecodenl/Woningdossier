@@ -48,7 +48,8 @@ trait CallsEconobisApi
         }
 
         $class = __CLASS__;
-        DiscordNotifier::init()->notify(get_class($exception)." Failed to send '{$class}' building_id: {$this->building->id}");
+        $buildingId = $this->building->id ?? 'No building id!';
+        DiscordNotifier::init()->notify(get_class($exception)." Failed to send '{$class}' building_id: {$buildingId}");
     }
 
     public function middleware(): array

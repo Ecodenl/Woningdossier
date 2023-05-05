@@ -63,7 +63,7 @@ class EconobisEventSubscriber
         // so this is the same as the policy used above, but at this stage the user does not exist anymore.
         // so we have to do it manually.
         if ( ! empty($event->accountRelated['account_id'])) {
-            SendUserDeletedToEconobis::dispatch($event->accountRelated);
+            SendUserDeletedToEconobis::dispatch($event->cooperation, $event->accountRelated);
         }
     }
 

@@ -24,7 +24,7 @@ class Form extends Component
         $this->cooperationToEdit = $cooperationToEdit;
         if ($cooperationToEdit->exists) {
             $this->fill([
-                'cooperationToEditFormData' => $cooperationToEdit->only(['name', 'slug', 'website_url', 'cooperationToEdit_email'])
+                'cooperationToEditFormData' => $cooperationToEdit->only(['name', 'slug', 'website_url', 'cooperation_email'])
             ]);
         }
     }
@@ -52,7 +52,8 @@ class Form extends Component
         return [
             'cooperationToEditFormData.name' => 'required',
             'cooperationToEditFormData.slug' => ['required', $slugUnique],
-            'cooperationToEditFormData.website_url' => 'nullable|url',
+            'cooperationToEditFormData.cooperation_email' => ['nullable', 'email'],
+            'cooperationToEditFormData.website_url' => ['nullable', 'url'],
         ];
     }
 

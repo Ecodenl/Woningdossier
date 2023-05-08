@@ -18,8 +18,6 @@ class InsertLogEntry implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::LOGS;
-
     public $loggableType;
     public $loggableId;
     public $buildingId;
@@ -33,6 +31,7 @@ class InsertLogEntry implements ShouldQueue
      */
     public function __construct(string $loggableType, int $loggableId, int $buildingId, string $message, bool $crucial = false)
     {
+        $this->queue = Queue::LOGS;
         $this->loggableType = $loggableType;
         $this->loggableId = $loggableId;
         $this->buildingId = $buildingId;

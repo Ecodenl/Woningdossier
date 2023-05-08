@@ -16,8 +16,6 @@ class CopyQuestionnaireToCooperation implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::APP;
-
     /**
      * The cooperation where the questionnaire needs to be copied to.
      *
@@ -39,6 +37,7 @@ class CopyQuestionnaireToCooperation implements ShouldQueue
      */
     public function __construct(Cooperation $cooperation, Questionnaire $questionnaire)
     {
+        $this->queue = Queue::APP;
         $this->cooperation = $cooperation;
         $this->questionnaire = $questionnaire;
     }

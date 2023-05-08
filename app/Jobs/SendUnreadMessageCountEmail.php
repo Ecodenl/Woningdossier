@@ -24,8 +24,6 @@ class SendUnreadMessageCountEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::APP_EXTERNAL;
-
     protected $user;
     protected $cooperation;
     protected $building;
@@ -34,6 +32,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue
 
     public function __construct(Cooperation $cooperation, User $user, Building $building, NotificationSetting $notificationSetting, int $unreadMessageCount)
     {
+        $this->queue = Queue::APP_EXTERNAL;
         $this->notificationSetting = $notificationSetting;
         $this->user = $user;
         $this->cooperation = $cooperation;

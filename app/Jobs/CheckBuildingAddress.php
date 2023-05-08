@@ -20,8 +20,6 @@ class CheckBuildingAddress implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::APP_EXTERNAL;
-
     public $building;
 
     public $tries = 10;
@@ -33,6 +31,7 @@ class CheckBuildingAddress implements ShouldQueue
     public function __construct(Building $building)
     {
         $this->building = $building;
+        $this->queue = Queue::APP_EXTERNAL;
     }
 
     /**

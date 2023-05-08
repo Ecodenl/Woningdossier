@@ -18,14 +18,13 @@ class CloneOpposingInputSource implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, HasNotifications;
 
-    public $queue = Queue::APP_HIGH;
-
     public Building $building;
     public InputSource $inputSource;
     public InputSource $cloneableInputSource;
 
     public function __construct(Building $building, InputSource $inputSource, InputSource $cloneableInputSource)
     {
+        $this->queue = Queue::APP_HIGH;
         $this->building = $building;
         $this->inputSource = $inputSource;
         $this->cloneableInputSource = $cloneableInputSource;

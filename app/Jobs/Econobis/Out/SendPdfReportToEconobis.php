@@ -20,8 +20,6 @@ class SendPdfReportToEconobis implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CallsEconobisApi;
 
-    public $queue = Queue::APP_EXTERNAL;
-
     public Building $building;
 
     /**
@@ -31,6 +29,7 @@ class SendPdfReportToEconobis implements ShouldQueue
      */
     public function __construct(Building $building)
     {
+        $this->queue = Queue::APP_EXTERNAL;
         $this->building = $building;
     }
 

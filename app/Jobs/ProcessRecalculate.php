@@ -14,10 +14,9 @@ class ProcessRecalculate implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::APP_HIGH;
-
     public function __construct()
     {
+        $this->queue = Queue::APP_HIGH;
     }
 
     /**

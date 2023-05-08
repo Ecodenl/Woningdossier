@@ -15,8 +15,6 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::APP_HIGH;
-
     public Building $building;
 
 
@@ -27,6 +25,7 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
      */
     public function __construct(Building $building)
     {
+        $this->queue = Queue::APP_HIGH;
         $this->building = $building;
     }
 

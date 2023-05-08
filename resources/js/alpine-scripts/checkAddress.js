@@ -11,6 +11,10 @@ export default (checks, tailwind = true) => ({
             this.performChecks();
             this.oldValues['postcode'] = this.$el.value;
         },
+        ['x-on:keydown.enter']() {
+            this.$event.preventDefault();
+            this.$el.triggerEvent('change');
+        }
     },
     houseNumber: {
         ['x-ref']: 'houseNumber',
@@ -18,13 +22,25 @@ export default (checks, tailwind = true) => ({
             this.performChecks();
             this.oldValues['houseNumber'] = this.$el.value;
         },
+        ['x-on:keydown.enter']() {
+            this.$event.preventDefault();
+            this.$el.triggerEvent('change');
+        }
     },
-    houseNumberExtension: {
-        // Conditionally setting x-ref seems to not work as expected, so it's set in the init
+    houseNumberExtensionField: {
+        // Used when BAG is down. Shouldn't do anything.
+        ['x-ref']: 'houseNumberExtensionField',
+    },
+    houseNumberExtensionSelect: {
+        ['x-ref']: 'houseNumberExtensionSelect',
         ['x-on:change']() {
             this.performChecks();
             this.oldValues['houseNumberExtension'] = this.$el.value;
         },
+        ['x-on:keydown.enter']() {
+            this.$event.preventDefault();
+            this.$el.triggerEvent('change');
+        }
     },
     city: {
         ['x-ref']: 'city',
@@ -36,22 +52,6 @@ export default (checks, tailwind = true) => ({
         if (! this.checks instanceof Object) {
             this.checks = {};
         }
-
-        // Because conditionally setting x-ref doesn' work...
-        Array.from(document.querySelectorAll('[x-bind="houseNumberExtension"]')).forEach((extensionField) => {
-            let ref = '';
-            switch (extensionField.tagName) {
-                case 'INPUT':
-                    ref = 'houseNumberExtensionField';
-                    break;
-                case 'SELECT':
-                    ref = 'houseNumberExtensionSelect';
-                    break;
-            }
-            if (ref) {
-                extensionField.setAttribute('x-ref', ref);
-            }
-        });
 
         // Another thread wait, else the refs have not yet been bound
         setTimeout(() => {
@@ -101,6 +101,7 @@ export default (checks, tailwind = true) => ({
                         context.showPostalCodeError = false;
 
                         let response = request.response;
+                        let faultyData = request.status === 422;
 
                         // Restore old value
                         let oldOption = houseNumberExtensionSelect.querySelector('option.old');
@@ -110,13 +111,13 @@ export default (checks, tailwind = true) => ({
                             oldOption.remove();
                         }
 
-                        if (response.available_extensions) {
-                            context.availableExtensions = response.available_extensions;
+                        if (response.available_extensions || faultyData) {
+                            context.availableExtensions = response.available_extensions || [];
                         }
 
                         // So, if no BAG address ID was returned, there was a BAG endpoint failure.
                         // We will consider the BAG available on form request errors also.
-                        context.bagAvailable = typeof response.bag_addressid !== 'undefined' || request.status === 422;
+                        context.bagAvailable = typeof response.bag_addressid !== 'undefined' || faultyData;
                         context.switchAvailability();
 
                         if (oldValue !== null) {
@@ -235,6 +236,8 @@ export default (checks, tailwind = true) => ({
         // Always hide, conditionally unhidden.
         this.$refs['houseNumberExtensionSelect'].style.display = 'none';
         this.$refs['houseNumberExtensionSelect'].setAttribute('disabled', 'disabled');
+        let label = this.$refs['houseNumberExtensionSelect'].closest('.form-group').querySelector('label');
+        label.style.display = 'none';
 
         if (this.bagAvailable) {
             this.$refs['street'].setAttribute('readonly', 'readonly');
@@ -245,12 +248,14 @@ export default (checks, tailwind = true) => ({
             if (this.availableExtensions.length > 0) {
                 this.$refs['houseNumberExtensionSelect'].style.display = '';
                 this.$refs['houseNumberExtensionSelect'].removeAttribute('disabled');
+                label.style.display = '';
             }
         } else {
             this.$refs['street'].removeAttribute('readonly');
             this.$refs['city'].removeAttribute('readonly');
             this.$refs['houseNumberExtensionField'].style.display = '';
             this.$refs['houseNumberExtensionField'].removeAttribute('disabled');
+            label.style.display = '';
         }
     },
 });

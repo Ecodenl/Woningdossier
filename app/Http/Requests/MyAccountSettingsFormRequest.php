@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Rules\PhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class MyAccountSettingsFormRequest extends FormRequest
 {
@@ -14,7 +15,7 @@ class MyAccountSettingsFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::check();
+        return Auth::check();
     }
 
     /**

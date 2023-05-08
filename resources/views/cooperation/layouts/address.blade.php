@@ -38,12 +38,12 @@
         <input class="form-input" type="text" name="address[extension]"
                value="{{ old('extension', $defaults->extension ?? '') }}"
                placeholder="@lang('auth.register.form.house-number-extension')"
-               x-bind="houseNumberExtension">
+               x-bind="houseNumberExtensionField">
         {{-- We are not using a custom select here. Because it defines its own x-data, it makes the x-ref invisible for the parent x-data --}}
         <select class="form-input" name="address[extension]" x-cloak
-                x-bind="houseNumberExtension">
+                x-bind="houseNumberExtensionSelect">
             {{-- Values will be bound from JS --}}
-            <option value="null">
+            <option value="">
                 @lang('auth.register.form.no-extension')
             </option>
             @if(old('extension', $defaults->extension ?? ''))

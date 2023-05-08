@@ -4,16 +4,18 @@ namespace App\Services\Lvbag\Payloads;
 
 class AddressExpanded
 {
-    public ?array $expandedAddress = null;
+    public array $expandedAddress = [];
 
     public function __construct(?array $expandedAddress)
     {
-        $this->expandedAddress = $expandedAddress;
+        $this->expandedAddress = $expandedAddress ?? [];
     }
 
     public function isEmpty(): bool
     {
-        return empty($this->expandedAddress);
+        $expandedAddress = $this->expandedAddress;
+        unset($expandedAddress['endpoint_failure']);
+        return empty($expandedAddress);
     }
 
     public function prepareForBuilding(): array
@@ -22,6 +24,7 @@ class AddressExpanded
         $data = [
             'street' => $address['openbareRuimteNaam'] ?? '',
             'number' => $address['huisnummer'] ?? '',
+            'extension' => trim(($address['huisletter'] ?? '') . ($address['huisnummertoevoeging'] ?? '')),
             'postal_code' => $address['postcode'] ?? '',
             'city' => $address['woonplaatsNaam'] ?? '',
             'build_year' => $address['oorspronkelijkBouwjaar'][0] ?? 1930,

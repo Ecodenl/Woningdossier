@@ -7,9 +7,6 @@
 <div class="{{ $class ?? 'flex flex-wrap w-full' }}" @if(! empty($attr)) {!! $attr !!} @endif
      x-data="checkAddress({'correct_address': '{{ route('api.get-address-data') }}'})">
     
-    <input type="hidden" name="address[addressid]" x-bind="addressId"
-           value="{{ old('addressid', $defaults->bag_addressid ?? '') }}">
-
     @component('cooperation.frontend.layouts.components.form-group', [
         'withInputSource' => false,
         'label' => $withLabels ? __('auth.register.form.postal-code') : '',

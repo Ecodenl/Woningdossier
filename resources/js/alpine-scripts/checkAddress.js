@@ -22,6 +22,7 @@ export default (checks, tailwind = true) => ({
     houseNumberExtension: {
         // Conditionally setting x-ref seems to not work as expected, so it's set in the init
         ['x-on:change']() {
+            this.performChecks();
             this.oldValues['houseNumberExtension'] = this.$el.value;
         },
     },
@@ -30,9 +31,6 @@ export default (checks, tailwind = true) => ({
     },
     street: {
         ['x-ref']: 'street',
-    },
-    addressId: {
-        ['x-ref']: 'addressId',
     },
     init() {
         if (! this.checks instanceof Object) {
@@ -72,16 +70,12 @@ export default (checks, tailwind = true) => ({
         // Get inputs from refs
         let postcode = this.$refs['postcode'];
         let houseNumber = this.$refs['houseNumber'];
+        let houseNumberExtensionSelect = this.$refs['houseNumberExtensionSelect'];
         let city = this.$refs['city'];
         let street = this.$refs['street'];
-        let addressId = this.$refs['addressId'];
 
         // So we only want to make a request if both postcode and house number are set.
         if (postcode.value && houseNumber.value) {
-            // Note: the code was written this way so a change to the house number extension could also be easily made
-            // to trigger an update. However, since the address should be correct anyway, just with a different
-            // extension, it won't trigger an update to save on requests.
-
             let url = this.getUrl(apiUrl);
             url = this.appendAddressData(url);
 
@@ -91,6 +85,8 @@ export default (checks, tailwind = true) => ({
                 makeRequest = true;
                 url.searchParams.append('fetch_extensions', '1');
                 url.searchParams.delete('extension');
+            } else if (this.isDirty('houseNumberExtension', houseNumberExtensionSelect.value)) {
+                makeRequest = true;
             }
 
             if (makeRequest) {
@@ -107,7 +103,7 @@ export default (checks, tailwind = true) => ({
                         let response = request.response;
 
                         // Restore old value
-                        let oldOption = context.$refs['houseNumberExtensionSelect'].querySelector('option.old');
+                        let oldOption = houseNumberExtensionSelect.querySelector('option.old');
                         let oldValue = null;
                         if (oldOption) {
                             oldValue = oldOption.value;
@@ -119,17 +115,18 @@ export default (checks, tailwind = true) => ({
                         }
 
                         // So, if no BAG address ID was returned, there was a BAG endpoint failure.
-                        context.bagAvailable = typeof response.bag_addressid !== 'undefined';
+                        // We will consider the BAG available on form request errors also.
+                        context.bagAvailable = typeof response.bag_addressid !== 'undefined' || request.status === 422;
                         context.switchAvailability();
 
                         if (oldValue !== null) {
                             setTimeout(() => {
-                                context.$refs['houseNumberExtensionSelect'].value = oldValue;
+                                houseNumberExtensionSelect.value = oldValue;
                             });
                         }
 
                         // If the request was successful, we fill the data in the field
-                        if (request.status == 200) {
+                        if (request.status === 200) {
                             if (response.postal_code === '' && context.bagAvailable) {
                                 context.showPostalCodeError = true;
                             }
@@ -137,10 +134,9 @@ export default (checks, tailwind = true) => ({
                             // Don't want to overwrite user data with nothing
                             if (context.bagAvailable) {
                                 // If BAG is available we want to reset the street/city so the user
-                                // cannot spoof the validation
+                                // cannot spoof the validation (without being a hackerman).
                                 street.value =  response.street;
                                 city.value =  response.city;
-                                addressId.value =  response.bag_addressid;
                             }
                         } else {
                             // Else we add errors

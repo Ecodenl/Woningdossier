@@ -62,7 +62,7 @@ class BuildingAddressService
         $addressData = array_filter($addressData, function ($value, $key) {
             // filter out empty results, only for specific keys
             // we want to clear the bag values.
-            if ( ! in_array($key, ['bag_addressid', 'bag_woonplaats_id', 'municipality_id'])) {
+            if (! in_array($key, ['bag_addressid', 'bag_woonplaats_id', 'municipality_id'])) {
                 return ! empty($value);
             }
             return true;

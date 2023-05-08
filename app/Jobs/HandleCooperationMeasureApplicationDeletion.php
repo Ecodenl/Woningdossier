@@ -23,8 +23,6 @@ class HandleCooperationMeasureApplicationDeletion implements ShouldQueue
 
     public $cooperationMeasureApplication;
 
-    public $queue = Queue::APP;
-
     /**
      * Create a new job instance.
      *
@@ -32,6 +30,7 @@ class HandleCooperationMeasureApplicationDeletion implements ShouldQueue
      */
     public function __construct(CooperationMeasureApplication $cooperationMeasureApplication)
     {
+        $this->queue = Queue::APP;
         $this->cooperationMeasureApplication = $cooperationMeasureApplication;
     }
 

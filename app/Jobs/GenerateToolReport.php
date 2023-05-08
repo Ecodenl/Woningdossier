@@ -24,8 +24,6 @@ class GenerateToolReport implements ShouldQueue
 {
     use Queueable, Dispatchable, InteractsWithQueue, SerializesModels;
 
-    public $queue = Queue::EXPORTS;
-
     protected $cooperation;
     protected $anonymizeData;
     protected $fileType;
@@ -33,6 +31,7 @@ class GenerateToolReport implements ShouldQueue
 
     public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage, bool $anonymizeData = false)
     {
+        $this->queue = Queue::EXPORTS;
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;
         $this->cooperation = $cooperation;

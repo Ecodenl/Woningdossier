@@ -23,8 +23,6 @@ class SendUserDeletedToEconobis implements ShouldQueue
     public array $accountRelated;
     public Cooperation $cooperation;
 
-    public $queue = Queue::APP_EXTERNAL;
-
     /**
      * Create a new job instance.
      *
@@ -32,6 +30,7 @@ class SendUserDeletedToEconobis implements ShouldQueue
      */
     public function __construct(Cooperation $cooperation, $accountRelated)
     {
+        $this->queue = Queue::APP_EXTERNAL;
         $this->cooperation = $cooperation;
         $this->accountRelated = $accountRelated;
     }

@@ -23,8 +23,6 @@ class CompleteRelatedSubStep implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::APP_HIGH;
-
     public SubStep $subStep;
     public Building $building;
     public InputSource $inputSource;
@@ -32,6 +30,7 @@ class CompleteRelatedSubStep implements ShouldQueue
 
     public function __construct(SubStep $subStep, Building $building, InputSource $inputSource)
     {
+        $this->queue = Queue::APP_HIGH;
         $this->subStep = $subStep;
         $this->building = $building;
         $this->inputSource = $inputSource;

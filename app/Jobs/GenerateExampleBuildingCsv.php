@@ -25,8 +25,6 @@ class GenerateExampleBuildingCsv implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::EXPORTS;
-
     public $cooperation;
     public $fileType;
     public $fileStorage;
@@ -38,6 +36,7 @@ class GenerateExampleBuildingCsv implements ShouldQueue
      */
     public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage)
     {
+        $this->queue = Queue::EXPORTS;
         $this->cooperation = $cooperation;
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;

@@ -20,8 +20,6 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::EXPORTS;
-
     protected $questionnaire;
     protected $anonymizeData;
     protected $fileType;
@@ -30,6 +28,7 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
 
     public function __construct(Questionnaire $questionnaire, $filename, FileType $fileType, FileStorage $fileStorage, bool $anonymizeData = false)
     {
+        $this->queue = Queue::EXPORTS;
         $this->fileType = $fileType;
         $this->filename = $filename;
         $this->fileStorage = $fileStorage;

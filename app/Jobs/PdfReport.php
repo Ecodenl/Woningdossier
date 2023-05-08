@@ -39,8 +39,6 @@ class PdfReport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = Queue::EXPORTS;
-
     protected User $user;
     protected FileType $fileType;
     protected FileStorage $fileStorage;
@@ -51,6 +49,7 @@ class PdfReport implements ShouldQueue
      */
     public function __construct(User $user, FileType $fileType, FileStorage $fileStorage, Scan $scan)
     {
+        $this->queue = Queue::EXPORTS;
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;
         $this->user = $user;

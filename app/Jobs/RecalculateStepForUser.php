@@ -22,8 +22,6 @@ class RecalculateStepForUser implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, HasNotifications;
 
-    public $queue = Queue::APP_HIGH;
-
     public User $user;
     public InputSource $inputSource;
     public Step $step;
@@ -31,6 +29,7 @@ class RecalculateStepForUser implements ShouldQueue
 
     public function __construct(User $user, InputSource $inputSource, Step $step, bool $withOldAdvices = true)
     {
+        $this->queue = Queue::APP_HIGH;
         $this->user = $user;
         $this->inputSource = $inputSource;
         $this->step = $step;

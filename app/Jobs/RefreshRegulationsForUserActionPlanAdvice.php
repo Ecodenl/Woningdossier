@@ -23,8 +23,6 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, HasNotifications;
 
-    public $queue = Queue::APP_EXTERNAL;
-
     public UserActionPlanAdvice $userActionPlanAdvice;
     public Building $building;
     public InputSource $inputSource;
@@ -38,6 +36,7 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
      */
     public function __construct(UserActionPlanAdvice $userActionPlanAdvice)
     {
+        $this->queue = Queue::APP_EXTERNAL;
         $this->userActionPlanAdvice = $userActionPlanAdvice;
         $this->building = $userActionPlanAdvice->user->building;
         $this->inputSource = $userActionPlanAdvice->inputSource;

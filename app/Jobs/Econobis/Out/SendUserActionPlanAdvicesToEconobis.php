@@ -19,8 +19,6 @@ class SendUserActionPlanAdvicesToEconobis implements ShouldQueue
 
     public Building $building;
 
-    public $queue = Queue::APP_EXTERNAL;
-
     /**
      * Create a new job instance.
      *
@@ -28,6 +26,7 @@ class SendUserActionPlanAdvicesToEconobis implements ShouldQueue
      */
     public function __construct(Building $building)
     {
+        $this->queue = Queue::APP_EXTERNAL;
         $this->building = $building;
     }
 

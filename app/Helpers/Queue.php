@@ -13,9 +13,11 @@ class Queue
     public static function getQueueNames(): array
     {
         return [
-            self::DEFAULT,
-            self::ASYNC,
-            self::REGULATIONS,
+            self::APP,
+            self::APP_HIGH,
+            self::APP_EXTERNAL,
+            self::LOGS,
+            self::EXPORTS,
         ];
     }
 }

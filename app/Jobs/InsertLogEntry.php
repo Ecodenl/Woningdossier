@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Models\Log;
 use App\Models\User;
 use Carbon\Carbon;
@@ -16,6 +17,8 @@ use Illuminate\Queue\SerializesModels;
 class InsertLogEntry implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $queue = Queue::LOGS;
 
     public $loggableType;
     public $loggableId;

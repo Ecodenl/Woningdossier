@@ -20,12 +20,9 @@ use Throwable;
 
 class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
 {
-    use Batchable,
-        Dispatchable,
-        InteractsWithQueue,
-        Queueable,
-        SerializesModels,
-        HasNotifications;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, HasNotifications;
+
+    public $queue = Queue::APP_EXTERNAL;
 
     public UserActionPlanAdvice $userActionPlanAdvice;
     public Building $building;
@@ -44,7 +41,6 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
         $this->building = $userActionPlanAdvice->user->building;
         $this->inputSource = $userActionPlanAdvice->inputSource;
 
-        $this->queue = Queue::REGULATIONS;
         $this->setUuid();
     }
 

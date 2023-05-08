@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\BuildingAddressService;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Log;
 class CheckBuildingAddress implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $queue = Queue::APP_EXTERNAL;
 
     public $building;
 

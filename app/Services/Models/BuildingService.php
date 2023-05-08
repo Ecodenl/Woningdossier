@@ -231,7 +231,7 @@ class BuildingService
         // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
         // If the municipality hasn't changed, however, we will manually dispatch a refresh.
         if (is_null($newMunicipality)) {
-            CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
+            CheckBuildingAddress::dispatch($building);
         } elseif ($currentMunicipality === $newMunicipality) {
             RefreshRegulationsForBuildingUser::dispatch($building);
         }

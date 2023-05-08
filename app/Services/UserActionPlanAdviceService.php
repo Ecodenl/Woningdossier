@@ -78,7 +78,6 @@ class UserActionPlanAdviceService
             })
             ->name('Refresh all user his regulations for advices.')
             ->allowFailures()
-            ->onQueue(Queue::REGULATIONS)
             ->dispatch();
     }
 

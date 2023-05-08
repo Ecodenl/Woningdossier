@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Mail\UnreadMessagesEmail;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -21,10 +22,9 @@ use Throwable;
 
 class SendUnreadMessageCountEmail implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $queue = Queue::APP_EXTERNAL;
 
     protected $user;
     protected $cooperation;

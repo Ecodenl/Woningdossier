@@ -108,7 +108,7 @@ class RecalculateForUser extends Command
                 foreach ($stepsToRecalculate as $stepToRecalculate) {
                     $stepsToRecalculateChain[] = (
                         new RecalculateStepForUser($user, $inputSource, $stepToRecalculate, $withOldAdvices)
-                    )->onQueue(Queue::ASYNC);
+                    );
                 }
 
                 NotificationService::init()
@@ -120,7 +120,6 @@ class RecalculateForUser extends Command
                 Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
 
                 ProcessRecalculate::withChain($stepsToRecalculateChain)
-                    ->onQueue(Queue::ASYNC)
                     ->dispatch();
             }
         }

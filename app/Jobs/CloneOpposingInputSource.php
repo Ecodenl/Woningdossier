@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Jobs\Middleware\CheckLastResetAt;
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\Cloning\CloneDataService;
@@ -16,11 +17,9 @@ use Throwable;
 
 class CloneOpposingInputSource implements ShouldQueue
 {
-    use Dispatchable,
-        InteractsWithQueue,
-        Queueable,
-        SerializesModels,
-        HasNotifications;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, HasNotifications;
+
+    public $queue = Queue::APP_HIGH;
 
     public Building $building;
     public InputSource $inputSource;

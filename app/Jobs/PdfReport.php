@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\MyRegulationHelper;
 use App\Helpers\NumberFormatter;
+use App\Helpers\Queue;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolHelper;
 use App\Jobs\Middleware\CheckLastResetAt;
@@ -36,10 +37,9 @@ use Throwable;
 
 class PdfReport implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $queue = Queue::EXPORTS;
 
     protected User $user;
     protected FileType $fileType;

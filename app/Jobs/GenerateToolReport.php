@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Helpers\ToolHelper;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
@@ -21,10 +22,9 @@ use Throwable;
 
 class GenerateToolReport implements ShouldQueue
 {
-    use Queueable;
-    use Dispatchable;
-    use InteractsWithQueue;
-    use SerializesModels;
+    use Queueable, Dispatchable, InteractsWithQueue, SerializesModels;
+
+    public $queue = Queue::EXPORTS;
 
     protected $cooperation;
     protected $anonymizeData;

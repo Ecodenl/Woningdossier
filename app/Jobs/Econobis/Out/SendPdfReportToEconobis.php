@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Econobis\Out;
 
+use App\Helpers\Queue;
 use App\Jobs\Middleware\EnsureCooperationHasEconobisLink;
 use App\Models\Building;
 use App\Services\Econobis\Api\EconobisApi;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Log;
 class SendPdfReportToEconobis implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CallsEconobisApi;
+
+    public $queue = Queue::APP_EXTERNAL;
 
     public Building $building;
 

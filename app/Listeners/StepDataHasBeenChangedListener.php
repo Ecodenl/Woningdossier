@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Helpers\Queue;
 use App\Jobs\InsertLogEntry;
 use App\Models\Log;
 use App\Models\User;
@@ -10,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class StepDataHasBeenChangedListener
 {
+    public $queue = Queue::LOGS;
     /**
      * Create the event listener.
      *

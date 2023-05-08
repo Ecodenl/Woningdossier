@@ -5,6 +5,8 @@ namespace App\Jobs\Econobis\Out;
 use App\Helpers\Wrapper;
 use App\Jobs\Middleware\EnsureCooperationHasEconobisLink;
 use App\Models\Cooperation;
+use App\Helpers\Queue;
+use App\Models\Building;
 use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\EconobisService;
 use Illuminate\Bus\Queueable;
@@ -20,6 +22,8 @@ class SendUserDeletedToEconobis implements ShouldQueue
 
     public array $accountRelated;
     public Cooperation $cooperation;
+
+    public $queue = Queue::APP_EXTERNAL;
 
     /**
      * Create a new job instance.

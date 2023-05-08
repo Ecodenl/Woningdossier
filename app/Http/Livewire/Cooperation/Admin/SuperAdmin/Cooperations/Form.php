@@ -31,7 +31,7 @@ class Form extends Component
                     'name',
                     'slug',
                     'website_url',
-                    'cooperationToEdit_email',
+                    'cooperation_email',
                     'econobis_wildcard'
                 ])
             ]);
@@ -69,11 +69,10 @@ class Form extends Component
         return [
             'cooperationToEditFormData.name' => 'required',
             'cooperationToEditFormData.slug' => ['required', $slugUnique],
-            'cooperationToEditFormData.website_url' => 'nullable|url',
-            'cooperationToEditFormData.cooperation_email' => 'nullable|email',
+            'cooperationToEditFormData.cooperation_email' => ['nullable', 'email'],
+            'cooperationToEditFormData.website_url' => ['nullable', 'url'],
             'cooperationToEditFormData.econobis_wildcard' => 'nullable',
             'cooperationToEditFormData.econobis_api_key' => ['nullable', 'string'],
-
         ];
     }
 

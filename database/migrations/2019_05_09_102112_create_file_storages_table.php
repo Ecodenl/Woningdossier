@@ -23,7 +23,7 @@ class CreateFileStoragesTable extends Migration
             $table->unsignedInteger('building_id')->nullable();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');
 
-            $table->unsignedInteger('questionnaire_id')->after('building_id')->nullable();
+            $table->unsignedInteger('questionnaire_id')->nullable();
             $table->foreign('questionnaire_id')->references('id')->on('questionnaires')->onDelete('cascade');
 
             $table->unsignedInteger('input_source_id')->nullable()->default(1);

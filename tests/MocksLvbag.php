@@ -28,6 +28,8 @@ trait MocksLvbag
                 "openbareRuimteNaam" => "Boezemweg",
                 "huisnummer" => $fallbackData['number'],
                 "postcode" => $fallbackData['postal_code'],
+                'huisletter' => null,
+                'huisnummertoevoeging' => $fallbackData['extension'],
                 "woonplaatsNaam" => "Oude-Tonge",
                 "oorspronkelijkBouwjaar" => [
                     0 => "2015"

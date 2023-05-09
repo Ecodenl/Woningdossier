@@ -29,7 +29,7 @@ trait MocksLvbag
                 "huisnummer" => $fallbackData['number'],
                 "postcode" => $fallbackData['postal_code'],
                 'huisletter' => null,
-                'huisnummertoevoeging' => $fallbackData['extension'],
+                'huisnummertoevoeging' => $fallbackData['extension'] ?? null, // null if not explicitly defined
                 "woonplaatsNaam" => "Oude-Tonge",
                 "oorspronkelijkBouwjaar" => [
                     0 => "2015"

@@ -18,9 +18,9 @@
                     </label>
                 @endif
                 <input class="form-control" type="text" name="address[postal_code]" id="postcode"
-                       value="{{ old('postal_code', $defaults->postal_code ?? '') }}"
+                       value="{{ old('address.postal_code', $defaults->postal_code ?? '') }}"
                        placeholder="@lang('auth.register.form.postal-code')" x-bind="postcode">
-                <p class="text-blue-800 -mt-2 w-full" x-show="showPostalCodeError">
+                <p class="text-info -mt-2 w-full" x-show="showPostalCodeError" x-cloak>
                     @lang('auth.register.form.possible-wrong-postal-code')
                 </p>
             @endcomponent
@@ -35,7 +35,7 @@
                     </label>
                 @endif
                 <input class="form-control" type="text" name="address[number]" id="number"
-                       value="{{ old('number', $defaults->number ?? '') }}"
+                       value="{{ old('address.number', $defaults->number ?? '') }}"
                        placeholder="@lang('auth.register.form.number')" x-bind="houseNumber">
             @endcomponent
         </div>
@@ -44,24 +44,24 @@
                    'input_name' => 'address.house_number_extension',
                ])
                 @if($withLabels)
-                    <label for="extension" class="control-label">
+                    <label for="extension" class="control-label" style="display: none;">
                         @lang('auth.register.form.house-number-extension')
                     </label>
                 @endif
-                <input class="form-control" type="text" name="address[extension]"
-                       value="{{ old('extension', $defaults->extension ?? '') }}"
+                <input class="form-control" type="text" name="address[extension]" style="display: none;"
+                       value="{{ old('address.extension', $defaults->extension ?? '') }}"
                        placeholder="@lang('auth.register.form.house-number-extension')"
                        x-bind="houseNumberExtensionField">
                 {{-- We are not using a custom select here. Because it defines its own x-data, it makes the x-ref invisible for the parent x-data --}}
-                <select class="form-control" name="address[extension]" x-cloak id="extension"
+                <select class="form-control" name="address[extension]" style="display: none;" id="extension"
                         x-bind="houseNumberExtensionSelect">
                     {{-- Values will be bound from JS --}}
                     <option value="">
                         @lang('auth.register.form.no-extension')
                     </option>
-                    @if(old('extension', $defaults->extension ?? ''))
-                        <option value="{{ old('extension', $defaults->extension ?? '') }}" selected class="old">
-                            {{ old('extension', $defaults->extension ?? '') }}
+                    @if(old('address.extension', $defaults->extension ?? ''))
+                        <option value="{{ old('address.extension', $defaults->extension ?? '') }}" selected class="old">
+                            {{ old('address.extension', $defaults->extension ?? '') }}
                         </option>
                     @endif
                     <template x-for="extension in availableExtensions">
@@ -83,7 +83,7 @@
                     </label>
                 @endif
                 <input class="form-control" type="text" name="address[street]" id="street"
-                       value="{{ old('street', $defaults->street ?? '') }}"
+                       value="{{ old('address.street', $defaults->street ?? '') }}"
                        placeholder="@lang('auth.register.form.street')" x-bind="street">
             @endcomponent
         </div>
@@ -97,7 +97,7 @@
                     </label>
                 @endif
                 <input class="form-control" type="text" name="address[city]" id="city"
-                       value="{{ old('city', $defaults->city ?? '') }}"
+                       value="{{ old('address.city', $defaults->city ?? '') }}"
                        placeholder="@lang('auth.register.form.city')" x-bind="city">
             @endcomponent
         </div>

@@ -23,13 +23,13 @@
                 ])
                     <input class="form-input" type="text" name="email" value="{{ old('email') }}"
                            placeholder="@lang('auth.register.form.email')" x-on:change="checkEmail($el)">
-                    <p class="text-red w-full text-left" x-show="showEmailWarning">
+                    <p class="text-red w-full text-left" x-show="showEmailWarning" x-cloak>
                         @lang('auth.register.form.possible-wrong-email')
                     </p>
-                    <p class="text-blue-800 w-full text-left" x-show="alreadyMember">
+                    <p class="text-blue-800 w-full text-left" x-show="alreadyMember" x-cloak>
                         @lang('auth.register.form.already-member')
                     </p>
-                    <p class="text-blue-800 w-full text-left" x-show="emailExists">
+                    <p class="text-blue-800 w-full text-left" x-show="emailExists" x-cloak>
                         @lang('auth.register.form.email-exists')
                     </p>
                 @endcomponent

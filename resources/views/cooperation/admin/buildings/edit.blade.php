@@ -58,7 +58,7 @@
                                         @lang('accounts.column-translations.email')
                                     </label>
                                     <input id="email" type="email" class="form-control" name="accounts[email]"
-                                           value="{{ old('account.email', $account->email) }}" required>
+                                           value="{{ old('accounts.email', $account->email) }}" required>
                                 @endcomponent
                             </div>
                             <div class="col-md-6 col-lg-4">
@@ -88,6 +88,7 @@
                                 @endcomponent
                             </div>
                         </div>
+                        {{-- TODO: Roles? --}}
 
                         <h3>@lang('cooperation/admin/buildings.edit.address-info-title')</h3>
                         <div class="row">

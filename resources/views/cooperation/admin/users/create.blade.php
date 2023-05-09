@@ -6,7 +6,7 @@
 
         <div class="panel-body">
             <div class="row">
-                <form class="has-address-data"
+                <form class="has-address-data col-sm-12"
                       @if(isset($cooperationToManage))
                           action="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.store', compact('cooperation', 'cooperationToManage'))}}"
                       @else
@@ -14,7 +14,6 @@
                       @endif
                       method="post">
                     @csrf
-                    <input id="addressid" name="addressid" type="text" value="" style="display:none;">
 
                     <div class="col-md-12">
                         <div class="row">
@@ -33,160 +32,110 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                @component('layouts.parts.components.form-group', [
-                                    'input_name' => 'email',
-                                ])
-                                    <label for="email">@lang('cooperation/admin/users.create.form.email')</label>
-                                    <input id="email" type="email" value="{{old('email')}}" class="form-control"
-                                           placeholder="@lang('cooperation/admin/users.create.form.email')..."
-                                           name="email">
-                                @endcomponent
-                            </div>
+                    <h3>@lang('cooperation/admin/buildings.edit.account-user-info-title')</h3>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            @component('layouts.parts.components.form-group', [
+                                'input_name' => 'users.first_name'
+                            ])
+                                <label for="first-name" class="control-label">
+                                    @lang('users.column-translations.first_name')
+                                </label>
+                                <input id="first-name" type="text" class="form-control" name="users[first_name]"
+                                       value="{{ old('users.first_name') }}" required autofocus>
+                            @endcomponent
                         </div>
 
-                        <div class="user-info">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    @component('layouts.parts.components.form-group', [
-                                       'input_name' => 'first_name',
-                                    ])
-                                        <label for="first-name">@lang('cooperation/admin/users.create.form.first-name')</label>
-                                        <input value="{{old('first_name')}}" type="text" class="form-control"
-                                               name="first_name"
-                                               placeholder="@lang('cooperation/admin/users.create.form.first-name')...">
-                                    @endcomponent
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    @component('layouts.parts.components.form-group', [
-                                       'input_name' => 'last_name',
-                                    ])
-                                        <label for="last_name">@lang('cooperation/admin/users.create.form.last-name')</label>
-                                        <input value="{{old('last_name')}}" type="text" class="form-control"
-                                               placeholder="@lang('cooperation/admin/users.create.form.last-name')..."
-                                               name="last_name">
-                                    @endcomponent
-                                </div>
-                            </div>
+                        <div class="col-md-6 col-lg-4">
+                            @component('layouts.parts.components.form-group', [
+                                'input_name' => 'users.last_name'
+                            ])
+                                <label for="last-name" class="control-label">
+                                    @lang('users.column-translations.last_name')
+                                </label>
+                                <input id="last-name" type="text" class="form-control" name="users[last_name]"
+                                       value="{{ old('users.last_name') }}" required>
+                            @endcomponent
+                        </div>
+                    </div>
 
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    @component('layouts.parts.components.form-group', [
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            @component('layouts.parts.components.form-group', [
+                                'input_name' => 'accounts.email'
+                            ])
+                                <label for="email" class="control-label">
+                                    @lang('accounts.column-translations.email')
+                                </label>
+                                <input id="email" type="email" class="form-control" name="accounts[email]"
+                                       value="{{ old('accounts.email') }}" required>
+                            @endcomponent
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            @component('layouts.parts.components.form-group', [
+                                'input_name' => 'users.phone_number'
+                            ])
+                                <label for="phone-number" class="control-label">
+                                    @lang('users.column-translations.phone_number')
+                                </label>
+                                <input id="phone-number" type="text" class="form-control" name="users[phone_number]"
+                                       value="{{ old('users.phone_number') }}">
+                            @endcomponent
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            @component('layouts.parts.components.form-group', [
                                        'input_name' => 'roles',
                                     ])
-                                        <label for="roles">@lang('cooperation/admin/users.create.form.roles')</label>
-                                        <select name="roles[]" class="roles form-control" id="roles"
-                                                multiple="multiple">
-                                            @foreach($roles as $role)
-                                                <option value="{{$role->id}}">
-                                                    {{$role->human_readable_name}}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    @endcomponent
-                                </div>
-                            </div>
+                                <label for="roles">@lang('cooperation/admin/users.create.form.roles')</label>
+                                <select name="roles[]" class="roles form-control" id="roles"
+                                        multiple="multiple">
+                                    @foreach($roles as $role)
+                                        <option value="{{$role->id}}">
+                                            {{$role->human_readable_name}}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endcomponent
                         </div>
                     </div>
-                    <div id="resident-info" class="col-md-6">
-                        <div class="row">
-                            <div class="form-group{{ $errors->has('postal_code') || $errors->has('number') ? ' has-error' : '' }}">
-                                <div class="col-md-4">
-                                    <label for="postal_code"
-                                           class="">@lang('cooperation/admin/users.create.form.postal-code')
-                                        <span class="">*</span></label>
 
-                                    <input id="postal_code" type="text" class="form-control" name="postal_code"
-                                           value="{{old('postal_code')}}">
-
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="number"
-                                           class="">@lang('cooperation/admin/users.create.form.number')
-                                        <span class="">*</span></label>
-
-                                    <input id="number" type="text" class="form-control" name="number"
-                                           value="{{ old('number') }}">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="house_number_extension"
-                                           class="">@lang('cooperation/admin/users.create.form.house-number-extension')</label>
-                                    <input id="house_number_extension" type="text" class="form-control"
-                                           name="house_number_extension"
-                                           placeholder="@lang('cooperation/admin/users.create.form.house-number-extension')"
-                                           value="{{ old('house_number_extension') }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                @component('layouts.parts.components.form-group', [
-                                   'input_name' => 'street',
-                                ])
-                                    <label for="street"
-                                           class="">@lang('cooperation/admin/users.create.form.street')
-                                        <span class="">*</span>
-                                    </label>
-
-                                    <input id="street" type="text" class="form-control" name="street"
-                                           value="{{ old('street') }}">
-                                @endcomponent
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                @component('layouts.parts.components.form-group', [
-                                   'input_name' => 'city',
-                                ])
-                                    <label for="city"
-                                           class="">@lang('cooperation/admin/users.create.form.city')
-                                        <span class="">*</span></label>
-
-                                    <input id="city" type="text" class="form-control" name="city"
-                                           value="{{ old('city') }}">
-                                @endcomponent
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                @component('layouts.parts.components.form-group', [
-                                   'input_name' => 'phone_number',
-                                ])
-                                    <label for="phone_number" class="">
-                                        @lang('cooperation/admin/users.create.form.phone-number')
-                                    </label>
-
-                                    <input id="phone_number" type="text" class="form-control" name="phone_number"
-                                           value="{{ old('phone_number') }}">
-                                @endcomponent
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                @component('layouts.parts.components.form-group', [
-                                   'input_name' => 'coach_id',
-                                ])
-                                    <label for="coach">@lang('cooperation/admin/users.create.form.select-coach')</label>
-                                    <select name="coach_id" class="coach form-control" id="coach">
-                                        @foreach($coaches as $coach)
-                                            <option value="{{$coach->id}}"
-                                                    @if(old('coach_id') == $coach->id) selected @endif>
-                                                {{$coach->getFullName()}}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                @endcomponent
-                            </div>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            @component('layouts.parts.components.form-group', [
+                               'input_name' => 'coach_id',
+                            ])
+                                <label for="coach">@lang('cooperation/admin/users.create.form.select-coach')</label>
+                                <select name="coach_id" class="coach form-control" id="coach">
+                                    @foreach($coaches as $coach)
+                                        <option value="{{$coach->id}}"
+                                                @if(old('coach_id') == $coach->id) selected @endif>
+                                            {{$coach->getFullName()}}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endcomponent
                         </div>
                     </div>
-                    <div class="col-sm-12 save-button">
-                        <button class="btn btn-primary btn-block"
-                                type="submit">@lang('cooperation/admin/users.create.form.submit')
-                            <span class="glyphicon glyphicon-plus"></span></button>
+                    {{-- TODO: Contact ID? --}}
+
+                    <h3>@lang('cooperation/admin/buildings.edit.address-info-title')</h3>
+                    <div class="row">
+                        <div class="col-xs-8">
+                            @include('cooperation.layouts.address-bootstrap', [
+                                'withLabels' => true,
+                            ])
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 save-button">
+                            <button class="btn btn-primary btn-block"
+                                    type="submit">@lang('cooperation/admin/users.create.form.submit')
+                                <span class="glyphicon glyphicon-plus"></span></button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -197,10 +146,9 @@
 @push('js')
     <script>
         $(document).ready(function () {
+            let oldSelectedRoles = [];
 
-            var oldSelectedRoles = [];
-
-            @if(!is_null(old('roles')))
+            @if(! is_null(old('roles')))
             @foreach(old('roles') as $roleId)
             oldSelectedRoles.push('{{$roleId}}');
             @endforeach
@@ -217,7 +165,7 @@
                 allowClear: true
             }).val(null).trigger("change");
 
-
+            // TODO: Convert to register Alpine x-data
             var email = $('#email');
 
             email.on('keyup change', function () {

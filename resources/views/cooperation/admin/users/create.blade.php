@@ -5,7 +5,8 @@
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')</div>
 
         <div class="panel-body">
-            <div class="row">
+            <div class="row"
+                 x-data="register('{{route('cooperation.check-existing-email', ['cooperation' => $cooperation, 'forCooperation' => $cooperationToManage ?? $cooperation])}}')">
                 <form class="has-address-data col-sm-12"
                       @if(isset($cooperationToManage))
                           action="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.store', compact('cooperation', 'cooperationToManage'))}}"
@@ -15,26 +16,9 @@
                       method="post">
                     @csrf
 
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="form-group" id="email-is-already-registered" style="display: none;">
-                                <div class="col-md-12">
-                                    @component('cooperation.tool.components.alert', ['alertType' => 'info'])
-                                        <div id="is-already-member">
-                                            @lang('cooperation/admin/users.create.form.already-member')
-                                        </div>
-                                        <div class="email-exist">
-                                            @lang('cooperation/admin/users.create.form.e-mail-exists')
-                                        </div>
-                                    @endcomponent
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <h3>@lang('cooperation/admin/buildings.edit.account-user-info-title')</h3>
                     <div class="row">
-                        <div class="col-md-6 col-lg-4">
+                        <div class="col-md-6 col-lg-4" x-show="! alreadyMember">
                             @component('layouts.parts.components.form-group', [
                                 'input_name' => 'users.first_name'
                             ])
@@ -46,7 +30,7 @@
                             @endcomponent
                         </div>
 
-                        <div class="col-md-6 col-lg-4">
+                        <div class="col-md-6 col-lg-4" x-show="! alreadyMember">
                             @component('layouts.parts.components.form-group', [
                                 'input_name' => 'users.last_name'
                             ])
@@ -68,10 +52,16 @@
                                     @lang('accounts.column-translations.email')
                                 </label>
                                 <input id="email" type="email" class="form-control" name="accounts[email]"
-                                       value="{{ old('accounts.email') }}" required>
+                                       value="{{ old('accounts.email') }}" required x-on:change="checkEmail($el)">
+                                <p class="text-info" x-show="alreadyMember" x-cloak>
+                                    @lang('cooperation/admin/users.create.form.already-member')
+                                </p>
+                                <p class="text-info" x-show="emailExists" x-cloak>
+                                    @lang('cooperation/admin/users.create.form.e-mail-exists')
+                                </p>
                             @endcomponent
                         </div>
-                        <div class="col-md-6 col-lg-4">
+                        <div class="col-md-6 col-lg-4" x-show="! alreadyMember">
                             @component('layouts.parts.components.form-group', [
                                 'input_name' => 'users.phone_number'
                             ])
@@ -85,7 +75,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 col-lg-4">
+                        <div class="col-md-6 col-lg-4" x-show="! alreadyMember">
                             @component('layouts.parts.components.form-group', [
                                        'input_name' => 'roles',
                                     ])
@@ -103,7 +93,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 col-lg-4">
+                        <div class="col-md-6 col-lg-4" x-show="! alreadyMember">
                             @component('layouts.parts.components.form-group', [
                                'input_name' => 'coach_id',
                             ])
@@ -121,9 +111,9 @@
                     </div>
                     {{-- TODO: Contact ID? --}}
 
-                    <h3>@lang('cooperation/admin/buildings.edit.address-info-title')</h3>
+                    <h3 x-show="! alreadyMember">@lang('cooperation/admin/buildings.edit.address-info-title')</h3>
                     <div class="row">
-                        <div class="col-xs-8">
+                        <div class="col-xs-8" x-show="! alreadyMember">
                             @include('cooperation.layouts.address-bootstrap', [
                                 'withLabels' => true,
                             ])
@@ -131,8 +121,8 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-12 save-button">
-                            <button class="btn btn-primary btn-block"
+                        <div class="col-sm-12 save-button" x-show="! alreadyMember">
+                            <button class="btn btn-primary btn-block" x-bind:disabled="alreadyMember"
                                     type="submit">@lang('cooperation/admin/users.create.form.submit')
                                 <span class="glyphicon glyphicon-plus"></span></button>
                         </div>
@@ -164,54 +154,6 @@
                 maximumSelectionLength: Infinity,
                 allowClear: true
             }).val(null).trigger("change");
-
-            // TODO: Convert to register Alpine x-data
-            var email = $('#email');
-
-            email.on('keyup change', function () {
-                $.ajax({
-                    url: '{{route('cooperation.check-existing-email', ['cooperation' => $cooperation, 'forCooperation' => $cooperationToManage ?? $cooperation])}}',
-                    method: "GET",
-                    data: {email: $(this).val()},
-                }).done(function (data) {
-                    var emailIsAlreadyRegistered = $('#email-is-already-registered');
-
-                    // email exists
-                    if (data.email_exists) {
-                        var isAlreadyMemberMessage = $('#is-already-member');
-                        var emailExistsDiv = $('.email-exist');
-
-                        emailIsAlreadyRegistered.show();
-
-                        // check if the email is connected to the current cooperation
-                        // and show the matching messages
-                        if (data.user_is_already_member_of_cooperation) {
-                            // hide the account stuff
-                            isAlreadyMemberMessage.show();
-                            emailExistsDiv.hide();
-                            $('.user-info').hide();
-                            $('#resident-info').hide();
-                            $('.save-button').hide();
-                        } else {
-                            isAlreadyMemberMessage.hide();
-                            emailExistsDiv.show();
-                            $('.user-info').show();
-                            $('#resident-info').show();
-                            $('.save-button').show();
-                        }
-
-                    } else {
-                        emailIsAlreadyRegistered.hide();
-                        $('.user-info').show();
-                        $('#resident-info').show();
-                        $('.save-button').show();
-                    }
-                });
-            });
-
-            if ($('.form-error').length) {
-                email.trigger('change');
-            }
         });
     </script>
 @endpush

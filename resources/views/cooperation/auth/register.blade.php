@@ -1,7 +1,7 @@
 @extends('cooperation.frontend.layouts.app')
 
 @section('main')
-    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20 "
+    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20"
          x-data="register('{{route('cooperation.check-existing-email')}}')">
         <div class="bg-white rounded-3xl p-20 text-center space-y-10 w-3/4">
             @include('cooperation.frontend.layouts.parts.logo')

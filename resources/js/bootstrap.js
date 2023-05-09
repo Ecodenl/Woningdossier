@@ -97,6 +97,7 @@ window.triggerCustomEvent = function (element, eventName, params = {}) {
  * Simple wrapper for Http requests.
  * Options:
  * - url: URL object, required.
+ * - method: HTTP method.
  * - done: Callback when request is done, retrieves request object, optional.
  * @param options
  */
@@ -111,12 +112,12 @@ window.performRequest = function (options = {}) {
         let request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP");
         request.onreadystatechange = function () {
             // Ajax finished and ready
-            if (request.readyState == window.XMLHttpRequest.DONE && options.done) {
+            if (request.readyState === window.XMLHttpRequest.DONE && options.done) {
                 options.done(request);
             }
         };
 
-        request.open('GET', url.toString());
+        request.open(options.method || 'GET', url.toString());
         request.setRequestHeader('Accept', 'application/json');
         request.responseType = 'json';
         request.send();

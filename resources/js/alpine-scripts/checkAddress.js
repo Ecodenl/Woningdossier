@@ -90,6 +90,15 @@ export default (checks, tailwind = true) => ({
             }
 
             if (makeRequest) {
+                // Restore old value
+                let oldOption = houseNumberExtensionSelect.querySelector('option.old');
+                let oldValue = null;
+                if (oldOption) {
+                    oldValue = oldOption.value;
+                    // We want to pass the old value to the backend, as otherwise the initial address might be wrong.
+                    url.searchParams.set('extension', oldValue);
+                    oldOption.remove();
+                }
                 let context = this;
                 performRequest({
                     'url': url,
@@ -98,18 +107,12 @@ export default (checks, tailwind = true) => ({
                         context.removeError(houseNumber);
                         context.removeError(city);
                         context.removeError(street);
-                        context.showPostalCodeError = false;
 
                         let response = request.response;
                         let faultyData = request.status === 422;
 
-                        // Restore old value
-                        let oldOption = houseNumberExtensionSelect.querySelector('option.old');
-                        let oldValue = null;
-                        if (oldOption) {
-                            oldValue = oldOption.value;
-                            oldOption.remove();
-                        }
+                        // Show postal code error if address is wrongly validated.
+                        context.showPostalCodeError = faultyData;
 
                         if (response.available_extensions || faultyData) {
                             context.availableExtensions = response.available_extensions || [];
@@ -128,9 +131,8 @@ export default (checks, tailwind = true) => ({
 
                         // If the request was successful, we fill the data in the field
                         if (request.status === 200) {
-                            if (response.postal_code === '' && context.bagAvailable) {
-                                context.showPostalCodeError = true;
-                            }
+                            // Show postal code error if BAG is available and no data was returned.
+                            context.showPostalCodeError = response.postal_code === '' && context.bagAvailable;
 
                             // Don't want to overwrite user data with nothing
                             if (context.bagAvailable) {

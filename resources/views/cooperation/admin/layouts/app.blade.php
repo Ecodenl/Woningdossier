@@ -31,6 +31,11 @@
     <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
 
     @livewireStyles
+    <style>
+        [x-cloak] {
+            display: none;
+        }
+    </style>
 </head>
 <body class="@yield('page_class')">
 <div id="app">

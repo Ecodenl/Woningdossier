@@ -23,7 +23,7 @@ class UserDeleted
     public function __construct(Cooperation $cooperation, array $accountRelated)
     {
         $this->cooperation = $cooperation;
-        $this->accountRelated = $accountRelated['account_related'];
+        $this->accountRelated = $accountRelated;
     }
 
     /**

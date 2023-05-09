@@ -12,7 +12,6 @@ use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
@@ -32,6 +31,7 @@ class SettingsController extends Controller
         // Update user data
         $user->update($data['user']);
         // Update building address
+        $data['address']['extension'] ??= null;
         $building->update($data['address']);
 
          CheckBuildingAddress::dispatchSync($building);

@@ -77,6 +77,7 @@ class UserActionPlanAdviceService
                 ]);
             })
             ->name('Refresh all user his regulations for advices.')
+            ->onQueue(Queue::APP_EXTERNAL)
             ->allowFailures()
             ->dispatch();
     }

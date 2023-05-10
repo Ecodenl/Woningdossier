@@ -24,8 +24,6 @@ class RequestAccountConfirmationEmail extends Mailable
 
     public $verifyUrl;
 
-    public $queue = Queue::APP_HIGH;
-
     /**
      * Create a new message instance.
      *

@@ -68,7 +68,6 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         $verifyUrl = $this->verificationUrl($notifiable);
-        \Illuminate\Support\Facades\Log::debug($verifyUrl);
         return new RequestAccountConfirmationEmail($this->user, $verifyUrl);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Helpers\Queue;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Mail\Mailable;
@@ -22,6 +23,8 @@ class RequestAccountConfirmationEmail extends Mailable
     public $userCooperation;
 
     public $verifyUrl;
+
+    public $queue = Queue::APP_HIGH;
 
     /**
      * Create a new message instance.

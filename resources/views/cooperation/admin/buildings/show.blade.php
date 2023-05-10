@@ -96,7 +96,7 @@
                                 </div>
                                     @else
                                         @foreach($scans as $scan)
-                                            <a class="btn btn-warning" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
+                                            <a class="btn btn-warning" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
                                                 @php
                                                     $transShort = \App\Services\Models\ScanService::init()
                                                         ->scan($scan)->building($building)->hasMadeScanProgress()

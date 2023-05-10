@@ -35,7 +35,7 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
      */
     public function __construct(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        $this->queue = Queue::APP_EXTERNAL;
+        $this->onQueue(Queue::APP_EXTERNAL);
         $this->userActionPlanAdvice = $userActionPlanAdvice;
         $this->building = $userActionPlanAdvice->user->building;
         $this->inputSource = $userActionPlanAdvice->inputSource;

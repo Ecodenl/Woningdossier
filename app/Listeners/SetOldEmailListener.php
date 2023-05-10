@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class SetOldEmailListener implements ShouldQueue
 {
-    public $queue = Queue::APP_EXTERNAL;
+    public $queue = Queue::APP;
     /**
      * Create the event listener.
      *

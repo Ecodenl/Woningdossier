@@ -3144,7 +3144,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required', 'numeric', 'integer',
+                    'required', 'numeric', 'integer', 'min:0',
                 ],
                 'save_in' => 'building_pv_panels.number',
                 'translation' => 'Hoeveel zonnepanelen moeten er komen?',

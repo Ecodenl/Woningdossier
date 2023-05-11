@@ -284,8 +284,9 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                 // Define total height per element
                 // let totalHeight = elementRect.height + parseInt(style['margin-top']) + parseInt(style['margin-bottom']);
 
-                // Use fixed value for now, cards + margin should always be 108px
-                let totalHeight = 108;
+                // Use fixed value for now, cards + margin should always be 112px. (h-28, aka 7rem). Used to be
+                // 108px (h-24, aka 6rem).
+                let totalHeight = 112;
 
                 // Do some maths to define the exact position within the target
                 let exactPositionInTarget = yCoord - targetRect.top;

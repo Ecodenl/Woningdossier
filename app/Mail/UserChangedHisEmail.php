@@ -2,16 +2,17 @@
 
 namespace App\Mail;
 
+use App\Helpers\Queue;
 use App\Models\Account;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UserChangedHisEmail extends Mailable
+class UserChangedHisEmail extends Mailable implements ShouldQueue
 {
-    use Queueable;
-    use SerializesModels;
+    use Queueable, SerializesModels;
 
     public $account;
     public $user;
@@ -26,6 +27,7 @@ class UserChangedHisEmail extends Mailable
      */
     public function __construct(User $user, Account $account, $newMail, $oldMail)
     {
+        $this->onQueue(Queue::APP_EXTERNAL);
         $this->user = $user;
         $this->account = $account;
         $this->newMail = $newMail;

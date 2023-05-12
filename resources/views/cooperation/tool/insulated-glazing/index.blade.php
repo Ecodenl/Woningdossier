@@ -382,9 +382,9 @@
             </div>
         </div>
 
-        @include('cooperation.tool.includes.user-costs', [
+        @include('cooperation.tool.includes.measure-related-questions', [
             'withHeader' => true,
-            'userCosts' => $userCosts,
+            'measureRelatedAnswers' => $measureRelatedAnswers
          ])
 
         <div id="taking-into-account">
@@ -456,7 +456,7 @@
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
                 // We want the user to be able to see their own old values for user costs. We don't want them submitted
                 // however, as it could interfere with the validation.
-                $('.user-costs input:not(.source-select-input)').each(function () {
+                $('.measure-related-questions input:not(.source-select-input)').each(function () {
                     // offsetParent is null when hidden
                     if (null === this.offsetParent) {
                         $(this).val(null);
@@ -523,7 +523,7 @@
                     valueElements.show();
                 }
 
-                checkUserCost(measureId, considers);
+                checkMeasureRelatedQuestions(measureId, considers);
             });
 
             $('.considerable').trigger('change');
@@ -532,11 +532,11 @@
             formChange();
         });
 
-        function checkUserCost(measureId, considers) {
+        function checkMeasureRelatedQuestions(measureId, considers) {
             if (considers == 1) {
-                $(`#user-cost-${measureId}`).show();
+                $(`#measure-related-question-${measureId}`).show();
             } else {
-                $(`#user-cost-${measureId}`).hide();
+                $(`#measure-related-question-${measureId}`).hide();
             }
         }
     </script>

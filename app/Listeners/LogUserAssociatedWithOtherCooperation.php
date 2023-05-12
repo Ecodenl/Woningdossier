@@ -2,12 +2,14 @@
 
 namespace App\Listeners;
 
+use App\Helpers\Queue;
 use App\Models\Log;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class LogUserAssociatedWithOtherCooperation implements ShouldQueue
 {
+    public $queue = Queue::LOGS;
     /**
      * Handle the event.
      *

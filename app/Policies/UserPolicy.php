@@ -6,6 +6,8 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
 use App\Models\User;
+use App\Services\BuildingCoachStatusService;
+use App\Services\UserService;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Spatie\Permission\Models\Role;
 
@@ -28,6 +30,11 @@ class UserPolicy
     public function accessAdmin(User $user): bool
     {
         return $user->hasAnyRole(['coordinator', 'superuser', 'super-admin', 'coach', 'cooperation-admin']);
+    }
+
+    public function sendUserInformationToEconobis(Account $account, User $user)
+    {
+        return app(UserService::class)->forUser($user)->isRelatedWithEconobis();
     }
 
     /**

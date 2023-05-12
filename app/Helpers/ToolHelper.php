@@ -2,12 +2,12 @@
 
 namespace App\Helpers;
 
-use App\Helpers\Models\UserCostHelper;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\ToolLabel;
 use App\Models\ToolQuestion;
 use App\Services\DumpService;
+use App\Services\RelatedModelService;
 
 class ToolHelper
 {
@@ -50,6 +50,10 @@ class ToolHelper
         self::STRUCT_PDF_LITE => self::STRUCT_LITE,
     ];
 
+    const SUPPORTED_RELATED_MODELS = [
+        MeasureApplication::class,
+    ];
+
     /**
      * Create the tool structure, which returns a mapping of shorts with labels attached.
      * These shorts could either be a save_in or a short to a model. If it's a model, a class
@@ -63,6 +67,7 @@ class ToolHelper
     public static function getContentStructure(string $short, string $mode): array
     {
         $stepOrder = static::getStepOrder($short);
+        $relatedModelService = RelatedModelService::init();
 
         $structure = [];
 
@@ -104,6 +109,11 @@ class ToolHelper
                 foreach ($subSteppables as $subSteppable) {
                     $model = $subSteppable->subSteppable;
 
+                    // Hide zinc.
+                    if (Str::contains($model->short, 'zinc')) {
+                        $processedShorts[$model->short][] = $subSteppable->sub_steppable_type;
+                    }
+
                     if (! array_key_exists($model->short, $processedShorts)
                         || ! in_array($subSteppable->sub_steppable_type, $processedShorts[$model->short])) {
                         $isToolQuestion = $subSteppable->sub_steppable_type === ToolQuestion::class;
@@ -130,10 +140,19 @@ class ToolHelper
                                 $labelShort = explode('.', $model->short)[0];
                                 $label = ToolLabel::findByShort($labelShort);
                                 $modelName .= " ({$label->name})";
-                            } elseif (Str::startsWith($model->short, 'user-costs')) {
-                                $measureShort = UserCostHelper::resolveMeasureAndTypeFromShort($model->short)[0];
-                                $measure = MeasureApplication::findByShort($measureShort);
-                                $modelName .= " ({$measure->measure_name})";
+                            } else {
+                                $query = $relatedModelService->from($model)
+                                    ->resolveTargetRaw()
+                                    ->whereIn('target_model_type', static::SUPPORTED_RELATED_MODELS);
+
+                                if ($query->exists()) {
+                                    /** @var \App\Models\RelatedModel $relatedModel */
+                                    foreach ($query->get() as $relatedModel) {
+                                        $relatedModel = $relatedModel->targetable;
+                                        $relatedModelName = $relatedModel->name ?? $relatedModel->title;
+                                        $modelName .= " ({$relatedModelName})";
+                                    }
+                                }
                             }
                         }
 

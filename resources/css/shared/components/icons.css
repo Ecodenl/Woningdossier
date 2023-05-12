@@ -299,6 +299,10 @@
 .icon-label-unknown {
     content: url('/icons/label-unknown.svg');
 }
+.icon-label-none {
+    @apply select-none;
+    content: url('/icons/label-none.svg');
+}
 .icon-mail {
     content: url('/icons/mail.svg');
 }

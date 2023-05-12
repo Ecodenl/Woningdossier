@@ -1,7 +1,7 @@
 {
     "/js/app.js": "/js/app.js?id=58d36c53f6c787e921a088358547577b",
-    "/css/frontend/app.css": "/css/frontend/app.css?id=86d0145bffa691a4b45790ee34b390d9",
-    "/css/admin/app.css": "/css/admin/app.css?id=97d21947025249ca210da9ebf7015ab1",
+    "/css/frontend/app.css": "/css/frontend/app.css?id=dd2f2f5bffe9aabcc837506d84eed223",
+    "/css/admin/app.css": "/css/admin/app.css?id=4974b3bd8479c1159de8a6c684f3589b",
     "/css/admin/datatables/dataTables.bootstrap.min.css": "/css/admin/datatables/dataTables.bootstrap.min.css?id=aee6a61599227dc516029b2c6475d757",
     "/css/admin/datatables/responsive.dataTables.min.css": "/css/admin/datatables/responsive.dataTables.min.css?id=1bfb0f316029008a5d240443bc0cd2e2",
     "/css/admin/datatables/responsive.bootstrap.min.css": "/css/admin/datatables/responsive.bootstrap.min.css?id=9fafdb7b3f67ad7e48342e946777b1bd",
@@ -212,6 +212,7 @@
     "/icons/label-e.svg": "/icons/label-e.svg?id=2a00496dd8fee32541a95176a26e7a30",
     "/icons/label-f.svg": "/icons/label-f.svg?id=7323724e90458dc2ebfdc23df5a9c838",
     "/icons/label-g.svg": "/icons/label-g.svg?id=f953c217e22d44c15f145c48eba9b623",
+    "/icons/label-none.svg": "/icons/label-none.svg?id=97a457f6f884a513131a28a89669ec7f",
     "/icons/label-unknown.svg": "/icons/label-unknown.svg?id=e2aee4f738b793432bd1acc6fa15cf48",
     "/icons/mail-green.svg": "/icons/mail-green.svg?id=b00996b7948059b8245922d22e615455",
     "/icons/mail.svg": "/icons/mail.svg?id=000c679ca28d54c5061bcc9b775aa821",

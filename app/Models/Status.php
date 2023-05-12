@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasOrder;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,14 +31,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Status extends Model
 {
-    use HasTranslations, HasShortTrait;
+    use HasTranslations,
+        HasShortTrait,
+        HasOrder;
 
     protected $translatable = [
         'name',
     ];
-
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('order');
-    }
 }

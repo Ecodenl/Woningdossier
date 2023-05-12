@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\V1\Controller;
 |
 */
 
+// V1 API
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))
     ->middleware(['auth:sanctum', 'cooperation', 'access.cooperation'])
     ->as('v1.cooperation.')
@@ -24,7 +25,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))
     ->group(function () {
         Route::get('', [Controller::class, 'index'])->name('index');
         Route::post('register', [RegisterController::class, 'store'])->name('register.store');
-        Route::post('building-coach-status', [BuildingCoachStatusController::class, 'buildingCoachStatus'])->name('building-coach-status.store');
+        Route::post('building-coach-status', [BuildingCoachStatusController::class, 'buildingCoachStatus'])
+            ->name('building-coach-status.store');
     });
 
+// Non-cooperation internal API
 Route::get('address-data', [Api\GeoController::class, 'getAddressData'])->name('get-address-data');
+// Not cooperation route because it shares with the super admin in which a cooperation domain doesn't work.
+Route::get('check-address-duplicates/{cooperation}', [Api\AddressController::class, 'checkDuplicates'])
+    ->name('check-address-duplicates');

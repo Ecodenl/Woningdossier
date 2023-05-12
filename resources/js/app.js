@@ -10,9 +10,9 @@ $.ajaxSetup({
     }
 });
 
-var baseUrl = window.location.origin;
-var apiUrl = '/api';
-var getAddressDataUrl = baseUrl + apiUrl + "/address-data";
+let baseUrl = window.location.origin;
+let apiUrl = '/api';
+let getAddressDataUrl = baseUrl + apiUrl + '/address-data';
 
 $('i.glyphicon-info-sign').click(function () {
     $(this).parent().parent().find('.modal').modal();

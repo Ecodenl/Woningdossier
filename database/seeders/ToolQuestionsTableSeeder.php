@@ -2996,7 +2996,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required', 'numeric', 'integer',
                 ],
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.zinc_surface",
-                'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+                'translation' => 'Wat is de oppervlakte van het zinkwerk?',
                 'short' => 'pitched-roof-zinc-surface',
             ],
             [

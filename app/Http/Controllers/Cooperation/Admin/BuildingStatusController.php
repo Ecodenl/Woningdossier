@@ -7,6 +7,8 @@ use App\Http\Requests\Cooperation\Admin\BuildingCoachStatusRequest;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Status;
+use App\Services\Models\BuildingService;
+use App\Services\Models\BuildingStatusService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -15,7 +17,7 @@ class BuildingStatusController extends Controller
     /**
      * Set an status for an building.
      */
-    public function setStatus(Cooperation $cooperation, BuildingCoachStatusRequest $request)
+    public function setStatus(BuildingStatusService $buildingStatusService, Cooperation $cooperation, BuildingCoachStatusRequest $request)
     {
         $statusId = $request->get('status_id');
         $buildingId = $request->get('building_id');
@@ -26,7 +28,7 @@ class BuildingStatusController extends Controller
 
         $this->authorize('set-status', $building);
 
-        $building->setStatus($status);
+        $buildingStatusService->forBuilding($building)->setStatus($status);
     }
 
     /**
@@ -42,6 +44,7 @@ class BuildingStatusController extends Controller
 
         $this->authorize('set-appointment', $building);
 
-        $building->setAppointmentDate(is_null($appointmentDate) ? null : Carbon::parse($appointmentDate));
+        app(BuildingService::class, compact('building'))
+            ->setAppointmentDate(is_null($appointmentDate) ? null : Carbon::parse($appointmentDate));
     }
 }

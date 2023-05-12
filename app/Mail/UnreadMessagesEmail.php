@@ -2,16 +2,17 @@
 
 namespace App\Mail;
 
+use App\Helpers\Queue;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UnreadMessagesEmail extends Mailable
+class UnreadMessagesEmail extends Mailable implements ShouldQueue
 {
-    use Queueable;
-    use SerializesModels;
+    use Queueable, SerializesModels;
 
     public $user;
     public $userCooperation;
@@ -25,6 +26,7 @@ class UnreadMessagesEmail extends Mailable
         $this->user = $user;
         $this->userCooperation = $cooperation;
         $this->unreadMessageCount = $unreadMessageCount;
+        $this->onQueue(Queue::APP_EXTERNAL);
     }
 
     /**

@@ -64,7 +64,7 @@ class RegisterController extends Controller
      *      ),
      * )
      */
-    public function store(RegisterFormRequest $request, Cooperation $cooperation)
+    public function store(RegisterFormRequest $request, Cooperation $cooperation, ToolQuestionService $toolQuestionService)
     {
         $requestData = $request->all();
         if (! is_null($requestData['extra']['contact_id'] ?? null)) {
@@ -109,14 +109,14 @@ class RegisterController extends Controller
             return ! is_null($value);
         });
 
+        $toolQuestionService->building($user->building);
         foreach ($toolQuestionAnswers as $toolQuestionShort => $toolQuestionAnswer) {
             if (in_array($toolQuestionShort, ToolQuestionHelper::SUPPORTED_API_SHORTS)) {
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
                 if ($toolQuestion instanceof ToolQuestion) {
                     foreach ($inputSources as $inputSource) {
-                        ToolQuestionService::init($toolQuestion)
-                            ->building($user->building)
+                        $toolQuestionService->toolQuestion($toolQuestion)
                             ->currentInputSource($inputSource)
                             ->save($toolQuestionAnswer);
                     }

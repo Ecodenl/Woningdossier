@@ -2,12 +2,14 @@
 
 namespace App\Listeners;
 
+use App\Helpers\Queue;
 use App\Mail\UserChangedHisEmail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Str;
 
 class SetOldEmailListener implements ShouldQueue
 {
+    public $queue = Queue::APP;
     /**
      * Create the event listener.
      *

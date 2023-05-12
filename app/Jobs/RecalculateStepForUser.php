@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\Cooperation\Tool\ToolHelper;
+use App\Helpers\Queue;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
@@ -18,11 +19,7 @@ use Throwable;
 
 class RecalculateStepForUser implements ShouldQueue
 {
-    use Dispatchable,
-        InteractsWithQueue,
-        Queueable,
-        SerializesModels,
-        HasNotifications;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, HasNotifications;
 
     public User $user;
     public InputSource $inputSource;
@@ -31,6 +28,7 @@ class RecalculateStepForUser implements ShouldQueue
 
     public function __construct(User $user, InputSource $inputSource, Step $step, bool $withOldAdvices = true)
     {
+        $this->queue = Queue::APP_HIGH;
         $this->user = $user;
         $this->inputSource = $inputSource;
         $this->step = $step;

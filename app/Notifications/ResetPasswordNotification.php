@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Queue;
 use App\Mail\ResetPasswordRequest;
 use App\Models\Account;
 use App\Models\Cooperation;
@@ -43,6 +44,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
      */
     public function __construct($token, Account $account, $cooperation)
     {
+        $this->onQueue(Queue::APP_HIGH);
         $this->account = $account;
         $this->token = $token;
         $this->cooperation = $cooperation;

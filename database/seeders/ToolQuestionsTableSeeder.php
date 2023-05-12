@@ -1279,7 +1279,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'integer', 'min:1', 'max:50'],
+                'validation' => ['required', 'numeric', 'integer', 'min:1', 'max:500'],
                 'save_in' => "building_services.{$solarPanels->id}.extra.value",
                 'short' => 'solar-panel-count',
                 // was current-state -> hoeveel zonnepanelen zijn er aanwezig
@@ -3144,7 +3144,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required', 'numeric', 'integer',
+                    'required', 'numeric', 'integer', 'min:0',
                 ],
                 'save_in' => 'building_pv_panels.number',
                 'translation' => 'Hoeveel zonnepanelen moeten er komen?',

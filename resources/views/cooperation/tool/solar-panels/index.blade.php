@@ -375,6 +375,14 @@
                         $(this).val(null);
                     }
                 });
+
+                // Set hidden fields null so validation doesn't error on something the user can't see
+                let answer = $('[name="filledInAnswers[{{$toolQuestion['id']}}]"]:checked').val();
+                if (answer === 'no') {
+                    $('[name="building_pv_panels[total_installed_power]"]').val('');
+                    $('[name="building_services[7][extra][year]"]').val('');
+                    $('[name="building_services[7][extra][value]"]').val('');
+                }
                 return true;
             });
 

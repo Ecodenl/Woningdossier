@@ -317,7 +317,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['numeric', 'in:1,2,0', 'exists:tool_question_custom_values,short'],
+                'validation' => ['numeric', 'in:1,2,0,3', 'exists:tool_question_custom_values,short'],
                 'save_in' => 'building_features.monument',
                 'short' => 'monument',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument',
@@ -332,6 +332,10 @@ class ToolQuestionsTableSeeder extends Seeder
                     ],
                     0 => [
                         'name' => __('woningdossier.cooperation.radiobutton.unknown'),
+                        'extra' => [],
+                    ],
+                    3 => [
+                        'name' => 'Beschermd stads- of dorpsgezicht',
                         'extra' => [],
                     ],
                 ],

@@ -44,9 +44,8 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
         $this->userActionPlanAdvice = $userActionPlanAdvice;
         $this->building = $userActionPlanAdvice->user->building;
         $this->inputSource = $userActionPlanAdvice->inputSource;
-
         $this->queue = Queue::REGULATIONS;
-        $this->setUuid();
+//        $this->setUuid();
     }
 
     /**

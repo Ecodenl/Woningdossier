@@ -41,7 +41,7 @@ class CheckLastResetAt
                 $id = $job->batch()->id;
                 $displayName = $job->batch()->name;
             } else {
-                $id = $job->job->getJobId();
+                $id = $job->getJobUuid();
                 $displayName = get_class($job->job);
             }
 

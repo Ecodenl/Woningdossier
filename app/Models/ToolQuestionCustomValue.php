@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasOrder;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,7 +46,8 @@ class ToolQuestionCustomValue extends Model
 {
     use HasFactory,
         HasTranslations,
-        HasShortTrait;
+        HasShortTrait,
+        HasOrder;
 
     protected $translatable = [
         'name'
@@ -72,11 +74,6 @@ class ToolQuestionCustomValue extends Model
     public function scopeVisible(Builder $query): Builder
     {
         return $query->where('show', true);
-    }
-
-    public function scopeOrdered(Builder $query): Builder
-    {
-        return $query->orderBy('order');
     }
 
     # Relations

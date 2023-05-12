@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Scan;
@@ -28,6 +29,7 @@ class CompleteRelatedSubStep implements ShouldQueue
 
     public function __construct(SubStep $subStep, Building $building, InputSource $inputSource)
     {
+        $this->queue = Queue::APP_HIGH;
         $this->subStep = $subStep;
         $this->building = $building;
         $this->inputSource = $inputSource;
@@ -92,5 +94,6 @@ class CompleteRelatedSubStep implements ShouldQueue
             ScanFlowService::init($subStep->step->scan, $building, $inputSource)
                 ->evaluateSubSteps($subStepsToCheck, $evaluator);
         }
+
     }
 }

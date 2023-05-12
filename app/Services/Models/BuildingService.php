@@ -2,6 +2,7 @@
 
 namespace App\Services\Models;
 
+use App\Events\BuildingAppointmentDateUpdated;
 use App\Helpers\Queue;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\CheckBuildingAddress;
@@ -26,6 +27,23 @@ class BuildingService
         $this->building = $building;
     }
 
+    /**
+     * convenient way of setting a appointment date on a building.
+     *
+     * @param string
+     *
+     * @return void
+     */
+    public function setAppointmentDate($appointmentDate): void
+    {
+        $this->building->buildingStatuses()->create([
+            'status_id' => $this->building->getMostRecentBuildingStatus()->status_id,
+            'appointment_date' => $appointmentDate,
+        ]);
+
+        BuildingAppointmentDateUpdated::dispatch($this->building);
+    }
+
     public function forBuilding(Building $building): self
     {
         $this->building = $building;
@@ -47,7 +65,6 @@ class BuildingService
             return $this->building->hasCompletedScan($scan, InputSource::findByShort(InputSource::MASTER_SHORT));
         }
     }
-
 
     /**
      * Get the answer for a set of questions including the input source that made that answer.
@@ -214,7 +231,7 @@ class BuildingService
         // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
         // If the municipality hasn't changed, however, we will manually dispatch a refresh.
         if (is_null($newMunicipality)) {
-            CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
+            CheckBuildingAddress::dispatch($building);
         } elseif ($currentMunicipality === $newMunicipality) {
             RefreshRegulationsForBuildingUser::dispatch($building);
         }

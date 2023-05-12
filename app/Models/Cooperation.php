@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\Cooperation
@@ -58,8 +63,12 @@ class Cooperation extends Model
 {
     use HasFactory, HasMedia;
 
-    public $fillable = [
-        'name', 'website_url', 'slug', 'cooperation_email',
+    protected $fillable = [
+        'name', 'slug', 'cooperation_email', 'website_url', 'econobis_wildcard', 'econobis_api_key',
+    ];
+
+    protected $hidden = [
+        'econobis_api_key',
     ];
 
     /**
@@ -74,7 +83,6 @@ class Cooperation extends Model
     {
         return $this->belongsToMany(Scan::class)->using(CooperationScan::class);
     }
-
 
     public function cooperationMeasureApplications(): HasMany
     {
@@ -111,14 +119,15 @@ class Cooperation extends Model
         return 'slug';
     }
 
+    // Model methods
     /**
      * Return the coaches from the current cooperation.
      *
-     * @return $this
+     * @return \Illuminate\Support\Collection
      */
-    public function getCoaches()
+    public function getCoaches(): Collection
     {
-        return $this->users()->forAllCooperations()->role('coach');
+        return $this->users()->forAllCooperations()->role('coach')->get();
     }
 
     /**
@@ -129,7 +138,7 @@ class Cooperation extends Model
     public function getUsersWithRole(Role $role): Collection
     {
         return User::hydrate(
-            \DB::table(config('permission.table_names.model_has_roles'))
+            DB::table(config('permission.table_names.model_has_roles'))
                 ->where('cooperation_id', $this->id)
                 ->where('role_id', $role->id)
                 ->leftJoin('users', config('permission.table_names.model_has_roles').'.'.config('permission.column_names.model_morph_key'), '=', 'users.id')
@@ -137,7 +146,45 @@ class Cooperation extends Model
         );
     }
 
-    # Relations
+    // Relations
+    public function users(): HasMany
+    {
+        //TODO: Check if we can do this without cooperation global scope; the relation is called from the
+        // cooperation so a session based cooperation scope seems pointless.
+        return $this->hasMany(User::class);
+    }
+
+    public function buildings(): HasManyThrough
+    {
+        return $this->hasManyThrough(Building::class, User::class)
+            ->withoutGlobalScope(CooperationScope::class);
+    }
+
+    public function scans(): BelongsToMany
+    {
+        return $this->belongsToMany(Scan::class)->using(CooperationScan::class);
+    }
+
+    public function cooperationMeasureApplications(): HasMany
+    {
+        return $this->hasMany(CooperationMeasureApplication::class);
+    }
+
+    public function style(): HasOne
+    {
+        return $this->hasOne(CooperationStyle::class);
+    }
+
+    public function questionnaires(): HasMany
+    {
+        return $this->hasMany(Questionnaire::class);
+    }
+
+    public function exampleBuildings(): HasMany
+    {
+        return $this->hasMany(ExampleBuilding::class);
+    }
+
     public function cooperationSettings(): HasMany
     {
         return $this->hasMany(CooperationSetting::class);

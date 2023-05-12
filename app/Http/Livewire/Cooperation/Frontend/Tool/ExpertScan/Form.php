@@ -160,7 +160,8 @@ class Form extends Component
                         $dirtyToolQuestions[$toolQuestion->short] = $givenAnswer;
                     }
 
-                    ToolQuestionService::init($toolQuestion)
+                    ToolQuestionService::init()
+                        ->toolQuestion($toolQuestion)
                         ->building($this->building)
                         ->currentInputSource($this->currentInputSource)
                         ->applyExampleBuilding()

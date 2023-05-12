@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Models\HasOrder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\EnergyLabel
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $building_features_count
  * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel ordered($direction = 'desc')
+ * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel ordered($direction = 'asc')
  * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel query()
  * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereCountryCode($value)
@@ -34,7 +35,7 @@ class EnergyLabel extends Model
 {
     use HasOrder;
 
-    public function buildingFeatures()
+    public function buildingFeatures(): HasMany
     {
         return $this->hasMany(BuildingFeature::class);
     }

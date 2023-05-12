@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -98,7 +99,8 @@ class BuildingFeature extends Model implements Auditable
 {
     use GetValueTrait,
         GetMyValuesTrait,
-        \App\Traits\Models\Auditable;
+        \App\Traits\Models\Auditable,
+        HasFactory;
 
     protected $fillable = [
         'example_building_id',
@@ -127,42 +129,32 @@ class BuildingFeature extends Model implements Auditable
         'energy_label_id',
     ];
 
-    public function building()
+    public function building(): BelongsTo
     {
         return $this->belongsTo(Building::class);
     }
 
-    public function damagedPaintwork()
+    public function damagedPaintwork(): BelongsTo
     {
         return $this->belongsTo(FacadeDamagedPaintwork::class, 'facade_damaged_paintwork_id', 'id');
     }
 
-    public function plasteredSurface()
+    public function plasteredSurface(): BelongsTo
     {
         return $this->belongsTo(FacadePlasteredSurface::class, 'facade_plastered_surface_id', 'id');
     }
 
-    /**
-     * Column is named wall_joints.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function wallJoints()
+    public function wallJoints(): BelongsTo
     {
         return $this->belongsTo(FacadeSurface::class, 'wall_joints', 'id');
     }
 
-    /**
-     * Column is named contaminated_wall_joints.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function contaminatedWallJoints()
+    public function contaminatedWallJoints(): BelongsTo
     {
         return $this->belongsTo(FacadeSurface::class, 'contaminated_wall_joints', 'id');
     }
 
-    public function buildingCategory()
+    public function buildingCategory(): BelongsTo
     {
         return $this->belongsTo(BuildingCategory::class);
     }
@@ -172,17 +164,17 @@ class BuildingFeature extends Model implements Auditable
         return $this->belongsTo(ExampleBuilding::class);
     }
 
-    public function buildingType()
+    public function buildingType(): BelongsTo
     {
         return $this->belongsTo(BuildingType::class);
     }
 
-    public function roofType()
+    public function roofType(): BelongsTo
     {
         return $this->belongsTo(RoofType::class);
     }
 
-    public function energyLabel()
+    public function energyLabel(): BelongsTo
     {
         return $this->belongsTo(EnergyLabel::class);
     }

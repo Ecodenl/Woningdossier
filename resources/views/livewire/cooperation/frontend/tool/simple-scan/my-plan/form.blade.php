@@ -1,3 +1,6 @@
+@php
+    $disabled = \App\Helpers\HoomdossierSession::isUserObserving();
+@endphp
 <div>
     {{-- Header row --}}
     <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3">
@@ -12,7 +15,7 @@
             <div class="flex items-center">
                 <h5 class="heading-5">
                     @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO)
-                </h5>
+                </h5>2
             </div>
         </div>
         <div class="flex flex-wrap items-center justify-between">
@@ -24,23 +27,30 @@
         </div>
     </div>
     <div class="w-full flex flex-wrap flex-row justify-center items-center"
-         @if(! \App\Helpers\HoomdossierSession::isUserObserving()) x-data="draggables()" @endif>
+         @if($disabled) x-data @else x-data="draggables()" @endif>
         <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10">
             @foreach($cards as $cardCategory => $cardCollection)
                 <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
                     @foreach($cardCollection as $order => $card)
-                        <div class="card @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled @endif"
+                        <div class="card @if($disabled) disabled pointer-events-auto @endif"
                              id="{{ $card['id'] }}" wire:key="card-{{$card['id']}}"
                              wire:loading.class="disabled" wire:target="cardMoved, cardTrashed, addHiddenCardToBoard"
                              {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
                              x-bind="draggable"
-                             @if(\App\Helpers\HoomdossierSession::isUserObserving()) draggable="false" @else draggable="true" @endif>
+                             @if($disabled) draggable="false" @else draggable="true" @endif>
                             <div class="icon-wrapper">
                                 <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                             </div>
                             <div class="info">
                                 @if(! empty($card['route']))
-                                    <a href="{{ $card['route'] }}" class="no-underline" draggable="false">
+                                    <a href="{{ $card['route'] }}" class="no-underline w-fit" draggable="false">
+                                        <h6 class="heading-6 text-purple max-w-17/20">
+                                            {{ $card['name'] }}
+                                        </h6>
+                                    </a>
+                                @elseif(array_key_exists('index', $card))
+                                    <a href="#" class="no-underline" draggable="false"
+                                       x-on:click="$event.preventDefault(); window.triggerEvent(document.querySelector('#edit-{{$card['index']}}'), 'open-modal');">
                                         <h6 class="heading-6 text-purple max-w-17/20">
                                             {{ $card['name'] }}
                                         </h6>
@@ -66,9 +76,8 @@
                                 @if($cardCategory !== \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
                                     @if($card['subsidy_available'])
                                         <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('cooperation', 'scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::SUBSIDY }}"
-                                           class="in-text" draggable="false">
-                                            <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2 w-full"
-                                                 style="width: fit-content; width: -moz-fit-content;">
+                                           class="in-text w-fit" draggable="false">
+                                            <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2">
                                                 @if($card['has_user_costs'])
                                                     @lang('cooperation/frontend/tool.my-plan.cards.regulations.after-subsidy-cut')
                                                 @else
@@ -78,9 +87,8 @@
                                         </a>
                                     @elseif($card['loan_available'])
                                         <a href="{{ route('cooperation.frontend.tool.simple-scan.my-regulations.index', compact('cooperation', 'scan')) . "?tab=" . \App\Services\Verbeterjehuis\RegulationService::LOAN }}"
-                                           class="in-text" draggable="false">
-                                            <div class="h-4 rounded-lg text-xs relative text-orange p bg-red bg-opacity-10 flex items-center px-2 w-full"
-                                                 style="width: fit-content; width: -moz-fit-content;">
+                                           class="in-text w-fit" draggable="false">
+                                            <div class="h-4 rounded-lg text-xs relative text-orange p bg-red bg-opacity-10 flex items-center px-2">
                                                 @lang('cooperation/frontend/tool.my-plan.cards.regulations.loan-available')
                                             </div>
                                         </a>
@@ -119,7 +127,7 @@
                         ])
                             <div class="w-full h-full">
                                 <div class="w-full h-full space-y-2">
-                                    @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+                                    @if(! $disabled && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
                                         <button class="btn btn-green flex w-full items-center justify-center" wire:key="trashed-button"
                                                 x-on:click="window.triggerEvent(document.querySelector('#trashed'), 'open-modal'); close();">
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.button')
@@ -131,9 +139,10 @@
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.expert.button')
                                         </button>
                                     @endif
-                                    @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! $scan->isLiteScan())
+                                    @if(! $disabled && ! $scan->isLiteScan())
+                                        @php $lastIndex = array_key_last($customMeasureApplicationsFormData); @endphp
                                         <button class="btn btn-green flex w-full items-center justify-center" wire:key="custom-button"
-                                                x-on:click="window.triggerEvent(document.querySelector('#add'), 'open-modal'); close();">
+                                                x-on:click="window.triggerEvent(document.querySelector('#edit-{{$lastIndex}}'), 'open-modal'); close();">
                                             @lang('cooperation/frontend/tool.my-plan.cards.add-advices.options.add.button')
                                         </button>
                                     @endif
@@ -150,7 +159,7 @@
 
     <div>
         {{-- Modal for invisible measures --}}
-        @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+        @if(! $disabled && ! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
             <div x-data="modal()" class="" wire:key="trashed-modal">
                 @component('cooperation.frontend.layouts.components.modal', [
                     'header' => __('cooperation/frontend/tool.my-plan.cards.add-advices.options.trashed.title'),
@@ -227,120 +236,18 @@
             </div>
         @endif
         {{-- Modal for custom measures --}}
-        @if(! \App\Helpers\HoomdossierSession::isUserObserving() && ! $scan->isLiteScan())
-            <div x-data="modal()" class="" wire:key="custom-modal">
-                @component('cooperation.frontend.layouts.components.modal', [
-                    'header' => __('cooperation/frontend/tool.form.subject'),
-                    'id' => 'add',
-                ])
-                    <form wire:submit.prevent="submit()">
-                        <div class="flex flex-wrap mb-5">
-                            @component('cooperation.frontend.layouts.components.form-group', [
-                               'inputName' => 'custom_measure_application.name',
-                               'class' => 'w-full -mt-8 mb-4',
-                               'id' => 'custom-measure-application-name',
-                               'withInputSource' => false,
-                            ])
-                                <input class="form-input" wire:model="custom_measure_application.name" id="custom-measure-application-name"
-                                       placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')">
-                            @endcomponent
-                            <div class="w-full flex items-center">
-                                <i class="icon-sm icon-info mr-3"></i>
-                                <h6 class="heading-6">
-                                    @lang('cooperation/frontend/shared.modals.add-measure.info')
-                                </h6>
-                            </div>
-                            @component('cooperation.frontend.layouts.components.form-group', [
-                               'inputName' => "custom_measure_application.info",
-                               'class' => 'w-full -mt-4 mb-4',
-                               'id' => 'custom-measure-application-info',
-                               'withInputSource' => false,
-                            ])
-                                <textarea class="form-input" wire:model="custom_measure_application.info"
-                                          id="custom-measure-application-info"
-                                          placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
-                                ></textarea>
-                            @endcomponent
-                            <div class="w-full flex flex-wrap items-center">
-                                <i class="icon-sm icon-info mr-3"></i>
-                                <h6 class="heading-6">
-                                    @lang('cooperation/frontend/shared.modals.add-measure.measure-category')
-                                </h6>
-
-                            </div>
-                            @component('cooperation.frontend.layouts.components.form-group', [
-                               'inputName' => "custom_measure_application.measure_category",
-                               'class' => 'w-full -mt-4 mb-4',
-                               'id' => "custom-measure-application-measure-category-wrapper",
-                               'withInputSource' => false,
-                            ])
-                                @component('cooperation.frontend.layouts.components.alpine-select')
-                                    <select class="form-input hidden"
-                                            x-on:saved-measure.window="triggerEvent($el, 'change');"
-                                            wire:model="custom_measure_application.measure_category"
-                                            id="custom-measure-application-measure-category" >
-                                        <option value="">
-                                            @lang('default.form.dropdown.choose')
-                                        </option>
-                                        @foreach($measures as $measure)
-                                            <option value="{{ $measure->id }}">
-                                                {{ $measure->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                @endcomponent
-                            @endcomponent
-                            <div class="w-full flex items-center">
-                                <i class="icon-sm icon-info mr-3"></i>
-                                <h6 class="heading-6">
-                                    @lang('cooperation/frontend/shared.modals.add-measure.costs')
-                                </h6>
-                            </div>
-                            @component('cooperation.frontend.layouts.components.form-group', [
-                                'inputName' => 'custom_measure_application.costs.from',
-                                'class' => 'w-1/2 pr-1 -mt-4 mb-4',
-                                'id' => 'custom-measure-application-costs-from',
-                                'withInputSource' => false,
-                            ])
-                                <input class="form-input" wire:model="custom_measure_application.costs.from" id="custom-measure-application-costs-from"
-                                       placeholder="@lang('default.from')">
-                            @endcomponent
-                            @component('cooperation.frontend.layouts.components.form-group', [
-                                'inputName' => 'custom_measure_application.costs.to',
-                                'class' => 'w-1/2 pl-1 -mt-4 mb-4',
-                                'id' => 'custom-measure-application-costs-to',
-                                'withInputSource' => false,
-                            ])
-                                <input class="form-input" wire:model="custom_measure_application.costs.to" id="custom-measure-application-costs-to"
-                                       placeholder="@lang('default.to')">
-                            @endcomponent
-                            <div class="w-full flex items-center">
-                                <i class="icon-sm icon-info mr-3"></i>
-                                <h6 class="heading-6">
-                                    @lang('cooperation/frontend/shared.modals.add-measure.savings-money')
-                                </h6>
-                            </div>
-                            @component('cooperation.frontend.layouts.components.form-group', [
-                                'inputName' => 'custom_measure_application.savings_money',
-                                'class' => 'w-full -mt-4 mb-4',
-                                'id' => 'custom-measure-application-savings-money',
-                                'withInputSource' => false,
-                            ])
-                                <input class="form-input" wire:model="custom_measure_application.savings_money"
-                                       id="custom-measure-application-savings-money"
-                                       placeholder="@lang('cooperation/frontend/shared.modals.add-measure.savings-money')">
-                            @endcomponent
-                        </div>
-                        <div class="w-full border border-gray fixed left-0"></div>
-                        <div class="flex flex-wrap justify-center mt-14">
-                            <button class="btn btn-purple w-full" type="submit">
-                                <i class="icon-xs icon-plus-purple mr-3"></i>
-                                @lang('cooperation/frontend/shared.modals.add-measure.save')
-                            </button>
-                        </div>
-                    </form>
-                @endcomponent
-            </div>
+        @if(! $scan->isLiteScan())
+            {{-- We put the modals here, else it's included in the draggable card which causes weird behaviour. --}}
+            @foreach($customMeasureApplicationsFormData as $index => $data)
+                <div x-data="modal">
+                    @include('livewire.cooperation.frontend.layouts.parts.custom-measure-modal', [
+                        'index' => $index,
+                        'isNew' => $loop->last,
+                        'id' => "edit-{$index}",
+                        'disabled' => $disabled,
+                    ])
+                </div>
+            @endforeach
         @endif
     </div>
 

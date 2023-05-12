@@ -71,48 +71,6 @@ class Cooperation extends Model
         'econobis_api_key',
     ];
 
-    /**
-     * The users associated with this cooperation.
-     */
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
-
-    public function scans()
-    {
-        return $this->belongsToMany(Scan::class)->using(CooperationScan::class);
-    }
-
-    public function cooperationMeasureApplications(): HasMany
-    {
-        return $this->hasMany(CooperationMeasureApplication::class);
-    }
-
-    public function style()
-    {
-        return $this->hasOne(CooperationStyle::class);
-    }
-
-    /**
-     * Return the questionnaires of a cooperation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function questionnaires()
-    {
-        return $this->hasMany(Questionnaire::class);
-    }
-
-    /**
-     * Return the example buildings for the cooperation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function exampleBuildings()
-    {
-        return $this->hasMany(ExampleBuilding::class);
-    }
 
     public function getRouteKeyName()
     {

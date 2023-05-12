@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\MyRegulationHelper;
 use App\Helpers\NumberFormatter;
+use App\Helpers\Queue;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolHelper;
 use App\Models\CooperationMeasureApplication;
@@ -35,10 +36,7 @@ use Throwable;
 
 class PdfReport implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected User $user;
     protected FileType $fileType;
@@ -50,6 +48,7 @@ class PdfReport implements ShouldQueue
      */
     public function __construct(User $user, FileType $fileType, FileStorage $fileStorage, Scan $scan)
     {
+        $this->queue = Queue::EXPORTS;
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;
         $this->user = $user;

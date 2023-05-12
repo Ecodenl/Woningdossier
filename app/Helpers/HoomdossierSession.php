@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Role;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class HoomdossierSession extends Session
@@ -316,5 +317,21 @@ class HoomdossierSession extends Session
     public static function getAll(): array
     {
         return (array) self::get('hoomdossier_session');
+    }
+
+    public static function switchRole(Building $building, Role $role)
+    {
+        Log::debug('Switching roles from '.static::getRole().' to '.$role->id);
+
+        // set the new sessions!
+        static::setRole($role);
+        if ($role->inputSource instanceof InputSource) {
+            static::setInputSource($role->inputSource);
+            static::setInputSourceValue($role->inputSource);
+        }
+
+        static::setBuilding($building);
+        static::setIsObserving(false);
+        static::setIsUserComparingInputSources(false);
     }
 }

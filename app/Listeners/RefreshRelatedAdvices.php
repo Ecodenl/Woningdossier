@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RefreshRelatedAdvices implements ShouldQueue
 {
-    public $queue = Queue::REGULATIONS;
+    public $queue = Queue::APP_EXTERNAL;
 
     /**
      * Create the event listener.

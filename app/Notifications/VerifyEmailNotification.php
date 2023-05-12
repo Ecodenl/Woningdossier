@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Queue;
 use App\Mail\RequestAccountConfirmationEmail;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -22,6 +23,7 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
     public function __construct(User $user)
     {
         $this->user = $user;
+        $this->onQueue(Queue::APP_HIGH);
     }
 
     /**
@@ -66,7 +68,6 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         $verifyUrl = $this->verificationUrl($notifiable);
-        \Illuminate\Support\Facades\Log::debug($verifyUrl);
         return new RequestAccountConfirmationEmail($this->user, $verifyUrl);
     }
 }

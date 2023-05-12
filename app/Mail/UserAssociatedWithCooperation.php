@@ -2,14 +2,17 @@
 
 namespace App\Mail;
 
+use App\Helpers\Queue;
 use App\Models\Cooperation;
 use App\Models\User;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UserAssociatedWithCooperation extends Mailable
+class UserAssociatedWithCooperation extends Mailable implements ShouldQueue
 {
-    use SerializesModels;
+    use SerializesModels, Queueable;
 
     public $cooperation;
     public $associatedUser;
@@ -21,6 +24,7 @@ class UserAssociatedWithCooperation extends Mailable
      */
     public function __construct(Cooperation $cooperation, User $user)
     {
+        $this->onQueue(Queue::APP_HIGH);
         $this->cooperation = $cooperation;
         $this->associatedUser = $user;
     }

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Exports\Cooperation\CsvExport;
+use App\Helpers\Queue;
 use App\Helpers\ToolHelper;
 use App\Helpers\QuestionValues\QuestionValue;
 use App\Models\Cooperation;
@@ -35,6 +36,7 @@ class GenerateExampleBuildingCsv implements ShouldQueue
      */
     public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage)
     {
+        $this->queue = Queue::EXPORTS;
         $this->cooperation = $cooperation;
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;

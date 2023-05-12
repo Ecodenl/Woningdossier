@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\User;
+use App\Services\Models\BuildingStatusService;
 use Illuminate\Support\Collection;
 
 class BuildingCoachStatusService
@@ -35,7 +36,7 @@ class BuildingCoachStatusService
             'status' => BuildingCoachStatus::STATUS_ADDED,
         ]);
 
-        $building->setStatus('in_progress');
+        app(BuildingStatusService::class)->forBuilding($building)->setStatus('in_progress');
 
         return true;
     }

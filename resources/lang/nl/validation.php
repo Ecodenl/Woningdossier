@@ -262,6 +262,7 @@ return [
         'custom_measure_application.name' => 'onderwerp',
         'custom_measure_application.measure_category' => 'maatregelcategorie',
         'custom_measure_application.info' => 'beschrijving',
+        'custom_measure_application.hide_costs' => 'geen kosten',
         'custom_measure_application.costs.from' => 'investering vanaf',
         'custom_measure_application.costs.to' => 'investering tot',
         'custom_measure_application.savings_money' => 'besparing',

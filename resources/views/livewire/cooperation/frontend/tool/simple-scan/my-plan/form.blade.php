@@ -15,7 +15,7 @@
             <div class="flex items-center">
                 <h5 class="heading-5">
                     @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO)
-                </h5>2
+                </h5>
             </div>
         </div>
         <div class="flex flex-wrap items-center justify-between">

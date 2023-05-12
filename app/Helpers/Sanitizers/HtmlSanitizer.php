@@ -20,6 +20,7 @@ class HtmlSanitizer implements Sanitizer
         $input = preg_replace('/<p> *<\/p>/ism', '', $input); // Remove empty paragraphs
         $input = preg_replace('/(<a.*?)(rel=[\'"][^\'"]*[\'"])(.*?>.*?<\/a>)/ism', '$1$3', $input); // Remove any anchor rel (we will add them ourselves)
         $input = preg_replace('/(<a.*?)(href=[\'"][^\/][^\'"]*[\'"])(.*?>.*?<\/a>)/ism', '$1$2 rel="nofollow" $3', $input); // Add rel="nofollow" to each external anchor
+        $input = preg_replace('/<iframe[^>]*?(?:\/>|>[^<]*?<\/iframe>)/ism', '', $input); // Remove iFrames
         // Trim the end content
         $input = trim($input);
 

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Models\Cooperation;
 use App\Models\Questionnaire;
 use App\Services\QuestionnaireService;
@@ -13,10 +14,7 @@ use Illuminate\Queue\SerializesModels;
 
 class CopyQuestionnaireToCooperation implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * The cooperation where the questionnaire needs to be copied to.
@@ -39,6 +37,7 @@ class CopyQuestionnaireToCooperation implements ShouldQueue
      */
     public function __construct(Cooperation $cooperation, Questionnaire $questionnaire)
     {
+        $this->queue = Queue::APP;
         $this->cooperation = $cooperation;
         $this->questionnaire = $questionnaire;
     }

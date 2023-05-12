@@ -2,11 +2,17 @@
 
 namespace App\Mail\Admin;
 
+use App\Helpers\Queue;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 
-class MissingBagMunicipalityMappingEmail extends Mailable
+class MissingBagMunicipalityMappingEmail extends Mailable implements ShouldQueue
 {
+    use Queueable;
+
     public string $municipalityName;
+
     /**
      * Create new message instance.
      *
@@ -14,6 +20,7 @@ class MissingBagMunicipalityMappingEmail extends Mailable
      */
     public function __construct(string $municipalityName)
     {
+        $this->onQueue(Queue::APP_EXTERNAL);
         $this->municipalityName = $municipalityName;
     }
 

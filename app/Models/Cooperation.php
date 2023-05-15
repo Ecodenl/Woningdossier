@@ -71,6 +71,7 @@ class Cooperation extends Model
         'econobis_api_key',
     ];
 
+
     public function getRouteKeyName()
     {
         return 'slug';

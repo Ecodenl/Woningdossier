@@ -75,7 +75,7 @@ class PdfReport extends Command
                     Log::debug("Sending PDF report to Econobis for building {$fileStorage->building_id}");
                     SendPdfReportToEconobis::dispatch($fileStorage->building);
                 }
-            });
+            }, FileStorage::getModel()->getKeyName(), 'file_storage_chunked_id');
 
         return 0;
     }

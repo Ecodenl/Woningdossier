@@ -80,7 +80,7 @@ class Woonplan extends Command
                         SendUserActionPlanAdvicesToEconobis::dispatch($user->building);
                     }
                 }
-            }, User::getModel()->getKeyName(), 'user_chunked_id');
+            });
 
         return 0;
     }

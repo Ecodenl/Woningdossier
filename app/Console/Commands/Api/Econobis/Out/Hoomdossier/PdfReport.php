@@ -47,12 +47,16 @@ class PdfReport extends Command
     public function handle()
     {
         $interval = $this->option('interval');
-        $interval = is_numeric($interval) ? (int) $interval : null;
-        $interval = is_null($interval) ? config("hoomdossier.services.econobis.interval." . SendPdfReportToEconobis::class) : $interval;
+        $interval = is_numeric($interval) ? (int)$interval : null;
+        $interval = is_null($interval) ? config("hoomdossier.services.econobis.interval.".SendPdfReportToEconobis::class) : $interval;
         $datetime = Carbon::now()->subMinutes($interval);
 
         // Applies available_until global scope
-        FileStorage::select(['file_storages.id', 'file_storages.input_source_id', 'file_storages.building_id'])
+        FileStorage::select([
+            'file_storages.id as file_storage_id',
+            'file_storages.input_source_id',
+            'file_storages.building_id'
+        ])
             ->join('buildings AS b', 'file_storages.building_id', '=', 'b.id')
             ->join('users AS u', 'b.user_id', '=', 'u.id')
             ->leftJoin('integration_processes AS ip', function (JoinClause $join) {
@@ -75,7 +79,7 @@ class PdfReport extends Command
                     Log::debug("Sending PDF report to Econobis for building {$fileStorage->building_id}");
                     SendPdfReportToEconobis::dispatch($fileStorage->building);
                 }
-            }, FileStorage::getModel()->getKeyName(), 'file_storage_chunked_id');
+            }, FileStorage::getModel()->getTable().'.'.FileStorage::getModel()->getKeyName(), 'file_storage_id');
 
         return 0;
     }

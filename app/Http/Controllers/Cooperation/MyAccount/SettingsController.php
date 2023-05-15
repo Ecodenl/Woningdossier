@@ -60,7 +60,7 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile(UserService $userService, Request $request, DossierSettingsService $dossierSettingsService)
+    public function resetFile(Request $request, DossierSettingsService $dossierSettingsService)
     {
         $user = Hoomdossier::user();
 

@@ -79,6 +79,7 @@ class SettingsController extends Controller
             ->forBuilding($user->building)
             ->forInputSource($masterInputSource)
             ->justDone();
+
         UserToolDataChanged::dispatch($user);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));

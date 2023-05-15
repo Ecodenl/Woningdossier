@@ -2,17 +2,13 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\ExpertScan;
 
-use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
-use App\Helpers\HoomdossierSession;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
-use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class SubSteppable extends Scannable
 {

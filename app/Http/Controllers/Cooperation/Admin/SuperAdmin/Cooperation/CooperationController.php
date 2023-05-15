@@ -23,7 +23,7 @@ class CooperationController extends Controller
     }
 
 
-    public function edit(Cooperation $currentCooperation, Cooperation $cooperationToEdit)
+    public function edit(Cooperation $cooperation, Cooperation $cooperationToEdit)
     {
         $this->authorize('updateOrCreate', $cooperationToEdit);
 

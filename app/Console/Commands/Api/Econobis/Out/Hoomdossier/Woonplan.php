@@ -2,13 +2,11 @@
 
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
-use App\Helpers\Hoomdossier;
 use App\Jobs\Econobis\Out\SendBuildingFilledInAnswersToEconobis;
 use App\Jobs\Econobis\Out\SendUserActionPlanAdvicesToEconobis;
 use App\Models\Integration;
 use App\Models\User;
 use App\Services\IntegrationProcessService;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Query\JoinClause;
 
@@ -82,7 +80,7 @@ class Woonplan extends Command
                         SendUserActionPlanAdvicesToEconobis::dispatch($user->building);
                     }
                 }
-            });
+            }, User::getModel()->getKeyName(), 'user_chunked_id');
 
         return 0;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\UserToolDataChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
@@ -59,7 +60,7 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile(Request $request, DossierSettingsService $dossierSettingsService)
+    public function resetFile(UserService $userService, Request $request, DossierSettingsService $dossierSettingsService)
     {
         $user = Hoomdossier::user();
 
@@ -78,6 +79,7 @@ class SettingsController extends Controller
             ->forBuilding($user->building)
             ->forInputSource($masterInputSource)
             ->justDone();
+        UserToolDataChanged::dispatch($user);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }

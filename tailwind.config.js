@@ -147,6 +147,7 @@ module.exports = {
                 ...fractionTen,
                 ...fractionTwenty,
                 'inherit': 'inherit',
+                'fit': 'fit-content', // Added in later version of Tailwind...
             },
             height: {
                 ...fractionTen,

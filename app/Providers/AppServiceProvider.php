@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
+use App\Services\Econobis\Api\Client as EconobisClient;
+use App\Services\Econobis\Api\EconobisApi;
+use App\Services\Models\NotificationService;
 use App\Services\Verbeterjehuis\Client as VerbeterJeHuisClient;
 use App\Services\Verbeterjehuis\Verbeterjehuis;
 use Carbon\Carbon;

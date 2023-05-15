@@ -15,7 +15,7 @@
             @endif
             <form class="w-full flex flex-wrap justify-center" method="POST" id="register"
                   action="{{ route('cooperation.register') }}"
-                  x-data="picoAddress('{{ route('api.get-address-data') }}')">
+                  x-data="checkAddress({'correct_address': '{{ route('api.get-address-data') }}'})">
                 @csrf
                 <input type="hidden" name="addressid" x-bind="addressId" value="{{ old('addressid') }}">
                 @component('cooperation.frontend.layouts.components.form-group', [
@@ -61,7 +61,7 @@
                 ])
                     <input class="form-input" type="text" name="postal_code" value="{{ old('postal_code') }}"
                            placeholder="@lang('auth.register.form.postal-code')" x-bind="postcode">
-                    <p class="text-blue-800 -mt-2 w-full" x-show="showPossibleError">
+                    <p class="text-blue-800 -mt-2 w-full" x-show="showPostalCodeError">
                         @lang('auth.register.form.possible-wrong-postal-code')
                     </p>
                 @endcomponent

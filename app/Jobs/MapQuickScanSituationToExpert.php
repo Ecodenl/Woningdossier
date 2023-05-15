@@ -262,7 +262,8 @@ class MapQuickScanSituationToExpert implements ShouldQueue
     {
         Log::debug("Mapping " . (is_array($answer) ? json_encode($answer) : $answer) . " for question {$question->short}");
 
-        ToolQuestionService::init($question)
+        ToolQuestionService::init()
+            ->toolQuestion($question)
             ->building($this->building)
             ->currentInputSource($this->inputSource)
             ->save($answer);

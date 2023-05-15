@@ -22,6 +22,7 @@ use App\Events\UserRevokedAccessToHisBuilding;
 use App\Listeners\AuditedListener;
 use App\Listeners\CreateTargetlessMappingForMunicipality;
 use App\Listeners\DeleteUserActionPlanAdvicesForStep;
+use App\Listeners\EconobisEventSubscriber;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\GiveCoachesBuildingPermission;
 use App\Listeners\LogAllowedAccessToBuilding;
@@ -45,6 +46,7 @@ use App\Listeners\SetMessagesUnreadForRevokedUserOnBuilding;
 use App\Listeners\SetOldEmailListener;
 use App\Listeners\StepDataHasBeenChangedListener;
 use App\Listeners\SuccessFullLoginListener;
+use App\Listeners\UserEventSubscriber;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use OwenIt\Auditing\Events\Audited;
@@ -130,6 +132,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $subscribe = [
+        UserEventSubscriber::class,
+        EconobisEventSubscriber::class,
         QueueEventSubscriber::class,
     ];
 

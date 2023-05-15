@@ -2,12 +2,15 @@
 
 namespace App\Listeners;
 
+use App\Helpers\Queue;
 use App\Mail\Admin\MissingVbjehuisMunicipalityMappingEmail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 
 class MissingVbjehuisMapping implements ShouldQueue
 {
+    public $queue = Queue::APP_EXTERNAL;
+
     /**
      * Create the event listener.
      *

@@ -383,8 +383,8 @@
                 </div>
             </div>
 
-            @include('cooperation.tool.includes.user-costs', [
-               'userCosts' => $userCosts,
+            @include('cooperation.tool.includes.measure-related-questions', [
+               'measureRelatedAnswers' => $measureRelatedAnswers
             ])
 
             <div id="taking-into-account">
@@ -482,7 +482,7 @@
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
                 // We want the user to be able to see their own old values for user costs. We don't want them submitted
                 // however, as it could interfere with the validation.
-                $('.user-costs input:not(.source-select-input)').each(function () {
+                $('.measure-related-questions input:not(.source-select-input)').each(function () {
                     // offsetParent is null when hidden
                     if (null === this.offsetParent) {
                         $(this).val(null);
@@ -494,7 +494,7 @@
             $("select, input[type=radio], input[type=text]").change(() => formChange());
 
             function formChange() {
-                checkUserCost();
+                checkMeasureRelatedQuestions();
 
                 if ($('.is-painted').is(':checked')) {
                     $('#painted-options').show();
@@ -611,11 +611,11 @@
             }
         }
 
-        function checkUserCost() {
+        function checkMeasureRelatedQuestions() {
             if ($('.considerable input:checked').val() == 1) {
-                $('.user-costs').show();
+                $('.measure-related-questions').show();
             } else {
-                $('.user-costs').hide();
+                $('.measure-related-questions').hide();
             }
 
             let idMap = {
@@ -625,11 +625,11 @@
 
             let cavityWall = '{{ \App\Models\MeasureApplication::findByShort(\App\Helpers\KeyFigures\WallInsulation\Temperature::WALL_INSULATION_JOINTS)->id }}';
 
-            $('[id^="user-cost-"]').hide();
+            $('[id^="measure-related-question-"]').hide();
             let hasCavityWall = $('[name="building_features[cavity_wall]"]:checked').val()
             let id = idMap[hasCavityWall] || cavityWall;
 
-            $(`[id^="user-cost-${id}"]`).show();
+            $(`[id^="measure-related-question-${id}"]`).show();
         }
     </script>
 @endpush

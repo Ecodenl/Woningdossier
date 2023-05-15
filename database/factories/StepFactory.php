@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Step;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StepFactory extends Factory
@@ -14,12 +15,21 @@ class StepFactory extends Factory
     public function definition()
     {
         $name = $this->faker->word();
-    return [
-        'parent_id' => mt_rand(0, 3) == 0 ? \App\Models\Step::factory() : null,
-        'name' => $name,
-        'slug' => \Illuminate\Support\Str::slug($name),
-        'short' => \Illuminate\Support\Str::slug($name),
-        'order' => $this->faker->randomNumber(1),
-    ];
+        return [
+            'parent_id' => null,
+            'name' => $name,
+            'slug' => \Illuminate\Support\Str::slug($name),
+            'short' => \Illuminate\Support\Str::slug($name),
+            'order' => $this->faker->randomNumber(1),
+        ];
+    }
+
+    public function withParent(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'parent_id' => Step::factory()->create()->id,
+            ];
+        });
     }
 }

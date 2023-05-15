@@ -7,7 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\MeasureApplication;
+use App\Models\RelatedModel;
 use App\Models\Scan;
+use App\Services\RelatedModelService;
 
 class HomeController extends Controller
 {

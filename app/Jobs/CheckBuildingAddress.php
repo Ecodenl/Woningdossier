@@ -4,16 +4,21 @@ namespace App\Jobs;
 
 use App\Contracts\Queue\ShouldRegisterQueuedTime;
 use App\Jobs\Middleware\CheckLastResetAt;
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\BuildingAddressService;
 use App\Traits\Queue\RegisterQueuedJobTime;
 use Carbon\Carbon;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -35,6 +40,7 @@ class CheckBuildingAddress implements ShouldQueue, ShouldRegisterQueuedTime
     {
         // $this->registerQueuedTime();
         $this->building = $building;
+        $this->queue = Queue::APP_EXTERNAL;
     }
 
     /**
@@ -46,10 +52,18 @@ class CheckBuildingAddress implements ShouldQueue, ShouldRegisterQueuedTime
     {
 //        $this->fail('bier');
         $building = $this->building;
-        $buildingAddressService->forBuilding($building);
-        $buildingAddressService->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
-        $buildingAddressService->attachMunicipality();
-        $buildingAddressService->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
+        try {
+            $buildingAddressService->forBuilding($building);
+            $buildingAddressService->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
+            $buildingAddressService->attachMunicipality();
+            $buildingAddressService->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
+        }
+        catch(ClientException $e) {
+            Log::debug("Exception: {$e->getMessage()}");
+            // When there's a client exception there's no point in retrying.
+            $this->fail($e);
+            return;
+        }
 
         /**
          * requery it, no municipality can have multiple causes
@@ -69,6 +83,7 @@ class CheckBuildingAddress implements ShouldQueue, ShouldRegisterQueuedTime
     public function middleware(): array
     {
         return  [];
+        return [(new WithoutOverlapping(sprintf('%s-%s', "CheckBuildingAddress", $this->building->id)))->releaseAfter(10)];
 //        return [new CheckLastResetAt($this->building)];
     }
 }

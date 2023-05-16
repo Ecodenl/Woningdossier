@@ -70,7 +70,8 @@ trait CallsEconobisApi
         );
 
         if ($shouldNotifyDiscord) {
-            DiscordNotifier::init()->notify(get_class($exception)." Failed to send '{$class}' building_id: {$buildingId}");
+            $environment = app()->environment();
+            DiscordNotifier::init()->notify(get_class($exception)." Failed to send [{$environment}] '{$class}' building_id: {$buildingId}");
         }
     }
 

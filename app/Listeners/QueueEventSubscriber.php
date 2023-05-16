@@ -45,27 +45,29 @@ class QueueEventSubscriber
     }
 
 
-//    /**
-//     * @param  JobProcessed  $event
-//     * @return void
-//     */
-//    public function forgetCachedQueuedTime($event)
-//    {
-//        if ($event->connectionName !== "sync") {
-//            $this->logState($event);
-//            Cache::forget($event->job->getJobId());
-//        }
-//    }
-
     /**
-     * @param  JobFailed  $event
+     * @param  JobProcessed  $event
      * @return void
      */
-    public function jobFailedHandle($event)
+    public function forgetCachedQueuedTime($event)
     {
-        // not possible to access methods from the job self, so we will retrieve the uuid manually
-        $this->logState($event);
+        if ($event->connectionName !== "sync") {
+            $this->logState($event);
+            $isReleased = $event->job->isReleased() ?? null;
+            $hasFailed = $event->job->hasFailed() ?? null;
+            $isDeleted = $event->job->isDeleted() ?? null;
+            $isDeletedOrReleased = $event->job->isDeletedOrReleased() ?? null;
+
+            // this means the actual job itself is finished and not re released to the queue or put in the retry table.
+            if ($isDeleted === true && $hasFailed === false && $isReleased === false) {
+                $this->logState($event);
+                Log::debug('Forgetting the cached queued at');
+                Cache::forget($event->job->uuid());
+            }
+        }
     }
+
+
 
     /**
      * @param  JobFailed  $event
@@ -89,18 +91,28 @@ class QueueEventSubscriber
             }
         }
 
-        $this->logState($event);
+//        $this->logState($event);
         // Log::debug(get_class($event)."[{$event->job->getJobId()}]".' uuid: '.$id);
     }
 
     /**
-     * @param  JobFailed  $event
+     * @param   $event
+     * @return void
+     */
+    public function jobFailedHandle($event)
+    {
+        // not possible to access methods from the job self, so we will retrieve the uuid manually
+        $this->logState($event);
+    }
+
+    /**
+     * @param   $event
      * @return void
      */
     public function jobExceptionHandle($event)
     {
         // not possible to access methods from the job self, so we will retrieve the uuid manually
-        $this->logState($event);
+//        $this->logState($event);
     }
 
     public function cacheTimeOfQueuedBatchedJob(BatchDispatched $event)
@@ -139,7 +151,7 @@ class QueueEventSubscriber
             BatchDispatched::class => ['cacheTimeOfQueuedBatchedJob'],
             JobQueued::class => ['cacheTimeOfQueuedJob'],
             JobProcessing::class => ['jobProcessing'],
-            JobProcessed::class => ['deactivateNotification'],
+            JobProcessed::class => ['deactivateNotification', 'forgetCachedQueuedTime'],
             JobFailed::class => 'jobFailedHandle',
             JobExceptionOccurred::class => 'jobExceptionHandle',
         ];

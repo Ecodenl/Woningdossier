@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Contracts\Queue\ShouldRegisterQueuedTime;
+use App\Contracts\Queue\ShouldNotHandleAfterBuildingReset;
 use App\Jobs\Middleware\CheckLastResetAt;
 use App\Helpers\Queue;
 use App\Models\Building;
@@ -22,9 +22,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class CheckBuildingAddress implements ShouldQueue, ShouldRegisterQueuedTime
+class CheckBuildingAddress implements ShouldQueue, ShouldNotHandleAfterBuildingReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, RegisterQueuedJobTime;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $building;
 
@@ -69,19 +69,14 @@ class CheckBuildingAddress implements ShouldQueue, ShouldRegisterQueuedTime
          * - Partial error, no bag_woonplaats_id (might be caused by faulty address from user or due to BAG outage)
          * - Partial error, no municipality string found in woonplaats endpoint
          */
-
-        if ($this->attempts() == 2) {
-            $this->fail('Bubba is kapot!');
-        }
         if (! $building->municipality()->first() instanceof Municipality) {
-            $this->release(2);
+            $this->release(60);
         }
     }
 
     public function middleware(): array
     {
-//        return [new CheckLastResetAt($this->building)];
-        return  [];
+        return [new CheckLastResetAt($this->building)];
         // return [(new WithoutOverlapping(sprintf('%s-%s', "CheckBuildingAddress", $this->building->id)))->releaseAfter(10)];
     }
 }

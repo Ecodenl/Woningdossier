@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Middleware;
 
+use App\Jobs\CheckBuildingAddress;
 use App\Jobs\ResetDossierForUser;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -30,7 +31,7 @@ class CheckLastResetAt
      * @param  callable  $next
      * @return mixed
      */
-    public function handle($job, $next)
+    public function handle(CheckBuildingAddress $job, $next)
     {
         if ($job->connection !== "sync") {
             if ($this->isBatchedJob($job)) {
@@ -41,33 +42,32 @@ class CheckLastResetAt
                 $id = $job->batch()->id;
                 $displayName = $job->batch()->name;
             } else {
-                $id = $job->getJobUuid();
+                $id = $job->job->uuid();
                 $displayName = get_class($job->job);
             }
 
             Log::debug("{$displayName} [{$id}] Checking for reset cached time: ".Cache::get($id));
-            return  $next($job);
-//            $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
-//
-//            $resetIsDoneAfterThisJobHasBeenQueued = app(DossierSettingsService::class)
-//                ->forBuilding($this->building)
-//                ->forInputSource(InputSource::master())
-//                ->forType(ResetDossierForUser::class)
-//                ->isDoneAfter($jobQueuedAt);
-//
-//
-//            $yesONo = $resetIsDoneAfterThisJobHasBeenQueued ? 'yes!' : 'no!';
-//            Log::debug("ResetDone after job queued: {$yesONo}");
-//            if ($resetIsDoneAfterThisJobHasBeenQueued) {
-//                // notify that the batch is cancelled.
-//                if ($this->isBatchedJob($job)) {
-//                    $job->batch()->cancel();
-//                }
-//                // cancel the execution of the job itself
-//                return;
-//            } else {
-//                $next($job);
-//            }
+            $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
+
+            $resetIsDoneAfterThisJobHasBeenQueued = app(DossierSettingsService::class)
+                ->forBuilding($this->building)
+                ->forInputSource(InputSource::master())
+                ->forType(ResetDossierForUser::class)
+                ->isDoneAfter($jobQueuedAt);
+
+
+            $yesONo = $resetIsDoneAfterThisJobHasBeenQueued ? 'yes!' : 'no!';
+            Log::debug("ResetDone after job queued: {$yesONo}");
+            if ($resetIsDoneAfterThisJobHasBeenQueued) {
+                // notify that the batch is cancelled.
+                if ($this->isBatchedJob($job)) {
+                    $job->batch()->cancel();
+                }
+                // cancel the execution of the job itself
+                return;
+            } else {
+                return $next($job);
+            }
         }
     }
 

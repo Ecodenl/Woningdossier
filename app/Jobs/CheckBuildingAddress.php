@@ -49,7 +49,6 @@ class CheckBuildingAddress implements ShouldQueue, ShouldRegisterQueuedTime
      */
     public function handle(BuildingAddressService $buildingAddressService)
     {
-//        $this->fail('bier');
         $building = $this->building;
         try {
             $buildingAddressService->forBuilding($building);
@@ -72,7 +71,7 @@ class CheckBuildingAddress implements ShouldQueue, ShouldRegisterQueuedTime
          */
 
         if ($this->attempts() == 2) {
-//            throw new \Exception('This is a sexcepion');
+            $this->fail('Bubba is kapot!');
         }
         if (! $building->municipality()->first() instanceof Municipality) {
             $this->release(2);
@@ -81,7 +80,7 @@ class CheckBuildingAddress implements ShouldQueue, ShouldRegisterQueuedTime
 
     public function middleware(): array
     {
-        return [new CheckLastResetAt($this->building)];
+//        return [new CheckLastResetAt($this->building)];
         return  [];
         // return [(new WithoutOverlapping(sprintf('%s-%s', "CheckBuildingAddress", $this->building->id)))->releaseAfter(10)];
     }

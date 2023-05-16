@@ -25,8 +25,6 @@ class QueueEventSubscriber
 {
     public function cacheTimeOfQueuedJob(JobQueued $event)
     {
-        Log::debug('job queued!');
-        Log::debug('JOB QUEUED EVENT HIT');
         // i think we can use this for the cache key, we will also retrieve
         if ($event->connectionName !== "sync") {
             $id = $event->id;
@@ -40,23 +38,10 @@ class QueueEventSubscriber
 
             $date = Carbon::now()->format('Y-m-d H:i:s');
             Log::debug("{$displayName} [{$id}] Caching time: {$date}");
-            Cache::set($id, $date);
+            Cache::put($id, $date, Carbon::now()->addWeek());
         }
 
-         Log::debug(get_class($event)."[{$event->job->id}]".' uuid: '.$event->job->uuid);
         $this->logState($event);
-    }
-
-    public function cacheTimeOfQueuedBatchedJob(BatchDispatched $event)
-    {
-        $id = $event->batch->id;
-
-        // the name is optional when dispatching.
-        $displayName = $event->batch->toArray()['name'] ?? 'Unknown batched job';
-
-        $date = Carbon::now()->format('Y-m-d H:i:s');
-        Log::debug("{$displayName} [{$id}] Caching time: {$date}");
-        Cache::set($id, $date);
     }
 
 
@@ -80,7 +65,6 @@ class QueueEventSubscriber
     {
         // not possible to access methods from the job self, so we will retrieve the uuid manually
         $this->logState($event);
-        // Log::debug(get_class($event)."[{$event->job->getJobId()}]".' uuid: '.$id);
     }
 
     /**
@@ -100,7 +84,7 @@ class QueueEventSubscriber
             $jobQueuedAt = Cache::get($event->job->getJobId());
             if (!is_null($jobQueuedAt)) {
                 Log::debug('Resetting cache '.$event->job->getJobId().' => ' .$event->job->uuid());
-                Cache::set($event->job->uuid(), $jobQueuedAt);
+                Cache::put($event->job->uuid(), $jobQueuedAt, Carbon::now()->addWeek());
                 Cache::forget($event->job->getJobId());
             }
         }
@@ -117,7 +101,18 @@ class QueueEventSubscriber
     {
         // not possible to access methods from the job self, so we will retrieve the uuid manually
         $this->logState($event);
-        // Log::debug(get_class($event)."[{$event->job->getJobId()}]".' uuid: '.$id);
+    }
+
+    public function cacheTimeOfQueuedBatchedJob(BatchDispatched $event)
+    {
+        $id = $event->batch->id;
+
+        // the name is optional when dispatching.
+        $displayName = $event->batch->toArray()['name'] ?? 'Unknown batched job';
+
+        $date = Carbon::now()->format('Y-m-d H:i:s');
+        Log::debug("{$displayName} [{$id}] Caching time: {$date}");
+        Cache::set($id, $date);
     }
 
     public function deactivateNotification($event)

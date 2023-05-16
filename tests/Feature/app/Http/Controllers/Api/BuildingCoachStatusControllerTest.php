@@ -14,18 +14,15 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-/** @skip */
 class BuildingCoachStatusControllerTest extends TestCase
 {
-    use WithFaker,
-        RefreshDatabase;
-// TODO: Update after subsidy merge
+    use WithFaker, RefreshDatabase;
+    // TODO: Update after subsidy merge
     private array $formData;
     private Cooperation $cooperation;
 
     protected function setUp(): void
     {
-        $this->markTestIncomplete();
         parent::setUp();
 
         $this->formData = [

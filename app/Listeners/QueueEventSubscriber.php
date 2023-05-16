@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Contracts\Queue\ShouldNotHandleAfterBuildingReset;
 use App\Jobs\PdfReport;
 use App\Services\Models\NotificationService;
 use App\Traits\Queue\HasNotifications;
@@ -26,7 +27,7 @@ class QueueEventSubscriber
     public function cacheTimeOfQueuedJob(JobQueued $event)
     {
         // i think we can use this for the cache key, we will also retrieve
-        if ($event->connectionName !== "sync") {
+        if ($event->connectionName !== "sync" && $event->job instanceof ShouldNotHandleAfterBuildingReset) {
             $id = $event->id;
             $job = $event->job;
 
@@ -40,7 +41,6 @@ class QueueEventSubscriber
             Log::debug("{$displayName} [{$id}] Caching time: {$date}");
             Cache::put($id, $date, Carbon::now()->addWeek());
         }
-
         $this->logState($event);
     }
 
@@ -51,7 +51,7 @@ class QueueEventSubscriber
      */
     public function forgetCachedQueuedTime($event)
     {
-        if ($event->connectionName !== "sync") {
+        if ($event->connectionName !== "sync" && $event->job instanceof ShouldNotHandleAfterBuildingReset) {
             $this->logState($event);
             $isReleased = $event->job->isReleased() ?? null;
             $hasFailed = $event->job->hasFailed() ?? null;
@@ -68,31 +68,34 @@ class QueueEventSubscriber
     }
 
 
-
     /**
      * @param  JobFailed  $event
      * @return void
      */
     public function jobProcessing(JobProcessing $event)
     {
-        // consistent check if its a batched job.
-        $batchId = unserialize($event->job->payload()['data']['command'])->batchId ?? null;
-        if (is_null($batchId)) {
-            // this does not make sense at first, let me explain:
-            // when the job is queued we set the datetime on the job id, this is because at that time the uuid is not available.
-            // The job id itself may change because of a release, so the next "job processing" we have no memory of the first id / job.
-            // But upon processing a job uuid becomes available! The uuid will not change with a release and stays the same
-            // so here we will convert the "original" jobId to the uuid.
-            $jobQueuedAt = Cache::get($event->job->getJobId());
-            if (!is_null($jobQueuedAt)) {
-                Log::debug('Resetting cache '.$event->job->getJobId().' => ' .$event->job->uuid());
-                Cache::put($event->job->uuid(), $jobQueuedAt, Carbon::now()->addWeek());
-                Cache::forget($event->job->getJobId());
+        if ($event->job instanceof ShouldNotHandleAfterBuildingReset) {
+
+            // consistent check if its a batched job.
+            $batchId = unserialize($event->job->payload()['data']['command'])->batchId ?? null;
+            if (is_null($batchId)) {
+                // this does not make sense at first, let me explain:
+                // when the job is queued we set the datetime on the job id, this is because at that time the uuid is not available.
+                // The job id itself may change because of a release, so the next "job processing" we have no memory of the first id / job.
+                // But upon processing a job uuid becomes available! The uuid will not change with a release and stays the same
+                // so here we will convert the "original" jobId to the uuid.
+                $jobQueuedAt = Cache::get($event->job->getJobId());
+                if ( ! is_null($jobQueuedAt)) {
+                    Log::debug('Resetting cache '.$event->job->getJobId().' => '.$event->job->uuid());
+                    Cache::put($event->job->uuid(), $jobQueuedAt, Carbon::now()->addWeek());
+                    Cache::forget($event->job->getJobId());
+                }
             }
-        }
+
 
 //        $this->logState($event);
-        // Log::debug(get_class($event)."[{$event->job->getJobId()}]".' uuid: '.$id);
+            // Log::debug(get_class($event)."[{$event->job->getJobId()}]".' uuid: '.$id);
+        }
     }
 
     /**
@@ -161,7 +164,7 @@ class QueueEventSubscriber
     {
         $context = [];
         $originalJobId = $event->id ?? 'No id';
-        $jobUuid =  'No uuid';
+        $jobUuid = 'No uuid';
         $usesBatch = in_array(Batchable::class, class_uses($event->job), true);
         if ( ! $usesBatch) {
             $isReleased = null;

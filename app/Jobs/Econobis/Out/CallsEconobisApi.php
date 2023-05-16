@@ -8,6 +8,7 @@ use App\Models\Integration;
 use App\Services\DiscordNotifier;
 use App\Services\IntegrationProcessService;
 use GuzzleHttp\Psr7\Stream;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Predis\Response\ServerException;
 
@@ -46,10 +47,32 @@ trait CallsEconobisApi
             $stream->rewind();
             Log::error($stream->getContents());
         }
+        $shouldNotifyDiscord = false;
 
         $class = __CLASS__;
         $buildingId = $this->building->id ?? 'No building id!';
-        DiscordNotifier::init()->notify(get_class($exception)." Failed to send '{$class}' building_id: {$buildingId}");
+
+        if ($buildingId === 'No building id!') {
+            $shouldNotifyDiscord = true;
+        }
+
+        // check whether this building id has failed before, if not we want to notify ourselfs.
+        if (!in_array($buildingId, Cache::get('failed_econobis_building_ids', []))) {
+            $shouldNotifyDiscord = true;
+        }
+
+        // now save the building id to prevent a discord spam
+        Cache::put(
+            'failed_econobis_building_ids',
+            array_unique(
+                array_merge([$buildingId], Cache::get('failed_econobis_building_ids', []))
+            )
+        );
+
+        if ($shouldNotifyDiscord) {
+            $environment = app()->environment();
+            DiscordNotifier::init()->notify(get_class($exception)." Failed to send [{$environment}] '{$class}' building_id: {$buildingId}");
+        }
     }
 
     public function middleware(): array

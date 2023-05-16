@@ -21,7 +21,7 @@ use Throwable;
 
 class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, HasNotifications;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public UserActionPlanAdvice $userActionPlanAdvice;
     public Building $building;

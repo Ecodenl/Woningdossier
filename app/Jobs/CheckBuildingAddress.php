@@ -18,7 +18,6 @@ use Illuminate\Events\CallQueuedListener;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -82,8 +81,8 @@ class CheckBuildingAddress implements ShouldQueue, ShouldRegisterQueuedTime
 
     public function middleware(): array
     {
+        return [new CheckLastResetAt($this->building)];
         return  [];
-        return [(new WithoutOverlapping(sprintf('%s-%s', "CheckBuildingAddress", $this->building->id)))->releaseAfter(10)];
-//        return [new CheckLastResetAt($this->building)];
+        // return [(new WithoutOverlapping(sprintf('%s-%s', "CheckBuildingAddress", $this->building->id)))->releaseAfter(10)];
     }
 }

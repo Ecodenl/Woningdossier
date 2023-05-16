@@ -46,27 +46,28 @@ class CheckLastResetAt
             }
 
             Log::debug("{$displayName} [{$id}] Checking for reset cached time: ".Cache::get($id));
-            $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
-
-            $resetIsDoneAfterThisJobHasBeenQueued = app(DossierSettingsService::class)
-                ->forBuilding($this->building)
-                ->forInputSource(InputSource::master())
-                ->forType(ResetDossierForUser::class)
-                ->isDoneAfter($jobQueuedAt);
-
-
-            $yesONo = $resetIsDoneAfterThisJobHasBeenQueued ? 'yes!' : 'no!';
-            Log::debug("ResetDone after job queued: {$yesONo}");
-            if ($resetIsDoneAfterThisJobHasBeenQueued) {
-                // notify that the batch is cancelled.
-                if ($this->isBatchedJob($job)) {
-                    $job->batch()->cancel();
-                }
-                // cancel the execution of the job itself
-                return;
-            } else {
-                $next($job);
-            }
+            return  $next($job);
+//            $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
+//
+//            $resetIsDoneAfterThisJobHasBeenQueued = app(DossierSettingsService::class)
+//                ->forBuilding($this->building)
+//                ->forInputSource(InputSource::master())
+//                ->forType(ResetDossierForUser::class)
+//                ->isDoneAfter($jobQueuedAt);
+//
+//
+//            $yesONo = $resetIsDoneAfterThisJobHasBeenQueued ? 'yes!' : 'no!';
+//            Log::debug("ResetDone after job queued: {$yesONo}");
+//            if ($resetIsDoneAfterThisJobHasBeenQueued) {
+//                // notify that the batch is cancelled.
+//                if ($this->isBatchedJob($job)) {
+//                    $job->batch()->cancel();
+//                }
+//                // cancel the execution of the job itself
+//                return;
+//            } else {
+//                $next($job);
+//            }
         }
     }
 

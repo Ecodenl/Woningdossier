@@ -15,6 +15,7 @@ trait RegisterQueuedJobTime
 
     public function registerQueuedTime(): void
     {
+
         $jobUuid = $this->getJobUuid();
 
         $date = Carbon::now()->format('Y-m-d H:i:s');

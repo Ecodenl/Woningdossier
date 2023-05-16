@@ -57,7 +57,7 @@ trait CallsEconobisApi
         }
 
         // check whether this building id has failed before, if not we want to notify ourselfs.
-        if (!in_array($buildingId, Cache::get('failed_econobis_building_ids'))) {
+        if (!in_array($buildingId, Cache::get('failed_econobis_building_ids', []))) {
             $shouldNotifyDiscord = true;
         }
 

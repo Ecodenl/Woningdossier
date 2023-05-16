@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan;
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Str;
 use App\Helpers\ToolQuestionHelper;
 use App\Http\Livewire\Cooperation\Frontend\Tool\Scannable;
 use App\Models\CompletedSubStep;
@@ -70,9 +71,10 @@ class Form extends Scannable
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->data_type === Caster::FLOAT) {
-                $this->filledInAnswers[$toolQuestion->short] = Caster::init(
-                    $toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short]
-                )->reverseFormatted();
+                $this->filledInAnswers[$toolQuestion->short] = Caster::init()
+                    ->dataType($toolQuestion->data_type)
+                    ->value($this->filledInAnswers[$toolQuestion->short])
+                    ->reverseFormatted();
             }
         }
 
@@ -94,7 +96,10 @@ class Form extends Scannable
                 // Validator failed, let's put it back as the user format
                 foreach ($this->toolQuestions as $toolQuestion) {
                     if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                        $this->filledInAnswers[$toolQuestion->short] = Caster::init($toolQuestion->data_type, $this->filledInAnswers[$toolQuestion->short])->getFormatForUser();
+                        $this->filledInAnswers[$toolQuestion->short] = Caster::init()
+                            ->dataType($toolQuestion->data_type)
+                            ->value($this->filledInAnswers[$toolQuestion->short])
+                            ->getFormatForUser();
                     }
                 }
 
@@ -124,7 +129,7 @@ class Form extends Scannable
                     // Master input source is important. Ensure both are set
                     if (is_null($currentAnswer) || is_null($masterAnswer)) {
                         $this->setDirty(true);
-                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        $dirtyToolQuestions[$toolQuestion->short] = $givenAnswer;
                         break;
                     }
                 }
@@ -137,29 +142,39 @@ class Form extends Scannable
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
-                // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                // Rules are conditionally unset. We don't want to save unvalidated answers, but don't want to just
+                // clear them either. In the case of a JSON question, the short will have sub-shorts, so we check
+                // at least one starts with the tool question short
+                if (array_key_exists("filledInAnswers.$toolQuestionShort", $this->rules)
+                    || ($toolQuestion->data_type === Caster::JSON && Str::arrKeyStartsWith(
+                        $this->rules,
+                        "filledInAnswers.$toolQuestionShort"
+                    ))
+                ) {
+                    // Define if we should answer this question...
+                    if ($this->building->user->account->can('answer', $toolQuestion)) {
+                        $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                        if ($masterAnswer !== $givenAnswer) {
+                            $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        }
 
-                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-                    if ($masterAnswer !== $givenAnswer) {
-                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        ToolQuestionService::init()
+                            ->toolQuestion($toolQuestion)
+                            ->building($this->building)
+                            ->currentInputSource($this->currentInputSource)
+                            ->applyExampleBuilding()
+                            ->save($givenAnswer);
+
+
+                        if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
+                            Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
+                            $shouldDoFullRecalculate = true;
+                        }
+
+                        $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                     }
-
-                    ToolQuestionService::init($toolQuestion)
-                        ->building($this->building)
-                        ->currentInputSource($this->currentInputSource)
-                        ->applyExampleBuilding()
-                        ->save($givenAnswer);
-
-
-                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
-                        Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
-                        $shouldDoFullRecalculate = true;
-                    }
-
-                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                 }
             }
         }

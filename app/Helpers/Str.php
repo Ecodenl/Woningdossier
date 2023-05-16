@@ -5,7 +5,7 @@ namespace App\Helpers;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str as SupportStr;
 
-class Str
+class Str extends \Illuminate\Support\Str
 {
     const CHARACTERS = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
     const CONSIDERED_EMPTY_ANSWERS = ['', null, 'null', '0.00', '0.0', '0', 0, '0,0', '0,00'];
@@ -193,6 +193,20 @@ class Str
     }
 
     /**
+     * Check if a needle is somewhere at the start of the keys in an array.
+     *
+     * @param  array  $array
+     * @param $needle
+     * @param  bool  $ignoreCase
+     *
+     * @return bool
+     */
+    public static function arrKeyStartsWith(array $array, $needle, bool $ignoreCase = false): bool
+    {
+        return static::arrStartsWith(array_keys($array), $needle, $ignoreCase);
+    }
+
+    /**
      * Convert HTML array format to dot
      *
      * @param  string  $htmlArray
@@ -206,6 +220,39 @@ class Str
             $dotted = substr($dotted, 0, strlen($dotted) - 1);
         }
         return $dotted;
+    }
+
+    /**
+     * Convert a dotted string to a valid HTML input name.
+     *
+     * @param  string|null  $dottedName
+     * @param  bool  $asArray
+     *
+     * @return string|null
+     */
+    public static function dotToHtml(?string $dottedName, bool $asArray = false): ?string
+    {
+        // No use for an empty string
+        if (empty($dottedName)) {
+            return $dottedName;
+        }
+
+        $htmlName = \Illuminate\Support\Str::of($dottedName);
+
+        // Nothing to replace if no dots
+        if ($htmlName->contains('.')) {
+            $htmlName = $htmlName->replaceFirst('.', '[') // Replace first dot with opening bracket
+            ->replace('*', '') // Remove wildcards
+            ->replace('.', '][') // Replace other dots with separating brackets
+            ->append(']'); // Add final bracket
+        }
+
+        if ($asArray) {
+            // Append HTML array if requested
+            $htmlName = $htmlName->append('[]');
+        }
+
+        return $htmlName;
     }
 
     /**
@@ -235,6 +282,7 @@ class Str
      */
     public static function prepareJsonForHtml(string $json): string
     {
+        // TODO: Just use {{ json_encode() }} in blade!
         return str_replace('"', '\'', $json);
     }
 }

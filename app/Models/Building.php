@@ -14,17 +14,20 @@ use App\Scopes\GetValueScope;
 use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use OwenIt\Auditing\Models\Audit;
 
 /**
  * App\Models\Building
  *
  * @property int $id
  * @property int|null $user_id
+ * @property int|null $municipality_id
  * @property string $street
  * @property string $number
  * @property string $extension
@@ -34,6 +37,7 @@ use Illuminate\Support\Str;
  * @property int|null $owner
  * @property int $primary
  * @property string $bag_addressid
+ * @property string|null $bag_woonplaats_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -64,6 +68,7 @@ use Illuminate\Support\Str;
  * @property-read \App\Models\BuildingHeater|null $heater
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
  * @property-read int|null $media_count
+ * @property-read \App\Models\Municipality|null $municipality
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
  * @property-read int|null $private_messages_count
  * @property-read \App\Models\BuildingPvPanel|null $pvPanels
@@ -84,6 +89,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Query\Builder|Building onlyTrashed()
  * @method static Builder|Building query()
  * @method static Builder|Building whereBagAddressid($value)
+ * @method static Builder|Building whereBagWoonplaatsId($value)
  * @method static Builder|Building whereCity($value)
  * @method static Builder|Building whereCountryCode($value)
  * @method static Builder|Building whereCreatedAt($value)
@@ -92,6 +98,7 @@ use Illuminate\Support\Str;
  * @method static Builder|Building whereHasMedia($tags = [], bool $matchAll = false)
  * @method static Builder|Building whereHasMediaMatchAll(array $tags)
  * @method static Builder|Building whereId($value)
+ * @method static Builder|Building whereMunicipalityId($value)
  * @method static Builder|Building whereNumber($value)
  * @method static Builder|Building whereOwner($value)
  * @method static Builder|Building wherePostalCode($value)
@@ -120,6 +127,8 @@ class Building extends Model
         'city',
         'postal_code',
         'bag_addressid',
+        'municipality_id',
+        'bag_woonplaats_id',
         'building_coach_status_id',
         'extension',
         'is_active',
@@ -147,6 +156,11 @@ class Building extends Model
     public function customMeasureApplications(): HasMany
     {
         return $this->hasMany(CustomMeasureApplication::class);
+    }
+
+    public function municipality(): BelongsTo
+    {
+        return $this->belongsTo(Municipality::class);
     }
 
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion, bool $withMaster = false)
@@ -428,6 +442,7 @@ class Building extends Model
      */
     public function hasAnsweredExpertQuestion(Step $step = null): bool
     {
+        // TODO: Should we rename this to "hasAnsweredExpertStep"? Or maybe just use "hasCompleted"?
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $quickScan = Scan::findByShort('quick-scan');
@@ -704,53 +719,6 @@ class Building extends Model
     public function getMostRecentBuildingStatus()
     {
         return $this->buildingStatuses()->with('status')->mostRecent()->first();
-    }
-
-    private function resolveStatusModel($status)
-    {
-        $statusModel = null;
-
-        if (is_string($status)) {
-            $statusModel = Status::where('short', $status)->first();
-        }
-
-        if ($status instanceof Status) {
-            $statusModel = $status;
-        }
-
-        return $statusModel;
-    }
-
-    /**
-     * convenient way of setting a status on a building.
-     *
-     * @param string|Status $status
-     *
-     * @return void
-     */
-    public function setStatus($status)
-    {
-        $statusModel = $this->resolveStatusModel($status);
-
-        $this->buildingStatuses()->create([
-            'status_id' => $statusModel->id,
-            'appointment_date' => $this->getAppointmentDate(),
-        ]);
-    }
-
-    /**
-     * convenient way of setting a appointment date on a building.
-     *
-     * @param string
-     *
-     * @return void
-     */
-    public function setAppointmentDate($appointmentDate)
-    {
-        $this->buildingStatuses()->create([
-            'status_id' => $this->getMostRecentBuildingStatus()->status_id,
-            'appointment_date' => $appointmentDate,
-        ]);
     }
 
     /**

@@ -27,6 +27,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $last_visited_url
  * @property array|null $extra
  * @property bool $allow_access
+ * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
+ * @property bool|null $refreshing_regulations
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Account|null $account
@@ -65,6 +67,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $user_action_plan_advice_comments_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserCost[] $userCosts
+ * @property-read int|null $user_costs_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
  * @property-read int|null $user_interests_count
  * @method static Builder|User byContact($contact)
@@ -86,6 +90,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder|User whereLastName($value)
  * @method static Builder|User whereLastVisitedUrl($value)
  * @method static Builder|User wherePhoneNumber($value)
+ * @method static Builder|User whereRefreshingRegulations($value)
+ * @method static Builder|User whereRegulationsRefreshedAt($value)
  * @method static Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
@@ -105,13 +111,16 @@ class User extends Model implements AuthorizableContract
      * @var array
      */
     protected $fillable = [
-        'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access',
-        'last_visited_url'
+        'tool_last_changed_at', 'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access', 'regulations_refreshed_at',
+        'last_visited_url', 'refreshing_regulations'
     ];
 
     protected $casts = [
         'allow_access' => 'boolean',
-        'extra' => 'array'
+        'extra' => 'array',
+        'tool_last_changed_at' => 'datetime:Y-m-d H:i:s',
+        'regulations_refreshed_at' => 'datetime:Y-m-d H:i:s',
+        'refreshing_regulations' => 'boolean',
     ];
 
     // We can't eager load roles by default because if the admin changes them, they don't refresh
@@ -125,6 +134,11 @@ class User extends Model implements AuthorizableContract
         // We assume $contact is an ID. Maybe in the future this won't be the case but this way it can be easily
         // expanded
         return $query->where('extra->contact_id', $contact);
+    }
+
+    public function scopeEconobisContacts(Builder $query): Builder
+    {
+        return $query->whereNotNull('extra->contact_id');
     }
 
     # Relations
@@ -303,17 +317,12 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function buildingNotes()
+    public function buildingNotes(): HasMany
     {
         return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
     }
 
-    public function userActionPlanAdviceComments()
-    {
-        return $this->hasMany(UserActionPlanAdviceComments::class);
-    }
-
-    public function motivations()
+    public function motivations(): HasMany
     {
         return $this->hasMany(UserMotivation::class);
     }
@@ -330,6 +339,16 @@ class User extends Model implements AuthorizableContract
     public function userActionPlanAdvices(): HasMany
     {
         return $this->hasMany(UserActionPlanAdvice::class);
+    }
+
+    public function userActionPlanAdviceComments(): HasMany
+    {
+        return $this->hasMany(UserActionPlanAdviceComments::class);
+    }
+
+    public function userCosts(): HasMany
+    {
+        return $this->hasMany(UserCost::class);
     }
 
     /**

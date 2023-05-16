@@ -82,12 +82,14 @@ return [
                 'image/jpeg',
                 'image/png',
                 'image/gif',
+                'image/webp',
             ],
             'extensions' => [
                 'jpg',
                 'jpeg',
                 'png',
                 'gif',
+                'webp',
             ]
         ],
         Plank\Mediable\Media::TYPE_IMAGE_VECTOR => [

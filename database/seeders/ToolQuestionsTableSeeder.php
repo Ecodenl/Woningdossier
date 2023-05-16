@@ -57,7 +57,7 @@ class ToolQuestionsTableSeeder extends Seeder
 
         // Wall insulation
         $wallInsulation = Element::findByShort('wall-insulation');
-        $energyLabels = EnergyLabel::ordered()->get();
+        $energyLabels = EnergyLabel::ordered('desc')->get();
         $comfortLevelsTapWater = ComfortLevelTapWater::where('calculate_value', '<=', 3)->get();
 
         // Insulated glazing
@@ -135,6 +135,8 @@ class ToolQuestionsTableSeeder extends Seeder
                 'name' => 'Niet van toepassing'
             ],
         ];
+        // Note: These are also used for the expert execute-{measure}-how questions since they use the same values.
+        // Take note of this if there needs to be a change on only one scan.
         $smallMeasureExecuteValues = [
             'do-self' => [
                 'name' => 'Dat ga ik zelf doen',
@@ -315,7 +317,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::IDENTIFIER,
-                'validation' => ['numeric', 'in:1,2,0', 'exists:tool_question_custom_values,short'],
+                'validation' => ['numeric', 'in:1,2,0,3', 'exists:tool_question_custom_values,short'],
                 'save_in' => 'building_features.monument',
                 'short' => 'monument',
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument',
@@ -330,6 +332,10 @@ class ToolQuestionsTableSeeder extends Seeder
                     ],
                     0 => [
                         'name' => __('woningdossier.cooperation.radiobutton.unknown'),
+                        'extra' => [],
+                    ],
+                    3 => [
+                        'name' => 'Beschermd stads- of dorpsgezicht',
                         'extra' => [],
                     ],
                 ],
@@ -367,6 +373,9 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                         '?' => [
                             'icon' => 'icon-label-unknown',
+                        ],
+                        'X' => [
+                            'icon' => 'icon-label-none',
                         ],
                     ],
                 ],
@@ -1270,7 +1279,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'integer', 'min:1', 'max:50'],
+                'validation' => ['required', 'numeric', 'integer', 'min:1', 'max:500'],
                 'save_in' => "building_services.{$solarPanels->id}.extra.value",
                 'short' => 'solar-panel-count',
                 // was current-state -> hoeveel zonnepanelen zijn er aanwezig
@@ -2636,7 +2645,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "considerables.App\\Models\\MeasureApplication.{$hrppGlassFrames->id}.is_considering",
                 'translation' => 'HR++ glas + kozijn: Meenemen in berekening',
-                'short' => 'hrpp-glass-frame-considerable',
+                'short' => 'hrpp-glass-frame-considerable', // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2684,7 +2693,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$hr3pFrames->id}.is_considering",
                 "translation" => "HR+++ glas + kozijn: Meenemen in berekening",
-                "short" => "hr3p-glass-frame-considerable",
+                "short" => "hr3p-glass-frame-considerable", // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2732,7 +2741,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 "save_in" => "considerables.App\\Models\\MeasureApplication.{$glassInLead->id}.is_considering",
                 "translation" => "Glas-in-lood vervangen: Meenemen in berekening",
-                "short" => "glass-in-lead-replace-considerable",
+                "short" => "glass-in-lead-replace-considerable", // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -2987,7 +2996,7 @@ class ToolQuestionsTableSeeder extends Seeder
                     'required', 'numeric', 'integer',
                 ],
                 'save_in' => "building_roof_types.{$pitchedRoof->id}.zinc_surface",
-                'translation' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+                'translation' => 'Wat is de oppervlakte van het zinkwerk?',
                 'short' => 'pitched-roof-zinc-surface',
             ],
             [
@@ -3120,7 +3129,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
                 'save_in' => "considerables.App\\Models\\Step.{$solarPanelStep->id}.is_considering",
                 'translation' => 'Zonnepanelen: Meenemen in berekening',
-                'short' => 'solar-panels-considerable',
+                'short' => 'solar-panels-considerable', // TODO: Match measure application short
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
@@ -3135,7 +3144,7 @@ class ToolQuestionsTableSeeder extends Seeder
             [
                 'data_type' => Caster::INT,
                 'validation' => [
-                    'required', 'numeric', 'integer',
+                    'required', 'numeric', 'integer', 'min:0',
                 ],
                 'save_in' => 'building_pv_panels.number',
                 'translation' => 'Hoeveel zonnepanelen moeten er komen?',
@@ -3178,11 +3187,51 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
         ];
 
+        #######
+        #
+        # README:
+        # For ease of seeding: user cost questions are related to energy saving measures that have expert related
+        # questions. Therefore, we simply loop through all of them. This means it's easily expanded for future added
+        # measures, as well as being simple in the code. This seeder is large enough already.
+        #
+        #######
+
+        $allExpertEnergySavingMeasures = MeasureApplication::measureType(MeasureApplication::ENERGY_SAVING)
+            ->where('step_id', '!=', $stepSmallMeasures->id)->get();
+
+        foreach ($allExpertEnergySavingMeasures as $measure) {
+            $questions[] = [
+                'data_type' => Caster::INT,
+                'validation' => [
+                    'nullable', 'numeric', 'integer', 'gt:0',
+                ],
+                'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.own_total",
+                'translation' => 'Eigen kosten (voor aftrek subsidie)',
+                'help_text' => 'In het geval dat je al weet hoeveel een maatregel gaat kosten (bijvoorbeeld door een opgevraagde offerte), kun je hier dat bedrag invullen.',
+                'short' => "user-costs-{$measure->short}-own-total",
+            ];
+            $questions[] = [
+                'data_type' => Caster::INT,
+                'validation' => [
+                    'nullable', 'numeric', 'integer', 'gt:0',
+                ],
+                'save_in' => "user_costs.App\\Models\\MeasureApplication.{$measure->id}.subsidy_total",
+                'translation' => 'Subsidiebedrag (zelf invullen)',
+                'help_text' => 'In het geval dat je al weet hoeveel subsidie je terugkrijgt op een maatregel, kun je dit hier invullen.',
+                'short' => "user-costs-{$measure->short}-subsidy-total",
+            ];
+            $questions[] = [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => "execute-{$measure->short}-how",
+                'translation' => 'Hoe wil je het uitvoeren?',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+                'options' => ['value' => 'let-do'],
+            ];
+        }
 
         foreach ($questions as $questionData) {
             if ($questionData['short'] != "") {
-
-
                 // Create the question itself
 
                 // Translation can be a key or text. We compare the results, because if it's a key, then the

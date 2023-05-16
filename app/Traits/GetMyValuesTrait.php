@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\Cache\BaseCache;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 trait GetMyValuesTrait
@@ -73,7 +75,7 @@ trait GetMyValuesTrait
      */
     public function hasAttribute(string $attribute): bool
     {
-        return (Schema::hasColumn($this->getTable(), $attribute));
+        return \App\Helpers\Cache\Schema::hasColumn($this->getTable(), $attribute);
     }
 
     protected function saveForMasterInputSource()
@@ -86,6 +88,10 @@ trait GetMyValuesTrait
         if (! in_array($this->getTable(), $tablesToIgnore)) {
             $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             $data = $this->attributesToArray();
+            // In case there's attributes we don't want to copy over
+            foreach (($this->ignoreAttributes ?? []) as $ignoreAttribute) {
+                unset($data[$ignoreAttribute]);
+            }
 
             $data['input_source_id'] = $masterInputSource->id;
             unset($data['id']);
@@ -97,7 +103,8 @@ trait GetMyValuesTrait
             $crucialRelationCombinationIds = [
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
                 'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
-                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id', 'uuid',
+                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id', 'uuid', 'advisable_type',
+                'advisable_id',
             ];
             $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
 
@@ -170,7 +177,8 @@ trait GetMyValuesTrait
             $crucialRelationCombinationIds = [
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
                 'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
-                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id', 'uuid',
+                'considerable_id', 'considerable_type', 'question_id', 'questionnaire_id', 'uuid', 'advisable_type',
+                'advisable_id',
             ];
             $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
 
@@ -277,7 +285,7 @@ trait GetMyValuesTrait
         $building = $user->building ?? HoomdossierSession::getBuilding(true);
 
         // determine what table we are using
-        $currentTable = $this->table ?? $this->getTable();
+        $currentTable = $this->getTable();
 
         // determine which column we should use.
         if (Schema::hasColumn($currentTable, 'building_id')) {

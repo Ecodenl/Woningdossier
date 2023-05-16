@@ -5,7 +5,6 @@ namespace App\Console\Commands\Tool;
 use App\Helpers\Queue;
 use App\Jobs\ProcessRecalculate;
 use App\Jobs\RecalculateStepForUser;
-use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Step;
@@ -108,7 +107,7 @@ class RecalculateForUser extends Command
                 foreach ($stepsToRecalculate as $stepToRecalculate) {
                     $stepsToRecalculateChain[] = (
                         new RecalculateStepForUser($user, $inputSource, $stepToRecalculate, $withOldAdvices)
-                    )->onQueue(Queue::ASYNC);
+                    );
                 }
 
                 NotificationService::init()
@@ -120,7 +119,6 @@ class RecalculateForUser extends Command
                 Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
 
                 ProcessRecalculate::withChain($stepsToRecalculateChain)
-                    ->onQueue(Queue::ASYNC)
                     ->dispatch();
             }
         }

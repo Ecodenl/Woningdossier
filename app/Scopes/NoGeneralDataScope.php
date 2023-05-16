@@ -15,8 +15,14 @@ class NoGeneralDataScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->whereNotIn('short', [
-            'general-data', 'building-characteristics', 'current-state', 'usage', 'interest',
-        ]);
+        if (\Schema::hasColumn('steps', 'short')) {
+            $builder->whereNotIn('short', [
+                'general-data',
+                'building-characteristics',
+                'current-state',
+                'usage',
+                'interest',
+            ]);
+        }
     }
 }

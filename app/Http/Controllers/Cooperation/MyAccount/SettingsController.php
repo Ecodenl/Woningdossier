@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\UserToolDataChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
+use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\InputSource;
-use App\Services\AddressService;
+use App\Models\Municipality;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
@@ -27,33 +30,23 @@ class SettingsController extends Controller
 
         $data = $request->all();
 
-        $buildingData = $data['building'];
-        $userData = $data['user'];
-
-        // now get the pico address data.
-        $picoAddressData = AddressService::init()->first(
-            $buildingData['postal_code'], $buildingData['house_number'], $buildingData['extension']
-        );
-
-        $userData['phone_number'] = $userData['phone_number'] ?? '';
-        $buildingData['extension'] = $buildingData['extension'] ?? '';
-        $buildingData['number'] = $buildingData['house_number'] ?? '';
-        // try to obtain the address id from the api, else get the one from the request.
-        $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'] ?? '';
-
         // update the user stuff
+        $userData = $data['user'];
+        $userData['phone_number'] = $userData['phone_number'] ?? '';
         $user->update($userData);
-        // now update the building itself
-        $building->update($buildingData);
 
-        // and update the building features with the data from pico.
-        $building->buildingFeatures()->update([
-            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
-            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
-        ]);
+        $buildingData['number'] = $buildingData['number'] ?? '';
+        $buildingData = $data['building'];
+
+        $building->update(Arr::only($buildingData, ['street', 'city', 'postal_code', 'number', 'extension']));
+
+         CheckBuildingAddress::dispatchSync($building);
+         if (!$building->municipality()->first() instanceof Municipality) {
+             CheckBuildingAddress::dispatch($building);
+         }
 
         return redirect()->route('cooperation.my-account.index')
-                         ->with('success', __('my-account.settings.store.success'));
+            ->with('success', __('my-account.settings.store.success'));
     }
 
     /**
@@ -61,19 +54,20 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile(Request $request)
+    public function resetFile(UserService $userService, Request $request)
     {
         $user = Hoomdossier::user();
 
         $inputSourceIds = $request->input('input_sources.id');
 
         // Reset master first.
-        UserService::resetUser($user, InputSource::findByShort(InputSource::MASTER_SHORT));
+        $userService->forUser($user)->resetUser(InputSource::master());
 
         foreach ($inputSourceIds as $inputSourceId) {
-            Log::debug("resetting for input source " . $inputSourceId);
-            UserService::resetUser($user, InputSource::find($inputSourceId));
+            Log::debug("resetting for input source ".$inputSourceId);
+            $userService->forUser($user)->resetUser(InputSource::find($inputSourceId));
         }
+        UserToolDataChanged::dispatch($user);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }
@@ -94,7 +88,7 @@ class SettingsController extends Controller
 
         $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();
         $success = __('my-account.settings.destroy.success.cooperation');
-        if (! $stillActiveForOtherCooperations) {
+        if ( ! $stillActiveForOtherCooperations) {
             $success = __('my-account.settings.destroy.success.full');
         }
 

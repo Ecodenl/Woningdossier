@@ -11,7 +11,6 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\Step;
 use App\Rules\LanguageRequired;
-use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
 
@@ -39,7 +38,7 @@ class Form extends Component
     protected function rules(): array
     {
         $rules = [
-            'exampleBuildingValues.name' => new LanguageRequired(),
+            'exampleBuildingValues.name' => ['required', new LanguageRequired()],
             'exampleBuildingValues.building_type_id' => 'required|exists:building_types,id',
             'exampleBuildingValues.is_default' => 'required|boolean',
             'exampleBuildingValues.order' => 'nullable|numeric|min:0',
@@ -56,11 +55,17 @@ class Form extends Component
     public function mount(ExampleBuilding $exampleBuilding = null)
     {
         $this->isSuperAdmin = HoomdossierSession::currentRole() === RoleHelper::ROLE_SUPER_ADMIN;
+        $this->buildingTypes = BuildingType::all();
+
         if ($this->isSuperAdmin) {
+            $alreadyPickedBuildingTypes = ExampleBuilding::generic()
+                ->groupBy('building_type_id')
+                ->select('building_type_id')
+                ->pluck('building_type_id');
+            $this->buildingTypes = BuildingType::whereNotIn('id', $alreadyPickedBuildingTypes->toArray())->get();
             $this->cooperations = Cooperation::all();
         }
 
-        $this->buildingTypes = BuildingType::all();
 
         $this->contentStructure = [];
 
@@ -87,7 +92,10 @@ class Form extends Component
                 foreach ($content as $toolQuestionShort => $value) {
                     if (array_key_exists($toolQuestionShort, $this->toolQuestionDataType)) {
                         if ($this->toolQuestionDataType[$toolQuestionShort] === \App\Helpers\DataTypes\Caster::FLOAT) {
-                            $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->getFormatForUser();
+                            $content[$toolQuestionShort] = Caster::init()
+                                ->dataType(Caster::FLOAT)
+                                ->value($value)
+                                ->getFormatForUser();
                         }
                     } else {
                         // If it's not found it means it should not be set
@@ -140,6 +148,12 @@ class Form extends Component
         $this->hydrateExampleBuildingSteps();
 
         $this->validate();
+
+        if (! is_numeric($this->exampleBuildingValues['order'] ?? null)) {
+            // Empty string isn't allowed
+            $this->exampleBuildingValues['order'] = null;
+        }
+
         if ($this->isSuperAdmin) {
             // If the super-admin wants to create a application wide example building
             // he keep the input empty
@@ -191,7 +205,10 @@ class Form extends Component
 
                     // cast the value to a database value (a int)
                     if ($this->toolQuestionDataType[$toolQuestionShort] === Caster::FLOAT) {
-                        $content[$toolQuestionShort] = Caster::init(Caster::FLOAT, $value)->reverseFormatted();
+                        $content[$toolQuestionShort] = Caster::init()
+                            ->dataType(Caster::FLOAT)
+                            ->value($value)
+                            ->reverseFormatted();
                     }
                 }
             }

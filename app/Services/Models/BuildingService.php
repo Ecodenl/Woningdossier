@@ -2,8 +2,13 @@
 
 namespace App\Services\Models;
 
+use App\Events\BuildingAppointmentDateUpdated;
+use App\Helpers\Queue;
 use App\Helpers\ToolQuestionHelper;
+use App\Jobs\CheckBuildingAddress;
+use App\Jobs\RefreshRegulationsForBuildingUser;
 use App\Models\Building;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Scan;
 use App\Services\WoonplanService;
@@ -17,15 +22,38 @@ class BuildingService
 
     public ?Building $building;
 
-    public function __construct(Building $building)
+    public function __construct(?Building $building = null)
     {
         $this->building = $building;
+    }
+
+    /**
+     * convenient way of setting a appointment date on a building.
+     *
+     * @param string
+     *
+     * @return void
+     */
+    public function setAppointmentDate($appointmentDate): void
+    {
+        $this->building->buildingStatuses()->create([
+            'status_id' => $this->building->getMostRecentBuildingStatus()->status_id,
+            'appointment_date' => $appointmentDate,
+        ]);
+
+        BuildingAppointmentDateUpdated::dispatch($this->building);
+    }
+
+    public function forBuilding(Building $building): self
+    {
+        $this->building = $building;
+        return $this;
     }
 
     public function canCalculate(Scan $scan): bool
     {
         if ($scan->isQuickScan()) {
-            $quickScan       = Scan::findByShort(Scan::QUICK);
+            $quickScan = Scan::findByShort(Scan::QUICK);
             $woonplanService = WoonplanService::init($this->building)->scan($quickScan);
             // iknow, the variable is not needed.
             // just got it here as a description since this same statement is found in different context.
@@ -56,7 +84,7 @@ class BuildingService
 
         // Get the tool question answers for custom values.
         $answersForTqa = collect();
-        if (! empty($ids)) {
+        if ( ! empty($ids)) {
             // This sub-query selects the example building if it has the same answer, or else the latest input source
             // that made changes on the tool question.
             $selectQuery = "(SELECT IF (
@@ -84,7 +112,13 @@ class BuildingService
             $answersForTqa = DB::table('tool_question_answers AS tqa')
                 ->select('tqa.tool_question_id', 'tqa.answer', 'nma.input_source_id', 'is.name AS input_source_name')
                 ->selectSub(
-                    fn ($query) => $query->selectRaw($selectQuery, [$this->building->id, $exampleBuildingInputSource->id, $exampleBuildingInputSource->id, $this->building->id, $masterInputSource->id]),
+                    fn($query) => $query->selectRaw($selectQuery, [
+                        $this->building->id,
+                        $exampleBuildingInputSource->id,
+                        $exampleBuildingInputSource->id,
+                        $this->building->id,
+                        $masterInputSource->id
+                    ]),
                     'latest_source_id'
                 )
                 ->where('tqa.building_id', $this->building->id)
@@ -99,28 +133,28 @@ class BuildingService
                 ->havingRaw('nma.input_source_id = latest_source_id')
                 ->get()
                 ->groupBy('tool_question_id')
-                ->map(fn($val) => $val->map(fn($subVal) => (array) $subVal)->toArray());
+                ->map(fn($val) => $val->map(fn($subVal) => (array)$subVal)->toArray());
         }
 
         $ids = $toolQuestions->whereNotNull('save_in')->pluck('id')->toArray();
 
         // Get the tool question answers for save in questions.
         $answersForSaveIn = collect();
-        if (! empty($ids)) {
+        if ( ! empty($ids)) {
             $saveIns = $toolQuestions->whereNotNull('save_in')->pluck('save_in', 'id')->toArray();
             foreach ($saveIns as $toolQuestionId => $saveIn) {
                 $resolved = ToolQuestionHelper::resolveSaveIn($saveIn, $this->building);
                 // Note: Where could contain extra queryable, e.g. service. If empty, the query builder
                 // will safely discard the where statement. If not empty, it gets added to the query.
-                $where        = $resolved['where'];
-                $table        = $resolved['table'];
+                $where = $resolved['where'];
+                $table = $resolved['table'];
                 $answerColumn = $resolved['column'];
-                $whereColumn  = array_key_exists('user_id', $where) ? 'user_id' : 'building_id';
-                $value        = data_get($resolved, "where.{$whereColumn}");
+                $whereColumn = array_key_exists('user_id', $where) ? 'user_id' : 'building_id';
+                $value = data_get($resolved, "where.{$whereColumn}");
                 unset($where[$whereColumn]);
 
                 $append = '';
-                if (! empty($where)) {
+                if ( ! empty($where)) {
                     foreach ($where as $col => $val) {
                         $append .= " AND {$col} = {$val}";
                     }
@@ -153,7 +187,13 @@ class BuildingService
                 $answersForResolved = DB::table("{$table} as tbl")
                     ->select("tbl.{$answerColumn} AS answer", 'nma.input_source_id', 'is.name AS input_source_name')
                     ->selectSub(
-                        fn ($query) => $query->selectRaw($selectQuery, [$value, $exampleBuildingInputSource->id, $exampleBuildingInputSource->id, $value, $masterInputSource->id]),
+                        fn($query) => $query->selectRaw($selectQuery, [
+                            $value,
+                            $exampleBuildingInputSource->id,
+                            $exampleBuildingInputSource->id,
+                            $value,
+                            $masterInputSource->id
+                        ]),
                         'latest_source_id'
                     )
                     ->where("tbl.{$whereColumn}", $value)
@@ -166,7 +206,7 @@ class BuildingService
                     ->leftJoin('input_sources AS is', 'nma.input_source_id', '=', 'is.id')
                     ->havingRaw('nma.input_source_id = latest_source_id')
                     ->get()
-                    ->map(fn($val) => (array) $val)
+                    ->map(fn($val) => (array)$val)
                     ->toArray();
 
                 $answersForSaveIn->put($toolQuestionId, $answersForResolved);
@@ -176,6 +216,26 @@ class BuildingService
         return $answersForTqa->union($answersForSaveIn);
     }
 
+    public function performMunicipalityCheck ()
+    {
+        $building = $this->building;
+
+        $currentMunicipality = $building->municipality_id;
+        CheckBuildingAddress::dispatchSync($building);
+        // Get a fresh (and updated) building instance
+        $building = $building->fresh();
+        $newMunicipality = $building->municipality_id;
+
+        // Check if a municipality was attached. If not, dispatch it on the regular queue so it retries.
+        // If the CheckBuildingAddress attaches a municipality, the BuildingAddressUpdated will be fired from the attachMunicipality method.
+        // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
+        // If the municipality hasn't changed, however, we will manually dispatch a refresh.
+        if (is_null($newMunicipality)) {
+            CheckBuildingAddress::dispatch($building);
+        } elseif ($currentMunicipality === $newMunicipality) {
+            RefreshRegulationsForBuildingUser::dispatch($building);
+        }
+    }
 
     public static function deleteBuilding(Building $building)
     {
@@ -185,8 +245,15 @@ class BuildingService
 
         $building->stepComments()->withoutGlobalScopes()->delete();
 
+        // Remove all mappings related to custom measure applications. Custom measures will get "auto deleted" due
+        // to cascade on delete, but mappings are a morph relation without foreign key constraints, so we must
+        // delete them ourselves.
+        DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
+            ->whereIn('from_model_id', $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray())
+            ->delete();
+
         // table will be removed anyways.
-        \DB::table('building_appliances')->whereBuildingId($building->id)->delete();
+        DB::table('building_appliances')->whereBuildingId($building->id)->delete();
 
         $building->forceDelete();
     }

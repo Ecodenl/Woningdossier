@@ -12,12 +12,12 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Str;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
-use App\Models\Scan;
 use App\Models\Step;
 use App\Models\ToolCalculationResult;
 use App\Models\ToolQuestion;
@@ -39,6 +39,7 @@ class Form extends Component
     public InputSource $masterInputSource;
     public InputSource $currentInputSource;
 
+    public array $rules = [];
     public array $succeededSubSteps = [];
     public array $failedValidationForSubSteps = [];
 
@@ -75,12 +76,13 @@ class Form extends Component
     }
 
     // We will mark the given sub step as succeeded
-    public function subStepSucceeded(array $subStep, array $filledInAnswers)
+    public function subStepSucceeded(array $subStep, array $filledInAnswers, array $rules)
     {
         // Unset failed sub step because it succeeds now
         unset($this->failedValidationForSubSteps[$subStep['slug'][$this->locale]]);
 
         $this->setFilledInAnswers($filledInAnswers);
+        $this->setRules($rules);
         $this->succeededSubSteps[$subStep['slug'][$this->locale]] = $subStep['slug'][$this->locale];
 
         // Save answers if all sub steps have been successfully answered
@@ -95,6 +97,13 @@ class Form extends Component
         // answers. array_merge messes up the keys and addition (array + array) causes weird behaviour
         foreach ($filledInAnswers as $toolQuestionShort => $answer) {
             $this->filledInAnswers[$toolQuestionShort] = $answer;
+        }
+    }
+
+    public function setRules(array $rules)
+    {
+        foreach ($rules as $short => $rule) {
+            $this->rules[$short] = $rule;
         }
     }
 
@@ -122,39 +131,51 @@ class Form extends Component
         // Answers have been updated, we save them and dispatch a recalculate
         // at this point we already now that the form is dirty, otherwise this event wouldnt have been dispatched
         foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
-            // Define if we should answer this question...
             /** @var ToolQuestion $toolQuestion */
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
-            if ($this->building->user->account->can('answer', $toolQuestion)) {
+            // Rules are conditionally unset. We don't want to save unvalidated answers, but don't want to just
+            // clear them either. In the case of a JSON question, the short will have sub-shorts, so we check
+            // at least one starts with the tool question short
+            if (array_key_exists("filledInAnswers.$toolQuestionShort", $this->rules)
+                || ($toolQuestion->data_type === Caster::JSON && Str::arrKeyStartsWith(
+                    $this->rules,
+                    "filledInAnswers.$toolQuestionShort"
+                ))
+            ) {
+                // Define if we should answer this question...
+                $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                    // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
+                    // so when we actually start saving it we have to format it one more time
+                    if ($toolQuestion->data_type === Caster::FLOAT) {
+                        $givenAnswer = Caster::init()
+                            ->dataType($toolQuestion->data_type)
+                            ->value($givenAnswer)
+                            ->reverseFormatted();
+                    }
 
-                // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
-                // so when we actually start saving it we have to format it one more time
-                if ($toolQuestion->data_type === Caster::FLOAT) {
-                    $givenAnswer = Caster::init(
-                        $toolQuestion->data_type, $givenAnswer
-                    )->reverseFormatted();
+                    // TODO: this is a horrible way to trace dirty answers
+                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+                    if ($masterAnswer !== $givenAnswer) {
+                        $dirtyToolQuestions[$toolQuestion->short] = $givenAnswer;
+                    }
+
+                    ToolQuestionService::init()
+                        ->toolQuestion($toolQuestion)
+                        ->building($this->building)
+                        ->currentInputSource($this->currentInputSource)
+                        ->applyExampleBuilding()
+                        ->save($givenAnswer);
+
+                    if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
+                        Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
+                        $shouldDoFullRecalculate = true;
+                    }
+
+                    // get the expert step equivalent
+                    // we will filter out duplicates later on.
+                    $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
                 }
-
-                // TODO: this is a horrible way to trace dirty answers
-                $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-                if ($masterAnswer !== $givenAnswer) {
-                    $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
-                }
-
-                ToolQuestionService::init($toolQuestion)
-                    ->building($this->building)
-                    ->currentInputSource($this->currentInputSource)
-                    ->applyExampleBuilding()
-                    ->save($givenAnswer);
-
-                if (ToolQuestionHelper::shouldToolQuestionDoFullRecalculate($toolQuestion, $this->building, $this->masterInputSource)) {
-                    Log::debug("Question {$toolQuestion->short} should trigger a full recalculate");
-                    $shouldDoFullRecalculate = true;
-                }
-
-                // get the expert step equivalent
-                // we will filter out duplicates later on.
-                $stepShortsToRecalculate = array_merge($stepShortsToRecalculate, ToolQuestionHelper::stepShortsForToolQuestion($toolQuestion, $this->building, $this->masterInputSource));
             }
         }
 
@@ -241,7 +262,11 @@ class Form extends Component
 
                 // Could be an unused result
                 if ($result instanceof ToolCalculationResult) {
-                    Arr::set($performedCalculations, $resultShort, Caster::init($result->data_type, $value)->getFormatForUser());
+                    Arr::set(
+                        $performedCalculations,
+                        $resultShort,
+                        Caster::init()->dataType($result->data_type)->value($value)->getFormatForUser()
+                    );
                 }
             }
 

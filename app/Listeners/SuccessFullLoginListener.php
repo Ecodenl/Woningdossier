@@ -9,17 +9,21 @@ use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Models\BuildingService;
 use Illuminate\Support\Facades\Auth;
 
 class SuccessFullLoginListener
 {
+    protected BuildingService $buildingService;
+
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BuildingService $buildingService)
     {
+        $this->buildingService = $buildingService;
     }
 
     /**
@@ -48,7 +52,7 @@ class SuccessFullLoginListener
             Auth::logout();
             $account->setRememberToken(null);
             $account->save();
-            header('Location: '.route('cooperation.welcome'));
+            header('Location: ' . route('cooperation.welcome'));
             exit;
         }
 
@@ -84,6 +88,8 @@ class SuccessFullLoginListener
                 'full_name' => $user->getFullName(),
             ]),
         ]);
+
+        $this->buildingService->forBuilding($building)->performMunicipalityCheck();
     }
 
     /**

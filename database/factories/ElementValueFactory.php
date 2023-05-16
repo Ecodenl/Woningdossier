@@ -14,10 +14,10 @@ class ElementValueFactory extends Factory
     public function definition()
     {
         return [
-        'element_id' => \App\Models\Element::factory(),
-        'value' => json_encode(['nl' => $this->faker->word]),
-        'calculate_value' => $this->faker->randomFloat(2, 0, 100),
-        'order' => $this->faker->randomNumber(2),
-    ];
+            'element_id' => \App\Models\Element::factory(),
+            'value' => ['nl' => $this->faker->word],
+            'calculate_value' => $this->faker->randomFloat(2, 0, 100),
+            'order' => $this->faker->randomNumber(2),
+        ];
     }
 }

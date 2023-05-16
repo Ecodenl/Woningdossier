@@ -3,16 +3,21 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
+use App\Events\UserToolDataChanged;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Http\Requests\Cooperation\Tool\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\Element;
-use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Services\ConsiderableService;
+use App\Services\LegacyService;
 use App\Services\StepCommentService;
+use App\Services\ToolQuestionService;
 
 class FloorInsulationController extends ToolController
 {
@@ -21,7 +26,7 @@ class FloorInsulationController extends ToolController
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(LegacyService $legacyService)
     {
         $typeIds = [4];
         /** @var Building $building */
@@ -52,11 +57,15 @@ class FloorInsulationController extends ToolController
             $building->buildingFeatures()
         )->get();
 
+        $measureRelatedAnswers = $legacyService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
+            ->getMeasureRelatedAnswers(Step::findByShort('floor-insulation'));
+
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe',
             'buildingElementsOrderedOnInputSourceCredibility',
             'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
-            'crawlspacePresent', 'building'
+            'crawlspacePresent', 'building', 'measureRelatedAnswers'
         ));
     }
 
@@ -83,17 +92,48 @@ class FloorInsulationController extends ToolController
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(FloorInsulationFormRequest $request)
+    public function store(FloorInsulationFormRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        ConsiderableService::save($this->step, $user, $inputSource,
-            $request->validated()['considerables'][$this->step->id]);
+        $considerables = $request->validated()['considerables'];
+        ConsiderableService::save($this->step, $user, $inputSource, $considerables[$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
+
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('floor-insulation'));
+        if ($considerables[$this->step->id]['is_considering'] && ($request->validated()['building_elements']['extra']['has_crawlspace'] ?? null) !== 'no') {
+            $crawlSpace = Element::findByShort('crawlspace');
+            $crawlSpaceHigh = $crawlSpace->elementValues()->where('calculate_value', 45)->first();
+            $crawlSpaceMid = $crawlSpace->elementValues()->where('calculate_value', 30)->first();
+
+            $idMap = [
+                $crawlSpaceHigh->id => Temperature::FLOOR_INSULATION_FLOOR,
+                $crawlSpaceMid->id => Temperature::FLOOR_INSULATION_BOTTOM,
+            ];
+
+            $research = Temperature::FLOOR_INSULATION_RESEARCH;
+
+            $height = $request->validated()['building_elements']['element_value_id'] ?? null;
+            $advice = $idMap[$height] ?? $research;
+
+            $adviceMeasure = MeasureApplication::findByShort($advice);
+            foreach ($measureRelatedShorts as $measureId => $tqShorts) {
+                if ($adviceMeasure->id === $measureId) {
+                    foreach ($tqShorts as $tqShort) {
+                        // Subsidy question might have been removed and thus not saveable.
+                        if (array_key_exists($tqShort, $request->validated())) {
+                            $tq = ToolQuestion::findByShort($tqShort);
+                            $toolQuestionService->toolQuestion($tq)->save($request->validated()[$tqShort]);
+                        }
+                    }
+                }
+            }
+        }
 
         $dirtyAttributes = json_decode($request->input('dirty_attributes'), true);
         $updatedMeasureIds = [];
@@ -104,6 +144,7 @@ class FloorInsulationController extends ToolController
             ])
                 ->pluck('id')
                 ->toArray();
+            UserToolDataChanged::dispatch($user);
         }
 
         $values = $request->validated();

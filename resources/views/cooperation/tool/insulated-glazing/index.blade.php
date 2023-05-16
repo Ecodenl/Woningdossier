@@ -4,15 +4,15 @@
 
 @section('content')
 
-    <?php
-    // we only need this for the titles above the main inputs
-    // we dont want a title above the hr3p-frames
-    $titles = [
-        7 => 'glass-in-lead',
-        8 => 'hrpp-glass-only',
-        9 => 'hrpp-glass-frames',
-    ];
-    ?>
+    @php
+        // we only need this for the titles above the main inputs
+        // we dont want a title above the hr3p-frames
+        $titles = [
+            7 => 'glass-in-lead',
+            8 => 'hrpp-glass-only',
+            9 => 'hrpp-glass-frames',
+        ];
+    @endphp
     <form method="POST" id="insulated-glazing-form"
           action="{{ route('cooperation.tool.insulated-glazing.store', compact('cooperation')) }}">
         @csrf
@@ -22,16 +22,16 @@
                 @if($i > 0 && array_key_exists($measureApplication->id, $titles))
                     <hr>
                 @endif
-                <?php
-                if (array_key_exists($measureApplication->id, $buildingInsulatedGlazingsForMe)) {
-                    $currentMeasureBuildingInsulatedGlazingForMe = $buildingInsulatedGlazingsForMe[$measureApplication->id];
-                } else {
-                    $currentMeasureBuildingInsulatedGlazingForMe = [];
-                }
+                @php
+                    if (array_key_exists($measureApplication->id, $buildingInsulatedGlazingsForMe)) {
+                        $currentMeasureBuildingInsulatedGlazingForMe = $buildingInsulatedGlazingsForMe[$measureApplication->id];
+                    } else {
+                        $currentMeasureBuildingInsulatedGlazingForMe = [];
+                    }
                     $buildingInsulatedGlazingsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
                         $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)
                     )->get();
-                ?>
+                @endphp
 
                 <div class="flex flex-row flex-wrap w-full" id="glass-question-{{$measureApplication->id}}">
                     <div class="w-full">
@@ -223,22 +223,21 @@
                     {{-- the current problem is there are only 2 places where checkboxes are used and those are used in a different way --}}
 
                     @slot('sourceSlot')
-                        <?php
-                        // check if there is a answer available from a input source.
-                        $hasAnswerWoodElements = $building->buildingElements()
-                            ->withoutGlobalScope(\App\Scopes\GetValueScope::class)
-                            ->where('element_id', $woodElements->id)
-                            ->get()
-                            ->contains('element_value_id', '!=', '');
-                        ?>
+                        @php
+                            // check if there is a answer available from a input source.
+                            $hasAnswerWoodElements = $building->buildingElements()
+                                ->withoutGlobalScope(\App\Scopes\GetValueScope::class)
+                                ->where('element_id', $woodElements->id)
+                                ->get()
+                                ->contains('element_value_id', '!=', '');
+                        @endphp
                         @if(!$hasAnswerWoodElements)
                             @include('cooperation.tool.includes.no-answer-available')
                         @else
                             @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
-                                <?php
-                                $myWoodElements = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id);
-
-                                ?>
+                                @php
+                                    $myWoodElements = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id);
+                                @endphp
                                 @foreach($myWoodElements as $myWoodElement)
                                     @if (!is_null($myWoodElement) && $myWoodElement->element_value_id == $woodElement->id)
                                         <li class="change-input-value" data-input-value="{{$woodElement->id}}"
@@ -383,6 +382,11 @@
             </div>
         </div>
 
+        @include('cooperation.tool.includes.measure-related-questions', [
+            'withHeader' => true,
+            'measureRelatedAnswers' => $measureRelatedAnswers
+         ])
+
         <div id="taking-into-account">
             <hr>
             @include('cooperation.tool.includes.section-title', [
@@ -450,6 +454,14 @@
 
             $('#insulated-glazing-form').submit(function () {
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
+                // We want the user to be able to see their own old values for user costs. We don't want them submitted
+                // however, as it could interfere with the validation.
+                $('.measure-related-questions input:not(.source-select-input)').each(function () {
+                    // offsetParent is null when hidden
+                    if (null === this.offsetParent) {
+                        $(this).val(null);
+                    }
+                });
                 return true;
             });
 
@@ -495,19 +507,23 @@
 
             $('.considerable').change(function () {
                 // this holds the yes or no value.
-                var considers = $(this).find('input:checked').val();
+                let considers = $(this).find('input:checked').val();
 
-                console.log($(this));
+                let parent = $(this).parents('[id*=glass-question-]').first();
+                let measureId = parent.attr('id').split('-').pop();
+
                 // div that holds the inputs (m2 and windows)
-                var valueElements = $(this).parents('[id*=glass-question-]').first().find('.values');
+                let valueElements = parent.find('.values');
                 if (considers == 0) {
                     valueElements.hide();
                     // clear the inputs, if the user filled in a faulty input it will still be send to the backend
                     // validation fails, inputs are hidden and the user would not know whats wrong
-                    valueElements.find('input').val(null)
+                    valueElements.find('input:not(.source-select-input):not(.select-wrapper input):not([id^=user-costs-])').val(null)
                 } else {
                     valueElements.show();
                 }
+
+                checkMeasureRelatedQuestions(measureId, considers);
             });
 
             $('.considerable').trigger('change');
@@ -516,5 +532,12 @@
             formChange();
         });
 
+        function checkMeasureRelatedQuestions(measureId, considers) {
+            if (considers == 1) {
+                $(`#measure-related-question-${measureId}`).show();
+            } else {
+                $(`#measure-related-question-${measureId}`).hide();
+            }
+        }
     </script>
 @endpush

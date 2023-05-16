@@ -64,9 +64,6 @@
                     @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin','superuser']))
                         <li><a href="{{ route('cooperation.admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
                     @endif
-                    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-                        <li><a href="{{ route('cooperation.admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
-                    @endif
 
                     @include('cooperation.admin.layouts.navbar.role-switcher')
 
@@ -76,11 +73,14 @@
                         </a>
 
                         <ul class="dropdown-menu">
+                            <li><a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
                             <li>
-                                <a href="{{ route('cooperation.my-account.index', compact('cooperation')) }}">
-                                    @lang('woningdossier.cooperation.my-account.settings.form.index.header')
+                                <a href="{{ route('cooperation.my-account.two-factor-authentication.index', compact('cooperation')) }}"
+                                   class="in-text">
+                                    @lang('woningdossier.cooperation.navbar.two-factor-authentication')
                                 </a>
                             </li>
+                            {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
                             {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
                             <li>
                                 @include('cooperation.frontend.shared.parts.logout')

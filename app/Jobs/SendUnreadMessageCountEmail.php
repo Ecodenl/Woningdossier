@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Mail\UnreadMessagesEmail;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -21,10 +22,7 @@ use Throwable;
 
 class SendUnreadMessageCountEmail implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $user;
     protected $cooperation;
@@ -34,6 +32,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue
 
     public function __construct(Cooperation $cooperation, User $user, Building $building, NotificationSetting $notificationSetting, int $unreadMessageCount)
     {
+        $this->queue = Queue::APP_EXTERNAL;
         $this->notificationSetting = $notificationSetting;
         $this->user = $user;
         $this->cooperation = $cooperation;
@@ -73,8 +72,6 @@ class SendUnreadMessageCountEmail implements ShouldQueue
         $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         PrivateMessageViewService::markAsReadByUser($messagesToSetRead, $this->user, $inputSource);
 
-        if (app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
-        }
+        report($exception);
     }
 }

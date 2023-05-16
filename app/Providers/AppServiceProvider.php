@@ -2,13 +2,19 @@
 
 namespace App\Providers;
 
-use App\Jobs\CloneOpposingInputSource;
-use App\Jobs\RecalculateStepForUser;
 use App\Models\PersonalAccessToken;
 use App\Rules\MaxFilenameLength;
+use App\Services\Econobis\Api\Client as EconobisClient;
+use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Models\NotificationService;
+use App\Services\Verbeterjehuis\Client as VerbeterJeHuisClient;
+use App\Services\Verbeterjehuis\Verbeterjehuis;
+use App\Traits\Queue\HasNotifications;
 use Carbon\Carbon;
+use Ecodenl\LvbagPhpWrapper\Client as LvbagClient;
+use Ecodenl\LvbagPhpWrapper\Lvbag;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Application;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
@@ -78,10 +84,10 @@ class AppServiceProvider extends ServiceProvider
 
         Queue::before(function (JobProcessing $event) {
             $payload = $event->job->payload();
-            /** @var RecalculateStepForUser|CloneOpposingInputSource $command */
             $command = unserialize($payload['data']['command']);
+            $commandTraits = class_uses_recursive($command);
             $jobName = get_class($command);
-            if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
+            if (in_array(HasNotifications::class, $commandTraits)) {
                 $building = $command->building ?? $command->user->building;
                 Log::debug("JOB {$jobName} started | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
             }
@@ -89,10 +95,10 @@ class AppServiceProvider extends ServiceProvider
 
         Queue::after(function (JobProcessed $event) {
             $payload = $event->job->payload();
-            /** @var RecalculateStepForUser|CloneOpposingInputSource $command */
             $command = unserialize($payload['data']['command']);
+            $commandTraits = class_uses_recursive($command);
             $jobName = get_class($command);
-            if (in_array($jobName, [RecalculateStepForUser::class, CloneOpposingInputSource::class])) {
+            if (in_array(HasNotifications::class, $commandTraits)) {
                 $building = $command->building ?? $command->user->building;
                 Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
                 NotificationService::init()
@@ -106,6 +112,31 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrapThree();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        $this->app->bind(LvbagClient::class, function (Application $app) {
+            $useProductionEndpoint = true;
+            // During testing, we should be mocking, but just in case someone forgets to mock...
+            if ($app->isLocal() || $app->environment('testing')) {
+                $useProductionEndpoint = false;
+            }
+            return new LvbagClient(
+                config('hoomdossier.services.bag.secret'),
+                'epsg:28992',
+                $useProductionEndpoint,
+            );
+        });
+
+        $this->app->bind(Lvbag::class, function (Application $app) {
+            return new Lvbag($app->make(LvbagClient::class));
+        });
+
+        $this->app->bind(VerbeterJeHuisClient::class, function (Application $app) {
+            return new VerbeterJeHuisClient();
+        });
+
+        $this->app->bind(Verbeterjehuis::class, function (Application $app) {
+            return new Verbeterjehuis($app->make(VerbeterJeHuisClient::class));
+        });
     }
 
     /**

@@ -10,9 +10,9 @@ $.ajaxSetup({
     }
 });
 
-var baseUrl = window.location.origin;
-var apiUrl = '/api';
-var getAddressDataUrl = baseUrl + apiUrl + "/address-data";
+let baseUrl = window.location.origin;
+let apiUrl = '/api';
+let getAddressDataUrl = baseUrl + apiUrl + '/address-data';
 
 $('i.glyphicon-info-sign').click(function () {
     $(this).parent().parent().find('.modal').modal();
@@ -112,7 +112,7 @@ $("#postal_code, #number, #house_number_extension").focusout(function () {
             }
 
             // this way the user can fill in the street and will only be forced with api data if it actually returns something
-            if (address.id !== "") {
+            if (address.bag_addressid !== "") {
                 street.val(address.street);
                 number.val(address.number);
                 houseNumberExtension.val(address.house_number_extension);

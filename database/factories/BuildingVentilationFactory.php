@@ -17,8 +17,8 @@ class BuildingVentilationFactory extends Factory
     public function definition()
     {
         return [
-        'how' => $this->faker->randomElements(["windows", "windows-doors", "other"]),
-        'living_situation' => $this->faker->randomElements(["dry-laundry", "fireplace", "combustion-device"]),
-    ];
+            'how' => $this->faker->randomElements(["windows", "windows-doors", "other"]),
+            'living_situation' => $this->faker->randomElements(["dry-laundry", "fireplace", "combustion-device"]),
+        ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Account;
 use App\Models\InputSource;
+use App\Models\User;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
@@ -71,6 +72,7 @@ class Hoomdossier
     }
 
     /**
+     * @deprecated
      * Return the most credible value from a given collection.
      *
      * @param string $column
@@ -154,7 +156,7 @@ class Hoomdossier
      *
      * @return \App\Models\User|null
      */
-    public static function user()
+    public static function user(): ?User
     {
         return (static::account() instanceof Account) ? static::account()->user() : null;
     }

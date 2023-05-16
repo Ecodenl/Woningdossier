@@ -28,8 +28,6 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'account_id' => \App\Models\Account::factory(),
-            'cooperation_id' => \App\Models\Cooperation::factory(),
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'phone_number' => $this->faker->phoneNumber,
@@ -39,31 +37,16 @@ class UserFactory extends Factory
 
     public function asCoach()
     {
-        return $this->state(function (array $attributes) {
-            return [
-                // We need this state for an after hook
-            ];
-        })->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COACH));
+        return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COACH));
     }
 
     public function asResident()
     {
-        return $this->state(function (array $attributes) {
-            return [
-                // We need this state for an after hook
-            ];
-        })->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_RESIDENT));
+        return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_RESIDENT));
     }
 
-
-    public function configure()
+    public function asCooperationAdmin()
     {
-        return $this->afterCreating(function (User $user) {
-            // Ensure we always have a building
-            $building = Building::factory()->create(['user_id' => $user]);
-        });
+        return $this->afterCreating(fn(User $user) => $user->assignRole(RoleHelper::ROLE_COOPERATION_ADMIN));
     }
 }
-
-
-

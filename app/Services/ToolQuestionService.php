@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
@@ -13,12 +14,16 @@ use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Services\Econobis\EconobisService;
+use App\Services\Models\BuildingService;
+use App\Services\Verbeterjehuis\Client;
+use App\Services\Verbeterjehuis\Verbeterjehuis;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-class ToolQuestionService {
-
+class ToolQuestionService
+{
     use FluentCaller;
 
     public ?Building $building;
@@ -27,10 +32,15 @@ class ToolQuestionService {
     public ?InputSource $currentInputSource;
     public bool $applyExampleBuilding = false;
 
-    public function __construct(ToolQuestion $toolQuestion)
+    public function __construct()
+    {
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+    }
+
+    public function toolQuestion(ToolQuestion $toolQuestion): self
     {
         $this->toolQuestion = $toolQuestion;
-        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        return $this;
     }
 
     public function building(Building $building): self
@@ -59,6 +69,7 @@ class ToolQuestionService {
             // this *can't* handle a checkbox / multiselect answer.
             $this->saveToolQuestionValuables($givenAnswer);
         }
+        UserToolDataChanged::dispatch($this->building->user);
     }
 
     public function saveToolQuestionCustomValues($givenAnswer)

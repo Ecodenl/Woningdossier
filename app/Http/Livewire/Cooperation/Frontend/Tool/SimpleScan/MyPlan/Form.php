@@ -7,6 +7,8 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\Models\CooperationMeasureApplicationHelper;
 use App\Helpers\NumberFormatter;
+use App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\CustomMeasureForm;
+use App\Jobs\RefreshRegulationsForUserActionPlanAdvice;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
@@ -15,50 +17,34 @@ use App\Models\Scan;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
+use App\Services\Models\NotificationService;
+use App\Services\Models\UserCostService;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use App\Helpers\Arr;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Livewire\Component;
 
-class Form extends Component
+class Form extends CustomMeasureForm
 {
     use AuthorizesRequests;
+
     public array $cards = [
-        UserActionPlanAdviceService::CATEGORY_COMPLETE => [
-
-        ],
-        UserActionPlanAdviceService::CATEGORY_TO_DO => [
-
-        ],
-        UserActionPlanAdviceService::CATEGORY_LATER => [
-
-        ],
+        UserActionPlanAdviceService::CATEGORY_COMPLETE => [],
+        UserActionPlanAdviceService::CATEGORY_TO_DO => [],
+        UserActionPlanAdviceService::CATEGORY_LATER => [],
     ];
 
     public array $hiddenCards = [
-        UserActionPlanAdviceService::CATEGORY_COMPLETE => [
-
-        ],
-        UserActionPlanAdviceService::CATEGORY_TO_DO => [
-
-        ],
-        UserActionPlanAdviceService::CATEGORY_LATER => [
-
-        ],
+        UserActionPlanAdviceService::CATEGORY_COMPLETE => [],
+        UserActionPlanAdviceService::CATEGORY_TO_DO => [],
+        UserActionPlanAdviceService::CATEGORY_LATER => [],
     ];
 
-    public Building $building;
-
-    public InputSource $masterInputSource;
-    public InputSource $currentInputSource;
     public InputSource $residentInputSource;
     public InputSource $coachInputSource;
 
     public Scan $scan;
-    public array $custom_measure_application = [];
 
     // Details
     public float $expectedInvestment = 0;
@@ -70,138 +56,18 @@ class Form extends Component
     public int $renewable = 0;
     public int $investment = 0;
 
-    // TODO: Move this to a constant helper when this is retrieved from backend
-    public string $SUBSIDY_AVAILABLE = 'available';
-    public string $SUBSIDY_UNAVAILABLE = 'unavailable';
-    public string $SUBSIDY_UNKNOWN = 'unknown';
-
-    protected $rules = [
-        'custom_measure_application.name' => 'required',
-        'custom_measure_application.info' => 'required',
-        'custom_measure_application.costs.from' => 'required|numeric|min:0',
-        'custom_measure_application.costs.to' => 'required|numeric|gte:custom_measure_application.costs.from',
-        'custom_measure_application.savings_money' => 'nullable|numeric|max:999999',
-    ];
-
-    private $calculationMap = [
-        'comfort' => [
-            [
-                'condition' => [
-                    'to' => 5,
-                ],
-                'value' => 1,
-            ],
-            [
-                'condition' => [
-                    'from' => 5,
-                    'to' => 10,
-                ],
-                'value' => 2,
-            ],
-            [
-                'condition' => [
-                    'from' => 10,
-                    'to' => 15,
-                ],
-                'value' => 3,
-            ],
-            [
-                'condition' => [
-                    'from' => 15,
-                    'to' => 20,
-                ],
-                'value' => 4,
-            ],
-            [
-                'condition' => [
-                    'from' => 20,
-                ],
-                'value' => 5,
-            ],
-        ],
-        'renewable' => [
-            [
-                'condition' => [
-                    'to' => 15,
-                ],
-                'value' => 1,
-            ],
-            [
-                'condition' => [
-                    'from' => 15,
-                    'to' => 30,
-                ],
-                'value' => 2,
-            ],
-            [
-                'condition' => [
-                    'from' => 30,
-                    'to' => 45,
-                ],
-                'value' => 3,
-            ],
-            [
-                'condition' => [
-                    'from' => 45,
-                    'to' => 60,
-                ],
-                'value' => 4,
-            ],
-            [
-                'condition' => [
-                    'from' => 60,
-                ],
-                'value' => 5,
-            ],
-        ],
-        'investment' => [
-            [
-                'condition' => [
-                    'to' => 0.5,
-                ],
-                'value' => 1,
-            ],
-            [
-                'condition' => [
-                    'from' => 0.5,
-                    'to' => 2.5,
-                ],
-                'value' => 2,
-            ],
-            [
-                'condition' => [
-                    'from' => 2.5,
-                    'to' => 4.5,
-                ],
-                'value' => 3,
-            ],
-            [
-                'condition' => [
-                    'from' => 4.5,
-                    'to' => 6.5,
-                ],
-                'value' => 4,
-            ],
-            [
-                'condition' => [
-                    'from' => 6.5,
-                ],
-                'value' => 5,
-            ],
-        ],
-    ];
+    // Notifications
+    public array $notifications = [];
 
     public function mount(Building $building)
     {
-        $this->building = $building;
-        // Set needed input sources
-        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $this->currentInputSource = HoomdossierSession::getInputSource(true);
-
+        $this->build($building);
+        
         $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT ? $this->currentInputSource : InputSource::findByShort(InputSource::COACH_SHORT);
 
         // Set cards
+        $this->loadCustomMeasures();
         $this->loadVisibleCards();
         $this->loadHiddenCards();
         $this->recalculate();
@@ -212,81 +78,22 @@ class Form extends Component
         return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.form');
     }
 
-    public function updated($field)
+    public function save(int $index)
     {
-        $this->validateOnly($field, $this->rules);
-    }
+        $customMeasureApplication = $this->submit($index, false);
+        $this->loadCustomMeasures();
 
-    public function submit()
-    {
-        abort_if(HoomdossierSession::isUserObserving(), 403);
+        $from = $customMeasureApplication->getSibling($this->masterInputSource);
 
-        // Before we can validate, we must convert human format to proper format
-        // TODO: Check for later; perhaps we should check if the variable has 1 comma or 2 or more dots to define the used format and set the str_replace only if it's a Dutch format
-        $costs = $this->custom_measure_application['costs'] ?? [];
-        $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
-        $costs['to'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['to'] ?? ''), 2);
-        $this->custom_measure_application['costs'] = $costs;
-        $this->custom_measure_application['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '', $this->custom_measure_application['savings_money'] ?? 0), 2);
+        // All cards are shown by master source. We will fetch the master, as we need it for the card.
+        $masterAdvice = $from->userActionPlanAdvices()->forInputSource($this->masterInputSource)->first();
 
-        $validator = Validator::make([
-            'custom_measure_application' => $this->custom_measure_application
-        ], $this->rules);
-
-        if ($validator->fails()) {
-            // Validator failed, let's put it back as the user format
-            $costs['from'] = NumberFormatter::formatNumberForUser($costs['from']);
-            $costs['to'] = NumberFormatter::formatNumberForUser($costs['to']);
-            $this->custom_measure_application['costs'] = $costs;
-            $this->custom_measure_application['savings_money'] = NumberFormatter::formatNumberForUser($this->custom_measure_application['savings_money']);
-        }
-
-        $measureData = $validator->validate()['custom_measure_application'];
-
-        // Create custom measure
-        $customMeasureApplication = CustomMeasureApplication::create([
-            'building_id' => $this->building->id,
-            'input_source_id' => $this->currentInputSource->id,
-            'hash' => Str::uuid(),
-            'name' => ['nl' => $measureData['name']],
-            'info' => ['nl' => $measureData['info']],
-        ]);
-
-        $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
-
-        // Get order based on current total (we don't have to add or subtract since count gives us the total, which
-        // is equal to indexable order + 1)
-        $order = count($this->cards[$category]);
-
-        // Build user advice
-        $advice = $customMeasureApplication
-            ->userActionPlanAdvices()
-            ->create(
-                [
-                    'user_id' => $this->building->user->id,
-                    'input_source_id' => $this->currentInputSource->id,
-                    'category' => $category,
-                    'visible' => true,
-                    'order' => $order,
-                    'costs' => $measureData['costs'],
-                    'savings_money' => $measureData['savings_money'] ?? 0,
-                ],
-            );
-
-        // Append card
-        $this->cards[$category][$order] = [
-            'id' => $advice->id,
-            'name' => $customMeasureApplication->name,
-            'info' => $customMeasureApplication->info,
-            'icon' => 'icon-tools',
-            'costs' => $advice->costs,
-            'subsidy' => $this->SUBSIDY_UNKNOWN,
-            'savings' => $advice->savings_money ?? 0,
-        ];
+        // Normally we would dispatch an event. However, the user "wants" the update to be real time, so we dispatch
+        // the update manually so we can keep track.
+        $this->dispatchRegulationUpdate($masterAdvice);
+        $this->reload($masterAdvice);
 
         $this->dispatchBrowserEvent('close-modal');
-        // Reset the modal
-        $this->custom_measure_application = [];
 
         $this->recalculate();
     }
@@ -471,8 +278,8 @@ class Form extends Component
         $package = $this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO];
         $package = array_merge($package, $this->cards[UserActionPlanAdviceService::CATEGORY_COMPLETE]);
         $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
-                                       ->whereIn('id', \Illuminate\Support\Arr::pluck($package, 'id'))
-                                       ->get();
+            ->whereIn('id', \Illuminate\Support\Arr::pluck($package, 'id'))
+            ->get();
         $totalGasSavings = $advices->sum('savings_gas');
         $totalElectricitySavings = $advices->sum('savings_electricity');
 
@@ -491,10 +298,10 @@ class Form extends Component
 
         // calculate to kg. (set gas and electricity to same unit)
         $co2Reductions = $totalGasSavings * Kengetallen::CO2_SAVING_GAS +
-        $totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY;
+            $totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY;
 
         $co2Current = $usageGas * Kengetallen::CO2_SAVING_GAS +
-        $usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY;
+            $usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY;
 
         // To calculate the new percentage, we need the new situation
         $co2New = $co2Current - $co2Reductions;
@@ -613,94 +420,53 @@ class Form extends Component
         $this->refreshAlerts();
     }
 
-    protected function refreshAlerts()
+    public function checkNotifications()
     {
-        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts');
-    }
+        $notificationService = NotificationService::init()
+            ->forBuilding($this->building)
+            ->forInputSource($this->masterInputSource);
 
-    private function loadVisibleCards()
-    {
-        foreach (UserActionPlanAdviceService::getCategories() as $category) {
-            $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
-                ->where('user_id', $this->building->user->id)
-                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE, $this->masterInputSource)
-                ->category($category)
-                ->orderBy('order')
-                ->get();
+        foreach ($this->notifications as $index => $notification) {
+            if ($notificationService->setType($notification['type'])->setUuid($notification['uuid'])->isNotActive()) {
+                unset($this->notifications[$index]);
 
-            $this->cards = array_merge($this->cards, $this->convertAdvicesToCards($advices, $category));
-        }
-    }
-
-    private function loadHiddenCards()
-    {
-        foreach (UserActionPlanAdviceService::getCategories() as $category) {
-            $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
-                ->invisible()
-                ->cooperationMeasureForType(CooperationMeasureApplicationHelper::SMALL_MEASURE, $this->masterInputSource)
-                ->where('user_id', $this->building->user->id)
-                ->category($category)
-                ->orderBy('order')
-                ->get();
-
-            $this->hiddenCards = array_merge($this->hiddenCards, $this->convertAdvicesToCards($hiddenAdvices, $category));
-        }
-    }
-
-    private function convertAdvicesToCards(Collection $advices, string $category): array
-    {
-        $cards = [];
-
-        // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
-        $order = 0;
-
-        foreach ($advices as $advice) {
-            $advisable = $advice->userActionPlanAdvisable;
-
-            if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
-                // We only want expert scan steps to be linkable
-                $route = null;
-                if ($advisable->step->scan->short === Scan::EXPERT) {
-                    $route = route('cooperation.frontend.tool.expert-scan.index', ['step' => $advisable->step]);
+                if (! empty($notification['action'])) {
+                    $parameters = $notification['action']['parameters'] ?? [];
+                    $this->{$notification['action']['method']}(...$parameters);
                 }
-
-                $cards[$category][$order] = [
-                    'name' => Str::limit($advisable->measure_name, 57),
-                    'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
-                    // TODO: Subsidy
-                    'subsidy' => $this->SUBSIDY_AVAILABLE,
-                    'info' => nl2br($advisable->measure_info),
-                    'route' => $route,
-                    'comfort' => $advisable->configurations['comfort'] ?? 0,
-                ];
-            } else {
-                // Custom measure has input source so we must fetch the advisable from the master input source
-                if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
-                    $advisable = $advice->userActionPlanAdvisable()
-                        ->forInputSource($this->masterInputSource)
-                        ->first();
-                }
-
-                $cards[$category][$order] = [
-                    'name' => Str::limit($advisable->name, 57),
-                    'icon' => $advisable->extra['icon'] ?? 'icon-tools',
-                    // TODO: Subsidy
-                    'subsidy' => $this->SUBSIDY_UNKNOWN,
-                    'info' => nl2br($advisable->info),
-                ];
             }
+        }
+    }
 
-            $cards[$category][$order]['id'] = $advice->id;
-            $cards[$category][$order]['costs'] = [
-                'from' => empty($advice->costs['from']) ? null : NumberFormatter::round($advice->costs['from']),
-                'to' =>  empty($advice->costs['to']) ? null : NumberFormatter::round($advice->costs['to']),
-            ];
-            $cards[$category][$order]['savings'] = NumberFormatter::round($advice->savings_money ?? 0);
-
-            ++$order;
+    /**
+     * Reload the data of an advice.
+     *
+     * @param $advice
+     *
+     * @return void
+     */
+    public function reload($advice)
+    {
+        if (! $advice instanceof UserActionPlanAdvice) {
+            $advice = UserActionPlanAdvice::allInputSources()->withInvisible()->find($advice);
         }
 
-        return $cards;
+        if ($advice instanceof UserActionPlanAdvice) {
+            $card = Arr::first($this->convertAdvicesToCards(collect([$advice]), $advice->category)[$advice->category]);
+
+            $prop = $advice->visible ? 'cards' : 'hiddenCards';
+            $cardData = Arr::where($this->{$prop}[$advice->category], function ($card, $order) use ($advice) {
+                return $card['id'] == $advice->id;
+            });
+
+            if (empty($cardData)) {
+                $newOrder = (array_key_last($this->{$prop}[$advice->category]) ?? -1) + 1;
+                $this->{$prop}[$advice->category][$newOrder] = $card;
+            } else {
+                $order = array_key_first($cardData);
+                $this->{$prop}[$advice->category][$order] = $card;
+            }
+        }
     }
 
     public function evaluateCalculationResult(string $field, $calculation, bool $setValue = true)
@@ -739,8 +505,263 @@ class Form extends Component
         return $value;
     }
 
+    protected function refreshAlerts()
+    {
+        $this->emitTo('cooperation.frontend.layouts.parts.alerts', 'refreshAlerts');
+    }
+
+    private function loadVisibleCards()
+    {
+        foreach (UserActionPlanAdviceService::getCategories() as $category) {
+            $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
+                ->where('user_id', $this->building->user->id)
+                ->cooperationMeasureForType(
+                    CooperationMeasureApplicationHelper::SMALL_MEASURE,
+                    $this->masterInputSource
+                )
+                ->category($category)
+                ->orderBy('order')
+                ->get();
+
+            $this->cards = array_merge($this->cards, $this->convertAdvicesToCards($advices, $category));
+        }
+    }
+
+    private function loadHiddenCards()
+    {
+        foreach (UserActionPlanAdviceService::getCategories() as $category) {
+            $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
+                ->invisible()
+                ->cooperationMeasureForType(
+                    CooperationMeasureApplicationHelper::SMALL_MEASURE,
+                    $this->masterInputSource
+                )
+                ->where('user_id', $this->building->user->id)
+                ->category($category)
+                ->orderBy('order')
+                ->get();
+
+            $this->hiddenCards = array_merge(
+                $this->hiddenCards,
+                $this->convertAdvicesToCards($hiddenAdvices, $category)
+            );
+        }
+    }
+
+    private function convertAdvicesToCards(Collection $advices, string $category): array
+    {
+        $cards = [];
+        $userCostService = UserCostService::init()->user($this->building->user)->inputSource($this->currentInputSource);
+
+        // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
+        $order = 0;
+
+        $hasUserCosts = false;
+
+        foreach ($advices as $advice) {
+            $advisable = $advice->userActionPlanAdvisable;
+
+            if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
+                // We only want expert scan steps to be linkable
+                $route = null;
+                if ($advisable->step->scan->short === Scan::EXPERT) {
+                    $route = route('cooperation.frontend.tool.expert-scan.index', ['step' => $advisable->step]);
+                }
+
+                $cards[$category][$order] = [
+                    'name' => Str::limit($advisable->measure_name, 57),
+                    'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
+                    'info' => nl2br($advisable->measure_info),
+                    'route' => $route,
+                    'comfort' => $advisable->configurations['comfort'] ?? 0,
+                ];
+
+                // If the advisable has no tool questions (most likely maintenance measure) then it's empty and so the
+                // user for certain doesn't have any costs. Else, it will get the answers, and if not viewable, then
+                // the answer will be null. It will also be null if the user didn't fill it in. So, if all answers
+                // are set, we can guarantee that this has user costs.
+                // For added clarification: has user costs means that subsidy was deducted from the own total, meaning
+                // both own_total and subsidy_total need to be filled in.
+                $userCosts = $userCostService->forAdvisable($advisable)->getAnswers()[$advisable->id] ?? [];
+                $hasUserCosts = ! empty($userCosts);
+                foreach ($userCosts as $tqShort => $answer) {
+                    if (is_null($answer)) {
+                        $hasUserCosts = false;
+                        break;
+                    }
+                }
+            } else {
+                // Custom measure has input source so we must fetch the advisable from the master input source
+                if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
+                    $advisable = $advice->userActionPlanAdvisable()
+                        ->forInputSource($this->masterInputSource)
+                        ->first();
+
+                    $index = array_key_first(Arr::where($this->customMeasureApplicationsFormData, function ($measure) use ($advisable) {
+                        return $measure['id'] === $advisable->id;
+                    }));
+                }
+
+                $cards[$category][$order] = [
+                    'name' => Str::limit($advisable->name, 57),
+                    'icon' => $advisable->extra['icon'] ?? 'icon-tools',
+                    'info' => nl2br($advisable->info),
+                ];
+
+                if (isset($index)) {
+                    $cards[$category][$order]['index'] = $index;
+                }
+            }
+
+            $cards[$category][$order]['has_user_costs'] = $hasUserCosts;
+            $cards[$category][$order]['subsidy_available'] = $advice->subsidy_available;
+            $cards[$category][$order]['loan_available'] = $advice->loan_available;
+
+            $cards[$category][$order]['id'] = $advice->id;
+            $cards[$category][$order]['costs'] = [
+                'from' => empty($advice->costs['from']) ? null : NumberFormatter::round($advice->costs['from']),
+                'to' => empty($advice->costs['to']) ? null : NumberFormatter::round($advice->costs['to']),
+            ];
+            $cards[$category][$order]['savings'] = NumberFormatter::round($advice->savings_money ?? 0);
+
+            ++$order;
+        }
+
+        return $cards;
+    }
+
     private function setField($field, $value)
     {
         $this->{$field} = $value;
     }
+
+    private function dispatchRegulationUpdate(UserActionPlanAdvice $advice)
+    {
+        $job = new RefreshRegulationsForUserActionPlanAdvice($advice);
+
+        NotificationService::init()
+            ->forBuilding($this->building)
+            ->forInputSource($this->masterInputSource)
+            ->setType(RefreshRegulationsForUserActionPlanAdvice::class)
+            ->setActive([$job->uuid]);
+
+        dispatch($job);
+
+        $this->notifications[] = [
+            'type' => RefreshRegulationsForUserActionPlanAdvice::class,
+            'uuid' => $job->uuid,
+            'action' => [
+                'method' => 'reload',
+                'parameters' => [$advice->id],
+            ]
+        ];
+    }
+
+    private array $calculationMap = [
+        'comfort' => [
+            [
+                'condition' => [
+                    'to' => 5,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 5,
+                    'to' => 10,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 10,
+                    'to' => 15,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 15,
+                    'to' => 20,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 20,
+                ],
+                'value' => 5,
+            ],
+        ],
+        'renewable' => [
+            [
+                'condition' => [
+                    'to' => 15,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 15,
+                    'to' => 30,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 30,
+                    'to' => 45,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 45,
+                    'to' => 60,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 60,
+                ],
+                'value' => 5,
+            ],
+        ],
+        'investment' => [
+            [
+                'condition' => [
+                    'to' => 0.5,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 0.5,
+                    'to' => 2.5,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 2.5,
+                    'to' => 4.5,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 4.5,
+                    'to' => 6.5,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 6.5,
+                ],
+                'value' => 5,
+            ],
+        ],
+    ];
 }

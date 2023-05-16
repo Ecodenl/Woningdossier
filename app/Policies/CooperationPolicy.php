@@ -25,20 +25,11 @@ class CooperationPolicy
      *
      * @return mixed
      */
-    public function create(Account $account)
+    public function updateOrCreate(Account $account)
     {
         return 'super-admin' == (bool) HoomdossierSession::currentRole();
     }
 
-    /**
-     * Determine whether the user can update the cooperation.
-     *
-     * @return mixed
-     */
-    public function update(Account $account, Cooperation $cooperation)
-    {
-        return 'super-admin' == (bool) HoomdossierSession::currentRole();
-    }
 
     /**
      * Determine whether the user can delete the cooperation.

@@ -13,6 +13,7 @@ use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\ToolQuestion;
+use App\Models\User;
 use App\Services\ToolQuestionService;
 use App\Services\UserService;
 use Illuminate\Support\Arr;
@@ -63,7 +64,7 @@ class RegisterController extends Controller
      *      ),
      * )
      */
-    public function store(RegisterFormRequest $request, Cooperation $cooperation)
+    public function store(RegisterFormRequest $request, Cooperation $cooperation, ToolQuestionService $toolQuestionService)
     {
         $requestData = $request->all();
         if (! is_null($requestData['extra']['contact_id'] ?? null)) {
@@ -75,6 +76,7 @@ class RegisterController extends Controller
         // this way the user can set his own password.
         $requestData['password'] = Hash::make(Str::randomPassword());
         $roles = array_unique(($requestData['roles'] ?? [RoleHelper::ROLE_RESIDENT]));
+        $requestData['extension'] = $requestData['house_number_extension'];
         $user = UserService::register($cooperation, $roles, $requestData);
         $account = $user->account;
 
@@ -107,14 +109,14 @@ class RegisterController extends Controller
             return ! is_null($value);
         });
 
+        $toolQuestionService->building($user->building);
         foreach ($toolQuestionAnswers as $toolQuestionShort => $toolQuestionAnswer) {
             if (in_array($toolQuestionShort, ToolQuestionHelper::SUPPORTED_API_SHORTS)) {
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
                 if ($toolQuestion instanceof ToolQuestion) {
                     foreach ($inputSources as $inputSource) {
-                        ToolQuestionService::init($toolQuestion)
-                            ->building($user->building)
+                        $toolQuestionService->toolQuestion($toolQuestion)
                             ->currentInputSource($inputSource)
                             ->save($toolQuestionAnswer);
                     }

@@ -37,11 +37,25 @@ return [
         'bag' => [
             'secret' => env('BAG_API_KEY', '')
         ],
+        'econobis' => [
+            'wildcard' => env('ECONOBIS_WILDCARD', 'test'),
+            'debug' => env('ECONOBIS_DEBUG', false),
+            'api-key' => env('ECONOBIS_KEY', ''),
+            // after how many minutes may the woonplan be sent to econobis?
+            'send_woonplan_after_change' => env('ECONOBIS_SEND_WOONPLAN_AFTER_CHANGE', 30),
+            'interval' => [
+                \App\Jobs\Econobis\Out\SendPdfReportToEconobis::class => env('ECONOBIS_INTERVAL_PDF_REPORT', 30),
+            ],
+        ],
     ],
 
     'webhooks' => [
         'discord' => env('DISCORD_WEBHOOK_URL')
     ],
+
+    // email adresses of the admins, those admins should be notified in case something happens.
+    'admin-emails' => env('ADMIN_MAIL_ADDRESS', ''),
+
 
     'media' => [
         'accepted_file_mimes' => env('MEDIA_FILE_MIMES', 'doc,dot,docx,dotx,docm,dotm,pdf,txt'),

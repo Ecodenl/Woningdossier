@@ -3,16 +3,20 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
+use App\Services\Models\BuildingService;
 
 class FillingToolForUserListener
 {
+    protected BuildingService $buildingService;
+
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BuildingService $buildingService)
     {
+        $this->buildingService = $buildingService;
     }
 
     /**
@@ -32,5 +36,7 @@ class FillingToolForUserListener
 
         HoomdossierSession::setBuilding($building);
         HoomdossierSession::setInputSourceValue($inputSourceValue);
+
+        $this->buildingService->forBuilding($building)->performMunicipalityCheck();
     }
 }

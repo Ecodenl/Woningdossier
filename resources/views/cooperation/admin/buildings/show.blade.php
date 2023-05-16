@@ -7,8 +7,9 @@
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
+                'municipality' => optional($building->municipality)->name ?? __('cooperation/admin/buildings.show.unknown-municipality'),
                 'email' => $user->account->email,
-                'phone-number' => $user->phone_number
+                'phone-number' => $user->phone_number,
             ])
         </div>
 
@@ -36,6 +37,7 @@
                             </button>
                         @endcan
                         @can('access-building', $building)
+                            @if($scans->count() > 1)
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         @lang('cooperation/admin/buildings.show.observe-building.label')
@@ -45,8 +47,8 @@
                                     <ul class="dropdown-menu">
                                         @foreach($scans as $scan)
                                             @php
-                                                $transShort = \App\Services\Models\ScanService::init()
-                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                $transShort = app(\App\Services\Models\ScanService::class)
+                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                                                     ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                             @endphp
                                             <li>
@@ -57,7 +59,20 @@
                                         @endforeach
                                     </ul>
                                 </div>
+                            @else
+                                @foreach($scans as $scan)
+                                    <a class="btn btn-primary" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
+                                        @php
+                                            $transShort = app(\App\Services\Models\ScanService::class)
+                                                ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
+                                                ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                        @endphp
+                                        @lang($transShort, ['scan' => $scan->name])
+                                    </a>
+                                @endforeach
+                            @endif
                             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
+                                @if($scans->count() > 1)
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         @lang('cooperation/admin/buildings.show.fill-for-user.label')
@@ -67,8 +82,8 @@
                                     <ul class="dropdown-menu">
                                         @foreach($scans as $scan)
                                             @php
-                                                $transShort = \App\Services\Models\ScanService::init()
-                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                $transShort = app(\App\Services\Models\ScanService::class)
+                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                                                     ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                             @endphp
                                             <li>
@@ -79,6 +94,18 @@
                                         @endforeach
                                     </ul>
                                 </div>
+                                    @else
+                                        @foreach($scans as $scan)
+                                            <a class="btn btn-warning" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
+                                                @php
+                                                    $transShort = app(\App\Services\Models\ScanService::class)
+                                                        ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
+                                                        ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                                @endphp
+                                                @lang($transShort, ['scan' => $scan->name])
+                                            </a>
+                                        @endforeach
+                                    @endif
                             @endif
                         @endcan
                         @can('edit', $building)
@@ -204,6 +231,11 @@
                     </a>
                 </li>
             @endif
+            <li>
+                <a data-toggle="tab" href="#2fa">
+                    @lang('cooperation/admin/buildings.show.tabs.2fa.title')
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -218,6 +250,30 @@
                 </div>
             @endcan
 
+            <div id="2fa" class="tab-pane fade @if(session('fragment') == '2fa' ) in active @endif">
+                <div class="panel">
+                    <div class="panel-body">
+                        @if($building->user->account->hasEnabledTwoFactorAuthentication())
+                            <div class="alert alert-success" role="alert">
+                                @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.title')
+                            </div>
+
+                            <form action="{{route('cooperation.admin.cooperation.accounts.disable-2fa')}}" method="post">
+                                @csrf
+                                @method('post')
+                                <input type="hidden" name="accounts[id]" value="{{$building->user->account_id}}">
+                                <button type="submit" class="btn btn-danger">
+                                    @lang('cooperation/admin/buildings.show.tabs.2fa.status.active.button')
+                                </button>
+                            </form>
+                        @else
+                            <div class="alert alert-info" role="alert">
+                                @lang('cooperation/admin/buildings.show.tabs.2fa.status.inactive.title')
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
 
             {{-- comments on the building, read only. --}}
             <div id="comments-on-building" class="tab-pane fade @if(session('fragment') == 'comments-on-building' ) in active @endif">

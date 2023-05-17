@@ -2,10 +2,11 @@
 
 namespace App\Contracts\Queue;
 
-/**
- * Implement this interface if you do not want the job handle to be executed after the reset has been done.
- */
+use Carbon\Carbon;
+
 interface ShouldNotHandleAfterBuildingReset
 {
+    public function registerQueuedTime(): void;
 
+    public function queuedAt(): Carbon;
 }

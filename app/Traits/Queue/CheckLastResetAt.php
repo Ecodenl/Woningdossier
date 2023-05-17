@@ -20,24 +20,23 @@ trait CheckLastResetAt
     public function __construct(DossierSettingsService $dossierSettingsService)
     {
         $this->dossierSettingsService = $dossierSettingsService;
+        $this->registerQueuedTime();
     }
 
     public function checkLastResetAt(\Closure $closure, $building)
     {
         if ($this->job->getConnectionName() !== "sync") {
             $payload = $this->job->payload();
-            $id = $this->job->getJobId();
             $displayName = $payload['displayName'];
 
-            Log::debug("{$displayName} [{$id}] Checking for reset cached time: ".Cache::get($id));
-            $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
+            Log::debug("{$displayName} Checking for reset cached time: ".$this->queuedAt());
 
             $resetIsDoneAfterThisJobHasBeenQueued = $this
                 ->dossierSettingsService
                 ->forInputSource(InputSource::master())
                 ->forBuilding($building)
                 ->forType(ResetDossierForUser::class)
-                ->isDoneAfter($jobQueuedAt);
+                ->isDoneAfter($this->queuedAt());
 
             if ($resetIsDoneAfterThisJobHasBeenQueued) {
                 return;

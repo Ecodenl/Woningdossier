@@ -3,13 +3,10 @@
 namespace App\Listeners;
 
 use App\Jobs\RefreshRegulationsForBuildingUser;
-use App\Traits\Queue\CheckLastResetAt;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
-class RefreshBuildingUserHisAdvices implements ShouldQueue
+class RefreshBuildingUserHisAdvices extends CanceableListener
 {
-    use CheckLastResetAt;
-
     /**
      * Handle the event.
      *
@@ -19,7 +16,8 @@ class RefreshBuildingUserHisAdvices implements ShouldQueue
     public function handle($event)
     {
         $this->checkLastResetAt(function () use ($event) {
-            RefreshRegulationsForBuildingUser::dispatch($event->building);
+            Log::debug('Handling the Refresh method');
+//            RefreshRegulationsForBuildingUser::dispatch($event->building);
         }, $event->building);
     }
 }

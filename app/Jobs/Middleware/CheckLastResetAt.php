@@ -31,7 +31,7 @@ class CheckLastResetAt
      * @param  callable  $next
      * @return mixed
      */
-    public function handle(CheckBuildingAddress $job, $next)
+    public function handle($job, $next)
     {
         if ($job->connection !== "sync") {
             if ($this->isBatchedJob($job)) {
@@ -42,18 +42,16 @@ class CheckLastResetAt
                 $id = $job->batch()->id;
                 $displayName = $job->batch()->name;
             } else {
-                $id = $job->job->uuid();
                 $displayName = get_class($job->job);
             }
 
-            Log::debug("{$displayName} [{$id}] Checking for reset cached time: ".Cache::get($id));
-            $jobQueuedAt = Carbon::createFromFormat('Y-m-d H:i:s', Cache::get($id));
+            Log::debug("{$displayName} Checking for reset cached time: ".$job->queuedAt()->format('Y-m-d H:i:s'));
 
             $resetIsDoneAfterThisJobHasBeenQueued = app(DossierSettingsService::class)
                 ->forBuilding($this->building)
                 ->forInputSource(InputSource::master())
                 ->forType(ResetDossierForUser::class)
-                ->isDoneAfter($jobQueuedAt);
+                ->isDoneAfter($job->queuedAt());
 
 
             $yesONo = $resetIsDoneAfterThisJobHasBeenQueued ? 'yes!' : 'no!';

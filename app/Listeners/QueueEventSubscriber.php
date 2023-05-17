@@ -3,24 +3,14 @@
 namespace App\Listeners;
 
 use App\Contracts\Queue\ShouldNotHandleAfterBuildingReset;
-use App\Helpers\Str;
-use App\Jobs\CheckBuildingAddress;
 use App\Jobs\PdfReport;
 use App\Services\Models\NotificationService;
 use App\Traits\Queue\HasNotifications;
 use Carbon\Carbon;
-use Illuminate\Bus\Batch;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Events\BatchDispatched;
-use Illuminate\Events\CallQueuedListener;
-use Illuminate\Foundation\Bus\PendingDispatch;
-use Illuminate\Queue\Events\JobExceptionOccurred;
-use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
-use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\JobQueued;
-use Illuminate\Queue\Events\JobRetryRequested;
-use Illuminate\Queue\Jobs\SyncJob;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -49,27 +39,6 @@ class QueueEventSubscriber
         }
     }
 
-
-
-    /**
-     * @param   $event
-     * @return void
-     */
-    public function jobFailedHandle($event)
-    {
-        // not possible to access methods from the job self, so we will retrieve the uuid manually
-        $this->logState($event);
-    }
-
-    /**
-     * @param   $event
-     * @return void
-     */
-    public function jobExceptionHandle($event)
-    {
-        // not possible to access methods from the job self, so we will retrieve the uuid manually
-//        $this->logState($event);
-    }
 
     public function cacheTimeOfQueuedBatchedJob(BatchDispatched $event)
     {
@@ -105,9 +74,7 @@ class QueueEventSubscriber
     {
         return [
             BatchDispatched::class => ['cacheTimeOfQueuedBatchedJob'],
-            JobProcessed::class => ['deactivateNotification', 'forgetCachedQueuedTime'],
-            JobFailed::class => 'jobFailedHandle',
-            JobExceptionOccurred::class => 'jobExceptionHandle',
+            JobProcessed::class => ['deactivateNotification'],
         ];
     }
 

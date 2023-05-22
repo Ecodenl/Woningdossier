@@ -2,55 +2,14 @@
 
 namespace App\Listeners;
 
-use App\Contracts\Queue\ShouldNotHandleAfterBuildingReset;
 use App\Jobs\PdfReport;
 use App\Services\Models\NotificationService;
 use App\Traits\Queue\HasNotifications;
-use Carbon\Carbon;
-use Illuminate\Bus\Batchable;
-use Illuminate\Bus\Events\BatchDispatched;
 use Illuminate\Queue\Events\JobProcessed;
-use Illuminate\Queue\Events\JobQueued;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class QueueEventSubscriber
 {
-
-    /**
-     * @param  JobProcessed  $event
-     * @return void
-     */
-    public function forgetCachedQueuedTime($event)
-    {
-        if ($event->connectionName !== "sync" && $event->job instanceof ShouldNotHandleAfterBuildingReset) {
-            $this->logState($event);
-            $isReleased = $event->job->isReleased() ?? null;
-            $hasFailed = $event->job->hasFailed() ?? null;
-            $isDeleted = $event->job->isDeleted() ?? null;
-            $isDeletedOrReleased = $event->job->isDeletedOrReleased() ?? null;
-
-            // this means the actual job itself is finished and not re released to the queue or put in the retry table.
-            if ($isDeleted === true && $hasFailed === false && $isReleased === false) {
-                $this->logState($event);
-                Log::debug('Forgetting the cached queued at');
-                Cache::forget($event->job->uuid());
-            }
-        }
-    }
-
-
-    public function cacheTimeOfQueuedBatchedJob(BatchDispatched $event)
-    {
-        $id = $event->batch->id;
-
-        // the name is optional when dispatching.
-        $displayName = $event->batch->toArray()['name'] ?? 'Unknown batched job';
-
-        $date = Carbon::now()->format('Y-m-d H:i:s');
-        Log::debug("{$displayName} [{$id}] Caching time: {$date}");
-        Cache::set($id, $date);
-    }
 
     public function deactivateNotification($event)
     {
@@ -73,43 +32,8 @@ class QueueEventSubscriber
     public function subscribe($events): array
     {
         return [
-            BatchDispatched::class => ['cacheTimeOfQueuedBatchedJob'],
             JobProcessed::class => ['deactivateNotification'],
         ];
-    }
-
-    private function logState($event)
-    {
-        $context = [];
-        $originalJobId = $event->id ?? 'No id';
-        $jobUuid = 'No uuid';
-        $usesBatch = in_array(Batchable::class, class_uses($event->job), true);
-        if ( ! $usesBatch) {
-            $isReleased = null;
-            $hasFailed = null;
-            $isDeleted = null;
-            $isDeletedOrReleased = null;
-            if ( ! $event instanceof JobQueued) {
-                $isReleased = $event->job->isReleased() ?? null;
-                $hasFailed = $event->job->hasFailed() ?? null;
-                $isDeleted = $event->job->isDeleted() ?? null;
-                $isDeletedOrReleased = $event->job->isDeletedOrReleased() ?? null;
-                $originalJobId = $event->job->getJobId();
-                $jobUuid = $event->job->uuid();
-            }
-            $context = compact('isReleased', 'hasFailed', 'isDeleted', 'isDeletedOrReleased');
-
-        } else {
-            // dd($event->job->batch() instanceof Batch);
-        }
-
-
-        if ($event->connectionName !== "sync") {
-            Log::debug(
-                get_class($event).'['.get_class($event->job).']'." "."[{$originalJobId}]".' uuid: '.$jobUuid,
-                $context
-            );
-        }
     }
 }
 

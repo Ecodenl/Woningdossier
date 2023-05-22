@@ -5,6 +5,6 @@ return [
         'first_name' => 'Voornaam',
         'last_name' => 'Achternaam',
         'phone_number' => 'Telefoonnummer',
-        'contact-id' => 'Contact ID',
+        'contact-id' => 'Econobis contact ID',
     ],
 ];

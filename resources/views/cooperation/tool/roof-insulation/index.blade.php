@@ -169,29 +169,29 @@
                                 </div>
                             </div>
 
-                            <div class="flex flex-row flex-wrap w-full">
-                                <div class="w-full">
-                                    @component('cooperation.tool.components.step-question', [
-                                        'id' => 'building_roof_types.' . $roofCat . '.extra.zinc_replaced_date',
-                                        'translation' => 'roof-insulation.current-situation.zinc-replaced',
-                                        'required' => false
-                                    ])
+{{--                            <div class="flex flex-row flex-wrap w-full">--}}
+{{--                                <div class="w-full">--}}
+{{--                                    @component('cooperation.tool.components.step-question', [--}}
+{{--                                        'id' => 'building_roof_types.' . $roofCat . '.extra.zinc_replaced_date',--}}
+{{--                                        'translation' => 'roof-insulation.current-situation.zinc-replaced',--}}
+{{--                                        'required' => false--}}
+{{--                                    ])--}}
 
-                                        @slot('sourceSlot')
-                                            @include('cooperation.tool.components.source-list', [
-                                                'inputType' => 'input',
-                                                'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat],
-                                                'userInputColumn' => 'extra.zinc_replaced_date'
-                                            ])
-                                        @endslot
+{{--                                        @slot('sourceSlot')--}}
+{{--                                            @include('cooperation.tool.components.source-list', [--}}
+{{--                                                'inputType' => 'input',--}}
+{{--                                                'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat],--}}
+{{--                                                'userInputColumn' => 'extra.zinc_replaced_date'--}}
+{{--                                            ])--}}
+{{--                                        @endslot--}}
 
-                                        <span class="input-group-prepend">@lang('general.unit.year.title')</span>
-                                        <input type="text" class="form-input"
-                                               name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]"
-                                               value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'extra.zinc_replaced_date')) }}">
-                                    @endcomponent
-                                </div>
-                            </div>
+{{--                                        <span class="input-group-prepend">@lang('general.unit.year.title')</span>--}}
+{{--                                        <input type="text" class="form-input"--}}
+{{--                                               name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]"--}}
+{{--                                               value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'extra.zinc_replaced_date')) }}">--}}
+{{--                                    @endcomponent--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                             <div class="flex flex-row flex-wrap w-full cover-bitumen">
                                 <div class="w-full">
                                     @component('cooperation.tool.components.step-question', [
@@ -390,8 +390,8 @@
                         </div>
                     </div>
 
-                    @include('cooperation.tool.includes.user-costs', [
-                        'userCosts' => $userCostsCategorized[$roofCat],
+                    @include('cooperation.tool.includes.measure-related-questions', [
+                        'measureRelatedAnswers' => $measureRelatedAnswersCategorized[$roofCat],
                     ])
                 </div>
             </div>
@@ -428,7 +428,7 @@
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
                 // We want the user to be able to see their own old values for user costs. We don't want them submitted
                 // however, as it could interfere with the validation.
-                $('.user-costs input:not(.source-select-input)').each(function () {
+                $('.measure-related-questions input:not(.source-select-input)').each(function () {
                     // offsetParent is null when hidden
                     if (null === this.offsetParent) {
                         $(this).val(null);
@@ -441,7 +441,7 @@
             $('#main-tab form input, select').change(() => formChange())
 
             function formChange() {
-                checkUserCosts();
+                checkMeasureRelatedQuestionss();
 
                 let form = $('#roof-insulation-form').serialize();
                 $.ajax({
@@ -586,19 +586,19 @@
             }
         });
 
-        function checkUserCosts() {
+        function checkMeasureRelatedQuestionss() {
             if ($('.considerable input:checked').val() == 1) {
-                $('.user-costs').show();
+                $('.measure-related-questions').show();
             } else {
-                $('.user-costs').hide();
+                $('.measure-related-questions').hide();
             }
 
-            $('[id^="user-cost-"]').hide();
+            $('[id^="measure-related-question-"]').hide();
             let pitchedId = $('#pitched-measure').val();
             let flatId = $('#flat-measure').val();
 
-            $(`[id^="user-cost-${pitchedId}"]`).show();
-            $(`[id^="user-cost-${flatId}"]`).show();
+            $(`[id^="measure-related-question-${pitchedId}"]`).show();
+            $(`[id^="measure-related-question-${flatId}"]`).show();
         }
     </script>
 @endpush

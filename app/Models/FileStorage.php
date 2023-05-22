@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Scopes\AvailableScope;
-use App\Scopes\CooperationScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
+use App\Traits\HasCooperationTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,7 +27,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \App\Models\FileType $fileType
  * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\User $user
  * @method static Builder|FileStorage allInputSources()
  * @method static Builder|FileStorage beingProcessed()
  * @method static Builder|FileStorage forBuilding($building)
@@ -56,19 +55,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class FileStorage extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
+    use GetValueTrait, GetMyValuesTrait, HasCooperationTrait;
 
     public static function boot()
     {
         parent::boot();
 
         static::addGlobalScope(new AvailableScope());
-        static::addGlobalScope(new CooperationScope());
     }
 
     protected $fillable = [
-        'cooperation_id', 'questionnaire_id', 'filename', 'building_id', 'input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
+        'cooperation_id', 'questionnaire_id', 'filename', 'building_id', 'input_source_id', 'file_type_id',
+        'is_being_processed', 'available_until',
     ];
 
     /**
@@ -138,12 +136,9 @@ class FileStorage extends Model
         return $this->belongsTo(FileType::class, 'file_type_id');
     }
 
-    /**
-     * Return the belongsto relationship on a user.
-     */
-    public function user(): BelongsTo
+    public function building(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Building::class);
     }
 
     /**

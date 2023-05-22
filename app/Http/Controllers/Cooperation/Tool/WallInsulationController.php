@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\WallInsulation;
+use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\Hoomdossier;
@@ -17,11 +18,12 @@ use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
 use App\Models\MeasureApplication;
 use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Scopes\GetValueScope;
 use App\Services\ConsiderableService;
-use App\Services\Models\UserCostService;
+use App\Services\LegacyService;
 use App\Services\StepCommentService;
-use Illuminate\Support\Facades\Log;
+use App\Services\ToolQuestionService;
 
 class WallInsulationController extends ToolController
 {
@@ -30,7 +32,7 @@ class WallInsulationController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(LegacyService $legacyService)
     {
         $typeIds = [3];
 
@@ -52,15 +54,15 @@ class WallInsulationController extends ToolController
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
 
-        $userCosts = UserCostService::init($building->user, HoomdossierSession::getInputSource(true))
-            ->forAdvisable(Step::findByShort('wall-insulation'))
-            ->getAnswers(true);
+        $measureRelatedAnswers = $legacyService->user($building->user)
+            ->inputSource(HoomdossierSession::getInputSource(true))
+            ->getMeasureRelatedAnswers(Step::findByShort('wall-insulation'));
 
         return view('cooperation.tool.wall-insulation.index', compact(
              'building', 'facadeInsulation', 'buildingFeaturesOrderedOnCredibility',
             'surfaces', 'buildingFeature', 'typeIds',
             'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
-            'buildingElements', 'buildingFeaturesRelationShip', 'userCosts'
+            'buildingElements', 'buildingFeaturesRelationShip', 'measureRelatedAnswers'
         ));
     }
 
@@ -71,7 +73,7 @@ class WallInsulationController extends ToolController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(WallInsulationRequest $request)
+    public function store(WallInsulationRequest $request, LegacyService $legacyService, ToolQuestionService $toolQuestionService)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -93,26 +95,26 @@ class WallInsulationController extends ToolController
             ])
                 ->pluck('id')
                 ->toArray();
+            UserToolDataChanged::dispatch($user);
         }
 
-        $cavityWallAdvice = [
-            1 => Temperature::WALL_INSULATION_JOINTS,
-            2 => Temperature::WALL_INSULATION_FACADE,
-            0 => Temperature::WALL_INSULATION_RESEARCH,
-        ];
+        $cavityWallAdvice = Temperature::CAVITY_WALL_ADVICE;
 
         $advice = $cavityWallAdvice[$request->validated()['building_features']['cavity_wall']] ?? Temperature::WALL_INSULATION_JOINTS;
 
-        $userCosts = $request->validated()['user_costs'];
-        $userCostService = UserCostService::init($user, $inputSource);
-        $userCostValues = [];
+        $toolQuestionService->building($building)->currentInputSource($inputSource);
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('wall-insulation'));
         if ($considerables[$this->step->id]['is_considering']) {
-            foreach ($userCosts as $measureShort => $costData) {
-                // Only save for connected type
-                if ($measureShort === $advice) {
-                    $measureApplication = MeasureApplication::findByShort($measureShort);
-                    $userCostService->forAdvisable($measureApplication)->sync($costData);
-                    $userCostValues[$measureShort] = $costData;
+            $adviceMeasure = MeasureApplication::findByShort($advice);
+            foreach ($measureRelatedShorts as $measureId => $tqShorts) {
+                if ($adviceMeasure->id === $measureId) {
+                    foreach ($tqShorts as $tqShort) {
+                        // Subsidy question might have been removed and thus not saveable.
+                        if (array_key_exists($tqShort, $request->validated())) {
+                            $tq = ToolQuestion::findByShort($tqShort);
+                            $toolQuestionService->toolQuestion($tq)->save($request->validated()[$tqShort]);
+                        }
+                    }
                 }
             }
         }
@@ -126,8 +128,7 @@ class WallInsulationController extends ToolController
             Arr::set($values, 'building_features.facade_plastered_surface_id', null);
         }
         $values['updated_measure_ids'] = $updatedMeasureIds;
-        $values['user_costs'] = $userCostValues;
-
+        
         (new WallInsulationHelper($user, $inputSource))
             ->setValues($values)
             ->saveValues()

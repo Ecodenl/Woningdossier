@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Helpers\Queue;
 use App\Models\Log;
 use App\Models\User;
 use Carbon\Carbon;
@@ -9,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class LogFillingToolForUserListener implements ShouldQueue
 {
+    public $queue = Queue::LOGS;
     /**
      * Create the event listener.
      *

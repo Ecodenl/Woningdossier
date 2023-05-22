@@ -20,7 +20,6 @@ class RegisterFormRequest extends ApiRequest
 {
     private ?Cooperation $cooperation = null;
 
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -86,13 +85,6 @@ class RegisterFormRequest extends ApiRequest
         }
 
         return $rules;
-    }
-
-    public function messages()
-    {
-        return [
-            'allow_access.required' => __('auth.register.validation.allow_access'),
-        ];
     }
 
     public function withValidator(Validator $validator)

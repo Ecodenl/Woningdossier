@@ -2,21 +2,16 @@
 
 namespace App\Jobs\Middleware;
 
-use App\Jobs\CheckBuildingAddress;
-use App\Jobs\ResetDossierForUser;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Services\DossierSettingsService;
-use Carbon\Carbon;
 use Illuminate\Bus\Batch;
 use Illuminate\Bus\Batchable;
-use Illuminate\Queue\Jobs\DatabaseJob;
-use Illuminate\Queue\Middleware\RateLimited;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class CheckLastResetAt
 {
+    use \App\Traits\Queue\CheckLastResetAt;
+
     public Building $building;
 
     public function __construct(Building $building)
@@ -46,12 +41,12 @@ class CheckLastResetAt
 
             Log::debug("{$displayName} Checking for reset queued time: ".$job->queuedAt()->format('Y-m-d H:i:s'));
 
-            $resetIsDoneAfterThisJobHasBeenQueued = app(DossierSettingsService::class)
-                ->forBuilding($this->building)
-                ->forInputSource(InputSource::master())
-                ->forType(ResetDossierForUser::class)
-                ->isDoneAfter($job->queuedAt());
 
+            $resetIsDoneAfterThisJobHasBeenQueued = $this->resetIsDoneAfterThisJobHasBeenQueued(
+                $this->building,
+                InputSource::master(),
+                $job->queuedAt()
+            );
 
             $yesONo = $resetIsDoneAfterThisJobHasBeenQueued ? 'yes!' : 'no!';
             Log::debug("ResetDone after job queued: {$yesONo}");

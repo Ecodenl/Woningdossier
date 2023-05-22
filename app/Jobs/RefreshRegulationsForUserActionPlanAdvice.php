@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Contracts\Queue\ShouldNotHandleAfterBuildingReset;
 use App\Helpers\Queue;
 use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;

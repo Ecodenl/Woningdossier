@@ -3,20 +3,12 @@
 namespace App\Jobs;
 
 use App\Helpers\Queue;
-use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class RefreshRegulationsForBuildingUser implements ShouldQueue
+class RefreshRegulationsForBuildingUser extends NonHandleableJobAfterReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public Building $building;
 
     /**
@@ -26,6 +18,7 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
      */
     public function __construct(Building $building)
     {
+        parent::__construct();
         $this->queue = Queue::APP_HIGH;
         $this->building = $building;
     }
@@ -43,10 +36,5 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
         UserActionPlanAdviceService::init()
             ->forUser($user)
             ->refreshUserRegulations();
-    }
-
-    public function middleware(): array
-    {
-        return [new CheckLastResetAt($this->building)];
     }
 }

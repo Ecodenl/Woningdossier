@@ -70,13 +70,13 @@ class SettingsController extends Controller
             ResetDossierForUser::dispatchSync($user, $relevantInputSource);
         }
 
-        UserToolDataChanged::dispatch($user);
-
         $dossierSettingsService
             ->forType(ResetDossierForUser::class)
             ->forBuilding($user->building)
             ->forInputSource($masterInputSource)
             ->justDone();
+
+        UserToolDataChanged::dispatch($user);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }

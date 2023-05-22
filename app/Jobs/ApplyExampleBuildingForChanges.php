@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Helpers\ExampleBuildingHelper;
-use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingType;
@@ -11,18 +10,10 @@ use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Services\ExampleBuildingService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\Types\Null_;
 
-class ApplyExampleBuildingForChanges implements ShouldQueue
+class ApplyExampleBuildingForChanges extends NonHandleableJobAfterReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public array $changes;
     public Building $building;
     public BuildingFeature $buildingFeature;
@@ -31,6 +22,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
 
     public function __construct(BuildingFeature $buildingFeature, array $changes, InputSource $applyForInputSource)
     {
+        parent::__construct();
         $this->changes = $changes;
         $this->buildingFeature = $buildingFeature;
         $this->building = $buildingFeature->building;
@@ -222,10 +214,5 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             $this->building,
             InputSource::findByShort(InputSource::EXAMPLE_BUILDING),
         );
-    }
-
-    public function middleware(): array
-    {
-        return [new CheckLastResetAt($this->building)];
     }
 }

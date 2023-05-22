@@ -9,18 +9,13 @@ use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
 use App\Traits\Queue\HasNotifications;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Throwable;
 
-class RecalculateStepForUser implements ShouldQueue
+class RecalculateStepForUser extends NonHandleableJobAfterReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, HasNotifications;
+    use HasNotifications;
 
     public User $user;
     public InputSource $inputSource;
@@ -29,6 +24,7 @@ class RecalculateStepForUser implements ShouldQueue
 
     public function __construct(User $user, InputSource $inputSource, Step $step, bool $withOldAdvices = true)
     {
+        parent::__construct();
         $this->queue = Queue::APP_HIGH;
         $this->user = $user;
         $this->inputSource = $inputSource;

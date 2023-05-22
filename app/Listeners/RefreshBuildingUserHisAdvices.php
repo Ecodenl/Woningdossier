@@ -3,13 +3,9 @@
 namespace App\Listeners;
 
 use App\Jobs\RefreshRegulationsForBuildingUser;
-use App\Traits\Queue\CheckLastResetAt;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RefreshBuildingUserHisAdvices implements ShouldQueue
+class RefreshBuildingUserHisAdvices extends NonHandleableListenerAfterReset
 {
-    use CheckLastResetAt;
-
     /**
      * Handle the event.
      *

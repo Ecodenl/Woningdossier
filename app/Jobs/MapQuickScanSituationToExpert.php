@@ -14,17 +14,11 @@ use App\Models\Service;
 use App\Models\ToolQuestion;
 use App\Services\ConditionService;
 use App\Services\ToolQuestionService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\NonHandleableJobAfterReset;
 
-class MapQuickScanSituationToExpert implements ShouldQueue
+class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public Building $building;
     public InputSource $inputSource;
     public InputSource $masterInputSource;
@@ -267,10 +261,5 @@ class MapQuickScanSituationToExpert implements ShouldQueue
             ->building($this->building)
             ->currentInputSource($this->inputSource)
             ->save($answer);
-    }
-
-    public function middleware(): array
-    {
-        return [new CheckLastResetAt($this->building)];
     }
 }

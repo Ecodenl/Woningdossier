@@ -11,18 +11,11 @@ use App\Models\Scan;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Services\Scans\ScanFlowService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class CompleteRelatedSubStep implements ShouldQueue
+class CompleteRelatedSubStep extends NonHandleableJobAfterReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public SubStep $subStep;
     public Building $building;
     public InputSource $inputSource;
@@ -96,10 +89,5 @@ class CompleteRelatedSubStep implements ShouldQueue
                 ->evaluateSubSteps($subStepsToCheck, $evaluator);
         }
 
-    }
-
-    public function middleware(): array
-    {
-        return [new CheckLastResetAt($this->building)];
     }
 }

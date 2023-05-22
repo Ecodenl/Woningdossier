@@ -6,11 +6,6 @@ export default (checks, tailwind = true) => ({
     oldValues: {},
     availableExtensions: [],
 
-    init() {
-        if (! this.checks instanceof Object) {
-            this.checks = {};
-        }
-    },
     postcode: {
         ['x-ref']: 'postcode',
         ['x-on:change']() {

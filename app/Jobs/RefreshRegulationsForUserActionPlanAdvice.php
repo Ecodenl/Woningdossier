@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Contracts\Queue\ShouldNotHandleAfterBuildingReset;
 use App\Helpers\Queue;
 use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
@@ -12,16 +13,10 @@ use App\Traits\Queue\HasNotifications;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ServerException;
 use Illuminate\Bus\Batchable;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Throwable;
 
-class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
+class RefreshRegulationsForUserActionPlanAdvice extends CanceableJob
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Batchable, HasNotifications;
 
     public UserActionPlanAdvice $userActionPlanAdvice;
     public Building $building;
@@ -36,12 +31,11 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
      */
     public function __construct(UserActionPlanAdvice $userActionPlanAdvice)
     {
+        parent::__construct();
         $this->onQueue(Queue::APP_EXTERNAL);
         $this->userActionPlanAdvice = $userActionPlanAdvice;
         $this->building = $userActionPlanAdvice->user->building;
         $this->inputSource = $userActionPlanAdvice->inputSource;
-
-//        $this->setUuid();
     }
 
     /**
@@ -60,7 +54,7 @@ class RefreshRegulationsForUserActionPlanAdvice implements ShouldQueue
         }
     }
 
-    public function failed(Throwable $exception)
+    public function failed(\Throwable $exception)
     {
         $this->deactivateNotification();
     }

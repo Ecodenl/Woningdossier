@@ -101,7 +101,7 @@ class AppServiceProvider extends ServiceProvider
 //                $service = NotificationService::init()
 //                    ->forBuilding($building)
 //                    ->setType($jobName)
-//                    ->setUuid($command->uuid);
+//                    ->setUuid($command->uuid);]
 //
 //                // The command might not care about the input source, and so in that case we don't want to query on it.
 //                if ($command->caresForInputSource) {

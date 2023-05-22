@@ -13,7 +13,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ServerException;
 use Illuminate\Bus\Batchable;
 
-class RefreshRegulationsForUserActionPlanAdvice extends CanceableJob
+class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterReset
 {
     use Batchable, HasNotifications;
 

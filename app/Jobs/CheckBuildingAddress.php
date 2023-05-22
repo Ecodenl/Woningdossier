@@ -12,7 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
 
-class CheckBuildingAddress extends CanceableJob implements ShouldQueue
+class CheckBuildingAddress extends NonHandleableJobAfterReset implements ShouldQueue
 {
     public $building;
 

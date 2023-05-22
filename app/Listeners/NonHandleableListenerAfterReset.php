@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
-abstract class CanceableListener implements ShouldQueue, ShouldNotHandleAfterBuildingReset
+abstract class NonHandleableListenerAfterReset implements ShouldQueue, ShouldNotHandleAfterBuildingReset
 {
     use CheckLastResetAt, RegisterQueuedJobTime, InteractsWithQueue;
 
@@ -30,7 +30,6 @@ abstract class CanceableListener implements ShouldQueue, ShouldNotHandleAfterBui
             $displayName = $payload['displayName'];
 
             Log::debug("{$displayName} Checking for reset cached time: ".$this->queuedAt());
-
 
             if ($this->resetIsDoneAfterThisJobHasBeenQueued($building, InputSource::master(), $this->queuedAt())) {
                 return;

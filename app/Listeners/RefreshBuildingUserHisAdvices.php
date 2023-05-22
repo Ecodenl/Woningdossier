@@ -4,7 +4,7 @@ namespace App\Listeners;
 
 use App\Jobs\RefreshRegulationsForBuildingUser;
 
-class RefreshBuildingUserHisAdvices extends CanceableListener
+class RefreshBuildingUserHisAdvices extends NonHandleableListenerAfterReset
 {
     /**
      * Handle the event.

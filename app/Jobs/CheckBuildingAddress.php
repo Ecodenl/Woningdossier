@@ -12,11 +12,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
 
-class CheckBuildingAddress extends NonHandleableJobAfterReset implements ShouldQueue
+class CheckBuildingAddress extends NonHandleableJobAfterReset
 {
     public $building;
 
-    public $tries = 3;
+    public $tries = 10;
 
     /**
      * Create a new job instance.

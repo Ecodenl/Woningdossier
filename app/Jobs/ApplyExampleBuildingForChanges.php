@@ -22,6 +22,7 @@ class ApplyExampleBuildingForChanges extends NonHandleableJobAfterReset
 
     public function __construct(BuildingFeature $buildingFeature, array $changes, InputSource $applyForInputSource)
     {
+        parent::__construct();
         $this->changes = $changes;
         $this->buildingFeature = $buildingFeature;
         $this->building = $buildingFeature->building;

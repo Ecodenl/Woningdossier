@@ -43,7 +43,8 @@ class PdfReport extends NonHandleableJobAfterReset
      */
     public function __construct(User $user, FileType $fileType, FileStorage $fileStorage, Scan $scan)
     {
-        $this->queue = Queue::EXPORTS;
+        parent::__construct();
+        $this->onQueue(Queue::EXPORTS);
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;
         $this->user = $user;

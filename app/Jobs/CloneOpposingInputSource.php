@@ -20,6 +20,7 @@ class CloneOpposingInputSource extends NonHandleableJobAfterReset
 
     public function __construct(Building $building, InputSource $inputSource, InputSource $cloneableInputSource)
     {
+        parent::__construct();
         $this->queue = Queue::APP_HIGH;
         $this->building = $building;
         $this->inputSource = $inputSource;

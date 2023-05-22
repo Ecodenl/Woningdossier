@@ -26,6 +26,7 @@ class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
 
     public function __construct(Building $building, InputSource $inputSource, MeasureApplication $measureApplication)
     {
+        parent::__construct();
         $this->building = $building;
         $this->inputSource = $inputSource;
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);

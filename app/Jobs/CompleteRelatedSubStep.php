@@ -23,7 +23,8 @@ class CompleteRelatedSubStep extends NonHandleableJobAfterReset
 
     public function __construct(SubStep $subStep, Building $building, InputSource $inputSource)
     {
-        $this->queue = Queue::APP_HIGH;
+        parent::__construct();
+        $this->onQueue(Queue::APP_HIGH);
         $this->subStep = $subStep;
         $this->building = $building;
         $this->inputSource = $inputSource;

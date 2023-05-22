@@ -24,6 +24,7 @@ class RecalculateStepForUser extends NonHandleableJobAfterReset
 
     public function __construct(User $user, InputSource $inputSource, Step $step, bool $withOldAdvices = true)
     {
+        parent::__construct();
         $this->queue = Queue::APP_HIGH;
         $this->user = $user;
         $this->inputSource = $inputSource;

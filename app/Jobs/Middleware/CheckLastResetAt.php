@@ -39,7 +39,6 @@ class CheckLastResetAt
                     Log::debug('Batch has been cancelled!, skipping job.');
                     return;
                 }
-                $id = $job->batch()->id;
                 $displayName = $job->batch()->name;
             } else {
                 $displayName = get_class($job->job);

@@ -32,6 +32,7 @@ class RefreshRegulationsForUserActionPlanAdvice extends CanceableJob
     public function __construct(UserActionPlanAdvice $userActionPlanAdvice)
     {
         parent::__construct();
+        $this->setUuid();
         $this->onQueue(Queue::APP_EXTERNAL);
         $this->userActionPlanAdvice = $userActionPlanAdvice;
         $this->building = $userActionPlanAdvice->user->building;

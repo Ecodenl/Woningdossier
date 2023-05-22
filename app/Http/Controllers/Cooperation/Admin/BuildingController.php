@@ -51,7 +51,7 @@ class BuildingController extends Controller
             [RoleHelper::ROLE_SUPERUSER, RoleHelper::ROLE_SUPER_ADMIN, RoleHelper::ROLE_COOPERATION_ADMIN])
             ->get();
 
-        $coaches = $cooperation->getCoaches()->get();
+        $coaches = $cooperation->getCoaches();
 
         $statuses = Status::ordered()->get();
 

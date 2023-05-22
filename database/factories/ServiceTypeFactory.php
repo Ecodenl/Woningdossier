@@ -14,7 +14,7 @@ class ServiceTypeFactory extends Factory
     public function definition()
     {
         return [
-            'name' => json_encode(['nl' => $this->faker->word]),
+            'name' => ['nl' => $this->faker->word],
             'iso' => "M" . $this->faker->randomDigit,
         ];
     }

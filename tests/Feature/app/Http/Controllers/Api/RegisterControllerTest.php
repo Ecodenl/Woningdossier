@@ -168,7 +168,6 @@ class RegisterControllerTest extends TestCase
         $account = $accounts->first();
         $this->assertCount(2, DB::table('users')->where('account_id', $account->id)->get());
         $this->assertDatabaseHas('accounts', ['email' => $this->formData['email']]);
-
     }
 
     public function test_invalid_data_returns_422()
@@ -188,4 +187,6 @@ class RegisterControllerTest extends TestCase
 
         $this->assertCount(0, $cooperation->users);
     }
+
+    // TODO: Create test for duplicate contact ID in the same cooperation
 }

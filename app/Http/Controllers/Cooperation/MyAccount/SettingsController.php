@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\UserToolDataChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
@@ -48,19 +49,20 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile(Request $request)
+    public function resetFile(UserService $userService, Request $request)
     {
         $user = Hoomdossier::user();
 
         $inputSourceIds = $request->input('input_sources.id');
 
         // Reset master first.
-        UserService::resetUser($user, InputSource::findByShort(InputSource::MASTER_SHORT));
+        $userService->forUser($user)->resetUser(InputSource::master());
 
         foreach ($inputSourceIds as $inputSourceId) {
             Log::debug("resetting for input source ".$inputSourceId);
-            UserService::resetUser($user, InputSource::find($inputSourceId));
+            $userService->forUser($user)->resetUser(InputSource::find($inputSourceId));
         }
+        UserToolDataChanged::dispatch($user);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }

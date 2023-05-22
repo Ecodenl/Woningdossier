@@ -8,7 +8,7 @@ use App\Services\Lvbag\BagService;
 
 class GeoController extends Controller
 {
-    public function getAddressData(BagService $bagService, FillAddressRequest $request)
+    public function getAddressData(BagService $bagService, FillAddressRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
 

@@ -1,10 +1,16 @@
 export default (checks, tailwind = true) => ({
     bagAvailable: true,
     showPostalCodeError: false,
+    showDuplicateError: false,
     checks: checks,
     oldValues: {},
     availableExtensions: [],
 
+    init() {
+        if (! this.checks instanceof Object) {
+            this.checks = {};
+        }
+    },
     postcode: {
         ['x-ref']: 'postcode',
         ['x-on:change']() {
@@ -64,6 +70,9 @@ export default (checks, tailwind = true) => ({
     performChecks() {
         if (Object.hasOwn(this.checks, 'correct_address')) {
             this.getAddressData(this.checks['correct_address']);
+        }
+        if (Object.hasOwn(this.checks, 'duplicates')) {
+            this.checkDuplicates(this.checks['duplicates']);
         }
     },
     getAddressData(apiUrl) {
@@ -157,6 +166,18 @@ export default (checks, tailwind = true) => ({
                 });
             }
         }
+    },
+    checkDuplicates(apiUrl) {
+        let url = this.getUrl(apiUrl);
+        url = this.appendAddressData(url);
+
+        let context = this;
+        performRequest({
+            'url': url,
+            'done': function (request) {
+                context.showDuplicateError = request.response.count > 0;
+            }
+        });
     },
     appendError(input, text) {
         if (typeof input !== 'undefined' && input) {

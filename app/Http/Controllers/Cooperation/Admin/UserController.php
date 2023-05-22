@@ -43,7 +43,7 @@ class UserController extends Controller
             }
         }
         $roles = collect($roles);
-        $coaches = $cooperation->getCoaches()->get();
+        $coaches = $cooperation->getCoaches();
 
         return view('cooperation.admin.users.create', compact('roles', 'coaches'));
     }

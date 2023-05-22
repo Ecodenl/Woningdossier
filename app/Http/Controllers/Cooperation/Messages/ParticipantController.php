@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Cooperation\Messages;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Helpers\Hoomdossier;
+use App\Helpers\Queue;
 use App\Http\Controllers\Controller;
+use App\Mail\User\NotifyCoachParticipantAdded;
+use App\Mail\User\NotifyResidentParticipantAdded;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -15,6 +18,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\PrivateMessageViewService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ParticipantController extends Controller
 {
@@ -70,6 +74,12 @@ class ParticipantController extends Controller
             BuildingCoachStatusService::giveAccess($user, $residentBuilding);
 
             ParticipantAddedEvent::dispatch($user, $residentBuilding, $request->user(), $cooperation);
+
+            $coachMail = (new NotifyCoachParticipantAdded($residentBuilding->user, $user))->onQueue(Queue::APP_EXTERNAL);
+            $residentMail = (new NotifyResidentParticipantAdded($residentBuilding->user, $user))->onQueue(Queue::APP_EXTERNAL);
+
+            Mail::queue($coachMail);
+            Mail::queue($residentMail);
         }
 
         // since the coordinator is the only one who can do this atm.

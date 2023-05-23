@@ -143,7 +143,7 @@ class UserActionPlanAdvice extends Model implements Auditable
     public function scopeGetCategorized(Builder $query): Collection
     {
         $categories = array_values(UserActionPlanAdviceService::getCategories());
-        return $query->get()->groupBy('category')->sortKeysUsing(function ($a, $b) use ($categories) {
+        return $query->orderBy('order')->get()->groupBy('category')->sortKeysUsing(function ($a, $b) use ($categories) {
             // https://stackoverflow.com/questions/3737139/reference-what-does-this-symbol-mean-in-php/31298778#31298778
             return array_search($a, $categories) <=> array_search($b, $categories);
         });

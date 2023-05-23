@@ -26,16 +26,7 @@ trait CreatesUsers
     {
         // give the user his role
         $roleIds = $request->input('roles', '');
-
         $roles = [];
-        foreach ($roleIds as $roleId) {
-            $role = Role::find($roleId);
-            if (Hoomdossier::account()->can('assign-role', $role)) {
-                Log::debug('User can assign role '.$role->name);
-                array_push($roles, $role->name);
-            }
-        }
-
         $requestData = $request->validated();
 
         // So, in the old way we just threw everything in one pile and that was processed. Now we (try to) put
@@ -51,6 +42,13 @@ trait CreatesUsers
 
         // add a random password to the data
         $input['password'] = Hash::make(Str::randomPassword());
+
+        foreach ($roleIds as $roleId) {
+            $role = \App\Models\Role::findOrFail($roleId);
+            $this->authorize('view', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)]);
+            $roles[] = $role->name;
+        }
+
         $user = UserService::register($cooperation, $roles, $input);
         $account = $user->account;
         $building = $user->building;

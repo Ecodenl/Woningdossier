@@ -87,6 +87,18 @@
                                            value="{{ old('users.extra.contact_id', $user->extra['contact_id'] ?? '') }}">
                                 @endcomponent
                             </div>
+                            <div class="col-md-6 col-lg-4">
+                                @component('layouts.parts.components.form-group', [
+                                    'input_name' => 'accounts.id',
+                                ])
+                                    <label for="account-id" class="control-label">
+                                        @lang('accounts.column-translations.id')
+                                    </label>
+                                    <input id="account-id" type="text" class="form-control" disabled
+                                           name="accounts[id]"
+                                           value="{{ $user->account->id }}">
+                                @endcomponent
+                            </div>
                         </div>
                         {{-- TODO: Roles? --}}
 

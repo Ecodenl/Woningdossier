@@ -223,7 +223,8 @@ class ScanFlowServiceTest extends TestCase
         // Test 1:
         // Save the first answer
         $firstAnswer = [$values[0]->short];
-        ToolQuestionService::init($arrayQuestion)
+        ToolQuestionService::init()
+            ->toolQuestion($arrayQuestion)
             ->building($building)
             ->currentInputSource($residentInputSource)
             ->save($firstAnswer);
@@ -297,7 +298,8 @@ class ScanFlowServiceTest extends TestCase
         // Test 2:
         // Save the second answer
         $secondAnswer = [$values[1]->short];
-        ToolQuestionService::init($arrayQuestion)
+        ToolQuestionService::init()
+            ->toolQuestion($arrayQuestion)
             ->building($building)
             ->currentInputSource($residentInputSource)
             ->save($secondAnswer);
@@ -360,7 +362,8 @@ class ScanFlowServiceTest extends TestCase
         // Test 3:
         // Save both answers
         $bothAnswers = [$values[0]->short, $values[1]->short];
-        ToolQuestionService::init($arrayQuestion)
+        ToolQuestionService::init()
+            ->toolQuestion($arrayQuestion)
             ->building($building)
             ->currentInputSource($residentInputSource)
             ->save($bothAnswers);

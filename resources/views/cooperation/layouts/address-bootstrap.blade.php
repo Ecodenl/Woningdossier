@@ -2,10 +2,16 @@
     $withLabels ??= false;
     // Any object that has the correct columns
     $defaults ??= new stdClass();
+    $checks = $checks ?? [
+        'correct_address',
+    ];
 @endphp
 
 <div class="{{ $class ?? '' }}" @if(! empty($attr)) {!! $attr !!} @endif
-     x-data="checkAddress({'correct_address': '{{ route('api.get-address-data') }}'})">
+     x-data="checkAddress({
+        @if(in_array('correct_address', $checks)) 'correct_address': '{{ route('api.get-address-data') }}', @endif
+        @if(in_array('duplicates', $checks)) 'duplicates': '{{ route('api.check-address-duplicates', ['cooperation' => $cooperationToManage ?? $cooperation]) }}', @endif
+     })">
 
     <div class="row">
         <div class="col-xs-12 col-lg-6">

@@ -4,12 +4,11 @@
     <div class="panel panel-default">
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')</div>
 
-        <div class="panel-body"
-             x-data="checkAddress({'duplicates': '{{ route('api.check-address-duplicates', ['cooperation' => $cooperationToManage ?? $cooperation]) }}'})">
+        <div class="panel-body" x-data>
             @component('cooperation.tool.components.alert', [
                 'alertType' => 'info',
                 'dismissible' => false,
-                'attr' => 'x-show="showDuplicateError"',
+                'attr' => 'style="display: none;" x-on:duplicates-checked.window="$el.style.display = $event.detail.showDuplicateError ? \'\' : \'none\'"',
             ])
                 @lang('auth.register.form.duplicate-address')
             @endcomponent
@@ -124,6 +123,9 @@
                         <div class="col-xs-8" x-show="! alreadyMember">
                             @include('cooperation.layouts.address-bootstrap', [
                                 'withLabels' => true,
+                                'checks' => [
+                                    'correct_address', 'duplicates',
+                                ],
                             ])
                         </div>
                     </div>

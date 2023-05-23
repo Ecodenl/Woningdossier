@@ -31,6 +31,13 @@ export default (checks, tailwind = true) => ({
     houseNumberExtensionField: {
         // Used when BAG is down. Shouldn't do anything.
         ['x-ref']: 'houseNumberExtensionField',
+        ['x-on:change']() {
+            this.performChecks();
+        },
+        ['x-on:keydown.enter']() {
+            this.$event.preventDefault();
+            this.$el.triggerEvent('change');
+        }
     },
     houseNumberExtensionSelect: {
         ['x-ref']: 'houseNumberExtensionSelect',
@@ -171,6 +178,7 @@ export default (checks, tailwind = true) => ({
             'url': url,
             'done': function (request) {
                 context.showDuplicateError = request.response.count > 0;
+                context.$dispatch('duplicates-checked', {'showDuplicateError': context.showDuplicateError});
             }
         });
     },

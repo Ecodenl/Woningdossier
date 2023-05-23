@@ -25,7 +25,6 @@ return [
             'quick-scan' => 'Uw quickscan Woonplan',
             'expert' => 'Uw Woonplan',
         ],
-        'help' => 'Wilt u iets aanpassen? Sleep dan de maatregelen naar de gewenste kolom',
         'info' => [
             'quick-scan' => '<p>Voor een gedetailleerd advies, kunt u de verdiepingsvragen invullen. U kunt ook de hulp van een <a href=":link">energiecoach</a> inroepen.</p>',
             'expert' => '<p>U kunt hulp van een <a href=":link">energiecoach</a> aanvragen voor extra advies</p>',

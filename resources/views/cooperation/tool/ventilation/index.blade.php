@@ -16,17 +16,17 @@
             </div>
         </div>
 
-        <?php
+        @php
         $myBuildingVentilations = $building->buildingVentilations()->forMe()->get();
         /** @var \App\Models\ServiceValue $howValues */
-        ?>
+        @endphp
 
         @if(in_array($buildingVentilation->calculate_value, [1,2,]))
         <!-- how : natural & mechanic -->
             <div class="flex flex-row flex-wrap w-full natural mechanic">
                 <div class="w-full">
 
-                    <?php
+                    @php
                     $ventilations = collect();
                     foreach ($howValues as $uvalue => $uname) {
                         $ventilation = new \App\Models\BuildingVentilation();
@@ -34,7 +34,7 @@
                         $ventilation->how = $uvalue;
                         $ventilations->push($ventilation);
                     }
-                    ?>
+                    @endphp
 
                     @component('cooperation.tool.components.step-question', [
                         'id' => 'how', 'name' => 'building_ventilations.how',
@@ -90,7 +90,7 @@
             <div class="flex flex-row flex-wrap w-full natural mechanic balanced decentral">
                 <div class="w-full">
 
-                    <?php
+                    @php
                     /** @var \Illuminate\Support\Collection $ventilations */
                     $ventilations = collect([]);
                     foreach ($livingSituationValues as $uvalue => $uname) {
@@ -99,7 +99,7 @@
                         $ventilation->living_situation = $uvalue;
                         $ventilations->push($ventilation);
                     }
-                    ?>
+                    @endphp
 
                     @component('cooperation.tool.components.step-question', [
                         'id' => 'living_situation',
@@ -114,19 +114,19 @@
                         @endslot
                             @foreach($livingSituationValues as $lsKey => $lsValue)
 
-                                <?php
+                                @php
                                 Log::debug(
 
                                     is_array(old('building_ventilations.living_situation', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation', []) ?? []))
                                         ? 'de living_situation van building ventilations is wel een array'
                                         : 'de living_situation van building ventilations is geen array'
                                 )
-                                ?>
+                                @endphp
                                 <div class="checkbox-wrapper">
-                                    <?php
+                                    @php
                                     // default wont work, null will be returned anyways.
                                     $mostCredibleLivingSituation = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation') ?? [];
-                                    ?>
+                                    @endphp
                                     <input type="checkbox" id="building-ventilation-living-situation-{{$lsKey}}" name="building_ventilations[living_situation][]"
                                            value="{{ $lsKey }}"
                                            @if(in_array($lsKey, old('building_ventilations.living_situation', $mostCredibleLivingSituation))) checked="checked" @endif>
@@ -165,7 +165,7 @@
             <div class="flex flex-row flex-wrap w-full mechanic balanced decentral">
                 <div class="w-full">
 
-                    <?php
+                    @php
                     /** @var \Illuminate\Support\Collection $ventilations */
                     $ventilations = collect([]);
                     foreach ($usageValues as $uvalue => $uname) {
@@ -174,7 +174,7 @@
                         $ventilation->usage = $uvalue;
                         $ventilations->push($ventilation);
                     }
-                    ?>
+                    @endphp
 
                     @component('cooperation.tool.components.step-question', [
                         'id' => 'usage', 'translation' => 'cooperation/tool/ventilation.index.usage',
@@ -277,9 +277,9 @@
             </div>
         </div>
 
-         @include('cooperation.tool.includes.user-costs', [
+         @include('cooperation.tool.includes.measure-related-questions', [
             'withHeader' => true,
-            'userCosts' => $userCosts,
+            'measureRelatedAnswers' => $measureRelatedAnswers
          ])
 
         <div id="costs-other" class="mt-4">
@@ -304,9 +304,9 @@
         ])
             <ol>
                 @foreach(['Maatregelblad_Ventilatiebox.pdf', 'Maatregelblad_Kierdichting_II.pdf'] as $fileName)
-                    <?php
+                    @php
                     $link = "storage/hoomdossier-assets/{$fileName}"
-                    ?>
+                    @endphp
                     <li>
                         <a href="{{asset($link)}}" download="">
                             {{ucfirst(strtolower($fileName))}}
@@ -327,7 +327,7 @@
 
             advices.on('change', '.considerable', function () {
                 let id = this.getAttribute('id');
-                checkUserCost(id.split('-')[1]);
+                checkMeasureRelatedQuestions(id.split('-')[1]);
             });
 
             let data = {};
@@ -339,7 +339,7 @@
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
                 // We want the user to be able to see their own old values for user costs. We don't want them submitted
                 // however, as it could interfere with the validation.
-                $('.user-costs input:not(.source-select-input)').each(function () {
+                $('.measure-related-questions input:not(.source-select-input)').each(function () {
                     // offsetParent is null when hidden
                     if (null === this.offsetParent) {
                         $(this).val(null);
@@ -432,7 +432,7 @@
                                     checked = ' checked="checked"';
                                 }
                                 advices.append('<div class="w-full sm:w-3/4">' + considerable.name + '</div><div class="w-full sm:w-1/4"><input id="considerable-' + considerableId + '" class="considerable" type="checkbox" name="considerables['+considerableId+'][is_considering]" value="1" '+checked+'></div>');
-                                checkUserCost(considerableId);
+                                checkMeasureRelatedQuestions(considerableId);
                             });
                             indicationForCosts.show();
                         } else {
@@ -475,11 +475,11 @@
             $('input[type="checkbox"]:enabled').first().trigger('change');
         });
 
-        function checkUserCost(measureId) {
+        function checkMeasureRelatedQuestions(measureId) {
             if ($(`#considerable-${measureId}`).prop('checked')) {
-                $(`#user-cost-${measureId}`).show();
+                $(`#measure-related-question-${measureId}`).show();
             } else {
-                $(`#user-cost-${measureId}`).hide();
+                $(`#measure-related-question-${measureId}`).hide();
             }
         }
     </script>

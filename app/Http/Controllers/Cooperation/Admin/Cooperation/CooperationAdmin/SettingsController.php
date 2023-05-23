@@ -29,9 +29,8 @@ class SettingsController extends Controller
         foreach ($tags as $tag) {
             $file = $request->file('medias.' . $tag);
 
+            $media = $cooperation->firstMedia($tag);
             if ($file instanceof UploadedFile) {
-                $media = $cooperation->firstMedia($tag);
-
                 // Check if media for this tag already exists
                 if ($media instanceof Media) {
                     // We delete it so we can make place for new media;
@@ -46,6 +45,11 @@ class SettingsController extends Controller
                     ->upload();
 
                 $cooperation->syncMedia($media, [$tag]);
+            } else {
+                // Check if user has removed file.
+                if ($media instanceof Media && is_null($request->input("medias.{$tag}_current"))) {
+                    $media->delete();
+                }
             }
         }
 

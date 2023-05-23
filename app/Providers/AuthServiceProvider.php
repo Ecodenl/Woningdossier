@@ -68,6 +68,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('delete-user', UserPolicy::class.'@deleteUser');
         Gate::define('remove-participant-from-chat', UserPolicy::class.'@removeParticipantFromChat');
 
+        Gate::define('send-user-information-to-econobis', [UserPolicy::class, 'sendUserInformationToEconobis']);
         Gate::define('editAny', [RolePolicy::class, 'editAny']);
     }
 }

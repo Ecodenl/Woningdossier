@@ -55,11 +55,17 @@ class Form extends Component
     public function mount(ExampleBuilding $exampleBuilding = null)
     {
         $this->isSuperAdmin = HoomdossierSession::currentRole() === RoleHelper::ROLE_SUPER_ADMIN;
+        $this->buildingTypes = BuildingType::all();
+
         if ($this->isSuperAdmin) {
+            $alreadyPickedBuildingTypes = ExampleBuilding::generic()
+                ->groupBy('building_type_id')
+                ->select('building_type_id')
+                ->pluck('building_type_id');
+            $this->buildingTypes = BuildingType::whereNotIn('id', $alreadyPickedBuildingTypes->toArray())->get();
             $this->cooperations = Cooperation::all();
         }
 
-        $this->buildingTypes = BuildingType::all();
 
         $this->contentStructure = [];
 

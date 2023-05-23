@@ -8,11 +8,13 @@ use App\Services\Lvbag\BagService;
 
 class GeoController extends Controller
 {
-    public function getAddressData(BagService $bagService, FillAddressRequest $request)
+    public function getAddressData(BagService $bagService, FillAddressRequest $request): \Illuminate\Http\JsonResponse
     {
-        $postalCode = trim(strip_tags($request->get('postal_code', '')));
-        $number = trim(strip_tags($request->get('number', '')));
-        $houseNumberExtension = trim(strip_tags($request->get('house_number_extension', '')));
+        $data = $request->validated();
+
+        $postalCode = trim(strip_tags($data['postal_code']));
+        $number = trim(strip_tags($data['number']));
+        $houseNumberExtension = trim(strip_tags($data['extension'] ?? ''));
 
         $address = $bagService
             ->addressExpanded($postalCode, $number, $houseNumberExtension)

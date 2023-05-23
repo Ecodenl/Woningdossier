@@ -14,6 +14,7 @@ use App\Services\MappingService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class MappingServiceTest extends TestCase
@@ -131,6 +132,9 @@ class MappingServiceTest extends TestCase
 
     public function test_resolve_target_returns_nothing_when_from_is_empty()
     {
+        // DB seeding also seeds mappings. We clear them since we're asserting a count.
+        DB::table('mappings')->delete();
+
         $from = Municipality::factory()->create();
         $target = ["Label" => "Muur", "Value" => "2933", "Highlight" => false];
         Mapping::factory()->create([
@@ -159,6 +163,9 @@ class MappingServiceTest extends TestCase
      */
     public function test_using_type_with_or_without_from_or_target_resolves_the_correct_related_mappings()
     {
+        // DB seeding also seeds mappings. We clear them since we're asserting a count.
+        DB::table('mappings')->delete();
+
         $municipality = Municipality::factory()->create([
             'name' => 'Voorne aan Zee',
             'short' => 'voorne-aan-zee',

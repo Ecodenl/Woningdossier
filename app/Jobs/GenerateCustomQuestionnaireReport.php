@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Exports\Cooperation\CsvExport;
+use App\Helpers\Queue;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\Questionnaire;
@@ -17,10 +18,7 @@ use Throwable;
 
 class GenerateCustomQuestionnaireReport implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $questionnaire;
     protected $anonymizeData;
@@ -30,6 +28,7 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
 
     public function __construct(Questionnaire $questionnaire, $filename, FileType $fileType, FileStorage $fileStorage, bool $anonymizeData = false)
     {
+        $this->queue = Queue::EXPORTS;
         $this->fileType = $fileType;
         $this->filename = $filename;
         $this->fileStorage = $fileStorage;

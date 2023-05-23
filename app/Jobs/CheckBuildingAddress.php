@@ -2,14 +2,19 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\BuildingAddressService;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class CheckBuildingAddress implements ShouldQueue
 {
@@ -26,6 +31,7 @@ class CheckBuildingAddress implements ShouldQueue
     public function __construct(Building $building)
     {
         $this->building = $building;
+        $this->queue = Queue::APP_EXTERNAL;
     }
 
     /**
@@ -36,10 +42,19 @@ class CheckBuildingAddress implements ShouldQueue
     public function handle(BuildingAddressService $buildingAddressService)
     {
         $building = $this->building;
-        $buildingAddressService
-            ->forBuilding($building)
-            ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
-        $buildingAddressService->attachMunicipality();
+        try {
+            $buildingAddressService->forBuilding($building);
+            $buildingAddressService->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
+            $buildingAddressService->attachMunicipality();
+            $buildingAddressService->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
+        }
+        catch(ClientException $e) {
+            Log::debug("Exception: {$e->getMessage()}");
+            // When there's a client exception there's no point in retrying.
+            $this->fail($e);
+            return;
+        }
+
         /**
          * requery it, no municipality can have multiple causes
          * - BAG is down
@@ -49,5 +64,15 @@ class CheckBuildingAddress implements ShouldQueue
         if (! $building->municipality()->first() instanceof Municipality) {
             $this->release(60);
         }
+    }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array
+     */
+    public function middleware()
+    {
+        return [(new WithoutOverlapping(sprintf('%s-%s', "CheckBuildingAddress", $this->building->id)))->releaseAfter(10)];
     }
 }

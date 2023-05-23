@@ -19,10 +19,21 @@
                                 </label>
                                 <input name="medias[logo]" id="file-logo" type="file"/>
 
-                                <span class="label label-primary">
-                                    @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
-                                    {{optional($cooperation->firstMedia(MediaHelper::LOGO))->filename}}
-                                </span>
+                                @if(($logo = $cooperation->firstMedia(MediaHelper::LOGO)) instanceof \App\Models\Media)
+                                    <input type="hidden" name="medias[logo_current]" value="{{ $logo->id }}"
+                                           id="current-logo">
+                                    <div style="display: flex; align-items: center;">
+                                        <span class="label label-primary">
+                                            @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
+                                            {{$logo->filename}}
+                                        </span>
+                                        <span class="text-danger"
+                                              style="cursor: pointer; font-weight: bold; margin-left: 0.5rem;"
+                                              onclick="let currentLogo = document.getElementById('current-logo'); currentLogo.value = null; currentLogo.nextElementSibling.style.display = 'none';">
+                                            X
+                                        </span>
+                                    </div>
+                                @endif
 
                                 @if($errors->has('medias.logo'))
                                     {{$errors->first('medias.logo')}}
@@ -33,10 +44,23 @@
                                     @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.background')
                                 </label>
                                 <input name="medias[background]" id="file-background" type="file"/>
-                                <span class="label label-primary">
-                                   @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
-                                    {{optional($cooperation->firstMedia(MediaHelper::BACKGROUND))->filename}}
-                                </span>
+
+                                @if(($background = $cooperation->firstMedia(MediaHelper::BACKGROUND)) instanceof \App\Models\Media)
+                                    <input type="hidden" name="medias[background_current]" value="{{ $background->id }}"
+                                           id="current-background">
+                                    <div style="display: flex; align-items: center;">
+                                        <span class="label label-primary">
+                                            @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
+                                            {{$background->filename}}
+                                        </span>
+                                        <span class="text-danger"
+                                              style="cursor: pointer; font-weight: bold; margin-left: 0.5rem;"
+                                              onclick="let currentBackground = document.getElementById('current-background'); currentBackground.value = null; currentBackground.nextElementSibling.style.display = 'none';">
+                                            X
+                                        </span>
+                                    </div>
+                                @endif
+
                                 @if($errors->has('medias.background'))
                                     {{$errors->first('medias.background')}}
                                 @endif

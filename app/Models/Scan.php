@@ -6,6 +6,8 @@ use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Facades\App;
 
 /**
@@ -48,6 +50,23 @@ class Scan extends Model
 
     protected $translatable = ['name', 'slug'];
 
+    // Static calls
+    public static function lite(): ?Model
+    {
+        return static::findByShort(self::LITE);
+    }
+
+    public static function quick(): ?Model
+    {
+        return self::findByShort(self::QUICK);
+    }
+
+    public static function expert(): ?Model
+    {
+        return self::findByShort(self::EXPERT);
+    }
+
+    // Model Methods
     public function getRouteKeyName()
     {
         $locale = App::getLocale();
@@ -59,21 +78,22 @@ class Scan extends Model
         return $this->slug;
     }
 
-    public function steps()
+    public function isLiteScan(): bool
     {
-        return $this->hasMany(Step::class);
+        return $this->short === self::LITE;
     }
 
-    public function subSteps()
+    public function isQuickScan(): bool
     {
-        return $this->hasManyThrough(SubStep::class, Step::class);
+        return $this->short === self::QUICK;
     }
 
-    public function completedSteps()
+    public function isExpertScan(): bool
     {
-        return $this->hasManyThrough(CompletedStep::class, Step::class);
+        return $this->short === self::EXPERT;
     }
 
+    // Scopes
     public function scopeSimple(Builder $query)
     {
         return $query->whereIn('short', [static::LITE, static::QUICK]);
@@ -90,18 +110,19 @@ class Scan extends Model
         return $query->where("slug->{$locale}", $slug);
     }
 
-    public function isLiteScan(): bool
+    // Relations
+    public function steps(): HasMany
     {
-        return $this->short === self::LITE;
+        return $this->hasMany(Step::class);
     }
 
-    public function isQuickScan(): bool
+    public function subSteps(): HasManyThrough
     {
-        return $this->short === self::QUICK;
+        return $this->hasManyThrough(SubStep::class, Step::class);
     }
 
-    public function isExpertScan(): bool
+    public function completedSteps(): HasManyThrough
     {
-        return $this->short === self::EXPERT;
+        return $this->hasManyThrough(CompletedStep::class, Step::class);
     }
 }

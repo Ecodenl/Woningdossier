@@ -48,7 +48,7 @@ class UserController extends Controller
     {
         $userCurrentRole = HoomdossierSession::getRole(true);
         $roles = Role::orderByDesc('level')->get();
-        $coaches = $cooperationToManage->getCoaches()->get();
+        $coaches = $cooperationToManage->getCoaches();
 
         return view('cooperation.admin.users.create', compact('userCurrentRole', 'roles', 'coaches', 'cooperationToManage'));
     }

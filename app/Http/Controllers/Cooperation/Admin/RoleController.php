@@ -49,7 +49,7 @@ class RoleController extends Controller
 
         // if the user is a super-admin, then hey may be removing roles from a user from a other cooperation, so we remove the scope.
         if ($currentUser->hasRoleAndIsCurrentRole('super-admin')) {
-            $user = User::withoutGlobalScopes()->find($userId);
+            $user = User::forAllCooperations()->find($userId);
         } else {
             $user = User::find($userId);
         }

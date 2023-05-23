@@ -38,7 +38,7 @@ class RoleController extends Controller
         return redirect()->back();
     }
 
-    public function removeRole(UserRoleService $userRoleService, Cooperation $cooperation, Request $request)
+    public function removeRole(Cooperation $cooperation, Request $request)
     {
         $currentUser = Hoomdossier::user();
         // the user id to assign the role to

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\CustomMeasureApplicationChanged;
+use App\Helpers\Queue;
 use App\Models\Building;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
@@ -21,6 +22,7 @@ class HandleCooperationMeasureApplicationDeletion implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable;
 
     public $cooperationMeasureApplication;
+
     /**
      * Create a new job instance.
      *
@@ -28,6 +30,7 @@ class HandleCooperationMeasureApplicationDeletion implements ShouldQueue
      */
     public function __construct(CooperationMeasureApplication $cooperationMeasureApplication)
     {
+        $this->queue = Queue::APP;
         $this->cooperationMeasureApplication = $cooperationMeasureApplication;
     }
 

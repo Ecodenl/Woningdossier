@@ -58,9 +58,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Step extends Model
 {
-    use HasFactory;
-
-    use HasShortTrait,
+    use HasFactory,
+        HasShortTrait,
         HasTranslations;
 
     protected $fillable = ['slug', 'name', 'order'];

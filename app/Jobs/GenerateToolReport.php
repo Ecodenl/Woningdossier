@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Helpers\ToolHelper;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
@@ -21,10 +22,7 @@ use Throwable;
 
 class GenerateToolReport implements ShouldQueue
 {
-    use Queueable;
-    use Dispatchable;
-    use InteractsWithQueue;
-    use SerializesModels;
+    use Queueable, Dispatchable, InteractsWithQueue, SerializesModels;
 
     protected $cooperation;
     protected $anonymizeData;
@@ -33,6 +31,7 @@ class GenerateToolReport implements ShouldQueue
 
     public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage, bool $anonymizeData = false)
     {
+        $this->queue = Queue::EXPORTS;
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;
         $this->cooperation = $cooperation;

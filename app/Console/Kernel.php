@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Gebruik;
+use App\Console\Commands\Api\Econobis\Out\Hoomdossier\PdfReport;
+use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Woonplan;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncMeasures;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncTargetGroups;
 use App\Console\Commands\Monitoring\MonitorQueue;
@@ -35,6 +38,16 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(SyncTargetGroups::class)->daily();
         $schedule->command(SyncMeasures::class)->daily();
+
+        $schedule->command(Gebruik::class)->daily();
+        if (\App::environment() == 'accept') {
+            $schedule->command(Woonplan::class)->everyMinute()->withoutOverlapping();
+            $schedule->command(PdfReport::class)->everyMinute()->withoutOverlapping();
+        } else {
+            $schedule->command(Woonplan::class)->everyFiveMinutes()->withoutOverlapping();
+            $schedule->command(PdfReport::class)->everyFiveMinutes()->withoutOverlapping();
+        }
+
 
         // $schedule->command('inspire')
         //          ->hourly();

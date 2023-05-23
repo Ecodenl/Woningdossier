@@ -14,12 +14,13 @@
             @endif
 
             <div class="w-full flex flex-row flex-wrap items-center">
-                <input id="btn-input" required autofocus autocomplete="false" name="message" type="text"
-                       class="form-input w-10/12 m-0" placeholder="@lang('my-account.messages.edit.chat.input')">
+                <textarea id="btn-input" required autofocus autocomplete="false" name="message" type="text"
+                       class="form-input w-10/12 m-0" placeholder="@lang('my-account.messages.edit.chat.input')"
+                ></textarea>
 
-                <span class="w-2/12 pl-3">
+                <div class="w-2/12 pl-3 flex justify-center">
                     {{ $slot }}
-                </span>
+                </div>
             </div>
         </form>
     @else
@@ -31,8 +32,10 @@
                 @if(isset($isPublic))
                     <input type="hidden" name="is_public" value="{{$isPublic ? 1 : 0}}">
                 @endif
-                <input id="btn-input" required autofocus autocomplete="false" name="message" type="text"
-                       class="form-control input-md" placeholder="@lang('my-account.messages.edit.chat.input')">
+                <textarea id="btn-input" required autofocus autocomplete="false" name="message" type="text"
+                          rows="5" style="resize: none;"
+                          class="form-control input-md" placeholder="@lang('my-account.messages.edit.chat.input')"
+                ></textarea>
 
                 <span class="input-group-btn">
                     {{ $slot }}

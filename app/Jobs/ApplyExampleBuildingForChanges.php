@@ -10,10 +10,16 @@ use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Services\ExampleBuildingService;
+use Illuminate\Bus\Queueable;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class ApplyExampleBuildingForChanges extends NonHandleableJobAfterReset
+class ApplyExampleBuildingForChanges
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     public array $changes;
     public Building $building;
     public BuildingFeature $buildingFeature;
@@ -22,7 +28,6 @@ class ApplyExampleBuildingForChanges extends NonHandleableJobAfterReset
 
     public function __construct(BuildingFeature $buildingFeature, array $changes, InputSource $applyForInputSource)
     {
-        parent::__construct();
         $this->changes = $changes;
         $this->buildingFeature = $buildingFeature;
         $this->building = $buildingFeature->building;

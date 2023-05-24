@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Econobis\Out;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\Wrapper;
 use App\Jobs\Middleware\EnsureCooperationHasEconobisLink;
 use App\Models\Integration;
@@ -18,23 +19,25 @@ trait CallsEconobisApi
 
     public function wrapCall(\Closure $function)
     {
-        Wrapper::wrapCall(
-            function () use ($function) {
-                $function();
-                app(IntegrationProcessService::class)
-                    ->forIntegration(Integration::findByShort('econobis'))
-                    ->forBuilding($this->building)
-                    ->forProcess(__CLASS__)
-                    ->syncedNow();
-            },
-            function (\Throwable $exception) {
-                $this->log($exception);
-                if ($exception instanceof ServerException) {
-                    // try again in 2 minutes
-                    $this->release(120);
-                }
-            }, false);
+        if (Hoomdossier::hasEnabledEconobisCalls()) {
+            Wrapper::wrapCall(
+                function () use ($function) {
+                    $function();
+                    app(IntegrationProcessService::class)
+                        ->forIntegration(Integration::findByShort('econobis'))
+                        ->forBuilding($this->building)
+                        ->forProcess(__CLASS__)
+                        ->syncedNow();
+                },
+                function (\Throwable $exception) {
+                    $this->log($exception);
+                    if ($exception instanceof ServerException) {
+                        // try again in 2 minutes
+                        $this->release(120);
+                    }
+                }, false);
 
+        }
         return;
     }
 

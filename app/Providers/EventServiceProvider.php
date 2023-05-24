@@ -39,6 +39,7 @@ use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\RefreshRelatedAdvices;
 use App\Listeners\RefreshBuildingUserHisAdvices;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
+use App\Listeners\SendingEmailListener;
 use App\Listeners\SendUserAssociatedWithCooperationMail;
 use App\Listeners\SetMessagesReadForBuilding;
 use App\Listeners\SetMessagesUnreadForRevokedUserOnBuilding;
@@ -48,6 +49,7 @@ use App\Listeners\SuccessFullLoginListener;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Mail\Events\MessageSending;
 use OwenIt\Auditing\Events\Audited;
 use Sentry\State\Scope;
 
@@ -122,6 +124,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         Audited::class => [
             AuditedListener::class,
+        ],
+
+        // Whenever a "message" is being prepared to send...
+        MessageSending::class => [
+            // Ensures no (specific) mails from test environment are sent to users (prevent spam/clutter mails)
+            SendingEmailListener::class,
         ],
     ];
 

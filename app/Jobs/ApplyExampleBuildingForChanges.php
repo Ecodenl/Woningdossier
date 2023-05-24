@@ -16,9 +16,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class ApplyExampleBuildingForChanges
+class ApplyExampleBuildingForChanges extends NonHandleableJobAfterReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+//    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public array $changes;
     public Building $building;

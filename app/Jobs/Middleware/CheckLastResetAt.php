@@ -28,7 +28,10 @@ class CheckLastResetAt
      */
     public function handle($job, $next)
     {
-        if ($job->connection !== "sync") {
+        // no logic should be applied when dispatched on sync
+        if ($job->connection === "sync") {
+            $next($job);
+        } else {
             if ($this->isBatchedJob($job)) {
                 if ($job->batch()->cancelled()) {
                     Log::debug('Batch has been cancelled!, skipping job.');
@@ -55,12 +58,11 @@ class CheckLastResetAt
                 if ($this->isBatchedJob($job)) {
                     $job->batch()->cancel();
                 }
-                // cancel the execution of the job itself
-                return;
             } else {
-                return $next($job);
+                $next($job);
             }
         }
+        return;
     }
 
     private function isBatchedJob($job): bool

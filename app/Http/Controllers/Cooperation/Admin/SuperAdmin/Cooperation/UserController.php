@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Models\Account;
@@ -45,17 +46,11 @@ class UserController extends Controller
 
     public function create(Cooperation $cooperation, Cooperation $cooperationToManage)
     {
-        $possibleRoles = \Spatie\Permission\Models\Role::orderByDesc('level')->get();
-        $roles = [];
-        foreach ($possibleRoles as $possibleRole) {
-            if (Hoomdossier::account()->can('assign-role', $possibleRole)) {
-                $roles[] = $possibleRole;
-            }
-        }
-        $roles = collect($roles);
+        $userCurrentRole = HoomdossierSession::getRole(true);
+        $roles = Role::orderByDesc('level')->get();
         $coaches = $cooperationToManage->getCoaches();
 
-        return view('cooperation.admin.users.create', compact('roles', 'coaches', 'cooperationToManage'));
+        return view('cooperation.admin.users.create', compact('userCurrentRole', 'roles', 'coaches', 'cooperationToManage'));
     }
 
     public function store(UserFormRequest $request, Cooperation $cooperation, Cooperation $cooperationToManage)
@@ -71,12 +66,12 @@ class UserController extends Controller
     public function show(Cooperation $currentCooperation, Cooperation $cooperationToManage, $userId)
     {
         $user = User::withoutGlobalScopes()->findOrFail($userId);
-        $roles = Role::where('name', '!=', 'superuser')
-            ->where('name', '!=', 'super-admin')
-            ->orderByDesc('level')->get();
+        $building = $user->building;
+        $roles = Role::orderByDesc('level')->get();
+        $userCurrentRole = HoomdossierSession::getRole(true);
 
         return view('cooperation.admin.super-admin.cooperations.users.show',
-            compact('user', 'cooperationToManage', 'roles'));
+            compact('user', 'cooperationToManage', 'roles', 'userCurrentRole', 'building'));
     }
 
     public function confirm(Cooperation $currentCooperation, Cooperation $cooperationToManage, $accountId)

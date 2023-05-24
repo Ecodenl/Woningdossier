@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
-use App\Helpers\RoleHelper;
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
 use App\Models\Building;
-use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\PrivateMessage;
@@ -15,10 +14,8 @@ use App\Models\Status;
 use App\Models\User;
 use App\Services\BuildingAddressService;
 use App\Services\BuildingCoachStatusService;
-use App\Services\Lvbag\BagService;
-use App\Services\Models\BuildingService;
-use Illuminate\Support\Arr;
-use Spatie\Permission\Models\Role;
+use App\Services\UserRoleService;
+use App\Models\Role;
 
 class BuildingController extends Controller
 {
@@ -31,7 +28,7 @@ class BuildingController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
-    public function show(Cooperation $cooperation, $buildingId)
+    public function show(UserRoleService $userRoleService, Cooperation $cooperation, $buildingId)
     {
         // retrieve the user from the building within the current cooperation;
         $user = $cooperation->users()->whereHas('building', function ($query) use ($buildingId) {
@@ -50,9 +47,7 @@ class BuildingController extends Controller
 
         $buildingId = $building->id;
 
-        $roles = Role::whereNotIn('name',
-            [RoleHelper::ROLE_SUPERUSER, RoleHelper::ROLE_SUPER_ADMIN, RoleHelper::ROLE_COOPERATION_ADMIN])
-            ->get();
+        $roles = Role::all();
 
         $coaches = $cooperation->getCoaches();
 
@@ -72,8 +67,10 @@ class BuildingController extends Controller
 
         $scan = $cooperation->scans()->where('short', '!=', Scan::EXPERT)->first();
         $scans = $cooperation->load(['scans' => fn($q) => $q->where('short', '!=', Scan::EXPERT)])->scans;
+        $userCurrentRole = HoomdossierSession::getRole(true);
 
         return view('cooperation.admin.buildings.show', compact(
+            'userRoleService', 'userCurrentRole',
                 'user', 'building', 'roles', 'coaches', 'scans',
                 'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
                 'publicMessages', 'buildingNotes', 'statuses', 'logs', 'scan',

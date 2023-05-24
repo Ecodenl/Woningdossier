@@ -29,7 +29,7 @@ class MissingVbjehuisMapping implements ShouldQueue
      */
     public function handle($event)
     {
-        $recipients = explode(',', config('hoomdossier.admin-emails'));
+        $recipients = explode(',', config('hoomdossier.contact.email.admin'));
         foreach ($recipients as $recipient) {
             Mail::to($recipient)->send(new MissingVbjehuisMunicipalityMappingEmail($event->municipality->name));
         }

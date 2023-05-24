@@ -14,9 +14,6 @@
                 <h4 class="heading-4">
                     {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
                 </h4>
-                <p>
-                    @lang('cooperation/frontend/tool.my-plan.help')
-                </p>
             </div>
             <div class="w-full flex flex-wrap mb-5">
                 {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", [

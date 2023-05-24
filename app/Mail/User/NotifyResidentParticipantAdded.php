@@ -2,6 +2,7 @@
 
 namespace App\Mail\User;
 
+use App\Mail\Middleware\Whitelist;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -41,5 +42,12 @@ class NotifyResidentParticipantAdded extends Mailable implements ShouldQueue
             ->subject(strip_tags(__('cooperation/mail/user/notify-resident-participant-added.subject', ['name' => $this->coach->getFullName()])))
             ->view('cooperation.mail.user.notify-resident-participant-added.view')
             ->text('cooperation.mail.user.notify-resident-participant-added.text');
+    }
+
+    public function middleware(): array
+    {
+        return [
+            new Whitelist(),
+        ];
     }
 }

@@ -80,19 +80,19 @@
                                     @endcomponent
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-sm-12">
                                     @component('layouts.parts.components.form-group', [
                                        'input_name' => 'roles',
                                     ])
                                         <label for="roles">@lang('cooperation/admin/users.create.form.roles')</label>
-                                        <select name="roles[]" class="roles form-control" id="roles"
-                                                multiple="multiple">
+                                        <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control roles" name="roles[]" id="role-select" multiple="multiple">
                                             @foreach($roles as $role)
-                                                <option value="{{$role->id}}">
-                                                    {{$role->human_readable_name}}
-                                                </option>
+                                                @can('view', [$role, Hoomdossier::user(), $userCurrentRole])
+                                                    <option value="{{$role->id}}" @if(in_array($role->id, old('roles', []))) selected="selected" @endif>
+                                                        {{$role->human_readable_name}}
+                                                    </option>
+                                                @endcan
                                             @endforeach
                                         </select>
                                     @endcomponent
@@ -206,12 +206,6 @@
         $(document).ready(function () {
 
             var oldSelectedRoles = [];
-
-            @if(!is_null(old('roles')))
-            @foreach(old('roles') as $roleId)
-            oldSelectedRoles.push('{{$roleId}}');
-            @endforeach
-            @endif
 
             $(".roles").select2({
                 placeholder: "@lang('cooperation/admin/users.create.form.select-role')",

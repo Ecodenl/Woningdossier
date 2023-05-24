@@ -20,7 +20,7 @@ trait CallsEconobisApi
     {
         Wrapper::wrapCall(
             function () use ($function) {
-//                $function();
+                $function();
                 app(IntegrationProcessService::class)
                     ->forIntegration(Integration::findByShort('econobis'))
                     ->forBuilding($this->building)

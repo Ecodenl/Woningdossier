@@ -29,7 +29,8 @@ mix.js('resources/js/app.js', 'public/js')
 
         ], 'public/js/datatables.js'
     )
-    .copyDirectory('vendor/tinymce/tinymce', 'public/js/tinymce')
+    .copyDirectory('vendor/tinymce/tinymce', 'public/js/tinymce') // Contents of composer package
+    .copyDirectory('resources/js/tinymce', 'public/js/tinymce') // Custom content (e.g. lang file(s))
     .scripts(
         [
             'resources/js/select2.js'

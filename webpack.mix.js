@@ -29,7 +29,7 @@ mix.js('resources/js/app.js', 'public/js')
 
         ], 'public/js/datatables.js'
     )
-    .copy('resources/js/tinymce/', 'public/js/tinymce', false)
+    .copyDirectory('vendor/tinymce/tinymce', 'public/js/tinymce')
     .scripts(
         [
             'resources/js/select2.js'

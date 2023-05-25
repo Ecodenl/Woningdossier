@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $building_features_count
  * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel ordered($direction = 'asc')
+ * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel ordered(string $direction = 'asc')
  * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel query()
  * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|EnergyLabel whereCountryCode($value)

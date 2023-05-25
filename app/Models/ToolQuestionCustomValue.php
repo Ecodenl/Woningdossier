@@ -25,9 +25,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read array $translations
  * @property-read \App\Models\ToolQuestion $toolQuestion
+ * @method static \Database\Factories\ToolQuestionCustomValueFactory factory(...$parameters)
  * @method static Builder|ToolQuestionCustomValue newModelQuery()
  * @method static Builder|ToolQuestionCustomValue newQuery()
- * @method static Builder|ToolQuestionCustomValue ordered()
+ * @method static Builder|ToolQuestionCustomValue ordered(string $direction = 'asc')
  * @method static Builder|ToolQuestionCustomValue query()
  * @method static Builder|ToolQuestionCustomValue visible()
  * @method static Builder|ToolQuestionCustomValue whereConditions($value)

@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $userActionPlanAdvices
  * @property-read int|null $user_action_plan_advices_count
  * @method static Builder|CooperationMeasureApplication extensiveMeasures()
+ * @method static \Database\Factories\CooperationMeasureApplicationFactory factory(...$parameters)
  * @method static Builder|CooperationMeasureApplication newModelQuery()
  * @method static Builder|CooperationMeasureApplication newQuery()
  * @method static \Illuminate\Database\Query\Builder|CooperationMeasureApplication onlyTrashed()

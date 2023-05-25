@@ -13,6 +13,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
 use App\Models\UserEnergyHabit;
+use App\Services\Kengetallen\KengetallenService;
 use Carbon\Carbon;
 
 class Calculator
@@ -57,6 +58,7 @@ class Calculator
      */
     public static function calculateCo2Savings($gasSavings)
     {
+
         $result = $gasSavings * Kengetallen::CO2_SAVING_GAS;
         self::debug(__METHOD__.' CO2 besparing: '.$result.' = '.$gasSavings.' * '.Kengetallen::CO2_SAVING_GAS);
 
@@ -70,7 +72,7 @@ class Calculator
      *
      * @return float|int
      */
-    public static function calculateMoneySavings($gasSavings)
+    public static function calculateMoneySavings($gasSavings, $euroSavingsGas)
     {
         $result = $gasSavings * Kengetallen::EURO_SAVINGS_GAS;
         self::debug(__METHOD__." Euro's besparing: ".$result.' = '.$gasSavings.' * '.Kengetallen::EURO_SAVINGS_GAS);

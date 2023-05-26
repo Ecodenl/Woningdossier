@@ -1,4 +1,6 @@
-@component('cooperation.frontend.layouts.components.wysiwyg')
+@component('cooperation.frontend.layouts.components.wysiwyg', [
+    'disabled' => $disabled ?? false,
+])
     <textarea wire:model.lazy="filledInAnswers.{{$toolQuestion['short']}}" id="{{$toolQuestion->short}}" class="form-input"
               placeholder="{{$toolQuestion->placeholder}}"
               @if(($disabled ?? false))

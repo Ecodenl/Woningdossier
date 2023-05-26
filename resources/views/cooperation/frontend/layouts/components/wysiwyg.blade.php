@@ -1,3 +1,7 @@
+@php
+    $disabled ??= false;
+@endphp
+
 <div class="tiny-editor relative w-inherit flex" @if(! empty($attr)) {!! $attr !!} @endif
      wire:ignore>
     {{ $slot }}
@@ -28,6 +32,13 @@
                 height: 200,
                 content_css: '{{ asset('css/frontend/tinymce.css') }}',
                 setup: (editor) => {
+                    // Since this config triggers on all tiny editors at once, we manually check on tiny init.
+                    editor.on('init', (event) => {
+                        if (editor.targetElm.hasAttribute('disabled')) {
+                            editor.mode.set('readonly');
+                        }
+                    });
+                    // Click doesn't trigger when the editor is readonly. This is fine.
                     editor.on('click', (event) => {
                         {{-- This is purely for the popup textareas... --}}
                         window.triggerEvent(editor.targetElm.closest('.tiny-editor'), 'click');

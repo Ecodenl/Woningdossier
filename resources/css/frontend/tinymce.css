@@ -3,7 +3,11 @@
 
 /* A custom stylesheet to be appended into the content_css option of tiny (to override iframe styling) */
 body {
-    @apply mx-3 my-2;
+    @apply mx-3 my-2 cursor-text;
+}
+
+body.mce-content-readonly {
+    @apply bg-gray bg-opacity-50 cursor-not-allowed;
 }
 
 * {

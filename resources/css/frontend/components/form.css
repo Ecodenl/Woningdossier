@@ -97,24 +97,32 @@ textarea.form-input {
     min-height: 2.75rem; /* Height of h-11, base height of input */
 }
 
-.tiny-editor .tox {
+.tiny-editor .tox.tox-tinymce {
     @apply cursor-auto mb-4;
 }
 
-.tiny-editor .tox .tox-editor-container {
+.tiny-editor .tox.tox-tinymce .tox-editor-container {
     @apply w-inherit;
 }
 
-.tiny-editor .tox .tox-editor-container .tox-statusbar__branding {
+.tiny-editor .tox.tox-tinymce .tox-editor-container .tox-statusbar__branding {
     @apply hidden;
 }
 
-.tiny-editor .tox .tox-editor-container .tox-tbtn {
+.tiny-editor .tox.tox-tinymce .tox-editor-container .tox-tbtn {
     @apply cursor-pointer;
 }
 
-.tiny-editor .tox .tox-editor-container .tox-tbtn svg {
+.tiny-editor .tox.tox-tinymce.tox-tinymce--disabled .tox-editor-container .tox-tbtn {
+    @apply cursor-not-allowed;
+}
+
+.tiny-editor .tox.tox-tinymce .tox-editor-container .tox-tbtn svg {
     @apply fill-current text-blue-500;
+}
+
+.tiny-editor .tox.tox-tinymce.tox-tinymce--disabled .tox-editor-container .tox-tbtn svg {
+    @apply text-opacity-50;
 }
 
 .form-input:disabled,

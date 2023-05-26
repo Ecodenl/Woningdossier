@@ -1,11 +1,10 @@
 <div x-data="modal()" class="w-full flex">
-
     @component('cooperation.frontend.layouts.components.wysiwyg', [
         'id' => "popup-{$toolQuestion['short']}",
         'attr' => 'x-on:click="toggle()"',
     ])
         <textarea wire:model.lazy="filledInAnswers.{{$toolQuestion['short']}}"
-                  id="{{$toolQuestion->short}}" wire:ignore
+                  id="clickable-{{$toolQuestion->short}}" wire:ignore
                   class="form-input"
                   placeholder="{{$toolQuestion->placeholder}}"
                   @if(($disabled ?? false)) disabled @endif>
@@ -20,7 +19,6 @@
                   id="{{$toolQuestion->short}}"
                   class="form-input w-full"
                   placeholder="{{$toolQuestion->placeholder}}"
-
             ></textarea>
         @endcomponent
 

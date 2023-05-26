@@ -27,10 +27,29 @@
                 resize: false,
                 height: 200,
                 content_css: '{{ asset('css/frontend/tinymce.css') }}',
-                {{-- This is purely for the popup textareas... --}}
                 setup: (editor) => {
-                    editor.on('click', (e) => {
+                    editor.on('click', (event) => {
+                        {{-- This is purely for the popup textareas... --}}
                         window.triggerEvent(editor.targetElm.closest('.tiny-editor'), 'click');
+                    });
+                    editor.on('change', (event) => {
+                        // Save editor (to textarea), then trigger change (to update Livewire).
+                        editor.save();
+                        window.triggerEvent(editor.targetElm, 'change');
+
+                        // Okay, hear me out: Due to the popup, we have 2 tiny editors that are meant to be in sync.
+                        // Instead of waiting for a full server request circle and detecting the textarea changing
+                        // values, and potentially overriding any user input, we instead just manually update the
+                        // tiny editor. This is faster, more reliable and less junky for the user.
+                        if (! editor.id.startsWith('clickable-')) {
+                            tinymce.get(`clickable-${editor.id}`).setContent(editor.getContent());
+                        }
+                    });
+                    // Reset tiny if related textarea is reset
+                    document.addEventListener('reset-question', (event) => {
+                        if (editor.id.includes(event.detail.short)) {
+                            editor.setContent(editor.targetElm.value);
+                        }
                     });
                 }
             });

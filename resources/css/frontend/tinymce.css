@@ -14,3 +14,10 @@ body {
 *::placeholder {
     @apply text-blue-500 text-opacity-50;
 }
+
+a {
+    @apply text-blue-900 underline font-medium cursor-pointer transition text-sm;
+
+    @apply hover:opacity-60;
+    @apply focus:opacity-60;
+}

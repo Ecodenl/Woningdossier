@@ -193,6 +193,7 @@ abstract class Scannable extends Component
     public function resetToOriginalAnswer($toolQuestionShort)
     {
         $this->filledInAnswers[$toolQuestionShort] = $this->originalAnswers[$toolQuestionShort];
+        $this->dispatchBrowserEvent('reset-question', ['short' => $toolQuestionShort]);
     }
 
     // specific to the popup question

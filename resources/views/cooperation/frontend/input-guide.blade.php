@@ -199,6 +199,28 @@
                 <input id="placeholder" type="text" class="form-input" placeholder="Placeholder">
             @endcomponent
         </div>
+
+        <div class="flex flex-wrap">
+            @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
+                @slot('modalBodySlot')
+                    <p class="font-bold">
+                        textarea.form-input
+                        <br>
+                        <span class="text-red">
+                            Note: The textarea should be wrapped by the tiny textarea component:
+                            <br>
+                            @@component('cooperation.frontend.layouts.components.tiny-textarea')
+                        </span>
+                    </p>
+                @endslot
+                @component('cooperation.frontend.layouts.components.tiny-textarea')
+                    <textarea id="tiny-text-area" class="form-input" placeholder="Text area"></textarea>
+                @endcomponent
+            @endcomponent
+        </div>
     </div>
 
     <div class="w-full">

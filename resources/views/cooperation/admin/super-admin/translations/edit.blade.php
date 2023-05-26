@@ -153,6 +153,7 @@
             toolbar: 'code link unlink bold italic underline strikethrough cut copy paste undo redo restoreOriginalText',
             promotion: false,
             language: 'nl',
+            // Elements that should stay in the HTML upon submit
             extended_valid_elements: '#i[class|style]',
             skin: 'tinymce-5',
             height: 200,

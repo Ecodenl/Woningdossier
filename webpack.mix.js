@@ -51,6 +51,9 @@ mix.js('resources/js/app.js', 'public/js')
     .postCss("resources/css/frontend/app.css", "public/css/frontend", [
         tailwindcss,
     ])
+    .postCss("resources/css/frontend/tinymce.css", "public/css/frontend", [
+        tailwindcss,
+    ])
     .options({
         // Whether to re-write added URLs based on the new css file location
         processCssUrls: false,

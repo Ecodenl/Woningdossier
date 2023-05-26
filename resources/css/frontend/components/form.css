@@ -44,7 +44,8 @@
 .form-input,
 .radio-wrapper > label,
 .checkbox-wrapper > label,
-.add-option-wrapper > label {
+.add-option-wrapper > label,
+.tiny-editor .tox {
     @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
 
     @apply hover:border-green hover:border-opacity-100;
@@ -94,6 +95,26 @@ textarea.form-input {
     @apply h-32 py-2 resize-none;
     line-height: 24px;
     min-height: 2.75rem; /* Height of h-11, base height of input */
+}
+
+.tiny-editor .tox {
+    @apply cursor-auto;
+}
+
+.tiny-editor .tox .tox-editor-container {
+    @apply w-inherit;
+}
+
+.tiny-editor .tox .tox-editor-container .tox-statusbar__branding {
+    @apply hidden;
+}
+
+.tiny-editor .tox .tox-editor-container .tox-tbtn {
+    @apply cursor-pointer;
+}
+
+.tiny-editor .tox .tox-editor-container .tox-tbtn svg {
+    @apply fill-current text-blue-500;
 }
 
 .form-input:disabled,

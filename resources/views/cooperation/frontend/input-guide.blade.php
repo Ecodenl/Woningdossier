@@ -212,11 +212,11 @@
                         <span class="text-red">
                             Note: The textarea should be wrapped by the tiny textarea component:
                             <br>
-                            @@component('cooperation.frontend.layouts.components.tiny-textarea')
+                            @@component('cooperation.frontend.layouts.components.wysiwyg')
                         </span>
                     </p>
                 @endslot
-                @component('cooperation.frontend.layouts.components.tiny-textarea')
+                @component('cooperation.frontend.layouts.components.wysiwyg')
                     <textarea id="tiny-text-area" class="form-input" placeholder="Text area"></textarea>
                 @endcomponent
             @endcomponent

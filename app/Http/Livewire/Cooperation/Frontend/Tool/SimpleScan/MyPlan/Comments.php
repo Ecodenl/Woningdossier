@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Sanitizers\HtmlSanitizer;
 use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -73,6 +74,8 @@ class Comments extends Component
             $sourceShort = Str::before($toolQuestionShort, 'Comment');
             $commentShort = "{$sourceShort}Comment";
             $commentText = $this->filledInAnswers[$toolQuestionShort];
+            // Sanitize HTML (just in case)
+            $commentText = (new HtmlSanitizer())->sanitize($commentText);
             $inputSource = $this->{"{$sourceShort}InputSource"};
 
             if ($inputSource->short === $this->currentInputSource->short) {

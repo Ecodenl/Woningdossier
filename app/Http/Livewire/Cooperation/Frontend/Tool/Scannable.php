@@ -199,9 +199,8 @@ abstract class Scannable extends Component
     // specific to the popup question
     public function saveSpecificToolQuestion($toolQuestionShort)
     {
-        if (HoomdossierSession::isUserObserving()) {
-            return null;
-        }
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         if (! empty($this->rules)) {
             $validator = Validator::make([
                 "filledInAnswers.{$toolQuestionShort}" => $this->filledInAnswers[$toolQuestionShort]

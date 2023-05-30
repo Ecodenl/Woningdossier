@@ -16,13 +16,12 @@
         ></textarea>
 
         @slot('header')
-            @php $inputSource = \App\Helpers\HoomdossierSession::getInputSource(true) @endphp
-            @lang("cooperation/frontend/tool.my-plan.comments.{$inputSource->short}")
+            {{ $toolQuestion->name }}
         @endslot
         <div class="flex justify-end space-x-2">
             <button class="btn btn-orange" wire:click="resetToOriginalAnswer('{{$toolQuestion['short']}}')"
                     x-on:click="close()">
-                Annuleren
+                @lang('default.buttons.cancel')
             </button>
             <button class="btn btn-purple" wire:click="saveSpecificToolQuestion('{{$toolQuestion['short']}}')"
                     x-on:click="close()">

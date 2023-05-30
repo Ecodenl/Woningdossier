@@ -1,4 +1,3 @@
-
 window._ = require('lodash');
 
 /**
@@ -44,6 +43,68 @@ if (token) {
  * Define functions that will be used throughout the whole application, that
  * are also required by Alpine.
  */
+
+window.initTinyMCE = function (options = {}) {
+    let defaults = {
+        selector: '.tiny-editor textarea',
+        // menubar: 'edit format',
+        menubar: false, // Bar above the toolbar with advanced options
+        statusbar: true, // Bar that shows the current HTML tag, word count, etc. at the bottom of the editor
+        plugins: [
+            'link', // https://www.tiny.cloud/docs/tinymce/6/link/
+            'wordcount', // https://www.tiny.cloud/docs/tinymce/6/wordcount/
+        ],
+        // Link plugin settings start
+        link_default_target: '_blank',
+        link_target_list: false,
+        link_title: false,
+        // Link plugin settings end
+        toolbar: 'link bold italic underline strikethrough',
+        promotion: false,
+        language: 'nl',
+        resize: false,
+        height: 200,
+    };
+
+    let defaultSetup = (editor) => {
+        // Since this config triggers on all tiny editors at once, we manually check on tiny init.
+        editor.on('init', (event) => {
+            if (editor.targetElm.hasAttribute('disabled')) {
+                editor.mode.set('readonly');
+            }
+        });
+        editor.on('change', (event) => {
+            // Save editor (to textarea), then trigger change (to update Livewire).
+            editor.save();
+            window.triggerEvent(editor.targetElm, 'change');
+        });
+        // Reset tiny if related textarea is reset
+        document.addEventListener('reset-question', (event) => {
+            if (editor.id.includes(event.detail.short)) {
+                editor.setContent(editor.targetElm.value);
+            }
+        });
+    }
+
+    let setup = (editor) => {
+        defaultSetup(editor);
+    };
+    if (typeof options.setup === 'function') {
+        setup = (editor) => {
+            defaultSetup(editor);
+            options.setup(editor);
+        };
+    }
+
+    // For now, this is fine. In the future, we might want to make some more fancy merging.
+    let config = {
+        ...defaults,
+        ...options,
+        setup: setup,
+    };
+
+    tinymce.init(config);
+}
 
 /**
  * Trigger a default event

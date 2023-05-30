@@ -4,6 +4,7 @@
 /* A custom stylesheet to be appended into the content_css option of tiny (to override iframe styling) */
 body {
     @apply mx-3 my-2 cursor-text;
+    outline: none !important;
 }
 
 body.mce-content-readonly {

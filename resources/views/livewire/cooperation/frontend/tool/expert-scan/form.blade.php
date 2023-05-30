@@ -46,22 +46,29 @@
 
 @push('js')
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            document.addEventListener('change', (event) => {
-                let target = event.target;
+        document.addEventListener('change', (event) => {
+            let target = event.target;
 
-                let hasWireModel = false;
-                for (const attr of target.attributes) {
-                    if (attr.name.startsWith('wire:model')) {
-                        hasWireModel = true;
-                        break;
-                    }
+            let hasWireModel = false;
+            for (const attr of target.attributes) {
+                if (attr.name.startsWith('wire:model')) {
+                    hasWireModel = true;
+                    break;
                 }
+            }
 
-                if (hasWireModel) {
-                    triggerCustomEvent(window, 'input-updated');
-                    livewire.emit('inputUpdated');
-                }
+            if (hasWireModel) {
+                triggerCustomEvent(window, 'input-updated');
+                livewire.emit('inputUpdated');
+            }
+        });
+
+        document.addEventListener('input-update-processed', () => {
+            tinymce.remove();
+            setTimeout(() => {
+                initTinyMCE({
+                    content_css: '{{ asset('css/frontend/tinymce.css') }}',
+                });
             });
         });
     </script>

@@ -25,7 +25,7 @@ class HtmlSanitizer implements Sanitizer
         $input = trim($input);
 
         // If it's just a new line, it's as good as null
-        if ($input === '<p><br></p>' || $input === '<br>') {
+        if ($input === '<p><br></p>' || $input === '<br>' || $input === '<p></p>') {
             $input = null;
         }
 

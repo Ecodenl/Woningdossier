@@ -6,6 +6,7 @@ use App\Events\UserToolDataChanged;
 use App\Helpers\Arr;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\DataTypes\Caster;
+use App\Helpers\Sanitizers\HtmlSanitizer;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\ApplyExampleBuildingForChanges;
 use App\Models\Building;
@@ -60,6 +61,11 @@ class ToolQuestionService
 
     public function save($givenAnswer)
     {
+        if ($this->toolQuestion->data_type === Caster::STRING && Str::contains($this->toolQuestion->short, 'comment')) {
+            // Sanitize HTML (just in case)
+            $givenAnswer = (new HtmlSanitizer())->sanitize($givenAnswer);
+        }
+
         if (is_null($this->toolQuestion->save_in)) {
             $this->saveToolQuestionCustomValues($givenAnswer);
         } else {

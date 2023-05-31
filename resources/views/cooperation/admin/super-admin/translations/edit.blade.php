@@ -151,13 +151,17 @@
             menubar: 'edit format',
             plugins: 'code link',
             toolbar: 'code link unlink bold italic underline strikethrough cut copy paste undo redo restoreOriginalText',
+            promotion: false,
             language: 'nl',
+            // Elements that should stay in the HTML upon submit
             extended_valid_elements: '#i[class|style]',
+            skin: 'tinymce-5',
+            height: 200,
             setup: function (editor) {
                 editor.ui.registry.addButton('restoreOriginalText', {
                     text: 'Herstel tekst',
                     onAction: function (buttonApi) {
-                        if (confirm('Orginele helptext herstellen ? Dit verwijderd de huidige helptext en vervangt deze met de orginele.')) {
+                        if (confirm('Orginele helptext herstellen? Dit verwijderd de huidige helptext en vervangt deze met de orginele.')) {
                             var originalHelpText = $(editor.targetElm).parent().find('.original-help-text').val();
                             editor.setContent(originalHelpText);
                         }

@@ -1,4 +1,4 @@
-<?php
+@php
     /* usage:
     @component('cooperation.tool.components.step-question',[
         'id' => 'building_type_id',
@@ -25,7 +25,7 @@
     $label = (isset($translation) ? (\App\Helpers\Translation::hasTranslation($translation . '.title')
             ? __($translation . '.title', $translationReplace)
             : $translation) : '') . ' ' . ($label ?? '');
-?>
+@endphp
 
 @component('cooperation.frontend.layouts.components.form-group', [
     'inputName' => $name,

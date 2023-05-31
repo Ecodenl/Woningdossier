@@ -10,8 +10,7 @@
         "production": "mix --production"
     },
     "devDependencies": {
-        "@tailwindcss/postcss7-compat": "^2.2.17",
-        "autoprefixer": "^9.8.8",
+        "autoprefixer": "^10.0.2",
         "axios": "^0.21.4",
         "bootstrap-sass": "^3.4.3",
         "jquery": "^3.4.1",
@@ -20,8 +19,7 @@
         "postcss": "^8.4.16",
         "sass": "^1.54.4",
         "sass-loader": "^8.0.2",
-        "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
-        "vue-template-compiler": "^2.7.8"
+        "tailwindcss": "^2.2.19"
     },
     "dependencies": {
         "alpinejs": "^3.10.3",

@@ -29,7 +29,8 @@ mix.js('resources/js/app.js', 'public/js')
 
         ], 'public/js/datatables.js'
     )
-    .copy('resources/js/tinymce/', 'public/js/tinymce', false)
+    .copyDirectory('vendor/tinymce/tinymce', 'public/js/tinymce') // Contents of composer package
+    .copyDirectory('resources/js/tinymce', 'public/js/tinymce') // Custom content (e.g. lang file(s))
     .scripts(
         [
             'resources/js/select2.js'
@@ -48,6 +49,9 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/admin/datatables/_responsive_datatables.scss', 'public/css/admin/datatables/responsive.dataTables.min.css')
     .sass('resources/sass/admin/datatables/_dataTables_bootstrap.scss', 'public/css/admin/datatables/dataTables.bootstrap.min.css')
     .postCss("resources/css/frontend/app.css", "public/css/frontend", [
+        tailwindcss,
+    ])
+    .postCss("resources/css/frontend/tinymce.css", "public/css/frontend", [
         tailwindcss,
     ])
     .options({

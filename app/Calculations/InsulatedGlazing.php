@@ -3,7 +3,7 @@
 namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
@@ -64,8 +64,8 @@ class InsulatedGlazing
                         'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, (int)$buildingInsulatedGlazingsData['m2'], (int)$buildingInsulatedGlazingsData['windows']),
                         'savings_gas' => $gasSavings,
                         // calculated outside this foreach
-                        //'savings_co2' => Calculator::calculateCo2Savings($gasSavings),
-                        //'savings_money' => Calculator::calculateMoneySavings($gasSavings),
+                        //'savings_co2' => RawCalculator::calculateCo2Savings($gasSavings),
+                        //'savings_money' => RawCalculator::calculateMoneySavings($gasSavings),
                     ];
 
                     $result['cost_indication'] += $result['measure'][$measureApplication->id]['costs'];
@@ -94,8 +94,8 @@ class InsulatedGlazing
 
         // \Log::debug(__METHOD__.' Net total gas savings: '.$result['savings_gas']);
 
-        $result['savings_co2'] += Calculator::calculateCo2Savings($result['savings_gas']);
-        $result['savings_money'] += Calculator::calculateMoneySavings($result['savings_gas']);
+        $result['savings_co2'] += RawCalculator::calculateCo2Savings($result['savings_gas']);
+        $result['savings_money'] += RawCalculator::calculateMoneySavings($result['savings_gas']);
 
         // Normalize (update) and add data to the result per measure
         foreach ($result['measure'] as $maId => $measureCalculationResults) {
@@ -105,8 +105,8 @@ class InsulatedGlazing
             $measureGasSavings = $rawTotalSavingsGas > 0 ? min(1, ($rawMeasureSavingsGas / $rawTotalSavingsGas)) * $result['savings_gas'] : 0;
             $result['measure'][$maId]['savings_gas'] = $measureGasSavings;
             // \Log::debug(__METHOD__.' Measure '.$maId.' factor: '.$measureGasSavings);
-            $result['measure'][$maId]['savings_co2'] = Calculator::calculateCo2Savings($result['measure'][$maId]['savings_gas']);
-            $result['measure'][$maId]['savings_money'] = Calculator::calculateMoneySavings($result['measure'][$maId]['savings_gas']);
+            $result['measure'][$maId]['savings_co2'] = RawCalculator::calculateCo2Savings($result['measure'][$maId]['savings_gas']);
+            $result['measure'][$maId]['savings_money'] = RawCalculator::calculateMoneySavings($result['measure'][$maId]['savings_gas']);
         }
 
         // normalization done
@@ -179,7 +179,7 @@ class InsulatedGlazing
 
             if ($measureApplication instanceof MeasureApplication && $paintworkStatus instanceof PaintworkStatus) {
                 $year = InsulatedGlazingCalculator::determineApplicationYear($measureApplication, $paintworkStatus, $woodRotStatus, $lastPaintedYear);
-                $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
+                $costs = RawCalculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
             }
 
             $result['paintwork'] = compact('costs', 'year');

@@ -3,7 +3,7 @@
 namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\NumberFormatter;
 use App\Helpers\RoofInsulation as RoofInsulationHelper;
 use App\Helpers\RoofInsulationCalculator;
@@ -126,9 +126,9 @@ class RoofInsulation
                     if ($energyHabit instanceof UserEnergyHabit) {
                         $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $inputSource, $roofInsulationValue, $energyHabit, $heating, $surface, $totalSurface, $advice);
                     }
-                    $catData['savings_co2'] = Calculator::calculateCo2Savings($catData['savings_gas']);
-                    $catData['savings_money'] = round(Calculator::calculateMoneySavings($catData['savings_gas']));
-                    $catData['cost_indication'] = Calculator::calculateCostIndication($surface, $objAdvice);
+                    $catData['savings_co2'] = RawCalculator::calculateCo2Savings($catData['savings_gas']);
+                    $catData['savings_money'] = round(RawCalculator::calculateMoneySavings($catData['savings_gas']));
+                    $catData['cost_indication'] = RawCalculator::calculateCostIndication($surface, $objAdvice);
                     $catData['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($catData['cost_indication'], $catData['savings_money']), 1);
                     // The replace year is about the replacement of bitumen..
                     $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($objAdvice, $year, $factor);
@@ -159,7 +159,7 @@ class RoofInsulation
                 $surface = NumberFormatter::reverseFormat($roofTypes[$cat]['roof_surface'] ?? 0);
                 // \Log::debug('Calculating costs for replacement measure..');
                 $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                $catData['replace']['costs'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year'], false);
+                $catData['replace']['costs'] = RawCalculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year'], false);
             }
 
             $result[$cat] = array_merge($result[$cat], $catData);

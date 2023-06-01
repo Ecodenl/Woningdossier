@@ -2,9 +2,16 @@
 
 namespace App\Services\Kengetallen\Resolvers;
 
-use App\Traits\Services\HasBuilding;
-
-interface KengetallenDefiner
+abstract class KengetallenDefiner
 {
-    public function get($kengetallenCode);
+    public array $context;
+
+    public abstract function get(string $kengetallenCode);
+
+    public function context(array $context): self
+    {
+        $this->context = $context;
+
+        return $this;
+    }
 }

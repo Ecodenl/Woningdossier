@@ -4,7 +4,7 @@ namespace App\Calculations;
 
 use App\Deprecation\ToolHelper;
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\ComfortLevelTapWater;
@@ -87,8 +87,8 @@ class Heater extends \App\Calculations\Calculator
                 $result['production_heat'] = $systemSpecs['production_heat'];
                 $result['savings_gas'] = $result['production_heat'] / Kengetallen::gasKwhPerM3();
                 $result['percentage_consumption'] = isset($result['consumption']['gas']) ? ($result['savings_gas'] / $result['consumption']['gas']) * 100 : 0;
-                $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
-                $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
+                $result['savings_co2'] = RawCalculator::calculateCo2Savings($result['savings_gas']);
+                $result['savings_money'] = round(RawCalculator::calculateMoneySavings($result['savings_gas']));
 
                 $componentCostBoiler = HeaterComponentCost::where('component', 'boiler')->where('size', $result['specs']['size_boiler'])->first();
                 $componentCostCollector = HeaterComponentCost::where('component', 'collector')->where('size', $result['specs']['size_collector'])->first();

@@ -2,7 +2,7 @@
 
 namespace App\Services\Econobis\Payloads;
 
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
@@ -110,7 +110,7 @@ class WoonplanPayload extends EconobisPayload
                 'name' => $advisable->measure_name ?? $advisable->name,
                 'savings_gas' => $advice->savings_gas,
                 'savings_electricity' => $advice->savings_electricity,
-                'co2_savings' => Calculator::calculateCo2Savings($advice->savings_gas),
+                'co2_savings' => RawCalculator::calculateCo2Savings($advice->savings_gas),
                 'measure_id' => $advice->user_action_plan_advisable_id,
                 'measure_type' => $advice->user_action_plan_advisable_type,
             ];

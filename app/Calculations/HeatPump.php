@@ -4,8 +4,9 @@ namespace App\Calculations;
 
 use App\Deprecation\ToolHelper;
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\Kengetallen;
+use App\Helpers\KengetallenCodes;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\Building;
 use App\Models\ElementValue;
@@ -16,6 +17,7 @@ use App\Models\KeyFigureInsulationFactor;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Services\Kengetallen\KengetallenService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -222,11 +224,11 @@ class HeatPump extends \App\Calculations\Calculator
             $currentNettoElectricityUsageCooking;
         Log::debug("C77 (meerverbruik elektra): (" . $newNettoElectricityUsageHeating . ' + ' . $newNettoElectricityUsageTapWater  . ' + ' . $newNettoElectricityUsageCooking . ') - ' . $currentNettoElectricityUsageHeating . ' - ' . $currentNettoElectricityUsageTapWater . ' - ' . $currentNettoElectricityUsageCooking . ' = ' . $extraConsumptionElectricity);
 
-        $savingsCo2 = Calculator::calculateCo2Savings($savingsGas) -
+        $savingsCo2 = RawCalculator::calculateCo2Savings($savingsGas) -
             ($extraConsumptionElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
         Log::debug("C78: " . $savingsCo2 . " (CO2 besparing)");
 
-        $savingsMoney = Calculator::calculateMoneySavings($savingsGas) -
+        $savingsMoney = RawCalculator::calculateMoneySavings($savingsGas, $euroSavingsGas) -
             ($extraConsumptionElectricity * Kengetallen::EURO_SAVINGS_ELECTRICITY);
         Log::debug("C79: " . $savingsMoney . " (euro besparing)");
 

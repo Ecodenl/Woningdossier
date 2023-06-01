@@ -3,7 +3,7 @@
 namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\FloorInsulationCalculator;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Models\Building;
@@ -84,9 +84,9 @@ class FloorInsulation
                     $result['savings_gas'] = FloorInsulationCalculator::calculateGasSavings($building, $inputSource, $floorInsulationValue, $energyHabit, $surface, $advice);
                 }
 
-                $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
-                $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
-                $result['cost_indication'] = Calculator::calculateCostIndication($surface, $insulationAdvice);
+                $result['savings_co2'] = RawCalculator::calculateCo2Savings($result['savings_gas']);
+                $result['savings_money'] = round(RawCalculator::calculateMoneySavings($result['savings_gas']));
+                $result['cost_indication'] = RawCalculator::calculateCostIndication($surface, $insulationAdvice);
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
             }
         }

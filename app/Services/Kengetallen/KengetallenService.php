@@ -23,11 +23,15 @@ class KengetallenService
     {
         if ($resolver instanceof BuildingDefined) {
             $value = (new $resolver)
+                ->context([
+                    'building' => $this->building,
+                    'inputSource' => $this->inputSource,
+                ])
                 ->forBuilding($this->building)
                 ->forInputSource($this->masterInputSource())
                 ->get($kengetallenCode);
 
-            if (!empty($value)) {
+            if ( ! empty($value)) {
                 return $value;
             }
         }
@@ -35,7 +39,7 @@ class KengetallenService
         if ($resolver instanceof CodeDefined) {
             $value = (new $resolver)
                 ->get($kengetallenCode);
-            if (!empty($value)) {
+            if ( ! empty($value)) {
                 return $value;
             }
         }

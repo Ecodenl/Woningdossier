@@ -27,9 +27,9 @@ class RoofInsulationCalculator
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
-                ($surface / $totalSurface) * Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
+                ($surface / $totalSurface) * RawCalculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
             );
-            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', ('.$surface / $totalSurface.') * '.Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
+            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', ('.$surface / $totalSurface.') * '.RawCalculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
         }
 
         return $result;

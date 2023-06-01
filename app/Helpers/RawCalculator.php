@@ -16,7 +16,7 @@ use App\Models\UserEnergyHabit;
 use App\Services\Kengetallen\KengetallenService;
 use Carbon\Carbon;
 
-class Calculator
+class RawCalculator
 {
     /**
      * Calculate the gas savings for the given building when applying the

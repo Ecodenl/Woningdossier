@@ -12,6 +12,7 @@ use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
+use App\Services\CalculatorService;
 
 class FloorInsulation
 {
@@ -85,7 +86,9 @@ class FloorInsulation
                 }
 
                 $result['savings_co2'] = RawCalculator::calculateCo2Savings($result['savings_gas']);
-                $result['savings_money'] = round(RawCalculator::calculateMoneySavings($result['savings_gas']));
+                $result['savings_money'] = round(
+                    app(CalculatorService::class)->forBuilding($building)->calculateMoneySavings($result['savings_gas'])
+                );
                 $result['cost_indication'] = RawCalculator::calculateCostIndication($surface, $insulationAdvice);
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
             }

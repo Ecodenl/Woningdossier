@@ -74,8 +74,8 @@ class RawCalculator
      */
     public static function calculateMoneySavings($gasSavings, $euroSavingsGas)
     {
-        $result = $gasSavings * Kengetallen::EURO_SAVINGS_GAS;
-        self::debug(__METHOD__." Euro's besparing: ".$result.' = '.$gasSavings.' * '.Kengetallen::EURO_SAVINGS_GAS);
+        $result = $gasSavings * $euroSavingsGas;
+        self::debug(__METHOD__." Euro's besparing: ".$result.' = '.$gasSavings.' * '.$euroSavingsGas);
 
         return $result;
     }

@@ -30,6 +30,7 @@ class CalculationsTable extends Component
     private array $fixedData = [
         'cost-gas' => [
             'name' => 'cooperation/frontend/tool.my-plan.calculations.values.gas-cost',
+            // todo: get variable kengetal from the service!
             'value' => Kengetallen::EURO_SAVINGS_GAS . ' € / m<sup>3</sup>',
             'source' => 'RVO',
         ],

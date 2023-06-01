@@ -30,9 +30,10 @@ class CalculatorService
 
     public function calculateMoneySavings($gasSavings)
     {
-        $euroSavingsGas = $this->resolveKengetal(KengetallenCodes::EURO_SAVINGS_GAS);
-
-        return RawCalculator::calculateMoneySavings($gasSavings, $euroSavingsGas);
+        return RawCalculator::calculateMoneySavings(
+            $gasSavings,
+            $this->resolveKengetal(KengetallenCodes::EURO_SAVINGS_GAS)
+        );
     }
 }
 

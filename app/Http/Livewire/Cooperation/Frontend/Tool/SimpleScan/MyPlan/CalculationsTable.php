@@ -99,15 +99,15 @@ class CalculationsTable extends Component
         $answers = BuildingService::init($this->building)->getSourcedAnswers($this->toolQuestions)->toArray();
 
         // determine where the kengetallen would come from
-
+        // currently (time of writng) there are only 2 "definers"
+        // so its either user input or rvo / code defined
+        // if in the future the cooperation would be added this has to ben herzien.
         $kengetallenService = $this->kengetallenService->forInputSource($this->masterInputSource)->forBuilding($this->building);
-
-
         $euroSavingsGasDefiner = $kengetallenService->explain(KengetallenCodes::EURO_SAVINGS_GAS);
         if ($euroSavingsGasDefiner instanceof BuildingDefined) {
             $this->toolQuestionShorts[] = 'gas-price-euro';
         } else {
-            $tableData['cost-gas'] = [
+            $this->tableData['cost-gas'] = [
                 'name' => __('cooperation/frontend/tool.my-plan.calculations.values.gas-cost'),
                 'value' => $kengetallenService->resolve(KengetallenCodes::EURO_SAVINGS_GAS).'€ / m<sup>3</sup>',
                 'source' => 'RVO'
@@ -117,14 +117,12 @@ class CalculationsTable extends Component
         if ($euroSavingsGasDefiner instanceof BuildingDefined) {
             $this->toolQuestionShorts[] = 'electricity-price-euro';
         } else {
-            $tableData['cost-electricity'] = [
+            $this->tableData['cost-electricity'] = [
                 'name' => __('cooperation/frontend/tool.my-plan.calculations.values.electricity-cost'),
                 'value' => $kengetallenService->resolve(KengetallenCodes::EURO_SAVINGS_ELECTRICITY).' € / kWh',
                 'source' => 'RVO'
             ];
         }
-
-        $this->tableData = $this->fixedData;
 
         foreach ($this->toolQuestions as $toolQuestion) {
             if (array_key_exists($toolQuestion->id, $answers)) {

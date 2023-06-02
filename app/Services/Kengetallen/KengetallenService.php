@@ -5,6 +5,7 @@ namespace App\Services\Kengetallen;
 use App\Services\Kengetallen\Resolvers\BuildingDefined;
 
 use App\Services\Kengetallen\Resolvers\CodeDefined;
+use App\Services\Kengetallen\Resolvers\KengetallenDefiner;
 use App\Traits\Services\HasBuilding;
 use App\Traits\Services\HasInputSources;
 
@@ -19,14 +20,14 @@ class KengetallenService
      */
     public array $resolvers = [
         BuildingDefined::class,
-        CodeDefined::class
+        CodeDefined::class,
     ];
 
     public function resolve(string $kengetallenCode)
     {
         foreach ($this->resolvers as $resolver) {
             $value = $this->get(new $resolver(), $kengetallenCode);
-            if (!is_null($value)) {
+            if ( ! is_null($value)) {
                 return $value;
             }
         }
@@ -34,23 +35,21 @@ class KengetallenService
 
     public function get($resolver, string $kengetallenCode)
     {
-        if ($resolver instanceof BuildingDefined) {
-            $value = (new $resolver)
-                ->context([
-                    'building' => $this->building,
-                    'inputSource' => $this->inputSource,
-                ])
-                ->get($kengetallenCode);
+        return (new $resolver)
+            ->context([
+                'building' => $this->building,
+                'inputSource' => $this->inputSource,
+            ])
+            ->get($kengetallenCode);
+    }
 
-            if ( ! empty($value)) {
-                return $value;
-            }
-        }
-
-        if ($resolver instanceof CodeDefined) {
-            $value = (new $resolver)->get($kengetallenCode);
-            if ( ! empty($value)) {
-                return $value;
+    public function explain(string $kengetallenCode): KengetallenDefiner
+    {
+        foreach ($this->resolvers as $resolver) {
+            $resolver = new $resolver();
+            $value = $this->get($resolver, $kengetallenCode);
+            if ( ! is_null($value)) {
+                return $resolver;
             }
         }
     }

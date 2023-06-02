@@ -8,6 +8,7 @@ use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\UserEnergyHabit;
+use App\Services\CalculatorService;
 use App\Services\Kengetallen\KengetallenService;
 
 class HighEfficiencyBoiler extends \App\Calculations\Calculator
@@ -43,7 +44,9 @@ class HighEfficiencyBoiler extends \App\Calculations\Calculator
         $result['amount_electricity'] = $this->getAnswer('amount-electricity');
 
         $result['savings_co2'] = RawCalculator::calculateCo2Savings($result['savings_gas']);
-        $result['savings_money'] = round(RawCalculator::calculateMoneySavings($result['savings_gas']));
+        $result['savings_money'] = round(app(CalculatorService::class)
+            ->forBuilding($this->building)
+            ->calculateMoneySavings($result['savings_gas']));
 
         $year = $this->getAnswer('boiler-placed-date');
         $result['replace_year'] = $hrBoilerCalculator->determineApplicationYear($measure, $year);

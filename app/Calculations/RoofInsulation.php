@@ -16,6 +16,7 @@ use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\UserEnergyHabit;
+use App\Services\CalculatorService;
 use Carbon\Carbon;
 
 class RoofInsulation
@@ -127,7 +128,10 @@ class RoofInsulation
                         $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $inputSource, $roofInsulationValue, $energyHabit, $heating, $surface, $totalSurface, $advice);
                     }
                     $catData['savings_co2'] = RawCalculator::calculateCo2Savings($catData['savings_gas']);
-                    $catData['savings_money'] = round(RawCalculator::calculateMoneySavings($catData['savings_gas']));
+
+                    $catData['savings_money'] = round(app(CalculatorService::class)
+                        ->forBuilding($building)
+                        ->calculateMoneySavings($catData['savings_gas']));
                     $catData['cost_indication'] = RawCalculator::calculateCostIndication($surface, $objAdvice);
                     $catData['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($catData['cost_indication'], $catData['savings_money']), 1);
                     // The replace year is about the replacement of bitumen..

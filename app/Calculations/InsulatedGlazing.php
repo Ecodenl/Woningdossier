@@ -15,6 +15,7 @@ use App\Models\InsulatingGlazing;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\WoodRotStatus;
+use App\Services\CalculatorService;
 
 class InsulatedGlazing
 {
@@ -94,8 +95,11 @@ class InsulatedGlazing
 
         // \Log::debug(__METHOD__.' Net total gas savings: '.$result['savings_gas']);
 
+        $calculatorService = app(CalculatorService::class)->forBuilding($building);
+
         $result['savings_co2'] += RawCalculator::calculateCo2Savings($result['savings_gas']);
-        $result['savings_money'] += RawCalculator::calculateMoneySavings($result['savings_gas']);
+
+        $result['savings_money'] += $calculatorService->calculateMoneySavings($result['savings_gas']);
 
         // Normalize (update) and add data to the result per measure
         foreach ($result['measure'] as $maId => $measureCalculationResults) {
@@ -106,7 +110,7 @@ class InsulatedGlazing
             $result['measure'][$maId]['savings_gas'] = $measureGasSavings;
             // \Log::debug(__METHOD__.' Measure '.$maId.' factor: '.$measureGasSavings);
             $result['measure'][$maId]['savings_co2'] = RawCalculator::calculateCo2Savings($result['measure'][$maId]['savings_gas']);
-            $result['measure'][$maId]['savings_money'] = RawCalculator::calculateMoneySavings($result['measure'][$maId]['savings_gas']);
+            $result['measure'][$maId]['savings_money'] = $calculatorService->calculateMoneySavings($result['measure'][$maId]['savings_gas']);
         }
 
         // normalization done

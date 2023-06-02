@@ -2,13 +2,21 @@
 
 namespace App\Services\Kengetallen\Resolvers;
 
-use App\Traits\Services\HasBuilding;
-use App\Traits\Services\HasInputSources;
+use App\Models\ToolQuestion;
 
 class BuildingDefined extends KengetallenDefiner
 {
-    public function get($kengetallenCode): float
+    public function get($kengetallenCode): ?float
     {
-        dd('not done');
+        $building = $this->context['building'];
+        $inputSource = $this->context['inputSource'];
+
+        if ($kengetallenCode === 'EURO_SAVINGS_GAS') {
+            return $building->getAnswer($inputSource, ToolQuestion::findByShort('electricity-price-euro'));
+        }
+
+        if ($kengetallenCode === 'EURO_SAVINGS_ELECTRICITY') {
+            return $building->getAnswer($inputSource, ToolQuestion::findByShort('electricity-price-euro'));
+        }
     }
 }

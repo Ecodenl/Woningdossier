@@ -574,6 +574,20 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => 'kWh'
             ],
             [
+                'data_type' => Caster::NON_ROUNDING_FLOAT,
+                'validation' => ['required', 'numeric', 'min:0', 'max:10'],
+                'short' => 'gas-price-euro',
+                'translation' => 'Eigen gasprijs per m3',
+                'unit_of_measure' => __('general.unit.cubic-meters.title'),
+            ],
+            [
+                'data_type' => Caster::NON_ROUNDING_FLOAT,
+                'validation' => ['required', 'numeric', 'min:0', 'max:10'],
+                'short' => 'electricity-price-euro',
+                'translation' => 'Eigen stroomprijs per kWh',
+                'unit_of_measure' => __('general.unit.cubic-meters.title'),
+            ],
+            [
                 'data_type' => Caster::STRING,
                 'validation' => ['nullable', 'string'],
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",

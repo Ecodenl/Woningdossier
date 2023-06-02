@@ -12,10 +12,23 @@ class KengetallenService
 {
     use HasBuilding, HasInputSources;
 
+    /**
+     * The resolvers, sorted based on priority
+     *
+     * @var array|string[]
+     */
+    public array $resolvers = [
+        BuildingDefined::class,
+        CodeDefined::class
+    ];
+
     public function resolve(string $kengetallenCode)
     {
-        if ($value = $this->get(new CodeDefined(), $kengetallenCode)) {
-            return $value;
+        foreach ($this->resolvers as $resolver) {
+            $value = $this->get(new $resolver(), $kengetallenCode);
+            if (!is_null($value)) {
+                return $value;
+            }
         }
     }
 
@@ -27,8 +40,6 @@ class KengetallenService
                     'building' => $this->building,
                     'inputSource' => $this->inputSource,
                 ])
-                ->forBuilding($this->building)
-                ->forInputSource($this->masterInputSource())
                 ->get($kengetallenCode);
 
             if ( ! empty($value)) {
@@ -37,8 +48,7 @@ class KengetallenService
         }
 
         if ($resolver instanceof CodeDefined) {
-            $value = (new $resolver)
-                ->get($kengetallenCode);
+            $value = (new $resolver)->get($kengetallenCode);
             if ( ! empty($value)) {
                 return $value;
             }

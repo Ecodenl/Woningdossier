@@ -41,6 +41,8 @@ class ToolQuestionHelper
      * An array map of tool questions that should do a full recalculate on change.
      */
     const TOOL_QUESTION_FULL_RECALCULATE = [
+        'gas-price-euro',
+        'electricity-price-euro',
         'thermostat-high',
         'thermostat-low',
         'hours-high',

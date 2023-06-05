@@ -70,7 +70,7 @@ class Form extends Scannable
 
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
-            if ($toolQuestion->data_type === Caster::FLOAT) {
+            if (in_array($toolQuestion->data_type, [Caster::FLOAT, Caster::NON_ROUNDING_FLOAT])) {
                 $this->filledInAnswers[$toolQuestion->short] = Caster::init()
                     ->dataType($toolQuestion->data_type)
                     ->value($this->filledInAnswers[$toolQuestion->short])

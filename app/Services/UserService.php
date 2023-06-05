@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\UserDeleted;
 use App\Events\UserResetHisBuilding;
+use App\Helpers\KengetallenCodes;
 use App\Helpers\Queue;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
@@ -15,8 +16,10 @@ use App\Models\Cooperation;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Municipality;
+use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Services\Econobis\EconobisService;
+use App\Services\Kengetallen\KengetallenService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
 use App\Services\Models\BuildingStatusService;
@@ -181,6 +184,8 @@ class UserService
             $features->building()->associate(
                 $building
             )->save();
+
+            app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
         }
         UserResetHisBuilding::dispatch($building);
     }
@@ -246,7 +251,7 @@ class UserService
         if ( ! $building->municipality()->first() instanceof Municipality) {
             CheckBuildingAddress::dispatch($building);
         }
-
+        app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
         $user->cooperation()->associate(
             $cooperation
         )->save();
@@ -257,6 +262,7 @@ class UserService
 
         return $user;
     }
+
 
     /**
      * Method to delete a user and its user info.

@@ -25,7 +25,11 @@ class MacroServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Loading in all macros...
+        // They are in a separate folder, so it's less clustered in here.
+        foreach (glob(app_path('Macros/*.php')) as $filename) {
+            require_once $filename;
+        }
     }
 
     private function registerCollectionMacros()

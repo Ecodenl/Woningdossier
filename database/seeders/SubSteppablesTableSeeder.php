@@ -319,6 +319,26 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                     ]
                 ],
+                'Gas en elektra kosten' => [
+                    'order' => 4,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolLabel::findByShort('gas-electricity-price-explain'),
+                            'size' => 'w-full'
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('gas-price-euro'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('electricity-price-euro'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
                 'Samenvatting bewoners-gebruik' => [
                     'order' => 4,
                     'sub_step_template_id' => $templateSummary->id,

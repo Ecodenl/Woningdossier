@@ -3,6 +3,7 @@
 namespace App\Services\Models;
 
 use App\Events\BuildingAppointmentDateUpdated;
+use App\Helpers\KengetallenCodes;
 use App\Helpers\Queue;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\CheckBuildingAddress;
@@ -11,10 +12,15 @@ use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Scan;
+use App\Models\ToolQuestion;
+use App\Services\Kengetallen\KengetallenService;
+use App\Services\Kengetallen\Resolvers\RvoDefined;
+use App\Services\ToolQuestionService;
 use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 
 class BuildingService
 {
@@ -30,7 +36,7 @@ class BuildingService
     /**
      * convenient way of setting a appointment date on a building.
      *
-     * @param string
+     * @param  string
      *
      * @return void
      */
@@ -42,6 +48,28 @@ class BuildingService
         ]);
 
         BuildingAppointmentDateUpdated::dispatch($this->building);
+    }
+
+    /**
+     * This method will set the BuildingDefined kengetallen to the "default" (RvoDefined) kengetallen
+     *
+     * @return void
+     */
+    public function setBuildingDefinedKengetallen(): void
+    {
+        $kengetallenService = app(KengetallenService::class)->forBuilding($this->building);
+        $toolQuestionService = ToolQuestionService::init()
+            ->building($this->building)
+            ->currentInputSource(InputSource::resident());
+
+        // force to resolve through the code defined kengetallen.
+        $toolQuestionService
+            ->toolQuestion(ToolQuestion::findByShort('electricity-price-euro'))
+            ->save($kengetallenService->get(new RvoDefined(), KengetallenCodes::EURO_SAVINGS_ELECTRICITY));
+
+        $toolQuestionService
+            ->toolQuestion(ToolQuestion::findByShort('gas-price-euro'))
+            ->save($kengetallenService->get(new RvoDefined(),KengetallenCodes::EURO_SAVINGS_GAS));
     }
 
     public function forBuilding(Building $building): self
@@ -216,7 +244,7 @@ class BuildingService
         return $answersForTqa->union($answersForSaveIn);
     }
 
-    public function performMunicipalityCheck ()
+    public function performMunicipalityCheck()
     {
         $building = $this->building;
 
@@ -249,7 +277,8 @@ class BuildingService
         // to cascade on delete, but mappings are a morph relation without foreign key constraints, so we must
         // delete them ourselves.
         DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
-            ->whereIn('from_model_id', $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray())
+            ->whereIn('from_model_id',
+                $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray())
             ->delete();
 
         // table will be removed anyways.

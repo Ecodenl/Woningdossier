@@ -4,7 +4,6 @@ namespace App\Services\Models;
 
 use App\Events\BuildingAppointmentDateUpdated;
 use App\Helpers\KengetallenCodes;
-use App\Helpers\Queue;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\CheckBuildingAddress;
 use App\Jobs\RefreshRegulationsForBuildingUser;
@@ -20,7 +19,6 @@ use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 
 class BuildingService
 {

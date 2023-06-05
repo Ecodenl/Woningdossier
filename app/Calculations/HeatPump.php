@@ -44,6 +44,8 @@ class HeatPump extends \App\Calculations\Calculator
 
     protected array $advices = [];
 
+    private KengetallenService $kengetallenService;
+
     /**
      * @param  \App\Models\Building  $building
      * @param  \App\Models\InputSource  $inputSource
@@ -52,7 +54,7 @@ class HeatPump extends \App\Calculations\Calculator
     public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         parent::__construct($building, $inputSource, $answers);
-
+        $this->kengetallenService = app(KengetallenService::class);
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
             ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
     }
@@ -235,7 +237,7 @@ class HeatPump extends \App\Calculations\Calculator
             ->forBuilding($this->building)
             ->calculateMoneySavings($savingsGas);
 
-        $euroSavingsElectricity = app(KengetallenService::class)->forBuilding($this->building)->resolve(KengetallenCodes::EURO_SAVINGS_ELECTRICITY);
+        $euroSavingsElectricity = $this->kengetallenService->forInputSource($this->inputSource)->forBuilding($this->building)->resolve(KengetallenCodes::EURO_SAVINGS_ELECTRICITY);
         $savingsMoney = $calculatedMoneySavings - ($extraConsumptionElectricity * $euroSavingsElectricity);
         Log::debug("C79: ".$savingsMoney." (euro besparing)");
 

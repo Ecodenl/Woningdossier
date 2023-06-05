@@ -234,7 +234,9 @@ class HeatPump extends \App\Calculations\Calculator
         $calculatedMoneySavings = app(CalculatorService::class)
             ->forBuilding($this->building)
             ->calculateMoneySavings($savingsGas);
-        $savingsMoney = $calculatedMoneySavings - ($extraConsumptionElectricity * Kengetallen::EURO_SAVINGS_ELECTRICITY);
+
+        $euroSavingsElectricity = app(KengetallenService::class)->forBuilding($this->building)->resolve(KengetallenCodes::EURO_SAVINGS_ELECTRICITY);
+        $savingsMoney = $calculatedMoneySavings - ($extraConsumptionElectricity * $euroSavingsElectricity);
         Log::debug("C79: ".$savingsMoney." (euro besparing)");
 
         $result = [

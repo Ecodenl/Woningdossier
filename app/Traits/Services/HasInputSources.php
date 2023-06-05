@@ -6,7 +6,7 @@ use App\Models\InputSource;
 
 trait HasInputSources
 {
-    public InputSource $inputSource;
+    public ?InputSource $inputSource = null;
 
     public function forInputSource(InputSource $inputSource): self
     {

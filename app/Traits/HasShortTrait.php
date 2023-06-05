@@ -38,20 +38,6 @@ trait HasShortTrait
         return self::whereIn('short', $shorts)->get();
     }
 
-    /**
-     * Find multiple records by a set of shorts, ordered by the given order of shorts.
-     *
-     * @param array $shorts
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public static function findByShortsOrdered(array $shorts): Collection
-    {
-        return self::orderByField('short', $shorts)
-            ->whereIn('short', $shorts)
-            ->get();
-    }
-
     public static function clearShortCache(string $short)
     {
         $cacheKey = 'HasShortTrait_find_by_short_%s_%s';

@@ -75,7 +75,7 @@ class CalculationsTable extends Component
 
     protected function setModels()
     {
-        $this->toolQuestions = ToolQuestion::findByShortsOrdered($this->toolQuestionShorts);
+        $this->toolQuestions = ToolQuestion::findByShortsOrdered($this->toolQuestionShorts)->get();
         $this->toolCalculationResults = ToolCalculationResult::findByShorts($this->toolCalculationResultShorts);
 
         $conditionService = ConditionService::init()
@@ -114,7 +114,7 @@ class CalculationsTable extends Component
             ];
         }
         $euroSavingsElectricityDefiner = $kengetallenService->explain(KengetallenCodes::EURO_SAVINGS_ELECTRICITY);
-        if ($euroSavingsGasDefiner instanceof BuildingDefined) {
+        if ($euroSavingsElectricityDefiner instanceof BuildingDefined) {
             $this->toolQuestionShorts[] = 'electricity-price-euro';
         } else {
             $this->tableData['cost-electricity'] = [

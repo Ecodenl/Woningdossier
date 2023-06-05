@@ -4,7 +4,7 @@ namespace App\Services\Kengetallen;
 
 use App\Services\Kengetallen\Resolvers\BuildingDefined;
 
-use App\Services\Kengetallen\Resolvers\CodeDefined;
+use App\Services\Kengetallen\Resolvers\RvoDefined;
 use App\Services\Kengetallen\Resolvers\KengetallenDefiner;
 use App\Traits\Services\HasBuilding;
 use App\Traits\Services\HasInputSources;
@@ -20,7 +20,7 @@ class KengetallenService
      */
     public array $resolvers = [
         BuildingDefined::class,
-        CodeDefined::class,
+        RvoDefined::class,
     ];
 
     public function resolve(string $kengetallenCode)

@@ -2,7 +2,7 @@
 
 namespace App\Services\Kengetallen\Resolvers;
 
-class CodeDefined extends KengetallenDefiner
+class RvoDefined extends KengetallenDefiner
 {
     public function get($kengetallenCode): float
     {

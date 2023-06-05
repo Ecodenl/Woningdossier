@@ -1,14 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
-
-Builder::macro('orderByField', function (string $column, array $array) {
-    $questionMarks = substr(str_repeat('?, ', count($array)), 0, -2);
-
-    return $this->orderByRaw("FIELD({$column}, {$questionMarks})", $array);
-});
 
 EloquentBuilder::macro('withWhereHas', function ($relation, Closure $callback = null, $operator = '>=', $count = 1) {
     /**

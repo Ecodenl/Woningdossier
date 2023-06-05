@@ -14,7 +14,7 @@ use App\Models\InputSource;
 use App\Models\Scan;
 use App\Models\ToolQuestion;
 use App\Services\Kengetallen\KengetallenService;
-use App\Services\Kengetallen\Resolvers\CodeDefined;
+use App\Services\Kengetallen\Resolvers\RvoDefined;
 use App\Services\ToolQuestionService;
 use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
@@ -51,7 +51,7 @@ class BuildingService
     }
 
     /**
-     * This method will set the BuildingDefined kengetallen to the "default" (CodeDefined) kengetallen
+     * This method will set the BuildingDefined kengetallen to the "default" (RvoDefined) kengetallen
      *
      * @return void
      */
@@ -65,11 +65,11 @@ class BuildingService
         // force to resolve through the code defined kengetallen.
         $toolQuestionService
             ->toolQuestion(ToolQuestion::findByShort('electricity-price-euro'))
-            ->save($kengetallenService->get(new CodeDefined(), KengetallenCodes::EURO_SAVINGS_ELECTRICITY));
+            ->save($kengetallenService->get(new RvoDefined(), KengetallenCodes::EURO_SAVINGS_ELECTRICITY));
 
         $toolQuestionService
             ->toolQuestion(ToolQuestion::findByShort('gas-price-euro'))
-            ->save($kengetallenService->get(new CodeDefined(),KengetallenCodes::EURO_SAVINGS_GAS));
+            ->save($kengetallenService->get(new RvoDefined(),KengetallenCodes::EURO_SAVINGS_GAS));
     }
 
     public function forBuilding(Building $building): self

@@ -318,7 +318,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Gas en elektra kosten' => [
-                    'order' => 4,
+                    'order' => 5,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [

@@ -75,7 +75,7 @@ class CalculationsTable extends Component
 
     protected function setModels()
     {
-        $this->toolQuestions = ToolQuestion::findByShorts($this->toolQuestionShorts);
+        $this->toolQuestions = ToolQuestion::findByShortsOrdered($this->toolQuestionShorts);
         $this->toolCalculationResults = ToolCalculationResult::findByShorts($this->toolCalculationResultShorts);
 
         $conditionService = ConditionService::init()
@@ -83,12 +83,12 @@ class CalculationsTable extends Component
             ->inputSource($this->masterInputSource);
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-            if ( ! $conditionService->forModel($toolQuestion)->isViewable()) {
+            if (! $conditionService->forModel($toolQuestion)->isViewable()) {
                 unset($this->toolQuestions[$index]);
             }
         }
         foreach ($this->toolCalculationResults as $index => $toolCalculationResult) {
-            if ( ! $conditionService->forModel($toolCalculationResult)->isViewable()) {
+            if (! $conditionService->forModel($toolCalculationResult)->isViewable()) {
                 unset($this->toolCalculationResults[$index]);
             }
         }

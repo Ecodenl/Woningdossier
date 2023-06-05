@@ -19,6 +19,7 @@ use App\Models\User;
 use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
+use App\Services\Kengetallen\KengetallenService;
 use App\Services\Models\AlertService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -30,7 +31,7 @@ class UserReportController extends Controller
     /**
      * TESTING only.
      */
-    public function index(Cooperation $userCooperation, ?string $scanShort = null)
+    public function index(KengetallenService $kengetallenService, Cooperation $userCooperation, ?string $scanShort = null)
     {
         $scanShort ??= Scan::QUICK;
         if ($scanShort === Scan::LITE) {
@@ -231,6 +232,9 @@ class UserReportController extends Controller
             $inputSource
         )[RegulationService::SUBSIDY] ?? [];
 
+        $kengetallenService = $kengetallenService
+            ->forInputSource($inputSource)
+            ->forBuilding($building);
         // https://github.com/mccarlosen/laravel-mpdf
         // To style container margins of the PDF, see config/pdf.php
         return LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
@@ -250,6 +254,7 @@ class UserReportController extends Controller
             'adviceComments',
             'alerts',
             'subsidyRegulations',
+            'kengetallenService'
         ))->stream();
     }
 }

@@ -51,7 +51,7 @@
             </div>
             <div class="col-10">
                 <p>
-                    {!! number_format(Kengetallen::EURO_SAVINGS_GAS, 2, ',', '.') . ' € / m<sup>3</sup>' !!}
+{{--                    {!! number_format($kengetallenService->resolve(\App\Helpers\KengetallenCodes::EURO_SAVINGS_GAS), 2, ',', '.') . ' € / m<sup>3</sup>' !!}--}}
                 </p>
             </div>
         </div>
@@ -63,7 +63,7 @@
             </div>
             <div class="col-10">
                 <p>
-                    {!! number_format(Kengetallen::EURO_SAVINGS_ELECTRICITY, 2, ',', '.') . ' € / kWh' !!}
+{{--                    {!! number_format($kengetallenService->resolve(\App\Helpers\KengetallenCodes::EURO_SAVINGS_ELECTRICITY), 2, ',', '.') . ' € / kWh' !!}--}}
                 </p>
             </div>
         </div>

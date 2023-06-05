@@ -12,7 +12,7 @@ class BuildingDefined extends KengetallenDefiner
         $inputSource = $this->context['inputSource'];
 
         if ($kengetallenCode === 'EURO_SAVINGS_GAS') {
-            return $building->getAnswer($inputSource, ToolQuestion::findByShort('electricity-price-euro'));
+            return $building->getAnswer($inputSource, ToolQuestion::findByShort('gas-price-euro'));
         }
 
         if ($kengetallenCode === 'EURO_SAVINGS_ELECTRICITY') {

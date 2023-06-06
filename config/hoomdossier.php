@@ -65,18 +65,7 @@ return [
             // Email addresses of the admins, those admins should be notified in case something happens.
             'admin' => env('ADMIN_MAIL_ADDRESS', ''),
             // Email addresses that should be allowed through the email filter if the app isn't in production.
-            'whitelist' => [
-                // Dev emails
-                'info@wedesignit.nl',
-                'logs@wedesignit.nl',
-                'dev@wedesignit.nl',
-                'p.vankouteren@wedesignit.nl',
-                'b.looij@wedesignit.nl',
-                'y.schrijvers@wedesignit.nl',
-                // Tester / Project manager / Client emails
-                'marco.tazelaar@econobis.nl',
-                'johannes.frolich@hoom.nl',
-            ],
+            'whitelist' => env("HOOM_CONTACT_EMAIL_WHITELIST", ''),
         ],
     ],
 ];

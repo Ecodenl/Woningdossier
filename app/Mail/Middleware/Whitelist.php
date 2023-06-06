@@ -54,7 +54,7 @@ class Whitelist
 
     private function filterAddresses(array $addresses): array
     {
-        $whitelisted = config('hoomdossier.contact.email.whitelist', []);
+        $whitelisted = array_filter(explode(',', config('hoomdossier.contact.email.whitelist', '')));
 
         $allowed = [];
         foreach ($addresses as $data) {

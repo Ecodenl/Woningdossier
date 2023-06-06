@@ -26,6 +26,11 @@ class Hoomdossier
         return false !== stristr($column, $needle);
     }
 
+    public static function hasEnabledEconobisCalls(): bool
+    {
+        return config('hoomdossier.services.econobis.enabled', true);
+    }
+
     /**
      * Method to return a unit for a given column.
      *
@@ -72,13 +77,13 @@ class Hoomdossier
     }
 
     /**
+     * @param  string  $column
+     * @param  null  $default
+     *
+     * @return mixed|null
      * @deprecated
      * Return the most credible value from a given collection.
      *
-     * @param string $column
-     * @param null   $default
-     *
-     * @return mixed|null
      */
     public static function getMostCredibleValueFromCollection(Collection $results, $column, $default = null)
     {
@@ -103,14 +108,18 @@ class Hoomdossier
     /**
      * Will return the most credible value from a given relationship.
      *
-     * @param null $column
-     * @param null $default
-     * @param null $onlyReturnForInputSource
+     * @param  null  $column
+     * @param  null  $default
+     * @param  null  $onlyReturnForInputSource
      *
      * @return \Illuminate\Database\Eloquent\Collection|mixed|null
      */
-    public static function getMostCredibleValue(Relation $relation, $column = null, $default = null, $onlyReturnForInputSource = null)
-    {
+    public static function getMostCredibleValue(
+        Relation $relation,
+        $column = null,
+        $default = null,
+        $onlyReturnForInputSource = null
+    ) {
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 

@@ -68,9 +68,17 @@ class Comments extends Component
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
         if ($sourceShort === InputSource::RESIDENT_SHORT || $sourceShort === InputSource::COACH_SHORT) {
+            $textProperty = "{$sourceShort}CommentText";
+
             $commentShort = "{$sourceShort}Comment";
-            $commentText = $this->{"{$sourceShort}CommentText"};
+            $commentText = $this->{$textProperty};
             $inputSource = $this->{"{$sourceShort}InputSource"};
+
+            $this->validate([
+                $textProperty => [
+                    'string', 'max:250000',
+                ],
+            ]);
 
             if ($inputSource->short === $this->currentInputSource->short) {
                 if ($this->{$commentShort} instanceof UserActionPlanAdviceComments) {

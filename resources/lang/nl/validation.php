@@ -405,6 +405,10 @@ return [
         // Measure caategories
         'measure_categories.name' => 'naam',
         'vbjehuis_measure' => 'VerbeterJeHuis maatregel',
+
+        // Woonplan comments
+        'residentCommentText' => 'opmerkingen bewoner',
+        'coachCommentText' => 'opmerkingen coach',
     ],
 
     'values' => [

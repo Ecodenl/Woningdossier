@@ -187,11 +187,9 @@
                     </p>
                 @endslot
 
-
                 @include("cooperation.tool-question-type-templates.{$subSteppablePivot->toolQuestionType->short}.show", [
                     'disabled' => $disabled,
                 ])
-
             @endcomponent
         @endforeach
     </div>

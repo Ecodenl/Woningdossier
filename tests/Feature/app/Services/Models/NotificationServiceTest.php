@@ -5,6 +5,7 @@ namespace Tests\Feature\app\Services\Models;
 use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Notification;
 use App\Services\Models\NotificationService;
 use Database\Seeders\InputSourcesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,7 +20,7 @@ class NotificationServiceTest extends TestCase
         $this->seed(InputSourcesTableSeeder::class);
         $building = Building::factory()->withUser()->create();
 
-        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $residentInputSource = InputSource::resident();
         $masterInputSource = InputSource::master();
 
         $uuid1 = Str::uuid();
@@ -51,7 +52,8 @@ class NotificationServiceTest extends TestCase
         $this->seed(InputSourcesTableSeeder::class);
         $building = Building::factory()->withUser()->create();
         
-        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $residentInputSource = InputSource::resident();
+        $masterInputSource = InputSource::master();
 
         $uuid1 = Str::uuid();
         $uuid2 = Str::uuid();
@@ -75,10 +77,10 @@ class NotificationServiceTest extends TestCase
         $this->assertTrue($notificationService->setUuid($uuid2)->isActive());
         $this->assertTrue($notificationService->hasActiveTypes(['test']));
 
-        // Assert we have one of types.
+        // Assert we have one of types (we still have uuid2 "set", but that doesn't matter).
         $this->assertTrue($notificationService->hasActiveTypes(['test', 'not-existing', 'other-type']));
 
-        // Assert we don't have one of types (we still have uuid2 active, but that doesn't matter).
+        // Assert we don't have one of types.
         $this->assertFalse($notificationService->hasActiveTypes(['not-existing', 'other-type']));
 
         // Create new notification with new uuid.
@@ -104,12 +106,12 @@ class NotificationServiceTest extends TestCase
 
         // Assert without input source.
         $notificationService = NotificationService::init()
-            ->forBuilding($building)
-            ->setType('test');
+            ->forBuilding($building);
 
         $notificationService->setType('nullable')->setActive([$uuid4]);
+        // Check if type is active even without input source query (and without uuid).
         $this->assertTrue($notificationService->isActive());
-        // Test type is active even without input source query.
+        // Check for type test also (activated on line 66).
         $this->assertTrue($notificationService->setType('test')->isActive());
 
         $this->assertTrue($notificationService->hasActiveTypes(['nullable']));
@@ -123,7 +125,7 @@ class NotificationServiceTest extends TestCase
         $this->seed(InputSourcesTableSeeder::class);
         $building = Building::factory()->withUser()->create();
 
-        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $residentInputSource = InputSource::resident();
         $masterInputSource = InputSource::master();
 
         $uuid1 = Str::uuid();
@@ -214,5 +216,9 @@ class NotificationServiceTest extends TestCase
             'uuid' => $uuid2,
             'type' => 'test',
         ]);
+
+        // Ensure we can find an active notification with and without input source
+        $this->assertTrue($notificationService->setUuid($uuid2)->isActive());
+        $this->assertTrue($notificationService->forInputSource($masterInputSource)->isActive());
     }
 }

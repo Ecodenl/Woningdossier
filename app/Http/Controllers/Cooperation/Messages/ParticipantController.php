@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Cooperation\Messages;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Helpers\Hoomdossier;
+use App\Helpers\Queue;
 use App\Http\Controllers\Controller;
+use App\Mail\User\NotifyCoachParticipantAdded;
+use App\Mail\User\NotifyResidentParticipantAdded;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -15,6 +18,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\PrivateMessageViewService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ParticipantController extends Controller
 {
@@ -60,9 +64,10 @@ class ParticipantController extends Controller
         $user = $cooperation->users()->find($userId);
 
         if ($user instanceof User) {
-            $residentBuilding = Building::find($buildingId);
+            $residentBuilding = Building::with('user')->find($buildingId);
+            $resident = $residentBuilding->user;
 
-            if ($residentBuilding->user->allowedAccess()) {
+            if ($resident->allowedAccess()) {
                 // give the coach permission to the resident his building
                 BuildingPermissionService::givePermission($user, $residentBuilding);
             }
@@ -70,6 +75,12 @@ class ParticipantController extends Controller
             BuildingCoachStatusService::giveAccess($user, $residentBuilding);
 
             ParticipantAddedEvent::dispatch($user, $residentBuilding, $request->user(), $cooperation);
+
+            $coachMail = (new NotifyCoachParticipantAdded($resident, $user))->onQueue(Queue::APP_EXTERNAL);
+            $residentMail = (new NotifyResidentParticipantAdded($resident, $user))->onQueue(Queue::APP_EXTERNAL);
+
+            Mail::to([['email' => $user->account->email, 'name'=> $user->getFullName()]])->queue($coachMail);
+            Mail::to([['email' => $resident->account->email, 'name'=> $resident->getFullName()]])->queue($residentMail);
         }
 
         // since the coordinator is the only one who can do this atm.

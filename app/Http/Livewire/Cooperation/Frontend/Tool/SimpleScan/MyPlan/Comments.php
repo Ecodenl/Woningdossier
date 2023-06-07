@@ -71,18 +71,18 @@ class Comments extends Component
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
         if (array_key_exists($toolQuestionShort, $this->filledInAnswers)) {
+            $this->validate([
+                "filledInAnswers.{$toolQuestionShort}" => [
+                    'string', 'max:250000',
+                ],
+            ]);
+
             $sourceShort = Str::before($toolQuestionShort, 'Comment');
             $commentShort = "{$sourceShort}Comment";
             $commentText = $this->filledInAnswers[$toolQuestionShort];
             // Sanitize HTML (just in case)
             $commentText = (new HtmlSanitizer())->sanitize($commentText);
             $inputSource = $this->{"{$sourceShort}InputSource"};
-
-            $this->validate([
-                "filledInAnswers.{$toolQuestionShort}" => [
-                    'string', 'max:250000',
-                ],
-            ]);
 
             if ($inputSource->short === $this->currentInputSource->short) {
                 if ($this->{$commentShort} instanceof UserActionPlanAdviceComments) {

@@ -30,7 +30,7 @@ class Whitelist
         /** @var \Illuminate\Mail\Mailable $mailable */
         $mailable = $mail->mailable;
 
-        if (! App::environment(['production', 'prod']) && ! (App::environment('local') && config('mail.default') === 'log')) {
+        if (config('hoomdossier.contact.email.whitelist_enabled')) {
             $tos = $mailable->to;
             $filtered = $this->filterAddresses($tos);
             if (empty($filtered)) {

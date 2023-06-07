@@ -60,7 +60,7 @@ class ToolQuestionService
 
     public function save($givenAnswer)
     {
-        if ($this->toolQuestion->data_type === Caster::STRING && Str::contains($this->toolQuestion->short, 'comment')) {
+        if ($this->toolQuestion->data_type === Caster::HTML_STRING) {
             // Sanitize HTML (just in case)
             $givenAnswer = (new HtmlSanitizer())->sanitize($givenAnswer);
         }

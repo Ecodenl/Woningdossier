@@ -65,7 +65,7 @@ return [
             // Email addresses of the admins, those admins should be notified in case something happens.
             'admin' => env('ADMIN_MAIL_ADDRESS', ''),
             // Email addresses that should be allowed through the email filter if the app isn't in production.
-            'whitelist' => env("HOOM_CONTACT_EMAIL_WHITELIST", ''),
+            'whitelist' => env('HOOM_CONTACT_EMAIL_WHITELIST', ''),
         ],
     ],
 ];

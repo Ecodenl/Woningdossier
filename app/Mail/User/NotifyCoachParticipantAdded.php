@@ -38,7 +38,6 @@ class NotifyCoachParticipantAdded extends Mailable implements ShouldQueue
     public function build()
     {
         return $this
-            ->to($this->coach->account->email, $this->coach->getFullName())
             ->subject(strip_tags(__('cooperation/mail/user/notify-coach-participant-added.subject', ['name' => $this->user->getFullName()])))
             ->view('cooperation.mail.user.notify-coach-participant-added.view')
             ->text('cooperation.mail.user.notify-coach-participant-added.text');

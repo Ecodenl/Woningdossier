@@ -64,9 +64,10 @@ class ParticipantController extends Controller
         $user = $cooperation->users()->find($userId);
 
         if ($user instanceof User) {
-            $residentBuilding = Building::find($buildingId);
+            $residentBuilding = Building::with('user')->find($buildingId);
+            $resident = $residentBuilding->user;
 
-            if ($residentBuilding->user->allowedAccess()) {
+            if ($resident->allowedAccess()) {
                 // give the coach permission to the resident his building
                 BuildingPermissionService::givePermission($user, $residentBuilding);
             }
@@ -75,11 +76,11 @@ class ParticipantController extends Controller
 
             ParticipantAddedEvent::dispatch($user, $residentBuilding, $request->user(), $cooperation);
 
-            $coachMail = (new NotifyCoachParticipantAdded($residentBuilding->user, $user))->onQueue(Queue::APP_EXTERNAL);
-            $residentMail = (new NotifyResidentParticipantAdded($residentBuilding->user, $user))->onQueue(Queue::APP_EXTERNAL);
+            $coachMail = (new NotifyCoachParticipantAdded($resident, $user))->onQueue(Queue::APP_EXTERNAL);
+            $residentMail = (new NotifyResidentParticipantAdded($resident, $user))->onQueue(Queue::APP_EXTERNAL);
 
-            Mail::queue($coachMail);
-            Mail::queue($residentMail);
+            Mail::to([['email' => $user->account->email, 'name'=> $user->getFullName()]])->queue($coachMail);
+            Mail::to([['email' => $resident->account->email, 'name'=> $resident->getFullName()]])->queue($residentMail);
         }
 
         // since the coordinator is the only one who can do this atm.

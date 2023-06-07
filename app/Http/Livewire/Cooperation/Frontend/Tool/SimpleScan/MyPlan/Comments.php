@@ -79,7 +79,7 @@ class Comments extends Component
             $inputSource = $this->{"{$sourceShort}InputSource"};
 
             $this->validate([
-                $toolQuestionShort => [
+                "filledInAnswers.{$toolQuestionShort}" => [
                     'string', 'max:250000',
                 ],
             ]);

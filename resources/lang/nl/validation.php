@@ -262,6 +262,7 @@ return [
         'custom_measure_application.name' => 'onderwerp',
         'custom_measure_application.measure_category' => 'maatregelcategorie',
         'custom_measure_application.info' => 'beschrijving',
+        'custom_measure_application.hide_costs' => 'geen kosten',
         'custom_measure_application.costs.from' => 'investering vanaf',
         'custom_measure_application.costs.to' => 'investering tot',
         'custom_measure_application.savings_money' => 'besparing',
@@ -269,10 +270,6 @@ return [
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',
-
-        // User costs
-        'user_costs.*.own_total' => 'eigen kosten',
-        'user_costs.*.subsidy_total' => 'subsidiebedrag',
 
         // Measure applications
         'measure_applications.measure_name' => 'naam',
@@ -372,6 +369,13 @@ return [
         'questionnaires.steps.*' => 'na stap',
         'questionnaires.name.*' => 'naam',
 
+        'cooperations.name' => 'naam van de coöperatie',
+        'cooperations.slug' => 'slug',
+        'cooperations.cooperation_email' => 'contact e-mailadres',
+        'cooperations.website_url' => 'website URL',
+        'cooperations.econobis_wildcard' => 'Econobis Domein Wildcard',
+        'cooperation.econobis_api_key' => 'Econobis API key',
+
         // Cooperation presets
         // Cooperation measure applications
         'content.name' => 'naam',
@@ -394,6 +398,10 @@ return [
         // Measure caategories
         'measure_categories.name' => 'naam',
         'vbjehuis_measure' => 'VerbeterJeHuis maatregel',
+
+        // Woonplan comments
+        'residentCommentText' => 'opmerkingen bewoner',
+        'coachCommentText' => 'opmerkingen coach',
     ],
 
     'values' => [

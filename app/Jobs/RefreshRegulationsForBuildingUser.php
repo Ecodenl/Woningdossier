@@ -25,8 +25,8 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
      */
     public function __construct(Building $building)
     {
+        $this->queue = Queue::APP_HIGH;
         $this->building = $building;
-        $this->queue = Queue::REGULATIONS;
     }
 
     /**

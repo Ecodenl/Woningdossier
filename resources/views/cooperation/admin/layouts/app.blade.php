@@ -44,7 +44,7 @@
     <div class="container-fluid">
         @if(stristr(Route::currentRouteName(), 'cooperation-to-manage'))
             {{--a little magic--}}
-            <?php $cooperationToManage = request()->route()->parameters()['cooperationToManage']; ?>
+            @php $cooperationToManage = request()->route()->parameters()['cooperationToManage']; @endphp
             <div class="row">
                 <div class="col-md-2">
                     <a class="btn btn-default btn-block" style="white-space: normal"
@@ -61,7 +61,7 @@
         @endif
 
         <div class="row">
-            @if(!isset($menu) || $menu == true)
+            @if(($menu ?? true))
                 @include('cooperation.admin.layouts.sidebar-menu')
                 <div class="col-md-10">
                     @yield('content')

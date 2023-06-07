@@ -10,7 +10,7 @@
             'class' => 'w-full md:w-1/2 md:pr-3',
             'withInputSource' => false,
             'id' => 'comments-resident',
-            'inputName' => 'comments.resident'
+            'inputName' => 'residentCommentText'
         ])
             <div x-data="modal()" class="w-full">
                 <textarea id="comments-resident" class=" w-full form-input" wire:model="residentCommentText"
@@ -41,7 +41,7 @@
             'class' => 'w-full md:w-1/2 md:pl-3',
             'withInputSource' => false,
             'id' => 'comments-coach',
-            'inputName' => 'comments.coach'
+            'inputName' => 'coachCommentText'
         ])
             @slot('header')
                 @lang('cooperation/frontend/tool.my-plan.comments.coach')

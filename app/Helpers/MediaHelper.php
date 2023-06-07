@@ -5,7 +5,8 @@ namespace App\Helpers;
 use App\Models\Building;
 use App\Models\Cooperation;
 
-class MediaHelper {
+class MediaHelper
+{
     const LOGO = 'logo';
     const BACKGROUND = 'background';
     const GENERIC_FILE = 'generic-file';

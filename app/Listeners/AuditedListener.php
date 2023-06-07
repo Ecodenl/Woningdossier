@@ -2,11 +2,14 @@
 
 namespace App\Listeners;
 
+use App\Helpers\Queue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use OwenIt\Auditing\Events\Audited;
 
 class AuditedListener implements ShouldQueue
 {
+    public $queue = Queue::LOGS;
+
     /**
      * Create the Auditing event listener.
      */

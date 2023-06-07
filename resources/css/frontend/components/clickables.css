@@ -133,3 +133,9 @@ a.in-text {
 #app-body .disabled {
     @apply cursor-not-allowed bg-gray bg-opacity-50 pointer-events-none;
 }
+
+/* Allow making disabled items clickable specifically */
+#app-body .disabled.pointer-events-auto {
+    /* can't use @apply pointer-events-auto here as it somehow seems to conflict with itself */
+    pointer-events: auto;
+}

@@ -42,7 +42,7 @@ class CreateBuildingController extends Controller
         // now get the picoaddress data.
         $bagService->addressExpanded($data['postal_code'], $data['number'])->prepareForBuilding();
 
-        $data['bag_addressid'] = isset($picoAddressData['bag_adresid']) ? $picoAddressData['bag_adresid'] : '';
+        $data['bag_addressid'] = $picoAddressData['bag_adresid'] ?? '';
 
         $features = new BuildingFeature([
             'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],

@@ -107,8 +107,10 @@ class MyRegulationHelper
                 $relatedAdvices = $advicesWithAdvisableMapping;
 
                 foreach ($tagsForRegulation as $tagForRegulation) {
-                    // the "other" type is not covered here, this is because there is no extra logic
                     // all advices from the $advicesWithAdvisableMapping are relevant, as long as they match the "tags" with measures.
+                    if ($regulationType == RegulationService::OTHER) {
+                        $relatedAdvices = $advicesWithAdvisableMapping;
+                    }
                     if ($regulationType == RegulationService::LOAN) {
                         $relatedAdvices = $advicesWithAdvisableMapping->where('loan_available', true);
                     }

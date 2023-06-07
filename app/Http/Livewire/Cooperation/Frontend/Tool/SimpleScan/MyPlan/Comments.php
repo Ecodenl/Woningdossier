@@ -71,14 +71,13 @@ class Comments extends Component
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
         if (array_key_exists($toolQuestionShort, $this->filledInAnswers)) {
-            $sourceShort = Str::before($toolQuestionShort, 'Comment');
-
             $this->validate([
                 "filledInAnswers.{$toolQuestionShort}" => [
                     'string', 'max:250000',
                 ],
             ]);
 
+            $sourceShort = Str::before($toolQuestionShort, 'Comment');
             $commentShort = "{$sourceShort}Comment";
             $commentText = $this->filledInAnswers[$toolQuestionShort];
             // Sanitize HTML (just in case)

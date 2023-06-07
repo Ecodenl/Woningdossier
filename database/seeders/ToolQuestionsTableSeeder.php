@@ -389,7 +389,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepBuildingData->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -397,7 +397,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepBuildingData->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -588,7 +588,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => __('general.unit.kwh.title'),
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -596,7 +596,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'cooperation/tool/general-data/usage.index.comment',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -665,7 +665,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -673,7 +673,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'cooperation/tool/general-data/interest.index.comment',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -1365,7 +1365,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 ],
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.element.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -1373,7 +1373,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.element.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -1381,7 +1381,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.service.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -1389,7 +1389,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.service.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -1796,7 +1796,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepSmallMeasures->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -1804,7 +1804,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de kleine maatregelen',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepSmallMeasures->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -2353,7 +2353,7 @@ class ToolQuestionsTableSeeder extends Seeder
             // TODO: If we were to delete these steps, besides the obvious calculator refactor, we should
             // move these to the heating step with a short for the context
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$hrBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -2361,7 +2361,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de CV ketel',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$hrBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -2369,7 +2369,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de CV ketel',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$heatPumpStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -2377,7 +2377,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de warmtepomp',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$heatPumpStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -2385,7 +2385,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de warmtepomp',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$sunBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -2393,7 +2393,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de zonneboiler',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$sunBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -2485,7 +2485,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 // No valuables, see App\Helpers\QuestionValues\IsConsidering
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$ventilationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -2493,7 +2493,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de ventilatie',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$ventilationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -2589,7 +2589,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$wallInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -2597,7 +2597,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de muurisolatie',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$wallInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -2856,7 +2856,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_values' => \App\Models\WoodRotStatus::all(),
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$insulatedGlazingStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -2864,7 +2864,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de isolerende beglazing',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$insulatedGlazingStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -2930,7 +2930,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'unit_of_measure' => __('general.unit.square-meters.title'),
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$floorInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -2938,7 +2938,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de vloerisolatie',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$floorInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -3121,7 +3121,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'tool_question_values' => BuildingHeating::all(),
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$roofInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -3129,7 +3129,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de dakisolatie',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$roofInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
@@ -3184,7 +3184,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'short' => 'solar-panel-angle',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$solarPanelStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
@@ -3192,7 +3192,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'Toelichting op de zonnepanelen',
             ],
             [
-                'data_type' => Caster::STRING,
+                'data_type' => Caster::HTML_STRING,
                 'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$solarPanelStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,

@@ -78,6 +78,12 @@ class Comments extends Component
             $commentText = (new HtmlSanitizer())->sanitize($commentText);
             $inputSource = $this->{"{$sourceShort}InputSource"};
 
+            $this->validate([
+                $toolQuestionShort => [
+                    'string', 'max:250000',
+                ],
+            ]);
+
             if ($inputSource->short === $this->currentInputSource->short) {
                 if ($this->{$commentShort} instanceof UserActionPlanAdviceComments) {
                     $this->{$commentShort}->update([

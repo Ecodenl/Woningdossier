@@ -21,7 +21,7 @@
             'class' => 'w-full md:w-1/2 md:pr-3',
             'withInputSource' => false,
             'id' => 'comments-resident',
-            'inputName' => 'comments.resident'
+            'inputName' => 'residentCommentText'
         ])
             @slot('header')
                 @lang('cooperation/frontend/tool.my-plan.comments.resident')
@@ -37,7 +37,7 @@
             'class' => 'w-full md:w-1/2 md:pl-3',
             'withInputSource' => false,
             'id' => 'comments-coach',
-            'inputName' => 'comments.coach'
+            'inputName' => 'coachCommentText'
         ])
             @slot('header')
                 @lang('cooperation/frontend/tool.my-plan.comments.coach')

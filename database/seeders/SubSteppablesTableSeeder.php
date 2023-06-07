@@ -320,7 +320,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Gas en elektra kosten' => [
-                    'order' => 5,
+                    'order' => 4,
                     'sub_step_template_id' => $templateDefault->id,
                     'morphs' => [
                         [
@@ -340,7 +340,7 @@ class SubSteppablesTableSeeder extends Seeder
                     ]
                 ],
                 'Samenvatting bewoners-gebruik' => [
-                    'order' => 4,
+                    'order' => 5,
                     'sub_step_template_id' => $templateSummary->id,
                     'morphs' => [
                         [

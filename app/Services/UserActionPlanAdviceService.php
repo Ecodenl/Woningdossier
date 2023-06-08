@@ -58,7 +58,6 @@ class UserActionPlanAdviceService
         $userActionPlanAdvices = $this->user
             ->userActionPlanAdvices()
             ->withoutGlobalScopes()
-            ->limit(2)
             ->get();
 
         $jobs = [];

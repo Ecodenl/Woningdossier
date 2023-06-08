@@ -14,7 +14,6 @@ class RefreshBuildingUserHisAdvices extends NonHandleableListenerAfterReset
      */
     public function handle($event)
     {
-        dd('bubba!');
         $this->checkLastResetAt(function () use ($event) {
             RefreshRegulationsForBuildingUser::dispatch($event->building);
         }, $event->building);

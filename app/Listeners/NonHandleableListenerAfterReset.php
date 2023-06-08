@@ -37,5 +37,6 @@ abstract class NonHandleableListenerAfterReset implements ShouldQueue, ShouldNot
                 return $closure();
             }
         }
+        return $closure();
     }
 }

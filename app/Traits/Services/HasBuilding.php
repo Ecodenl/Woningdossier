@@ -13,9 +13,4 @@ trait HasBuilding
         $this->building = $building;
         return $this;
     }
-
-    public function lastDoneAt()
-    {
-
-    }
 }

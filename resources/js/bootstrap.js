@@ -61,7 +61,7 @@ window.initTinyMCE = function (options = {}) {
         // Link plugin settings end
         toolbar: 'link bold italic underline strikethrough fontsize',
         // font_size_formats: 'Extra-Small=10px Small=14px Normal=18px Medium=24px Large=32px Extra-Large=36px Extra-Extra Large=48px',
-        font_size_formats: 'PDF=11px Normaal=14px',
+        font_size_formats: 'Normaal=14px',
         promotion: false,
         language: 'nl',
         resize: false,

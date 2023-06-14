@@ -56,8 +56,8 @@ class BagService
         // if that does not work we will do a last resort that may not be that accurate..
         if (! empty($houseNumberExtension)) {
             $addressExpanded = $this->listAddressExpanded($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
-            if ($addressExpanded->isEmpty()) {
-                // if that does not work we will try the huislett
+            if ($addressExpanded->isEmpty() && strlen($houseNumberExtension) === 1) {
+                // if that does not work we will try the huisletter (but only if it has length 1, it cannot be longer)
                 $addressExpanded = $this->listAddressExpanded($attributes + ['huisletter' => $houseNumberExtension]);
             }
 
@@ -96,7 +96,6 @@ class BagService
             $list = $this->lvbag
                     ->adresUitgebreid()
                     ->list($attributes) ?? [];
-
             return array_shift($list);
         }));
     }

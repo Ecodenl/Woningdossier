@@ -56,9 +56,9 @@ class MapQuickScanSituationToExpertTest extends TestCase
         ];
 
         foreach ($answersToSave as $short => $answer) {
-            ToolQuestionService::init(
-                ToolQuestion::findByShort($short)
-            )->building($building)
+            app(ToolQuestionService::class)
+                ->toolQuestion(ToolQuestion::findByShort($short))
+                ->building($building)
                 ->currentInputSource($inputSource)
                 ->save($answer);
         }
@@ -87,9 +87,9 @@ class MapQuickScanSituationToExpertTest extends TestCase
         // Boiler type is not viewable, so ensure it's handled as "null" if boiler type isn't in the heat source.
         $boilerValues = Service::findByShort('boiler')->values;
 
-        ToolQuestionService::init(
-            ToolQuestion::findByShort('boiler-type')
-        )->building($building)
+        app(ToolQuestionService::class)
+            ->toolQuestion(ToolQuestion::findByShort('boiler-type'))
+            ->building($building)
             ->currentInputSource($inputSource)
             ->save($boilerValues->first()->id);
 
@@ -102,16 +102,16 @@ class MapQuickScanSituationToExpertTest extends TestCase
         $this->checkAnswers($answersExpected);
 
         // Retry mapping with all possible boiler types, after adding to heat-source.
-        ToolQuestionService::init(
-            ToolQuestion::findByShort('heat-source')
-        )->building($building)
+        app(ToolQuestionService::class)
+            ->toolQuestion(ToolQuestion::findByShort('heat-source'))
+            ->building($building)
             ->currentInputSource($inputSource)
             ->save(['hr-boiler', 'heat-pump']);
 
         foreach ($boilerValues as $boilerValue) {
-            ToolQuestionService::init(
-                ToolQuestion::findByShort('boiler-type')
-            )->building($building)
+            app(ToolQuestionService::class)
+                ->toolQuestion(ToolQuestion::findByShort('boiler-type'))
+                ->building($building)
                 ->currentInputSource($inputSource)
                 ->save($boilerValue->id);
 
@@ -134,9 +134,9 @@ class MapQuickScanSituationToExpertTest extends TestCase
         $heatPumpType = Service::findByShort('heat-pump')->values()->orderByDesc('calculate_value')->first()->id;
         $advisable = MeasureApplication::findByShort(array_flip(HeatPumpHelper::MEASURE_SERVICE_LINK)[$heatPumpType]);
 
-        ToolQuestionService::init(
-            ToolQuestion::findByShort('heat-pump-type')
-        )->building($building)
+        app(ToolQuestionService::class)
+            ->toolQuestion(ToolQuestion::findByShort('heat-pump-type'))
+            ->building($building)
             ->currentInputSource($inputSource)
             ->save($heatPumpType);
 
@@ -160,9 +160,9 @@ class MapQuickScanSituationToExpertTest extends TestCase
         ];
 
         foreach ($updateAnswers as $short => $answer) {
-            ToolQuestionService::init(
-                ToolQuestion::findByShort($short)
-            )->building($building)
+            app(ToolQuestionService::class)
+                ->toolQuestion(ToolQuestion::findByShort($short))
+                ->building($building)
                 ->currentInputSource($inputSource)
                 ->save($answer);
         }
@@ -182,9 +182,9 @@ class MapQuickScanSituationToExpertTest extends TestCase
         // Add placing year.
         $year = (int) Carbon::now()->format('Y');
 
-        ToolQuestionService::init(
-            ToolQuestion::findByShort('boiler-placed-date')
-        )->building($building)
+        app(ToolQuestionService::class)
+            ->toolQuestion(ToolQuestion::findByShort('boiler-placed-date'))
+            ->building($building)
             ->currentInputSource($inputSource)
             ->save(($year - 9)); // Younger than 10 years, so should be no
 
@@ -198,9 +198,9 @@ class MapQuickScanSituationToExpertTest extends TestCase
 
         $this->checkAnswers($answersExpected);
 
-        ToolQuestionService::init(
-            ToolQuestion::findByShort('boiler-placed-date')
-        )->building($building)
+        app(ToolQuestionService::class)
+            ->toolQuestion(ToolQuestion::findByShort('boiler-placed-date'))
+            ->building($building)
             ->currentInputSource($inputSource)
             ->save(($year - 10)); // Older or equal to 10 years, so should be yes
 

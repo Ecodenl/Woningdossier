@@ -2,6 +2,7 @@
 
 namespace App\Services\Lvbag;
 
+use App\Helpers\Arr;
 use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\Lvbag\Payloads\City;
 use App\Traits\FluentCaller;
@@ -18,6 +19,20 @@ class BagService
         $this->lvbag = $lvbag;
     }
 
+    public function getHouseNumberExtensions(string $postalCode, string $number): array
+    {
+        $attributes = [
+            'postcode' => $postalCode,
+            'huisnummer' => $number,
+            'exacteMatch' => false,
+        ];
+
+        $list = $this->wrapCall(fn () => $this->lvbag->adresUitgebreid()->list($attributes) ?? []);
+        return array_values(array_filter(array_unique(array_map(function ($address) {
+            return trim(($address['huisletter'] ?? '') . ($address['huisnummertoevoeging'] ?? ''));
+        }, $list))));
+    }
+
     /**
      * Returns the address data from the wrapper in the way we want
      * Will always return the FIRST result
@@ -32,7 +47,6 @@ class BagService
         $attributes = [
             'postcode' => $postalCode,
             'huisnummer' => $number,
-            // we always want a exact match, rather no result than wrong one.
             'exacteMatch' => true,
         ];
 
@@ -55,38 +69,14 @@ class BagService
                 $huisletter = array_shift($extensions);
                 $huisnummertoevoeging = implode('', $extensions);
 
-                $addressExpanded = $this->listAddressExpanded($attributes + compact('huisletter',
-                        'huisnummertoevoeging'));
-            }
-
-            // a last resort..
-            if ($addressExpanded->isEmpty()) {
-                // this is for the users that are not up to date on the huisletter and extension combi
-                // they might only enter a huisleter or extension even though it should be a combi.
-                // the previous calls were all based on a exact match, to get the best match.
-                // this last resort turns that of to get the at least the build year accurate.
-                $attributes['exacteMatch'] = false;
-                // these 2 calls could both return multiple addresses
-                // it just depends on the given address, we will shift it later on to get only one result
-                // the surface is probably inaccurate however the build year will be spot on (i think :kek:)
-                $addressExpanded = $this->listAddressExpanded($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
-
-                if ($addressExpanded->isEmpty()) {
-                    $addressExpanded = $this->listAddressExpanded($attributes + ['huisletter' => $houseNumberExtension]);
-                }
-                if ($addressExpanded->isEmpty()) {
-                    // and a call without the extension, this should always return a address but this is very inaccurate.
-                    $addressExpanded = $this->listAddressExpanded($attributes);
-                }
+                $addressExpanded = $this->listAddressExpanded(
+                    $attributes + compact('huisletter', 'huisnummertoevoeging')
+                );
             }
         } else {
             // the simple case.. :)
             $addressExpanded = $this->listAddressExpanded($attributes);
         }
-
-        // so the bag MAY return it, split on huisletter and extension.
-        // however it doesn't really matter since we will save it as is.
-        $addressExpanded->expendedAddress['house_number_extension'] = $houseNumberExtension;
 
         return $addressExpanded;
     }
@@ -100,7 +90,7 @@ class BagService
         }));
     }
 
-    public function listAddressExpanded(array $attributes): ?AddressExpanded
+    public function listAddressExpanded(array $attributes): AddressExpanded
     {
         return new AddressExpanded($this->wrapCall(function () use ($attributes) {
             $list = $this->lvbag

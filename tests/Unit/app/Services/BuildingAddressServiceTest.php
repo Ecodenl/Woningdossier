@@ -149,7 +149,7 @@ class BuildingAddressServiceTest extends TestCase
         Event::assertNotDispatched(BuildingAddressUpdated::class);
     }
 
-    public function test_update_address_uses_bag_as_thruth_when_available()
+    public function test_update_address_uses_bag_as_truth_when_available()
     {
         $fallbackData = [
             'street' => $this->faker->streetName,

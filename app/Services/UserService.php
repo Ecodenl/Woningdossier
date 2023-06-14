@@ -235,7 +235,8 @@ class UserService
         );
 
         // filter relevant data from the request
-        $buildingData = Arr::only($data, ['street', 'city', 'postal_code', 'number', 'extension']);
+        $data['address']['extension'] ??= null;
+        $buildingData = $data['address'];
 
         // create the building for the user
         $building = $user->building()->save(new Building($buildingData));

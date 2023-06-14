@@ -16,11 +16,14 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
+use Tests\MocksLvbag;
 use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use WithFaker,
+        RefreshDatabase,
+        MocksLvbag;
 
     public $seed = true;
     public $seeder = DatabaseSeeder::class;
@@ -45,7 +48,7 @@ class RegisterControllerTest extends TestCase
             "city" => "Zerocity",
             "phone_number" => null,
         ];
-        Artisan::call('cache:clear');
+        $this->mockLvbagClientAdresUitgebreid($this->formData)->createLvbagMock();
     }
 
     public function test_valid_data_registers_new_account()

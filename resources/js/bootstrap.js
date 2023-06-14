@@ -66,6 +66,7 @@ if (token) {
  * @param eventName
  */
 window.triggerEvent = function (element, eventName) {
+    // TODO: Deprecate to just the window.
     if (((element && [Node.ELEMENT_NODE, Node.DOCUMENT_NODE].includes(element.nodeType)) || element === window) && eventName) {
         let event = new Event(eventName, {bubbles: true});
         element.dispatchEvent(event);
@@ -80,6 +81,7 @@ window.triggerEvent = function (element, eventName) {
  * @param params
  */
 window.triggerCustomEvent = function (element, eventName, params = {}) {
+    // TODO: Deprecate to just the window.
     if (typeof params !== 'object') {
         console.error('Params is not a valid object!');
         params = {};
@@ -122,38 +124,35 @@ window.performRequest = function (options = {}) {
 }
 
 /**
- * Expand HTML object functionality
+ * Simple wrapper for Http requests.
+ * Options:
+ * - url: URL object, required.
+ * - method: HTTP method.
+ * - done: Callback when request is done, retrieves request object, optional.
+ * @param options
  */
+window.performRequest = function (options = {}) {
+    if (! options instanceof Object) {
+        options = {};
+    }
 
-//--- HTMLCollection
+    let url = options.url || null;
 
-/**
- * Remove all elements in the HTML collection
- */
-Object.defineProperty(HTMLCollection.prototype, 'remove', {
-    value: function() {
-        Array.from(this).forEach((nodeElement) => {
-            nodeElement.remove();
-        });
-    },
-    enumerable: false,
-    configurable: false,
-});
+    if ((window.XMLHttpRequest || window.ActiveXObject) && url instanceof URL) {
+        let request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP");
+        request.onreadystatechange = function () {
+            // Ajax finished and ready
+            if (request.readyState === window.XMLHttpRequest.DONE && options.done) {
+                options.done(request);
+            }
+        };
 
-//--- NodeList
-
-/**
- * Remove all elements in the node list
- */
-Object.defineProperty(NodeList.prototype, 'remove', {
-    value: function() {
-        Array.from(this).forEach((nodeElement) => {
-            nodeElement.remove();
-        });
-    },
-    enumerable: false,
-    configurable: false,
-});
+        request.open(options.method || 'GET', url.toString());
+        request.setRequestHeader('Accept', 'application/json');
+        request.responseType = 'json';
+        request.send();
+    }
+}
 
 /**
  * Set up Alpine JS with extra data functions that can be used throughout
@@ -208,8 +207,10 @@ polyfill({
 });
 
 /**
- * Expand HTML object functionality
+ * Expand HTML DOM functionality
  */
+
+//--- Element
 
 /**
  * Fade out an element.
@@ -217,7 +218,7 @@ polyfill({
  * @param time (in milliseconds)
  * @param callback
  */
-Object.defineProperty(Object.prototype, 'fadeOut', {
+Object.defineProperty(Element.prototype, 'fadeOut', {
     value: function (time = 1000, callback = null) {
         // Ensure time is a valid number
         if (isNaN(time) || time === null || time === '' || time <= 0) {
@@ -258,7 +259,7 @@ Object.defineProperty(Object.prototype, 'fadeOut', {
  *
  * @param time (in milliseconds)
  */
-Object.defineProperty(Object.prototype, 'fadeIn', {
+Object.defineProperty(Element.prototype, 'fadeIn', {
     value: function (time = 1000, callback = null) {
         // Ensure time is a valid number
         if (isNaN(time) || time === null || time === '' || time <= 0) {
@@ -289,6 +290,74 @@ Object.defineProperty(Object.prototype, 'fadeIn', {
                 this.style.opacity = parseFloat(this.style.opacity) + steps;
             }
         }, timeout);
+    },
+    enumerable: false,
+    configurable: false,
+});
+
+/**
+ * Trigger a default event
+ *
+ * @param eventName
+ */
+Object.defineProperty(Element.prototype, 'triggerEvent', {
+    value: function (eventName) {
+        if (eventName) {
+            let event = new Event(eventName, {bubbles: true});
+            this.dispatchEvent(event);
+        }
+    },
+    enumerable: false,
+    configurable: false,
+});
+
+/**
+ * Trigger a custom event, with potential parameters.
+ *
+ * @param eventName
+ * @param params
+ */
+Object.defineProperty(Element.prototype, 'triggerCustomEvent', {
+    value: function (eventName, params = {}) {
+        if (typeof params !== 'object') {
+            console.error('Params is not a valid object!');
+            params = {};
+        }
+
+        if (eventName) {
+            let event = new CustomEvent(eventName, {bubbles: true, detail: params });
+            this.dispatchEvent(event);
+        }
+    },
+    enumerable: false,
+    configurable: false,
+});
+
+//--- HTMLCollection
+
+/**
+ * Remove all elements in the HTML collection
+ */
+Object.defineProperty(HTMLCollection.prototype, 'remove', {
+    value: function() {
+        Array.from(this).forEach((element) => {
+            element.remove();
+        });
+    },
+    enumerable: false,
+    configurable: false,
+});
+
+//--- NodeList
+
+/**
+ * Remove all elements in the node list
+ */
+Object.defineProperty(NodeList.prototype, 'remove', {
+    value: function() {
+        Array.from(this).forEach((element) => {
+            element.remove();
+        });
     },
     enumerable: false,
     configurable: false,

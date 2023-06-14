@@ -97,6 +97,7 @@ textarea.form-input {
 }
 
 .form-input:disabled,
+input.form-input:read-only,
 .radio-wrapper input[type="radio"]:disabled + label,
 .checkbox-wrapper input[type="checkbox"]:disabled + label {
     @apply cursor-not-allowed bg-gray bg-opacity-50;

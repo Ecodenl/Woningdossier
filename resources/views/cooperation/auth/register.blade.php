@@ -14,10 +14,8 @@
                 @endcomponent
             @endif
             <form class="w-full flex flex-wrap justify-center" method="POST" id="register"
-                  action="{{ route('cooperation.register') }}"
-                  x-data="checkAddress({'correct_address': '{{ route('api.get-address-data') }}'})">
+                  action="{{ route('cooperation.register') }}">
                 @csrf
-                <input type="hidden" name="addressid" x-bind="addressId" value="{{ old('addressid') }}">
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
                     'class' => 'w-full',
@@ -25,13 +23,13 @@
                 ])
                     <input class="form-input" type="text" name="email" value="{{ old('email') }}"
                            placeholder="@lang('auth.register.form.email')" x-on:change="checkEmail($el)">
-                    <p class="text-red w-full text-left" x-show="showEmailWarning">
+                    <p class="text-red w-full text-left" x-show="showEmailWarning" x-cloak>
                         @lang('auth.register.form.possible-wrong-email')
                     </p>
-                    <p class="text-blue-800 w-full text-left" x-show="alreadyMember">
+                    <p class="text-blue-800 w-full text-left" x-show="alreadyMember" x-cloak>
                         @lang('auth.register.form.already-member')
                     </p>
-                    <p class="text-blue-800 w-full text-left" x-show="emailExists">
+                    <p class="text-blue-800 w-full text-left" x-show="emailExists" x-cloak>
                         @lang('auth.register.form.email-exists')
                     </p>
                 @endcomponent
@@ -53,56 +51,12 @@
                     <input class="form-input" type="text" name="last_name" value="{{ old('last_name') }}"
                            placeholder="@lang('auth.register.form.last-name')">
                 @endcomponent
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'withInputSource' => false,
-                    'class' => 'w-full -mt-5  lg:w-1/2 lg:pr-3',
-                    'inputName' => 'postal_code',
+
+                @include('cooperation.layouts.address', [
                     'attr' => 'x-show="! alreadyMember"',
+                    'withLabels' => false,
                 ])
-                    <input class="form-input" type="text" name="postal_code" value="{{ old('postal_code') }}"
-                           placeholder="@lang('auth.register.form.postal-code')" x-bind="postcode">
-                    <p class="text-blue-800 -mt-2 w-full" x-show="showPostalCodeError">
-                        @lang('auth.register.form.possible-wrong-postal-code')
-                    </p>
-                @endcomponent
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'withInputSource' => false,
-                    'class' => 'w-full -mt-5  lg:w-1/4 lg:px-3',
-                    'inputName' => 'number',
-                    'attr' => 'x-show="! alreadyMember"',
-                ])
-                    <input class="form-input" type="text" name="number" value="{{ old('number') }}"
-                           placeholder="@lang('auth.register.form.number')" x-bind="houseNumber">
-                @endcomponent
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'withInputSource' => false,
-                    'class' => 'w-full -mt-5 lg:w-1/4 lg:pl-3',
-                    'inputName' => 'house_number_extension',
-                    'attr' => 'x-show="! alreadyMember"',
-                ])
-                    <input class="form-input" type="text" name="extension"
-                           value="{{ old('extension') }}"
-                           placeholder="@lang('auth.register.form.house-number-extension')"
-                           x-bind="houseNumberExtension">
-                @endcomponent
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'withInputSource' => false,
-                    'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
-                    'inputName' => 'street',
-                    'attr' => 'x-show="! alreadyMember"',
-                ])
-                    <input class="form-input" type="text" name="street" value="{{ old('street') }}"
-                           placeholder="@lang('auth.register.form.street')" x-bind="street">
-                @endcomponent
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'withInputSource' => false,
-                    'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
-                    'inputName' => 'city',
-                    'attr' => 'x-show="! alreadyMember"',
-                ])
-                    <input class="form-input" type="text" name="city" value="{{ old('city') }}"
-                           placeholder="@lang('auth.register.form.city')" x-bind="city">
-                @endcomponent
+
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5',

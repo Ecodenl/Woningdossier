@@ -47,7 +47,6 @@ class UpdateContactIds extends Command
 
             $cooperation = Cooperation::where('slug', 'gouda')->first();
             $user = User::forMyCooperation($cooperation->id)->where('account_id', $accountId)->first();
-
             if ($user instanceof User) {
                 $extra = $user->extra ?? [];
                 $oldContactId = Arr::get($extra, 'contact_id', 'No old');
@@ -58,6 +57,8 @@ class UpdateContactIds extends Command
                 $user->update([
                     'extra' => $extra,
                 ]);
+            } else {
+                Log::info("User not found account {$accountId} does not have a link with the provided cooperation");
             }
         }
     }

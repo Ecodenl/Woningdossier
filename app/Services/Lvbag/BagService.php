@@ -71,14 +71,14 @@ class BagService
                 $huisletter = array_shift($extensions);
                 $huisnummertoevoeging = implode('', $extensions);
 
-//                if (!empty($huisletter)) {
-//                    $filteredExtensions['huisletter'] = $huisletter;
-//                }
-//                if (!empty($huisnummertoevoeging)) {
-//                    $filteredExtensions['huisnummertoevoeging'] = $huisnummertoevoeging;
-//                }
+                if (!empty($huisletter)) {
+                    $filteredExtensions['huisletter'] = $huisletter;
+                }
+                if (!empty($huisnummertoevoeging)) {
+                    $filteredExtensions['huisnummertoevoeging'] = $huisnummertoevoeging;
+                }
                 $addressExpanded = $this->listAddressExpanded(
-                    $attributes + compact('huisletter', 'huisnummertoevoeging')
+                    $attributes + $filteredExtensions
                 );
             }
         } else {

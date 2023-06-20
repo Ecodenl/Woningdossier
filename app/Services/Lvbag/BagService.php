@@ -2,12 +2,11 @@
 
 namespace App\Services\Lvbag;
 
-use App\Helpers\Arr;
-use App\Helpers\Str;
 use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\Lvbag\Payloads\City;
 use App\Traits\FluentCaller;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
+use Illuminate\Support\Facades\Log;
 
 class BagService
 {
@@ -72,14 +71,14 @@ class BagService
                 $huisletter = array_shift($extensions);
                 $huisnummertoevoeging = implode('', $extensions);
 
-                if (!empty($huisletter)) {
-                    $filteredExtensions['huisletter'] = $huisletter;
-                }
-                if (!empty($huisnummertoevoeging)) {
-                    $filteredExtensions['huisnummertoevoeging'] = $huisnummertoevoeging;
-                }
+//                if (!empty($huisletter)) {
+//                    $filteredExtensions['huisletter'] = $huisletter;
+//                }
+//                if (!empty($huisnummertoevoeging)) {
+//                    $filteredExtensions['huisnummertoevoeging'] = $huisnummertoevoeging;
+//                }
                 $addressExpanded = $this->listAddressExpanded(
-                    $attributes + $filteredExtensions
+                    $attributes + compact('huisletter', 'huisnummertoevoeging')
                 );
             }
         } else {
@@ -117,7 +116,7 @@ class BagService
             $result['endpoint_failure'] = false;
         } catch (\Exception $exception) {
             if ($exception->getCode() !== 200) {
-                report($exception);
+                Log::error($exception->getMessage() .' '. $exception->getTraceAsString());
                 $result['endpoint_failure'] = true;
             }
         }

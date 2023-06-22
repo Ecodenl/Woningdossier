@@ -80,11 +80,10 @@ class EconobisEventSubscriber
 
     private function canUserSendInformationToEconobis($event)
     {
-        return $event
-            ->building
-            ->user->account->can(
+        $user = $event->building->user()->forAllCooperations()->first();
+        return $user->account->can(
                 'send-user-information-to-econobis',
-                [$event->building->user]
+                [$user]
             );
     }
 }

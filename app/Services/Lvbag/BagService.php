@@ -2,11 +2,11 @@
 
 namespace App\Services\Lvbag;
 
-use App\Helpers\Arr;
 use App\Services\Lvbag\Payloads\AddressExpanded;
 use App\Services\Lvbag\Payloads\City;
 use App\Traits\FluentCaller;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
+use Illuminate\Support\Facades\Log;
 
 class BagService
 {
@@ -56,6 +56,7 @@ class BagService
         // if that does not work we will do a last resort that may not be that accurate..
         if (! empty($houseNumberExtension)) {
             $addressExpanded = $this->listAddressExpanded($attributes + ['huisnummertoevoeging' => $houseNumberExtension]);
+
             if ($addressExpanded->isEmpty() && strlen($houseNumberExtension) === 1) {
                 // if that does not work we will try the huisletter (but only if it has length 1, it cannot be longer)
                 $addressExpanded = $this->listAddressExpanded($attributes + ['huisletter' => $houseNumberExtension]);
@@ -65,12 +66,19 @@ class BagService
             // we will handle that here
             if ($addressExpanded->isEmpty()) {
                 $extensions = str_split($houseNumberExtension);
+                $filteredExtensions = [];
                 // huisletter should always have a length of 1
                 $huisletter = array_shift($extensions);
                 $huisnummertoevoeging = implode('', $extensions);
 
+                if (!empty($huisletter)) {
+                    $filteredExtensions['huisletter'] = $huisletter;
+                }
+                if (!empty($huisnummertoevoeging)) {
+                    $filteredExtensions['huisnummertoevoeging'] = $huisnummertoevoeging;
+                }
                 $addressExpanded = $this->listAddressExpanded(
-                    $attributes + compact('huisletter', 'huisnummertoevoeging')
+                    $attributes + $filteredExtensions
                 );
             }
         } else {
@@ -108,7 +116,7 @@ class BagService
             $result['endpoint_failure'] = false;
         } catch (\Exception $exception) {
             if ($exception->getCode() !== 200) {
-                report($exception);
+                Log::error($exception->getMessage() .' '. $exception->getTraceAsString());
                 $result['endpoint_failure'] = true;
             }
         }

@@ -51,7 +51,6 @@ class BuildingStatusService
      */
     public function setStatus($status)
     {
-        Log::debug(__CLASS__);
         $statusModel = $this->resolveStatusModel($status);
 
         $this->building->buildingStatuses()->create([

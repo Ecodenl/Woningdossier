@@ -1,4 +1,4 @@
-/*! tailwindcss v2.2.17 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v2.2.19 | MIT License | https://tailwindcss.com */
 
 /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
 
@@ -25198,146 +25198,6 @@ video {
   --tw-placeholder-opacity: 1;
 }
 
-#app-body .caret-transparent{
-  caret-color: transparent;
-}
-
-#app-body .caret-black{
-  caret-color: #000000;
-}
-
-#app-body .caret-white{
-  caret-color: #FFFFFF;
-}
-
-#app-body .caret-gray-50{
-  caret-color: #FFFFFF;
-}
-
-#app-body .caret-gray-100{
-  caret-color: #FFFFFF;
-}
-
-#app-body .caret-gray-200{
-  caret-color: #FFFFFF;
-}
-
-#app-body .caret-gray-300{
-  caret-color: #FAFBFB;
-}
-
-#app-body .caret-gray-400{
-  caret-color: #E4E6E9;
-}
-
-#app-body .caret-gray-500{
-  caret-color: #CDD2D7;
-}
-
-#app-body .caret-gray-600{
-  caret-color: #AEB6BE;
-}
-
-#app-body .caret-gray-700{
-  caret-color: #8F9AA5;
-}
-
-#app-body .caret-gray-800{
-  caret-color: #707E8C;
-}
-
-#app-body .caret-gray-900{
-  caret-color: #57626D;
-}
-
-#app-body .caret-gray{
-  caret-color: #CDD2D7;
-}
-
-#app-body .caret-green{
-  caret-color: #2CA982;
-}
-
-#app-body .caret-purple-100{
-  caret-color: #E1DCF2;
-}
-
-#app-body .caret-purple{
-  caret-color: #622191;
-}
-
-#app-body .caret-blue-100{
-  caret-color: #F0F1F2;
-}
-
-#app-body .caret-blue-500{
-  caret-color: #647585;
-}
-
-#app-body .caret-blue-800{
-  caret-color: #3781F0;
-}
-
-#app-body .caret-blue-900{
-  caret-color: #1122C8;
-}
-
-#app-body .caret-blue{
-  caret-color: #414C57;
-}
-
-#app-body .caret-orange{
-  caret-color: #FF7F4A;
-}
-
-#app-body .caret-yellow{
-  caret-color: #FFBD5A;
-}
-
-#app-body .caret-red-50{
-  caret-color: #fef2f2;
-}
-
-#app-body .caret-red-100{
-  caret-color: #fee2e2;
-}
-
-#app-body .caret-red-200{
-  caret-color: #fecaca;
-}
-
-#app-body .caret-red-300{
-  caret-color: #fca5a5;
-}
-
-#app-body .caret-red-400{
-  caret-color: #f87171;
-}
-
-#app-body .caret-red-500{
-  caret-color: #E41440;
-}
-
-#app-body .caret-red-600{
-  caret-color: #dc2626;
-}
-
-#app-body .caret-red-700{
-  caret-color: #b91c1c;
-}
-
-#app-body .caret-red-800{
-  caret-color: #991b1b;
-}
-
-#app-body .caret-red-900{
-  caret-color: #7f1d1d;
-}
-
-#app-body .caret-red{
-  caret-color: #E41440;
-}
-
 #app-body .opacity-0{
   opacity: 0;
 }
@@ -29802,10 +29662,6 @@ video {
 
 #app-body .ease-in-out{
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-#app-body .content-none{
-  content: none;
 }
 
 #app-body .pad-0> :not([hidden]) ~ :not([hidden]){

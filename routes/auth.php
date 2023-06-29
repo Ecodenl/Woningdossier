@@ -24,7 +24,7 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
     ->middleware(['guest:'.config('fortify.guard')])
     ->name('register.store');
 
-Route::get('check-existing-mail', [RegisteredUserController::class, 'checkExistingEmail'])
+Route::get('check-existing-mail/{forCooperation?}', [RegisteredUserController::class, 'checkExistingEmail'])
     ->name('check-existing-email');
 
 Route::as('auth.')->group(function () {

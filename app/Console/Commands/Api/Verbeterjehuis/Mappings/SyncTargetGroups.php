@@ -8,6 +8,7 @@ use App\Services\DiscordNotifier;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\RegulationService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class SyncTargetGroups extends Command
 {
@@ -61,7 +62,9 @@ class SyncTargetGroups extends Command
                         ->first()
                 )->sync([$targetGroups[$target]]);
             }
-            DiscordNotifier::init()->notify('SyncTargetGroups just ran!');
+
+            $this->info("Measures mapped to building-contract-type question custom values.");
+            Log::debug("Measures mapped to building-contract-type question custom values.");
         }, function ($exception) {
             $this->error('Something is going on with VerbeterJeHuis!');
         });

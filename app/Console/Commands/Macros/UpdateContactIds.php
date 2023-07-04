@@ -23,7 +23,7 @@ class UpdateContactIds extends Command
      *
      * @var string
      */
-    protected $signature = 'macros:update-contact-ids';
+    protected $signature = 'macros:update-contact-ids {cooperation : The cooperation slug that the change is for}';
 
     /**
      * The console command description.
@@ -34,6 +34,14 @@ class UpdateContactIds extends Command
 
     public function handle()
     {
+        $cooperationSlug = $this->argument('cooperation');
+        $cooperation = Cooperation::where('slug', $cooperationSlug)->first();
+
+        if (! $cooperation instanceof Cooperation) {
+            $this->error('Given cooperation not found!');
+            exit;
+        }
+
         if (! Storage::disk('local')->exists('contact-ids.csv')) {
             $this->error('"contact-ids.csv" not found at /storage/app!');
             exit;
@@ -45,7 +53,6 @@ class UpdateContactIds extends Command
             $accountId = $data[1];
             $newContactId = $data[2];
 
-            $cooperation = Cooperation::where('slug', 'gouda')->first();
             $user = User::forMyCooperation($cooperation->id)->where('account_id', $accountId)->first();
             if ($user instanceof User) {
                 $extra = $user->extra ?? [];

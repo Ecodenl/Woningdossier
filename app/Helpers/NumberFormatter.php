@@ -132,9 +132,18 @@ class NumberFormatter
             $number
         );
 
-        return str_replace(self::$reverseLocaleSeparators[$locale]['decimal'],
+        $result = str_replace(
+            self::$reverseLocaleSeparators[$locale]['decimal'],
             '.',
-            $number);
+            $number
+        );
+
+        // In some cases, the given number might not be an actual number. We want to force it as one.
+        if (! is_numeric($result)) {
+            $result = 0;
+        }
+
+        return $result;
     }
 
     public static function range($from, $to, $decimals = 0, $separator = ' - ', $prefix = '')
@@ -168,11 +177,11 @@ class NumberFormatter
      *
      * @param $number
      * @param bool $isInteger
-     * @param $alwaysNumber
+     * @param bool $alwaysNumber
      *
      * @return array|int|string|string[]|null
      */
-    public static function formatNumberForUser($number, bool $isInteger = false, $alwaysNumber = true)
+    public static function formatNumberForUser($number, bool $isInteger = false, bool $alwaysNumber = true)
     {
         // TODO: Make this work with incorrect values (reverseFormat?)
 

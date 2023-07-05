@@ -115,8 +115,8 @@ abstract class CustomMeasureForm extends Component
 
             if ($validator->fails()) {
                 // Validator failed, let's put it back as the user format
-                $costs['from'] = NumberFormatter::formatNumberForUser($costs['from']);
-                $costs['to'] = NumberFormatter::formatNumberForUser($costs['to']);
+                $costs['from'] = NumberFormatter::formatNumberForUser($costs['from'] ?? 0);
+                $costs['to'] = NumberFormatter::formatNumberForUser($costs['to'] ?? 0);
                 $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
                 $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::formatNumberForUser($this->customMeasureApplicationsFormData[$index]['savings_money']);
             }

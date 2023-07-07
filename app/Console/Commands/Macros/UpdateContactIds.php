@@ -4,6 +4,7 @@ namespace App\Console\Commands\Macros;
 
 use App\Helpers\Arr;
 use App\Helpers\FileFormats\CsvHelper;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\User;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * NOTE;
- * This command will change, since the given csvs will not and never will be anywhere near consistent.
+ * This command will change, since the given CSVs will not and never will be anywhere near consistent.
  * DO NOT load up the contact csv file and run it blindly.
  */
 class UpdateContactIds extends Command
@@ -23,7 +24,9 @@ class UpdateContactIds extends Command
      *
      * @var string
      */
-    protected $signature = 'macros:update-contact-ids {cooperation : The cooperation slug that the change is for}';
+    protected $signature = 'macros:update-contact-ids 
+                            {cooperation : The cooperation slug that the change is for}
+                            {--a|auto-reason : Create a CSV to write why the account ID is not found}';
 
     /**
      * The console command description.
@@ -47,6 +50,9 @@ class UpdateContactIds extends Command
             exit;
         }
 
+        $autoReason = $this->option('auto-reason');
+        $notFound = [];
+
         $changes = CsvHelper::toArray(Storage::disk('local')->path('contact-ids.csv'), ';', false);
         foreach ($changes as $data) {
             $cooperationName = $data[0];
@@ -66,6 +72,12 @@ class UpdateContactIds extends Command
                 ]);
             } else {
                 Log::info("User not found account {$accountId} does not have a link with the provided cooperation");
+                // No need to clutter memory of not needed
+                if ($autoReason) {
+                    $notFound[$accountId] = Account::exists($accountId)
+                        ? 'Geen gebruiker voor cooperatie ' . $cooperationSlug
+                        : 'Account verwijderd';
+                }
             }
         }
     }

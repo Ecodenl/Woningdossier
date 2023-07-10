@@ -43,14 +43,13 @@ class CleanupExpiredFileStorages extends Command
         // so this withExpired thing is accurate at the moment
         // however the FileStorage::isProcessed set the available_until, which defaults to seven days if not set by file type.
         // currently this is not a problem, no file type has a specific available.
-        FileStorage::withoutGlobalScopes()->withExpired()->chunkById(250, function ($fileStorages) {
-            foreach ($fileStorages as $fileStorage) {
-                if (Storage::disk('downloads')->exists($fileStorage->filename)) {
-                    Storage::disk('downloads')->delete($fileStorage->filename);
-                    $fileStorage->delete();
-                }
+        $fileStorages = FileStorage::withoutGlobalScopes()->withExpired()->limit(50)->get();
+        foreach ($fileStorages as $fileStorage) {
+            if (Storage::disk('downloads')->exists($fileStorage->filename)) {
+                Storage::disk('downloads')->delete($fileStorage->filename);
+                $fileStorage->delete();
             }
-        });
+        }
 
         return 0;
     }

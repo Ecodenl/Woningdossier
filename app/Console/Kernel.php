@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(MonitorQueue::class)->everyFiveMinutes();
 
         $schedule->command('avg:cleanup-audits')->daily();
-        $schedule->command(CleanupExpiredFileStorages::class)->hourly();
+        $schedule->command(CleanupExpiredFileStorages::class)->everyThirtyMinutes();
 
         $schedule->command(SyncTargetGroups::class)->daily();
         $schedule->command(SyncMeasures::class)->daily();

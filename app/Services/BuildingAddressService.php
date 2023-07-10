@@ -7,14 +7,18 @@ use App\Events\NoMappingFoundForBagMunicipality;
 use App\Events\NoMappingFoundForVbjehuisMunicipality;
 use App\Helpers\MappingHelper;
 use App\Models\Building;
+use App\Models\BuildingFeature;
+use App\Models\InputSource;
 use App\Models\Municipality;
+use App\Models\ToolQuestion;
 use App\Services\Lvbag\BagService;
 use App\Traits\FluentCaller;
+use App\Traits\Services\HasInputSources;
 use Illuminate\Support\Arr;
 
 class BuildingAddressService
 {
-    use FluentCaller;
+    use FluentCaller, HasInputSources;
 
     public ?Building $building;
     public BagService $bagService;
@@ -39,7 +43,7 @@ class BuildingAddressService
      * We simply cant rely on external API data, the address data will always be filled with data from the request.
      * We only need it for the IDs.
      *
-     * @param array $fallbackAddressData
+     * @param  array  $fallbackAddressData
      *
      * @return void
      */
@@ -73,6 +77,40 @@ class BuildingAddressService
         $this->building->update($buildingData);
     }
 
+    public function updateBuildingFeatures(array $addressData): void
+    {
+        $addressExpanded = $this
+            ->bagService
+            ->addressExpanded(
+                $addressData['postal_code'],
+                $addressData['number'],
+                $addressData['extension']
+            );
+
+        $addressData = $addressExpanded->prepareForBuilding();
+
+        $buildYear = $this->building->getAnswer($this->masterInputSource(), ToolQuestion::findByShort('build-year'));
+        $surface = $this->building->getAnswer($this->masterInputSource(), ToolQuestion::findByShort('surface'));
+
+        $updateableBuildingFeatureData = [];
+        // we only set the data from the bag when its empty, we will never overwrite previous filled in data
+        if (empty($buildYear)) {
+            $updateableBuildingFeatureData['build_year'] = $addressData['build_year'];
+        }
+        if (empty($surface)) {
+            $updateableBuildingFeatureData['surface'] = $addressData['surface'];
+        }
+
+        BuildingFeature::withoutGlobalScopes()
+            ->updateOrCreate(
+                [
+                    'building_id' => $this->building->id,
+                    'input_source_id' => InputSource::resident()->id
+                ],
+                $updateableBuildingFeatureData
+            );
+    }
+
     public function attachMunicipality(): void
     {
         $bagWoonplaatsId = $this->building->bag_woonplaats_id;
@@ -80,7 +118,7 @@ class BuildingAddressService
         $buildingAddressUpdated = false;
 
         $municipalityName = null;
-        if (! empty($bagWoonplaatsId)) {
+        if ( ! empty($bagWoonplaatsId)) {
             // The BAG woonplaats ID cannot be empty. The value passed should be valid (a 4 digit code from BAG), but
             // that should be the only value ever passed, since we save directly from the BAG.
             $municipalityName = optional($this->bagService
@@ -88,7 +126,7 @@ class BuildingAddressService
                 ->municipalityName();
         }
         // It's entirely possible that a municipality is not returned from the bag.
-        if (! is_null($municipalityName)) {
+        if ( ! is_null($municipalityName)) {
             $municipality = $this->mappingService
                 ->from($municipalityName)
                 ->type(MappingHelper::TYPE_BAG_MUNICIPALITY)
@@ -110,7 +148,7 @@ class BuildingAddressService
                     NoMappingFoundForBagMunicipality::dispatch($municipalityName);
                 }
                 // The disassociate only matters when the field was filled before
-                if (! is_null($this->building->municipality_id)) {
+                if ( ! is_null($this->building->municipality_id)) {
                     $buildingAddressUpdated = true;
                 }
                 // remove the relationship.

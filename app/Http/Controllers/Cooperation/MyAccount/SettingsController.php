@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\UserToolDataChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
@@ -10,10 +11,6 @@ use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\InputSource;
 use App\Models\Municipality;
-use App\Services\BuildingAddressService;
-use App\Services\Lvbag\BagService;
-use App\Services\Lvbag\Payloads\AddressExpanded;
-use App\Services\Models\BuildingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -25,36 +22,23 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(BuildingAddressService $buildingAddressService, BagService $bagService, MyAccountSettingsFormRequest $request)
+    public function update(MyAccountSettingsFormRequest $request)
     {
         $user = Hoomdossier::user();
         $building = HoomdossierSession::getBuilding(true);
 
-        $data = $request->all();
+        $data = $request->validated();
 
-        // update the user stuff
-        $userData = $data['user'];
-        $userData['phone_number'] = $userData['phone_number'] ?? '';
-        $user->update($userData);
+        // Update user data
+        $user->update($data['user']);
+        // Update building address
+        $data['address']['extension'] ??= null;
+        $building->update($data['address']);
 
-        $buildingData['number'] = $buildingData['number'] ?? '';
-        $buildingData = $data['building'];
-
-        $buildingAddressService->forBuilding($building)->updateAddress($buildingData);
-        $buildingAddressService->forBuilding($building)->attachMunicipality();
-
-        if (!$building->municipality()->first() instanceof Municipality) {
-            CheckBuildingAddress::dispatch($building);
-        }
-        $addressData = $bagService->addressExpanded(
-            $buildingData['postal_code'], $buildingData['number'], $buildingData['extension']
-        )->prepareForBuilding();
-        // here we update the surface and build year IF bag returns it
-        // we will never nullify it, only "correct" it.
-        $building->buildingFeatures()->update([
-            'surface' => empty($addressData['surface']) ? null : $addressData['surface'],
-            'build_year' => empty($addressData['build_year']) ? null : $addressData['build_year'],
-        ]);
+         CheckBuildingAddress::dispatchSync($building);
+         if (! $building->municipality()->first() instanceof Municipality) {
+             CheckBuildingAddress::dispatch($building);
+         }
 
         return redirect()->route('cooperation.my-account.index')
             ->with('success', __('my-account.settings.store.success'));
@@ -65,19 +49,20 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile(Request $request)
+    public function resetFile(UserService $userService, Request $request)
     {
         $user = Hoomdossier::user();
 
         $inputSourceIds = $request->input('input_sources.id');
 
         // Reset master first.
-        UserService::resetUser($user, InputSource::findByShort(InputSource::MASTER_SHORT));
+        $userService->forUser($user)->resetUser(InputSource::master());
 
         foreach ($inputSourceIds as $inputSourceId) {
             Log::debug("resetting for input source ".$inputSourceId);
-            UserService::resetUser($user, InputSource::find($inputSourceId));
+            $userService->forUser($user)->resetUser(InputSource::find($inputSourceId));
         }
+        UserToolDataChanged::dispatch($user);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }

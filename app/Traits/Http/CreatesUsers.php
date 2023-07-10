@@ -25,21 +25,31 @@ trait CreatesUsers
     public function createUser(Request $request, Cooperation $cooperation)
     {
         // give the user his role
-        $roleIds = $request->get('roles', '');
-
+        $roleIds = $request->input('roles', '');
         $roles = [];
+        $requestData = $request->validated();
+
+        // So, in the old way we just threw everything in one pile and that was processed. Now we (try to) put
+        // everything separated by database table (e.g. accounts.email, users.first_name). To accommodate this change,
+        // it's just thrown together (for now!).
+        $input = array_merge(
+            $requestData['accounts'],
+            $requestData['users'],
+            [
+                'address' => $requestData['address'],
+            ]
+        );
+
+        // add a random password to the data
+        $input['password'] = Hash::make(Str::randomPassword());
+
         foreach ($roleIds as $roleId) {
-            $role = Role::find($roleId);
-            if (Hoomdossier::account()->can('assign-role', $role)) {
-                Log::debug('User can assign role '.$role->name);
-                array_push($roles, $role->name);
-            }
+            $role = \App\Models\Role::findOrFail($roleId);
+            $this->authorize('view', [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true)]);
+            $roles[] = $role->name;
         }
 
-        $requestData = $request->all();
-        // add a random password to the data
-        $requestData['password'] = Hash::make(Str::randomPassword());
-        $user = UserService::register($cooperation, $roles, $requestData);
+        $user = UserService::register($cooperation, $roles, $input);
         $account = $user->account;
         $building = $user->building;
 
@@ -49,7 +59,7 @@ trait CreatesUsers
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {
             // find the coach to give permissions
-            $coach = User::find($request->get('coach_id'));
+            $coach = User::find($request->input('coach_id'));
 
             // now give the selected coach access with permission to the new created building
             BuildingPermissionService::givePermission($coach, $building);

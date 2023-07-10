@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\SuperAdmin\CooperationRequest;
 use App\Models\Cooperation;
 use App\Services\UserService;
 
@@ -18,43 +17,19 @@ class CooperationController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Cooperation::class);
+        $this->authorize('updateOrCreate', Cooperation::class);
 
         return view('cooperation.admin.super-admin.cooperations.create');
     }
 
-    public function store(Cooperation $cooperation, CooperationRequest $request)
+
+    public function edit(Cooperation $cooperation, Cooperation $cooperationToEdit)
     {
-        $this->authorize('create', Cooperation::class);
-
-        Cooperation::create($request->all());
-
-        return redirect()->route('cooperation.admin.super-admin.cooperations.index')
-            ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.store.success'));
-    }
-
-    public function edit(Cooperation $currentCooperation, Cooperation $cooperationToEdit)
-    {
-        $this->authorize('edit', $cooperationToEdit);
+        $this->authorize('updateOrCreate', $cooperationToEdit);
 
         return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToEdit'));
     }
 
-    public function update(Cooperation $cooperation, CooperationRequest $request)
-    {
-        $cooperationId = $request->get('cooperation_id');
-
-        $cooperationToUpdate = Cooperation::find($cooperationId);
-
-        $this->authorize('update', $cooperationToUpdate);
-        if ($cooperationToUpdate instanceof Cooperation) {
-            $cooperationToUpdate->fill($request->all());
-            $cooperationToUpdate->save();
-        }
-
-        return redirect()->route('cooperation.admin.super-admin.cooperations.index')
-            ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.update.success'));
-    }
 
     public function destroy(Cooperation $cooperation, Cooperation $cooperationToDestroy)
     {

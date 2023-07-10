@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
-use App\Helpers\RoleHelper;
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
+use App\Jobs\CheckBuildingAddress;
 use App\Models\Building;
-use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\Log;
+use App\Models\Municipality;
 use App\Models\PrivateMessage;
 use App\Models\Scan;
 use App\Models\Status;
 use App\Models\User;
-use App\Services\BuildingAddressService;
 use App\Services\BuildingCoachStatusService;
-use App\Services\Lvbag\BagService;
-use App\Services\Models\BuildingService;
-use Illuminate\Support\Arr;
-use Spatie\Permission\Models\Role;
+use App\Services\UserRoleService;
+use App\Models\Role;
 
 class BuildingController extends Controller
 {
@@ -31,7 +29,7 @@ class BuildingController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
-    public function show(Cooperation $cooperation, $buildingId)
+    public function show(UserRoleService $userRoleService, Cooperation $cooperation, $buildingId)
     {
         // retrieve the user from the building within the current cooperation;
         $user = $cooperation->users()->whereHas('building', function ($query) use ($buildingId) {
@@ -50,11 +48,9 @@ class BuildingController extends Controller
 
         $buildingId = $building->id;
 
-        $roles = Role::whereNotIn('name',
-            [RoleHelper::ROLE_SUPERUSER, RoleHelper::ROLE_SUPER_ADMIN, RoleHelper::ROLE_COOPERATION_ADMIN])
-            ->get();
+        $roles = Role::all();
 
-        $coaches = $cooperation->getCoaches()->get();
+        $coaches = $cooperation->getCoaches();
 
         $statuses = Status::ordered()->get();
 
@@ -72,8 +68,10 @@ class BuildingController extends Controller
 
         $scan = $cooperation->scans()->where('short', '!=', Scan::EXPERT)->first();
         $scans = $cooperation->load(['scans' => fn($q) => $q->where('short', '!=', Scan::EXPERT)])->scans;
+        $userCurrentRole = HoomdossierSession::getRole(true);
 
         return view('cooperation.admin.buildings.show', compact(
+            'userRoleService', 'userCurrentRole',
                 'user', 'building', 'roles', 'coaches', 'scans',
                 'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
                 'publicMessages', 'buildingNotes', 'statuses', 'logs', 'scan',
@@ -89,7 +87,7 @@ class BuildingController extends Controller
         return view('cooperation.admin.buildings.edit', compact('building', 'user', 'account'));
     }
 
-    public function update(BuildingFormRequest $request, BuildingAddressService $buildingAddressService, Cooperation $cooperation, Building $building)
+    public function update(BuildingFormRequest $request, Cooperation $cooperation, Building $building)
     {
         $validatedData = $request->validated();
         if (! is_null($validatedData['users']['extra']['contact_id'] ?? null)) {
@@ -97,14 +95,19 @@ class BuildingController extends Controller
             $validatedData['users']['extra']['contact_id'] = (int) $validatedData['users']['extra']['contact_id'];
         }
 
-        $buildingAddressService->forBuilding($building)->updateAddress($validatedData['buildings']);
+        $validatedData['address']['extension'] ??= null;
+        $building->update($validatedData['address']);
 
-        $buildingAddressService->forBuilding($building)->attachMunicipality();
+        CheckBuildingAddress::dispatchSync($building);
+        if (! $building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building);
+        }
 
         $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';
         $building->user->update($validatedData['users']);
         $building->user->account->update($validatedData['accounts']);
 
-        return redirect()->route('cooperation.admin.buildings.edit', compact('building'))->with('success', __('cooperation/admin/buildings.update.success'));
+        return redirect()->route('cooperation.admin.buildings.edit', compact('building'))
+            ->with('success', __('cooperation/admin/buildings.update.success'));
     }
 }

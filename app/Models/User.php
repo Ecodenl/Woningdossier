@@ -111,13 +111,14 @@ class User extends Model implements AuthorizableContract
      * @var array
      */
     protected $fillable = [
-        'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access', 'regulations_refreshed_at',
+        'tool_last_changed_at', 'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access', 'regulations_refreshed_at',
         'last_visited_url', 'refreshing_regulations'
     ];
 
     protected $casts = [
         'allow_access' => 'boolean',
         'extra' => 'array',
+        'tool_last_changed_at' => 'datetime:Y-m-d H:i:s',
         'regulations_refreshed_at' => 'datetime:Y-m-d H:i:s',
         'refreshing_regulations' => 'boolean',
     ];
@@ -133,6 +134,11 @@ class User extends Model implements AuthorizableContract
         // We assume $contact is an ID. Maybe in the future this won't be the case but this way it can be easily
         // expanded
         return $query->where('extra->contact_id', $contact);
+    }
+
+    public function scopeEconobisContacts(Builder $query): Builder
+    {
+        return $query->whereNotNull('extra->contact_id');
     }
 
     # Relations

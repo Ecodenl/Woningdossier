@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 
+use App\Http\Requests\AddressFormRequest;
 use App\Models\Account;
 use App\Models\Cooperation;
-use App\Rules\HouseNumber;
-use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
-use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -26,17 +24,6 @@ class UserFormRequest extends FormRequest
     }
 
     /**
-     * so fields can be modified or added before validation.
-     */
-    public function prepareForValidation()
-    {
-        // Add new data field before it gets sent to the validator
-        $this->merge([
-            'extension' => strtolower(preg_replace("/[\s-]+/", '', $this->get('extension', ''))),
-        ]);
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -46,28 +33,23 @@ class UserFormRequest extends FormRequest
         $cooperationToCheckFor = $this->route('cooperationToManage') instanceof Cooperation
             ? $this->route('cooperationToManage') : $this->route('cooperation');
 
-        $emailRules = ['required', 'email'];
-        $rules = [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'postal_code' => ['required', new PostalCode('nl')],
-            'number' => ['required', new HouseNumber('nl')],
-            'extension' => [new HouseNumberExtension('nl')],
-            'phone_number' => ['nullable', new PhoneNumber('nl')],
-            'street' => 'required|string',
-            'city' => 'required|string',
+        $rules = array_merge([
+            'accounts.email' => ['required', 'email', Rule::unique('accounts', 'email')],
+            'users.first_name' => 'required|string|max:255',
+            'users.last_name' => 'required|string|max:255',
+            'users.phone_number' => ['nullable', new PhoneNumber('nl')],
+            'users.extra.contact_id' => ['nullable', 'numeric', 'integer', 'gt:0'],
             'roles' => 'required|exists:roles,id', // TODO: This doesn't evaluate if the user may assign the role.
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
-        ];
+        ], (new AddressFormRequest())->rules());
 
-        $account = Account::where('email', $this->get('email'))->first();
-
-        // so at this point we already know the data in invalid because the account is already associated with the current cooperation
-        // however we add the unique rule so we let laravel do the error handling
-        if ($account instanceof Account && $account->isAssociatedWith($cooperationToCheckFor)) {
-            $emailRules[] = 'unique:accounts,email';
+        // try to get the account
+        $account = Account::where('email', $this->input('accounts.email'))->first();
+        // if the account exists but the user is not associated with the current cooperation
+        // then just want the email as is.
+        if ($account instanceof Account && ! $account->isAssociatedWith($cooperationToCheckFor)) {
+            $rules['accounts.email'] = ['required', 'email'];
         }
-        $rules['email'] = $emailRules;
 
         return $rules;
     }

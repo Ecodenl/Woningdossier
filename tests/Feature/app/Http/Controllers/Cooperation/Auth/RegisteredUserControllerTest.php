@@ -16,11 +16,14 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use OwenIt\Auditing\Drivers\Database;
+use Tests\MocksLvbag;
 use Tests\TestCase;
 
 class RegisteredUserControllerTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use WithFaker,
+        RefreshDatabase,
+        MocksLvbag;
 
     public $seed = true;
     public $seeder = DatabaseSeeder::class;
@@ -34,15 +37,18 @@ class RegisteredUserControllerTest extends TestCase
             "email" => $this->faker->email,
             "first_name" => "Demo",
             "last_name" => "Example",
-            "postal_code" => "3255MC",
-            "number" => "13",
-            "extension" => "",
-            "street" => "Boezemweg",
-            "city" => "Oudetonge",
+            'address' => [
+                "postal_code" => "3255MC",
+                "number" => "13",
+                "extension" => "",
+                "street" => "Boezemweg",
+                "city" => "Oudetonge",
+            ],
             "phone_number" => null,
             'allow_access' => true,
             'password' => $this->faker->password('8')
         ];
+        $this->mockLvbagClientAdresUitgebreid($this->formData['address'])->createLvbagMock();
     }
 
     public function test_valid_data_registers_new_account()
@@ -53,7 +59,8 @@ class RegisteredUserControllerTest extends TestCase
         /** @var Client $client */
         $this->formData['password_confirmation'] = $this->formData['password'];
         $response = $this->post(route('cooperation.register.store', compact('cooperation')), $this->formData);
-
+\Log::debug($response->statusText());
+\Log::debug($response->getStatusCode());
         $response->assertRedirect(route('cooperation.auth.verification.notice', compact('cooperation')));
 
         $this->assertDatabaseHas('accounts', ['email' => $this->formData['email']]);

@@ -4,9 +4,11 @@ namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Helpers\ConsiderableHelper;
 use App\Models\RoofType;
+use App\Models\Step;
+use App\Models\ToolQuestion;
+use App\Services\LegacyService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -43,9 +45,10 @@ class RoofInsulationFormRequest extends FormRequest
         if (2 == $roofType->calculate_value) {
             return 'bitumen';
         }
-        if (4 == $roofType->calculate_value) {
-            return 'zinc';
-        }
+        // There isn't even a roof type with calculate value 4 atm...
+        //if (4 == $roofType->calculate_value) {
+        //    return 'zinc';
+        //}
 
         return '';
     }
@@ -55,18 +58,27 @@ class RoofInsulationFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(LegacyService $legacyService)
     {
-        return [
+        $measureRelatedShorts = $legacyService->getToolQuestionShorts(Step::findByShort('roof-insulation'));
+
+        $rules = [
             'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             'building_roof_type_ids' => 'bail|required|exists:roof_types,id',
             'building_roof_types.*.element_value_id' => 'exists:element_values,id',
             'building_roof_types.*.building_heating_id' => 'exists:building_heatings,id',
             'building_roof_types.*.extra.tiles_condition' => 'numeric|exists:roof_tile_statuses,id',
             'building_roof_types.roof_type_id' => 'exists:roof_types,id',
-            'user_costs.*.own_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
-            'user_costs.*.subsidy_total' => ['nullable', 'numeric', 'integer', 'gt:0'],
         ];
+
+        foreach ($measureRelatedShorts as $tqShorts) {
+            $toolQuestions = ToolQuestion::findByShorts($tqShorts);
+            foreach ($toolQuestions as $toolQuestion) {
+                $rules[$toolQuestion->short] = $toolQuestion->validation;
+            }
+        }
+
+        return $rules;
     }
 
     /**
@@ -99,7 +111,7 @@ class RoofInsulationFormRequest extends FormRequest
                 $validator->addRules([
                     $brt.'.'.$roofTypeCategory.'.roof_surface' => 'required|numeric|min:0',
                     $brt.'.'.$roofTypeCategory.'.insulation_roof_surface' => 'required|numeric|min:0|needs_to_be_lower_or_same_as:'.$brt.'.'.$roofTypeCategory.'.roof_surface',
-                    $brt.'.'.$roofTypeCategory.'.extra.zinc_replaced_date' => 'nullable|numeric|between:1960,'.$max,
+                    //$brt.'.'.$roofTypeCategory.'.extra.zinc_replaced_date' => 'nullable|numeric|between:1960,'.$max,
                 ]);
 
                 // bitumen is only possible on a flat roof

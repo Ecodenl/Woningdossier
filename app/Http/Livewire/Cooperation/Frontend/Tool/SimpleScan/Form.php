@@ -180,7 +180,7 @@ class Form extends Scannable
         }
 
         // Now mark the sub step as complete
-        $completedSubStep = CompletedSubStep::firstOrCreate([
+        $completedSubStep = CompletedSubStep::allInputSources()->firstOrCreate([
             'sub_step_id' => $this->subStep->id,
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id

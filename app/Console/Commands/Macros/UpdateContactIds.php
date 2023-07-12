@@ -77,6 +77,8 @@ class UpdateContactIds extends Command
                     $notFound[$accountId] = Account::where('id', $accountId)->exists()
                         ? 'Geen gebruiker voor cooperatie ' . $cooperationSlug
                         : 'Account verwijderd';
+
+                    // TODO: Write to CSV
                 }
             }
         }

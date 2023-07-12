@@ -126,18 +126,18 @@ class GenerateToolReport implements ShouldQueue
 
                 Log::debug('GenerateTotalReport - Putting chunk ' . $chunkNo);
                 $path = Storage::disk('downloads')->path($this->fileStorage->filename);
+                Log::debug('GenerateTotalReport - Path: ' . $path);
                 $handle = fopen($path, 'a');
-                if (!$handle){
+                if (! $handle) {
                     Log::error('GenerateTotalReport - no handle');
                 }
                 Log::debug('GenerateTotalReport - ' . count($rows) .  ' rows on chunk ' . $chunkNo);
                 foreach ($rows as $row) {
                     $strlen = fputcsv($handle, $row);
-                    if ($strlen === false){
-                        Log::error('GenerateTotalReport - no characters written to path ' . $path);
-                    }
-                    else {
-                        Log::error('GenerateTotalReport - ' . $strlen . " characters written to path " . $path);
+                    if ($strlen === false) {
+                        Log::error('GenerateTotalReport - no characters written to path');
+                    } else {
+                        Log::info('GenerateTotalReport - ' . $strlen . ' characters written to path');
                     }
                 }
                 Log::debug('GenerateTotalReport - closing handle');

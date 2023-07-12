@@ -56,7 +56,7 @@ class Form extends Component
     public function slugify()
     {
         if (empty($this->cooperationToEditFormData['slug'] ?? [])) {
-            $this->fill(['cooperationToEditFormData.slug' => Str::slug($this->cooperationToEditFormData['name'])]);
+            $this->fill(['cooperationToEditFormData.slug' => Str::slug($this->cooperationToEditFormData['name'] ?? '')]);
         }
     }
 

@@ -390,7 +390,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepBuildingData->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'building-data-comment-resident',
@@ -398,7 +398,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepBuildingData->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'building-data-comment-coach',
@@ -589,7 +589,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'usage-quick-scan-comment-resident',
@@ -597,7 +597,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'usage-quick-scan-comment-coach',
@@ -666,7 +666,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'living-requirements-comment-resident',
@@ -674,7 +674,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'living-requirements-comment-coach',
@@ -1366,7 +1366,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.element.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'residential-status-element-comment-resident',
@@ -1374,7 +1374,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.element.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-element-comment-coach',
@@ -1382,7 +1382,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.service.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'residential-status-service-comment-resident',
@@ -1390,7 +1390,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepResidentialStatus->id}.service.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'residential-status-service-comment-coach',
@@ -1797,7 +1797,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepSmallMeasures->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'small-measures-comment-resident',
@@ -1805,7 +1805,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$stepSmallMeasures->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'small-measures-comment-coach',
@@ -2354,7 +2354,7 @@ class ToolQuestionsTableSeeder extends Seeder
             // move these to the heating step with a short for the context
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$hrBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'hr-boiler-comment-resident',
@@ -2362,7 +2362,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$hrBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'hr-boiler-comment-coach',
@@ -2370,7 +2370,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$heatPumpStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'heat-pump-comment-resident',
@@ -2378,7 +2378,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$heatPumpStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'heat-pump-comment-coach',
@@ -2386,7 +2386,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$sunBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'sun-boiler-comment-resident',
@@ -2394,7 +2394,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$sunBoilerStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'sun-boiler-comment-coach',
@@ -2486,7 +2486,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$ventilationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'ventilation-comment-resident',
@@ -2494,7 +2494,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$ventilationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'ventilation-comment-coach',
@@ -2590,7 +2590,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$wallInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'wall-insulation-comment-resident',
@@ -2598,7 +2598,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$wallInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'wall-insulation-comment-coach',
@@ -2857,7 +2857,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$insulatedGlazingStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'insulated-glazing-comment-resident',
@@ -2865,7 +2865,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$insulatedGlazingStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'insulated-glazing-comment-coach',
@@ -2931,7 +2931,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$floorInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'floor-insulation-comment-resident',
@@ -2939,7 +2939,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$floorInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'floor-insulation-comment-coach',
@@ -3122,7 +3122,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$roofInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'roof-insulation-comment-resident',
@@ -3130,7 +3130,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$roofInsulationStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'roof-insulation-comment-coach',
@@ -3185,7 +3185,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$solarPanelStep->id}.comment",
                 'for_specific_input_source_id' => $residentInputSource->id,
                 'short' => 'solar-panels-comment-resident',
@@ -3193,7 +3193,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::STRING,
-                'validation' => ['nullable', 'string'],
+                'validation' => ['nullable', 'string', 'max:250000'],
                 'save_in' => "step_comments.{$solarPanelStep->id}.comment",
                 'for_specific_input_source_id' => $coachInputSource->id,
                 'short' => 'solar-panels-comment-coach',

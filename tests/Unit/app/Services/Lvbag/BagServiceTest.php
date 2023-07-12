@@ -41,7 +41,7 @@ class BagServiceTest extends TestCase
 
         $addressExpanded = app(BagService::class)->listAddressExpanded($attributes);
 
-        $this->assertTrue($addressExpanded->expendedAddress['endpoint_failure']);
+        $this->assertTrue($addressExpanded->expandedAddress['endpoint_failure']);
         $buildingData = $addressExpanded->prepareForBuilding();
         $this->assertArrayNotHasKey('bag_addressid', $buildingData);
         $this->assertArrayNotHasKey('bag_woonplaats_id', $buildingData);
@@ -64,7 +64,7 @@ class BagServiceTest extends TestCase
 
         $addressExpanded = app(BagService::class)->listAddressExpanded($attributes);
 
-        $this->assertFalse($addressExpanded->expendedAddress['endpoint_failure']);
+        $this->assertFalse($addressExpanded->expandedAddress['endpoint_failure']);
         $buildingData = $addressExpanded->prepareForBuilding();
         $this->assertEmpty($buildingData['bag_addressid']);
         $this->assertEmpty($buildingData['bag_woonplaats_id']);
@@ -106,7 +106,7 @@ class BagServiceTest extends TestCase
 
         $addressExpanded = app(BagService::class)->listAddressExpanded($attributes);
 
-        $this->assertFalse($addressExpanded->expendedAddress['endpoint_failure']);
+        $this->assertFalse($addressExpanded->expandedAddress['endpoint_failure']);
         $buildingData = $addressExpanded->prepareForBuilding();
         $this->assertSame($buildingData['bag_addressid'], $mockedApiData['_embedded']['adressen'][0]['nummeraanduidingIdentificatie']);
         $this->assertSame($buildingData['bag_woonplaats_id'], $mockedApiData['_embedded']['adressen'][0]['woonplaatsIdentificatie']);

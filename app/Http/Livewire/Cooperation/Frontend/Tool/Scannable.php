@@ -203,8 +203,12 @@ abstract class Scannable extends Component
         }
         if (! empty($this->rules)) {
             $validator = Validator::make([
-                "filledInAnswers.{$toolQuestionShort}" => $this->filledInAnswers[$toolQuestionShort]
-            ], $this->rules["filledInAnswers.{$toolQuestionShort}"], [], $this->attributes);
+                'filledInAnswers' => [
+                    $toolQuestionShort => $this->filledInAnswers[$toolQuestionShort],
+                ]
+            ], [
+                "filledInAnswers.{$toolQuestionShort}" => $this->rules["filledInAnswers.{$toolQuestionShort}"],
+            ], [], $this->attributes);
 
             // Translate values also
             $defaultValues = __('validation.values.defaults');

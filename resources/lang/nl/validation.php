@@ -360,6 +360,13 @@ return [
         'buildings.street' => 'straat',
         'buildings.city' => 'stad',
 
+        // Address
+        'address.postal_code' => 'postcode',
+        'address.number' => 'huisnummer',
+        'address.extension' => 'toevoeging',
+        'address.street' => 'straat',
+        'address.city' => 'stad',
+
         // API
         'building_coach_statuses.coach_contact_id' => 'coach contact ID',
         'building_coach_statuses.resident_contact_id' => 'bewoner contact ID',
@@ -398,6 +405,10 @@ return [
         // Measure caategories
         'measure_categories.name' => 'naam',
         'vbjehuis_measure' => 'VerbeterJeHuis maatregel',
+
+        // Woonplan comments
+        'residentCommentText' => 'opmerkingen bewoner',
+        'coachCommentText' => 'opmerkingen coach',
     ],
 
     'values' => [

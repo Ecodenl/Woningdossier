@@ -8,7 +8,6 @@ use App\Models\Municipality;
 use App\Services\BuildingAddressService;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -16,6 +15,7 @@ use Illuminate\Queue\MaxAttemptsExceededException;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class CheckBuildingAddress implements ShouldQueue
 {
@@ -53,8 +53,6 @@ class CheckBuildingAddress implements ShouldQueue
             // When there's a client exception there's no point in retrying.
             $this->fail($e);
             return;
-        } catch (MaxAttemptsExceededException $e) {
-            Log::debug(__METHOD__ . " - Building {$building->id}: " . $e->getMessage());
         }
 
         /**
@@ -76,5 +74,17 @@ class CheckBuildingAddress implements ShouldQueue
     public function middleware()
     {
         return [(new WithoutOverlapping(sprintf('%s-%s', "CheckBuildingAddress", $this->building->id)))->releaseAfter(10)];
+    }
+
+    public function failed(Throwable $exception)
+    {
+        if ($exception instanceof MaxAttemptsExceededException) {
+            // Basic report.
+            // TODO: This works, but it still logs the full stacktrace after...
+            Log::debug(__METHOD__ . " - Building {$this->building->id}: " . $exception->getMessage());
+        } else {
+            // Trigger as usual.
+            report($exception);
+        }
     }
 }

@@ -74,7 +74,7 @@ class UpdateContactIds extends Command
                 Log::info("User not found account {$accountId} does not have a link with the provided cooperation");
                 // No need to clutter memory of not needed
                 if ($autoReason) {
-                    $notFound[$accountId] = Account::exists($accountId)
+                    $notFound[$accountId] = Account::where('id', $accountId)->exists()
                         ? 'Geen gebruiker voor cooperatie ' . $cooperationSlug
                         : 'Account verwijderd';
                 }

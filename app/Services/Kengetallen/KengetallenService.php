@@ -23,6 +23,12 @@ class KengetallenService
         RvoDefined::class,
     ];
 
+    /**
+     * Resolves a kengetallen value.
+     *
+     * @param  string  $kengetallenCode
+     * @return mixed|void
+     */
     public function resolve(string $kengetallenCode)
     {
         foreach ($this->resolvers as $resolver) {
@@ -33,6 +39,13 @@ class KengetallenService
         }
     }
 
+    /**
+     * Returns the value for the given code on the resolver.
+     *
+     * @param $resolver
+     * @param  string  $kengetallenCode
+     * @return mixed
+     */
     public function get($resolver, string $kengetallenCode)
     {
         return (new $resolver)
@@ -43,6 +56,12 @@ class KengetallenService
             ->get($kengetallenCode);
     }
 
+    /**
+     * Returns what resolver is used a specific kengetallen code.
+     *
+     * @param  string  $kengetallenCode
+     * @return KengetallenDefiner
+     */
     public function explain(string $kengetallenCode): KengetallenDefiner
     {
         foreach ($this->resolvers as $resolver) {

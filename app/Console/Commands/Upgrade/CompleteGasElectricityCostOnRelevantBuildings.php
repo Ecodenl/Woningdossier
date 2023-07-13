@@ -24,9 +24,7 @@ class CompleteGasElectricityCostOnRelevantBuildings extends Command
      *
      * @var string
      */
-    protected $description = '
-    This command contains code that should be ran during deployment. 
-    It also MUST contain atomic code to prevent problems in case this command isn\'t cleared for a new deployment.';
+    protected $description = 'Completes the gas-electricity substep for eligible buildings and its relevant input sources.';
 
     /**
      * Create a new command instance.

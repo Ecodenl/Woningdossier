@@ -75,10 +75,10 @@ class CompleteGasElectricityCostOnRelevantBuildings extends Command
                                             completed_steps.input_source_id'
                         )
                         ->leftJoin('completed_steps', 'steps.id', 'completed_steps.step_id')
-                        ->leftJoin('completed_sub_steps', function (JoinClause $leftJoin) {
+                        ->leftJoin('completed_sub_steps', function (JoinClause $leftJoin) use ($subStepToComplete) {
                             $leftJoin->on('completed_steps.building_id', 'completed_sub_steps.building_id')
                                 ->on('completed_steps.input_source_id', '=', 'completed_sub_steps.input_source_id')
-                                ->where('completed_sub_steps.sub_step_id', '=', '85');
+                                ->where('completed_sub_steps.sub_step_id', '=', $subStepToComplete->id);
                         })
                         ->where('steps.id', $usageQuickScan->id)
                         // due to the left join we will also get rows which are not present in the completed_sub_steps, those with a empty sub step id!
@@ -89,28 +89,33 @@ class CompleteGasElectricityCostOnRelevantBuildings extends Command
                     foreach ($incompleteGasElectricityForBuildingInputSourcesCombinations as $building) {
                         $this->info("Inserting for building {$building->building_id} and source {$building->input_source_id}");
                         // give the user the "missing" answers
-                        DB::table('tool_question_answers')
-                            ->insert([
-                                [
-                                    'tool_question_id' => $electricityPriceEuroTq->id,
+
+                        DB::table('tool_question_answers')->updateOrInsert([
+                            'tool_question_id' => $electricityPriceEuroTq->id,
+                            'building_id' => $building->building_id,
+                            'input_source_id' => $building->input_source_id,
+                        ], ['answer' => $electricityPrice]);
+
+                        DB::table('tool_question_answers')->updateOrInsert([
+                            'tool_question_id' => $gasPriceEuroTq->id,
+                            'building_id' => $building->building_id,
+                            'input_source_id' => $building->input_source_id,
+                        ], ['answer' => $gasPrice]);
+
+                        $alreadyCompleted = DB::table('completed_sub_steps')
+                            ->where('building_id', $building->building_id)
+                            ->where('input_source_id', $building->input_source_id)
+                            ->where('sub_step_id', $subStepToComplete->id)
+                            ->exists();
+
+                        if ($alreadyCompleted === false) {
+                            DB::table('completed_sub_steps')
+                                ->insert([
                                     'building_id' => $building->building_id,
                                     'input_source_id' => $building->input_source_id,
-                                    'answer' => $electricityPrice
-                                ],
-                                [
-                                    'tool_question_id' => $gasPriceEuroTq->id,
-                                    'building_id' => $building->building_id,
-                                    'input_source_id' => $building->input_source_id,
-                                    'answer' => $gasPrice
-                                ]
-                            ]);
-                        // now complete the new substep for the above tool questions
-                        DB::table('completed_sub_steps')
-                            ->insert([
-                                'building_id' => $building->building_id,
-                                'input_source_id' => $building->input_source_id,
-                                'sub_step_id' => $subStepToComplete->id,
-                            ]);
+                                    'sub_step_id' => $subStepToComplete->id,
+                                ]);
+                        }
                     }
                 }
             });

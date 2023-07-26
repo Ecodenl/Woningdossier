@@ -1,18 +1,20 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Http\Controllers\ConfirmablePasswordController;
 use Laravel\Fortify\Http\Controllers\ConfirmedPasswordStatusController;
-use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
-use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
-use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
 use Laravel\Fortify\Http\Controllers\ConfirmedTwoFactorAuthenticationController;
+
+use App\Http\Controllers\Cooperation\Auth\RegisteredUserController;
+use App\Http\Controllers\Cooperation\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Cooperation\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Cooperation\Auth\TwoFactorAuthenticatedSessionController;
 
 // Fortify auth routes start
 Route::get('/register', [RegisteredUserController::class, 'index'])
@@ -22,7 +24,8 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
     ->middleware(['guest:'.config('fortify.guard')])
     ->name('register.store');
 
-Route::get('check-existing-mail', [RegisteredUserController::class, 'checkExistingEmail'])->name('check-existing-email');
+Route::get('check-existing-mail/{forCooperation?}', [RegisteredUserController::class, 'checkExistingEmail'])
+    ->name('check-existing-email');
 
 Route::as('auth.')->group(function () {
     $limiter = config('fortify.limiters.login');
@@ -39,21 +42,22 @@ Route::as('auth.')->group(function () {
         ->middleware([config('fortify.auth_middleware', 'auth').':'.$guard, 'throttle:'.$verificationLimiter])
         ->name('verification.send');
 
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])->middleware(['guest:' . $guard])
+    Route::get('login', [AuthenticatedSessionController::class, 'create'])->middleware(['guest:'.$guard])
         ->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store'])->middleware(array_filter([
-        'guest:' . $guard, $limiter ? 'throttle:' . $limiter : null,
+        'guest:'.$guard,
+        $limiter ? 'throttle:'.$limiter : null,
     ]))->name('login.submit');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-    Route::get('password/request', [PasswordResetLinkController::class, 'create'])->middleware(['guest:' . $guard])
+    Route::get('password/request', [PasswordResetLinkController::class, 'create'])->middleware(['guest:'.$guard])
         ->name('password.request.index');
-    Route::post('password/request', [PasswordResetLinkController::class, 'store'])->middleware(['guest:' . $guard])
+    Route::post('password/request', [PasswordResetLinkController::class, 'store'])->middleware(['guest:'.$guard])
         ->name('password.request.store');
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->middleware(['guest:' . $guard])
+    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->middleware(['guest:'.$guard])
         ->name('password.reset');
-    Route::post('reset-password', [NewPasswordController::class, 'store'])->middleware(['guest:' . $guard])
+    Route::post('reset-password', [NewPasswordController::class, 'store'])->middleware(['guest:'.$guard])
         ->name('password.update');
 
     // Two Factor Authentication...
@@ -109,8 +113,7 @@ Route::as('auth.')->group(function () {
             ->middleware($twoFactorMiddleware)
             ->name('two-factor.enable');
 
-        Route::post('/user/confirmed-two-factor-authentication',
-            [ConfirmedTwoFactorAuthenticationController::class, 'store'])
+        Route::post('/user/confirmed-two-factor-authentication', [ConfirmedTwoFactorAuthenticationController::class, 'store'])
             ->middleware($twoFactorMiddleware)
             ->name('two-factor.confirm');
 

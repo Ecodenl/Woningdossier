@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Cooperation\Admin\SuperAdmin\Cooperations;
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -14,6 +15,8 @@ class Form extends Component
     use AuthorizesRequests;
 
     public $cooperationToEdit;
+    public bool $clearApiKey = false;
+    public bool $hasApiKey = false;
 
     public array $cooperationToEditFormData = [
         'slug' => null,
@@ -24,8 +27,15 @@ class Form extends Component
         $this->cooperationToEdit = $cooperationToEdit;
         if ($cooperationToEdit->exists) {
             $this->fill([
-                'cooperationToEditFormData' => $cooperationToEdit->only(['name', 'slug', 'website_url', 'cooperationToEdit_email'])
+                'cooperationToEditFormData' => $cooperationToEdit->only([
+                    'name',
+                    'slug',
+                    'website_url',
+                    'cooperation_email',
+                    'econobis_wildcard'
+                ])
             ]);
+            $this->hasApiKey = ! is_null($cooperationToEdit->econobis_api_key);
         }
     }
 
@@ -36,10 +46,17 @@ class Form extends Component
         }
     }
 
+    public function updatedClearApiKey($shouldClear)
+    {
+        if ($shouldClear) {
+            $this->cooperationToEditFormData['econobis_api_key'] = null;
+        }
+    }
+
     public function slugify()
     {
         if (empty($this->cooperationToEditFormData['slug'] ?? [])) {
-            $this->fill(['cooperationToEditFormData.slug' => Str::slug($this->cooperationToEditFormData['name'])]);
+            $this->fill(['cooperationToEditFormData.slug' => Str::slug($this->cooperationToEditFormData['name'] ?? '')]);
         }
     }
 
@@ -52,7 +69,10 @@ class Form extends Component
         return [
             'cooperationToEditFormData.name' => 'required',
             'cooperationToEditFormData.slug' => ['required', $slugUnique],
-            'cooperationToEditFormData.website_url' => 'nullable|url',
+            'cooperationToEditFormData.cooperation_email' => ['nullable', 'email'],
+            'cooperationToEditFormData.website_url' => ['nullable', 'url'],
+            'cooperationToEditFormData.econobis_wildcard' => 'nullable',
+            'cooperationToEditFormData.econobis_api_key' => ['nullable', 'string'],
         ];
     }
 
@@ -61,17 +81,34 @@ class Form extends Component
         $validatedData = $this->validate();
         // just to be sure.
         $validatedData['cooperationToEditFormData']['slug'] = Str::slug($validatedData['cooperationToEditFormData']['slug']);
+        $cooperationToEditFormData = $validatedData['cooperationToEditFormData'];
         // when you can create, you can update.
         $this->authorize('updateOrCreate', Cooperation::class);
-        if ($this->cooperationToEdit->exists) {
-            $this->cooperationToEdit->update($validatedData['cooperationToEditFormData']);
+
+        // prev update method
+        if ($this->clearApiKey) {
+            $cooperationToEditFormData['econobis_api_key'] = null;
         } else {
-            Cooperation::create($validatedData['cooperationToEditFormData']);
+            if ( ! empty($cooperationToEditFormData['econobis_api_key'])) {
+                $cooperationToEditFormData['econobis_api_key'] = Crypt::encrypt($cooperationToEditFormData['econobis_api_key']);
+            } else {
+                // If it's empty we want to unset it, because we don't want to nullify the API key.
+                unset($cooperationToEditFormData['econobis_api_key']);
+            }
+        }
+
+
+        if ($this->cooperationToEdit->exists) {
+            $this->cooperationToEdit->update($cooperationToEditFormData);
+        } else {
+            Cooperation::create($cooperationToEditFormData);
         }
         return redirect()
-            ->route('cooperation.admin.super-admin.cooperations.index', ['cooperation' => HoomdossierSession::getCooperation(true)])
-            ->with('success',  __('woningdossier.cooperation.admin.super-admin.cooperations.update.success'));
+            ->route('cooperation.admin.super-admin.cooperations.index',
+                ['cooperation' => HoomdossierSession::getCooperation(true)])
+            ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.update.success'));
     }
+
     public function render()
     {
         return view('livewire.cooperation.admin.super-admin.cooperations.form');

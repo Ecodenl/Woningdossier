@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Account;
 use App\Models\InputSource;
+use App\Models\User;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,11 @@ class Hoomdossier
     {
         // TODO: Refactor references to Str::contains
         return false !== stristr($column, $needle);
+    }
+
+    public static function hasEnabledEconobisCalls(): bool
+    {
+        return config('hoomdossier.services.econobis.enabled', true);
     }
 
     /**
@@ -71,13 +77,13 @@ class Hoomdossier
     }
 
     /**
+     * @param  string  $column
+     * @param  null  $default
+     *
+     * @return mixed|null
      * @deprecated
      * Return the most credible value from a given collection.
      *
-     * @param string $column
-     * @param null   $default
-     *
-     * @return mixed|null
      */
     public static function getMostCredibleValueFromCollection(Collection $results, $column, $default = null)
     {
@@ -102,14 +108,18 @@ class Hoomdossier
     /**
      * Will return the most credible value from a given relationship.
      *
-     * @param null $column
-     * @param null $default
-     * @param null $onlyReturnForInputSource
+     * @param  null  $column
+     * @param  null  $default
+     * @param  null  $onlyReturnForInputSource
      *
      * @return \Illuminate\Database\Eloquent\Collection|mixed|null
      */
-    public static function getMostCredibleValue(Relation $relation, $column = null, $default = null, $onlyReturnForInputSource = null)
-    {
+    public static function getMostCredibleValue(
+        Relation $relation,
+        $column = null,
+        $default = null,
+        $onlyReturnForInputSource = null
+    ) {
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
@@ -155,7 +165,7 @@ class Hoomdossier
      *
      * @return \App\Models\User|null
      */
-    public static function user()
+    public static function user(): ?User
     {
         return (static::account() instanceof Account) ? static::account()->user() : null;
     }

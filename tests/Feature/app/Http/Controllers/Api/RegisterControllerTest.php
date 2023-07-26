@@ -16,11 +16,14 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
+use Tests\MocksLvbag;
 use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use WithFaker,
+        RefreshDatabase,
+        MocksLvbag;
 
     public $seed = true;
     public $seeder = DatabaseSeeder::class;
@@ -45,7 +48,7 @@ class RegisterControllerTest extends TestCase
             "city" => "Zerocity",
             "phone_number" => null,
         ];
-        Artisan::call('cache:clear');
+        $this->mockLvbagClientAdresUitgebreid($this->formData)->createLvbagMock();
     }
 
     public function test_valid_data_registers_new_account()
@@ -165,7 +168,6 @@ class RegisterControllerTest extends TestCase
         $account = $accounts->first();
         $this->assertCount(2, DB::table('users')->where('account_id', $account->id)->get());
         $this->assertDatabaseHas('accounts', ['email' => $this->formData['email']]);
-
     }
 
     public function test_invalid_data_returns_422()
@@ -185,4 +187,6 @@ class RegisterControllerTest extends TestCase
 
         $this->assertCount(0, $cooperation->users);
     }
+
+    // TODO: Create test for duplicate contact ID in the same cooperation
 }

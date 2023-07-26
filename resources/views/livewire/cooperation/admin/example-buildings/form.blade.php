@@ -26,12 +26,23 @@
             $selected = old('building_type_id', isset($exampleBuilding) ? $exampleBuilding->building_type_id : null);
         @endphp
 
-        <label for="building_type_id">{{\App\Helpers\Translation::translate('building-detail.building-type.what-type.title')}}</label>
+        <label for="building_type_id">
+            @lang('building-detail.building-type.what-type.title')
+            @if($isSuperAdmin && isset($exampleBuilding))
+                Huidig: {{$exampleBuilding->buildingType->name}}
+            @endif
+        </label>
         <select id="building_type_id" wire:model="exampleBuildingValues.building_type_id" class="form-control">
             <option value="">-</option>
-            @foreach($buildingTypes as $buildingType)
-                <option value="{{ $buildingType->id }}">{{ $buildingType->name }}</option>
-            @endforeach
+            @if(isset($exampleBuilding) && $exampleBuilding->isGeneric())
+                @foreach($genericBuildingTypes as $buildingType)
+                    <option value="{{ $buildingType->id }}">{{ $buildingType->name }}</option>
+                @endforeach
+            @else
+                @foreach($buildingTypes as $buildingType)
+                    <option value="{{ $buildingType->id }}">{{ $buildingType->name }}</option>
+                @endforeach
+            @endif
         </select>
 
         @if($errors->has('exampleBuildingValues.building_type_id'))

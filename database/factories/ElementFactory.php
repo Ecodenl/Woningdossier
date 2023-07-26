@@ -16,11 +16,11 @@ class ElementFactory extends Factory
         $name = $this->faker->word;
         $short = \Illuminate\Support\Str::slug($name);
         return [
-            'name' => json_encode(['nl' => $name]),
+            'name' => ['nl' => $name],
             'short' => $short,
             'service_type_id' => \App\Models\ServiceType::factory(),
             'order' => $this->faker->randomNumber(2),
-            'info' => json_encode(['nl' => $this->faker->sentence]),
+            'info' => ['nl' => $this->faker->sentence],
         ];
     }
 }

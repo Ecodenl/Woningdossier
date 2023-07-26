@@ -4,7 +4,6 @@ namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\RoofInsulation as RoofInsulationCalculate;
 use App\Events\StepCleared;
-use App\Helpers\Arr;
 use App\Helpers\Calculator;
 use App\Helpers\RoofInsulation;
 use App\Helpers\RoofInsulationCalculator;
@@ -104,46 +103,46 @@ class RoofInsulationHelper extends ToolHelper
 
                     $roofCatData = $buildingRoofTypeData[$roofCat] ?? [];
                     $extra = $roofCatData['extra'] ?? [];
-                    if (array_key_exists('zinc_replaced_date', $extra)) {
-                        $zincReplaceYear = (int)$extra['zinc_replaced_date'];
-                        // todo Get surface for $roofCat from building_roof_types (or elsewhere) for this input source
-                        // Default: get from building_roof_types table for this input source
-                        $roofType = RoofType::where('short', '=', $roofCat)->first();
-
-                        $zincSurface = 0;
-                        if ($roofType instanceof RoofType) {
-                            $buildingRoofType = $this->building->roofTypes()->forInputSource($this->inputSource)->where('roof_type_id', '=', $roofType->id)->first();
-                            if ($buildingRoofType instanceof BuildingRoofType) {
-                                $zincSurface = $buildingRoofType->zinc_surface;
-                            }
-                        }
-                        // Note there's no such request input just yet. We're not sure this will be available for the user
-                        // to fill in.
-                        $zincSurface = $roofCatData['zinc_surface'] ?? $zincSurface;
-
-                        if ($zincReplaceYear > 0 && $zincSurface > 0) {
-                            /** @var MeasureApplication $zincReplaceMeasure */
-                            $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc-' . $roofCat)->first();
-
-                            $year = RoofInsulationCalculator::determineApplicationYear($zincReplaceMeasure, $zincReplaceYear, 1);
-                            $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
-
-                            $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
-                            $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);
-                            $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                            $actionPlanAdvice->user()->associate($this->user);
-                            $actionPlanAdvice->userActionPlanAdvisable()->associate($zincReplaceMeasure);
-                            $actionPlanAdvice->step()->associate($step);
-
-                            // We only want to check old advices if the updated attributes are not relevant to this measure
-                            if (! in_array($zincReplaceMeasure->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
-                                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $zincReplaceMeasure,
-                                    $oldAdvices);
-                            }
-
-                            $actionPlanAdvice->save();
-                        }
-                    }
+                    //if (array_key_exists('zinc_replaced_date', $extra)) {
+                    //    $zincReplaceYear = (int)$extra['zinc_replaced_date'];
+                    //    // todo Get surface for $roofCat from building_roof_types (or elsewhere) for this input source
+                    //    // Default: get from building_roof_types table for this input source
+                    //    $roofType = RoofType::where('short', '=', $roofCat)->first();
+                    //
+                    //    $zincSurface = 0;
+                    //    if ($roofType instanceof RoofType) {
+                    //        $buildingRoofType = $this->building->roofTypes()->forInputSource($this->inputSource)->where('roof_type_id', '=', $roofType->id)->first();
+                    //        if ($buildingRoofType instanceof BuildingRoofType) {
+                    //            $zincSurface = $buildingRoofType->zinc_surface;
+                    //        }
+                    //    }
+                    //    // Note there's no such request input just yet. We're not sure this will be available for the user
+                    //    // to fill in.
+                    //    $zincSurface = $roofCatData['zinc_surface'] ?? $zincSurface;
+                    //
+                    //    if ($zincReplaceYear > 0 && $zincSurface > 0) {
+                    //        /** @var MeasureApplication $zincReplaceMeasure */
+                    //        $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc-' . $roofCat)->first();
+                    //
+                    //        $year = RoofInsulationCalculator::determineApplicationYear($zincReplaceMeasure, $zincReplaceYear, 1);
+                    //        $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
+                    //
+                    //        $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
+                    //        $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);
+                    //        $actionPlanAdvice->input_source_id = $this->inputSource->id;
+                    //        $actionPlanAdvice->user()->associate($this->user);
+                    //        $actionPlanAdvice->userActionPlanAdvisable()->associate($zincReplaceMeasure);
+                    //        $actionPlanAdvice->step()->associate($step);
+                    //
+                    //        // We only want to check old advices if the updated attributes are not relevant to this measure
+                    //        if (! in_array($zincReplaceMeasure->id, $updatedMeasureIds) && $this->shouldCheckOldAdvices()) {
+                    //            UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $zincReplaceMeasure,
+                    //                $oldAdvices);
+                    //        }
+                    //
+                    //        $actionPlanAdvice->save();
+                    //    }
+                    //}
                     if (array_key_exists('tiles_condition', $extra)) {
                         $tilesCondition = (int)$extra['tiles_condition'];
 
@@ -233,12 +232,12 @@ class RoofInsulationHelper extends ToolHelper
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
-                $buildingRoofType = $this->building->roofTypes()->forInputSource($this->inputSource)->where('roof_type_id', '=', $roofType->id)->first();
-                $zincSurface = $buildingRoofType instanceof BuildingRoofType ? $buildingRoofType->zinc_surface : 0;
+                //$buildingRoofType = $this->building->roofTypes()->forInputSource($this->inputSource)->where('roof_type_id', '=', $roofType->id)->first();
+                //$zincSurface = $buildingRoofType instanceof BuildingRoofType ? $buildingRoofType->zinc_surface : 0;
 
                 // Note there's no such request input just yet. We're not sure this will be available for the user
                 // to fill in.
-                $buildingRoofTypeData[$roofType->short]['zinc_surface'] = $zincSurface;
+                //$buildingRoofTypeData[$roofType->short]['zinc_surface'] = $zincSurface;
                 $buildingRoofTypeData[$roofType->short]['roof_type_id'] = $roofType->id;
 
                 $buildingRoofTypeCreateData[] = $buildingRoofTypeData[$roofType->short];

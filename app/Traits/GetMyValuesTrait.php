@@ -285,7 +285,7 @@ trait GetMyValuesTrait
         $building = $user->building ?? HoomdossierSession::getBuilding(true);
 
         // determine what table we are using
-        $currentTable = $this->table ?? $this->getTable();
+        $currentTable = $this->getTable();
 
         // determine which column we should use.
         if (Schema::hasColumn($currentTable, 'building_id')) {

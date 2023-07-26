@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Queue;
 use App\Helpers\ToolHelper;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
@@ -21,10 +22,7 @@ use Throwable;
 
 class GenerateToolReport implements ShouldQueue
 {
-    use Queueable;
-    use Dispatchable;
-    use InteractsWithQueue;
-    use SerializesModels;
+    use Queueable, Dispatchable, InteractsWithQueue, SerializesModels;
 
     protected $cooperation;
     protected $anonymizeData;
@@ -33,6 +31,7 @@ class GenerateToolReport implements ShouldQueue
 
     public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage, bool $anonymizeData = false)
     {
+        $this->queue = Queue::EXPORTS;
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;
         $this->cooperation = $cooperation;
@@ -86,6 +85,7 @@ class GenerateToolReport implements ShouldQueue
             $dumpService->headerStructure[] = 'Account id';
             $dumpService->headerStructure[] = 'User id';
             $dumpService->headerStructure[] = 'Building id';
+            $dumpService->headerStructure[] = 'Contact id';
         }
 
         $rows[] = $dumpService->headerStructure;
@@ -122,23 +122,24 @@ class GenerateToolReport implements ShouldQueue
                         $rows[$user->building->id]['Account id'] = $user->account_id;
                         $rows[$user->building->id]['User id'] = $user->id;
                         $rows[$user->building->id]['Building id'] = $user->building->id;
+                        $rows[$user->building->id]['Contact id'] = optional($user->extra)['contact_id'];
                     }
                 }
 
                 Log::debug('GenerateTotalReport - Putting chunk ' . $chunkNo);
                 $path = Storage::disk('downloads')->path($this->fileStorage->filename);
+                Log::debug('GenerateTotalReport - Path: ' . $path);
                 $handle = fopen($path, 'a');
-                if (!$handle){
+                if (! $handle) {
                     Log::error('GenerateTotalReport - no handle');
                 }
                 Log::debug('GenerateTotalReport - ' . count($rows) .  ' rows on chunk ' . $chunkNo);
                 foreach ($rows as $row) {
                     $strlen = fputcsv($handle, $row);
-                    if ($strlen === false){
-                        Log::error('GenerateTotalReport - no characters written to path ' . $path);
-                    }
-                    else {
-                        Log::error('GenerateTotalReport - ' . $strlen . " characters written to path " . $path);
+                    if ($strlen === false) {
+                        Log::error('GenerateTotalReport - no characters written to path');
+                    } else {
+                        Log::info('GenerateTotalReport - ' . $strlen . ' characters written to path');
                     }
                 }
                 Log::debug('GenerateTotalReport - closing handle');

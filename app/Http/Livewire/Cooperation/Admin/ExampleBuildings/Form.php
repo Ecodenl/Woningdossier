@@ -18,6 +18,7 @@ class Form extends Component
 {
     public $exampleBuilding = null;
     public $buildingTypes;
+    public $genericBuildingTypes;
     public $cooperations;
     public $exampleBuildingSteps;
     public $contents = [];
@@ -58,11 +59,14 @@ class Form extends Component
         $this->buildingTypes = BuildingType::all();
 
         if ($this->isSuperAdmin) {
+
             $alreadyPickedBuildingTypes = ExampleBuilding::generic()
                 ->groupBy('building_type_id')
                 ->select('building_type_id')
                 ->pluck('building_type_id');
-            $this->buildingTypes = BuildingType::whereNotIn('id', $alreadyPickedBuildingTypes->toArray())->get();
+            $this->genericBuildingTypes = BuildingType::whereNotIn('id', $alreadyPickedBuildingTypes->toArray())->get();
+
+            $this->buildingTypes = BuildingType::all();
             $this->cooperations = Cooperation::all();
         }
 

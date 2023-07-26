@@ -85,6 +85,7 @@ class GenerateToolReport implements ShouldQueue
             $dumpService->headerStructure[] = 'Account id';
             $dumpService->headerStructure[] = 'User id';
             $dumpService->headerStructure[] = 'Building id';
+            $dumpService->headerStructure[] = 'Contact id';
         }
 
         $rows[] = $dumpService->headerStructure;
@@ -121,6 +122,7 @@ class GenerateToolReport implements ShouldQueue
                         $rows[$user->building->id]['Account id'] = $user->account_id;
                         $rows[$user->building->id]['User id'] = $user->id;
                         $rows[$user->building->id]['Building id'] = $user->building->id;
+                        $rows[$user->building->id]['Contact id'] = optional($user->extra)['contact_id'];
                     }
                 }
 

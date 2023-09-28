@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\MediaHelper;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -38,12 +39,13 @@ class MediaPolicy
      *
      * @return mixed
      */
-    public function viewAny(Account $user, InputSource $inputSource, Building $building): bool
+    public function viewAny(Account $user, InputSource $inputSource, Building $building, ?string $tag = null): bool
     {
         // Media can be viewed if it's either the user's own building, or the user
         // belongs to the cooperation (coach belongs to cooperation).
 
-        return $this->isCooperation($inputSource) || HoomdossierSession::isUserObserving();
+        return ($this->isCooperation($inputSource) || HoomdossierSession::isUserObserving())
+            && $tag !== MediaHelper::BUILDING_IMAGE;
     }
 
     /**
@@ -67,9 +69,13 @@ class MediaPolicy
      *
      * @return mixed
      */
-    public function create(Account $user, InputSource $inputSource, Building $building): bool
+    public function create(Account $user, InputSource $inputSource, Building $building, ?string $tag = null): bool
     {
-        return$this->isCooperation($inputSource) && ! HoomdossierSession::isUserObserving();
+        // Only a coach is allowed to upload a building image as of now
+        return ! HoomdossierSession::isUserObserving() && (
+                ($tag !== MediaHelper::BUILDING_IMAGE && $this->isCooperation($inputSource)) ||
+                $inputSource->short === InputSource::COACH_SHORT
+            );
     }
 
     /**

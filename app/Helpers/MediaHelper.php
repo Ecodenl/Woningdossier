@@ -8,6 +8,7 @@ use App\Models\Cooperation;
 class MediaHelper
 {
     const LOGO = 'logo';
+    const BUILDING_IMAGE = 'building-image';
     const BACKGROUND = 'background';
     const GENERIC_FILE = 'generic-file';
     const GENERIC_IMAGE = 'generic-image';
@@ -38,6 +39,21 @@ class MediaHelper
             default:
                 return [];
         }
+    }
+
+    public static function getRulesForTag(string $tag): array
+    {
+        $rules = [
+            'max' => null,
+        ];
+
+        switch ($tag) {
+            case self::BUILDING_IMAGE:
+                $rules['max'] = 1;
+                break;
+        }
+
+        return $rules;
     }
 
     public static function getImageMimes(bool $asArray = false)

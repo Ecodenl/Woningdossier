@@ -204,6 +204,10 @@
             </div>
         </div>
 
+        @can('create', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building, MediaHelper::BUILDING_IMAGE])
+            <livewire:cooperation.admin.buildings.uploader :building="$building">
+        @endcan
+
         <ul class="nav nav-tabs">
 
             <li @if(session('fragment') == 'messages-intern') class="active" @endif>

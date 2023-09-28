@@ -225,9 +225,7 @@
                                 <i class="ml-2 icon-sm icon-arrow-down"></i>
                             </a>
                             @can('delete', [$file, $inputSource, $building])
-                                {{-- It is important to have the wire:click AFTER the x-on:click, otherwise the confirm doesn't prevent wire:click --}}
-                                <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {close(); $el.closest('{{"[wire\\\\:key=\"{$file->id}\"]"}}').fadeOut(250);} else { $event.stopImmediatePropagation(); }"
-                                        wire:click="delete({{$file->id}})"
+                                <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {$wire.call('delete', {{$file->id}}); close(); $el.closest('{{"[wire\\\\:key=\"{$file->id}\"]"}}').fadeOut(250);}"
                                         class="flex px-4 btn btn-outline-red items-center">
                                     @lang('cooperation/frontend/tool.my-plan.uploader.form.delete.title')
                                     <i class="ml-2 icon-md icon-trash-can-red"></i>

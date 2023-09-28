@@ -41,21 +41,6 @@ class MediaHelper
         }
     }
 
-    public static function getRulesForTag(string $tag): array
-    {
-        $rules = [
-            'max' => null,
-        ];
-
-        switch ($tag) {
-            case self::BUILDING_IMAGE:
-                $rules['max'] = 1;
-                break;
-        }
-
-        return $rules;
-    }
-
     public static function getImageMimes(bool $asArray = false)
     {
         $mimes = config('hoomdossier.media.accepted_image_mimes');

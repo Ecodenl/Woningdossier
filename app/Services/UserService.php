@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Events\UserDeleted;
+use App\Events\UserResetHisBuilding;
 use App\Helpers\Queue;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
@@ -14,14 +16,39 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Models\User;
+use App\Services\Econobis\EconobisService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
+use App\Services\Models\BuildingStatusService;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserService
 {
+    public User $user;
+
+    public function forUser(User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    public function isRelatedWithEconobis(): bool
+    {
+        $contactId = $this->user->extra['contact_id'] ?? null;
+        if ( ! empty($contactId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function toolChanged(): void
+    {
+        $this->user->update(['tool_last_changed_at' => Carbon::now()]);
+    }
+
     /**
      * Method to eager load most of the relationships the model has.
      * We either expect a user collection or a user model.
@@ -81,11 +108,12 @@ class UserService
     /**
      * Method to reset a user his file for a specific input source.
      */
-    public static function resetUser(User $user, InputSource $inputSource)
+    public function resetUser(InputSource $inputSource)
     {
-        Log::debug(__METHOD__." ".$user->id." for input source ".$inputSource->short);
+        Log::debug(__METHOD__." ".$this->user->id." for input source ".$inputSource->short);
         // only remove the example building id from the building
-        $building = $user->building;
+        $user = $this->user;
+        $building = $this->user->building;
         $building->buildingFeatures()->forInputSource($inputSource)->update([
             'example_building_id' => null,
         ]);
@@ -116,7 +144,8 @@ class UserService
 
         // Remove all mappings related to custom measure applications
         DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
-            ->whereIn('from_model_id', $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray())
+            ->whereIn('from_model_id',
+                $building->customMeasureApplications()->forInputSource($inputSource)->pluck('id')->toArray())
             ->delete();
         // Remove custom measure applications the user has made
         $building->customMeasureApplications()->forInputSource($inputSource)->delete();
@@ -153,6 +182,7 @@ class UserService
                 $building
             )->save();
         }
+        UserResetHisBuilding::dispatch($building);
     }
 
     /**
@@ -200,20 +230,21 @@ class UserService
                 'account_id' => $account->id,
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
-                'phone_number' => is_null($data['phone_number']) ? '' : $data['phone_number'],
+                'phone_number' => $data['phone_number'] ?? '',
             ]
         );
 
         // filter relevant data from the request
-        $buildingData = Arr::only($data, ['street', 'city', 'postal_code', 'number', 'extension']);
+        $data['address']['extension'] ??= null;
+        $buildingData = $data['address'];
 
         // create the building for the user
         $building = $user->building()->save(new Building($buildingData));
 
         CheckBuildingAddress::dispatchSync($building);
         // check if the connection was successful, if not dispatch it on the regular queue so it retries.
-        if (! $building->municipality()->first() instanceof Municipality) {
-            CheckBuildingAddress::dispatch($building)->onQueue(Queue::DEFAULT);
+        if ( ! $building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building);
         }
 
         $user->cooperation()->associate(
@@ -222,8 +253,7 @@ class UserService
 
         $user->assignRole($roles);
 
-        // turn on when merged
-        $building->setStatus('active');
+        app(BuildingStatusService::class)->forBuilding($building)->setStatus('active');
 
         return $user;
     }
@@ -239,6 +269,8 @@ class UserService
     {
         $accountId = $user->account_id;
         $building = $user->building;
+        $cooperation = $user->cooperation;
+        $accountRelated = app(EconobisService::class)->forBuilding($building)->resolveAccountRelated();
 
         if ($building instanceof Building) {
             if ($shouldForceDeleteBuilding) {
@@ -282,6 +314,7 @@ class UserService
                 $account->delete();
             }
         }
+        UserDeleted::dispatch($cooperation, $accountRelated['account_related']);
     }
 
     /**

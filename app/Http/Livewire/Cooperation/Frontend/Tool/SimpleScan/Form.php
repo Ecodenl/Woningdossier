@@ -129,7 +129,7 @@ class Form extends Scannable
                     // Master input source is important. Ensure both are set
                     if (is_null($currentAnswer) || is_null($masterAnswer)) {
                         $this->setDirty(true);
-                        $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
+                        $dirtyToolQuestions[$toolQuestion->short] = $givenAnswer;
                         break;
                     }
                 }
@@ -160,7 +160,8 @@ class Form extends Scannable
                             $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
                         }
 
-                        ToolQuestionService::init($toolQuestion)
+                        ToolQuestionService::init()
+                            ->toolQuestion($toolQuestion)
                             ->building($this->building)
                             ->currentInputSource($this->currentInputSource)
                             ->applyExampleBuilding()
@@ -179,7 +180,7 @@ class Form extends Scannable
         }
 
         // Now mark the sub step as complete
-        $completedSubStep = CompletedSubStep::firstOrCreate([
+        $completedSubStep = CompletedSubStep::allInputSources()->firstOrCreate([
             'sub_step_id' => $this->subStep->id,
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id

@@ -37,6 +37,7 @@
                             </button>
                         @endcan
                         @can('access-building', $building)
+                            @if($scans->count() > 1)
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         @lang('cooperation/admin/buildings.show.observe-building.label')
@@ -46,8 +47,8 @@
                                     <ul class="dropdown-menu">
                                         @foreach($scans as $scan)
                                             @php
-                                                $transShort = \App\Services\Models\ScanService::init()
-                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                $transShort = app(\App\Services\Models\ScanService::class)
+                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                                                     ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                             @endphp
                                             <li>
@@ -58,7 +59,16 @@
                                         @endforeach
                                     </ul>
                                 </div>
+                            @else
+                                @foreach($scans as $scan)
+                                    <a class="btn btn-primary" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
+                                        @lang('cooperation/admin/buildings.show.observe-building.label')
+                                        @lang('cooperation/admin/buildings.show.observe-building.button')
+                                    </a>
+                                @endforeach
+                            @endif
                             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
+                                @if($scans->count() > 1)
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         @lang('cooperation/admin/buildings.show.fill-for-user.label')
@@ -68,8 +78,8 @@
                                     <ul class="dropdown-menu">
                                         @foreach($scans as $scan)
                                             @php
-                                                $transShort = \App\Services\Models\ScanService::init()
-                                                    ->scan($scan)->building($building)->hasMadeScanProgress()
+                                                $transShort = app(\App\Services\Models\ScanService::class)
+                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                                                     ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                             @endphp
                                             <li>
@@ -80,6 +90,19 @@
                                         @endforeach
                                     </ul>
                                 </div>
+                                    @else
+                                        @foreach($scans as $scan)
+                                            <a class="btn btn-warning" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
+                                                @php
+                                                    $transShort = app(\App\Services\Models\ScanService::class)
+                                                        ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
+                                                        ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                                @endphp
+                                                @lang($transShort, ['scan' => $scan->name])
+                                                @lang('cooperation/admin/buildings.show.fill-for-user.button')
+                                            </a>
+                                        @endforeach
+                                    @endif
                             @endif
                         @endcan
                         @can('edit', $building)
@@ -135,6 +158,7 @@
                     </div>
                 </div>
             </div>
+
             {{--coaches and role--}}
             <div class="row">
                 @if($publicMessages->isNotEmpty())
@@ -155,17 +179,24 @@
                         </div>
                     </div>
                 @endif
+
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
-                        <select @if($building->id == \App\Helpers\HoomdossierSession::getBuilding() || Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif
-                                class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+
+                        <select @cannot('editAny',$userCurrentRole) disabled="disabled" @endcannot class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
-                                <option @if($user->hasNotMultipleRoles()) locked="locked"
-                                        @endif @if($user->hasRole($role)) selected="selected"
+                                @can('view', [$role, Hoomdossier::user(), HoomdossierSession::getRole(true)])
+                                <option
+                                        @cannot('delete',  [$role, Hoomdossier::user(), \App\Helpers\HoomdossierSession::getRole(true), $building->user]))
+                                            locked="locked" disabled="disabled"
+                                        @endcannot
+                                        @if($user->hasRole($role))
+                                            selected="selected"
                                         @endif value="{{$role->id}}">
                                     {{$role->human_readable_name}}
                                 </option>
+                                @endcan
                             @endforeach
                         </select>
                     </div>

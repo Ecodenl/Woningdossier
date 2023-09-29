@@ -10,6 +10,12 @@ use Carbon\Carbon;
 
 class UserObserver
 {
+    public function saving(User $user)
+    {
+        // Not allowed as null
+        $user->phone_number ??= '';
+    }
+
     public function created(User $user)
     {
         // we create for every notification type a setting with daily interval and set the last_notified_at to now

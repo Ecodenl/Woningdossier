@@ -107,6 +107,9 @@ class ExampleBuildingService
 
         Log::debug($exampleBuilding);
 
+        $toolQuestionService = ToolQuestionService::init()
+            ->building($building)
+            ->currentInputSource($inputSource);
         foreach ($exampleData as $toolQuestionShort => $value) {
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
             $shouldSave = true;
@@ -117,18 +120,14 @@ class ExampleBuildingService
             }
 
             if ($shouldSave) {
-                ToolQuestionService::init($toolQuestion)
-                    ->building($building)
-                    ->currentInputSource($inputSource)
+                $toolQuestionService->toolQuestion($toolQuestion)
                     ->save($value);
             }
         }
 
 
         // the building type is a part of the example building, not the example building its content.
-        ToolQuestionService::init(ToolQuestion::findByShort('building-type'))
-            ->building($building)
-            ->currentInputSource($inputSource)
+        $toolQuestionService->toolQuestion(ToolQuestion::findByShort('building-type'))
             ->save($exampleBuilding->building_type_id);
     }
 

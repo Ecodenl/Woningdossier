@@ -335,8 +335,8 @@
             </div>
         </div>
 
-        @include('cooperation.tool.includes.user-costs', [
-            'userCosts' => $userCosts,
+        @include('cooperation.tool.includes.measure-related-questions', [
+            'measureRelatedAnswers' => $measureRelatedAnswers
         ])
 
         @include('cooperation.tool.includes.comment', [
@@ -369,19 +369,27 @@
                 $('input[name="dirty_attributes"]').val(JSON.stringify(data));
                 // We want the user to be able to see their own old values for user costs. We don't want them submitted
                 // however, as it could interfere with the validation.
-                $('.user-costs input:not(.source-select-input)').each(function () {
+                $('.measure-related-questions input:not(.source-select-input)').each(function () {
                     // offsetParent is null when hidden
                     if (null === this.offsetParent) {
                         $(this).val(null);
                     }
                 });
+
+                // Set hidden fields null so validation doesn't error on something the user can't see
+                let answer = $('[name="filledInAnswers[{{$toolQuestion['id']}}]"]:checked').val();
+                if (answer === 'no') {
+                    $('[name="building_pv_panels[total_installed_power]"]').val('');
+                    $('[name="building_services[7][extra][year]"]').val('');
+                    $('[name="building_services[7][extra][value]"]').val('');
+                }
                 return true;
             });
 
             $("select, input[type=radio], input[type=text]").change(() => formChange());
 
             function formChange() {
-                checkUserCost();
+                checkMeasureRelatedQuestions();
 
                 var form = $('#solar-panels-form').serialize();
                 $.ajax({
@@ -433,11 +441,11 @@
             formChange();
         });
 
-        function checkUserCost() {
+        function checkMeasureRelatedQuestions() {
             if ($('.considerable input:checked').val() == 1) {
-                $('.user-costs').show();
+                $('.measure-related-questions').show();
             } else {
-                $('.user-costs').hide();
+                $('.measure-related-questions').hide();
             }
         }
     </script>

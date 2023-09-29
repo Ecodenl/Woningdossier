@@ -58,7 +58,7 @@
                                         @lang('accounts.column-translations.email')
                                     </label>
                                     <input id="email" type="email" class="form-control" name="accounts[email]"
-                                           value="{{ old('account.email', $account->email) }}" required>
+                                           value="{{ old('accounts.email', $account->email) }}" required>
                                 @endcomponent
                             </div>
                             <div class="col-md-6 col-lg-4">
@@ -87,73 +87,31 @@
                                            value="{{ old('users.extra.contact_id', $user->extra['contact_id'] ?? '') }}">
                                 @endcomponent
                             </div>
+                            <div class="col-md-6 col-lg-4">
+                                @component('layouts.parts.components.form-group', [
+                                    'input_name' => 'accounts.id',
+                                ])
+                                    <label for="account-id" class="control-label">
+                                        @lang('accounts.column-translations.id')
+                                    </label>
+                                    <input id="account-id" type="text" class="form-control" disabled
+                                           name="accounts[id]"
+                                           value="{{ $user->account->id }}">
+                                @endcomponent
+                            </div>
                         </div>
+                        {{-- TODO: Roles? --}}
 
                         <h3>@lang('cooperation/admin/buildings.edit.address-info-title')</h3>
                         <div class="row">
-                            <div class="col-md-6 col-lg-4">
-                                @component('layouts.parts.components.form-group', [
-                                    'input_name' => 'buildings.postal_code'
+                            <div class="col-xs-8">
+                                @include('cooperation.layouts.address-bootstrap', [
+                                    'withLabels' => true,
+                                    'defaults' => $building,
                                 ])
-                                    <label for="postal_code" class="control-label">
-                                        @lang('buildings.column-translations.postal_code')
-                                    </label>
-                                    <input id="postal_code" type="text" class="form-control"
-                                           name="buildings[postal_code]"
-                                           value="{{ old('buildings.postal_code', $building->postal_code) }}" required>
-                                @endcomponent
-
-                            </div>
-
-                            <div class="col-md-6 col-lg-2">
-                                @component('layouts.parts.components.form-group', [
-                                    'input_name' => 'buildings.number'
-                                ])
-                                    <label for="number" class="control-label">
-                                        @lang('buildings.column-translations.number')
-                                    </label>
-                                    <input id="number" type="text" class="form-control" name="buildings[number]"
-                                           value="{{ old('buildings.number', $building->number) }}" required>
-                                @endcomponent
-                            </div>
-                            <div class="col-md-6 col-lg-2">
-                                @component('layouts.parts.components.form-group', [
-                                    'input_name' => 'buildings.extension'
-                                ])
-                                    <label for="house_number_extension" class="control-label">
-                                        @lang('buildings.column-translations.extension')
-                                    </label>
-                                    <input id="house_number_extension" type="text" class="form-control"
-                                           name="buildings[extension]"
-                                           value="{{ old('buildings.extension', $building->extension) }}">
-                                @endcomponent
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 col-lg-4">
-                                @component('layouts.parts.components.form-group', [
-                                    'input_name' => 'buildings.city'
-                                ])
-                                    <label for="city" class="control-label">
-                                        @lang('buildings.column-translations.city')
-                                    </label>
-                                    <input id="city" type="text" class="form-control" name="buildings[city]"
-                                           value="{{ old('buildings.city', $building->city) }}" required>
-                                @endcomponent
-                            </div>
-                            <div class="col-md-6 col-lg-4">
-                                @component('layouts.parts.components.form-group', [
-                                    'input_name' => 'buildings.street'
-                                ])
-                                    <label for="street" class="control-label">
-                                        @lang('buildings.column-translations.street')
-                                    </label>
-                                    <input id="street" type="text" class="form-control" name="buildings[street]"
-                                           value="{{ old('buildings.street', $building->street) }}" required >
-                                @endcomponent
-                            </div>
-                        </div>
                         <button type="submit" class="btn btn-success">
                             @lang('cooperation/admin/buildings.edit.form.submit')
                         </button>

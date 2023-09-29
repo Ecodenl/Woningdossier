@@ -64,7 +64,7 @@ class RegisterController extends Controller
      *      ),
      * )
      */
-    public function store(RegisterFormRequest $request, Cooperation $cooperation)
+    public function store(RegisterFormRequest $request, Cooperation $cooperation, ToolQuestionService $toolQuestionService)
     {
         $requestData = $request->all();
         if (! is_null($requestData['extra']['contact_id'] ?? null)) {
@@ -76,7 +76,25 @@ class RegisterController extends Controller
         // this way the user can set his own password.
         $requestData['password'] = Hash::make(Str::randomPassword());
         $roles = array_unique(($requestData['roles'] ?? [RoleHelper::ROLE_RESIDENT]));
-        $requestData['extension'] = $requestData['house_number_extension'];
+
+        // With the new update in the frontend, the service has changed. This API has not. We also don't want to force
+        // it out of the blue. So we convert the data to the new format.
+        $requestData['address'] = [
+            'postal_code' => $requestData['postal_code'],
+            'number' => $requestData['number'],
+            'extension' => $requestData['house_number_extension'] ?? '',
+            'street' => $requestData['street'],
+            'city' => $requestData['city'],
+        ];
+
+        unset(
+            $requestData['postal_code'],
+            $requestData['number'],
+            $requestData['house_number_extension'],
+            $requestData['street'],
+            $requestData['city'],
+        );
+
         $user = UserService::register($cooperation, $roles, $requestData);
         $account = $user->account;
 
@@ -109,14 +127,14 @@ class RegisterController extends Controller
             return ! is_null($value);
         });
 
+        $toolQuestionService->building($user->building);
         foreach ($toolQuestionAnswers as $toolQuestionShort => $toolQuestionAnswer) {
             if (in_array($toolQuestionShort, ToolQuestionHelper::SUPPORTED_API_SHORTS)) {
                 $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
                 if ($toolQuestion instanceof ToolQuestion) {
                     foreach ($inputSources as $inputSource) {
-                        ToolQuestionService::init($toolQuestion)
-                            ->building($user->building)
+                        $toolQuestionService->toolQuestion($toolQuestion)
                             ->currentInputSource($inputSource)
                             ->save($toolQuestionAnswer);
                     }

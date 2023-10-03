@@ -178932,7 +178932,7 @@ p a, .as-text a, a.in-text {
 
 /* Input styles */
 
-.form-input, .radio-wrapper > label, .checkbox-wrapper > label, .add-option-wrapper > label, .tiny-editor .tox {
+.form-input, .radio-wrapper > label, .checkbox-wrapper > label, .add-option-wrapper > label {
   position: relative;
   display: flex;
   height: 2.75rem;
@@ -178956,13 +178956,13 @@ p a, .as-text a, a.in-text {
   outline-offset: 2px;
 }
 
-.form-input:hover, .radio-wrapper > label:hover, .checkbox-wrapper > label:hover, .add-option-wrapper > label:hover, .tiny-editor .tox:hover {
+.form-input:hover, .radio-wrapper > label:hover, .checkbox-wrapper > label:hover, .add-option-wrapper > label:hover {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
 }
 
-.form-input:focus, .radio-wrapper > label:focus, .checkbox-wrapper > label:focus, .add-option-wrapper > label:focus, .tiny-editor .tox:focus {
+.form-input:focus, .radio-wrapper > label:focus, .checkbox-wrapper > label:focus, .add-option-wrapper > label:focus {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
@@ -179047,37 +179047,6 @@ textarea.form-input {
   padding-bottom: 0.5rem;
   line-height: 24px;
   min-height: 2.75rem; /* Height of h-11, base height of input */
-}
-
-.tiny-editor .tox.tox-tinymce {
-  margin-bottom: 1rem;
-  cursor: auto;
-}
-
-.tiny-editor .tox.tox-tinymce .tox-editor-container {
-  width: inherit;
-}
-
-.tiny-editor .tox.tox-tinymce .tox-editor-container .tox-statusbar__branding {
-  display: none;
-}
-
-.tiny-editor .tox.tox-tinymce .tox-editor-container .tox-tbtn {
-  cursor: pointer;
-}
-
-.tiny-editor .tox.tox-tinymce.tox-tinymce--disabled .tox-editor-container .tox-tbtn {
-  cursor: not-allowed;
-}
-
-.tiny-editor .tox.tox-tinymce .tox-editor-container .tox-tbtn svg {
-  fill: currentColor;
-  --tw-text-opacity: 1;
-  color: rgba(100, 117, 133, var(--tw-text-opacity));
-}
-
-.tiny-editor .tox.tox-tinymce.tox-tinymce--disabled .tox-editor-container .tox-tbtn svg {
-  --tw-text-opacity: 0.5;
 }
 
 input.form-input:-moz-read-only:not(.select-wrapper input) {

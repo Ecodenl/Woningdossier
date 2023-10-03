@@ -1,16 +1,16 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'action-plan'])
-    <h2>
+    <h1 class="mb-2">
         @lang('pdf/user-report.pages.action-plan.title')
-    </h2>
+    </h1>
     <p>
         @lang('pdf/user-report.pages.action-plan.text')
     </p>
 
     <div class="group">
         @php $stepShort = $scanShort === \App\Models\Scan::LITE ? 'usage-lite-scan' : 'usage-quick-scan'; @endphp
-        <h4>
+        <h2>
             @lang('pdf/user-report.pages.action-plan.usage.current')
-        </h4>
+        </h2>
 
         <div class="row">
             <div class="col-2">
@@ -20,7 +20,7 @@
             </div>
             <div class="col-9">
                 <p>
-                    {!! $simpleDump[$stepShort]['question_amount-gas'] !!}
+{{--                    {!! $simpleDump[$stepShort]['question_amount-gas'] !!}--}}
                 </p>
             </div>
         </div>
@@ -32,16 +32,16 @@
             </div>
             <div class="col-10">
                 <p>
-                    {!! $simpleDump[$stepShort]['question_amount-electricity'] !!}
+{{--                    {!! $simpleDump[$stepShort]['question_amount-electricity'] !!}--}}
                 </p>
             </div>
         </div>
     </div>
 
     <div class="group">
-        <h4>
+        <h2>
             @lang('pdf/user-report.pages.action-plan.usage.kengetallen')
-        </h4>
+        </h2>
 
         <div class="row">
             <div class="col-2">

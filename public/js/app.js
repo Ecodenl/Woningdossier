@@ -4108,18 +4108,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           context.select.addEventListener('change', function (event) {
             context.updateSelectedValues();
           });
-          if (context.multiple) {
-            // If it's multiple, we will add an event listener to rebuild the input on resizing,
-            // as well as on switching tabs.
-            window.addEventListener('resize', function (event) {
-              context.setInputValue();
-            });
-            window.addEventListener('tab-switched', function (event) {
-              setTimeout(function () {
-                context.setInputValue();
-              });
-            });
-          }
         }
         if (context.livewire && null !== context.select) {
           //TODO: This works for now, but the wire:model can have extra options such as .lazy, which will
@@ -4147,9 +4135,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
     },
     // Construct a fresh custom select
-    constructSelect: function constructSelect() {
+    constructSelect: function constructSelect(isFirstBoot) {
       var _this2 = this;
-      var isFirstBoot = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       var before = this.values;
       var wrapper = this.$refs['select-wrapper'];
       if (wrapper) {
@@ -5755,11 +5742,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! mobile-drag-drop */ "./node_modules/mobile-drag-drop/index.min.js");
 /* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
 /**
@@ -5799,74 +5781,25 @@ if (token) {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 */
+/**
+ * Echo exposes an expressive API for subscribing to channels and listening
+ * for events that are broadcast by Laravel. Echo and event broadcasting
+ * allows your team to easily build robust real-time web applications.
+ */
+
+// import Echo from 'laravel-echo'
+
+// window.Pusher = require('pusher-js');
+
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: 'your-pusher-key'
+// });
 
 /**
  * Define functions that will be used throughout the whole application, that
  * are also required by Alpine.
  */
-
-window.initTinyMCE = function () {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var defaults = {
-    selector: '.tiny-editor textarea',
-    // menubar: 'edit format',
-    menubar: false,
-    // Bar above the toolbar with advanced options
-    statusbar: true,
-    // Bar that shows the current HTML tag, word count, etc. at the bottom of the editor
-    plugins: ['link',
-    // https://www.tiny.cloud/docs/tinymce/6/link/
-    'wordcount' // https://www.tiny.cloud/docs/tinymce/6/wordcount/
-    ],
-
-    // Link plugin settings start
-    link_default_target: '_blank',
-    link_target_list: false,
-    link_title: false,
-    // Link plugin settings end
-    toolbar: 'link bold italic underline strikethrough fontsize',
-    // font_size_formats: 'Extra-Small=10px Small=14px Normal=18px Medium=24px Large=32px Extra-Large=36px Extra-Extra Large=48px',
-    font_size_formats: 'Normaal=14px',
-    promotion: false,
-    language: 'nl',
-    resize: false,
-    height: 200
-  };
-  var defaultSetup = function defaultSetup(editor) {
-    // Since this config triggers on all tiny editors at once, we manually check on tiny init.
-    editor.on('init', function (event) {
-      if (editor.targetElm.hasAttribute('disabled')) {
-        editor.mode.set('readonly');
-      }
-    });
-    editor.on('change', function (event) {
-      // Save editor (to textarea), then trigger change (to update Livewire).
-      editor.save();
-      window.triggerEvent(editor.targetElm, 'change');
-    });
-    // Reset tiny if related textarea is reset
-    document.addEventListener('reset-question', function (event) {
-      if (editor.id.includes(event.detail["short"])) {
-        editor.setContent(editor.targetElm.value);
-      }
-    });
-  };
-  var setup = function setup(editor) {
-    defaultSetup(editor);
-  };
-  if (typeof options.setup === 'function') {
-    setup = function setup(editor) {
-      defaultSetup(editor);
-      options.setup(editor);
-    };
-  }
-
-  // For now, this is fine. In the future, we might want to make some more fancy merging.
-  var config = _objectSpread(_objectSpread(_objectSpread({}, defaults), options), {}, {
-    setup: setup
-  });
-  tinymce.init(config);
-};
 
 /**
  * Trigger a default event
@@ -36712,19 +36645,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/css/frontend/tinymce.css":
-/*!********************************************!*\
-  !*** ./resources/css/frontend/tinymce.css ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
 /***/ "./resources/sass/admin/app.scss":
 /*!***************************************!*\
   !*** ./resources/sass/admin/app.scss ***!
@@ -36939,7 +36859,6 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			"/js/app": 0,
 /******/ 			"css/frontend/app": 0,
 /******/ 			"css/admin/app": 0,
-/******/ 			"css/frontend/tinymce": 0,
 /******/ 			"css/admin/datatables/dataTables.bootstrap.min": 0,
 /******/ 			"css/admin/datatables/responsive.dataTables.min": 0,
 /******/ 			"css/admin/datatables/responsive.bootstrap.min": 0,
@@ -36993,14 +36912,13 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/frontend/tinymce","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/js/app.js")))
-/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/frontend/tinymce","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/sass/admin/app.scss")))
-/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/frontend/tinymce","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/sass/pdf.scss")))
-/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/frontend/tinymce","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/sass/admin/datatables/_responsive_bootstrap.scss")))
-/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/frontend/tinymce","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/sass/admin/datatables/_responsive_datatables.scss")))
-/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/frontend/tinymce","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/sass/admin/datatables/_dataTables_bootstrap.scss")))
-/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/frontend/tinymce","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/css/frontend/app.css")))
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/frontend/tinymce","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/css/frontend/tinymce.css")))
+/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/js/app.js")))
+/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/sass/admin/app.scss")))
+/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/sass/pdf.scss")))
+/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/sass/admin/datatables/_responsive_bootstrap.scss")))
+/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/sass/admin/datatables/_responsive_datatables.scss")))
+/******/ 	__webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/sass/admin/datatables/_dataTables_bootstrap.scss")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["css/frontend/app","css/admin/app","css/admin/datatables/dataTables.bootstrap.min","css/admin/datatables/responsive.dataTables.min","css/admin/datatables/responsive.bootstrap.min","css/pdf"], () => (__webpack_require__("./resources/css/frontend/app.css")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

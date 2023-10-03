@@ -68,6 +68,10 @@
   width: 100%;
 }
 
+.w-full {
+  width: 100%;
+}
+
 .text-center {
   text-align: center;
 }
@@ -77,6 +81,90 @@
 
 .pull-right {
   float: right;
+}
+
+.pull-left {
+  float: left;
+}
+
+.text-blue-900 {
+  color: #1122C8;
+}
+
+.text-green {
+  color: #18825F;
+}
+
+.text-orange {
+  color: #FF7F4A;
+}
+
+.text-red {
+  color: #E41440;
+}
+
+.text-purple {
+  color: #622191;
+}
+
+.p-0 {
+  padding: 0rem;
+}
+
+.pt-0 {
+  padding-top: 0rem;
+}
+
+.pb-0 {
+  padding-bottom: 0rem;
+}
+
+.py-0 {
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+}
+
+.pr-0 {
+  padding-right: 0rem;
+}
+
+.pl-0 {
+  padding-left: 0rem;
+}
+
+.px-0 {
+  padding-right: 0rem;
+  padding-left: 0rem;
+}
+
+.m-0 {
+  margin: 0rem;
+}
+
+.mt-0 {
+  margin-top: 0rem;
+}
+
+.mb-0 {
+  margin-bottom: 0rem;
+}
+
+.my-0 {
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+}
+
+.mr-0 {
+  margin-right: 0rem;
+}
+
+.ml-0 {
+  margin-left: 0rem;
+}
+
+.mx-0 {
+  margin-right: 0rem;
+  margin-left: 0rem;
 }
 
 .p-1 {
@@ -109,6 +197,36 @@
   padding-left: 0.25rem;
 }
 
+.m-1 {
+  margin: 0.25rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.mr-1 {
+  margin-right: 0.25rem;
+}
+
+.ml-1 {
+  margin-left: 0.25rem;
+}
+
+.mx-1 {
+  margin-right: 0.25rem;
+  margin-left: 0.25rem;
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -137,6 +255,36 @@
 .px-2 {
   padding-right: 0.5rem;
   padding-left: 0.5rem;
+}
+
+.m-2 {
+  margin: 0.5rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.my-2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.mx-2 {
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
 }
 
 .p-3 {
@@ -169,6 +317,36 @@
   padding-left: 0.75rem;
 }
 
+.m-3 {
+  margin: 0.75rem;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.mr-3 {
+  margin-right: 0.75rem;
+}
+
+.ml-3 {
+  margin-left: 0.75rem;
+}
+
+.mx-3 {
+  margin-right: 0.75rem;
+  margin-left: 0.75rem;
+}
+
 .p-4 {
   padding: 1rem;
 }
@@ -197,6 +375,36 @@
 .px-4 {
   padding-right: 1rem;
   padding-left: 1rem;
+}
+
+.m-4 {
+  margin: 1rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mr-4 {
+  margin-right: 1rem;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.mx-4 {
+  margin-right: 1rem;
+  margin-left: 1rem;
 }
 
 .p-5 {
@@ -229,6 +437,36 @@
   padding-left: 1.25rem;
 }
 
+.m-5 {
+  margin: 1.25rem;
+}
+
+.mt-5 {
+  margin-top: 1.25rem;
+}
+
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+
+.my-5 {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.mr-5 {
+  margin-right: 1.25rem;
+}
+
+.ml-5 {
+  margin-left: 1.25rem;
+}
+
+.mx-5 {
+  margin-right: 1.25rem;
+  margin-left: 1.25rem;
+}
+
 .p-6 {
   padding: 1.5rem;
 }
@@ -257,6 +495,36 @@
 .px-6 {
   padding-right: 1.5rem;
   padding-left: 1.5rem;
+}
+
+.m-6 {
+  margin: 1.5rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.my-6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.mr-6 {
+  margin-right: 1.5rem;
+}
+
+.ml-6 {
+  margin-left: 1.5rem;
+}
+
+.mx-6 {
+  margin-right: 1.5rem;
+  margin-left: 1.5rem;
 }
 
 .p-7 {
@@ -289,6 +557,36 @@
   padding-left: 1.75rem;
 }
 
+.m-7 {
+  margin: 1.75rem;
+}
+
+.mt-7 {
+  margin-top: 1.75rem;
+}
+
+.mb-7 {
+  margin-bottom: 1.75rem;
+}
+
+.my-7 {
+  margin-top: 1.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.mr-7 {
+  margin-right: 1.75rem;
+}
+
+.ml-7 {
+  margin-left: 1.75rem;
+}
+
+.mx-7 {
+  margin-right: 1.75rem;
+  margin-left: 1.75rem;
+}
+
 .p-8 {
   padding: 2rem;
 }
@@ -317,6 +615,36 @@
 .px-8 {
   padding-right: 2rem;
   padding-left: 2rem;
+}
+
+.m-8 {
+  margin: 2rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.my-8 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.mr-8 {
+  margin-right: 2rem;
+}
+
+.ml-8 {
+  margin-left: 2rem;
+}
+
+.mx-8 {
+  margin-right: 2rem;
+  margin-left: 2rem;
 }
 
 .p-9 {
@@ -349,6 +677,36 @@
   padding-left: 2.25rem;
 }
 
+.m-9 {
+  margin: 2.25rem;
+}
+
+.mt-9 {
+  margin-top: 2.25rem;
+}
+
+.mb-9 {
+  margin-bottom: 2.25rem;
+}
+
+.my-9 {
+  margin-top: 2.25rem;
+  margin-bottom: 2.25rem;
+}
+
+.mr-9 {
+  margin-right: 2.25rem;
+}
+
+.ml-9 {
+  margin-left: 2.25rem;
+}
+
+.mx-9 {
+  margin-right: 2.25rem;
+  margin-left: 2.25rem;
+}
+
 .p-10 {
   padding: 2.5rem;
 }
@@ -377,6 +735,36 @@
 .px-10 {
   padding-right: 2.5rem;
   padding-left: 2.5rem;
+}
+
+.m-10 {
+  margin: 2.5rem;
+}
+
+.mt-10 {
+  margin-top: 2.5rem;
+}
+
+.mb-10 {
+  margin-bottom: 2.5rem;
+}
+
+.my-10 {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.mr-10 {
+  margin-right: 2.5rem;
+}
+
+.ml-10 {
+  margin-left: 2.5rem;
+}
+
+.mx-10 {
+  margin-right: 2.5rem;
+  margin-left: 2.5rem;
 }
 
 .p-11 {
@@ -409,6 +797,36 @@
   padding-left: 2.75rem;
 }
 
+.m-11 {
+  margin: 2.75rem;
+}
+
+.mt-11 {
+  margin-top: 2.75rem;
+}
+
+.mb-11 {
+  margin-bottom: 2.75rem;
+}
+
+.my-11 {
+  margin-top: 2.75rem;
+  margin-bottom: 2.75rem;
+}
+
+.mr-11 {
+  margin-right: 2.75rem;
+}
+
+.ml-11 {
+  margin-left: 2.75rem;
+}
+
+.mx-11 {
+  margin-right: 2.75rem;
+  margin-left: 2.75rem;
+}
+
 .p-12 {
   padding: 3rem;
 }
@@ -439,11 +857,41 @@
   padding-left: 3rem;
 }
 
+.m-12 {
+  margin: 3rem;
+}
+
+.mt-12 {
+  margin-top: 3rem;
+}
+
+.mb-12 {
+  margin-bottom: 3rem;
+}
+
+.my-12 {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.mr-12 {
+  margin-right: 3rem;
+}
+
+.ml-12 {
+  margin-left: 3rem;
+}
+
+.mx-12 {
+  margin-right: 3rem;
+  margin-left: 3rem;
+}
+
 h1 {
   font-family: Helvetice, sans-serif;
   font-size: 26px;
   font-weight: bold;
-  color: #1C956E;
+  color: #18825F;
   line-height: 1.15;
   margin: 0 0 4rem;
   padding: 0;
@@ -453,7 +901,7 @@ h2 {
   font-family: Helvetice, sans-serif;
   font-size: 20px;
   font-weight: bold;
-  color: #1C956E;
+  color: #622191;
   line-height: 1.15;
   margin: 0 0 0.25rem;
   padding: 0;
@@ -473,7 +921,7 @@ h4 {
   font-family: Helvetice, sans-serif;
   font-size: 11px;
   font-weight: bold;
-  color: #1C956E;
+  color: #18825F;
   line-height: 1.15;
   margin: 0 0 0.25rem;
   padding: 0;
@@ -483,18 +931,18 @@ h5 {
   font-family: Helvetice, sans-serif;
   font-size: 11px;
   font-weight: bold;
-  color: #1C956E;
+  color: #18825F;
   line-height: 1.15;
   margin: 0.25rem 0 0;
   padding: 0;
 }
 
-.as-text,
 p {
   font-family: Helvetice, sans-serif;
   color: #000000;
   font-size: 11px;
   line-height: 1.15;
+  letter-spacing: 0.2px;
   margin: 0;
   padding: 0;
 }
@@ -511,26 +959,6 @@ small {
 .comment {
   word-wrap: break-word !important;
   white-space: pre-line;
-}
-
-.text-blue-900 {
-  color: #1122C8;
-}
-
-.text-green {
-  color: #2CA982;
-}
-
-.text-orange {
-  color: #FF7F4A;
-}
-
-.text-red {
-  color: #E41440;
-}
-
-.text-purple {
-  color: #622191;
 }
 
 #front-page #cooperation-logo {

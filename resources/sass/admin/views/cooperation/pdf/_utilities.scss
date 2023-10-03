@@ -19,6 +19,27 @@
     float: left;
 }
 
+// Imitate Tailwind
+.text-blue-900 {
+    color: $color-blue;
+}
+
+.text-green {
+    color: $color-main;
+}
+
+.text-orange {
+    color: $color-orange;
+}
+
+.text-red {
+    color: $color-red;
+}
+
+.text-purple {
+    color: $color-purple;
+}
+
 @for $i from 0 through 12 {
     .p-#{$i} {
         padding: unquote("#{calc(0.25 * $i)}rem");

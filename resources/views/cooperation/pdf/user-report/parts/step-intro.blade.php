@@ -18,9 +18,9 @@
         <img src="{{ pdfAsset($stepIconMap[$step->short]) }}" alt="{{ $step->name }}"
              style="max-width: 100%; max-height: 100%;">
     </div>
-    <h1 class="my-2">
+    <h2 class="text-green">
         {{ $step->name }}
-    </h1>
+    </h2>
     <p>
         {!! nl2br(strip_tags(__("pdf/user-report.step-description.{$step->short}"))) !!}
     </p>

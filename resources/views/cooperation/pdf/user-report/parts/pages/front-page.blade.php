@@ -16,10 +16,10 @@
 
 
             <div id="cooperation-info">
-                <h2 class="p-0 m-0">
+                <h2 class="text-green">
                     {{ $userCooperation->name }}
                 </h2>
-                <h2>
+                <h2 class="text-green">
                     {{ date('d-m-Y') }}
                     <br>
                     @php $coachNames = implode(', ', $connectedCoachNames); @endphp

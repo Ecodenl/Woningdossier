@@ -51,6 +51,7 @@ class UserReportController extends Controller
             ->anonymize() // See comment above unset below
             ->createHeaderStructure($short);
 
+        $dump = [];
         // Retrieve headers AFTER the dump is done, as conditionally incorrect data will be removed.
         $dump = $dumpService->generateDump();
         $headers = $dumpService->headerStructure;
@@ -233,6 +234,24 @@ class UserReportController extends Controller
 
         // https://github.com/mccarlosen/laravel-mpdf
         // To style container margins of the PDF, see config/pdf.php
+//        return  view('cooperation.pdf.user-report.index', compact(
+//            'scanShort',
+//            'userCooperation',
+//            'building',
+//            'user',
+//            'inputSource',
+//            'connectedCoachNames',
+//            // 'headers',
+//            'simpleDump',
+//            'expertDump',
+//            'coachHelp',
+//            'categorizedAdvices',
+//            'measureSteps',
+//            'smallMeasureAdvices',
+//            'adviceComments',
+//            'alerts',
+//            'subsidyRegulations'));
+
         return LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
             'scanShort',
             'userCooperation',
@@ -240,7 +259,7 @@ class UserReportController extends Controller
             'user',
             'inputSource',
             'connectedCoachNames',
-            'headers',
+             'headers',
             'simpleDump',
             'expertDump',
             'coachHelp',

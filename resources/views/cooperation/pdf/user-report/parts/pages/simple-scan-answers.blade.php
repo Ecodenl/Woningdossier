@@ -1,7 +1,7 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'simple-scan-answers'])
-    <h3>
+    <h1 class="my-2">
         @lang('pdf/user-report.pages.simple-scan-answers.title')
-    </h3>
+    </h1>
     <p>
         @lang('pdf/user-report.pages.simple-scan-answers.text')
     </p>

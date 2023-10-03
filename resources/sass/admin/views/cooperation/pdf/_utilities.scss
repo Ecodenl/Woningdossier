@@ -1,3 +1,7 @@
+.w-full {
+    width: 100%;
+}
+
 .text {
     &-center {
         text-align: center;
@@ -11,7 +15,11 @@
     float: right;
 }
 
-@for $i from 1 through 12 {
+.pull-left {
+    float: left;
+}
+
+@for $i from 0 through 12 {
     .p-#{$i} {
         padding: unquote("#{calc(0.25 * $i)}rem");
     }
@@ -34,5 +42,29 @@
     .px-#{$i} {
         padding-right: unquote("#{calc(0.25 * $i)}rem");
         padding-left: unquote("#{calc(0.25 * $i)}rem");
+    }
+    
+    .m-#{$i} {
+        margin: unquote("#{calc(0.25 * $i)}rem");
+    }
+    .mt-#{$i} {
+        margin-top: unquote("#{calc(0.25 * $i)}rem");
+    }
+    .mb-#{$i} {
+        margin-bottom: unquote("#{calc(0.25 * $i)}rem");
+    }
+    .my-#{$i} {
+        margin-top: unquote("#{calc(0.25 * $i)}rem");
+        margin-bottom: unquote("#{calc(0.25 * $i)}rem");
+    }
+    .mr-#{$i} {
+        margin-right: unquote("#{calc(0.25 * $i)}rem");
+    }
+    .ml-#{$i} {
+        margin-left: unquote("#{calc(0.25 * $i)}rem");
+    }
+    .mx-#{$i} {
+        margin-right: unquote("#{calc(0.25 * $i)}rem");
+        margin-left: unquote("#{calc(0.25 * $i)}rem");
     }
 }

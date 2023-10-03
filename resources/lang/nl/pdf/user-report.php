@@ -18,11 +18,11 @@ return [
             'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
         ],
         'action-plan' => [
-            'title' => 'Dit is jouw woonplan',
-            'text' => 'Je hebt het Hoomdossier voor je woning ingevuld. Hieronder zie je een samenvatting van het woonplan zoals je die hebt ingericht.',
+            'title' => 'Dit is jouw Woonplan',
+            'text' => 'Je hebt het Hoomdossier voor je woning ingevuld. Hieronder zie je een samenvatting van het Woonplan zoals je die hebt ingericht.',
             'usage' => [
                 'current' => 'Dit is je huidig energiegebruik:',
-                'kengetallen' => 'In deze samenvatting hebben we met de volgende energieprijzen gerekend:',
+                'kengetallen' => 'In jouw Woonplan hebben we met de volgende energieprijzen gerekend:',
             ],
             'categories' => [
                 UserActionPlanAdviceService::CATEGORY_COMPLETE => 'De volgende maatregelen heb je al gedaan:',
@@ -34,7 +34,7 @@ return [
                 'cost-indication' => 'Kostenindicatie [ € ]',
                 'savings' => 'Besparing [ € / jaar ]',
             ],
-            'comment' => 'Toelichting op het woonplan',
+            'comment' => 'Toelichting op het Woonplan',
         ],
         'info-page' => [
             'subsidy' => [
@@ -58,8 +58,8 @@ return [
             'text' => 'De volgende gegevens heb je ingevuld in het Hoomdossier:',
         ],
         'expert-scan-answers' => [
-            'title' => 'Dit is de uitkomst van jouw :scan woonplan',
-            'text' => 'Op de volgende bladzijden zie je voor de maatregelen die in jouw woonplan staan een samenvatting van de ingevoerde gegevens en de gedetailleerde uitkomst van de berekeningen. Meer informatie over de maatregelen kun je ook vinden op de website van Milieucentraal <a href="www.milieucentraal.nl" target="_blank" rel="nofollow">www.milieucentraal.nl</a>.',
+            'title' => 'Jouw uitgebreide Woonplan',
+            'text' => 'Op de volgende bladzijden zie je voor de maatregelen die in jouw Woonplan staan een samenvatting van de ingevoerde gegevens en de gedetailleerde uitkomst van de berekeningen. Meer informatie over de maatregelen kun je ook vinden op de website van Milieucentraal <a href="www.milieucentraal.nl" target="_blank" rel="nofollow">www.milieucentraal.nl</a>.',
             'action-plan' => 'In deze bijlage vind je de gegevens van de volgende maatregelen',
         ],
         'small-measures' => [

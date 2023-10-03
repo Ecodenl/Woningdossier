@@ -12,7 +12,7 @@ h2 {
     font-family: Helvetice, sans-serif;
     font-size: $font-size-sub-heading-1;
     font-weight: bold;
-    color: $color-main;
+    color: $color-purple;
     line-height: $universal-line-height;
     margin: 0 0 0.25rem;
     padding: 0;
@@ -53,6 +53,7 @@ p {
     color: $color-black;
     font-size: $font-size-normal;
     line-height: $universal-line-height;
+    letter-spacing: 0.2px;
     margin: 0;
     padding: 0;
 }

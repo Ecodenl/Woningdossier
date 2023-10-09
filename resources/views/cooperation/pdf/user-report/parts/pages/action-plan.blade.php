@@ -8,9 +8,9 @@
 
     <div class="group">
         @php $stepShort = $scanShort === \App\Models\Scan::LITE ? 'usage-lite-scan' : 'usage-quick-scan'; @endphp
-        <h2>
+        <h3>
             @lang('pdf/user-report.pages.action-plan.usage.current')
-        </h2>
+        </h3>
 
         <div class="row">
             <div class="col-2">
@@ -39,9 +39,9 @@
     </div>
 
     <div class="group">
-        <h2>
+        <h3>
             @lang('pdf/user-report.pages.action-plan.usage.kengetallen')
-        </h2>
+        </h3>
 
         <div class="row">
             <div class="col-2">

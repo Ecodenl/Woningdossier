@@ -31,7 +31,7 @@
         </div>
         <div class="pull-right">
             @if($logo instanceof \App\Models\Media)
-                <img class="pull-right" src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $userCooperation->name }}" width="150">
+                <img class="pull-right" src="{{ pdfAsset($logo->getPath()) }}" alt="{{ $userCooperation->name }}" width="450">
             @else
                 <h3>
                     {{ $userCooperation->name }}

@@ -65,6 +65,8 @@ class Uploader extends Component
             // Otherwise, we check if the user has allowed cooperation access
             $shareWithCooperation = (bool) (request()->input('iframe', false) ?: $this->building->user->allow_access);
 
+            $this->deleteOldImage();
+
             $media = MediaUploader::fromSource($document->getRealPath())
                 ->toDestination('uploads', "buildings/{$this->building->id}")
                 ->useFilename(pathinfo($document->getClientOriginalName(), PATHINFO_FILENAME))
@@ -85,5 +87,13 @@ class Uploader extends Component
         // Delete file after processed
         $document->delete();
         $this->document = null;
+    }
+
+    public function deleteOldImage()
+    {
+        // File limit is 1, but if we don't delete it, the media model remains, and if we don't delete from the model,
+        // it won't delete the file.
+        optional($this->building->media()->wherePivot('tag', $this->tag)->first())->delete();
+        $this->image = null;
     }
 }

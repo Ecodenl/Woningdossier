@@ -99,10 +99,13 @@ class MediaPolicy
      *
      * @return mixed
      */
-    public function delete(Account $user, Media $media, InputSource $inputSource, Building $building): bool
+    public function delete(Account $user, Media $media, InputSource $inputSource, Building $building, ?string $tag = null): bool
     {
-        return $this->isCooperation($inputSource) && data_get($media->custom_properties, 'share_with_cooperation')
-            && ! HoomdossierSession::isUserObserving();
+        return data_get($media->custom_properties, 'share_with_cooperation')
+            && ! HoomdossierSession::isUserObserving() && (
+                ($tag !== MediaHelper::BUILDING_IMAGE && $this->isCooperation($inputSource)) ||
+                $inputSource->short === InputSource::COACH_SHORT
+            );
     }
 
     public function shareWithCooperation(Account $user, Media $media, InputSource $inputSource, Building $building): bool

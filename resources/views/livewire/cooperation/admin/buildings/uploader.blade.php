@@ -103,8 +103,8 @@
     @endcan
 
     @if($image instanceof \App\Models\Media)
-        @can('view', [$image, $inputSource, $building])
-            <div class="flex justify-center items-center w-full md:w-1/4">
+        @can('view', [$image, $inputSource, $building, $tag])
+            <div class="flex flex-wrap justify-center items-center w-full md:w-1/4" id="uploaded-image">
                 @if(in_array($image->extension, MediaHelper::getImageMimes(true)))
                     {{-- Image --}}
                     <img src="{{ $image->getUrl() }}" class="object-cover w-full">
@@ -112,6 +112,14 @@
                     {{-- Document --}}
                     <i class="icon-xxxl icon-other"></i>
                 @endif
+
+                @can('delete', [$image, $inputSource, $building, $tag])
+                    <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {$wire.call('deleteOldImage'); close(); document.getElementById('uploaded-image').fadeOut(250);}"
+                            class="flex px-4 btn btn-outline-red items-center">
+                        @lang('cooperation/frontend/tool.my-plan.uploader.form.delete.title')
+                        <i class="ml-2 icon-md icon-trash-can-red"></i>
+                    </button>
+                @endcan
             </div>
 
             <hr class="w-full">

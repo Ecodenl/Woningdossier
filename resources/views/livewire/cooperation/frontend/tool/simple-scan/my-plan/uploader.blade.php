@@ -52,6 +52,7 @@
             ])
                 <input wire:model="documents" wire:loading.attr="disabled"
                        class="form-input" id="uploader" type="file" multiple autocomplete="off"
+                       {{-- This is a Livewire event we can capture --}}
                        x-on:livewire-upload-finish="livewire.emit('uploadDone')">
             @endcomponent
             <div class="flex w-2/3 justify-end pt-4">

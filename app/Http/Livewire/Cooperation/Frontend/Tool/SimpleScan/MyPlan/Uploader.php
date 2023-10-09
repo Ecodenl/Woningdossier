@@ -61,6 +61,7 @@ class Uploader extends Component
         }
     }
 
+    // Called from $listeners
     public function saveFiles()
     {
         $this->resetErrorBag('documents');

@@ -1,52 +1,3 @@
-{{--
-    This is a Tailwind (frontend) classed design, so we just push the classes into the head (for now... until the admin
-    gets a rework).
---}}
-@push('css')
-    <style>
-        /* Tailwind */
-        .flex {
-            display: flex;
-        }
-        .flex-wrap {
-            flex-wrap: wrap;
-        }
-        .justify-center {
-            justify-content: center;
-        }
-        .items-center {
-            align-items: center;
-        }
-        .w-full {
-            width: 100%;
-        }
-        .object-cover {
-            object-fit: cover;
-        }
-        .pb-5 {
-            padding-bottom: 1.25rem;
-        }
-        .w-1\/3 {
-            width: 33.33%;
-        }
-        @media(min-width: 768px) {
-            .md\:w-1\/4 {
-                width: 25%;
-            }
-            .md\:w-1\/2 {
-                width: 50%;
-            }
-        }
-
-        /* Custom frontend */
-        .form-error-label {
-            color: #a94442; /* Backend text-danger colour */
-            width: 100%;
-            margin-top: 1rem;
-        }
-    </style>
-@endpush
-
 @php
     // When the temporary upload from Livewire fails, an error is thrown for the upload input. When the input is
     // multiple, one gets thrown for EVERY uploaded file. The error bag is shared with the view but not with
@@ -83,7 +34,6 @@
     }
 @endphp
 
-
 <div class="flex flex-wrap w-full flex pb-5" x-data>
     @can('create', [\App\Models\Media::class, $inputSource, $building, $tag])
         <div class="flex flex-wrap w-full">
@@ -104,10 +54,13 @@
 
     @if($image instanceof \App\Models\Media)
         @can('view', [$image, $inputSource, $building, $tag])
-            <div class="flex flex-wrap justify-center items-center w-full md:w-1/4" id="uploaded-image">
+            <div class="flex flex-wrap {{--justify-center--}} items-center w-full md:w-1/4" id="uploaded-image">
                 @if(in_array($image->extension, MediaHelper::getImageMimes(true)))
                     {{-- Image --}}
-                    <img src="{{ $image->getUrl() }}" class="object-cover w-full">
+                    <a href="{{ $image->getUrl() }}" target="_blank" class="mr-4">
+                        @lang('cooperation/frontend/tool.my-plan.uploader.form.header-view')
+                    </a>
+{{--                    <img src="{{ $image->getUrl() }}" class="object-cover w-full">--}}
                 @else
                     {{-- Document --}}
                     <i class="icon-xxxl icon-other"></i>

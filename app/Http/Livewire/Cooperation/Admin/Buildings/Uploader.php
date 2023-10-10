@@ -53,7 +53,7 @@ class Uploader extends Component
             [
                 'document' => [
                     'file',
-                    'mimes:' . MediaHelper::getAllMimes(),
+                    'mimes:' . MediaHelper::getMimesForTag($this->tag),
                     'max:' . MediaHelper::getMaxFileSize(),
                     new MaxFilenameLength(),
                 ],

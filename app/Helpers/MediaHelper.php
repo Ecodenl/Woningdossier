@@ -41,6 +41,20 @@ class MediaHelper
         }
     }
 
+    public static function getMimesForTag(string $tag): string
+    {
+        switch ($tag) {
+            case self::BUILDING_IMAGE:
+                $method = 'getImageMimes';
+                break;
+            default:
+                $method = 'getAllMimes';
+                break;
+        }
+
+        return static::{$method}();
+    }
+
     public static function getImageMimes(bool $asArray = false)
     {
         $mimes = config('hoomdossier.media.accepted_image_mimes');

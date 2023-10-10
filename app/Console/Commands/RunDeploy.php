@@ -40,21 +40,24 @@ class RunDeploy extends Command
      */
     public function handle()
     {
-        $commands = [
-            SeedCommand::class => [
-                ['--class' => 'EnergyLabelsTableSeeder', '--force' => true],
-                ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
-            ],
-        ];
 
-        foreach ($commands as $command => $variants) {
-            if (empty($variants)) {
-                $this->call($command);
-            }
+        \DB::table('language_lines')
+            ->where('group', 'pdf/user-report')
+            ->where('key', 'pages.front-page.title')
+            ->update([
+                'text' => json_encode(['nl' =>  __('pdf/user-report.pages.front-page.title')]),
+            ]);
 
-            foreach ($variants as $arguments) {
-                $this->call($command, $arguments);
-            }
-        }
+//        $commands = [];
+
+//        foreach ($commands as $command => $variants) {
+//            if (empty($variants)) {
+//                $this->call($command);
+//            }
+//
+//            foreach ($variants as $arguments) {
+//                $this->call($command, $arguments);
+//            }
+//        }
     }
 }

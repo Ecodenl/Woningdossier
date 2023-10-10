@@ -203,10 +203,8 @@
                                    'withInputSource' => false,
                                    'label' => __('cooperation/frontend/tool.my-plan.uploader.form.tag.label'),
                                 ])
-                                    {{-- In the develop heat pump upgrade, alpine select becomes usable for livewire. No point in re-inventing the wheel --}}
-                                    {{-- TODO: use when available --}}
-            {{--                            @component('cooperation.frontend.layouts.components.alpine-select')--}}
-                                        <select id="edit-file-tag-{{$file->id}}" class="form-input"
+                                    @component('cooperation.frontend.layouts.components.alpine-select')
+                                        <select id="edit-file-tag-{{$file->id}}" class="form-input hidden"
                                                 wire:model="fileData.{{$file->id}}.tag">
                                             @foreach(MediaHelper::getFillableTagsForClass(\App\Models\Building::class) as $tag)
                                                 <option value="{{ $tag }}">
@@ -214,7 +212,7 @@
                                                 </option>
                                             @endforeach
                                         </select>
-            {{--                            @endcomponent--}}
+                                    @endcomponent
                                 @endcomponent
                             @endif
                         </div>

@@ -17,6 +17,10 @@ class MediaHelper
     const INVOICE = 'invoice';
     const BILL = 'bill';
 
+    /**
+     * These are the tags that are fillable (or better said, selectable). Tags that are not set here cannot be selected
+     * in e.g. the file uploader (usually tags with a dedicated purpose (such as building-image)).
+     */
     public static function getFillableTagsForClass(?string $class = null): array
     {
         switch ($class) {

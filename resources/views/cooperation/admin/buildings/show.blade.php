@@ -62,12 +62,8 @@
                             @else
                                 @foreach($scans as $scan)
                                     <a class="btn btn-primary" href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building', 'scan'))}}">
-                                        @php
-                                            $transShort = app(\App\Services\Models\ScanService::class)
-                                                ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
-                                                ? 'home.start.buttons.continue' : 'home.start.buttons.start';
-                                        @endphp
-                                        @lang($transShort, ['scan' => $scan->name])
+                                        @lang('cooperation/admin/buildings.show.observe-building.label')
+                                        @lang('cooperation/admin/buildings.show.observe-building.button')
                                     </a>
                                 @endforeach
                             @endif
@@ -103,6 +99,7 @@
                                                         ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                                 @endphp
                                                 @lang($transShort, ['scan' => $scan->name])
+                                                @lang('cooperation/admin/buildings.show.fill-for-user.button')
                                             </a>
                                         @endforeach
                                     @endif

@@ -862,7 +862,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source-warm-tap-water',
                 'translation' => "Wat word er gebruikt voor warm tapwater",
-                'options' => ['value' => ['hr-boiler'],],
+                'options' => [],
                 'tool_question_custom_values' => [
                     'hr-boiler' => [
                         'name' => 'Gasketel',

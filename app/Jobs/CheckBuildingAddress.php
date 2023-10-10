@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\MaxAttemptsExceededException;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
@@ -47,12 +48,13 @@ class CheckBuildingAddress implements ShouldQueue
             $buildingAddressService->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
             $buildingAddressService->attachMunicipality();
             $buildingAddressService->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
-        }
-        catch(ClientException $e) {
+        } catch (ClientException $e) {
             Log::debug("Exception: {$e->getMessage()}");
             // When there's a client exception there's no point in retrying.
             $this->fail($e);
             return;
+        } catch (MaxAttemptsExceededException $e) {
+            Log::debug(__METHOD__ . " - Building {$building->id}: " . $e->getMessage());
         }
 
         /**

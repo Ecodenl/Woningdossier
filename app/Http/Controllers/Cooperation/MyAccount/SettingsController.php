@@ -13,7 +13,6 @@ use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
@@ -28,20 +27,16 @@ class SettingsController extends Controller
         $user = Hoomdossier::user();
         $building = HoomdossierSession::getBuilding(true);
 
-        $data = $request->all();
+        $data = $request->validated();
 
-        // update the user stuff
-        $userData = $data['user'];
-        $userData['phone_number'] = $userData['phone_number'] ?? '';
-        $user->update($userData);
-
-        $buildingData['number'] = $buildingData['number'] ?? '';
-        $buildingData = $data['building'];
-
-        $building->update(Arr::only($buildingData, ['street', 'city', 'postal_code', 'number', 'extension']));
+        // Update user data
+        $user->update($data['user']);
+        // Update building address
+        $data['address']['extension'] ??= null;
+        $building->update($data['address']);
 
          CheckBuildingAddress::dispatchSync($building);
-         if (!$building->municipality()->first() instanceof Municipality) {
+         if (! $building->municipality()->first() instanceof Municipality) {
              CheckBuildingAddress::dispatch($building);
          }
 

@@ -61,9 +61,8 @@ class Uploader extends Component
         );
 
         if ($validator->passes()) {
-            // If we're in an iframe currently, then we know it's being done from the admin and share should be true.
-            // Otherwise, we check if the user has allowed cooperation access
-            $shareWithCooperation = (bool) (request()->input('iframe', false) ?: $this->building->user->allow_access);
+            // For now just true since this is currently only used for the building image.
+            $shareWithCooperation = true; // $this->building->user->allow_access;
 
             $this->deleteOldImage();
 

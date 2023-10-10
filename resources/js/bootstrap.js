@@ -53,19 +53,24 @@ window.initTinyMCE = function (options = {}) {
         plugins: [
             'link', // https://www.tiny.cloud/docs/tinymce/6/link/
             'wordcount', // https://www.tiny.cloud/docs/tinymce/6/wordcount/
+            'lists', // https://www.tiny.cloud/docs/tinymce/6/lists/
+            'advlist', // https://www.tiny.cloud/docs/tinymce/6/advlist/ < Without this, the lists plugin does not work
         ],
         // Link plugin settings start
         link_default_target: '_blank',
         link_target_list: false,
         link_title: false,
         // Link plugin settings end
-        toolbar: 'link bold italic underline strikethrough fontsize',
+        toolbar: 'link bold italic underline strikethrough fontsize | bullist numlist',
         // font_size_formats: 'Extra-Small=10px Small=14px Normal=18px Medium=24px Large=32px Extra-Large=36px Extra-Extra Large=48px',
         font_size_formats: 'Normaal=14px',
         promotion: false,
         language: 'nl',
         resize: false,
         height: 200,
+        lists_indent_on_tab: true,
+        advlist_bullet_styles: 'disc,circle,square',
+        advlist_number_styles: 'decimal,upper-alpha,upper-roman',
     };
 
     let defaultSetup = (editor) => {

@@ -5,6 +5,7 @@ return [
         'title' => 'Instellingen voor coöperatie',
         'logo' => 'Selecteer hier een logo',
         'background' => 'Selectier hier een achtergrond afbeelding',
+        'pdf-background' => 'Selectier hier een PDF achtergrond afbeelding',
         'current' => 'Huidig:',
     ],
     'store' => [

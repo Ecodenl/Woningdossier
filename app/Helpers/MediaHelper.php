@@ -9,6 +9,7 @@ class MediaHelper
 {
     const LOGO = 'logo';
     const BACKGROUND = 'background';
+    const PDF_BACKGROUND = 'pdf-background';
     const GENERIC_FILE = 'generic-file';
     const GENERIC_IMAGE = 'generic-image';
     const REPORT = 'report';
@@ -23,6 +24,7 @@ class MediaHelper
                 return [
                     self::LOGO => self::LOGO,
                     self::BACKGROUND => self::BACKGROUND,
+                    self::PDF_BACKGROUND => self::PDF_BACKGROUND,
                 ];
 
             case Building::class:

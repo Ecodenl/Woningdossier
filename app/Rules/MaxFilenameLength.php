@@ -29,6 +29,5 @@ class MaxFilenameLength implements Rule
         return __('validation.custom-rules.max-filename-length', [
             'length' => $this->maxLength,
         ]);
-
     }
 }

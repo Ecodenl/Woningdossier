@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use App\Helpers\MediaHelper;
 use App\Helpers\Models\CooperationSettingHelper;
+use App\Models\Cooperation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SettingsFormRequest extends FormRequest
@@ -24,11 +26,14 @@ class SettingsFormRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'medias.logo' => 'nullable|image',
-            'medias.background' => 'nullable|image',
-
+        $rules = [
             'cooperation_settings.' . CooperationSettingHelper::SHORT_REGISTER_URL => ['nullable', 'url'],
         ];
+
+        foreach (MediaHelper::getFillableTagsForClass(Cooperation::class) as $tag) {
+            $rules["medias.{$tag}"] = 'nullable|image';
+        }
+
+        return $rules;
     }
 }

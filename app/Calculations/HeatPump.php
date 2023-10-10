@@ -64,11 +64,10 @@ class HeatPump extends \App\Calculations\Calculator
         $this->desiredPower = $this->getAnswer('heat-pump-preferred-power');
         // If it wasn't answered (by person in expert or example building)
         if ($this->desiredPower <= 0 && $characteristics instanceof HeatPumpCharacteristic) {
-            if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL){
+            if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL) {
                 // for full: required power
                 $this->desiredPower = round($this->requiredPower);
-            }
-            else {
+            } else {
                 // for hybrid: fixed value / standard from table
                 $this->desiredPower = round($characteristics->standard_power_kw);
             }
@@ -80,7 +79,7 @@ class HeatPump extends \App\Calculations\Calculator
         // return value affects other calculations.
 
         $scopTw = 0;
-        if ($characteristics instanceof HeatPumpCharacteristic){
+        if ($characteristics instanceof HeatPumpCharacteristic) {
             $scopTw = $characteristics->type == HeatPumpCharacteristic::TYPE_HYBRID ? 0 : ($characteristics->scop_tap_water ?? 0); // C65
         }
 

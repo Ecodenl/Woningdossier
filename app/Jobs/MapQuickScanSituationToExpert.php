@@ -40,8 +40,7 @@ class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
      */
     public function handle()
     {
-        $boilerService = Service::findByShort('boiler');
-        $boilerValues = $boilerService->values;
+        $boilerValues = Service::findByShort('boiler')->values;
 
         // Convert (heat pump) measure application scenario to expert scan.
         // Note: currently only triggered if a user gets a heat pump measure application in their action plan,
@@ -152,7 +151,19 @@ class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
 
         // Force replace
         $this->saveAnswer(ToolQuestion::findByShort('heat-pump-replace'), true);
-        $this->saveAnswer(ToolQuestion::findByShort('hr-boiler-replace'), true);
+
+        $boilerAgeQuestion = ToolQuestion::findByShort('boiler-placed-date');
+        $viewable = ConditionService::init()->building($this->building)->inputSource($this->masterInputSource)
+            ->forModel($boilerAgeQuestion)->isViewable();
+
+        if ($viewable) {
+            $answer = $this->building->getAnswer($this->masterInputSource, $boilerAgeQuestion);
+
+            if (is_numeric($answer)) {
+                $diff = now()->format('Y') - $answer;
+                $this->saveAnswer(ToolQuestion::findByShort('hr-boiler-replace'), ! ($diff < 10));
+            }
+        }
 
         foreach ($mapping as $tqShort => $data) {
             $toolQuestion = ToolQuestion::findByShort($tqShort);
@@ -191,10 +202,7 @@ class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
         }
 
         // As last step, calculate required power to save as desired power...........
-        $answers['new-heat-pump-type'] = ToolQuestion::findByShort('new-heat-pump-type')
-            ->toolQuestionCustomValues()
-            ->where('extra->calculate_value', $calculateValue)
-            ->first()->short;
+        $answers['new-heat-pump-type'] = $type;
 
         // If we're not in expert yet, we need the heating temp for the calculations
         $heatingTemp = $this->building->getAnswer($this->masterInputSource, ToolQuestion::findByShort('boiler-setting-comfort-heat'));

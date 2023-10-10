@@ -9,6 +9,9 @@ use App\Models\Municipality;
 use App\Services\BuildingAddressService;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\MaxAttemptsExceededException;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
 
@@ -48,6 +51,8 @@ class CheckBuildingAddress extends NonHandleableJobAfterReset
             // When there's a client exception there's no point in retrying.
             $this->fail($e);
             return;
+        } catch (MaxAttemptsExceededException $e) {
+            Log::debug(__METHOD__ . " - Building {$building->id}: " . $e->getMessage());
         }
 
         /**

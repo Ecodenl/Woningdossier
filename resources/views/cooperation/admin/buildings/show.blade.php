@@ -202,6 +202,10 @@
                     </div>
                 </div>
             </div>
+
+            @can('create', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building, MediaHelper::BUILDING_IMAGE])
+                <livewire:cooperation.admin.buildings.uploader :building="$building" tag="{{ MediaHelper::BUILDING_IMAGE }}">
+            @endcan
         </div>
 
         <ul class="nav nav-tabs">

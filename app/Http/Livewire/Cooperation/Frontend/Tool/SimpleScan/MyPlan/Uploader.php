@@ -38,7 +38,9 @@ class Uploader extends Component
         $this->inputSource = HoomdossierSession::getInputSource(true);
 
         // We want all media regardless of tag
-        $this->files = $building->media;
+        $this->files = $building->media()
+            ->wherePivotIn('tag', MediaHelper::getFillableTagsForClass(Building::class))
+            ->get();
         foreach ($this->files as $file) {
             $this->fileData[$file->id] = [
                 'title' => data_get($file->custom_properties, 'title'),
@@ -61,6 +63,7 @@ class Uploader extends Component
         }
     }
 
+    // Called from $listeners
     public function saveFiles()
     {
         $this->resetErrorBag('documents');

@@ -52,6 +52,7 @@
             ])
                 <input wire:model="documents" wire:loading.attr="disabled"
                        class="form-input" id="uploader" type="file" multiple autocomplete="off"
+                       {{-- This is a Livewire event we can capture --}}
                        x-on:livewire-upload-finish="livewire.emit('uploadDone')">
             @endcomponent
             <div class="flex w-2/3 justify-end pt-4">
@@ -202,10 +203,8 @@
                                    'withInputSource' => false,
                                    'label' => __('cooperation/frontend/tool.my-plan.uploader.form.tag.label'),
                                 ])
-                                    {{-- In the develop heat pump upgrade, alpine select becomes usable for livewire. No point in re-inventing the wheel --}}
-                                    {{-- TODO: use when available --}}
-            {{--                            @component('cooperation.frontend.layouts.components.alpine-select')--}}
-                                        <select id="edit-file-tag-{{$file->id}}" class="form-input"
+                                    @component('cooperation.frontend.layouts.components.alpine-select')
+                                        <select id="edit-file-tag-{{$file->id}}" class="form-input hidden"
                                                 wire:model="fileData.{{$file->id}}.tag">
                                             @foreach(MediaHelper::getFillableTagsForClass(\App\Models\Building::class) as $tag)
                                                 <option value="{{ $tag }}">
@@ -213,7 +212,7 @@
                                                 </option>
                                             @endforeach
                                         </select>
-            {{--                            @endcomponent--}}
+                                    @endcomponent
                                 @endcomponent
                             @endif
                         </div>
@@ -225,9 +224,7 @@
                                 <i class="ml-2 icon-sm icon-arrow-down"></i>
                             </a>
                             @can('delete', [$file, $inputSource, $building])
-                                {{-- It is important to have the wire:click AFTER the x-on:click, otherwise the confirm doesn't prevent wire:click --}}
-                                <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {close(); $el.closest('{{"[wire\\\\:key=\"{$file->id}\"]"}}').fadeOut(250);} else { $event.stopImmediatePropagation(); }"
-                                        wire:click="delete({{$file->id}})"
+                                <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {$wire.call('delete', {{$file->id}}); close(); $el.closest('{{"[wire\\\\:key=\"{$file->id}\"]"}}').fadeOut(250);}"
                                         class="flex px-4 btn btn-outline-red items-center">
                                     @lang('cooperation/frontend/tool.my-plan.uploader.form.delete.title')
                                     <i class="ml-2 icon-md icon-trash-can-red"></i>

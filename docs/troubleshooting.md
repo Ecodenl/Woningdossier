@@ -34,7 +34,7 @@ test. And you run the test individually and everything is fine, but now you're r
 them fails because there is a database assertion (e.g. `assertDatabaseCount()`) which is retuning more data than 
 there should be. The database was not properly refreshed. `RefreshDatabase` uses transactions to roll back made 
 changes. This is faster than re-running all migrations, however it is important to note that the transaction may not 
-be commited. During a commit, a transaction is saved to the database, and a further rollback will not undo this commit.
+be committed. During a commit, a transaction is saved to the database, and a further rollback will not undo this commit.
 Usually however, the failure comes from an implicit commit. This is a commit without explicitly calling `COMMIT`. 
 This is from Data definition language (DDL) statements, i.e. schema info altering statements. 
 

@@ -239,6 +239,7 @@ return [
         'nl' => 'Nederlands',
         'en' => 'Engels',
 
+        'document' => 'geüpload bestand',
         'documents' => 'bestanden',
         'documents.*' => 'een bestand',
 

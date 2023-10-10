@@ -62,12 +62,12 @@ class MyPlanController extends Controller
 
     public function media(Request $request, Cooperation $cooperation, Scan $scan, ?Building $building = null)
     {
-        $sessionBuilding = HoomdossierSession::getBuilding(true);
+        $currentBuilding = HoomdossierSession::getBuilding(true);
 
-        $this->authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), $sessionBuilding]);
+        $this->authorize('viewAny', [Media::class, HoomdossierSession::getInputSource(true), $currentBuilding]);
 
         if (! $building instanceof Building) {
-            $building = $sessionBuilding;
+            $building = $currentBuilding;
         }
 
         return view('cooperation.frontend.tool.simple-scan.my-plan.media', compact('scan', 'building'));

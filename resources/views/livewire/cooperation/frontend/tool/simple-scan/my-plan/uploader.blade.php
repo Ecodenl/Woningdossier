@@ -41,7 +41,7 @@
 @endphp
 
 <div class="flex flex-wrap w-full flex pb-5" x-data>
-    @can('create', [\App\Models\Media::class, $inputSource, $building])
+    @can('create', [\App\Models\Media::class, $currentInputSource, $building])
         <div class="flex flex-wrap w-full">
             @component('cooperation.frontend.layouts.components.form-group', [
                'label' => __('cooperation/frontend/tool.my-plan.uploader.add'),
@@ -67,9 +67,9 @@
 
     <div class="flex flex-wrap w-full media-container">
         @foreach($files as $file)
-            @can('view', [$file, $inputSource, $building])
+            @can('view', [$file, $currentInputSource, $building])
                 @php
-                    $canUpdate = Auth::user()->can('update', [$file, $inputSource, $building]);
+                    $canUpdate = Auth::user()->can('update', [$file, $currentInputSource, $building]);
                     $shareVal = data_get($fileData, "{$file->id}.share_with_cooperation") ? 'show' : 'hide';
                 @endphp
 
@@ -91,7 +91,7 @@
                                         {{ "{$file->filename}.{$file->extension}" }}
                                     </h2>
                                 </div>
-                                @can('shareWithCooperation', [$file, $inputSource, $building])
+                                @can('shareWithCooperation', [$file, $currentInputSource, $building])
                                     <i class="icon-md {{ "icon-{$shareVal}" }}"></i>
                                 @endif
                             </div>
@@ -173,7 +173,7 @@
                                           placeholder="@lang('cooperation/frontend/tool.my-plan.uploader.form.description.label')"
                                 ></textarea>
                             @endcomponent
-                            @can('shareWithCooperation', [$file, $inputSource, $building])
+                            @can('shareWithCooperation', [$file, $currentInputSource, $building])
                                 @component('cooperation.frontend.layouts.components.form-group', [
                                    'inputName' => "fileData.{$file->id}.share_with_cooperation",
                                    'class' => 'w-full',
@@ -223,7 +223,7 @@
                                 @lang('cooperation/frontend/tool.my-plan.uploader.form.download.title')
                                 <i class="ml-2 icon-sm icon-arrow-down"></i>
                             </a>
-                            @can('delete', [$file, $inputSource, $building])
+                            @can('delete', [$file, $currentInputSource, $building])
                                 <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {$wire.call('delete', {{$file->id}}); close(); $el.closest('{{"[wire\\\\:key=\"{$file->id}\"]"}}').fadeOut(250);}"
                                         class="flex px-4 btn btn-outline-red items-center">
                                     @lang('cooperation/frontend/tool.my-plan.uploader.form.delete.title')

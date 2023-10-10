@@ -21,7 +21,7 @@ class Uploader extends Component
 
     public Building $building;
     public string $tag;
-    public InputSource $inputSource;
+    public InputSource $currentInputSource;
     public ?Media $image;
     public $document;
 
@@ -33,7 +33,7 @@ class Uploader extends Component
     {
         $this->building = $building;
         $this->tag = $tag;
-        $this->inputSource = HoomdossierSession::getInputSource(true);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->image = $building->firstMedia($tag);
     }

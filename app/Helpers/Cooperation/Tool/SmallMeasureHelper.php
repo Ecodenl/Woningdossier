@@ -21,8 +21,11 @@ class SmallMeasureHelper extends ToolHelper
         'energy-efficient-installations' => [
             'pump-switch-floor-heating', 'replace-alternating-current-fan',
         ],
+        // save-energy-with-crack-sealing voor de kierdichting kleine vraag
         'save-energy-with-crack-sealing' => [
             'crack-sealing-windows-doors', 'mailbox-bristles',
+
+            'isolating-window-foil', 'crack-caulk', 'crack-foam', 'door-silicone-strip'
         ],
         'improve-radiators' => [
             'radiator-foil', 'no-curtains-for-the-radiator', 'apply-thermostat-knobs',

@@ -73,8 +73,8 @@ class SuccessFullLoginListener
         $inputSource = $role->inputSource;
 
         // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-        if (! $role->inputSource instanceof InputSource) {
-            $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        if (! $inputSource instanceof InputSource) {
+            $inputSource = InputSource::resident();
         }
 
         // set the required sessions
@@ -89,7 +89,7 @@ class SuccessFullLoginListener
             ]),
         ]);
 
-        $this->buildingService->forBuilding($building)->performMunicipalityCheck();
+        $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
     }
 
     /**

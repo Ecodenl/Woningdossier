@@ -52,17 +52,17 @@ class InputSource extends Model
         return self::MASTER_SHORT == $this->short;
     }
 
-    public static function master(): ?Model
+    public static function master(): ?self
     {
         return self::findByShort(static::MASTER_SHORT);
     }
 
-    public static function coach(): ?Model
+    public static function coach(): ?self
     {
         return self::findByShort(static::COACH_SHORT);
     }
 
-    public static function resident(): ?Model
+    public static function resident(): ?self
     {
         return self::findByShort(static::RESIDENT_SHORT);
     }

@@ -37,10 +37,12 @@ class SettingsController extends Controller
         $data['address']['extension'] ??= null;
         $building->update($data['address']);
 
-         CheckBuildingAddress::dispatchSync($building);
-         if (! $building->municipality()->first() instanceof Municipality) {
-             CheckBuildingAddress::dispatch($building);
-         }
+        $currentInputSource = HoomdossierSession::getInputSource(true);
+
+        CheckBuildingAddress::dispatchSync($building, $currentInputSource);
+        if (! $building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building, $currentInputSource);
+        }
 
         return redirect()->route('cooperation.my-account.index')
             ->with('success', __('my-account.settings.store.success'));

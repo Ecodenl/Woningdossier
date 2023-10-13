@@ -8,10 +8,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithUpserts;
 
 class ToolQuestionsImport implements ToCollection, WithCustomCsvSettings, WithHeadingRow
 {
@@ -41,6 +39,7 @@ class ToolQuestionsImport implements ToCollection, WithCustomCsvSettings, WithHe
     {
         return [
             'delimiter' => ",",
+            // because json.
             'escape_character' => "\""
         ];
     }

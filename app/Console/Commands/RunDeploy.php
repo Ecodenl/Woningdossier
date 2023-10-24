@@ -40,6 +40,13 @@ class RunDeploy extends Command
      */
     public function handle()
     {
+        \DB::table('language_lines')
+            ->where('group', 'pdf/user-report')
+            ->where('key', 'pages.front-page.title')
+            ->update([
+                'text' => json_encode(['nl' =>  __('pdf/user-report.pages.front-page.title')]),
+            ]);
+
         $commands = [
             SeedCommand::class => [
                 ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],

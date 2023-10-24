@@ -46,7 +46,7 @@
                         </div>
                         <div class="bg-purple text-center p-4 text-sm text-white font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                             <span>.bg-purple</span>
-                            <span>#622181</span>
+                            <span>#622191</span>
                         </div>
                         <div class="bg-white text-center p-4 text-sm text-blue-500 font-light rounded-lg h-24 w-24 flex flex-col justify-between border-2 border-solid border-blue-100">
                             <span>.bg-white</span>

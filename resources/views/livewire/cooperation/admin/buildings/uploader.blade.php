@@ -35,7 +35,7 @@
 @endphp
 
 <div class="flex flex-wrap w-full flex pb-5" x-data>
-    @can('create', [\App\Models\Media::class, $inputSource, $building, $tag])
+    @can('create', [\App\Models\Media::class, $currentInputSource, $building, $tag])
         <div class="flex flex-wrap w-full">
             @component('cooperation.frontend.layouts.components.form-group', [
                'label' => __('cooperation/admin/buildings.show.building-image'),
@@ -53,7 +53,7 @@
     @endcan
 
     @if($image instanceof \App\Models\Media)
-        @can('view', [$image, $inputSource, $building, $tag])
+        @can('view', [$image, $currentInputSource, $building, $tag])
             <div class="flex flex-wrap {{--justify-center--}} items-center w-full md:w-1/4" id="uploaded-image">
                 @if(in_array($image->extension, MediaHelper::getImageMimes(true)))
                     {{-- Image --}}
@@ -66,7 +66,7 @@
                     <i class="icon-xxxl icon-other"></i>
                 @endif
 
-                @can('delete', [$image, $inputSource, $building, $tag])
+                @can('delete', [$image, $currentInputSource, $building, $tag])
                     <button x-on:click="if (confirm('@lang('cooperation/frontend/tool.my-plan.uploader.form.delete.confirm')')) {$wire.call('deleteOldImage'); close(); document.getElementById('uploaded-image').fadeOut(250);}"
                             class="flex px-4 btn btn-outline-red items-center">
                         @lang('cooperation/frontend/tool.my-plan.uploader.form.delete.title')

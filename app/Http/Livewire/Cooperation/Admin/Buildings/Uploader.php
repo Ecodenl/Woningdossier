@@ -21,7 +21,7 @@ class Uploader extends Component
 
     public Building $building;
     public string $tag;
-    public InputSource $inputSource;
+    public InputSource $currentInputSource;
     public ?Media $image;
     public $document;
 
@@ -33,7 +33,7 @@ class Uploader extends Component
     {
         $this->building = $building;
         $this->tag = $tag;
-        $this->inputSource = HoomdossierSession::getInputSource(true);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->image = $building->firstMedia($tag);
     }
@@ -61,9 +61,8 @@ class Uploader extends Component
         );
 
         if ($validator->passes()) {
-            // If we're in an iframe currently, then we know it's being done from the admin and share should be true.
-            // Otherwise, we check if the user has allowed cooperation access
-            $shareWithCooperation = (bool) (request()->input('iframe', false) ?: $this->building->user->allow_access);
+            // For now just true since this is currently only used for the building image.
+            $shareWithCooperation = true; // $this->building->user->allow_access;
 
             $this->deleteOldImage();
 

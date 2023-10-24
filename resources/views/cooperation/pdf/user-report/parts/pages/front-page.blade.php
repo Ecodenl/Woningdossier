@@ -2,6 +2,9 @@
     @php
         $logo = $userCooperation->firstMedia(MediaHelper::LOGO);
         $background = $userCooperation->firstMedia(MediaHelper::BACKGROUND);
+        $backgroundUrl = $background instanceof \App\Models\Media
+            ? pdfAsset($background->getPath())
+            : pdfAsset('images/background.jpg');
     @endphp
     <div class="w-100">
         <div class="pull-left" style="width: 50%">
@@ -40,9 +43,7 @@
         </div>
     </div>
 
-
-
-    <img src="{{pdfAsset($background->getPath())}}" alt="{{$userCooperation->name}}" style="max-height: 550px; width: 100%">
+    <img src="{{ $backgroundUrl }}" alt="{{$userCooperation->name}}" style="max-height: 550px; width: 100%">
     <div class="w-100 my-2">
     </div>
 

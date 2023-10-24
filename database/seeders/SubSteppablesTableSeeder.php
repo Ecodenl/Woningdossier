@@ -907,6 +907,26 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
+                        [
+                            'morph' => ToolQuestion::findByShort('isolating-window-foil'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-caulk'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-foam'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('door-silicone-strip'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
                     ],
                 ],
                 'Verbeteren van de radiatoren' => [
@@ -1652,6 +1672,78 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                             'conditions' => $this->getSubQuestionConditions('mailbox-bristles'),
+                        ],
+                        
+                        [
+                            'morph' => ToolQuestion::findByShort('isolating-window-foil'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('isolating-window-foil-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('isolating-window-foil'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('isolating-window-foil-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('isolating-window-foil'),
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-caulk'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-caulk-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('crack-caulk'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-caulk-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('crack-caulk'),
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-foam'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-foam-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('crack-foam'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-foam-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('crack-foam'),
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('door-silicone-strip'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('door-silicone-strip-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('door-silicone-strip'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('door-silicone-strip-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('door-silicone-strip'),
                         ],
                     ],
                 ],

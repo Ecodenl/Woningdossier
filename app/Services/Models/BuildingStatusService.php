@@ -2,19 +2,9 @@
 
 namespace App\Services\Models;
 
-use App\Events\BuildingAppointmentDateUpdated;
 use App\Events\BuildingStatusUpdated;
-use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
-use App\Models\CustomMeasureApplication;
-use App\Models\InputSource;
-use App\Models\Scan;
 use App\Models\Status;
-use App\Services\WoonplanService;
-use App\Traits\FluentCaller;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class BuildingStatusService
 {

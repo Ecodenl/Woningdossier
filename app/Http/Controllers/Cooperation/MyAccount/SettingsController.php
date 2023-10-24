@@ -8,9 +8,15 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Jobs\CheckBuildingAddress;
+use App\Jobs\ResetDossierForUser;
 use App\Models\Account;
 use App\Models\InputSource;
 use App\Models\Municipality;
+use App\Services\BuildingAddressService;
+use App\Services\DossierSettingsService;
+use App\Services\Lvbag\BagService;
+use App\Services\Lvbag\Payloads\AddressExpanded;
+use App\Services\Models\BuildingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -35,10 +41,12 @@ class SettingsController extends Controller
         $data['address']['extension'] ??= null;
         $building->update($data['address']);
 
-         CheckBuildingAddress::dispatchSync($building);
-         if (! $building->municipality()->first() instanceof Municipality) {
-             CheckBuildingAddress::dispatch($building);
-         }
+        $currentInputSource = HoomdossierSession::getInputSource(true);
+
+        CheckBuildingAddress::dispatchSync($building, $currentInputSource);
+        if (! $building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building, $currentInputSource);
+        }
 
         return redirect()->route('cooperation.my-account.index')
             ->with('success', __('my-account.settings.store.success'));
@@ -49,19 +57,26 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile(UserService $userService, Request $request)
+    public function resetFile(Request $request, DossierSettingsService $dossierSettingsService)
     {
         $user = Hoomdossier::user();
 
         $inputSourceIds = $request->input('input_sources.id');
 
-        // Reset master first.
-        $userService->forUser($user)->resetUser(InputSource::master());
-
+        $masterInputSource = InputSource::master();
+        ResetDossierForUser::dispatchSync($user, $masterInputSource);
         foreach ($inputSourceIds as $inputSourceId) {
             Log::debug("resetting for input source ".$inputSourceId);
-            $userService->forUser($user)->resetUser(InputSource::find($inputSourceId));
+            $relevantInputSource = InputSource::find($inputSourceId);
+            ResetDossierForUser::dispatchSync($user, $relevantInputSource);
         }
+
+        $dossierSettingsService
+            ->forType(ResetDossierForUser::class)
+            ->forBuilding($user->building)
+            ->forInputSource($masterInputSource)
+            ->justDone();
+
         UserToolDataChanged::dispatch($user);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));

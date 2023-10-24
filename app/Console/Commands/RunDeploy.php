@@ -40,7 +40,6 @@ class RunDeploy extends Command
      */
     public function handle()
     {
-
         \DB::table('language_lines')
             ->where('group', 'pdf/user-report')
             ->where('key', 'pages.front-page.title')
@@ -48,16 +47,21 @@ class RunDeploy extends Command
                 'text' => json_encode(['nl' =>  __('pdf/user-report.pages.front-page.title')]),
             ]);
 
-//        $commands = [];
+        $commands = [
+            SeedCommand::class => [
+                ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
+                ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
+            ],
+        ];
 
-//        foreach ($commands as $command => $variants) {
-//            if (empty($variants)) {
-//                $this->call($command);
-//            }
-//
-//            foreach ($variants as $arguments) {
-//                $this->call($command, $arguments);
-//            }
-//        }
+        foreach ($commands as $command => $variants) {
+            if (empty($variants)) {
+                $this->call($command);
+            }
+
+            foreach ($variants as $arguments) {
+                $this->call($command, $arguments);
+            }
+        }
     }
 }

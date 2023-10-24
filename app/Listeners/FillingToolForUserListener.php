@@ -37,6 +37,6 @@ class FillingToolForUserListener
         HoomdossierSession::setBuilding($building);
         HoomdossierSession::setInputSourceValue($inputSourceValue);
 
-        $this->buildingService->forBuilding($building)->performMunicipalityCheck();
+        $this->buildingService->forBuilding($building)->forInputSource($inputSourceValue)->performMunicipalityCheck();
     }
 }

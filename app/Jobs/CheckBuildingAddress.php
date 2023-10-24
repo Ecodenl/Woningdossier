@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Jobs\Middleware\CheckLastResetAt;
 use App\Helpers\Queue;
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Services\BuildingAddressService;
 use GuzzleHttp\Exception\ClientException;
@@ -14,7 +15,8 @@ use Illuminate\Support\Facades\Log;
 
 class CheckBuildingAddress extends NonHandleableJobAfterReset
 {
-    public $building;
+    public Building $building;
+    public InputSource $inputSource;
 
     public $tries = 10;
 
@@ -23,10 +25,11 @@ class CheckBuildingAddress extends NonHandleableJobAfterReset
      *
      * @return void
      */
-    public function __construct(Building $building)
+    public function __construct(Building $building, InputSource $inputSource)
     {
         parent::__construct();
         $this->building = $building;
+        $this->inputSource = $inputSource;
         $this->queue = Queue::APP_EXTERNAL;
     }
 
@@ -39,10 +42,11 @@ class CheckBuildingAddress extends NonHandleableJobAfterReset
     {
         $building = $this->building;
         try {
-            $buildingAddressService->forBuilding($building);
-            $buildingAddressService->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'));
-            $buildingAddressService->attachMunicipality();
-            $buildingAddressService->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
+            $buildingAddressService->forBuilding($building)
+                ->forInputSource($this->inputSource)
+                ->updateAddress($building->only('postal_code', 'number', 'extension', 'street', 'city'))
+                ->attachMunicipality()
+                ->updateBuildingFeatures($building->only('postal_code', 'number', 'extension'));
         } catch (ClientException $e) {
             Log::debug("Exception: {$e->getMessage()}");
             // When there's a client exception there's no point in retrying.
@@ -53,12 +57,12 @@ class CheckBuildingAddress extends NonHandleableJobAfterReset
         }
 
         /**
-         * requery it, no municipality can have multiple causes
+         * Re-query it, no municipality can have multiple causes
          * - BAG is down
          * - Partial error, no bag_woonplaats_id (might be caused by faulty address from user or due to BAG outage)
          * - Partial error, no municipality string found in woonplaats endpoint
          */
-        if ( ! $building->municipality()->first() instanceof Municipality) {
+        if (! $building->municipality()->first() instanceof Municipality) {
             $this->release(60);
         }
     }

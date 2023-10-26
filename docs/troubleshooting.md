@@ -31,7 +31,7 @@ This creates clones of the original query, so the original instance is not affec
 ### Database not refreshing while using `RefreshDatabase`
 So, you're making a quality test, and you want to use the `RefreshDatabase` so that the database is fresh after each 
 test. And you run the test individually and everything is fine, but now you're running a series of tests and one of 
-them fails because there is a database assertion (e.g. `assertDatabaseCount()`) which is retuning more data than 
+them fails because there is a database assertion (e.g. `assertDatabaseCount()`) which is returning more data than 
 there should be. The database was not properly refreshed. `RefreshDatabase` uses transactions to roll back made 
 changes. This is faster than re-running all migrations, however it is important to note that the transaction may not 
 be commited. During a commit, a transaction is saved to the database, and a further rollback will not undo this commit.

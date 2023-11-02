@@ -37,13 +37,19 @@ trait CallsEconobisApi
                     }
                 }, false);
 
+        } else {
+            $buildingId = $this->building->id ?? 'No building id!';
+            Log::debug('Building ' . $buildingId . ' - Econobis calls are disabled, skipping call');
         }
         return;
     }
 
     private function log(\Throwable $exception)
     {
-        Log::error(get_class($exception).' '.$exception->getCode().' '.$exception->getMessage());
+        $class = __CLASS__;
+        $buildingId = $this->building->id ?? 'No building id!';
+
+        Log::error(sprintf('Building %s - %s %s %s', $buildingId, get_class($exception), $exception->getCode(), $exception->getMessage()));
         if (method_exists($exception, 'getResponse')) {
             /** @var Stream $stream */
             $stream = $exception->getResponse()->getBody();
@@ -51,9 +57,6 @@ trait CallsEconobisApi
             Log::error($stream->getContents());
         }
         $shouldNotifyDiscord = false;
-
-        $class = __CLASS__;
-        $buildingId = $this->building->id ?? 'No building id!';
 
         if ($buildingId === 'No building id!') {
             $shouldNotifyDiscord = true;

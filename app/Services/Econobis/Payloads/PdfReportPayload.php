@@ -21,6 +21,7 @@ class PdfReportPayload extends EconobisPayload
             ->forMyCooperation($building->user->cooperation_id)
             ->forBuilding($building)
             ->forInputSource($inputSource)
+            ->withExpired()
             ->first();
 
         if (Storage::disk('downloads')->exists($fileStorage->filename)) {

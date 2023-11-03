@@ -29,8 +29,6 @@ class Form extends Scannable
 
     public function mount(Scan $scan, Step $step, SubStep $subStep)
     {
-        Log::debug("mounting form [Step: {$step->id}] [SubStep: {$subStep->id}]");
-
         // Only load in properties that are not order inclusive
         $subStep->load([
             'toolQuestions' => function ($query) {

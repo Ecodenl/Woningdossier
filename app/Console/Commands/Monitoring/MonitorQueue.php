@@ -4,6 +4,7 @@ namespace App\Console\Commands\Monitoring;
 
 use App\Helpers\Queue;
 use App\Models\QueueLog;
+use App\Services\DiscordNotifier;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Queue as QueueFacade;
@@ -41,13 +42,30 @@ class MonitorQueue extends Command
      */
     public function handle()
     {
+        // Log queue size for each available queue.
         foreach (Queue::getQueueNames() as $queueName) {
-            QueueLog::create([
+            $size = QueueFacade::size($queueName);
+
+            $log = QueueLog::create([
                 'queue' => $queueName,
-                'size' => QueueFacade::size($queueName),
+                'size' => $size,
             ]);
+
+            $warningSize = config('hoomdossier.queue.warning_size');
+            if ($size >= $warningSize) {
+                // Previous log
+                $prevLog = QueueLog::orderByDesc('created_at')->where('queue', $queueName)
+                    ->where('created_at', '!=', $log->created_at)
+                    ->first();
+
+                if (! $prevLog instanceof QueueLog || $prevLog->size < $warningSize) {
+                    DiscordNotifier::init()
+                        ->notify("Queue {$queueName} has reached {$warningSize}!");
+                }
+            }
         }
 
+        // Remove logs older than 7 days.
         QueueLog::whereIn('queue', Queue::getQueueNames())
             ->where('created_at', '<=', Carbon::now()->subDays(7))
             ->delete();

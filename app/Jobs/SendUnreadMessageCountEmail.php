@@ -19,6 +19,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 
 class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
@@ -48,11 +49,9 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
      */
     public function handle()
     {
-        Log::debug('Witholding sending email to user id '.$this->user->id.' for cooperation id '.$this->cooperation->id.' with unread message count '.$this->unreadMessageCount);
-        return;
         if ($this->building instanceof Building) {
             // send the mail to the user
-            \Mail::to($this->user->account->email)->send(new UnreadMessagesEmail($this->user, $this->cooperation, $this->unreadMessageCount));
+            Mail::to($this->user->account->email)->send(new UnreadMessagesEmail($this->user, $this->cooperation, $this->unreadMessageCount));
 
             // after that has been done, update the last_notified_at to the current date
             $this->notificationSetting->last_notified_at = Carbon::now();

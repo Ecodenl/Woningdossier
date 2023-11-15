@@ -3,6 +3,7 @@
 namespace App\Jobs\Econobis\Out;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\Str;
 use App\Helpers\Wrapper;
 use App\Jobs\Middleware\EnsureCooperationHasEconobisLink;
 use App\Models\Integration;
@@ -35,13 +36,13 @@ trait CallsEconobisApi
                         // try again in 2 minutes
                         $this->release(120);
                     }
-                }, false);
-
+                },
+                false
+            );
         } else {
             $buildingId = $this->building->id ?? 'No building id!';
             Log::debug('Building ' . $buildingId . ' - Econobis calls are disabled, skipping call');
         }
-        return;
     }
 
     private function log(\Throwable $exception)
@@ -54,20 +55,27 @@ trait CallsEconobisApi
             /** @var Stream $stream */
             $stream = $exception->getResponse()->getBody();
             $stream->rewind();
-            Log::error($stream->getContents());
+
+            $contents = $stream->getContents();
+            Log::error($contents);
+
+            if (Str::of($contents)->contains('ErrorException')) {
+                report($exception);
+            }
         }
+
         $shouldNotifyDiscord = false;
 
         if ($buildingId === 'No building id!') {
             $shouldNotifyDiscord = true;
         }
 
-        // check whether this building id has failed before, if not we want to notify ourselfs.
-        if (!in_array($buildingId, Cache::get('failed_econobis_building_ids', []))) {
+        // Check whether this building ID has failed before, if not we want to notify ourselves.
+        if (! in_array($buildingId, Cache::get('failed_econobis_building_ids', []))) {
             $shouldNotifyDiscord = true;
         }
 
-        // now save the building id to prevent a discord spam
+        // Now save the building id to prevent a discord spam
         Cache::put(
             'failed_econobis_building_ids',
             array_unique(

@@ -28,7 +28,7 @@ class Hoomdossier
 
     public static function hasEnabledEconobisCalls(): bool
     {
-        return config('hoomdossier.services.econobis.enabled', true);
+        return config('hoomdossier.services.econobis.enabled', false);
     }
 
     /**

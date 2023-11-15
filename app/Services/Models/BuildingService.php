@@ -20,6 +20,7 @@ use App\Traits\FluentCaller;
 use App\Traits\Services\HasInputSources;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BuildingService
 {
@@ -46,6 +47,8 @@ class BuildingService
             'status_id' => $this->building->getMostRecentBuildingStatus()->status_id,
             'appointment_date' => $appointmentDate,
         ]);
+        Log::debug(__METHOD__);
+        Log::debug("dispatching BuildingAppointmentDateUpdated for building {$this->building->id}");
 
         BuildingAppointmentDateUpdated::dispatch($this->building);
     }

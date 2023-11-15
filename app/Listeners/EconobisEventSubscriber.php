@@ -28,9 +28,11 @@ class EconobisEventSubscriber
 
     public function sendAppointmentDateToEconobis(BuildingAppointmentDateUpdated $event)
     {
+        Log::debug(__METHOD__);
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
         $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building->id)->isNotEmpty();
         if ($canSendUserInformationToEconobis && $userHasConnectedCoaches) {
+            Log::debug(__METHOD__ . ' - dispatching SendAppointmentDateToEconobis');
             SendAppointmentDateToEconobis::dispatch($event->building);
         }
     }

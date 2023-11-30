@@ -28,19 +28,18 @@ class SettingsController extends Controller
         $tags = MediaHelper::getFillableTagsForClass(Cooperation::class);
         foreach ($tags as $tag) {
             $file = $request->file('medias.' . $tag);
-
             $media = $cooperation->firstMedia($tag);
             if ($file instanceof UploadedFile) {
                 // Check if media for this tag already exists
                 if ($media instanceof Media) {
                     // We delete it so we can make place for new media;
-                    // We _could_ use replace(), but this doesn't update the file names
+                    // We _could_ use replace(), but this doesn't update the file names.
                     $media->delete();
                 }
 
                 // Upload the new media, replace file if it already exists
                 $media = MediaUploader::fromSource($file)
-                    ->onDuplicateUpdate()
+                    ->onDuplicateIncrement()
                     ->toDestination('uploads', $cooperation->slug)
                     ->upload();
 

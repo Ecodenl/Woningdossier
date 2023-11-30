@@ -10,6 +10,7 @@ class MediaHelper
     const LOGO = 'logo';
     const BUILDING_IMAGE = 'building-image';
     const BACKGROUND = 'background';
+    const PDF_BACKGROUND = 'pdf-background';
     const GENERIC_FILE = 'generic-file';
     const GENERIC_IMAGE = 'generic-image';
     const REPORT = 'report';
@@ -28,6 +29,7 @@ class MediaHelper
                 return [
                     self::LOGO => self::LOGO,
                     self::BACKGROUND => self::BACKGROUND,
+                    self::PDF_BACKGROUND => self::PDF_BACKGROUND,
                 ];
 
             case Building::class:
@@ -77,8 +79,17 @@ class MediaHelper
         return static::getFileMimes() . ',' . static::getImageMimes();
     }
 
-    public static function getMaxFileSize()
+    public static function getMaxFileSize(?string $tag = null)
     {
-        return config('hoomdossier.media.max_size');
+        $size = config('hoomdossier.media.max_size');
+
+        if (! is_null($tag)) {
+            $custom = config('hoomdossier.media.custom');
+            if (array_key_exists($tag, $custom)) {
+                return $custom[$tag]['max_size'] ?? $size;
+            }
+        }
+
+        return $size;
     }
 }

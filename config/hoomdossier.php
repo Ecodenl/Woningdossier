@@ -62,5 +62,11 @@ return [
         'accepted_file_mimes' => env('MEDIA_FILE_MIMES', 'doc,dot,docx,dotx,docm,dotm,pdf,txt'),
         'accepted_image_mimes' => env('MEDIA_IMAGE_MIMES', 'jpg,jpeg,png'),
         'max_size' => env('MEDIA_MAX_SIZE', 16384), // KB
+
+        'custom' => [
+            \App\Helpers\MediaHelper::PDF_BACKGROUND => [
+                'max_size' => env('PDF_BACKGROUND_MEDIA_MAX_SIZE', 1000), // KB
+            ],
+        ],
     ],
 ];

@@ -31,7 +31,7 @@ class SettingsFormRequest extends FormRequest
         ];
 
         foreach (MediaHelper::getFillableTagsForClass(Cooperation::class) as $tag) {
-            $rules["medias.{$tag}"] = 'nullable|image';
+            $rules["medias.{$tag}"] = ['nullable', 'image',  'max:' . MediaHelper::getMaxFileSize($tag)];
         }
 
         return $rules;

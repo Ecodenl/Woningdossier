@@ -65,6 +65,7 @@ class UserActionPlanAdviceService
         foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
             $jobs[] = new RefreshRegulationsForUserActionPlanAdvice($userActionPlanAdvice);
         }
+
         Bus::batch($jobs)
             ->then(function (Batch $batch) {
                 $this->user->update([

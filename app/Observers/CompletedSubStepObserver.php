@@ -28,7 +28,6 @@ class CompletedSubStepObserver
             $scan = $step->scan;
             $scanRelatedSubStepIds = $scan->subSteps->pluck('id');
 
-            \DB::enableQueryLog();
             $otherCompletedSubStepsForScan = $building
                 ->completedSubSteps()
                 ->forInputSource($inputSource)

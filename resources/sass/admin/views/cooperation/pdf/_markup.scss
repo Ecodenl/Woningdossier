@@ -12,7 +12,7 @@ h2 {
     font-family: Helvetice, sans-serif;
     font-size: $font-size-sub-heading-1;
     font-weight: bold;
-    color: $color-main;
+    color: $color-purple;
     line-height: $universal-line-height;
     margin: 0 0 0.25rem;
     padding: 0;
@@ -22,7 +22,7 @@ h3 {
     font-family: Helvetice, sans-serif;
     font-size: $font-size-sub-heading-2;
     font-weight: bold;
-    color: $color-main;
+    color: $color-purple;
     line-height: $universal-line-height;
     margin: 0 0 0.25rem;
     padding: 0;
@@ -53,6 +53,7 @@ p {
     color: $color-black;
     font-size: $font-size-normal;
     line-height: $universal-line-height;
+    letter-spacing: 0.2px;
     margin: 0;
     padding: 0;
 }
@@ -69,21 +70,4 @@ small {
 .comment {
     word-wrap: break-word !important;
     white-space: pre-line;
-}
-
-// Imitate Tailwind
-.text-blue-900 {
-    color: #1122C8;
-}
-
-.text-green {
-    color: #2CA982;
-}
-
-.text-orange {
-    color: #FF7F4A;
-}
-
-.text-red {
-    color: #E41440;
 }

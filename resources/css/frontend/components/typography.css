@@ -1,21 +1,21 @@
 /* Headings */
 .heading-1 {
-    @apply font-semibold text-blue text-xxl;
+    @apply font-semibold text-blue text-xl md:text-xxl;
 }
 .heading-2 {
-    @apply font-semibold text-blue text-xl;
+    @apply font-semibold text-blue text-lg md:text-xl;
 }
 .heading-3 {
-    @apply font-semibold text-blue text-lg;
+    @apply font-semibold text-blue text-md md:text-lg;
 }
 .heading-4 {
-    @apply font-semibold text-blue text-md;
+    @apply font-semibold text-blue text-base md:text-md;
 }
 .heading-5 {
-    @apply font-semibold text-blue text-base;
+    @apply font-semibold text-blue text-sm md:text-base;
 }
 .heading-6 {
-    @apply font-semibold text-blue text-sm;
+    @apply font-semibold text-blue text-xs md:text-sm;
 }
 
 /* Paragraph */

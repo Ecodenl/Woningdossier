@@ -26,6 +26,10 @@ return [
 //        'en',
     ],
 
+    'queue' => [
+        'warning_size' => env('QUEUE_WARNING_SIZE', 1000),
+    ],
+
     'cache' => [
         'prefix' => env('CACHE_PREFIX', 'hoomdossier_'),
         'times' => [

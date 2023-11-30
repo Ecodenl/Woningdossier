@@ -13,6 +13,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SendAppointmentDateToEconobis implements ShouldQueue
 {
@@ -38,6 +39,7 @@ class SendAppointmentDateToEconobis implements ShouldQueue
      */
     public function handle(EconobisService $econobisService, EconobisApi $econobis)
     {
+        Log::debug("Sending appointment date payload to Econobis for building {$this->building->id}");
         $this->wrapCall(function () use ($econobis, $econobisService) {
             $econobis
                 ->forCooperation($this->building->user->cooperation)

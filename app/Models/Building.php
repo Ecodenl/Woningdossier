@@ -144,6 +144,7 @@ class Building extends Model
 
         // The mediable only _detaches_ the media. We want to DELETE the media if set.
         static::deleting(function (Building $building) {
+            // TODO: This doesn't delete the files
             $building->media()->delete();
         });
     }

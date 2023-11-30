@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Calculations\HeatPump;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\InputSource;
@@ -13,17 +14,11 @@ use App\Models\Service;
 use App\Models\ToolQuestion;
 use App\Services\ConditionService;
 use App\Services\ToolQuestionService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\NonHandleableJobAfterReset;
 
-class MapQuickScanSituationToExpert implements ShouldQueue
+class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public Building $building;
     public InputSource $inputSource;
     public InputSource $masterInputSource;
@@ -31,6 +26,7 @@ class MapQuickScanSituationToExpert implements ShouldQueue
 
     public function __construct(Building $building, InputSource $inputSource, MeasureApplication $measureApplication)
     {
+        parent::__construct();
         $this->building = $building;
         $this->inputSource = $inputSource;
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);

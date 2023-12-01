@@ -67,6 +67,9 @@ return [
             \App\Helpers\MediaHelper::PDF_BACKGROUND => [
                 'max_size' => env('PDF_BACKGROUND_MEDIA_MAX_SIZE', 1000), // KB
             ],
+            \App\Helpers\MediaHelper::BUILDING_IMAGE => [
+                'max_size' => env('BUILDING_IMAGE_MEDIA_MAX_SIZE', 1000), // KB
+            ],
         ],
     ],
 

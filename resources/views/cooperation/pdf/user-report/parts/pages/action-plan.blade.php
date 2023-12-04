@@ -20,7 +20,7 @@
             </div>
             <div class="col-9">
                 <p>
-{{--                    {!! $simpleDump[$stepShort]['question_amount-gas'] !!}--}}
+                    {!! $simpleDump[$stepShort]['question_amount-gas'] !!}
                 </p>
             </div>
         </div>
@@ -32,7 +32,7 @@
             </div>
             <div class="col-10">
                 <p>
-{{--                    {!! $simpleDump[$stepShort]['question_amount-electricity'] !!}--}}
+                    {!! $simpleDump[$stepShort]['question_amount-electricity'] !!}
                 </p>
             </div>
         </div>

@@ -6,7 +6,8 @@
         $errorBag = $errors->getBag('default')->getMessages();
         foreach($errorBag as $key => $error) {
             if(Str::startsWith($key, 'document')) {
-                $errorToReport = __('validation.custom.uploader.wrong-files');
+                $maxSize = MediaHelper::getMaxFileSize($tag);
+                $errorToReport = __('validation.custom.uploader.wrong-files') . ' ' . __('validation.custom.uploader.max-size', ['size' => number_format($maxSize / 1000, 0)]);
 
                 if (is_array($error)) {
                     $error = Arr::first($error);

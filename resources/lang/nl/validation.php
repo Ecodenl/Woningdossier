@@ -197,6 +197,7 @@ return [
         ],
         'uploader' => [
             'wrong-files' => 'Een of meerdere bestanden zijn ongeldig of te groot.',
+            'max-size' => 'Maximale toegestane bestandsgrootte is :size MB',
         ],
     ],
     'custom-rules' => [

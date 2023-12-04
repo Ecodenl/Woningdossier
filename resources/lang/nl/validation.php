@@ -183,9 +183,6 @@ return [
             'url' => 'Het formaat is ongeldig, de url moet beginnen met https:// of http://.'
         ],
 
-        'uploader' => [
-            'wrong-files' => 'Een of meerdere bestanden zijn ongeldig of te groot.',
-        ],
         'contact-id' => [
             'not-found' => 'Opgegeven contact ID voor :attribute is niet bekend als gebruiker in het Hoomdossier.'
         ],
@@ -197,6 +194,10 @@ return [
         'building-coach-statuses' => [
             'no-access' => 'Bewoner heeft geen toestemming gegeven om gegevens te delen.',
             'already-linked' => 'De opgegeven coach is al gekoppeld aan de gegeven woning.',
+        ],
+        'uploader' => [
+            'wrong-files' => 'Een of meerdere bestanden zijn ongeldig of te groot.',
+            'max-size' => 'Maximale toegestane bestandsgrootte is :size MB',
         ],
     ],
     'custom-rules' => [

@@ -3,7 +3,6 @@
 namespace App\Services\Models;
 
 use App\Events\BuildingAppointmentDateUpdated;
-use App\Helpers\Queue;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\CheckBuildingAddress;
 use App\Jobs\RefreshRegulationsForBuildingUser;
@@ -13,12 +12,15 @@ use App\Models\InputSource;
 use App\Models\Scan;
 use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
+use App\Traits\Services\HasInputSources;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BuildingService
 {
-    use FluentCaller;
+    use FluentCaller,
+        HasInputSources;
 
     public ?Building $building;
 
@@ -40,6 +42,8 @@ class BuildingService
             'status_id' => $this->building->getMostRecentBuildingStatus()->status_id,
             'appointment_date' => $appointmentDate,
         ]);
+        Log::debug(__METHOD__);
+        Log::debug("dispatching BuildingAppointmentDateUpdated for building {$this->building->id}");
 
         BuildingAppointmentDateUpdated::dispatch($this->building);
     }
@@ -84,7 +88,7 @@ class BuildingService
 
         // Get the tool question answers for custom values.
         $answersForTqa = collect();
-        if ( ! empty($ids)) {
+        if (! empty($ids)) {
             // This sub-query selects the example building if it has the same answer, or else the latest input source
             // that made changes on the tool question.
             $selectQuery = "(SELECT IF (
@@ -140,7 +144,7 @@ class BuildingService
 
         // Get the tool question answers for save in questions.
         $answersForSaveIn = collect();
-        if ( ! empty($ids)) {
+        if (! empty($ids)) {
             $saveIns = $toolQuestions->whereNotNull('save_in')->pluck('save_in', 'id')->toArray();
             foreach ($saveIns as $toolQuestionId => $saveIn) {
                 $resolved = ToolQuestionHelper::resolveSaveIn($saveIn, $this->building);
@@ -154,7 +158,7 @@ class BuildingService
                 unset($where[$whereColumn]);
 
                 $append = '';
-                if ( ! empty($where)) {
+                if (! empty($where)) {
                     foreach ($where as $col => $val) {
                         $append .= " AND {$col} = {$val}";
                     }
@@ -216,12 +220,12 @@ class BuildingService
         return $answersForTqa->union($answersForSaveIn);
     }
 
-    public function performMunicipalityCheck ()
+    public function performMunicipalityCheck()
     {
         $building = $this->building;
 
         $currentMunicipality = $building->municipality_id;
-        CheckBuildingAddress::dispatchSync($building);
+        CheckBuildingAddress::dispatchSync($building, $this->inputSource);
         // Get a fresh (and updated) building instance
         $building = $building->fresh();
         $newMunicipality = $building->municipality_id;
@@ -231,7 +235,7 @@ class BuildingService
         // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
         // If the municipality hasn't changed, however, we will manually dispatch a refresh.
         if (is_null($newMunicipality)) {
-            CheckBuildingAddress::dispatch($building);
+            CheckBuildingAddress::dispatch($building, $this->inputSource);
         } elseif ($currentMunicipality === $newMunicipality) {
             RefreshRegulationsForBuildingUser::dispatch($building);
         }

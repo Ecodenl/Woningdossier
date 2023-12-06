@@ -13,14 +13,16 @@ use App\Models\User;
 use App\Services\PrivateMessageViewService;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 
-class SendUnreadMessageCountEmail implements ShouldQueue
+class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -49,7 +51,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue
     {
         if ($this->building instanceof Building) {
             // send the mail to the user
-            \Mail::to($this->user->account->email)->send(new UnreadMessagesEmail($this->user, $this->cooperation, $this->unreadMessageCount));
+            Mail::to($this->user->account->email)->send(new UnreadMessagesEmail($this->user, $this->cooperation, $this->unreadMessageCount));
 
             // after that has been done, update the last_notified_at to the current date
             $this->notificationSetting->last_notified_at = Carbon::now();
@@ -73,5 +75,14 @@ class SendUnreadMessageCountEmail implements ShouldQueue
         PrivateMessageViewService::markAsReadByUser($messagesToSetRead, $this->user, $inputSource);
 
         report($exception);
+    }
+
+    /**
+     * Defines the uniqueness for the job. Only one job per user per cooperation.
+     * @return string
+     */
+    public function uniqueId() : string
+    {
+        return $this->user->id.'-'.$this->cooperation->id;
     }
 }

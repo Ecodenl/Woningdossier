@@ -90,7 +90,6 @@ class UserActionPlanAdviceObserver
         // usually we would exclude the master input source, however the refreshRegulations does NOT trigger model events.
         // We don't do it for the custom measure here, as creating a custom measure will apply its own refresh call.
         if (in_array($userActionPlanAdvice->user_action_plan_advisable_type, [MeasureApplication::class, CooperationMeasureApplication::class])) {
-            Log::debug('Refresh ze regulations.');
             Wrapper::wrapCall(function () use ($userActionPlanAdvice) {
                 UserActionPlanAdviceService::init()
                     ->forUser($userActionPlanAdvice->user)

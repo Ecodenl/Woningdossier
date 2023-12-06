@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Role
@@ -37,19 +38,17 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Role extends \Spatie\Permission\Models\Role
 {
-    # Scopes
+    // Scopes
     public function scopeByName(Builder $query, string $name): Builder
     {
         return $query->where('name', $name);
     }
 
-    # Relations
+    // Relations
     /**
      * Return the input source for the role.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function inputSource()
+    public function inputSource(): BelongsTo
     {
         return $this->belongsTo(\App\Models\InputSource::class, 'input_source_id', 'id');
     }

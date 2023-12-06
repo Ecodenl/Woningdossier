@@ -8,6 +8,7 @@ use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\Municipality;
 use App\Models\PrivateMessage;
@@ -98,9 +99,16 @@ class BuildingController extends Controller
         $validatedData['address']['extension'] ??= null;
         $building->update($validatedData['address']);
 
-        CheckBuildingAddress::dispatchSync($building);
+        $buildingFeature = $building->buildingFeatures()->allInputSources()
+            ->whereHas('inputSource', fn ($q) => $q->whereNotIn('input_source_id', [InputSource::master()->id, InputSource::exampleBuilding()->id]))
+            ->orderByDesc('updated_at')
+            ->first();
+
+        $inputSource = optional($buildingFeature)->inputSource ?? InputSource::resident();
+
+        CheckBuildingAddress::dispatchSync($building, $inputSource);
         if (! $building->municipality()->first() instanceof Municipality) {
-            CheckBuildingAddress::dispatch($building);
+            CheckBuildingAddress::dispatch($building, $inputSource);
         }
 
         $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';

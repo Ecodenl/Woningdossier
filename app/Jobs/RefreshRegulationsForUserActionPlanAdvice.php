@@ -32,13 +32,11 @@ class RefreshRegulationsForUserActionPlanAdvice extends NonHandleableJobAfterRes
     {
         parent::__construct();
         $this->setUuid();
+        $this->ignoreNotificationInputSource();
         $this->onQueue(Queue::APP_EXTERNAL);
         $this->userActionPlanAdvice = $userActionPlanAdvice;
         $this->building = $userActionPlanAdvice->user->building;
         $this->inputSource = $userActionPlanAdvice->inputSource;
-
-        $this->setUuid();
-        $this->ignoreNotificationInputSource();
     }
 
     /**

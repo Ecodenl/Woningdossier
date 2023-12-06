@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class QueueEventSubscriber
 {
-
     public function deactivateNotification($event)
     {
         $payload = $event->job->payload();

@@ -2,11 +2,11 @@
 
 namespace App\Jobs\Econobis\Out;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\Wrapper;
 use App\Jobs\Middleware\EnsureCooperationHasEconobisLink;
 use App\Models\Cooperation;
 use App\Helpers\Queue;
-use App\Models\Building;
 use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Econobis\EconobisService;
 use Illuminate\Bus\Queueable;
@@ -14,6 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Predis\Response\ServerException;
 
 class SendUserDeletedToEconobis implements ShouldQueue
@@ -57,19 +58,26 @@ class SendUserDeletedToEconobis implements ShouldQueue
 
     public function wrapCall(\Closure $function)
     {
-        Wrapper::wrapCall(
-            function () use ($function) {
-                $function();
-                // normally, in the trait we would set the synced at time
-                // but the user is deleted, so we cant record anything.
-            },
-            function (\Throwable $exception) {
-                $this->log($exception);
-                if ($exception instanceof ServerException) {
-                    // try again in 2 minutes
-                    $this->release(120);
-                }
-            }, false);
+        if (Hoomdossier::hasEnabledEconobisCalls()) {
+            Wrapper::wrapCall(
+                function () use ($function) {
+                    $function();
+                    // normally, in the trait we would set the synced at time
+                    // but the user is deleted, so we cant record anything.
+                },
+                function (\Throwable $exception) {
+                    $this->log($exception);
+                    if ($exception instanceof ServerException) {
+                        // try again in 2 minutes
+                        $this->release(120);
+                    }
+                },
+                false
+            );
+        } else {
+            $buildingId = $this->accountRelated['building_id'] ?? 'No building id!';
+            Log::debug('Building ' . $buildingId . ' - Econobis calls are disabled, skipping call');
+        }
 
         return;
     }

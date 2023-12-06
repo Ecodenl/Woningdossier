@@ -9,13 +9,6 @@ conditions consider earlier set answers. During the `upgrade:quick-scan` we had 
 `hr-boiler`. We then also applied the same logic as we are doing now. Any future condition/calculations should 
 **always** check the answers for any related conditional answers.
 
-## Notifications
-### RefreshRegulations
-Most notifications run using our notification service. However, during regulation refreshing, the jobs
-are based on the input source of the UserActionPlanAdvice related. This causes the notifications to not be cleared 
-as expected, since there's a mixed batch of input sources. Instead we use the `refreshing_regulations` column on the 
-users table.
-
 ## Formatting
 ### Costs JSON formatting
 If a value is higher than 0, it isn't logical to put it in a 'from' if a 'to' isn't set. Therefore, if the value is

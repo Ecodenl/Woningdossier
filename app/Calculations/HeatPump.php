@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
-class HeatPump extends \App\Calculations\Calculator
+class HeatPump extends Calculator
 {
     /**
      * Answer for tool question 'new-boiler-setting-comfort-heat'
@@ -97,11 +97,11 @@ class HeatPump extends \App\Calculations\Calculator
             // if hybrid: show scop_tap_water as 0 (asked by coaches)
             'scop_tap_water' => $scopTw,
         ];
-        //Log::debug(__METHOD__.' '.json_encode($advisedSystem)." (geadviseerd systeem)");
+        //Log::debug(__METHOD__ . ' ' . json_encode($advisedSystem) . " (geadviseerd systeem)");
 
         // D2 = bruto
         $amountGas = $this->getAnswer('amount-gas') ?? 0;
-        //Log::debug("D2: ".$amountGas." (huidig gasverbruik)");
+        //Log::debug("D2: " . $amountGas . " (huidig gasverbruik)");
 
         // new
         //Log::debug("=== Heating calculate ===");
@@ -112,22 +112,22 @@ class HeatPump extends \App\Calculations\Calculator
 
         // D8
         $currentNettoGasUsageHeating = data_get($energyUsage, 'heating.current.gas.netto', 0);
-        //Log::debug("D8: ".$currentNettoGasUsageHeating." (huidig netto gasverbruik verwarming)");
+        //Log::debug("D8: " . $currentNettoGasUsageHeating . " (huidig netto gasverbruik verwarming)");
         // D9
         $currentNettoGasUsageTapWater = data_get($energyUsage, 'tap_water.current.gas.netto', 0);
-        //Log::debug("D9: ".$currentNettoGasUsageTapWater." (huidig netto gasverbruik wtw)");
+        //Log::debug("D9: " . $currentNettoGasUsageTapWater . " (huidig netto gasverbruik wtw)");
         $currentNettoGasUsageCooking = data_get($energyUsage, 'cooking.current.gas', 0);
-        //Log::debug("D14: ".$currentNettoGasUsageCooking." (huidig gasverbruik koken)");
+        //Log::debug("D14: " . $currentNettoGasUsageCooking . " (huidig gasverbruik koken)");
 
         // Now we can calculate the new energy usage
         // C68 = D8 - (D8 * C62)
         $newNettoGasUsageHeating = $currentNettoGasUsageHeating - ($currentNettoGasUsageHeating * ($advisedSystem['share_heating'] / 100));
-        //Log::debug("C68: ".$newNettoGasUsageHeating." (nieuw gasverbruik verwarming)");
+        //Log::debug("C68: " . $newNettoGasUsageHeating . " (nieuw gasverbruik verwarming)");
         // C69 = D9 - (D9 * C63)
         $newNettoGasUsageTapWater = $currentNettoGasUsageTapWater - ($currentNettoGasUsageTapWater * ($advisedSystem['share_tap_water'] / 100));
-        //Log::debug("C69: ".$newNettoGasUsageTapWater." (nieuw gasverbruik wtw)");
+        //Log::debug("C69: " . $newNettoGasUsageTapWater . " (nieuw gasverbruik wtw)");
         $newNettoGasUsageCooking = data_get($energyUsage, 'cooking.new.gas', 0);
-        //Log::debug("C70: ".$newNettoGasUsageCooking." (nieuw gasverbruik koken)");
+        //Log::debug("C70: " . $newNettoGasUsageCooking . " (nieuw gasverbruik koken)");
 
         // E71
         // if volledige warmtepomp: C68 * KeyFigures::M3_GAS_TO_KWH
@@ -139,16 +139,15 @@ class HeatPump extends \App\Calculations\Calculator
             $electricalReheating = $newNettoGasUsageHeating * KeyFigures::M3_GAS_TO_KWH;
             $newNettoGasUsageHeating = 0;
         }
-        //Log::debug("E71: ".$electricalReheating." (elektrisch bijverwarmen)");
+        //Log::debug("E71: " . $electricalReheating . " (elektrisch bijverwarmen)");
 
         // C71 = (((D8-C68) * KeyFigures::M3_GAS_TO_KWH) / scop_heating) + E71
 //        $electricityUsageHeating = ((($currentNettoGasUsageHeating - $newNettoGasUsageHeating) * KeyFigures::M3_GAS_TO_KWH) / max(
 //                    $advisedSystem['scop_heating'],
 //                    1
 //                )) + $electricalReheating;
-        $newNettoElectricityUsageHeating = data_get($energyUsage, 'heating.new.electricity.netto',
-                0) + $electricalReheating;
-        //Log::debug("C71: ".$newNettoElectricityUsageHeating." (elektraverbruik verwarmen)");
+        $newNettoElectricityUsageHeating = data_get($energyUsage, 'heating.new.electricity.netto', 0) + $electricalReheating;
+        //Log::debug("C71: " . $newNettoElectricityUsageHeating . " (elektraverbruik verwarmen)");
 
         // C72 = ((D9-C69) * KeyFigures::M3_GAS_TO_KWH) / scop_tap_water)
         //$newNettoElectricityUsageTapWater = (($currentNettoGasUsageTapWater - $newNettoGasUsageTapWater) * KeyFigures::M3_GAS_TO_KWH) / max(
@@ -156,28 +155,28 @@ class HeatPump extends \App\Calculations\Calculator
         //        1
         //    );
         $newNettoElectricityUsageTapWater = data_get($energyUsage, 'tap_water.new.electricity.netto', 0);
-        //Log::debug("C72: ".$newNettoElectricityUsageTapWater." (elektraverbruik wtw)");
+        //Log::debug("C72: " . $newNettoElectricityUsageTapWater . " (elektraverbruik wtw)");
 
         // C73 = from mapping Maatregelopties en kengetallen: B58:D60 icm future situation
         $newNettoElectricityUsageCooking = data_get($energyUsage, 'cooking.new.electricity');
-        //Log::debug("C73: ".$newNettoElectricityUsageCooking." (elektraverbruik koken)");
+        //Log::debug("C73: " . $newNettoElectricityUsageCooking . " (elektraverbruik koken)");
 
         // D11
         $currentBrutoElectricityUsage = $this->getAnswer('amount-electricity') ?? 0;
-        //Log::debug("D11: ".$currentBrutoElectricityUsage." (huidig elektraverbruik)");
+        //Log::debug("D11: " . $currentBrutoElectricityUsage . " (huidig elektraverbruik)");
         // D12
         $currentNettoElectricityUsageHeating = data_get($energyUsage, 'heating.current.electricity.netto', 0);
-        //Log::debug("D12: ".$currentNettoElectricityUsageHeating." (huidig elektraverbruik verwarmen)");
+        //Log::debug("D12: " . $currentNettoElectricityUsageHeating . " (huidig elektraverbruik verwarmen)");
         // D13
         //$currentNettoElectricityUsageTapWater = 0;
         // new
         $currentNettoElectricityUsageTapWater = data_get($energyUsage, 'tap_water.current.electricity.netto', 0);
-        //Log::debug("D13: ".$currentNettoElectricityUsageTapWater." (huidig elektraverbruik wtw)");
+        //Log::debug("D13: " . $currentNettoElectricityUsageTapWater . " (huidig elektraverbruik wtw)");
         // D14 = from mapping Maatregelopties en kengetallen B58:D60 icm current situation
         //$currentElectricityUsageCooking = $this->energyUsageForCooking();
         // new
         $currentNettoElectricityUsageCooking = data_get($energyUsage, 'cooking.current.electricity.netto', 0);
-        //Log::debug("D14: ".$currentNettoElectricityUsageCooking." (huidig elektraverbruik koken)");
+        //Log::debug("D14: " . $currentNettoElectricityUsageCooking . " (huidig elektraverbruik koken)");
 
         // these values aren't part of the outcome.
         // if volledige warmtepomp: D2
@@ -205,7 +204,7 @@ class HeatPump extends \App\Calculations\Calculator
         // New gas usage will probably (ideally) be less than new. Savings is the difference, but * -1!
         $savingsGas = $savingsGas * -1;
 
-//        Log::debug('C76 (gasbesparing): = '.sprintf('((%s - %s) + (%s - %s) + (%s - %s)) * -1 = %s',
+//        Log::debug('C76 (gasbesparing): = ' . sprintf('((%s - %s) + (%s - %s) + (%s - %s)) * -1 = %s',
 //                data_get($energyUsage, 'heating.new.gas.bruto', 0),
 //                data_get($energyUsage, 'heating.current.gas.bruto', 0),
 //                data_get($energyUsage, 'tap_water.new.gas.bruto', 0),
@@ -227,11 +226,11 @@ class HeatPump extends \App\Calculations\Calculator
             $currentNettoElectricityUsageHeating -
             $currentNettoElectricityUsageTapWater -
             $currentNettoElectricityUsageCooking;
-        //Log::debug("C77 (meerverbruik elektra): (".$newNettoElectricityUsageHeating.' + '.$newNettoElectricityUsageTapWater.' + '.$newNettoElectricityUsageCooking.') - '.$currentNettoElectricityUsageHeating.' - '.$currentNettoElectricityUsageTapWater.' - '.$currentNettoElectricityUsageCooking.' = '.$extraConsumptionElectricity);
+        //Log::debug("C77 (meerverbruik elektra): (" . $newNettoElectricityUsageHeating . ' + ' . $newNettoElectricityUsageTapWater  . ' + ' . $newNettoElectricityUsageCooking . ') - ' . $currentNettoElectricityUsageHeating . ' - ' . $currentNettoElectricityUsageTapWater . ' - ' . $currentNettoElectricityUsageCooking . ' = ' . $extraConsumptionElectricity);
 
         $savingsCo2 = RawCalculator::calculateCo2Savings($savingsGas) -
             ($extraConsumptionElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
-        //Log::debug("C78: ".$savingsCo2." (CO2 besparing)");
+        //Log::debug("C78: " . $savingsCo2 . " (CO2 besparing)");
 
         $calculatedMoneySavings = app(CalculatorService::class)
             ->forBuilding($this->building)
@@ -239,7 +238,7 @@ class HeatPump extends \App\Calculations\Calculator
 
         $euroSavingsElectricity = $this->kengetallenService->forInputSource($this->inputSource)->forBuilding($this->building)->resolve(KengetallenCodes::EURO_SAVINGS_ELECTRICITY);
         $savingsMoney = $calculatedMoneySavings - ($extraConsumptionElectricity * $euroSavingsElectricity);
-        //Log::debug("C79: ".$savingsMoney." (euro besparing)");
+        //Log::debug("C79: " . $savingsMoney . " (euro besparing)");
 
         $result = [
             'amount_gas' => $amountGas,
@@ -261,7 +260,7 @@ class HeatPump extends \App\Calculations\Calculator
             1
         );
 
-        //Log::debug("GRAND TOTAL: ".json_encode($result));
+        //Log::debug("GRAND TOTAL: " . json_encode($result));
 
         return $result;
     }
@@ -309,7 +308,7 @@ class HeatPump extends \App\Calculations\Calculator
             $this->getAnswer('new-heat-pump-type'));
 
         if ($heatPumpConfigurable instanceof Model && $this->heatingTemperature instanceof ToolQuestionCustomValue) {
-            //Log::debug("New heat pump: ".$heatPumpConfigurable->value);
+            //Log::debug("New heat pump: " . $heatPumpConfigurable->value);
             return HeatPumpCharacteristic::forHeatPumpConfigurable($heatPumpConfigurable)
                 ->forHeatingTemperature($this->heatingTemperature)
                 ->first();

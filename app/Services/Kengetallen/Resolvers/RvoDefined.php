@@ -4,7 +4,7 @@ namespace App\Services\Kengetallen\Resolvers;
 
 class RvoDefined extends KengetallenDefiner
 {
-    public function get($kengetallenCode): float
+    public function get(string $kengetallenCode): float
     {
         return constant('Kengetallen::'.$kengetallenCode);
     }

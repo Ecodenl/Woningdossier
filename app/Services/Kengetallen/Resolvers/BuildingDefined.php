@@ -6,7 +6,7 @@ use App\Models\ToolQuestion;
 
 class BuildingDefined extends KengetallenDefiner
 {
-    public function get($kengetallenCode): ?float
+    public function get(string $kengetallenCode): ?float
     {
         $building = $this->context['building'];
         $inputSource = $this->context['inputSource'];

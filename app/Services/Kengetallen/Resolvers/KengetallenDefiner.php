@@ -11,7 +11,6 @@ abstract class KengetallenDefiner
     public function context(array $context): self
     {
         $this->context = $context;
-
         return $this;
     }
 }

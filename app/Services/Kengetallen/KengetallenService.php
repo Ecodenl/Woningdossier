@@ -33,7 +33,7 @@ class KengetallenService
     {
         foreach ($this->resolvers as $resolver) {
             $value = $this->get(new $resolver(), $kengetallenCode);
-            if ( ! is_null($value)) {
+            if (! is_null($value)) {
                 return $value;
             }
         }
@@ -46,9 +46,9 @@ class KengetallenService
      * @param  string  $kengetallenCode
      * @return mixed
      */
-    public function get($resolver, string $kengetallenCode)
+    public function get(KengetallenDefiner $resolver, string $kengetallenCode)
     {
-        return (new $resolver)
+        return $resolver
             ->context([
                 'building' => $this->building,
                 'inputSource' => $this->inputSource,
@@ -67,7 +67,7 @@ class KengetallenService
         foreach ($this->resolvers as $resolver) {
             $resolver = new $resolver();
             $value = $this->get($resolver, $kengetallenCode);
-            if ( ! is_null($value)) {
+            if (! is_null($value)) {
                 return $resolver;
             }
         }

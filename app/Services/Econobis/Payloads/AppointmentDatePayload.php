@@ -19,7 +19,7 @@ class AppointmentDatePayload extends EconobisPayload
     {
         $building = $this->building;
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
-        $payload = ['appointment_date' => $mostRecentStatus->appointment_date->toDateTimeString()];
+        $payload = ['appointment_date' => optional($mostRecentStatus->appointment_date)->toDateTimeString()];
 
         $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
 

@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Rules\HouseNumber;
-use App\Rules\HouseNumberExtension;
 use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -31,7 +30,7 @@ class FillAddressRequest extends FormRequest
         return [
             'postal_code' => ['required', new PostalCode('nl')],
             'number' => ['required', new HouseNumber('nl'), 'numeric'],
-            'extension' => ['nullable', new HouseNumberExtension('nl')],
+            'extension' => ['nullable'], // Should be returned from the BAG so it doesn't need further validation
         ];
     }
 }

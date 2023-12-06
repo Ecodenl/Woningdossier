@@ -149,7 +149,7 @@ class BuildingAddressServiceTest extends TestCase
         Event::assertNotDispatched(BuildingAddressUpdated::class);
     }
 
-    public function test_update_address_uses_bag_as_thruth_when_available()
+    public function test_update_address_uses_bag_as_truth_when_available()
     {
         $fallbackData = [
             'street' => $this->faker->streetName,
@@ -245,14 +245,18 @@ class BuildingAddressServiceTest extends TestCase
         $addressExpandedData['endpoint_failure'] = false;
         $assertableBuildingData = (new AddressExpanded($addressExpandedData))->prepareForBuilding();
 
+        $residentInputSource = InputSource::resident();
+
         BuildingFeature::factory()->create([
             'building_id' => $building->id,
-            'input_source_id' => InputSource::resident()->id,
+            'input_source_id' => $residentInputSource->id,
             'build_year' => 1300,
             'surface' => 120,
         ]);
 
-        app(BuildingAddressService::class)->forBuilding($building)->updateBuildingFeatures($fallbackData);
+        app(BuildingAddressService::class)->forBuilding($building)
+            ->forInputSource($residentInputSource)
+            ->updateBuildingFeatures($fallbackData);
 
         $this->assertDatabaseHas('building_features', [
             'building_id' => $building->id,
@@ -292,12 +296,16 @@ class BuildingAddressServiceTest extends TestCase
         $addressExpandedData['endpoint_failure'] = false;
         $assertableBuildingData = (new AddressExpanded($addressExpandedData))->prepareForBuilding();
 
+        $residentInputSource = InputSource::resident();
+
         BuildingFeature::factory()->create([
             'building_id' => $building->id,
-            'input_source_id' => InputSource::resident()->id,
+            'input_source_id' => $residentInputSource->id,
         ]);
 
-        app(BuildingAddressService::class)->forBuilding($building)->updateBuildingFeatures($fallbackData);
+        app(BuildingAddressService::class)->forBuilding($building)
+            ->forInputSource($residentInputSource)
+            ->updateBuildingFeatures($fallbackData);
 
         $this->assertDatabaseHas('building_features', [
             'building_id' => $building->id,

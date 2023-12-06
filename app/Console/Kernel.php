@@ -8,6 +8,7 @@ use App\Console\Commands\Api\Econobis\Out\Hoomdossier\Woonplan;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncMeasures;
 use App\Console\Commands\Api\Verbeterjehuis\Mappings\SyncTargetGroups;
 use App\Console\Commands\Monitoring\MonitorQueue;
+use App\Console\Commands\CleanupExpiredFileStorages;
 use App\Console\Commands\SendNotifications;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -35,11 +36,12 @@ class Kernel extends ConsoleKernel
         $schedule->command(MonitorQueue::class)->everyFiveMinutes();
 
         $schedule->command('avg:cleanup-audits')->daily();
+        $schedule->command(CleanupExpiredFileStorages::class)->everyThirtyMinutes();
 
         $schedule->command(SyncTargetGroups::class)->daily();
         $schedule->command(SyncMeasures::class)->daily();
 
-        $schedule->command(Gebruik::class)->daily();
+        $schedule->command(Gebruik::class)->dailyAt('01:00');
         if (\App::environment() == 'accept') {
             $schedule->command(Woonplan::class)->everyMinute()->withoutOverlapping();
             $schedule->command(PdfReport::class)->everyMinute()->withoutOverlapping();

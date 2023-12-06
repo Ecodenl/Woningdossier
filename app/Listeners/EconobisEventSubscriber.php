@@ -28,9 +28,11 @@ class EconobisEventSubscriber
 
     public function sendAppointmentDateToEconobis(BuildingAppointmentDateUpdated $event)
     {
+        Log::debug(__METHOD__);
         $canSendUserInformationToEconobis = $this->canUserSendInformationToEconobis($event);
         $userHasConnectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->building->id)->isNotEmpty();
         if ($canSendUserInformationToEconobis && $userHasConnectedCoaches) {
+            Log::debug(__METHOD__ . ' - dispatching SendAppointmentDateToEconobis');
             SendAppointmentDateToEconobis::dispatch($event->building);
         }
     }
@@ -62,7 +64,7 @@ class EconobisEventSubscriber
     {
         // so this is the same as the policy used above, but at this stage the user does not exist anymore.
         // so we have to do it manually.
-        if ( ! empty($event->accountRelated['account_id'])) {
+        if (! empty($event->accountRelated['account_id'])) {
             SendUserDeletedToEconobis::dispatch($event->cooperation, $event->accountRelated);
         }
     }
@@ -80,11 +82,10 @@ class EconobisEventSubscriber
 
     private function canUserSendInformationToEconobis($event)
     {
-        return $event
-            ->building
-            ->user->account->can(
-                'send-user-information-to-econobis',
-                [$event->building->user]
-            );
+        $user = $event->building->user()->forAllCooperations()->first();
+        return $user->account->can(
+            'send-user-information-to-econobis',
+            [$user]
+        );
     }
 }

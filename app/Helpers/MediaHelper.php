@@ -8,6 +8,7 @@ use App\Models\Cooperation;
 class MediaHelper
 {
     const LOGO = 'logo';
+    const BUILDING_IMAGE = 'building-image';
     const BACKGROUND = 'background';
     const GENERIC_FILE = 'generic-file';
     const GENERIC_IMAGE = 'generic-image';
@@ -16,6 +17,10 @@ class MediaHelper
     const INVOICE = 'invoice';
     const BILL = 'bill';
 
+    /**
+     * These are the tags that are fillable (or better said, selectable). Tags that are not set here cannot be selected
+     * in e.g. the file uploader (usually tags with a dedicated purpose (such as building-image)).
+     */
     public static function getFillableTagsForClass(?string $class = null): array
     {
         switch ($class) {
@@ -38,6 +43,20 @@ class MediaHelper
             default:
                 return [];
         }
+    }
+
+    public static function getMimesForTag(string $tag): string
+    {
+        switch ($tag) {
+            case self::BUILDING_IMAGE:
+                $method = 'getImageMimes';
+                break;
+            default:
+                $method = 'getAllMimes';
+                break;
+        }
+
+        return static::{$method}();
     }
 
     public static function getImageMimes(bool $asArray = false)

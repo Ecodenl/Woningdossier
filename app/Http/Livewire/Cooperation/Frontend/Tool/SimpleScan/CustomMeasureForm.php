@@ -99,6 +99,13 @@ abstract class CustomMeasureForm extends Component
             $costs = $measure['costs'] ?? [];
             $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
             $costs['to'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['to'] ?? ''), 2);
+
+            if (empty($costs['to']) && ! is_numeric($costs['to'])) {
+                // Similar situation as to what is explained on line 131 - 134 (savings money nullable);
+                // If to isn't a numeric value, we want it to just not be set.
+                unset($costs['to']);
+            }
+
             $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
             $savingsMoney = empty($measure['savings_money']) ? 0 : $measure['savings_money'];
             $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '', $savingsMoney), 2);
@@ -108,8 +115,8 @@ abstract class CustomMeasureForm extends Component
 
             if ($validator->fails()) {
                 // Validator failed, let's put it back as the user format
-                $costs['from'] = NumberFormatter::formatNumberForUser($costs['from']);
-                $costs['to'] = NumberFormatter::formatNumberForUser($costs['to']);
+                $costs['from'] = NumberFormatter::formatNumberForUser($costs['from'] ?? 0);
+                $costs['to'] = NumberFormatter::formatNumberForUser($costs['to'] ?? 0);
                 $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
                 $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::formatNumberForUser($this->customMeasureApplicationsFormData[$index]['savings_money']);
             }

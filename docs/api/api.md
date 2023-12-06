@@ -1,5 +1,4 @@
-#Hoomdossier API
-
+# Hoomdossier API
 ## API Token
 An API token will be issued by Hoomdossier itself, contact https://hoom.nl/ for a token. 
 

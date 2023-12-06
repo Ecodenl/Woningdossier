@@ -43,6 +43,6 @@ class ObservingToolForUserListener
         // so the user isn't able to save anything
         HoomdossierSession::setIsObserving(true);
 
-        $this->buildingService->forBuilding($building)->performMunicipalityCheck();
+        $this->buildingService->forBuilding($building)->forInputSource($inputSource)->performMunicipalityCheck();
     }
 }

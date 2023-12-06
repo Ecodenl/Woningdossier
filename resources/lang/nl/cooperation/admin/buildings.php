@@ -7,6 +7,7 @@ return [
         'give-role' => 'Weet u zeker dat u deze rol aan deze gebruiker wilt toevoegen?',
         'remove-role' => 'Weet u zeker dat u deze rol van deze gebruiker wilt verwijderen?',
         'view-files' => 'Gedeelde bestanden',
+        'building-image' => 'Woning foto',
 
         'save-building-detail' => 'Opmerking opslaan',
 

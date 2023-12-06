@@ -1,8 +1,8 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'info-page'])
     <div class="group">
-        <h4>
+        <h2>
             @lang('pdf/user-report.pages.info-page.subsidy.title')
-        </h4>
+        </h2>
         @if(empty($subsidyRegulations))
             <p>
                 @lang('pdf/user-report.pages.info-page.subsidy.none-available')
@@ -32,17 +32,17 @@
     </div>
 
     <div class="group">
-        <h4>
+        <h2>
             @lang('pdf/user-report.pages.info-page.calculations-are-indicative.title')
-        </h4>
+        </h2>
         <p>
             @lang('pdf/user-report.pages.info-page.calculations-are-indicative.text')
         </p>
     </div>
     <div class="group">
-        <h4>
+        <h2>
             @lang('pdf/user-report.pages.info-page.more-info.title')
-        </h4>
+        </h2>
         <p>
             @lang('pdf/user-report.pages.info-page.more-info.text', ['cooperation' => $userCooperation->name])
             @if(! empty($userCooperation->website_url))

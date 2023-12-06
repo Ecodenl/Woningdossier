@@ -16,6 +16,7 @@ use App\Models\Cooperation;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Municipality;
+use App\Models\Role;
 use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Services\Econobis\EconobisService;
@@ -24,6 +25,7 @@ use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
 use App\Services\Models\BuildingStatusService;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -202,7 +204,7 @@ class UserService
         $account = Account::where('email', $email)->first();
 
         // if its not found we will create a new one.
-        if ( ! $account instanceof Account) {
+        if (! $account instanceof Account) {
             $account = AccountService::create($email, $registerData['password']);
         }
 
@@ -235,7 +237,7 @@ class UserService
                 'account_id' => $account->id,
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
-                'phone_number' => is_null($data['phone_number']) ? '' : $data['phone_number'],
+                'phone_number' => $data['phone_number'] ?? '',
             ]
         );
 
@@ -246,10 +248,21 @@ class UserService
         // create the building for the user
         $building = $user->building()->save(new Building($buildingData));
 
-        CheckBuildingAddress::dispatchSync($building);
+        // We need an input source. From the API, roles are passed as string. From the other sources as ID. We just
+        // fetch them all and grab the first one.
+        $rolesWithSources = Role::has('inputSource')->with('inputSource')->where(
+            fn (Builder $q) => $q->whereIn('id', $roles)->orWhereIn('name', $roles)
+        )->get();
+
+        // Fallback to resident in case of illogical situation.
+        $inputSource = $rolesWithSources->isNotEmpty()
+            ? $rolesWithSources->first()->inputSource
+            : InputSource::resident();
+
+        CheckBuildingAddress::dispatchSync($building, $inputSource);
         // check if the connection was successful, if not dispatch it on the regular queue so it retries.
-        if ( ! $building->municipality()->first() instanceof Municipality) {
-            CheckBuildingAddress::dispatch($building);
+        if (! $building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building, $inputSource);
         }
         app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
         $user->cooperation()->associate(

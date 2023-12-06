@@ -1,16 +1,16 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'action-plan'])
-    <h2>
+    <h1 class="mb-2">
         @lang('pdf/user-report.pages.action-plan.title')
-    </h2>
+    </h1>
     <p>
         @lang('pdf/user-report.pages.action-plan.text')
     </p>
 
     <div class="group">
         @php $stepShort = $scanShort === \App\Models\Scan::LITE ? 'usage-lite-scan' : 'usage-quick-scan'; @endphp
-        <h4>
+        <h3>
             @lang('pdf/user-report.pages.action-plan.usage.current')
-        </h4>
+        </h3>
 
         <div class="row">
             <div class="col-2">
@@ -39,9 +39,9 @@
     </div>
 
     <div class="group">
-        <h4>
+        <h3>
             @lang('pdf/user-report.pages.action-plan.usage.kengetallen')
-        </h4>
+        </h3>
 
         <div class="row">
             <div class="col-2">

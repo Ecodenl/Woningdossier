@@ -3,6 +3,7 @@
 namespace App\Jobs\Econobis\Out;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\Str;
 use App\Helpers\Wrapper;
 use App\Jobs\Middleware\EnsureCooperationHasEconobisLink;
 use App\Models\Integration;
@@ -35,36 +36,46 @@ trait CallsEconobisApi
                         // try again in 2 minutes
                         $this->release(120);
                     }
-                }, false);
-
+                },
+                false
+            );
+        } else {
+            $buildingId = $this->building->id ?? 'No building id!';
+            Log::debug('Building ' . $buildingId . ' - Econobis calls are disabled, skipping call');
         }
-        return;
     }
 
     private function log(\Throwable $exception)
     {
-        Log::error(get_class($exception).' '.$exception->getCode().' '.$exception->getMessage());
+        $class = __CLASS__;
+        $buildingId = $this->building->id ?? 'No building id!';
+
+        Log::error(sprintf('Building %s - %s %s %s', $buildingId, get_class($exception), $exception->getCode(), $exception->getMessage()));
         if (method_exists($exception, 'getResponse')) {
             /** @var Stream $stream */
             $stream = $exception->getResponse()->getBody();
             $stream->rewind();
-            Log::error($stream->getContents());
-        }
-        $shouldNotifyDiscord = false;
 
-        $class = __CLASS__;
-        $buildingId = $this->building->id ?? 'No building id!';
+            $contents = $stream->getContents();
+            Log::error($contents);
+
+            if (Str::of($contents)->contains('ErrorException')) {
+                report($exception);
+            }
+        }
+
+        $shouldNotifyDiscord = false;
 
         if ($buildingId === 'No building id!') {
             $shouldNotifyDiscord = true;
         }
 
-        // check whether this building id has failed before, if not we want to notify ourselfs.
-        if (!in_array($buildingId, Cache::get('failed_econobis_building_ids', []))) {
+        // Check whether this building ID has failed before, if not we want to notify ourselves.
+        if (! in_array($buildingId, Cache::get('failed_econobis_building_ids', []))) {
             $shouldNotifyDiscord = true;
         }
 
-        // now save the building id to prevent a discord spam
+        // Now save the building id to prevent a discord spam
         Cache::put(
             'failed_econobis_building_ids',
             array_unique(

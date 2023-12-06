@@ -11,7 +11,6 @@ use App\Models\Step;
 use App\Models\StepComment;
 use App\Models\SubStep;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
 
 class StepHelper
 {
@@ -98,7 +97,6 @@ class StepHelper
                 ]);
             }
         }
-
     }
 
     /**
@@ -134,8 +132,6 @@ class StepHelper
         // in a mixed bag of coach and resident.
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        Log::debug("Complete step {$step->short} if needed");
-        $scan = $step->scan;
         $allCompletedSubStepIds = CompletedSubStep::forInputSource($masterInputSource)
             ->forBuilding($building)
             ->whereHas('subStep', function ($query) use ($step) {
@@ -149,7 +145,6 @@ class StepHelper
 
         if (empty($diff)) {
             // The sub step that has been completed finished up the set, so we complete the main step
-            Log::debug("Completing step {$step->short}");
             static::complete($step, $building, $inputSource);
 
             StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);
@@ -168,7 +163,6 @@ class StepHelper
 
             if ($cantSee === $leftoverSubSteps->count()) {
                 // Conditions "passed", so we complete!
-                Log::debug("Completing step {$step->short}");
                 static::complete($step, $building, $inputSource);
 
                 StepDataHasBeenChanged::dispatch($step, $building, $authUser, $inputSource);

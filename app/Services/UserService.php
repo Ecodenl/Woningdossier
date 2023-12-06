@@ -4,8 +4,6 @@ namespace App\Services;
 
 use App\Events\UserDeleted;
 use App\Events\UserResetHisBuilding;
-use App\Helpers\KengetallenCodes;
-use App\Helpers\Queue;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\Building;
@@ -17,10 +15,8 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Models\Role;
-use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Services\Econobis\EconobisService;
-use App\Services\Kengetallen\KengetallenService;
 use App\Services\Lvbag\BagService;
 use App\Services\Models\BuildingService;
 use App\Services\Models\BuildingStatusService;
@@ -43,7 +39,7 @@ class UserService
     public function isRelatedWithEconobis(): bool
     {
         $contactId = $this->user->extra['contact_id'] ?? null;
-        if ( ! empty($contactId)) {
+        if (! empty($contactId)) {
             return true;
         }
         return false;

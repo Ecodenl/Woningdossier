@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
-class HeatPump extends \App\Calculations\Calculator
+class HeatPump extends Calculator
 {
     /**
      * Answer for tool question 'new-boiler-setting-comfort-heat'

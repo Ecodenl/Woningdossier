@@ -11,7 +11,7 @@ use App\Models\UserEnergyHabit;
 use App\Services\CalculatorService;
 use App\Services\Kengetallen\KengetallenService;
 
-class HighEfficiencyBoiler extends \App\Calculations\Calculator
+class HighEfficiencyBoiler extends Calculator
 {
     public function performCalculations(): array
     {

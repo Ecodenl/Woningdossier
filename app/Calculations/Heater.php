@@ -16,7 +16,7 @@ use App\Models\PvPanelYield;
 use App\Services\CalculatorService;
 use Carbon\Carbon;
 
-class Heater extends \App\Calculations\Calculator
+class Heater extends Calculator
 {
     public function performCalculations(): array
     {

@@ -77,41 +77,6 @@ class AppServiceProvider extends ServiceProvider
             }, $boolean);
         });
 
-        // is this still nodig or is it only loggin?
-        //Queue::before(function (JobProcessing $event) {
-        //    $payload = $event->job->payload();
-        //    $command = unserialize($payload['data']['command']);
-        //    $commandTraits = class_uses_recursive($command);
-        //    $jobName = get_class($command);
-        //    if (in_array(HasNotifications::class, $commandTraits)) {
-        //        $building = $command->building ?? $command->user->building;
-        //        Log::debug("JOB {$jobName} started | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-        //    }
-        //});
-        //
-        //Queue::after(function (JobProcessed $event) {
-        //    $payload = $event->job->payload();
-        //    $command = unserialize($payload['data']['command']);
-        //    $commandTraits = class_uses_recursive($command);
-        //    $jobName = get_class($command);
-        //    if (in_array(HasNotifications::class, $commandTraits)) {
-        //        $building = $command->building ?? $command->user->building;
-        //        Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-        //
-        //        $service = NotificationService::init()
-        //            ->forBuilding($building)
-        //            ->setType($jobName)
-        //            ->setUuid($command->uuid);
-        //
-        //        // The command might not care about the input source, and so in that case we don't want to query on it.
-        //        if ($command->caresForInputSource) {
-        //            $service->forInputSource($command->inputSource);
-        //        }
-        //
-        //        $service->deactivate();
-        //    }
-        //});
-
         Paginator::useBootstrapThree();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 

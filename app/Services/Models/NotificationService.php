@@ -11,7 +11,7 @@ class NotificationService
 {
     use FluentCaller;
 
-    protected InputSource $inputSource;
+    protected ?InputSource $inputSource = null;
     protected Building $building;
     protected string $type;
     protected string $uuid;
@@ -42,6 +42,7 @@ class NotificationService
 
     public function hasActiveTypes(array $types): bool
     {
+        // TODO: Should we "reset" the type to the type we had before calling this method?
         $isActive = false;
         foreach ($types as $type) {
             if ($this->setType($type)->isActive()) {
@@ -68,7 +69,7 @@ class NotificationService
         foreach ($uuids as $uuid) {
             Notification::allInputSources()->updateOrCreate(
                 [
-                    'input_source_id' => $this->inputSource->id,
+                    'input_source_id' => optional($this->inputSource)->id,
                     'type' => $this->type,
                     'uuid' => $uuid,
                     'building_id' => $this->building->id,
@@ -89,8 +90,23 @@ class NotificationService
 
     protected function getNotification(): ?Notification
     {
-        $query = Notification::activeNotifications($this->building, $this->inputSource)
+        $query = Notification::forBuilding($this->building)
             ->forType($this->type);
+
+        // Master gets created automatically due to GetMyValuesTrait, even if input source is null. Therefore, if you
+        // explicitly want to check for master, ensure so via static::forInputSource, otherwise we will ignore master,
+        // so we get the row with non-master/null input source (since even when deleting a null input source row, it
+        // will delete the master due to uuid).
+        $this->inputSource instanceof InputSource
+            ? $query->forInputSource($this->inputSource)
+            : $query->allInputSources()->where(function ($query) {
+                // LME: MySQL treats NULL not as undefined but as unknown. When we query "not equals", the
+                // values that are NULL are not returned, as MySQL is not sure if it matches or not. This is a failsafe.
+                // By querying as OR on the same column, we get the required result. We could also use the null safe
+                // operator ( <=> ), but that reads awkward.
+                $query->where('input_source_id', '!=', InputSource::master()->id)
+                    ->orWhereNull('input_source_id');
+            });
 
         if (isset($this->uuid)) {
             $query->forUuid($this->uuid);

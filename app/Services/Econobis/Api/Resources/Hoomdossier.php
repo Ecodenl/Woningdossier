@@ -32,7 +32,7 @@ class Hoomdossier extends Resource
 
     public function pdf(array $data)
     {
-        return $this->client->post($this->uri('pdf'), [RequestOptions::JSON => $data]);
+        return $this->client->post($this->uri('pdf'), [RequestOptions::JSON => $data, 'timeout' => 120]);
     }
 
     public function delete(array $data)

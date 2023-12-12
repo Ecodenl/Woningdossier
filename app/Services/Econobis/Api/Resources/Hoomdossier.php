@@ -3,6 +3,7 @@
 namespace App\Services\Econobis\Api\Resources;
 
 use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Facades\Log;
 
 class Hoomdossier extends Resource
 {
@@ -32,7 +33,8 @@ class Hoomdossier extends Resource
 
     public function pdf(array $data)
     {
-        return $this->client->post($this->uri('pdf'), [RequestOptions::JSON => $data, 'timeout' => 120]);
+        Log::debug("Sending PDF with timeout of 360 seconds");
+        return $this->client->post($this->uri('pdf'), [RequestOptions::JSON => $data, 'timeout' => 360]);
     }
 
     public function delete(array $data)

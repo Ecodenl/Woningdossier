@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
- * @method static Builder|Notification activeNotifications(\App\Models\Building $building, \App\Models\InputSource $inputSource)
  * @method static Builder|Notification allInputSources()
  * @method static Builder|Notification forBuilding($building)
  * @method static Builder|Notification forInputSource(\App\Models\InputSource $inputSource)
@@ -52,11 +51,6 @@ class Notification extends Model
     ];
 
     # Scopes
-    public function scopeActiveNotifications(Builder $query, Building $building, InputSource $inputSource): Builder
-    {
-        return $query->forBuilding($building)->forInputSource($inputSource);
-    }
-
     public function scopeForType(Builder $query, string $type): Builder
     {
         return $query->where('type', $type);

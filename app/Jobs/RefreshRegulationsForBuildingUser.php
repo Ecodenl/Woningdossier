@@ -32,7 +32,6 @@ class RefreshRegulationsForBuildingUser extends NonHandleableJobAfterReset
     {
         Log::debug('Handle of refresh regulations for building user');
         $user = $this->building->user;
-        $user->update(['refreshing_regulations' => true]);
 
         UserActionPlanAdviceService::init()
             ->forUser($user)

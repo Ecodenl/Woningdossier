@@ -33,7 +33,6 @@ class Hoomdossier extends Resource
 
     public function pdf(array $data)
     {
-        Log::debug("Sending PDF with timeout of 360 seconds");
         return $this->client->post($this->uri('pdf'), [RequestOptions::JSON => $data, 'timeout' => 360]);
     }
 

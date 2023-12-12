@@ -46,7 +46,7 @@ class PdfReport extends Command
      */
     public function handle()
     {
-        //return self::SUCCESS;
+        return self::SUCCESS;
         // disabled for now..
 
         $interval = $this->option('interval');

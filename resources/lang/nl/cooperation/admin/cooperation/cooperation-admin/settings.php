@@ -6,8 +6,8 @@ return [
     'index' => [
         'title' => 'Instellingen voor coöperatie',
         MediaHelper::LOGO => 'Selecteer hier een logo',
-        MediaHelper::BACKGROUND => 'Selectier hier een achtergrond afbeelding',
-        MediaHelper::PDF_BACKGROUND => 'Selectier hier een PDF achtergrond afbeelding',
+        MediaHelper::BACKGROUND => 'Selecteer hier een achtergrond afbeelding',
+        MediaHelper::PDF_BACKGROUND => 'Selecteer hier een PDF achtergrond afbeelding',
         'current' => 'Huidig:',
     ],
     'store' => [

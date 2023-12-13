@@ -82,7 +82,6 @@ class SolarPanel
                 ->forInputSource($masterInputSource)
                 ->forBuilding($building)
                 ->resolve(KengetallenCodes::EURO_SAVINGS_ELECTRICITY);
-            //$result['savings_money'] = $result['yield_electricity'] * KeyFigures::COST_KWH;
             $result['savings_money'] = $result['yield_electricity'] * $euroSavingsElectricity;
             $result['cost_indication'] = $wp * KeyFigures::COST_WP;
             $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);

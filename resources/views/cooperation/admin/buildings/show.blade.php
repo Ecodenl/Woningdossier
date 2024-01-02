@@ -69,40 +69,40 @@
                             @endif
                             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
                                 @if($scans->count() > 1)
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        @lang('cooperation/admin/buildings.show.fill-for-user.label')
-                                        @lang('cooperation/admin/buildings.show.fill-for-user.button')
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        @foreach($scans as $scan)
-                                            @php
-                                                $transShort = app(\App\Services\Models\ScanService::class)
-                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
-                                                    ? 'home.start.buttons.continue' : 'home.start.buttons.start';
-                                            @endphp
-                                            <li>
-                                                <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
-                                                    @lang($transShort, ['scan' => $scan->name])
-                                                </a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                                    @else
-                                        @foreach($scans as $scan)
-                                            <a class="btn btn-warning" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            @lang('cooperation/admin/buildings.show.fill-for-user.label')
+                                            @lang('cooperation/admin/buildings.show.fill-for-user.button')
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            @foreach($scans as $scan)
                                                 @php
                                                     $transShort = app(\App\Services\Models\ScanService::class)
                                                         ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
                                                         ? 'home.start.buttons.continue' : 'home.start.buttons.start';
                                                 @endphp
-                                                @lang($transShort, ['scan' => $scan->name])
-                                                @lang('cooperation/admin/buildings.show.fill-for-user.button')
-                                            </a>
-                                        @endforeach
-                                    @endif
+                                                <li>
+                                                    <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
+                                                        @lang($transShort, ['scan' => $scan->name])
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @else
+                                    @foreach($scans as $scan)
+                                        <a class="btn btn-warning" href="{{route('cooperation.admin.tool.fill-for-user', compact('building', 'scan'))}}">
+                                            @php
+                                                $transShort = app(\App\Services\Models\ScanService::class)
+                                                    ->scan($scan)->forBuilding($building)->hasMadeScanProgress()
+                                                    ? 'home.start.buttons.continue' : 'home.start.buttons.start';
+                                            @endphp
+                                            @lang($transShort, ['scan' => $scan->name])
+                                            @lang('cooperation/admin/buildings.show.fill-for-user.button')
+                                        </a>
+                                    @endforeach
+                                @endif
                             @endif
                         @endcan
                         @can('edit', $building)
@@ -202,6 +202,10 @@
                     </div>
                 </div>
             </div>
+
+            @can('create', [\App\Models\Media::class, \App\Helpers\HoomdossierSession::getInputSource(true), $building, MediaHelper::BUILDING_IMAGE])
+                <livewire:cooperation.admin.buildings.uploader :building="$building" tag="{{ MediaHelper::BUILDING_IMAGE }}">
+            @endcan
         </div>
 
         <ul class="nav nav-tabs">

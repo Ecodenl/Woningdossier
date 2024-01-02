@@ -5,18 +5,11 @@ namespace App\Jobs;
 use App\Helpers\Queue;
 use App\Models\Building;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
-class RefreshRegulationsForBuildingUser implements ShouldQueue
+class RefreshRegulationsForBuildingUser extends NonHandleableJobAfterReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public Building $building;
-
 
     /**
      * Create a new job instance.
@@ -25,6 +18,7 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
      */
     public function __construct(Building $building)
     {
+        parent::__construct();
         $this->queue = Queue::APP_HIGH;
         $this->building = $building;
     }
@@ -36,8 +30,8 @@ class RefreshRegulationsForBuildingUser implements ShouldQueue
      */
     public function handle()
     {
+        Log::debug('Handle of refresh regulations for building user');
         $user = $this->building->user;
-        $user->update(['refreshing_regulations' => true]);
 
         UserActionPlanAdviceService::init()
             ->forUser($user)

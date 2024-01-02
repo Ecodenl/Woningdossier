@@ -47,9 +47,6 @@ class PdfReport extends Command
      */
     public function handle()
     {
-        return self::SUCCESS;
-        // disabled for now..
-
         $interval = $this->option('interval');
         $interval = is_numeric($interval) ? (int)$interval : null;
         $interval = is_null($interval) ? config("hoomdossier.services.econobis.interval.".SendPdfReportToEconobis::class) : $interval;

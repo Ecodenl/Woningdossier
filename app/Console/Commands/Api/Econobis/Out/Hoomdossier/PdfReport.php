@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Api\Econobis\Out\Hoomdossier;
 
+use App\Helpers\Queue;
 use App\Jobs\Econobis\Out\SendPdfReportToEconobis;
 use App\Models\FileStorage;
 use App\Models\FileType;
@@ -80,7 +81,7 @@ class PdfReport extends Command
             ->chunkById(50, function ($fileStorages) {
                 foreach ($fileStorages as $fileStorage) {
                     Log::debug("Sending PDF report to Econobis for building {$fileStorage->building_id}");
-                    SendPdfReportToEconobis::dispatch($fileStorage->building);
+                    SendPdfReportToEconobis::dispatch($fileStorage->building)->onQueue(Queue::APP_EXTERNAL);
                 }
             }, FileStorage::getModel()->getTable().'.'.FileStorage::getModel()->getKeyName(), 'file_storage_id');
 

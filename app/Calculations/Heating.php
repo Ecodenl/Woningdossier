@@ -109,7 +109,6 @@ class Heating extends Calculator
         // because cooking is fairly stable / always around 37, the wtw gas
         // usage should be the leftover of the amount gas - cooking.
         // correction should only be done on the current situation.
-        /** @var array $heatSources */
         foreach (
             [
                 'current' => 'heat-source',

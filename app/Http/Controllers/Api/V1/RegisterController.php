@@ -72,8 +72,8 @@ class RegisterController extends Controller
             $requestData['extra']['contact_id'] = (int) $requestData['extra']['contact_id'];
         }
 
-        // normally we would have a user given password, however we will reset the password right after its created.
-        // this way the user can set his own password.
+        // Normally we would have a user given password, however we will reset the password right after it's created.
+        // This way the user can set his own password.
         $requestData['password'] = Hash::make(Str::randomPassword());
         $roles = array_unique(($requestData['roles'] ?? [RoleHelper::ROLE_RESIDENT]));
 
@@ -108,7 +108,7 @@ class RegisterController extends Controller
             UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
         }
 
-        // at this point, a user cant register without accepting the privacy terms.
+        // At this point, a user can't register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user, $user->building);
 
         // Get input sources by name (unique)

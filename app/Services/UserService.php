@@ -40,7 +40,7 @@ class UserService
     public function isRelatedWithEconobis(): bool
     {
         $contactId = $this->user->extra['contact_id'] ?? null;
-        if ( ! empty($contactId)) {
+        if (! empty($contactId)) {
             return true;
         }
         return false;
@@ -165,13 +165,13 @@ class UserService
         // remove the progress of the completed questionnaires
         CompletedQuestionnaire::forMe($user)->forInputSource($inputSource)->delete();
 
-        if ( ! in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
+        if (! in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
             // re-query the bag
             $addressData = app(BagService::class)->addressExpanded(
                 $building->postal_code, $building->number, $building->extension
             )->prepareForBuilding();
 
-            if ( ! empty(($addressData['bag_addressid'] ?? null))) {
+            if (! empty(($addressData['bag_addressid'] ?? null))) {
                 $building->update(['bag_addressid' => $addressData['bag_addressid']]);
             }
 

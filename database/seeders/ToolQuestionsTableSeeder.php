@@ -862,7 +862,7 @@ class ToolQuestionsTableSeeder extends Seeder
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],
                 'short' => 'heat-source-warm-tap-water',
                 'translation' => "Wat word er gebruikt voor warm tapwater",
-                'options' => ['value' => ['hr-boiler'],],
+                'options' => [],
                 'tool_question_custom_values' => [
                     'hr-boiler' => [
                         'name' => 'Gasketel',
@@ -1508,6 +1508,97 @@ class ToolQuestionsTableSeeder extends Seeder
                 'translation' => 'De energiecoach heeft voor deze maatregel',
                 'tool_question_custom_values' => $smallMeasureCoachHelpValues,
             ],
+
+
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'isolating-window-foil',
+                'translation' => 'Isolerende raamfolie',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'isolating-window-foil-how',
+                'translation' => 'Hoe wil je het uitvoeren',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'isolating-window-foil-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-caulk',
+                'translation' => 'Kitwerk kieren',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-caulk-how',
+                'translation' => 'Hoe wil je het uitvoeren',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-caulk-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-foam',
+                'translation' => 'Afschuimen kieren',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-foam-how',
+                'translation' => 'Hoe wil je het uitvoeren',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'crack-foam-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'door-silicone-strip',
+                'translation' => 'Deur siliconestrip',
+                'tool_question_custom_values' => $smallMeasureApplyValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                'short' => 'door-silicone-strip-how',
+                'translation' => 'Hoe wil je het uitvoeren',
+                'tool_question_custom_values' => $smallMeasureExecuteValues,
+            ],
+            [
+                'data_type' => Caster::IDENTIFIER,
+                'validation' => ['nullable', 'exists:tool_question_custom_values,short'],
+                'short' => 'door-silicone-strip-coach-help',
+                'translation' => 'De energiecoach heeft voor deze maatregel',
+                'tool_question_custom_values' => $smallMeasureCoachHelpValues,
+            ],
+
+
             [
                 'data_type' => Caster::IDENTIFIER,
                 'validation' => ['required', 'exists:tool_question_custom_values,short'],

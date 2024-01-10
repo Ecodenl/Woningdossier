@@ -5,14 +5,16 @@ namespace App\Http\Controllers\Cooperation\Admin;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
+use App\Jobs\CheckBuildingAddress;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Log;
+use App\Models\Municipality;
 use App\Models\PrivateMessage;
 use App\Models\Scan;
 use App\Models\Status;
 use App\Models\User;
-use App\Services\BuildingAddressService;
 use App\Services\BuildingCoachStatusService;
 use App\Services\UserRoleService;
 use App\Models\Role;
@@ -86,7 +88,7 @@ class BuildingController extends Controller
         return view('cooperation.admin.buildings.edit', compact('building', 'user', 'account'));
     }
 
-    public function update(BuildingFormRequest $request, BuildingAddressService $buildingAddressService, Cooperation $cooperation, Building $building)
+    public function update(BuildingFormRequest $request, Cooperation $cooperation, Building $building)
     {
         $validatedData = $request->validated();
         if (! is_null($validatedData['users']['extra']['contact_id'] ?? null)) {
@@ -94,14 +96,26 @@ class BuildingController extends Controller
             $validatedData['users']['extra']['contact_id'] = (int) $validatedData['users']['extra']['contact_id'];
         }
 
-        $buildingAddressService->forBuilding($building)->updateAddress($validatedData['buildings']);
+        $validatedData['address']['extension'] ??= null;
+        $building->update($validatedData['address']);
 
-        $buildingAddressService->forBuilding($building)->attachMunicipality();
+        $buildingFeature = $building->buildingFeatures()->allInputSources()
+            ->whereHas('inputSource', fn ($q) => $q->whereNotIn('input_source_id', [InputSource::master()->id, InputSource::exampleBuilding()->id]))
+            ->orderByDesc('updated_at')
+            ->first();
+
+        $inputSource = optional($buildingFeature)->inputSource ?? InputSource::resident();
+
+        CheckBuildingAddress::dispatchSync($building, $inputSource);
+        if (! $building->municipality()->first() instanceof Municipality) {
+            CheckBuildingAddress::dispatch($building, $inputSource);
+        }
 
         $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';
         $building->user->update($validatedData['users']);
         $building->user->account->update($validatedData['accounts']);
 
-        return redirect()->route('cooperation.admin.buildings.edit', compact('building'))->with('success', __('cooperation/admin/buildings.update.success'));
+        return redirect()->route('cooperation.admin.buildings.edit', compact('building'))
+            ->with('success', __('cooperation/admin/buildings.update.success'));
     }
 }

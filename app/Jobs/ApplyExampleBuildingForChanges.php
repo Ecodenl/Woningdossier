@@ -11,14 +11,12 @@ use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Services\ExampleBuildingService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\Types\Null_;
 
-class ApplyExampleBuildingForChanges implements ShouldQueue
+class ApplyExampleBuildingForChanges
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

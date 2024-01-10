@@ -6,11 +6,10 @@ use App\Helpers\Queue;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UnreadMessagesEmail extends Mailable implements ShouldQueue
+class UnreadMessagesEmail extends Mailable
 {
     use Queueable, SerializesModels;
 

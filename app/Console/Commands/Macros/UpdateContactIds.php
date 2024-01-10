@@ -2,13 +2,20 @@
 
 namespace App\Console\Commands\Macros;
 
+use App\Helpers\Arr;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * NOTE;
+ * This command will change, since the given csvs will not and never will be anywhere near consistent.
+ * DO NOT load up the contact csv file and run it blindly.
+ */
 class UpdateContactIds extends Command
 {
     /**
@@ -16,7 +23,7 @@ class UpdateContactIds extends Command
      *
      * @var string
      */
-    protected $signature = 'macros:update-contact-ids';
+    protected $signature = 'macros:update-contact-ids {cooperation : The cooperation slug that the change is for}';
 
     /**
      * The console command description.
@@ -27,6 +34,14 @@ class UpdateContactIds extends Command
 
     public function handle()
     {
+        $cooperationSlug = $this->argument('cooperation');
+        $cooperation = Cooperation::where('slug', $cooperationSlug)->first();
+
+        if (! $cooperation instanceof Cooperation) {
+            $this->error('Given cooperation not found!');
+            exit;
+        }
+
         if (! Storage::disk('local')->exists('contact-ids.csv')) {
             $this->error('"contact-ids.csv" not found at /storage/app!');
             exit;
@@ -34,17 +49,15 @@ class UpdateContactIds extends Command
 
         $changes = CsvHelper::toArray(Storage::disk('local')->path('contact-ids.csv'), ';', false);
         foreach ($changes as $data) {
-            // Not using associative headers because misspellings...
-            $buildingId = $data[2];
-            $newContactId = $data[0];
+            $cooperationName = $data[0];
+            $accountId = $data[1];
+            $newContactId = $data[2];
 
-            $building = Building::find($buildingId);
-            $user = $building->user ?? null;
-
+            $user = User::forMyCooperation($cooperation->id)->where('account_id', $accountId)->first();
             if ($user instanceof User) {
                 $extra = $user->extra ?? [];
-                $oldContactId = data_get($extra, 'contact_id');
-                Log::info("Changing the contact ID of user {$user->id} (building {$buildingId}) from {$oldContactId} to {$newContactId}");
+                $oldContactId = Arr::get($extra, 'contact_id', 'No old');
+                Log::info("Changing the contact ID of user {$user->id} from {$oldContactId} to {$newContactId}");
 
                 $extra['contact_id'] = $newContactId;
 
@@ -52,7 +65,7 @@ class UpdateContactIds extends Command
                     'extra' => $extra,
                 ]);
             } else {
-                Log::warning("No user found for building {$buildingId}");
+                Log::info("User not found account {$accountId} does not have a link with the provided cooperation");
             }
         }
     }

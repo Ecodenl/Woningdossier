@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Calculations\HeatPump;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
+use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\InputSource;
@@ -13,17 +14,11 @@ use App\Models\Service;
 use App\Models\ToolQuestion;
 use App\Services\ConditionService;
 use App\Services\ToolQuestionService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\NonHandleableJobAfterReset;
 
-class MapQuickScanSituationToExpert implements ShouldQueue
+class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public Building $building;
     public InputSource $inputSource;
     public InputSource $masterInputSource;
@@ -31,6 +26,7 @@ class MapQuickScanSituationToExpert implements ShouldQueue
 
     public function __construct(Building $building, InputSource $inputSource, MeasureApplication $measureApplication)
     {
+        parent::__construct();
         $this->building = $building;
         $this->inputSource = $inputSource;
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
@@ -44,8 +40,7 @@ class MapQuickScanSituationToExpert implements ShouldQueue
      */
     public function handle()
     {
-        $boilerService = Service::findByShort('boiler');
-        $boilerValues = $boilerService->values;
+        $boilerValues = Service::findByShort('boiler')->values;
 
         // Convert (heat pump) measure application scenario to expert scan.
         // Note: currently only triggered if a user gets a heat pump measure application in their action plan,
@@ -156,7 +151,19 @@ class MapQuickScanSituationToExpert implements ShouldQueue
 
         // Force replace
         $this->saveAnswer(ToolQuestion::findByShort('heat-pump-replace'), true);
-        $this->saveAnswer(ToolQuestion::findByShort('hr-boiler-replace'), true);
+
+        $boilerAgeQuestion = ToolQuestion::findByShort('boiler-placed-date');
+        $viewable = ConditionService::init()->building($this->building)->inputSource($this->masterInputSource)
+            ->forModel($boilerAgeQuestion)->isViewable();
+
+        if ($viewable) {
+            $answer = $this->building->getAnswer($this->masterInputSource, $boilerAgeQuestion);
+
+            if (is_numeric($answer)) {
+                $diff = now()->format('Y') - $answer;
+                $this->saveAnswer(ToolQuestion::findByShort('hr-boiler-replace'), ! ($diff < 10));
+            }
+        }
 
         foreach ($mapping as $tqShort => $data) {
             $toolQuestion = ToolQuestion::findByShort($tqShort);
@@ -195,10 +202,7 @@ class MapQuickScanSituationToExpert implements ShouldQueue
         }
 
         // As last step, calculate required power to save as desired power...........
-        $answers['new-heat-pump-type'] = ToolQuestion::findByShort('new-heat-pump-type')
-            ->toolQuestionCustomValues()
-            ->where('extra->calculate_value', $calculateValue)
-            ->first()->short;
+        $answers['new-heat-pump-type'] = $type;
 
         // If we're not in expert yet, we need the heating temp for the calculations
         $heatingTemp = $this->building->getAnswer($this->masterInputSource, ToolQuestion::findByShort('boiler-setting-comfort-heat'));

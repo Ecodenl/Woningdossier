@@ -23,7 +23,7 @@ class Uploader extends Component
         AuthorizesRequests;
 
     public Building $building;
-    public InputSource $inputSource;
+    public InputSource $currentInputSource;
     public $documents; // The temporary uploaded files do some weird shenanigans so we can't type this
     public Collection $files;
     public array $fileData = [];
@@ -35,10 +35,12 @@ class Uploader extends Component
     public function mount(Building $building)
     {
         $this->building = $building;
-        $this->inputSource = HoomdossierSession::getInputSource(true);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         // We want all media regardless of tag
-        $this->files = $building->media;
+        $this->files = $building->media()
+            ->wherePivotIn('tag', MediaHelper::getFillableTagsForClass(Building::class))
+            ->get();
         foreach ($this->files as $file) {
             $this->fileData[$file->id] = [
                 'title' => data_get($file->custom_properties, 'title'),
@@ -61,6 +63,7 @@ class Uploader extends Component
         }
     }
 
+    // Called from $listeners
     public function saveFiles()
     {
         $this->resetErrorBag('documents');
@@ -120,7 +123,7 @@ class Uploader extends Component
 
         $file = $this->files->where('id', $fileId)->first();
 
-        $this->authorize('update', [$file, $this->inputSource, $this->building]);
+        $this->authorize('update', [$file, $this->currentInputSource, $this->building]);
 
         $fileData = $this->fileData[$fileId];
 
@@ -135,7 +138,7 @@ class Uploader extends Component
 
             $customProperties['title'] = data_get($fileData, 'title', '');
             $customProperties['description'] = data_get($fileData, 'description', '');
-            if (Auth::user()->can('shareWithCooperation', [$file, $this->inputSource, $this->building])) {
+            if (Auth::user()->can('shareWithCooperation', [$file, $this->currentInputSource, $this->building])) {
                 // Ensure we don't edit this if we're not allowed to
                 $customProperties['share_with_cooperation'] = (bool) data_get($fileData, 'share_with_cooperation');
             }
@@ -150,7 +153,7 @@ class Uploader extends Component
     {
         $file = $this->files->where('id', $fileId)->first();
 
-        $this->authorize('delete', [$file, $this->inputSource, $this->building]);
+        $this->authorize('delete', [$file, $this->currentInputSource, $this->building]);
 
         if ($file instanceof Media) {
             $file->delete();

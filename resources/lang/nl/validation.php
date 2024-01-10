@@ -239,6 +239,7 @@ return [
         'nl' => 'Nederlands',
         'en' => 'Engels',
 
+        'document' => 'geüpload bestand',
         'documents' => 'bestanden',
         'documents.*' => 'een bestand',
 
@@ -359,6 +360,13 @@ return [
         'buildings.extension' => 'toevoeging',
         'buildings.street' => 'straat',
         'buildings.city' => 'stad',
+
+        // Address
+        'address.postal_code' => 'postcode',
+        'address.number' => 'huisnummer',
+        'address.extension' => 'toevoeging',
+        'address.street' => 'straat',
+        'address.city' => 'stad',
 
         // API
         'building_coach_statuses.coach_contact_id' => 'coach contact ID',

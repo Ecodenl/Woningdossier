@@ -45,10 +45,12 @@
 .radio-wrapper > label,
 .checkbox-wrapper > label,
 .add-option-wrapper > label {
-    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
+    @apply flex items-center w-full cursor-pointer rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
 
     @apply hover:border-green hover:border-opacity-100;
     @apply focus:border-green focus:border-opacity-100;
+
+    min-height: 2.75rem; /* Height of h-11, base height of input */
 }
 
 .radio-wrapper > label,
@@ -97,6 +99,7 @@ textarea.form-input {
 }
 
 .form-input:disabled,
+input.form-input:read-only:not(.select-wrapper input),
 .radio-wrapper input[type="radio"]:disabled + label,
 .checkbox-wrapper input[type="checkbox"]:disabled + label {
     @apply cursor-not-allowed bg-gray bg-opacity-50;
@@ -215,7 +218,7 @@ textarea.form-input {
 
 .radio-wrapper label,
 .checkbox-wrapper label {
-    @apply px-3;
+    @apply px-3 py-1;
 }
 
 /* Hide ugly default input */
@@ -249,6 +252,9 @@ textarea.form-input {
 /* Style checkmark for both radio and checkbox */
 .checkmark {
     @apply w-4 h-4 mr-2 border border-blue-500 border-opacity-50 relative bg-white;
+
+    min-width: 1rem; /* w-4 is 1 rem, if we don't add this, the span gets shrunk if the content doesn't fit */
+    min-height: 1rem; /* h-4 is 1 rem, if we don't add this, the span gets shrunk if the content doesn't fit */
 }
 
 .checkmark::after {

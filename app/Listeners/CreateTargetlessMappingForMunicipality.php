@@ -37,7 +37,7 @@ class CreateTargetlessMappingForMunicipality implements ShouldQueue
             ->from($event->municipalityName)
             ->sync([], MappingHelper::TYPE_BAG_MUNICIPALITY);
 
-        $recipients = explode(',', config('hoomdossier.admin-emails'));
+        $recipients = explode(',', config('hoomdossier.contact.email.admin'));
         foreach ($recipients as $recipient) {
             Mail::to($recipient)->send(new MissingBagMunicipalityMappingEmail($event->municipalityName));
         }

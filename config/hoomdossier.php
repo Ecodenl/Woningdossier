@@ -58,13 +58,19 @@ return [
         'discord' => env('DISCORD_WEBHOOK_URL')
     ],
 
-    // email adresses of the admins, those admins should be notified in case something happens.
-    'admin-emails' => env('ADMIN_MAIL_ADDRESS', ''),
-
-
     'media' => [
         'accepted_file_mimes' => env('MEDIA_FILE_MIMES', 'doc,dot,docx,dotx,docm,dotm,pdf,txt'),
         'accepted_image_mimes' => env('MEDIA_IMAGE_MIMES', 'jpg,jpeg,png'),
         'max_size' => env('MEDIA_MAX_SIZE', 16384), // KB
+    ],
+
+    'contact' => [
+        'email' => [
+            // Email addresses of the admins, those admins should be notified in case something happens.
+            'admin' => env('ADMIN_MAIL_ADDRESS', ''),
+            // Email addresses that should be allowed through the email filter if the app isn't in production.
+            'whitelist' => env('HOOM_CONTACT_EMAIL_WHITELIST', ''),
+            'whitelist_enabled' => env('HOOM_CONTACT_EMAIL_WHITELIST_ENABLED', true),
+        ],
     ],
 ];

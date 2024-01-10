@@ -1,10 +1,16 @@
 @component('cooperation.pdf.user-report.components.new-page', ['id' => 'front-page', 'withPageBreak' => false])
     @php
         $logo = $userCooperation->firstMedia(MediaHelper::LOGO);
-        $background = $userCooperation->firstMedia(MediaHelper::BACKGROUND);
-        $backgroundUrl = $background instanceof \App\Models\Media
-            ? pdfAsset($background->getPath())
-            : pdfAsset('images/background.jpg');
+
+        $buildingBackground = $building->firstMedia(\App\Helpers\MediaHelper::BUILDING_IMAGE);
+
+        $backgroundUrl = $buildingBackground instanceof \App\Models\Media
+            ? pdfAsset($buildingBackground->getPath())
+            : (
+                ($pdfBackground = $userCooperation->firstMedia(MediaHelper::PDF_BACKGROUND)) instanceof \App\Models\Media
+                ? pdfAsset($pdfBackground->getPath())
+                : pdfAsset('images/background.jpg')
+            );
     @endphp
     <div class="w-100">
         <div class="pull-left" style="width: 50%">

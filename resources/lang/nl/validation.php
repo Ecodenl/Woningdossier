@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\MediaHelper;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -195,6 +197,7 @@ return [
         ],
         'uploader' => [
             'wrong-files' => 'Een of meerdere bestanden zijn ongeldig of te groot.',
+            'max-size' => 'Maximale toegestane bestandsgrootte is :size MB',
         ],
     ],
     'custom-rules' => [
@@ -410,6 +413,17 @@ return [
         // Woonplan comments
         'residentCommentText' => 'opmerkingen bewoner',
         'coachCommentText' => 'opmerkingen coach',
+
+        // Media
+        'medias.' . MediaHelper::LOGO => "logo",
+        'medias.' . MediaHelper::BACKGROUND => "achtergrond",
+        'medias.' . MediaHelper::PDF_BACKGROUND => "pdf achtergrond",
+        'medias.' . MediaHelper::GENERIC_FILE => "generiek bestand",
+        'medias.' . MediaHelper::GENERIC_IMAGE => "generieke foto",
+        'medias.' . MediaHelper::REPORT => "rapportage",
+        'medias.' . MediaHelper::QUOTATION => "offerte",
+        'medias.' . MediaHelper::INVOICE => "factuur",
+        'medias.' . MediaHelper::BILL => "rekening",
     ],
 
     'values' => [

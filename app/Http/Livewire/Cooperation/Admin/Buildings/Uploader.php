@@ -46,6 +46,7 @@ class Uploader extends Component
     // Called from $listeners
     public function saveFile()
     {
+        $maxSize = MediaHelper::getMaxFileSize($this->tag);
         $document = $this->document;
 
         $validator = Validator::make(
@@ -54,7 +55,7 @@ class Uploader extends Component
                 'document' => [
                     'file',
                     'mimes:' . MediaHelper::getMimesForTag($this->tag),
-                    'max:' . MediaHelper::getMaxFileSize(),
+                    'max:' . $maxSize,
                     new MaxFilenameLength(),
                 ],
             ]
@@ -80,7 +81,10 @@ class Uploader extends Component
             $this->building->syncMedia($media, $this->tag);
             $this->image = $media;
         } else {
-            $this->addError('documents', __('validation.custom.uploader.wrong-files'));
+            $this->addError(
+                'documents',
+                __('validation.custom.uploader.wrong-files') . ' ' . __('validation.custom.uploader.max-size', ['size' => number_format($maxSize / 1000, 0)])
+            );
         }
 
         // Delete file after processed

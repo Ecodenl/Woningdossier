@@ -1,4 +1,3 @@
-
 window._ = require('lodash');
 
 /**
@@ -39,25 +38,80 @@ if (token) {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 */
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-
-// import Echo from 'laravel-echo'
-
-// window.Pusher = require('pusher-js');
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: 'your-pusher-key'
-// });
 
 /**
  * Define functions that will be used throughout the whole application, that
  * are also required by Alpine.
  */
+
+window.initTinyMCE = function (options = {}) {
+    let defaults = {
+        selector: '.tiny-editor textarea',
+        // menubar: 'edit format',
+        menubar: false, // Bar above the toolbar with advanced options
+        statusbar: true, // Bar that shows the current HTML tag, word count, etc. at the bottom of the editor
+        plugins: [
+            'link', // https://www.tiny.cloud/docs/tinymce/6/link/
+            'wordcount', // https://www.tiny.cloud/docs/tinymce/6/wordcount/
+            'lists', // https://www.tiny.cloud/docs/tinymce/6/lists/
+            'advlist', // https://www.tiny.cloud/docs/tinymce/6/advlist/ < Without this, the lists plugin does not work
+        ],
+        // Link plugin settings start
+        link_default_target: '_blank',
+        link_target_list: false,
+        link_title: false,
+        // Link plugin settings end
+        toolbar: 'link bold italic underline strikethrough fontsize | bullist numlist',
+        // font_size_formats: 'Extra-Small=10px Small=14px Normal=18px Medium=24px Large=32px Extra-Large=36px Extra-Extra Large=48px',
+        font_size_formats: 'Normaal=14px',
+        promotion: false,
+        language: 'nl',
+        resize: false,
+        height: 200,
+        lists_indent_on_tab: true,
+        advlist_bullet_styles: 'disc,circle,square',
+        advlist_number_styles: 'decimal,upper-alpha,upper-roman',
+    };
+
+    let defaultSetup = (editor) => {
+        // Since this config triggers on all tiny editors at once, we manually check on tiny init.
+        editor.on('init', (event) => {
+            if (editor.targetElm.hasAttribute('disabled')) {
+                editor.mode.set('readonly');
+            }
+        });
+        editor.on('change', (event) => {
+            // Save editor (to textarea), then trigger change (to update Livewire).
+            editor.save();
+            window.triggerEvent(editor.targetElm, 'change');
+        });
+        // Reset tiny if related textarea is reset
+        document.addEventListener('reset-question', (event) => {
+            if (editor.id.includes(event.detail.short)) {
+                editor.setContent(editor.targetElm.value);
+            }
+        });
+    }
+
+    let setup = (editor) => {
+        defaultSetup(editor);
+    };
+    if (typeof options.setup === 'function') {
+        setup = (editor) => {
+            defaultSetup(editor);
+            options.setup(editor);
+        };
+    }
+
+    // For now, this is fine. In the future, we might want to make some more fancy merging.
+    let config = {
+        ...defaults,
+        ...options,
+        setup: setup,
+    };
+
+    tinymce.init(config);
+}
 
 /**
  * Trigger a default event

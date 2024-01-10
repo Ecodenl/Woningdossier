@@ -9,7 +9,10 @@ class Caster
 {
     use FluentCaller;
 
+    // TODO: Convert these into custom classes
+
     public const STRING = 'string';
+    public const HTML_STRING = 'html_string'; // String that contains HTML and should be sanitized
     public const INT = 'int';
     public const INT_5 = 'int_5'; // INT with bucket 5 for rounding
     public const FLOAT = 'float';
@@ -59,6 +62,7 @@ class Caster
 
         switch ($this->dataType) {
             case static::STRING:
+            case static::HTML_STRING:
                 $this->value = (string) $this->value;
                 break;
 

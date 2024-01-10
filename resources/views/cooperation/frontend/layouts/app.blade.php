@@ -60,6 +60,7 @@
 {{--<script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="true"></script>--}}
 {{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
 <script src="{{ mix('js/app.js') }}"></script>
+<script src="{{asset('js/tinymce/tinymce.min.js')}}"></script>
 <script src="{{ mix('js/hoomdossier.js') }}"></script>
 
 <script>

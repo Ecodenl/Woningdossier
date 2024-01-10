@@ -22,7 +22,11 @@ use Illuminate\Support\Facades\DB;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $website_url
+ * @property string|null $econobis_wildcard
+ * @property string|null $econobis_api_key
  * @property string|null $cooperation_email
+ * @property-read \Plank\Mediable\MediableCollection|\App\Models\Building[] $buildings
+ * @property-read int|null $buildings_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CooperationMeasureApplication[] $cooperationMeasureApplications
  * @property-read int|null $cooperation_measure_applications_count
  * @property-read \Plank\Mediable\MediableCollection|\App\Models\CooperationSetting[] $cooperationSettings
@@ -46,6 +50,8 @@ use Illuminate\Support\Facades\DB;
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation query()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereCooperationEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereEconobisApiKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereEconobisWildcard($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereHasMedia($tags = [], bool $matchAll = false)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereHasMediaMatchAll(array $tags)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereId($value)

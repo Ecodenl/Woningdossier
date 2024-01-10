@@ -24,14 +24,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $is_being_processed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \App\Models\FileType $fileType
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static Builder|FileStorage allInputSources()
  * @method static Builder|FileStorage beingProcessed()
+ * @method static Builder|FileStorage forAllCooperations()
  * @method static Builder|FileStorage forBuilding($building)
  * @method static Builder|FileStorage forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder|FileStorage forMe(?\App\Models\User $user = null)
+ * @method static Builder|FileStorage forMyCooperation($cooperationId)
  * @method static Builder|FileStorage forUser($user)
  * @method static Builder|FileStorage leaveOutPersonalFiles()
  * @method static Builder|FileStorage mostRecent(?\App\Models\Questionnaire $questionnaire = null)

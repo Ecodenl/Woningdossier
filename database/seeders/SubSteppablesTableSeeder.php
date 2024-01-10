@@ -48,6 +48,8 @@ class SubSteppablesTableSeeder extends Seeder
         $sliderType = ToolQuestionType::findByShort('slider');
         $textareaType = ToolQuestionType::findByShort('textarea');
         $textareaPopupType = ToolQuestionType::findByShort('textarea-popup');
+        $wysiwygTextareaType = ToolQuestionType::findByShort('wysiwyg-textarea');
+        $wysiwygTextareaPopupType = ToolQuestionType::findByShort('wysiwyg-textarea-popup');
         $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
         $dropdownType = ToolQuestionType::findByShort('dropdown');
         $multiDropdownType = ToolQuestionType::findByShort('multi-dropdown');
@@ -231,12 +233,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('building-data-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('building-data-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -343,12 +345,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('usage-quick-scan-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('usage-quick-scan-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -388,12 +390,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('living-requirements-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('living-requirements-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -808,22 +810,22 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-element-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-element-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-service-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-service-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -1079,12 +1081,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('small-measures-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('small-measures-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -1207,12 +1209,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('building-data-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('building-data-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -1299,12 +1301,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('usage-quick-scan-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('usage-quick-scan-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -1333,12 +1335,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('living-requirements-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('living-requirements-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -1514,22 +1516,22 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-element-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-element-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-service-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('residential-status-service-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -2017,12 +2019,12 @@ class SubSteppablesTableSeeder extends Seeder
                     'morphs' => [
                         [
                             'morph' => ToolQuestion::findByShort('small-measures-comment-resident'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('small-measures-comment-coach'),
-                            'tool_question_type_id' => $textareaPopupType->id,
+                            'tool_question_type_id' => $wysiwygTextareaPopupType->id,
                             'size' => 'w-1/2',
                         ],
                     ],
@@ -2166,13 +2168,13 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hr-boiler-comment-resident'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => $newHrBoilerCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('hr-boiler-comment-coach'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => $newHrBoilerCondition,
                         ],
@@ -2316,13 +2318,13 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-comment-resident'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => $newHeatPumpCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('heat-pump-comment-coach'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => $newHeatPumpCondition,
                         ],
@@ -2557,13 +2559,13 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('sun-boiler-comment-resident'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => $newSunBoilerCondition,
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('sun-boiler-comment-coach'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => $newSunBoilerCondition,
                         ],
@@ -3177,13 +3179,13 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('ventilation-comment-resident'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('ventilation-comment-coach'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
@@ -3602,13 +3604,13 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('wall-insulation-comment-resident'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('wall-insulation-comment-coach'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
@@ -4017,13 +4019,13 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('insulated-glazing-comment-resident'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('insulated-glazing-comment-coach'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
@@ -4484,13 +4486,13 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('floor-insulation-comment-resident'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('floor-insulation-comment-coach'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
@@ -5359,13 +5361,13 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('roof-insulation-comment-resident'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('roof-insulation-comment-coach'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
@@ -5509,13 +5511,13 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('solar-panels-comment-resident'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('solar-panels-comment-coach'),
-                            'tool_question_type_id' => $textareaType->id,
+                            'tool_question_type_id' => $wysiwygTextareaType->id,
                             'size' => 'col-span-3',
                             'conditions' => [],
                         ],

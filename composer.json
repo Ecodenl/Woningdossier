@@ -43,7 +43,8 @@
         "nunomaduro/collision": "^5.10",
         "nunomaduro/larastan": "^1.0",
         "phpunit/phpunit": "^9.5.10",
-        "squizlabs/php_codesniffer": "*"
+        "squizlabs/php_codesniffer": "*",
+        "tinymce/tinymce": "^6.4"
     },
     "autoload": {
         "files": [

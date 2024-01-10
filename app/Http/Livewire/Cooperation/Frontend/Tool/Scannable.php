@@ -193,14 +193,14 @@ abstract class Scannable extends Component
     public function resetToOriginalAnswer($toolQuestionShort)
     {
         $this->filledInAnswers[$toolQuestionShort] = $this->originalAnswers[$toolQuestionShort];
+        $this->dispatchBrowserEvent('reset-question', ['short' => $toolQuestionShort]);
     }
 
     // specific to the popup question
     public function saveSpecificToolQuestion($toolQuestionShort)
     {
-        if (HoomdossierSession::isUserObserving()) {
-            return null;
-        }
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         if (! empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => [

@@ -3,6 +3,8 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\SimpleScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Sanitizers\HtmlSanitizer;
+use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\UserActionPlanAdviceComments;
@@ -18,14 +20,16 @@ class Comments extends Component
     public InputSource $coachInputSource;
 
     public ?UserActionPlanAdviceComments $residentComment = null;
-    public string $residentCommentText = '';
     public ?UserActionPlanAdviceComments $coachComment = null;
-    public string $coachCommentText = '';
 
-    // holds the original comments and will not be editable in the frontend
-    // this allows the user to reset it when he clicks cancel
-    public string $originalCoachComment;
-    public string $originalResidentComment;
+    public array $originalAnswers = [
+        'residentComment' => '',
+        'coachComment' => '',
+    ];
+    public array $filledInAnswers = [
+        'residentComment' => '',
+        'coachComment' => '',
+    ];
 
     public function mount(Building $building)
     {
@@ -41,21 +45,13 @@ class Comments extends Component
         // Set comments
         $this->residentComment = UserActionPlanAdviceComments::forInputSource($this->residentInputSource)
             ->where('user_id', $this->building->user->id)->first();
-        $this->residentCommentText = $this->residentComment instanceof UserActionPlanAdviceComments ? $this->residentComment->comment : '';
+        $this->filledInAnswers['residentComment'] = $this->residentComment instanceof UserActionPlanAdviceComments ? $this->residentComment->comment : '';
 
         $this->coachComment = UserActionPlanAdviceComments::forInputSource($this->coachInputSource)
             ->where('user_id', $this->building->user->id)->first();
-        $this->coachCommentText = $this->coachComment instanceof UserActionPlanAdviceComments ? $this->coachComment->comment : '';
+        $this->filledInAnswers['coachComment'] = $this->coachComment instanceof UserActionPlanAdviceComments ? $this->coachComment->comment : '';
 
-        $this->originalCoachComment = $this->coachCommentText;
-        $this->originalResidentComment = $this->residentCommentText;
-    }
-
-    public function resetComment()
-    {
-        // method to reset the comments back to the original ones
-        $this->coachCommentText = $this->originalCoachComment;
-        $this->residentCommentText = $this->originalResidentComment;
+        $this->originalAnswers = $this->filledInAnswers;
     }
 
     public function render()
@@ -63,22 +59,30 @@ class Comments extends Component
         return view('livewire.cooperation.frontend.tool.simple-scan.my-plan.comments');
     }
 
-    public function save(string $sourceShort)
+    // Semi-duplicate code from Scannable
+    public function resetToOriginalAnswer(string $toolQuestionShort)
+    {
+        $this->filledInAnswers[$toolQuestionShort] = $this->originalAnswers[$toolQuestionShort];
+        $this->dispatchBrowserEvent('reset-question', ['short' => $toolQuestionShort]);
+    }
+
+    public function saveSpecificToolQuestion(string $toolQuestionShort)
     {
         abort_if(HoomdossierSession::isUserObserving(), 403);
 
-        if ($sourceShort === InputSource::RESIDENT_SHORT || $sourceShort === InputSource::COACH_SHORT) {
-            $textProperty = "{$sourceShort}CommentText";
-
-            $commentShort = "{$sourceShort}Comment";
-            $commentText = $this->{$textProperty};
-            $inputSource = $this->{"{$sourceShort}InputSource"};
-
+        if (array_key_exists($toolQuestionShort, $this->filledInAnswers)) {
             $this->validate([
-                $textProperty => [
+                "filledInAnswers.{$toolQuestionShort}" => [
                     'string', 'max:250000',
                 ],
             ]);
+
+            $sourceShort = Str::before($toolQuestionShort, 'Comment');
+            $commentShort = "{$sourceShort}Comment";
+            $commentText = $this->filledInAnswers[$toolQuestionShort];
+            // Sanitize HTML (just in case)
+            $commentText = (new HtmlSanitizer())->sanitize($commentText);
+            $inputSource = $this->{"{$sourceShort}InputSource"};
 
             if ($inputSource->short === $this->currentInputSource->short) {
                 if ($this->{$commentShort} instanceof UserActionPlanAdviceComments) {

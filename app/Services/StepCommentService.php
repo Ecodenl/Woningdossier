@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Sanitizers\HtmlSanitizer;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Step;
@@ -25,11 +26,11 @@ class StepCommentService
 
         is_null($short) ?: $dataToUpdate['short'] = $short;
 
-        // we could use the relationships and stuff but then the method isnt testable
+        // we could use the relationships and stuff but then the method isn't testable
         StepComment::withOutGlobalScopes()->updateOrCreate(
             $dataToUpdate,
             [
-                'comment' => $comment ?? '',
+                'comment' => (new HtmlSanitizer())->sanitize($comment ?? ''),
             ]
         );
     }

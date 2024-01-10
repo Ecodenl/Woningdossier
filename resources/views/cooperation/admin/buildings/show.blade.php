@@ -67,6 +67,7 @@
                                     </a>
                                 @endforeach
                             @endif
+                            {{-- TODO: This should be a policy --}}
                             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
                                 @if($scans->count() > 1)
                                     <div class="btn-group" role="group">

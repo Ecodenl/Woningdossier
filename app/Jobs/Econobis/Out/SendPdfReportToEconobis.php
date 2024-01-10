@@ -29,7 +29,6 @@ class SendPdfReportToEconobis implements ShouldQueue
      */
     public function __construct(Building $building)
     {
-        $this->queue = Queue::APP_EXTERNAL;
         $this->building = $building;
     }
 
@@ -41,13 +40,12 @@ class SendPdfReportToEconobis implements ShouldQueue
     public function handle(EconobisService $econobisService, EconobisApi $econobis)
     {
         Log::debug("Processing PDF report payload to Econobis for building {$this->building->id}");
-        Log::debug("Unfortunately PDF report processing has been disabled temporarily.");
-//        $this->wrapCall(function () use ($econobis, $econobisService) {
-//            $econobis
-//                ->forCooperation($this->building->user->cooperation)
-//                ->hoomdossier()
-//                ->pdf($econobisService->forBuilding($this->building)->getPayload(PdfReportPayload::class));
-//        });
+        $this->wrapCall(function () use ($econobis, $econobisService) {
+            $econobis
+                ->forCooperation($this->building->user->cooperation)
+                ->hoomdossier()
+                ->pdf($econobisService->forBuilding($this->building)->getPayload(PdfReportPayload::class));
+        });
     }
 
     /**

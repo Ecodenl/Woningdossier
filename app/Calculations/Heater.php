@@ -88,7 +88,7 @@ class Heater extends Calculator
                 // \Log::debug('Heater: For this water consumption you need this heater: '.json_encode($systemSpecs));
                 $result['production_heat'] = $systemSpecs['production_heat'];
                 $result['savings_gas'] = $result['production_heat'] / Kengetallen::gasKwhPerM3();
-                $result['percentage_consumption'] = isset($result['consumption']['gas']) ? ($result['savings_gas'] / $result['consumption']['gas']) * 100 : 0;
+                $result['percentage_consumption'] = data_get($result, 'consumption.gas', 0) > 0 ? ($result['savings_gas'] / $result['consumption']['gas']) * 100 : 0;
                 $result['savings_co2'] = RawCalculator::calculateCo2Savings($result['savings_gas']);
                 $result['savings_money'] = round(app(CalculatorService::class)
                     ->forBuilding($this->building)

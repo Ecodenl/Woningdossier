@@ -77,7 +77,7 @@ class Client
 
     public function request(string $method, string $uri, array $options = []): array
     {
-        $options = array_merge($options, [RequestOptions::HEADERS => ['Content-Length' => strlen(json_encode($options))], RequestOptions::HTTP_ERRORS => true]);
+        //$options = array_merge($options, [RequestOptions::HEADERS => ['Content-Length' => strlen(json_encode($options))], RequestOptions::HTTP_ERRORS => true]);
 
         $response = $this->getClient()->request($method, $uri, $options);
 

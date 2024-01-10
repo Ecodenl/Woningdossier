@@ -45,6 +45,7 @@ use Illuminate\Support\Collection;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ToolQuestionValuable[] $toolQuestionValuables
  * @property-read int|null $tool_question_valuables_count
  * @method static \Database\Factories\ToolQuestionFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion findByShortsOrdered($shorts)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolQuestion query()

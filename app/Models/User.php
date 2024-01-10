@@ -27,9 +27,11 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $last_visited_url
  * @property array|null $extra
  * @property bool $allow_access
+ * @property \Illuminate\Support\Carbon|null $tool_last_changed_at
  * @property \Illuminate\Support\Carbon|null $regulations_refreshed_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $refreshing_regulations
  * @property-read \App\Models\Account|null $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
  * @property-read int|null $action_plan_advices_count
@@ -71,6 +73,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
  * @property-read int|null $user_interests_count
  * @method static Builder|User byContact($contact)
+ * @method static Builder|User econobisContacts()
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User forAllCooperations()
  * @method static Builder|User forMyCooperation($cooperationId)
@@ -91,6 +94,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder|User wherePhoneNumber($value)
  * @method static Builder|User whereRefreshingRegulations($value)
  * @method static Builder|User whereRegulationsRefreshedAt($value)
+ * @method static Builder|User whereToolLastChangedAt($value)
  * @method static Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */

@@ -12904,16 +12904,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "6.4.2",
+            "version": "6.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "6a37da4822eebcd2706793454b07bd891c5277a8"
+                "reference": "2a1344eb95eb8ed512f4ad56986bfc230c8c74c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/6a37da4822eebcd2706793454b07bd891c5277a8",
-                "reference": "6a37da4822eebcd2706793454b07bd891c5277a8",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/2a1344eb95eb8ed512f4ad56986bfc230c8c74c7",
+                "reference": "2a1344eb95eb8ed512f4ad56986bfc230c8c74c7",
                 "shasum": ""
             },
             "type": "component",
@@ -12957,9 +12957,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/6.4.2"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/6.7.3"
             },
-            "time": "2023-04-26T10:48:15+00:00"
+            "time": "2023-11-15T00:41:51+00:00"
         }
     ],
     "aliases": [],
@@ -12972,5 +12972,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

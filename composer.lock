@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "821f8a2168fb1c104194f4e5e22edb76",
+    "content-hash": "8dfa8278cfcea1d285bceca03595018a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -12904,16 +12904,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "6.4.2",
+            "version": "6.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "6a37da4822eebcd2706793454b07bd891c5277a8"
+                "reference": "b0073db409746748af4fc06fbee337bb99f462d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/6a37da4822eebcd2706793454b07bd891c5277a8",
-                "reference": "6a37da4822eebcd2706793454b07bd891c5277a8",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/b0073db409746748af4fc06fbee337bb99f462d9",
+                "reference": "b0073db409746748af4fc06fbee337bb99f462d9",
                 "shasum": ""
             },
             "type": "component",
@@ -12957,9 +12957,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/6.4.2"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/6.8.2"
             },
-            "time": "2023-04-26T10:48:15+00:00"
+            "time": "2023-12-11T03:21:56+00:00"
         }
     ],
     "aliases": [],

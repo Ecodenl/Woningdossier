@@ -51,7 +51,8 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
     {
         if ($this->building instanceof Building) {
             // send the mail to the user
-            Mail::to($this->user->account->email)->send(new UnreadMessagesEmail($this->user, $this->cooperation, $this->unreadMessageCount));
+            Mail::to($this->user->account->email)
+                ->send(new UnreadMessagesEmail($this->user, $this->cooperation, $this->unreadMessageCount));
 
             // after that has been done, update the last_notified_at to the current date
             $this->notificationSetting->last_notified_at = Carbon::now();
@@ -63,9 +64,9 @@ class SendUnreadMessageCountEmail implements ShouldQueue, ShouldBeUnique
 
     public function failed(Throwable $exception)
     {
-        // this functionality is here for people which mistyped they're email address
-        // this will set the messages to read for the user in its resident its input source.
-        // this way we prevent the mail for being sent over and over again.
+        // This functionality is here for people which mistyped their email address.
+        // This will set the messages to read for the user in the resident's input source.
+        // This way we prevent the mail from being sent over and over again.
         $messagesToSetRead = PrivateMessage::where('to_cooperation_id', $this->cooperation->id)
             ->conversation($this->building->id);
 

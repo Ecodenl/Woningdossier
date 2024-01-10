@@ -21,6 +21,7 @@ use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Services\Models\NotificationService;
 use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Services\Verbeterjehuis\RegulationService;
 use App\Traits\FluentCaller;
@@ -66,15 +67,17 @@ class UserActionPlanAdviceService
             $jobs[] = new RefreshRegulationsForUserActionPlanAdvice($userActionPlanAdvice);
         }
 
+        // Since we get mixed input sources, we won't set one for the notifications. Technically we could
+        // loop to set the individual input sources, but we won't check on it so it doesn't matter.
+        NotificationService::init()
+            ->forBuilding($this->user->building)
+            ->setType(RefreshRegulationsForUserActionPlanAdvice::class)
+            ->setActive(collect($jobs)->pluck('uuid')->all());
+
         Bus::batch($jobs)
             ->then(function (Batch $batch) {
                 $this->user->update([
                     'regulations_refreshed_at' => Carbon::now(),
-                ]);
-            })
-            ->finally(function (Batch $batch) {
-                $this->user->update([
-                    'refreshing_regulations' => false,
                 ]);
             })
             ->name('Refresh all user his regulations for advices.')

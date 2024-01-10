@@ -71,10 +71,10 @@ class HeatPump extends Calculator
         if ($this->desiredPower <= 0 && $characteristics instanceof HeatPumpCharacteristic) {
             if ($characteristics->type === HeatPumpCharacteristic::TYPE_FULL) {
                 // for full: required power
-                $this->desiredPower = round($this->requiredPower);
+                $this->desiredPower = (int) round($this->requiredPower);
             } else {
                 // for hybrid: fixed value / standard from table
-                $this->desiredPower = round($characteristics->standard_power_kw);
+                $this->desiredPower = (int) round($characteristics->standard_power_kw);
             }
         }
 
@@ -308,7 +308,6 @@ class HeatPump extends Calculator
             $this->getAnswer('new-heat-pump-type'));
 
         if ($heatPumpConfigurable instanceof Model && $this->heatingTemperature instanceof ToolQuestionCustomValue) {
-            //Log::debug("New heat pump: " . $heatPumpConfigurable->value);
             return HeatPumpCharacteristic::forHeatPumpConfigurable($heatPumpConfigurable)
                 ->forHeatingTemperature($this->heatingTemperature)
                 ->first();
@@ -322,7 +321,7 @@ class HeatPump extends Calculator
     {
         // use round for this check
         if ($this->desiredPower - round($this->requiredPower) >= 0 &&
-            $this->desiredPower - round($this->requiredPower < 1)
+            $this->desiredPower - round($this->requiredPower) < 1
         ) {
             return 1;
         }

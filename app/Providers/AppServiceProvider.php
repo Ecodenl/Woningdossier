@@ -77,35 +77,6 @@ class AppServiceProvider extends ServiceProvider
             }, $boolean);
         });
 
-//        // is this still nodig or is it only loggin?
-//        Queue::before(function (JobProcessing $event) {
-//            $payload = $event->job->payload();
-//            $command = unserialize($payload['data']['command']);
-//            $commandTraits = class_uses_recursive($command);
-//            $jobName = get_class($command);
-//            if (in_array(HasNotifications::class, $commandTraits)) {
-//                $building = $command->building ?? $command->user->building;
-//                Log::debug("JOB {$jobName} started | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-//            }
-//        });
-//
-//        Queue::after(function (JobProcessed $event) {
-//            $payload = $event->job->payload();
-//            $command = unserialize($payload['data']['command']);
-//            $commandTraits = class_uses_recursive($command);
-//            $jobName = get_class($command);
-//            if (in_array(HasNotifications::class, $commandTraits)) {
-//                $building = $command->building ?? $command->user->building;
-//                Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-//                NotificationService::init()
-//                    ->forBuilding($building)
-//                    ->forInputSource($command->inputSource)
-//                    ->setType($jobName)
-//                    ->setUuid($command->uuid)
-//                    ->deactivate();
-//            }
-//        });
-
         Paginator::useBootstrapThree();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 

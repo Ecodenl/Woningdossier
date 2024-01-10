@@ -49,6 +49,7 @@ class RunDeploy extends Command
 
         $commands = [
             SeedCommand::class => [
+                ['--class' => 'ToolLabelsTableSeeder', '--force' => true],
                 ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
                 ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
             ],

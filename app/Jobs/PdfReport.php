@@ -20,6 +20,7 @@ use App\Models\User;
 use App\Scopes\GetValueScope;
 use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
+use App\Services\Kengetallen\KengetallenService;
 use App\Services\Models\AlertService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\Verbeterjehuis\RegulationService;
@@ -56,7 +57,7 @@ class PdfReport extends NonHandleableJobAfterReset
      *
      * @return void
      */
-    public function handle()
+    public function handle(KengetallenService $kengetallenService)
     {
         if (App::runningInConsole()) {
             Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
@@ -265,6 +266,10 @@ class PdfReport extends NonHandleableJobAfterReset
             $inputSource
         )[RegulationService::SUBSIDY] ?? [];
 
+        $kengetallenService = $kengetallenService
+            ->forInputSource($inputSource)
+            ->forBuilding($building);
+
         // https://github.com/mccarlosen/laravel-mpdf
         // To style container margins of the PDF, see config/pdf.php
         $pdf = LaravelMpdf::loadView('cooperation.pdf.user-report.index', compact(
@@ -284,6 +289,7 @@ class PdfReport extends NonHandleableJobAfterReset
             'adviceComments',
             'alerts',
             'subsidyRegulations',
+            'kengetallenService'
         ))->output();
 
         // save the pdf report

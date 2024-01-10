@@ -4,8 +4,9 @@ namespace App\Calculations;
 
 use App\Deprecation\ToolHelper;
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\Kengetallen;
+use App\Helpers\KengetallenCodes;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\Building;
 use App\Models\ElementValue;
@@ -16,11 +17,13 @@ use App\Models\KeyFigureInsulationFactor;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Services\CalculatorService;
+use App\Services\Kengetallen\KengetallenService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
-class HeatPump extends \App\Calculations\Calculator
+class HeatPump extends Calculator
 {
     /**
      * Answer for tool question 'new-boiler-setting-comfort-heat'
@@ -41,6 +44,8 @@ class HeatPump extends \App\Calculations\Calculator
 
     protected array $advices = [];
 
+    private KengetallenService $kengetallenService;
+
     /**
      * @param  \App\Models\Building  $building
      * @param  \App\Models\InputSource  $inputSource
@@ -49,7 +54,7 @@ class HeatPump extends \App\Calculations\Calculator
     public function __construct(Building $building, InputSource $inputSource, ?Collection $answers = null)
     {
         parent::__construct($building, $inputSource, $answers);
-
+        $this->kengetallenService = app(KengetallenService::class);
         $this->heatingTemperature = ToolQuestion::findByShort('new-boiler-setting-comfort-heat')
             ->toolQuestionCustomValues()->whereShort($this->getAnswer('new-boiler-setting-comfort-heat'))->first();
     }
@@ -191,9 +196,11 @@ class HeatPump extends \App\Calculations\Calculator
         //$savingsGas = $amountGas - data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage, 'cooking.gas.electricity', 0);
         //Log::debug('C76 (gasbesparing): = ' . "$amountGas - ($newNettoGasUsageHeating + $newNettoGasUsageTapWater + $newNettoGasUsageCooking) = $savingsGas");
 
-        $savingsGas = (data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage, 'heating.current.gas.bruto', 0)) +
-                      (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage, 'tap_water.current.gas.bruto', 0)) +
-                      (data_get($energyUsage, 'cooking.new.gas', 0) - data_get($energyUsage, 'cooking.current.gas', 0));
+        $savingsGas = (data_get($energyUsage, 'heating.new.gas.bruto', 0) - data_get($energyUsage,
+                    'heating.current.gas.bruto', 0)) +
+            (data_get($energyUsage, 'tap_water.new.gas.bruto', 0) - data_get($energyUsage,
+                    'tap_water.current.gas.bruto', 0)) +
+            (data_get($energyUsage, 'cooking.new.gas', 0) - data_get($energyUsage, 'cooking.current.gas', 0));
         // New gas usage will probably (ideally) be less than new. Savings is the difference, but * -1!
         $savingsGas = $savingsGas * -1;
 
@@ -221,12 +228,16 @@ class HeatPump extends \App\Calculations\Calculator
             $currentNettoElectricityUsageCooking;
         //Log::debug("C77 (meerverbruik elektra): (" . $newNettoElectricityUsageHeating . ' + ' . $newNettoElectricityUsageTapWater  . ' + ' . $newNettoElectricityUsageCooking . ') - ' . $currentNettoElectricityUsageHeating . ' - ' . $currentNettoElectricityUsageTapWater . ' - ' . $currentNettoElectricityUsageCooking . ' = ' . $extraConsumptionElectricity);
 
-        $savingsCo2 = Calculator::calculateCo2Savings($savingsGas) -
+        $savingsCo2 = RawCalculator::calculateCo2Savings($savingsGas) -
             ($extraConsumptionElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
         //Log::debug("C78: " . $savingsCo2 . " (CO2 besparing)");
 
-        $savingsMoney = Calculator::calculateMoneySavings($savingsGas) -
-            ($extraConsumptionElectricity * Kengetallen::EURO_SAVINGS_ELECTRICITY);
+        $calculatedMoneySavings = app(CalculatorService::class)
+            ->forBuilding($this->building)
+            ->calculateMoneySavings($savingsGas);
+
+        $euroSavingsElectricity = $this->kengetallenService->forInputSource($this->inputSource)->forBuilding($this->building)->resolve(KengetallenCodes::EURO_SAVINGS_ELECTRICITY);
+        $savingsMoney = $calculatedMoneySavings - ($extraConsumptionElectricity * $euroSavingsElectricity);
         //Log::debug("C79: " . $savingsMoney . " (euro besparing)");
 
         $result = [
@@ -283,7 +294,7 @@ class HeatPump extends \App\Calculations\Calculator
                 ->forHeatingTemperature($this->heatingTemperature)
                 ->first();
 
-            if ($coverage instanceof KeyFigureHeatPumpCoverage){
+            if ($coverage instanceof KeyFigureHeatPumpCoverage) {
                 return $coverage->percentage;
             }
         }
@@ -306,7 +317,7 @@ class HeatPump extends \App\Calculations\Calculator
     }
 
     // = C61
-    public function betaFactor() : float
+    public function betaFactor(): float
     {
         // use round for this check
         if ($this->desiredPower - round($this->requiredPower) >= 0 &&
@@ -342,7 +353,8 @@ class HeatPump extends \App\Calculations\Calculator
         return round($score / (count($toolQuestions) + 1), 1);
     }
 
-    protected function insulationSubScore($questions) : float {
+    protected function insulationSubScore($questions): float
+    {
         $score = 0;
 
         foreach ($questions as $toolQuestion => $weight) {

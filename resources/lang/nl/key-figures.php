@@ -169,9 +169,5 @@ return [
             'title' => 'kosten wp',
             'unit' => '€/wp',
         ],
-        'COST_KWH' => [
-            'title' => 'kosten kWh',
-            'unit' => '€/kWh',
-        ],
     ],
 ];

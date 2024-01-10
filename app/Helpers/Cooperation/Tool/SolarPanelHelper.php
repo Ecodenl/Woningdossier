@@ -38,10 +38,10 @@ class SolarPanelHelper extends ToolHelper
         $totalSunPanelsService = Service::findByShort('total-sun-panels');
 
         $buildingServiceValues = $this->getValues("building_services.{$totalSunPanelsService->id}");
-        // we could, when not passed; clear the values.
-        // however users (and people in general) tend to make mistakes
-        // so we will keep the data in case they turn the solar panels back on,
-        if (!is_null($buildingServiceValues)) {
+        // We could (when not passed) clear the values.
+        // However users (and people in general) tend to make mistakes,
+        // so we will keep the data in case they turn the solar panels back on.
+        if (! is_null($buildingServiceValues)) {
             BuildingService::allInputSources()->updateOrCreate(
                 [
                     'building_id' => $this->building->id,

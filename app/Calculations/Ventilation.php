@@ -3,7 +3,7 @@
 namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\Number;
@@ -15,6 +15,7 @@ use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\UserEnergyHabit;
+use App\Services\CalculatorService;
 use Illuminate\Support\Arr;
 
 class Ventilation
@@ -22,12 +23,16 @@ class Ventilation
     /**
      * Calculate the wall insulation costs and savings etc.
      *
-     * @param UserEnergyHabit|null $energyHabit
+     * @param  UserEnergyHabit|null  $energyHabit
      *
      * @return array;
      */
-    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, array $calculateData): array
-    {
+    public static function calculate(
+        Building $building,
+        InputSource $inputSource,
+        $energyHabit,
+        array $calculateData
+    ): array {
         $step = Step::findByShort('ventilation');
 
         /** @var BuildingService $buildingVentilationService */
@@ -46,7 +51,6 @@ class Ventilation
                 'interest_comparable' => null,
             ],
         ];
-
 
 
         if ($buildingVentilationService instanceof BuildingService) {
@@ -94,7 +98,8 @@ class Ventilation
                     // because: either there is no crack sealing or it's all okay
                     $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-                    if (in_array('none', Arr::get($calculateData, 'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                    if (in_array('none', Arr::get($calculateData,
+                                'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
                         unset($measures['crack-sealing']);
                     }
 
@@ -123,7 +128,8 @@ class Ventilation
                     // because: either there is no crack sealing or it's all okay
                     $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-                    if (in_array('none', Arr::get($calculateData, 'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                    if (in_array('none', Arr::get($calculateData,
+                                'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
                         unset($measures['crack-sealing']);
                     }
 
@@ -152,7 +158,8 @@ class Ventilation
                     // because: either there is no crack sealing or it's all okay
                     $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-                    if (in_array('none', Arr::get($calculateData, 'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
+                    if (in_array('none', Arr::get($calculateData,
+                                'building_ventilations.how') ?? []) || $currentCrackSealingCalculateValue < 2) {
                         unset($measures['crack-sealing']);
                     }
 
@@ -190,10 +197,14 @@ class Ventilation
                     $measureApplication = MeasureApplication::where('short',
                         'crack-sealing')->first();
 
-                    $result['crack_sealing']['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measureApplication,
+                    $result['crack_sealing']['cost_indication'] = RawCalculator::calculateMeasureApplicationCosts($measureApplication,
                         1, null, false);
-                    $result['crack_sealing']['savings_co2'] = Calculator::calculateCo2Savings($result['crack_sealing']['savings_gas']);
-                    $result['crack_sealing']['savings_money'] = Calculator::calculateMoneySavings($result['crack_sealing']['savings_gas']);
+                    $result['crack_sealing']['savings_co2'] = RawCalculator::calculateCo2Savings($result['crack_sealing']['savings_gas']);
+
+                    $result['crack_sealing']['savings_money'] = app(CalculatorService::class)
+                        ->forBuilding($building)
+                        ->calculateMoneySavings($result['crack_sealing']['savings_gas']);
+
                     $result['crack_sealing']['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['crack_sealing']['cost_indication'],
                         $result['crack_sealing']['savings_money']), 1);
                 }

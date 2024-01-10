@@ -9,9 +9,6 @@ use App\Models\PvPanelYield;
 
 class KeyFigures implements KeyFiguresInterface
 {
-    const SOLAR_PANEL_SURFACE = 1.6; // m2
-
-    const COST_KWH = 0.23; // euro
     const COST_WP = 1.50; // euro
 
     protected static $angles = [
@@ -94,7 +91,6 @@ class KeyFigures implements KeyFiguresInterface
     public static function getKeyFigures()
     {
         return [
-            'COST_KWH' => self::COST_KWH,
             'COST_WP' => self::COST_WP,
         ];
     }

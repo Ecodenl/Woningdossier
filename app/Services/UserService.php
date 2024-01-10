@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Events\UserDeleted;
 use App\Events\UserResetHisBuilding;
-use App\Helpers\Queue;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\Building;
@@ -40,7 +39,7 @@ class UserService
     public function isRelatedWithEconobis(): bool
     {
         $contactId = $this->user->extra['contact_id'] ?? null;
-        if ( ! empty($contactId)) {
+        if (! empty($contactId)) {
             return true;
         }
         return false;
@@ -183,6 +182,8 @@ class UserService
             $features->building()->associate(
                 $building
             )->save();
+
+            app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
         }
         UserResetHisBuilding::dispatch($building);
     }
@@ -259,7 +260,7 @@ class UserService
         if (! $building->municipality()->first() instanceof Municipality) {
             CheckBuildingAddress::dispatch($building, $inputSource);
         }
-
+        app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
         $user->cooperation()->associate(
             $cooperation
         )->save();
@@ -270,6 +271,7 @@ class UserService
 
         return $user;
     }
+
 
     /**
      * Method to delete a user and its user info.

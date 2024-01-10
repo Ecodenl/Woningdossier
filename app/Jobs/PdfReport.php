@@ -91,12 +91,13 @@ class PdfReport extends NonHandleableJobAfterReset
         $headers = $dumpService->headerStructure;
 
         // So we don't use the initial headers (currently). Therefore, we anonymize, as then we only have to unset
-        // the first four keys.
+        // the first five keys.
         unset(
             $dump[0],
             $dump[1],
             $dump[2],
             $dump[3],
+            $dump[4],
         );
 
         $simpleDump = [];

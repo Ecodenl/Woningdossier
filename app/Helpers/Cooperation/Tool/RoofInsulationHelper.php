@@ -4,7 +4,7 @@ namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\RoofInsulation as RoofInsulationCalculate;
 use App\Events\StepCleared;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\RoofInsulation;
 use App\Helpers\RoofInsulationCalculator;
 use App\Models\Building;
@@ -125,7 +125,7 @@ class RoofInsulationHelper extends ToolHelper
                     //        $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc-' . $roofCat)->first();
                     //
                     //        $year = RoofInsulationCalculator::determineApplicationYear($zincReplaceMeasure, $zincReplaceYear, 1);
-                    //        $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
+                    //        $costs = RawCalculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
                     //
                     //        $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
                     //        $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);
@@ -157,7 +157,7 @@ class RoofInsulationHelper extends ToolHelper
                                 $factor = ($roofTilesStatus->calculate_value / 100);
 
                                 $year = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                                $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
+                                $costs = RawCalculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                                 $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
                                 $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);
@@ -191,7 +191,7 @@ class RoofInsulationHelper extends ToolHelper
                             $factor = 1;
 
                             $year = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                            $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
+                            $costs = RawCalculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                             $actionPlanAdvice = new UserActionPlanAdvice(compact('year'));
                             $actionPlanAdvice->costs = UserActionPlanAdviceService::formatCosts($costs);

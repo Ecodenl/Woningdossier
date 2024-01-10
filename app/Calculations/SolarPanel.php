@@ -4,8 +4,8 @@ namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Kengetallen;
+use App\Helpers\KengetallenCodes;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
-use App\Helpers\Translation;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\PvPanelLocationFactor;
@@ -14,6 +14,7 @@ use App\Models\PvPanelYield;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
+use App\Services\Kengetallen\KengetallenService;
 use Carbon\Carbon;
 
 class SolarPanel
@@ -58,16 +59,15 @@ class SolarPanel
         }
 
         if ($peakPower > 0) {
-
             $number = 0;
             // we cant calculate the amount of panels if someone has a negative amount of electricity
             if ($amountElectricity > 0) {
                 $number = ceil(($amountElectricity / $helpFactor) / $peakPower);
             }
             // \Log::debug(__METHOD__.' Advised number of panels: '.$number.' = ceil(( '.$amountElectricity.' / '.$helpFactor.') / '.$peakPower.')');
-            $result['advice'] = Translation::translate('solar-panels.advice-text', ['number' => $number]);
+            $result['advice'] = __('solar-panels.advice-text', ['number' => $number]);
             $wp = $panels * $peakPower;
-            $result['total_power'] = Translation::translate('solar-panels.total-power', ['wp' => $wp]);
+            $result['total_power'] = __('solar-panels.total-power', ['wp' => $wp]);
 
             $result['yield_electricity'] = $wp * $helpFactor;
             // \Log::debug(__METHOD__.' Electricity yield: '.$result['yield_electricity'].' = '.$wp.' * '.$helpFactor);
@@ -76,12 +76,16 @@ class SolarPanel
             // \Log::debug(__METHOD__.' % of own consumption: '.$result['raise_own_consumption'].' = ('.$result['yield_electricity'].' / '.$amountElectricity.') * 100');
 
             $result['savings_co2'] = $result['yield_electricity'] * Kengetallen::CO2_SAVINGS_ELECTRICITY;
-            $result['savings_money'] = $result['yield_electricity'] * KeyFigures::COST_KWH;
+
+            $masterInputSource = InputSource::master();
+            $euroSavingsElectricity = app(KengetallenService::class)
+                ->forInputSource($masterInputSource)
+                ->forBuilding($building)
+                ->resolve(KengetallenCodes::EURO_SAVINGS_ELECTRICITY);
+            $result['savings_money'] = $result['yield_electricity'] * $euroSavingsElectricity;
             $result['cost_indication'] = $wp * KeyFigures::COST_WP;
             $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-
-            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
             $hasPanelsQuestion = ToolQuestion::findByShort('has-solar-panels');
             if ($hasPanelsQuestion instanceof ToolQuestion) {
                 $answer = $building->getAnswer($masterInputSource, $hasPanelsQuestion);

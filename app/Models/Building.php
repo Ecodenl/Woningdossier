@@ -138,16 +138,25 @@ class Building extends Model
         'is_active' => 'boolean',
     ];
 
+    // Static methods
     public static function boot()
     {
         parent::boot();
 
         // The mediable only _detaches_ the media. We want to DELETE the media if set.
         static::deleting(function (Building $building) {
+            // TODO: This doesn't delete the files
             $building->media()->delete();
         });
     }
 
+    // Model methods
+    public function getAddress(): string
+    {
+        return "{$this->street} {$this->number}{$this->extension}, {$this->postal_code} {$this->city}";
+    }
+
+    // Relations
     public function toolQuestionAnswers(): HasMany
     {
         return $this->hasMany(ToolQuestionAnswer::class);
@@ -163,6 +172,7 @@ class Building extends Model
         return $this->belongsTo(Municipality::class);
     }
 
+    // Unsorted
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion, bool $withMaster = false)
     {
         // TODO: See if and how we can reduce query calls here

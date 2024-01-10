@@ -6,11 +6,10 @@ use App\Helpers\Queue;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UnreadMessagesEmail extends Mailable implements ShouldQueue
+class UnreadMessagesEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -37,9 +36,13 @@ class UnreadMessagesEmail extends Mailable implements ShouldQueue
     public function build()
     {
         return $this->view('cooperation.mail.user.unread-message-count.view')
-                    ->text('cooperation.mail.user.unread-message-count.text')
-                    ->subject(strip_tags(trans_choice('cooperation/mail/unread-message-count.subject', $this->unreadMessageCount, [
-                        'unread_message_count' => $this->unreadMessageCount,
-                    ])));
+            ->text('cooperation.mail.user.unread-message-count.text')
+            ->subject(strip_tags(trans_choice(
+                'cooperation/mail/unread-message-count.subject',
+                $this->unreadMessageCount,
+                [
+                    'unread_message_count' => $this->unreadMessageCount,
+                ]
+            )));
     }
 }

@@ -29,7 +29,6 @@ class SendPdfReportToEconobis implements ShouldQueue
      */
     public function __construct(Building $building)
     {
-        $this->queue = Queue::APP_EXTERNAL;
         $this->building = $building;
     }
 

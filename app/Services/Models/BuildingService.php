@@ -3,7 +3,7 @@
 namespace App\Services\Models;
 
 use App\Events\BuildingAppointmentDateUpdated;
-use App\Helpers\Queue;
+use App\Helpers\KengetallenCodes;
 use App\Helpers\ToolQuestionHelper;
 use App\Jobs\CheckBuildingAddress;
 use App\Jobs\RefreshRegulationsForBuildingUser;
@@ -11,14 +11,21 @@ use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Scan;
+use App\Models\ToolQuestion;
+use App\Services\Kengetallen\KengetallenService;
+use App\Services\Kengetallen\Resolvers\RvoDefined;
+use App\Services\ToolQuestionService;
 use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
+use App\Traits\Services\HasInputSources;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BuildingService
 {
-    use FluentCaller;
+    use FluentCaller,
+        HasInputSources;
 
     public ?Building $building;
 
@@ -30,7 +37,7 @@ class BuildingService
     /**
      * convenient way of setting a appointment date on a building.
      *
-     * @param string
+     * @param  string
      *
      * @return void
      */
@@ -40,8 +47,32 @@ class BuildingService
             'status_id' => $this->building->getMostRecentBuildingStatus()->status_id,
             'appointment_date' => $appointmentDate,
         ]);
+        Log::debug(__METHOD__);
+        Log::debug("dispatching BuildingAppointmentDateUpdated for building {$this->building->id}");
 
         BuildingAppointmentDateUpdated::dispatch($this->building);
+    }
+
+    /**
+     * This method will set the BuildingDefined kengetallen to the "default" (RvoDefined) kengetallen
+     *
+     * @return void
+     */
+    public function setBuildingDefinedKengetallen(): void
+    {
+        $kengetallenService = app(KengetallenService::class)->forBuilding($this->building);
+        $toolQuestionService = ToolQuestionService::init()
+            ->building($this->building)
+            ->currentInputSource(InputSource::resident());
+
+        // force to resolve through the code defined kengetallen.
+        $toolQuestionService
+            ->toolQuestion(ToolQuestion::findByShort('electricity-price-euro'))
+            ->save($kengetallenService->get(new RvoDefined(), KengetallenCodes::EURO_SAVINGS_ELECTRICITY));
+
+        $toolQuestionService
+            ->toolQuestion(ToolQuestion::findByShort('gas-price-euro'))
+            ->save($kengetallenService->get(new RvoDefined(),KengetallenCodes::EURO_SAVINGS_GAS));
     }
 
     public function forBuilding(Building $building): self
@@ -84,7 +115,7 @@ class BuildingService
 
         // Get the tool question answers for custom values.
         $answersForTqa = collect();
-        if ( ! empty($ids)) {
+        if (! empty($ids)) {
             // This sub-query selects the example building if it has the same answer, or else the latest input source
             // that made changes on the tool question.
             $selectQuery = "(SELECT IF (
@@ -140,7 +171,7 @@ class BuildingService
 
         // Get the tool question answers for save in questions.
         $answersForSaveIn = collect();
-        if ( ! empty($ids)) {
+        if (! empty($ids)) {
             $saveIns = $toolQuestions->whereNotNull('save_in')->pluck('save_in', 'id')->toArray();
             foreach ($saveIns as $toolQuestionId => $saveIn) {
                 $resolved = ToolQuestionHelper::resolveSaveIn($saveIn, $this->building);
@@ -154,7 +185,7 @@ class BuildingService
                 unset($where[$whereColumn]);
 
                 $append = '';
-                if ( ! empty($where)) {
+                if (! empty($where)) {
                     foreach ($where as $col => $val) {
                         $append .= " AND {$col} = {$val}";
                     }
@@ -216,12 +247,12 @@ class BuildingService
         return $answersForTqa->union($answersForSaveIn);
     }
 
-    public function performMunicipalityCheck ()
+    public function performMunicipalityCheck()
     {
         $building = $this->building;
 
         $currentMunicipality = $building->municipality_id;
-        CheckBuildingAddress::dispatchSync($building);
+        CheckBuildingAddress::dispatchSync($building, $this->inputSource);
         // Get a fresh (and updated) building instance
         $building = $building->fresh();
         $newMunicipality = $building->municipality_id;
@@ -231,7 +262,7 @@ class BuildingService
         // This event has a RefreshBuildingUserHisAdvices listener that calls the RefreshRegulationsForBuildingUser job.
         // If the municipality hasn't changed, however, we will manually dispatch a refresh.
         if (is_null($newMunicipality)) {
-            CheckBuildingAddress::dispatch($building);
+            CheckBuildingAddress::dispatch($building, $this->inputSource);
         } elseif ($currentMunicipality === $newMunicipality) {
             RefreshRegulationsForBuildingUser::dispatch($building);
         }
@@ -249,7 +280,8 @@ class BuildingService
         // to cascade on delete, but mappings are a morph relation without foreign key constraints, so we must
         // delete them ourselves.
         DB::table('mappings')->where('from_model_type', CustomMeasureApplication::class)
-            ->whereIn('from_model_id', $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray())
+            ->whereIn('from_model_id',
+                $building->customMeasureApplications()->allInputSources()->pluck('id')->toArray())
             ->delete();
 
         // table will be removed anyways.

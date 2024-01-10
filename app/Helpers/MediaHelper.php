@@ -8,7 +8,9 @@ use App\Models\Cooperation;
 class MediaHelper
 {
     const LOGO = 'logo';
+    const BUILDING_IMAGE = 'building-image';
     const BACKGROUND = 'background';
+    const PDF_BACKGROUND = 'pdf-background';
     const GENERIC_FILE = 'generic-file';
     const GENERIC_IMAGE = 'generic-image';
     const REPORT = 'report';
@@ -16,6 +18,10 @@ class MediaHelper
     const INVOICE = 'invoice';
     const BILL = 'bill';
 
+    /**
+     * These are the tags that are fillable (or better said, selectable). Tags that are not set here cannot be selected
+     * in e.g. the file uploader (usually tags with a dedicated purpose (such as building-image)).
+     */
     public static function getFillableTagsForClass(?string $class = null): array
     {
         switch ($class) {
@@ -23,6 +29,7 @@ class MediaHelper
                 return [
                     self::LOGO => self::LOGO,
                     self::BACKGROUND => self::BACKGROUND,
+                    self::PDF_BACKGROUND => self::PDF_BACKGROUND,
                 ];
 
             case Building::class:
@@ -38,6 +45,20 @@ class MediaHelper
             default:
                 return [];
         }
+    }
+
+    public static function getMimesForTag(string $tag): string
+    {
+        switch ($tag) {
+            case self::BUILDING_IMAGE:
+                $method = 'getImageMimes';
+                break;
+            default:
+                $method = 'getAllMimes';
+                break;
+        }
+
+        return static::{$method}();
     }
 
     public static function getImageMimes(bool $asArray = false)
@@ -58,8 +79,17 @@ class MediaHelper
         return static::getFileMimes() . ',' . static::getImageMimes();
     }
 
-    public static function getMaxFileSize()
+    public static function getMaxFileSize(?string $tag = null)
     {
-        return config('hoomdossier.media.max_size');
+        $size = config('hoomdossier.media.max_size');
+
+        if (! is_null($tag)) {
+            $custom = config('hoomdossier.media.custom');
+            if (array_key_exists($tag, $custom)) {
+                return $custom[$tag]['max_size'] ?? $size;
+            }
+        }
+
+        return $size;
     }
 }

@@ -319,8 +319,28 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                     ]
                 ],
-                'Samenvatting bewoners-gebruik' => [
+                'Gas en elektra kosten' => [
                     'order' => 4,
+                    'sub_step_template_id' => $templateDefault->id,
+                    'morphs' => [
+                        [
+                            'morph' => ToolLabel::findByShort('gas-electricity-price-explain'),
+                            'size' => 'w-full'
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('gas-price-euro'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('electricity-price-euro'),
+                            'tool_question_type_id' => $textType->id,
+                            'size' => 'w-full',
+                        ],
+                    ]
+                ],
+                'Samenvatting bewoners-gebruik' => [
+                    'order' => 5,
                     'sub_step_template_id' => $templateSummary->id,
                     'morphs' => [
                         [
@@ -906,6 +926,26 @@ class SubSteppablesTableSeeder extends Seeder
                         ],
                         [
                             'morph' => ToolQuestion::findByShort('mailbox-bristles'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('isolating-window-foil'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-caulk'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-foam'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('door-silicone-strip'),
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                         ],
@@ -1654,6 +1694,78 @@ class SubSteppablesTableSeeder extends Seeder
                             'tool_question_type_id' => $radioType->id,
                             'size' => 'w-full',
                             'conditions' => $this->getSubQuestionConditions('mailbox-bristles'),
+                        ],
+                        
+                        [
+                            'morph' => ToolQuestion::findByShort('isolating-window-foil'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('isolating-window-foil-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('isolating-window-foil'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('isolating-window-foil-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('isolating-window-foil'),
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-caulk'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-caulk-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('crack-caulk'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-caulk-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('crack-caulk'),
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-foam'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-foam-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('crack-foam'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('crack-foam-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('crack-foam'),
+                        ],
+
+                        [
+                            'morph' => ToolQuestion::findByShort('door-silicone-strip'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('door-silicone-strip-how'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('door-silicone-strip'),
+                        ],
+                        [
+                            'morph' => ToolQuestion::findByShort('door-silicone-strip-coach-help'),
+                            'tool_question_type_id' => $radioType->id,
+                            'size' => 'w-full',
+                            'conditions' => $this->getSubQuestionConditions('door-silicone-strip'),
                         ],
                     ],
                 ],

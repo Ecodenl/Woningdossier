@@ -1,10 +1,13 @@
 <?php
 
+use App\Helpers\MediaHelper;
+
 return [
     'index' => [
         'title' => 'Instellingen voor coöperatie',
-        'logo' => 'Selecteer hier een logo',
-        'background' => 'Selectier hier een achtergrond afbeelding',
+        MediaHelper::LOGO => 'Selecteer hier een logo',
+        MediaHelper::BACKGROUND => 'Selecteer hier een achtergrond afbeelding',
+        MediaHelper::PDF_BACKGROUND => 'Selecteer hier een PDF achtergrond afbeelding',
         'current' => 'Huidig:',
     ],
     'store' => [

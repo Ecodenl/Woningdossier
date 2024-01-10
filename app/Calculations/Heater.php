@@ -4,7 +4,7 @@ namespace App\Calculations;
 
 use App\Deprecation\ToolHelper;
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
+use App\Helpers\RawCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\ComfortLevelTapWater;
@@ -13,9 +13,10 @@ use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
+use App\Services\CalculatorService;
 use Carbon\Carbon;
 
-class Heater extends \App\Calculations\Calculator
+class Heater extends Calculator
 {
     public function performCalculations(): array
     {
@@ -77,7 +78,8 @@ class Heater extends \App\Calculations\Calculator
 
             $systemSpecs = KeyFigures::getSystemSpecifications($result['consumption']['water'], $helpFactor);
 
-            if (is_array($systemSpecs) && array_key_exists('boiler', $systemSpecs) && array_key_exists('collector', $systemSpecs)) {
+            if (is_array($systemSpecs) && array_key_exists('boiler', $systemSpecs) && array_key_exists('collector',
+                    $systemSpecs)) {
                 $result['specs'] = [
                     'size_boiler' => $systemSpecs['boiler'],
                     'size_collector' => $systemSpecs['collector'],
@@ -86,15 +88,20 @@ class Heater extends \App\Calculations\Calculator
                 // \Log::debug('Heater: For this water consumption you need this heater: '.json_encode($systemSpecs));
                 $result['production_heat'] = $systemSpecs['production_heat'];
                 $result['savings_gas'] = $result['production_heat'] / Kengetallen::gasKwhPerM3();
-                $result['percentage_consumption'] = isset($result['consumption']['gas']) ? ($result['savings_gas'] / $result['consumption']['gas']) * 100 : 0;
-                $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
-                $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
+                $result['percentage_consumption'] = data_get($result, 'consumption.gas', 0) > 0 ? ($result['savings_gas'] / $result['consumption']['gas']) * 100 : 0;
+                $result['savings_co2'] = RawCalculator::calculateCo2Savings($result['savings_gas']);
+                $result['savings_money'] = round(app(CalculatorService::class)
+                    ->forBuilding($this->building)
+                    ->calculateMoneySavings($result['savings_gas']));
 
-                $componentCostBoiler = HeaterComponentCost::where('component', 'boiler')->where('size', $result['specs']['size_boiler'])->first();
-                $componentCostCollector = HeaterComponentCost::where('component', 'collector')->where('size', $result['specs']['size_collector'])->first();
+                $componentCostBoiler = HeaterComponentCost::where('component', 'boiler')->where('size',
+                    $result['specs']['size_boiler'])->first();
+                $componentCostCollector = HeaterComponentCost::where('component', 'collector')->where('size',
+                    $result['specs']['size_collector'])->first();
                 $result['cost_indication'] = $componentCostBoiler->cost + $componentCostCollector->cost;
 
-                $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+                $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'],
+                    $result['savings_money']), 1);
 
 
                 $answer = array_merge($this->getAnswer('heat-source'), $this->getAnswer('heat-source-warm-tap-water'));

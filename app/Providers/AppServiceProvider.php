@@ -9,19 +9,14 @@ use App\Services\Econobis\Api\EconobisApi;
 use App\Services\Models\NotificationService;
 use App\Services\Verbeterjehuis\Client as VerbeterJeHuisClient;
 use App\Services\Verbeterjehuis\Verbeterjehuis;
-use App\Traits\Queue\HasNotifications;
 use Carbon\Carbon;
 use Ecodenl\LvbagPhpWrapper\Client as LvbagClient;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Application;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Queue\Events\JobProcessed;
-use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
@@ -80,34 +75,6 @@ class AppServiceProvider extends ServiceProvider
                     }
                 }
             }, $boolean);
-        });
-
-        Queue::before(function (JobProcessing $event) {
-            $payload = $event->job->payload();
-            $command = unserialize($payload['data']['command']);
-            $commandTraits = class_uses_recursive($command);
-            $jobName = get_class($command);
-            if (in_array(HasNotifications::class, $commandTraits)) {
-                $building = $command->building ?? $command->user->building;
-                Log::debug("JOB {$jobName} started | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-            }
-        });
-
-        Queue::after(function (JobProcessed $event) {
-            $payload = $event->job->payload();
-            $command = unserialize($payload['data']['command']);
-            $commandTraits = class_uses_recursive($command);
-            $jobName = get_class($command);
-            if (in_array(HasNotifications::class, $commandTraits)) {
-                $building = $command->building ?? $command->user->building;
-                Log::debug("JOB {$jobName} ended | b_id: {$building->id} | input_source_id: {$command->inputSource->id}");
-                NotificationService::init()
-                    ->forBuilding($building)
-                    ->forInputSource($command->inputSource)
-                    ->setType($jobName)
-                    ->setUuid($command->uuid)
-                    ->deactivate();
-            }
         });
 
         Paginator::useBootstrapThree();

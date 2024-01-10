@@ -125,7 +125,8 @@ class ToolQuestion extends Model
 
                         // these will also be available in the frontend, to the user.
                         // be careful choosing what you allow.
-                        $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short', 'building_type_id', 'cooperation_id']);
+                        $questionValue = Arr::only($valuable->toArray(),
+                            ['calculate_value', 'short', 'building_type_id', 'cooperation_id']);
                         $questionValue['extra'] = $toolQuestionValuable->extra;
                         // the humane readable name is either set in the name or value column.
                         $questionValue['name'] = $valuable->name ?? $valuable->value ?? $valuable->measure_name;
@@ -173,6 +174,15 @@ class ToolQuestion extends Model
         return $this->morphToMany(SubStep::class, 'sub_steppable')
             ->using(SubSteppable::class)
             ->withPivot('order', 'size', 'conditions', 'tool_question_type_id');
+    }
+
+    public function scopeFindByShortsOrdered($builder, $shorts)
+    {
+        $questionMarks = substr(str_repeat('?, ', count($shorts)), 0, -2);
+
+        return $builder
+            ->orderByRaw("FIELD(short, {$questionMarks})", $shorts)
+            ->whereIn('short', $shorts);
     }
 
     /**

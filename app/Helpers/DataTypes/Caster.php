@@ -16,6 +16,7 @@ class Caster
     public const INT = 'int';
     public const INT_5 = 'int_5'; // INT with bucket 5 for rounding
     public const FLOAT = 'float';
+    public const NON_ROUNDING_FLOAT = 'non_rounding_float';
     public const BOOL = 'bool';
     public const ARRAY = 'array';
     public const JSON = 'json';
@@ -73,6 +74,7 @@ class Caster
                 $this->value = (int) NumberFormatter::round((float) $this->value, 5);
                 break;
 
+            case static::NON_ROUNDING_FLOAT:
             case static::FLOAT:
                 $this->value = (float) $this->value;
                 break;
@@ -110,6 +112,9 @@ class Caster
             case static::INT:
                 // Note that the dot is replaced with nothing. We expect a Dutch format.
                 $value = (int) NumberFormatter::mathableFormat(str_replace('.', '', ($value ?? 0)), 0);
+                break;
+            case static::NON_ROUNDING_FLOAT:
+                $value = (float) str_replace(',', '.', ($value ?? 0));
                 break;
             case static::FLOAT:
                 // Note that the dot is replaced with nothing. We expect a Dutch format.

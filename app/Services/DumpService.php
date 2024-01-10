@@ -131,6 +131,7 @@ class DumpService
         if ($this->anonymize) {
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.updated-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
@@ -139,6 +140,7 @@ class DumpService
         } else {
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.updated-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.coach-appointment-date'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -189,6 +191,10 @@ class DumpService
         $inputSource = $this->inputSource;
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
+        $updatedAt = $this->user->userActionPlanAdvices()
+            ->forInputSource($inputSource)
+            ->orderByDesc('updated_at')
+            ->value('updated_at');
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
 
         if (! $mostRecentStatus instanceof BuildingStatus) {
@@ -205,7 +211,7 @@ class DumpService
 
         if ($this->anonymize) {
             $data = [
-                $createdAt, $buildingStatus, $postalCode, $city,
+                $createdAt, $updatedAt, $buildingStatus, $postalCode, $city,
             ];
         } else {
             $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
@@ -228,7 +234,7 @@ class DumpService
             $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
 
             $data = [
-                $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
+                $createdAt, $updatedAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                 $firstName, $lastName, $email, $phoneNumber,
                 $street, trim($number . ' ' . $extension), $postalCode, $city,
             ];

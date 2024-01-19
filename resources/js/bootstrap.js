@@ -62,6 +62,8 @@ window.initTinyMCE = function (options = {}) {
         link_title: false,
         // Link plugin settings end
         toolbar: 'link bold italic underline strikethrough fontsize | bullist numlist',
+        contextmenu: 'link',
+        paste_as_text: true,
         // font_size_formats: 'Extra-Small=10px Small=14px Normal=18px Medium=24px Large=32px Extra-Large=36px Extra-Extra Large=48px',
         font_size_formats: 'Normaal=14px',
         promotion: false,

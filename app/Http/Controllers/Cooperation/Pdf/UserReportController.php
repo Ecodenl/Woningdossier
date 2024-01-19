@@ -264,7 +264,7 @@ class UserReportController extends Controller
             'user',
             'inputSource',
             'connectedCoachNames',
-             'headers',
+            'headers',
             'simpleDump',
             'expertDump',
             'coachHelp',

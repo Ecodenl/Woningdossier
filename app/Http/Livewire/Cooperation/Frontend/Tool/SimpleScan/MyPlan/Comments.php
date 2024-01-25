@@ -96,6 +96,8 @@ class Comments extends Component
                         'comment' => $commentText,
                     ]);
                 }
+
+                $this->originalAnswers[$toolQuestionShort] = $this->filledInAnswers[$toolQuestionShort];
             }
         }
     }

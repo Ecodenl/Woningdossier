@@ -254,6 +254,8 @@ abstract class Scannable extends Component
 
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
+            $this->originalAnswers[$toolQuestionShort] = $this->filledInAnswers[$toolQuestionShort];
+
             foreach ($this->filledInAnswers as $toolQuestionShort => $givenAnswer) {
                 // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */

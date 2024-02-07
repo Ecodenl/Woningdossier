@@ -53,6 +53,7 @@ class RunDeploy extends Command
                 ['--class' => 'ToolLabelsTableSeeder', '--force' => true],
                 ['--class' => 'ToolQuestionsTableSeeder', '--force' => true],
                 ['--class' => 'SubSteppablesTableSeeder', '--force' => true],
+                ['--class' => 'MeasureApplicationsTableSeeder', '--force' => true],
             ],
         ];
 

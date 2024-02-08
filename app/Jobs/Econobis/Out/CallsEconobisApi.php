@@ -67,6 +67,7 @@ trait CallsEconobisApi
                 }
             } else {
                 Log::error('Response is null!');
+                report($exception);
             }
         }
 

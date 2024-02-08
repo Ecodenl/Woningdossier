@@ -52,14 +52,21 @@ trait CallsEconobisApi
 
         Log::error(sprintf('Building %s - %s %s %s', $buildingId, get_class($exception), $exception->getCode(), $exception->getMessage()));
         if (method_exists($exception, 'getResponse')) {
-            /** @var Stream $stream */
-            $stream = $exception->getResponse()->getBody();
-            $stream->rewind();
+            $response = $exception->getResponse();
 
-            $contents = $stream->getContents();
-            Log::error($contents);
+            if (! is_null($response)) {
+                /** @var Stream $stream */
+                $stream = $exception->getResponse()->getBody();
+                $stream->rewind();
 
-            if (Str::of($contents)->contains('ErrorException')) {
+                $contents = $stream->getContents();
+                Log::error($contents);
+
+                if (Str::of($contents)->contains('ErrorException')) {
+                    report($exception);
+                }
+            } else {
+                Log::error('Response is null!');
                 report($exception);
             }
         }

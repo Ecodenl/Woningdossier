@@ -51,7 +51,7 @@ class Alerts extends Component
             ->setAnswers(collect($answers))
             ->getAlerts();
 
-        if (! empty($newAlerts)) {
+        if ($newAlerts->isNotEmpty()) {
             $oldAlertShorts = $oldAlerts->pluck('short')->toArray();
             $newAlertShorts = $newAlerts->pluck('short')->toArray();
 

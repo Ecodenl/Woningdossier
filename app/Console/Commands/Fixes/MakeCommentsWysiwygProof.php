@@ -50,11 +50,21 @@ class MakeCommentsWysiwygProof extends Command
         ];
 
         foreach ($tables as $table) {
+            // Make comments wysiwyg proof
             DB::table($table)->where('comment', '!=', '')
                 ->whereRaw('`comment` NOT LIKE "<p>%"')
                 ->orderBy('id')
                 ->eachById(function ($commentable) use ($table) {
                     $comment = $this->formatComment($commentable->comment);
+                    DB::table($table)->where('id', $commentable->id)->update(compact('comment'));
+                });
+
+            // Remove unsupported style
+            DB::table($table)->where('comment', '!=', '')
+                ->whereRaw('`comment` LIKE "%style=%"')
+                ->orderBy('id')
+                ->eachById(function ($commentable) use ($table) {
+                    $comment = $this->cleanComment($commentable->comment);
                     DB::table($table)->where('id', $commentable->id)->update(compact('comment'));
                 });
         }
@@ -66,5 +76,13 @@ class MakeCommentsWysiwygProof extends Command
     private function formatComment(string $comment): string
     {
         return '<p>' . nl2br(trim($this->sanitizer->sanitize($comment))) . '</p>';
+    }
+
+    private function cleanComment(string $comment): string
+    {
+        // Remove all style tags if they don't begin with an allowed style tag.
+        // NOTE: This isn't perfect. Something like 'style="font-size: 14px; color: red;"' will remain untouched,
+        // but it should at least clean out the biggest garbage.
+        return preg_replace('/(style=\"((?!font-size|list-style-type|text-decoration)[^"]*)\")/', '', $comment);
     }
 }

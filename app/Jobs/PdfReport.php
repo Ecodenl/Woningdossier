@@ -29,7 +29,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
-use App\Jobs\NonHandleableJobAfterReset;
 use Throwable;
 
 class PdfReport extends NonHandleableJobAfterReset

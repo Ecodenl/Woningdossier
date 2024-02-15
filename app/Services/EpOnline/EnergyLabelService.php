@@ -34,8 +34,6 @@ class EnergyLabelService
                     'huisnummer' => $this->building->number,
                 ];
 
-                $result = [];
-
                 if (! empty($this->building->extension)) {
                     $extension = $this->building->extension;
 
@@ -61,12 +59,7 @@ class EnergyLabelService
                         }
                         $result = $this->attemptFetchingEnergyLabelFromAddress($attributes + $filteredExtensions);
                     }
-                }
-
-                // TODO: Should we?
-                // In case the extension has NO result we will fall back to normal address because the overlapping
-                // building might have an energy label.
-                if (empty($result)) {
+                } else {
                     // The simple case :)
                     $result = $this->attemptFetchingEnergyLabelFromAddress($attributes);
                 }

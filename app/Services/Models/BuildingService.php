@@ -109,7 +109,7 @@ class BuildingService
     public function getSourcedAnswers(Collection $toolQuestions): Collection
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $exampleBuildingInputSource = InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
+        $exampleBuildingInputSource = InputSource::findByShort(InputSource::EXAMPLE_BUILDING_SHORT);
 
         $ids = $toolQuestions->whereNull('save_in')->pluck('id')->toArray();
 

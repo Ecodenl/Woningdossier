@@ -37,7 +37,8 @@ class InputSource extends Model
     const COACH_SHORT = 'coach';
     const COOPERATION_SHORT = 'cooperation';
     const MASTER_SHORT = 'master';
-    const EXAMPLE_BUILDING = 'example-building';
+    const EXAMPLE_BUILDING_SHORT = 'example-building';
+    const EXTERNAL_SHORT = 'external';
 
     /**
      * Check if the input source is a resident.
@@ -69,6 +70,11 @@ class InputSource extends Model
 
     public static function exampleBuilding(): ?self
     {
-        return self::findByShort(static::EXAMPLE_BUILDING);
+        return self::findByShort(static::EXAMPLE_BUILDING_SHORT);
+    }
+
+    public static function external(): ?self
+    {
+        return self::findByShort(static::EXTERNAL_SHORT);
     }
 }

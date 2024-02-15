@@ -38,14 +38,14 @@ trait GetMyValuesTrait
     {
         static::saved(function (Model $model) {
             // might be handy to prevent getting into an infinite loop (-:>
-            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
+            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT])) {
                 $model->saveForMasterInputSource();
             }
         });
 
         static::deleting(function (Model $model) {
             // might be handy to prevent getting into an infinite loop (-:>
-            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
+            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT])) {
                 $supportedClasses = [
                     BuildingRoofType::class,
                     ToolQuestionAnswer::class,

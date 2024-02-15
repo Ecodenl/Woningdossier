@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\InputSource;
 use Illuminate\Database\Seeder;
 
 class InputSourcesTableSeeder extends Seeder
@@ -16,29 +17,34 @@ class InputSourcesTableSeeder extends Seeder
         $inputSources = [
             [
                 'name' => 'Bewoner',
-                'short' => 'resident',
+                'short' => InputSource::RESIDENT_SHORT,
                 'order' => 1,
             ],
             [
                 'name' => 'Voorbeeld woning',
-                'short' => 'example-building',
+                'short' => InputSource::EXAMPLE_BUILDING_SHORT,
                 'order' => 3,
             ],
             [
                 'name' => 'Coach',
-                'short' => 'coach',
+                'short' => InputSource::COACH_SHORT,
                 'order' => 2,
             ],
             [
                 'name' => 'Coöperatie',
-                'short' => 'cooperation',
+                'short' => InputSource::COOPERATION_SHORT,
                 'order' => 4,
             ],
             [
                 'name' => 'Master',
-                'short' => 'master',
+                'short' => InputSource::MASTER_SHORT,
                 'order' => 5
-            ]
+            ],
+            [
+                'name' => 'Extern',
+                'short' => InputSource::EXTERNAL_SHORT,
+                'order' => 6
+            ],
         ];
 
         foreach ($inputSources as $inputSource) {

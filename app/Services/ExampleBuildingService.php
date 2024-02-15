@@ -87,7 +87,7 @@ class ExampleBuildingService
         foreach ($fixedToolQuestionShorts as $toolQuestionShort) {
             $toolQuestion = ToolQuestion::findByShort($toolQuestionShort);
 
-            if ($inputSource->short !== InputSource::EXAMPLE_BUILDING && in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
+            if ($inputSource->short !== InputSource::EXAMPLE_BUILDING_SHORT && in_array($toolQuestionShort, $fixedToolQuestionShorts)) {
 
                 $answer = $building->getAnswer($inputSource, $toolQuestion);
                 if (!is_null($answer)) {

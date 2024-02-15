@@ -38,6 +38,9 @@ return [
     ],
 
     'services' => [
+        'ep_online' => [
+            'secret' => env('EP_ONLINE_API_KEY', '')
+        ],
         'bag' => [
             'secret' => env('BAG_API_KEY', '')
         ],

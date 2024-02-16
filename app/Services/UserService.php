@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\UserDeleted;
 use App\Events\UserResetHisBuilding;
+use App\Jobs\AttachEnergyLabel;
 use App\Jobs\CheckBuildingAddress;
 use App\Models\Account;
 use App\Models\Building;
@@ -164,7 +165,7 @@ class UserService
         // remove the progress of the completed questionnaires
         CompletedQuestionnaire::forMe($user)->forInputSource($inputSource)->delete();
 
-        if (! in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
+        if (! in_array($inputSource->short, [InputSource::MASTER_SHORT])) {
             // re-query the bag
             $addressData = app(BagService::class)->addressExpanded(
                 $building->postal_code, $building->number, $building->extension
@@ -184,6 +185,8 @@ class UserService
             )->save();
 
             app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
+
+            AttachEnergyLabel::dispatch($building);
         }
         UserResetHisBuilding::dispatch($building);
     }
@@ -260,6 +263,9 @@ class UserService
         if (! $building->municipality()->first() instanceof Municipality) {
             CheckBuildingAddress::dispatch($building, $inputSource);
         }
+
+        AttachEnergyLabel::dispatch($building);
+
         app(BuildingService::class)->forBuilding($building)->setBuildingDefinedKengetallen();
         $user->cooperation()->associate(
             $cooperation

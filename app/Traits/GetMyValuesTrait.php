@@ -29,23 +29,22 @@ use Illuminate\Support\Facades\Schema;
 
 trait GetMyValuesTrait
 {
-
     /**
-     * boot this trait
+     * Boot this trait.
      * (https://www.archybold.com/blog/post/booting-eloquent-model-traits)
      */
     public static function bootGetMyValuesTrait()
     {
         static::saved(function (Model $model) {
             // might be handy to prevent getting into an infinite loop (-:>
-            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT])) {
+            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT, InputSource::EXTERNAL_SHORT])) {
                 $model->saveForMasterInputSource();
             }
         });
 
         static::deleting(function (Model $model) {
             // might be handy to prevent getting into an infinite loop (-:>
-            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT])) {
+            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING_SHORT, InputSource::EXTERNAL_SHORT])) {
                 $supportedClasses = [
                     BuildingRoofType::class,
                     ToolQuestionAnswer::class,

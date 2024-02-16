@@ -9,9 +9,8 @@ use App\Services\ConditionService;
 
 trait RetrievesAnswers
 {
-    public Building $building;
-
-    public InputSource $inputSource;
+    public ?Building $building = null;
+    public ?InputSource $inputSource = null;
 
     /**
      * Get the answer from the given building (if allowed).

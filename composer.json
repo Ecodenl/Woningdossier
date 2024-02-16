@@ -15,6 +15,7 @@
         "carlos-meneses/laravel-mpdf": "^2.1",
         "darkaonline/l5-swagger": "^8.0",
         "doctrine/dbal": "^2.13",
+        "ecodenl/ep-online-php-wrapper": "^3.0",
         "ecodenl/lvbag-php-wrapper": "^2.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3.1|^7.0.1",

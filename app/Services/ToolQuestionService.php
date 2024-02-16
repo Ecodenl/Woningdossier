@@ -309,7 +309,7 @@ class ToolQuestionService
 
         // If we have tool questions to unset, and we're not on the example building right now, we will delete the
         // sub steps
-        if (! empty($toolQuestionsToUnset) && $this->currentInputSource->short !== InputSource::EXAMPLE_BUILDING) {
+        if (! empty($toolQuestionsToUnset) && $this->currentInputSource->short !== InputSource::EXAMPLE_BUILDING_SHORT) {
             $processedIds = [];
             $processedSubSteps = [];
 
@@ -344,7 +344,7 @@ class ToolQuestionService
     {
         if (is_null($toolQuestion->save_in)) {
             // We don't want to mess with the master if it's the example building
-            $whereIn = $this->currentInputSource->short === InputSource::EXAMPLE_BUILDING
+            $whereIn = $this->currentInputSource->short === InputSource::EXAMPLE_BUILDING_SHORT
                 ? [$this->currentInputSource->id]
                 : [$this->masterInputSource->id, $this->currentInputSource->id];
 

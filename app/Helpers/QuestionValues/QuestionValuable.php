@@ -2,16 +2,19 @@
 
 namespace App\Helpers\QuestionValues;
 
-use App\Models\Building;
 use App\Models\Cooperation;
-use App\Models\InputSource;
 use App\Traits\FluentCaller;
 use App\Traits\HasDynamicAnswers;
+use App\Traits\Services\HasBuilding;
+use App\Traits\Services\HasInputSources;
 use Illuminate\Support\Collection;
 
 abstract class QuestionValuable implements ShouldReturnQuestionValues
 {
-    use FluentCaller, HasDynamicAnswers;
+    use FluentCaller,
+        HasBuilding,
+        HasInputSources,
+        HasDynamicAnswers;
 
     public Cooperation $cooperation;
     public Collection $questionValues;
@@ -22,17 +25,4 @@ abstract class QuestionValuable implements ShouldReturnQuestionValues
         $this->questionValues = $questionValues;
         $this->answers = $answers;
     }
-
-    public function forInputSource(InputSource $inputSource): self
-    {
-        $this->inputSource = $inputSource;
-        return $this;
-    }
-
-    public function forBuilding(Building $building): self
-    {
-        $this->building = $building;
-        return $this;
-    }
-
 }

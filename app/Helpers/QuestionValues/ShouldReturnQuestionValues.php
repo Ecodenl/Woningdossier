@@ -2,7 +2,6 @@
 
 namespace App\Helpers\QuestionValues;
 
-
 use App\Models\Building;
 use App\Models\InputSource;
 use Illuminate\Support\Collection;

@@ -6,22 +6,21 @@ use App\Events\BuildingAddressUpdated;
 use App\Events\NoMappingFoundForBagMunicipality;
 use App\Events\NoMappingFoundForVbjehuisMunicipality;
 use App\Helpers\MappingHelper;
-use App\Models\Building;
 use App\Models\BuildingFeature;
-use App\Models\InputSource;
 use App\Models\Municipality;
 use App\Models\ToolQuestion;
 use App\Services\Lvbag\BagService;
 use App\Traits\FluentCaller;
+use App\Traits\Services\HasBuilding;
 use App\Traits\Services\HasInputSources;
 use Illuminate\Support\Arr;
 
 class BuildingAddressService
 {
     use FluentCaller,
+        HasBuilding,
         HasInputSources;
 
-    public ?Building $building;
     public BagService $bagService;
     public MappingService $mappingService;
 
@@ -29,12 +28,6 @@ class BuildingAddressService
     {
         $this->bagService = $bagService;
         $this->mappingService = $mappingService;
-    }
-
-    public function forBuilding(Building $building): self
-    {
-        $this->building = $building;
-        return $this;
     }
 
     /**

@@ -6,7 +6,7 @@ use App\Models\Building;
 
 trait HasBuilding
 {
-    public Building $building;
+    public ?Building $building = null;
 
     public function forBuilding(Building $building): self
     {

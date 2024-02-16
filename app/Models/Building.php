@@ -191,8 +191,8 @@ class Building extends Model
             ];
         }
 
-        // this means we should get the answer the "traditional way" , in another table (not from the tool_question_answers)
-        if (!is_null($toolQuestion->save_in)) {
+        // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
+        if (! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion->save_in, $this);
             $table = $saveIn['table'];
             $column = $saveIn['column'];
@@ -226,11 +226,10 @@ class Building extends Model
                     );
 
                 // in case the saved value is actually a array, loop through them and select them one by one.
-                // in most cases this isnt neceserry, because the first $values at line 156 holds them all
-                // weird cases lijk building values.
+                // in most cases this isn't necessary, because the first $values at line 156 holds them all
+                // weird cases like building values.
                 if (is_array($value)) {
                     foreach ($value as $definitiveValue) {
-
                         $answer = $questionValues->isNotEmpty() && !is_null($definitiveValue) && isset($questionValues[$definitiveValue]) ? $questionValues[$definitiveValue] : $definitiveValue;
                         $answers[$inputSource->short][] = [
                             'answer' => $answer,

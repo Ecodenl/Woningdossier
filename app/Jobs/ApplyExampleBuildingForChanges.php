@@ -217,7 +217,7 @@ class ApplyExampleBuildingForChanges
             $exampleBuilding,
             $buildYear,
             $this->building,
-            InputSource::findByShort(InputSource::EXAMPLE_BUILDING),
+            InputSource::findByShort(InputSource::EXAMPLE_BUILDING_SHORT),
         );
     }
 }

@@ -94,7 +94,7 @@ class SettingsController extends Controller
 
         $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();
         $success = __('my-account.settings.destroy.success.cooperation');
-        if ( ! $stillActiveForOtherCooperations) {
+        if (! $stillActiveForOtherCooperations) {
             $success = __('my-account.settings.destroy.success.full');
         }
 

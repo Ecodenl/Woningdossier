@@ -184,6 +184,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        App\Providers\ExternalServiceProvider::class,
         App\Providers\EconobisServiceProvider::class,
         App\Providers\WoningdossierServiceProvider::class,
         App\Providers\MacroServiceProvider::class,

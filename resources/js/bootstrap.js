@@ -389,6 +389,55 @@ Object.defineProperty(Element.prototype, 'triggerCustomEvent', {
     configurable: false,
 });
 
+/**
+ * Add form error.
+ */
+Object.defineProperty(Element.prototype, 'addError', {
+    value: function (message, id) {
+        let element = this;
+        if (! this.classList.contains('form-group')) {
+            element = this.closest('.form-group');
+        }
+
+        if (element) {
+            // Add manual error (support frontend (Tailwind, form-error) and backend (Bootstrap, has-error))
+            element.classList.add('form-error', 'has-error');
+
+            // Don't append feedback if already set.
+            if (! element.querySelector(`small#${id}`)) {
+                let feedback = document.getElementById('invalid-feedback-template').content.firstElementChild.cloneNode();
+                feedback.setAttribute('id', id);
+                feedback.textContent = message;
+                element.appendChild(feedback);
+            }
+        }
+    },
+    enumerable: false,
+    configurable: false,
+});
+
+/**
+ * Remove form error.
+ */
+Object.defineProperty(Element.prototype, 'removeError', {
+    value: function () {
+        let element = this;
+        if (! this.classList.contains('form-group')) {
+            element = this.closest('.form-error');
+        }
+
+        if (element) {
+            // Remove manual error
+            element.classList.remove('form-error', 'has-error');
+            // Support frontend and backend, again.
+            element.querySelector('p.form-error-label')?.remove();
+            element.querySelector('span.help-block')?.remove();
+        }
+    },
+    enumerable: false,
+    configurable: false,
+});
+
 //--- HTMLCollection
 
 /**

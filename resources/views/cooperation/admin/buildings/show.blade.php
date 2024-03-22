@@ -367,16 +367,16 @@
 @push('js')
     <script>
         // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
-        var originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}' @else '' @endif;
+        let originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y H:i')}}' @else '' @endif;
 
         $(document).ready(function () {
 
             // get some basic information
-            var buildingOwnerId = $('input[name=building\\[id\\]]').val();
-            var userId = $('input[name=user\\[id\\]]').val();
-            var cooperationId = $('#cooperation-id').val();
+            let buildingOwnerId = $('input[name=building\\[id\\]]').val();
+            let userId = $('input[name=user\\[id\\]]').val();
+            let cooperationId = $('#cooperation-id').val();
 
-            var appointmentDate = $('#appointment-date');
+            let appointmentDate = $('#appointment-date');
 
             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
             $('#log-table').DataTable({
@@ -397,7 +397,7 @@
 
             $('.nav-tabs .active a').trigger('shown.bs.tab');
 
-            var currentDate = new Date();
+            let currentDate = new Date();
             currentDate.setDate(currentDate.getDate() - 1);
 
             appointmentDate.datetimepicker({
@@ -407,35 +407,40 @@
                 // format: 'L',
                 showClear: true,
             }).on('dp.hide', function (event) {
-                // this way the right events get triggerd so we will always get a nice formatted date
+                // This way the right events get triggered so we will always get a nice formatted date
                 appointmentDate.find('input').blur();
 
-                var date = appointmentDate.find('input').val();
+                // Queue the confirm so the DOM is properly updated for the browsers which seem to ignore the blur.
+                setTimeout(() => {
+                    let date = appointmentDate.find('input').val();
 
-                if (date !== originalAppointmentDate) {
-                    var confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
+                    if (date !== originalAppointmentDate) {
+                        let confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
 
-                    if (date.length > 0) {
-                        confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
+                        if (date.length > 0) {
+                            confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
+                        }
+
+                        if (confirm(confirmMessage)) {
+                            $.ajax({
+                                method: 'POST',
+                                url: '{{route('cooperation.admin.building-status.set-appointment-date')}}',
+                                data: {
+                                    building_id: buildingOwnerId,
+                                    appointment_date: date
+                                },
+                            }).fail(function (response) {
+                                appointmentDate.find('input').get(0).addError('Invalid format');
+                            }).done(function () {
+                                location.reload();
+                            })
+                        } else {
+                            // if the user does not want to set / change the appointment date
+                            // we set the date back to the one we got onload.
+                            appointmentDate.find('input').val(originalAppointmentDate);
+                        }
                     }
-
-                    if (confirm(confirmMessage)) {
-                        $.ajax({
-                            method: 'POST',
-                            url: '{{route('cooperation.admin.building-status.set-appointment-date')}}',
-                            data: {
-                                building_id: buildingOwnerId,
-                                appointment_date: date
-                            },
-                        }).done(function () {
-                            location.reload();
-                        })
-                    } else {
-                        // if the user does not want to set / change the appointment date
-                        // we set the date back to the one we got onload.
-                        appointmentDate.find('input').val(originalAppointmentDate);
-                    }
-                }
+                });
             });
 
             // delete the current user
@@ -456,7 +461,7 @@
             });
 
             $('#building-status').select2({}).on('select2:selecting', function (event) {
-                var statusToSelect = $(event.params.args.data.element);
+                let statusToSelect = $(event.params.args.data.element);
 
                 if (confirm('@lang('cooperation/admin/buildings.show.set-status')')) {
                     $.ajax({
@@ -476,7 +481,7 @@
             });
             $('#associated-coaches').select2({
                 templateSelection: function (tag, container) {
-                    var option = $('#associated-coaches option[value="' + tag.id + '"]');
+                    let option = $('#associated-coaches option[value="' + tag.id + '"]');
                     if (option.attr('locked')) {
                         $(container).addClass('select2-locked-tag');
                         tag.locked = true
@@ -485,7 +490,7 @@
                     return tag.text;
                 }
             }).on('select2:unselecting', function (event) {
-                var optionToUnselect = $(event.params.args.data.element);
+                let optionToUnselect = $(event.params.args.data.element);
 
                 // check if the option is locked
                 if (typeof optionToUnselect.attr('locked') === "undefined") {
@@ -510,7 +515,7 @@
                     return false;
                 }
             }).on('select2:selecting', function (event) {
-                var optionToSelect = $(event.params.args.data.element);
+                let optionToSelect = $(event.params.args.data.element);
 
                 if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {
                     $.ajax({
@@ -532,7 +537,7 @@
 
             $('#role-select').select2({
                 templateSelection: function (tag, container) {
-                    var option = $('#role-select option[value="' + tag.id + '"]');
+                    let option = $('#role-select option[value="' + tag.id + '"]');
                     if (option.attr('locked')) {
                         $(container).addClass('select2-locked-tag');
                         tag.locked = true
@@ -542,7 +547,7 @@
                 }
             })
                 .on('select2:selecting', function (event) {
-                    var roleToSelect = $(event.params.args.data.element);
+                    let roleToSelect = $(event.params.args.data.element);
 
                     if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {
                         $.ajax({
@@ -563,7 +568,7 @@
                     }
                 })
                 .on('select2:unselecting', function (event) {
-                    var roleToUnselect = $(event.params.args.data.element);
+                    let roleToUnselect = $(event.params.args.data.element);
 
                     if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {
                         $.ajax({
@@ -589,15 +594,15 @@
         function scrollChatToMostRecentMessage() {
             $('.nav-tabs a').on('shown.bs.tab', function () {
 
-                var tabId = $(this).attr('href');
-                var tab = $(tabId);
-                var chat = tab.find('.panel-chat-body')[0];
+                let tabId = $(this).attr('href');
+                let tab = $(tabId);
+                let chat = tab.find('.panel-chat-body')[0];
 
                 if (typeof chat !== "undefined") {
                     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
 
-                    var isChatPublic = tab.find('[name=is_public]').val();
-                    var buildingId = tab.find('[name=building_id]').val();
+                    let isChatPublic = tab.find('[name=is_public]').val();
+                    let buildingId = tab.find('[name=building_id]').val();
 
                     $.ajax({
                         url: '{{route('cooperation.messages.participants.set-read')}}',

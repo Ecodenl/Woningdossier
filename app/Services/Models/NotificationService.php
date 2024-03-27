@@ -2,31 +2,20 @@
 
 namespace App\Services\Models;
 
-use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Notification;
 use App\Traits\FluentCaller;
+use App\Traits\Services\HasBuilding;
+use App\Traits\Services\HasInputSources;
 
 class NotificationService
 {
-    use FluentCaller;
+    use FluentCaller,
+        HasBuilding,
+        HasInputSources;
 
-    protected ?InputSource $inputSource = null;
-    protected Building $building;
     protected string $type;
     protected string $uuid;
-
-    public function forInputSource(InputSource $inputSource): self
-    {
-        $this->inputSource = $inputSource;
-        return $this;
-    }
-
-    public function forBuilding(Building $building): self
-    {
-        $this->building = $building;
-        return $this;
-    }
 
     public function setType(string $type): self
     {

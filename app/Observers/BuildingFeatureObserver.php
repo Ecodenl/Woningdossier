@@ -49,7 +49,7 @@ class BuildingFeatureObserver
                         if ($shouldCreate) {
                             $exampleBuildingRoofType = $building->roofTypes()
                                 ->where('roof_type_id', $roofTypeToLink->id)
-                                ->forInputSource(InputSource::findByShort(InputSource::EXAMPLE_BUILDING))
+                                ->forInputSource(InputSource::findByShort(InputSource::EXAMPLE_BUILDING_SHORT))
                                 ->first();
 
                             if (! $exampleBuildingRoofType instanceof BuildingRoofType) {
@@ -62,7 +62,7 @@ class BuildingFeatureObserver
 
                                 $exampleBuildingRoofType = $building->roofTypes()
                                     ->where('roof_type_id', $otherRoofType->id)
-                                    ->forInputSource(InputSource::findByShort(InputSource::EXAMPLE_BUILDING))
+                                    ->forInputSource(InputSource::findByShort(InputSource::EXAMPLE_BUILDING_SHORT))
                                     ->first();
                             }
 

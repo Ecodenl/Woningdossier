@@ -17,6 +17,7 @@ use App\Services\Kengetallen\Resolvers\RvoDefined;
 use App\Services\ToolQuestionService;
 use App\Services\WoonplanService;
 use App\Traits\FluentCaller;
+use App\Traits\Services\HasBuilding;
 use App\Traits\Services\HasInputSources;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -25,9 +26,8 @@ use Illuminate\Support\Facades\Log;
 class BuildingService
 {
     use FluentCaller,
+        HasBuilding,
         HasInputSources;
-
-    public ?Building $building;
 
     public function __construct(?Building $building = null)
     {
@@ -72,13 +72,7 @@ class BuildingService
 
         $toolQuestionService
             ->toolQuestion(ToolQuestion::findByShort('gas-price-euro'))
-            ->save($kengetallenService->get(new RvoDefined(),KengetallenCodes::EURO_SAVINGS_GAS));
-    }
-
-    public function forBuilding(Building $building): self
-    {
-        $this->building = $building;
-        return $this;
+            ->save($kengetallenService->get(new RvoDefined(), KengetallenCodes::EURO_SAVINGS_GAS));
     }
 
     public function canCalculate(Scan $scan): bool
@@ -109,7 +103,7 @@ class BuildingService
     public function getSourcedAnswers(Collection $toolQuestions): Collection
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $exampleBuildingInputSource = InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
+        $exampleBuildingInputSource = InputSource::findByShort(InputSource::EXAMPLE_BUILDING_SHORT);
 
         $ids = $toolQuestions->whereNull('save_in')->pluck('id')->toArray();
 

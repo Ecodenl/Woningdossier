@@ -45,11 +45,8 @@ class ApplyExampleBuildingForChanges
         $exampleBuilding = $this->getExampleBuildingIfChangeIsNeeded($this->changes);
 
         if ($exampleBuilding instanceof ExampleBuilding) {
-            Log::debug(__CLASS__." Example building should be (re)applied!");
             // Apply the example building
             $this->retriggerExampleBuildingApplication($exampleBuilding);
-        } else {
-            Log::debug(__CLASS__." No change in example building contents, or no new contents found.");
         }
     }
 
@@ -62,7 +59,6 @@ class ApplyExampleBuildingForChanges
         // Kinda obvious but still
         // if the user changed his example building in the frontend we will just apply that one.
         if (array_key_exists('example_building_id', $changes)) {
-
             // to prevent ANOTHER apply being executed, with 0 purpose.
             if ($changes['example_building_id'] != $currentExampleBuildingId) {
                 return ExampleBuilding::find($changes['example_building_id']);
@@ -75,27 +71,27 @@ class ApplyExampleBuildingForChanges
         $changedBuildYear = $changes['build_year'] ?? null;
 
         // We need this to do stuff
-        if (! is_null($currentBuildYearValue) || !is_null($changedBuildYear)) {
+        if (! is_null($currentBuildYearValue) || ! is_null($changedBuildYear)) {
             // current values for comparison later on
-            $currentBuildYearValue = (int)$buildingFeature->build_year;
+            $currentBuildYearValue = (int) $buildingFeature->build_year;
 
             if (array_key_exists('building_type_id', $changes)) {
-                $buildingType = BuildingType::find((int)$changes['building_type_id']);
+                $buildingType = BuildingType::find((int) $changes['building_type_id']);
             } else {
                 $buildingType = $buildingFeature->buildingType;
             }
 
-            if (!$buildingType instanceof BuildingType) {
+            if (! $buildingType instanceof BuildingType) {
                 return null;
             }
 
             $exampleBuilding = ExampleBuilding::generic()->where(
-                    'building_type_id',
+                'building_type_id',
                 $buildingType->id
             )->first();
 
 
-            if (!$exampleBuilding instanceof ExampleBuilding) {
+            if (! $exampleBuilding instanceof ExampleBuilding) {
                 // No example building for the building type, so can't change then.
                 return null;
             }
@@ -112,7 +108,12 @@ class ApplyExampleBuildingForChanges
                 }
 
                 // there is a last resort for (mostly) old buildings.
-                if ($this->getExampleBuildingIfContentChanged($exampleBuilding, $currentBuildYearValue, $changedBuildYear) instanceof ExampleBuilding) {
+                if ($this->getExampleBuildingIfContentChanged(
+                    $exampleBuilding,
+                    $currentBuildYearValue,
+                    $changedBuildYear
+                ) instanceof ExampleBuilding
+                ) {
                     return $exampleBuilding;
                 }
 
@@ -120,12 +121,13 @@ class ApplyExampleBuildingForChanges
                 // the lowest available example building content its build year.
                 $contentForLowestBuildYear = $exampleBuilding->contents()->orderBy('build_year')->first();
                 if ($changedBuildYear < $contentForLowestBuildYear->build_year) {
-                    return $this->getExampleBuildingIfContentChanged($exampleBuilding, $currentBuildYearValue, $contentForLowestBuildYear->build_year);
+                    return $this->getExampleBuildingIfContentChanged(
+                        $exampleBuilding,
+                        $currentBuildYearValue,
+                        $contentForLowestBuildYear->build_year
+                    );
                 }
-
             }
-        } else {
-            Log::debug(__CLASS__." Build year not set for building {$this->building->id}");
         }
 
         return null;
@@ -155,11 +157,8 @@ class ApplyExampleBuildingForChanges
 
     private function retriggerExampleBuildingApplication(ExampleBuilding $exampleBuilding)
     {
-        Log::debug(__METHOD__);
-        $buildingFeature =  $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
+        $buildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
         if ($buildingFeature->example_building_id !== $exampleBuilding->id) {
-
-            Log::debug(__CLASS__." Example building ID changes (" . $buildingFeature->example_building_id . " -> " . $exampleBuilding->id . ")");
             $buildingFeatureToUpdate = $this->building->buildingFeatures()->forInputSource($this->applyForInputSource)->first();
 
             if ($buildingFeatureToUpdate instanceof BuildingFeature) {
@@ -189,7 +188,6 @@ class ApplyExampleBuildingForChanges
         // just use the lowest available one.
         $contentForLowestBuildYear = $exampleBuilding->contents()->orderBy('build_year')->first();
         if ($buildYear < $contentForLowestBuildYear->build_year) {
-            Log::debug("Building id: {$this->building->id} filled in build year: {$buildYear} altered to lowest available build year {$contentForLowestBuildYear->build_year}");
             $buildYear = $contentForLowestBuildYear->build_year;
         }
 
@@ -202,7 +200,6 @@ class ApplyExampleBuildingForChanges
             ->count();
 
         if ($totalOtherCompletedSubSteps === 0) {
-            Log::debug(__CLASS__ . ' Override user data with example building data. $totalOtherCompletedSubSteps: ' . $totalOtherCompletedSubSteps);
             ExampleBuildingService::apply(
                 $exampleBuilding,
                 $buildYear,
@@ -217,7 +214,7 @@ class ApplyExampleBuildingForChanges
             $exampleBuilding,
             $buildYear,
             $this->building,
-            InputSource::findByShort(InputSource::EXAMPLE_BUILDING),
+            InputSource::exampleBuilding(),
         );
     }
 }

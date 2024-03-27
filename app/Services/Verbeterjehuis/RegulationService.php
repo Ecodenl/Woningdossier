@@ -4,31 +4,24 @@ namespace App\Services\Verbeterjehuis;
 
 use App\Helpers\Cache\BaseCache;
 use App\Helpers\MappingHelper;
-use App\Models\Building;
 use App\Models\Municipality;
 use App\Services\MappingService;
 use App\Services\Verbeterjehuis\Payloads\Search;
 use App\Traits\FluentCaller;
+use App\Traits\Services\HasBuilding;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class RegulationService
 {
-    use FluentCaller;
+    use FluentCaller,
+        HasBuilding;
 
     const SUBSIDY = 'subsidy';
     const LOAN = 'loan';
     const OTHER = 'other';
 
-    public Building $building;
-
     public array $context = [];
-
-    public function forBuilding(Building $building): self
-    {
-        $this->building = $building;
-        return $this;
-    }
 
     public function getFilters(): array
     {

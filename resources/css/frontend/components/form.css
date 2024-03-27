@@ -494,6 +494,12 @@ input.form-input:read-only:not(.select-wrapper input),
     @apply hover:border-opacity-100;
     @apply focus:border-opacity-100;
 }
+.source-external {
+    @apply border border-opacity-0 border-black bg-black bg-opacity-10 text-black;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
 .source-null {
     @apply border border-opacity-0 border-blue bg-blue bg-opacity-10 text-blue;
 

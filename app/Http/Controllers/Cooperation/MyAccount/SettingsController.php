@@ -12,11 +12,7 @@ use App\Jobs\ResetDossierForUser;
 use App\Models\Account;
 use App\Models\InputSource;
 use App\Models\Municipality;
-use App\Services\BuildingAddressService;
 use App\Services\DossierSettingsService;
-use App\Services\Lvbag\BagService;
-use App\Services\Lvbag\Payloads\AddressExpanded;
-use App\Services\Models\BuildingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -98,7 +94,7 @@ class SettingsController extends Controller
 
         $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();
         $success = __('my-account.settings.destroy.success.cooperation');
-        if ( ! $stillActiveForOtherCooperations) {
+        if (! $stillActiveForOtherCooperations) {
             $success = __('my-account.settings.destroy.success.full');
         }
 

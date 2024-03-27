@@ -3,21 +3,17 @@
 namespace App\Services\Econobis;
 
 use App\Models\Building;
+use App\Traits\Services\HasBuilding;
 
 class EconobisService
 {
+    use HasBuilding;
+
     private array $accountRelated;
-    public ?Building $building = null;
 
     public function setAccountRelated(array $accountRelated): self
     {
         $this->accountRelated = $accountRelated;
-        return $this;
-    }
-
-    public function forBuilding(Building $building): self
-    {
-        $this->building = $building;
         return $this;
     }
 
@@ -42,7 +38,7 @@ class EconobisService
         $defaultPayload = $this->resolveAccountRelated();
         $payload = [];
         // sometimes there are edge cases, those will be solved in a different manner.
-        if ( ! is_null($payloadClass) && class_exists($payloadClass, true) && $this->building instanceof Building) {
+        if (! is_null($payloadClass) && class_exists($payloadClass, true) && $this->building instanceof Building) {
             $payload = app($payloadClass)->forBuilding($this->building)->buildPayload();
         }
         return array_merge($defaultPayload, $payload);

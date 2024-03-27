@@ -3,19 +3,12 @@
 namespace App\Services\Models;
 
 use App\Events\BuildingStatusUpdated;
-use App\Models\Building;
 use App\Models\Status;
+use App\Traits\Services\HasBuilding;
 
 class BuildingStatusService
 {
-    public ?Building $building;
-
-    public function forBuilding(Building $building): self
-    {
-        $this->building = $building;
-        return $this;
-    }
-
+    use HasBuilding;
 
     private function resolveStatusModel($status)
     {

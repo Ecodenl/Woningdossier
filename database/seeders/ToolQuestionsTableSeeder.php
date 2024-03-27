@@ -559,7 +559,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'integer', 'min:0', 'max:10000'],
+                'validation' => ['required', 'numeric', 'integer', 'min:0',  'max:9999999999'],
                 'save_in' => 'user_energy_habits.amount_gas',
                 'short' => 'amount-gas',
                 'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.gas-usage',
@@ -567,7 +567,7 @@ class ToolQuestionsTableSeeder extends Seeder
             ],
             [
                 'data_type' => Caster::INT,
-                'validation' => ['required', 'numeric', 'integer', 'min:-10000', 'max:25000'],
+                'validation' => ['required', 'numeric', 'integer', 'min:-10000', 'max:9999999999'],
                 'save_in' => 'user_energy_habits.amount_electricity',
                 'short' => 'amount-electricity',
                 'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity',

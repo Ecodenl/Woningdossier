@@ -67,6 +67,7 @@ class Caster
                 break;
 
             case static::INT:
+                // TODO: If the value is too large, it will bitshift into negative. This might be unexpected behaviour.
                 $this->value = (int) round((float) $this->value);
                 break;
 

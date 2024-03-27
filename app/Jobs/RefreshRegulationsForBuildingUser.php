@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Helpers\Queue;
 use App\Models\Building;
+use App\Models\User;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Facades\Log;
 
@@ -33,8 +34,11 @@ class RefreshRegulationsForBuildingUser extends NonHandleableJobAfterReset
         Log::debug('Handle of refresh regulations for building user');
         $user = $this->building->user;
 
-        UserActionPlanAdviceService::init()
-            ->forUser($user)
-            ->refreshUserRegulations();
+        // If building was deleted, user will be gone, and so it _can_ be null, even if it doesn't happen often
+        if ($user instanceof User) {
+            UserActionPlanAdviceService::init()
+                ->forUser($user)
+                ->refreshUserRegulations();
+        }
     }
 }

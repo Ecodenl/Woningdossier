@@ -34,9 +34,10 @@ class CreateUserActionPlanAdvicesTable extends Migration
             $table->boolean('loan_available')->default(0);
 
             $table->json('costs')->nullable();
-            $table->decimal('savings_gas')->nullable();
-            $table->decimal('savings_electricity')->nullable();
-            $table->decimal('savings_money')->nullable();
+            // Support up to 65 digits (including the 2 floating points)
+            $table->decimal('savings_gas', 65)->nullable();
+            $table->decimal('savings_electricity', 65)->nullable();
+            $table->decimal('savings_money', 65)->nullable();
 
             $table->integer('year')->nullable();
             $table->boolean('planned')->default(true);

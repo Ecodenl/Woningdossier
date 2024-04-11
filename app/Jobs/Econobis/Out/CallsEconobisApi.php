@@ -62,6 +62,8 @@ trait CallsEconobisApi
                 $contents = $stream->getContents();
                 Log::error($contents);
 
+                // This has not been tested, but has been implemented trying to find out why there's an
+                // `array_intersect_key` exception even though this code base does not use `array_intersect_key`.
                 if (Str::of($contents)->contains('ErrorException')) {
                     report($exception);
                 }
@@ -92,7 +94,9 @@ trait CallsEconobisApi
 
         if ($shouldNotifyDiscord) {
             $environment = app()->environment();
-            DiscordNotifier::init()->notify(get_class($exception)." Failed to send [{$environment}] '{$class}' building_id: {$buildingId}");
+            // TODO: In PHP 8, just use the nullsafe operator (?->)
+            $cooperationId = optional(optional(optional($this->building)->user)->cooperation)->id ?? 'No cooperation ID';
+            DiscordNotifier::init()->notify(get_class($exception)." Failed to send [{$environment}] '{$class}' building_id: {$buildingId} cooperation_id: {$cooperationId}");
         }
     }
 

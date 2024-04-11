@@ -1,24 +1,11 @@
 <div>
-    @php
-        // We want to unset keys once the input is placed
-        $locales = config('hoomdossier.supported_locales');
-        // default
-        $translationKey = '';
-    @endphp
-    @foreach($locales as $locale)
-        <div class="form-group {{ $errors->has('exampleBuildingValues.name') ? 'has-error' : '' }}">
+    @foreach(config('hoomdossier.supported_locales') as $locale)
+        @component('layouts.parts.components.form-group', [
+            'input_name' => "exampleBuildingValues.name.{$locale}"
+        ])
             <label for="name-{{ $locale }}">{{ $locale }}:</label>
-            <input id="name-{{$locale}}" class="form-control" wire:model="exampleBuildingValues.name.{{$locale}}">
-
-            @if($errors->has('exampleBuildingValues.name'))
-                <span class="help-block">
-                    <strong>{{ $errors->first('exampleBuildingValues.name') }}</strong>
-                </span>
-            @endif
-        </div>
-        @php
-            unset($locales[$locale]);
-        @endphp
+            <input id="name-{{ $locale }}" class="form-control" wire:model="exampleBuildingValues.name.{{$locale}}">
+        @endcomponent
     @endforeach
 
     <div class="form-group {{ $errors->has('exampleBuildingValues.building_type_id') ? 'has-error' : '' }}">
@@ -34,7 +21,7 @@
         </label>
         <select id="building_type_id" wire:model="exampleBuildingValues.building_type_id" class="form-control">
             <option value="">-</option>
-            @if(isset($exampleBuilding) && $exampleBuilding->isGeneric())
+            @if($exampleBuilding instanceof \App\Models\ExampleBuilding && $exampleBuilding->isGeneric())
                 @foreach($genericBuildingTypes as $buildingType)
                     <option value="{{ $buildingType->id }}">{{ $buildingType->name }}</option>
                 @endforeach
@@ -53,50 +40,40 @@
     </div>
 
     @if($isSuperAdmin)
-    <div class="form-group {{ $errors->has('exampleBuildingValues.cooperation_id') ? ' has-error' : '' }}">
-        <label for="cooperation">@lang('cooperation/admin/example-buildings.components.cooperation')</label>
-        <select id="cooperation" wire:model="exampleBuildingValues.cooperation_id" class="form-control">
-            @if($isSuperAdmin)
-                <option value="" selected="selected">-</option>
-            @endif
-            @foreach($cooperations as $cooperation)
-                <option value="{{ $cooperation->id }}">
-                    {{ $cooperation->name }}
-                </option>
-            @endforeach
-        </select>
-
-        @if($errors->has('exampleBuildingValues.cooperation_id'))
-            <span class="help-block">
-            <strong>{{ $errors->first('exampleBuildingValues.cooperation_id') }}</strong>
-        </span>
-        @endif
-    </div>
+        @component('layouts.parts.components.form-group', [
+            'input_name' => 'exampleBuildingValues.cooperation_id'
+        ])
+            <label for="cooperation">@lang('cooperation/admin/example-buildings.components.cooperation')</label>
+            <select id="cooperation" wire:model="exampleBuildingValues.cooperation_id" class="form-control">
+                @if($isSuperAdmin)
+                    <option value="" selected="selected">-</option>
+                @endif
+                @foreach($cooperations as $cooperation)
+                    <option value="{{ $cooperation->id }}">
+                        {{ $cooperation->name }}
+                    </option>
+                @endforeach
+            </select>
+        @endcomponent
     @endif
 
-    <div class="form-group {{ $errors->has('exampleBuildingValues.order') ? 'has-error' : '' }}">
+    @component('layouts.parts.components.form-group', [
+        'input_name' => 'exampleBuildingValues.order'
+    ])
         <label for="order">@lang('cooperation/admin/example-buildings.components.order')</label>
         <input type="number" id="order" class="form-control" min="0" wire:model="exampleBuildingValues.order">
-        @if($errors->has('exampleBuildingValues.order'))
-            <span class="help-block">
-                <strong>{{ $errors->first('exampleBuildingValues.order') }}</strong>
-            </span>
-        @endif
-    </div>
+    @endcomponent
 
-    <div class="form-group {{ $errors->has('exampleBuildingValues.is_default') ? 'has-error' : '' }}">
+    @component('layouts.parts.components.form-group', [
+        'input_name' => 'exampleBuildingValues.is_default'
+    ])
         <label for="is_default">@lang('cooperation/admin/example-buildings.components.is-default.label')</label>
         <select wire:model="exampleBuildingValues.is_default" class="form-control">
             @foreach(__('cooperation/admin/example-buildings.components.is-default.options') as $val => $string)
                 <option value="{{ $val }}">{{ $string }}</option>
             @endforeach
         </select>
-        @if($errors->has('exampleBuildingValues.is_default'))
-            <span class="help-block">
-                <strong>{{ $errors->first('exampleBuildingValues.is_default') }}</strong>
-            </span>
-        @endif
-    </div>
+    @endcomponent
 
     <div class="form-group" style="margin-top: 5em;">
         <input type="hidden" name="new" value="0">
@@ -128,7 +105,7 @@
     </ul>
     <div class="tab-content">
         {{-- tab contents --}}
-        @if(isset($exampleBuilding) && $exampleBuilding instanceof \App\Models\ExampleBuilding)
+        @if($exampleBuilding instanceof \App\Models\ExampleBuilding)
             @foreach($exampleBuilding->contents as $content)
                 <div role="tabpanel" class="tab-pane" id="{{ $content->id }}" wire:ignore.self>
                     @include('cooperation.admin.example-buildings.components.content-table', ['content' => $content])

@@ -21,6 +21,12 @@ class HtmlSanitizer implements Sanitizer
         $input = preg_replace('/(<a.*?)(rel=[\'"][^\'"]*[\'"])(.*?>.*?<\/a>)/ism', '$1$3', $input); // Remove any anchor rel (we will add them ourselves)
         $input = preg_replace('/(<a.*?)(href=[\'"][^\/][^\'"]*[\'"])(.*?>.*?<\/a>)/ism', '$1$2 rel="nofollow" $3', $input); // Add rel="nofollow" to each external anchor
         $input = preg_replace('/<iframe[^>]*?(?:\/>|>[^<]*?<\/iframe>)/ism', '', $input); // Remove iFrames
+
+        // Remove all style tags if they don't begin with an allowed style tag.
+        // NOTE: This isn't perfect. Something like 'style="font-size: 14px; color: red;"' will remain untouched,
+        // but it should at least clean out the biggest garbage.
+        $input=  preg_replace('/(style=\"((?!font-size|list-style-type|text-decoration)[^"]*)\")/', '', $input);
+
         // Trim the end content
         $input = trim($input);
 

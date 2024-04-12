@@ -25,7 +25,7 @@ class HtmlSanitizer implements Sanitizer
         // Remove all style tags if they don't begin with an allowed style tag.
         // NOTE: This isn't perfect. Something like 'style="font-size: 14px; color: red;"' will remain untouched,
         // but it should at least clean out the biggest garbage.
-        $input=  preg_replace('/(style=\"((?!font-size|list-style-type|text-decoration)[^"]*)\")/', '', $input);
+        $input = preg_replace('/(style=\"((?!font-size|list-style-type|text-decoration)[^"]*)\")/', '', $input);
 
         // Trim the end content
         $input = trim($input);

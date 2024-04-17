@@ -48,6 +48,7 @@ class MapQuickScanSituationToExpertTest extends TestCase
         // First define basic mapping.
         $answersToSave = [
             'heat-source' => ['heat-pump'],
+            'heat-source-warm-tap-water' => ['hr-boiler'],
             'heat-pump-type' => $heatPumpType,
             'boiler-setting-comfort-heat' => 'temp-high',
             'building-heating-application' => ['radiators', 'floor-heating', 'low-temperature-heater'],
@@ -83,6 +84,34 @@ class MapQuickScanSituationToExpertTest extends TestCase
         ];
 
         $this->checkAnswers($answersExpected);
+
+        // Check warm water is properly copied (and none is mapped to hr-boiler).
+        $heatSourceWarmTapWaterCases = [
+            [['sun-boiler'], ['sun-boiler']],
+            [['sun-boiler', 'none'], ['sun-boiler', 'hr-boiler']],
+            [['heat-pump'], ['heat-pump']],
+            [['district-heating'], ['district-heating']],
+            [['electric-boiler', 'sun-boiler'], ['electric-boiler', 'sun-boiler']],
+            [['none'], ['hr-boiler']],
+        ];
+
+        foreach ($heatSourceWarmTapWaterCases as $case) {
+            $answersExpected['new-heat-source-warm-tap-water'] = $case[1];
+
+            app(ToolQuestionService::class)
+                ->toolQuestion(ToolQuestion::findByShort('heat-source-warm-tap-water'))
+                ->building($building)
+                ->currentInputSource($inputSource)
+                ->save($case[0]);
+
+            MapQuickScanSituationToExpert::dispatchSync(
+                $building,
+                $inputSource,
+                $advisable
+            );
+
+            $this->checkAnswers($answersExpected);
+        }
 
         // Boiler type is not viewable, so ensure it's handled as "null" if boiler type isn't in the heat source.
         $boilerValues = Service::findByShort('boiler')->values;
@@ -151,6 +180,23 @@ class MapQuickScanSituationToExpertTest extends TestCase
         $answersExpected['new-heat-source-warm-tap-water'] = ['heat-pump'];
 
         $this->checkAnswers($answersExpected);
+
+        // Test them again and see how they all map to heat-pump
+        foreach ($heatSourceWarmTapWaterCases as $case) {
+            app(ToolQuestionService::class)
+                ->toolQuestion(ToolQuestion::findByShort('heat-source-warm-tap-water'))
+                ->building($building)
+                ->currentInputSource($inputSource)
+                ->save($case[0]);
+
+            MapQuickScanSituationToExpert::dispatchSync(
+                $building,
+                $inputSource,
+                $advisable
+            );
+
+            $this->checkAnswers($answersExpected);
+        }
 
         // Change mapping just once more.
         $updateAnswers = [

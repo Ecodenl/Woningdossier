@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Calculations\HeatPump;
 use App\Helpers\Conditions\Clause;
 use App\Helpers\Cooperation\Tool\HeatPumpHelper;
-use App\Jobs\Middleware\CheckLastResetAt;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\InputSource;
@@ -15,7 +14,6 @@ use App\Models\ToolQuestion;
 use App\Services\ConditionService;
 use App\Services\ToolQuestionService;
 use Illuminate\Support\Facades\Log;
-use App\Jobs\NonHandleableJobAfterReset;
 
 class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
 {
@@ -143,11 +141,24 @@ class MapQuickScanSituationToExpert extends NonHandleableJobAfterReset
         $type = $this->measureApplication->short;
         $source = $calculateValue <= 3 ? ['hr-boiler', 'heat-pump'] : ['heat-pump'];
 
+        $currentHeatSourceWarmTapWater = $this->building->getAnswer($this->masterInputSource, ToolQuestion::findByShort('heat-source-warm-tap-water'));
+        if (in_array('hr-boiler', $source)) {
+            $newHeatSourceWarmTapWater = empty($currentHeatSourceWarmTapWater)
+                ? ['hr-boiler']
+                : $currentHeatSourceWarmTapWater;
+            if (false !== ($index = array_search('none', $newHeatSourceWarmTapWater))) {
+                // Replace none with hr-boiler
+                $newHeatSourceWarmTapWater = array_replace($newHeatSourceWarmTapWater, [$index => 'hr-boiler']);
+            }
+        } else {
+            $newHeatSourceWarmTapWater = ['heat-pump'];
+        }
+
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-pump-type'), $type);
         // It is important to first map the new-heat-source, else the potential answer for new-heat-source-warm-tap-water
         // might be removed due to conditionals.
         $this->saveAnswer(ToolQuestion::findByShort('new-heat-source'), $source);
-        $this->saveAnswer(ToolQuestion::findByShort('new-heat-source-warm-tap-water'), (in_array('hr-boiler', $source) ? ['hr-boiler'] : ['heat-pump']));
+        $this->saveAnswer(ToolQuestion::findByShort('new-heat-source-warm-tap-water'), $newHeatSourceWarmTapWater);
 
         // Force replace
         $this->saveAnswer(ToolQuestion::findByShort('heat-pump-replace'), true);

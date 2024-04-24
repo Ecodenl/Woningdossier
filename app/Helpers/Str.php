@@ -19,12 +19,12 @@ class Str extends \Illuminate\Support\Str
         $laravel = app();
         if (version_compare($laravel::VERSION, '5.6.0') < 0) {
             try {
-                return (string) Uuid::uuid4();
+                return (string)Uuid::uuid4();
             } catch (\Exception $e) {
-                return (string) self::randomUuid();
+                return (string)self::randomUuid();
             }
         } else {
-            return (string) \Illuminate\Support\Str::uuid();
+            return (string)\Illuminate\Support\Str::uuid();
         }
     }
 
@@ -35,7 +35,7 @@ class Str extends \Illuminate\Support\Str
      */
     public static function isValidUuid($uuid): bool
     {
-        if (! is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
+        if (!is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
             return false;
         }
 
@@ -102,7 +102,7 @@ class Str extends \Illuminate\Support\Str
             $password[] = self::CHARACTERS[$n];
         }
 
-        return (string) implode($password); // password returns array so implode it
+        return (string)implode($password); // password returns array so implode it
     }
 
     /**
@@ -121,7 +121,7 @@ class Str extends \Illuminate\Support\Str
 
     public static function lcfirst($string)
     {
-        return SupportStr::lower(SupportStr::substr($string, 0, 1)).SupportStr::substr($string, 1);
+        return SupportStr::lower(SupportStr::substr($string, 0, 1)) . SupportStr::substr($string, 1);
     }
 
     public static function isValidJson($value, $arrayOnly = true): bool
@@ -129,15 +129,15 @@ class Str extends \Illuminate\Support\Str
         $json = json_decode($value, true);
 
         // There could be JSON strings or numeric values, we don't want them to be valid if $arrayOnly is true.
-        return ! is_null($json) && ($arrayOnly === false || ($arrayOnly === true && is_array($json)));
+        return !is_null($json) && ($arrayOnly === false || ($arrayOnly === true && is_array($json)));
     }
 
     /**
      * Check if a needle is somewhere (partially) in an array.
      *
-     * @param  array  $array
+     * @param array $array
      * @param  $needle
-     * @param  bool  $ignoreCase
+     * @param bool $ignoreCase
      *
      * @return bool
      */
@@ -145,7 +145,7 @@ class Str extends \Illuminate\Support\Str
     {
         $needle = $ignoreCase ? strtolower($needle) : $needle;
 
-        if (! empty($array)) {
+        if (!empty($array)) {
             // Dot to remove recursion
             $array = Arr::dot($array);
 
@@ -165,9 +165,9 @@ class Str extends \Illuminate\Support\Str
     /**
      * Check if a needle is somewhere at the start in an array.
      *
-     * @param  array  $array
+     * @param array $array
      * @param $needle
-     * @param  bool  $ignoreCase
+     * @param bool $ignoreCase
      *
      * @return bool
      */
@@ -175,7 +175,7 @@ class Str extends \Illuminate\Support\Str
     {
         $needle = $ignoreCase ? strtolower($needle) : $needle;
 
-        if (! empty($array)) {
+        if (!empty($array)) {
             // Dot to remove recursion
             $array = Arr::dot($array);
 
@@ -195,9 +195,9 @@ class Str extends \Illuminate\Support\Str
     /**
      * Check if a needle is somewhere at the start of the keys in an array.
      *
-     * @param  array  $array
+     * @param array $array
      * @param $needle
-     * @param  bool  $ignoreCase
+     * @param bool $ignoreCase
      *
      * @return bool
      */
@@ -209,7 +209,7 @@ class Str extends \Illuminate\Support\Str
     /**
      * Convert HTML array format to dot
      *
-     * @param  string  $htmlArray
+     * @param string $htmlArray
      *
      * @return string
      */
@@ -225,8 +225,8 @@ class Str extends \Illuminate\Support\Str
     /**
      * Convert a dotted string to a valid HTML input name.
      *
-     * @param  string|null  $dottedName
-     * @param  bool  $asArray
+     * @param string|null $dottedName
+     * @param bool $asArray
      *
      * @return string|null
      */
@@ -258,7 +258,7 @@ class Str extends \Illuminate\Support\Str
     /**
      * Check if a string has replaceables.
      *
-     * @param  string  $string
+     * @param string $string
      *
      * @return bool
      */
@@ -269,14 +269,14 @@ class Str extends \Illuminate\Support\Str
 
         preg_match("/{$pattern}/i", $string, $matches);
 
-        return ! empty($matches);
+        return !empty($matches);
     }
 
     /**
      * Prepare a JSON string for dropping in HTML.
      * TODO: Tests
      *
-     * @param  string  $json
+     * @param string $json
      *
      * @return string
      */
@@ -284,5 +284,16 @@ class Str extends \Illuminate\Support\Str
     {
         // TODO: Just use {{ json_encode() }} in blade!
         return str_replace('"', '\'', $json);
+    }
+
+    public static function normalizeZipCode(string $zipCode): string
+    {
+        preg_match('/^(\d{4})\s?([a-zA-Z]{2})$/', $zipCode, $matches);
+
+        if (!empty($matches)) {
+            return $matches[1] . mb_strtoupper($matches[2]);
+        }
+
+        return '';
     }
 }

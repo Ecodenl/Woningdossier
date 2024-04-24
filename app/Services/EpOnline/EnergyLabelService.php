@@ -24,9 +24,48 @@ class EnergyLabelService
         $this->client = $epOnline->pandEnergielabel();
     }
 
+    public function getEnergyLabelByAddress(string $zipCode, string $houseNumber, ?string $extension = null): ?string
+    {
+        $attributes = [
+            'postcode' => Str::normalizeZipCode($zipCode),
+            'huisnummer' => $houseNumber,
+        ];
+
+        if (!empty($extension)) {
+            // Extension found, so can be multiple cases, just like in the BagService...
+            $result = $this->attemptFetchingEnergyLabel($attributes + ['huisnummertoevoeging' => $extension]);
+
+            if (empty($result) && strlen($extension) === 1) {
+                $result = $this->attemptFetchingEnergyLabel($attributes + ['huisletter' => $extension]);
+            }
+
+            if (empty($result)) {
+                $extensions = str_split($extension);
+                $filteredExtensions = [];
+                // huisletter should always have a length of 1
+                $huisletter = array_shift($extensions);
+                $huisnummertoevoeging = implode('', $extensions);
+
+                if (!empty($huisletter)) {
+                    $filteredExtensions['huisletter'] = $huisletter;
+                }
+                if (!empty($huisnummertoevoeging)) {
+                    $filteredExtensions['huisnummertoevoeging'] = $huisnummertoevoeging;
+                }
+                $result = $this->attemptFetchingEnergyLabel($attributes + $filteredExtensions);
+            }
+        } else {
+            // The simple case :)
+            $result = $this->attemptFetchingEnergyLabel($attributes);
+        }
+
+        // Result is array wrapped but always only one result...
+        return $result[0]['labelLetter'] ?? null;
+    }
+
     public function getEnergyLabel(): ?string
     {
-        if (! empty($this->building->bag_addressid)) {
+        if (!empty($this->building->bag_addressid)) {
             $result = $this->attemptFetchingEnergyLabel(['id' => $this->building->bag_addressid]);
         }
 
@@ -34,40 +73,7 @@ class EnergyLabelService
         // but not from a BAG ID which is returned from the given address. How that works...???
         if (empty($result)) {
             // Fall back to address in case no BAG ID is available.
-            $attributes = [
-                'postcode' => $this->getNormalizedZipcode(),
-                'huisnummer' => $this->building->number,
-            ];
-
-            if (! empty($this->building->extension)) {
-                $extension = $this->building->extension;
-
-                // Extension found, so can be multiple cases, just like in the BagService...
-                $result = $this->attemptFetchingEnergyLabel($attributes + ['huisnummertoevoeging' => $extension]);
-
-                if (empty($result) && strlen($extension) === 1) {
-                    $result = $this->attemptFetchingEnergyLabel($attributes + ['huisletter' => $extension]);
-                }
-
-                if (empty($result)) {
-                    $extensions = str_split($extension);
-                    $filteredExtensions = [];
-                    // huisletter should always have a length of 1
-                    $huisletter = array_shift($extensions);
-                    $huisnummertoevoeging = implode('', $extensions);
-
-                    if (! empty($huisletter)) {
-                        $filteredExtensions['huisletter'] = $huisletter;
-                    }
-                    if (! empty($huisnummertoevoeging)) {
-                        $filteredExtensions['huisnummertoevoeging'] = $huisnummertoevoeging;
-                    }
-                    $result = $this->attemptFetchingEnergyLabel($attributes + $filteredExtensions);
-                }
-            } else {
-                // The simple case :)
-                $result = $this->attemptFetchingEnergyLabel($attributes);
-            }
+            return $this->getEnergyLabelByAddress($this->getNormalizedZipcode(), $this->building->number, $this->building->extension);
         }
 
         // Result is array wrapped but always only one result...
@@ -115,7 +121,7 @@ class EnergyLabelService
 
         $model = EnergyLabel::where('name', $label)->first();
 
-        if (! $model instanceof EnergyLabel) {
+        if (!$model instanceof EnergyLabel) {
             $model = EnergyLabel::where('name', 'X')->first();
         }
 
@@ -131,7 +137,7 @@ class EnergyLabelService
     private function attemptFetchingEnergyLabel(array $attributes): array
     {
         return Wrapper::wrapCall(
-            fn () => ! empty($attributes['id']) ? $this->client->byId($attributes['id']) : $this->client->byAddress($attributes),
+            fn() => !empty($attributes['id']) ? $this->client->byId($attributes['id']) : $this->client->byAddress($attributes),
             function (Throwable $exception) {
                 $throw = true;
 
@@ -151,17 +157,13 @@ class EnergyLabelService
     }
 
     /**
-     * Normalize the zipcode so it works with the EP API.
+     * Normalize the zipcode for the EP API.
+     *
+     * @return string
      */
-    private function getNormalizedZipcode(): ?string
+    private function getNormalizedZipcode(): string
     {
-        $zipcode = $this->building->postal_code;
-        preg_match('/^(\d{4})\s?([a-zA-Z]{2})$/', $zipcode, $matches);
-
-        if (! empty($matches)) {
-            return $matches[1] . mb_strtoupper($matches[2]);
-        }
-
-        return '';
+        return Str::normalizeZipCode($this->building->postal_code);
     }
+
 }

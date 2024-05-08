@@ -12,7 +12,7 @@
     @endcomponent
 
     @component('cooperation.mail.parts.centered-button', [
-        'href' => route('cooperation.auth.password.reset', ['cooperation' => $userCooperation, 'token' => $token]),
+        'href' => route('cooperation.auth.password.reset', ['cooperation' => $userCooperation, 'token' => $token, 'email' => $account->email]),
         'width' => '200'
     ])
         @lang('cooperation/mail/reset-password.button')
@@ -21,7 +21,7 @@
     @component('cooperation.mail.components.text', ['style' => 'margin-bottom: 0px;'])
         @lang('cooperation/mail/reset-password.button-does-not-work')
         @include('cooperation.mail.parts.long-ahref', [
-            'href' =>  route('cooperation.auth.password.reset', ['cooperation' => $userCooperation, 'token' => $token])
+            'href' =>  route('cooperation.auth.password.reset', ['cooperation' => $userCooperation, 'token' => $token, 'email' => $account->email])
         ])
     @endcomponent
 

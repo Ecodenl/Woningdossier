@@ -22,7 +22,8 @@
                         'inputName' => 'email',
                         'id' => 'email',
                     ])
-                        <input class="form-input" type="text" name="email" id="email" value="{{ old('email') }}"
+                        <input class="form-input" type="text" name="email" id="email"
+                               value="{{ old('email', request()->input('email')) }}"
                                placeholder="@lang('auth.register.form.email')">
                         <i class="icon-sm icon-mail-green absolute right-6 top-5/20"></i>
                     @endcomponent

@@ -23,7 +23,7 @@ class ExternalServiceProvider extends ServiceProvider
         $this->app->bind(LvbagClient::class, function (Application $app) {
             $useProductionEndpoint = true;
             // During testing, we should be mocking, but just in case someone forgets to mock...
-            if ($app->isLocal() || $app->environment('testing')) {
+            if ($app->environment('testing')) {
                 $useProductionEndpoint = false;
             }
             return new LvbagClient(

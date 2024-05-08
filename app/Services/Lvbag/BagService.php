@@ -27,10 +27,23 @@ class BagService
             'exacteMatch' => false,
         ];
 
-        $list = $this->wrapCall(fn () => $this->lvbag->adresUitgebreid()->list($attributes) ?? []);
-        return array_values(array_filter(array_unique(array_map(function ($address) {
-            return trim(($address['huisletter'] ?? '') . ($address['huisnummertoevoeging'] ?? ''));
-        }, $list))));
+        $result = [];
+        $page = 0;
+
+        // We don't know how many extensions an address has. Since pagination is limited to 100, we fetch as many as
+        // we can, but if the result is 100, we will attempt another fetch since there _might_ be more.
+        do {
+            ++$page;
+            $list = $this->wrapCall(fn () => $this->lvbag->adresUitgebreid()->page($page)->pageSize(100)->list($attributes) ?? []);
+            $filtered = array_filter(array_unique(array_map(function ($address) {
+                return trim(($address['huisletter'] ?? '') . ($address['huisnummertoevoeging'] ?? ''));
+            }, $list)));
+            $result = array_merge($result, $filtered);
+        } while (count($filtered) === 100);
+
+        natsort($result);
+
+        return array_values($result);
     }
 
     /**

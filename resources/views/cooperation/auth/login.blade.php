@@ -32,13 +32,21 @@
             <form class="w-full flex flex-wrap justify-center" method="POST"
                   action="{{ route('cooperation.auth.login') }}">
                 @csrf
+
+                @php
+                    $email = null;
+                    if (! empty(($id = request()->input('id')))) {
+                        $email = optional(\App\Models\Account::find($id))->email;
+                    }
+                @endphp
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
                     'class' => 'w-full',
                     'inputName' => 'email',
                     'id' => 'email',
                 ])
-                    <input class="form-input" type="text" name="email" id="email" value="{{ old('email') }}"
+                    <input class="form-input" type="text" name="email" id="email"
+                           value="{{ old('email', $email) }}"
                            placeholder="@lang('auth.login.form.email')">
                     <i class="icon-sm icon-mail-green absolute right-6 top-5/20"></i>
                 @endcomponent

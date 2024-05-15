@@ -3,6 +3,7 @@
 namespace App\Responses;
 
 use App\Helpers\RoleHelper;
+use App\Helpers\Str;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
@@ -22,6 +23,13 @@ class LoginResponse implements \Laravel\Fortify\Contracts\LoginResponse
         $role = Role::findByName($user->roles()->first()->name);
 
         $redirect = 1 == $user->roles->count() ? RoleHelper::getUrlByRole($role) : '/admin';
+
+        $intended = session()->pull('url.intended');
+
+        // If it's the e-mail verify, we will direct them to it.
+        if (! empty($intended) && Str::startsWith(parse_url($intended, PHP_URL_PATH), '/email/verify')) {
+            $redirect = $intended;
+        }
 
         return $request->wantsJson()
             ? response()->json(['two_factor' => false])

@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends \Laravel\Fortify\Http\Controllers\A
             $account = Auth::guard()->getLastAttempted();
 
             if (! $account->isAssociatedWith($cooperation)) {
-                throw ValidationException::withMessages(['cooperation' => [trans('auth.cooperation')]]);
+                throw ValidationException::withMessages(['cooperation' => [__('auth.cooperation')]]);
             }
 
             if (! $account->user()->building instanceof Building) {

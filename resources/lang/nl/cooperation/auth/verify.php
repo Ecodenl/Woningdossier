@@ -11,4 +11,5 @@ return [
 
     'success-log-in' => 'Uw account is bevestigd, u kunt nu inloggen met uw gebruikersnaam en wachtwoord.',
     'success' => 'Uw account is bevestigd, u kunt nu gebruik maken van het Hoomdossier.',
+    'require-auth' => 'Je moet eerst inloggen voordat je jouw e-mailadres kan bevestigen!'
 ];

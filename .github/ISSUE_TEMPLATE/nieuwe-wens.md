@@ -2,7 +2,7 @@
 name: Nieuwe Wens
 about: Geef hier je nieuwe wens aan
 title: ''
-labels: ''
+labels: Nieuwe Wens
 assignees: ''
 
 ---

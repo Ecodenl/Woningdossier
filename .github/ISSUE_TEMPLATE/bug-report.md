@@ -2,7 +2,7 @@
 name: Bug report
 about: Maak een bug rapportage om het Hoomdossier te verbeteren
 title: ''
-labels: ''
+labels: bug
 assignees: ''
 
 ---

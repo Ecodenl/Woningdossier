@@ -90,7 +90,12 @@ class SyncMeasures extends Command
             foreach ($map as $measureApplicationShort => $targetMeasureValues) {
                 $syncData = [];
                 foreach ($targetMeasureValues as $targetMeasureValue) {
-                    $syncData[] = $targetGroups[$targetMeasureValue];
+                    if($targetGroups->has($targetMeasureValue)) {
+                        $syncData[] = $targetGroups[$targetMeasureValue];
+                    }
+                    else {
+                        Log::error("SyncMeasures: Target group key $targetMeasureValue not found for $measureApplicationShort. Will not be synced.");
+                    }
                 }
                 $mappingService
                     ->from(MeasureApplication::findByShort($measureApplicationShort))

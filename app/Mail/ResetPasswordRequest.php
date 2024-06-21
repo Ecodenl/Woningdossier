@@ -15,7 +15,6 @@ class ResetPasswordRequest extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $userCooperation;
-    public $email;
     public $account;
     public $user;
     public $token;
@@ -29,7 +28,6 @@ class ResetPasswordRequest extends Mailable implements ShouldQueue
     {
         $this->onQueue(Queue::APP_HIGH);
         $this->token = $token;
-        $this->email = encrypt($account->email);
         $this->account = $account;
         $this->user = $account->user();
         $this->userCooperation = $cooperation;

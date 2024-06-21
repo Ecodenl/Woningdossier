@@ -62,7 +62,7 @@ class Handler extends ExceptionHandler
             return redirect()->route('index');
         }
 
-        return redirect()->route('cooperation.auth.login', compact('cooperation'));
+        return redirect()->guest($exception->redirectTo() ?? route('cooperation.auth.login', compact('cooperation')));
     }
 
 

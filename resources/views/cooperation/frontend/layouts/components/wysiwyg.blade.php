@@ -7,15 +7,16 @@
     {{ $slot }}
 </div>
 
-{{-- TODO: Use pushonce in L9 --}}
 @if(($withScript ?? true))
-    @push('js')
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                initTinyMCE({
-                    content_css: '{{ asset('css/frontend/tinymce.css') }}',
+    @once
+        @push('js')
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    initTinyMCE({
+                        content_css: '{{ asset('css/frontend/tinymce.css') }}',
+                    });
                 });
-            });
-        </script>
-    @endpush
+            </script>
+        @endpush
+    @endonce
 @endif

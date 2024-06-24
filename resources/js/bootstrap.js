@@ -76,14 +76,34 @@ window.initTinyMCE = function (options = {}) {
     };
 
     let defaultSetup = (editor) => {
+        // When a command is executed
+        editor.on('ExecCommand', function (e) {
+            // Check if it's a list style command without a list style to replace it with a supported style
+            if (['InsertUnorderedList', 'InsertOrderedList'].includes(e.command)) {
+                let regex = e.command === 'InsertUnorderedList' ? /<ul>/ig : /<ol>/ig;
+                let replace = e.command === 'InsertUnorderedList' ? '<ul style="list-style-type:disc;">' : '<ol style="list-style-type:decimal;">';
+
+                // Save the current cursor position
+                let bookmark = editor.selection.getBookmark(2, true);
+
+                let content = editor.getContent();
+                if (regex.test(content)) {
+                    editor.setContent(content.replace(regex, replace));
+                    // Restore the cursor position
+                    editor.selection.moveToBookmark(bookmark);
+                }
+            }
+        });
+
         // Since this config triggers on all tiny editors at once, we manually check on tiny init.
         editor.on('init', (event) => {
             if (editor.targetElm.hasAttribute('disabled')) {
+                // Enable readonly to the editor if the textarea is disabled
                 editor.mode.set('readonly');
             }
         });
         editor.on('change', (event) => {
-            // Save editor (to textarea), then trigger change (to update Livewire).
+            // Save editor (to textarea), then trigger change (to trigger updates for e.g. Livewire).
             editor.save();
             window.triggerEvent(editor.targetElm, 'change');
         });

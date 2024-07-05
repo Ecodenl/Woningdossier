@@ -31,9 +31,19 @@ class BuildingFeatureObserver
                             // No roof types defined yet. Let's set them.
                             $shouldCreate = true;
                         } else {
-                            // There are roof types present. We need to check if the primary one is included. If it's not,
-                            // we delete the other ones, and then built a new one.
-                            if ($secondaryRoofTypes->where('roof_type_id', $roofTypeToLink->id)->count() === 0) {
+                            // There are roof types present. As of right now, there's 3 options. If the primary
+                            // is not EXACTLY the one selected, we ensure it is. This is because if a user goes
+                            // through the quick scan, the example building might set 2 secondary roof types purely
+                            // to ensure values like surface are set (necessary for the calculations).
+                            // However, this means the other one will not be deselected, causing confusion and
+                            // incorrect calculations. Instead, we force to only select a single one. If they
+                            // want to select a second one, they MUST go to the expert scan.
+
+                            // NOTE: The expert scan uses the old saving method, which means it will first save the
+                            // primary roof type (which triggers this observer) and then manually updates the
+                            // building roof types. If the expert scan logic changes, we MUST alter
+                            // the flow of this observer.
+                            if ($secondaryRoofTypes->count() > 1 || $secondaryRoofTypes->where('roof_type_id', $roofTypeToLink->id)->count() === 0) {
                                 // It's not present.
 
                                 // Delete old ones

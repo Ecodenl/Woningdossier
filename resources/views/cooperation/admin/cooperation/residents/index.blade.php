@@ -19,6 +19,7 @@
                                 <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.zip-code')</th>
                                 <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.city')</th>
                                 <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.status')</th>
+                                <th>@lang('cooperation/admin/cooperation/residents.index.table.columns.email-verified')</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -55,6 +56,16 @@
                                             {{$mostRecentBuildingStatus->status->name}}
                                         @endif
                                     </td>
+                                    <td>
+                                        @can('verifyEmail', $user->account)
+                                            <a class="btn btn-success"
+                                               href="{{ route('cooperation.admin.actions.verify-email', ['account' => $user->account]) }}">
+                                                @lang('default.verify')
+                                            </a>
+                                        @else
+                                            {{ is_null($user->account->email_verified_at) ? __('default.no') : $user->account->email_verified_at->format('d-m-Y') }}
+                                        @endcan
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -68,8 +79,7 @@
 @push('js')
     <script>
         $(document).ready(function () {
-
-            var table = $('table');
+            let table = $('table');
             table.DataTable({
                 responsive: true,
                 stateSave: true,
@@ -80,7 +90,8 @@
                     {responsivePriority: 3},
                     {responsivePriority: 4},
                     {responsivePriority: 6},
-                    {responsivePriority: 5}
+                    {responsivePriority: 5},
+                    {responsivePriority: 7}
                 ]
             });
         })

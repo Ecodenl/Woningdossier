@@ -31,6 +31,7 @@ return [
     'from' => 'van',
     'to' => 'tot',
     'for' => 'voor',
+    'verify' => 'Verifiëren',
 
     'progress' => [
         'not-completed' => ':step - deze stap is nog niet afgerond',

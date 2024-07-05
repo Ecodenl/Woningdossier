@@ -11,7 +11,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-responsive ">
+                    <table class="table table-responsive">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.questionnaire-name')</th>
@@ -21,10 +21,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse($questionnaires as $questionnaire)
+                        @foreach($questionnaires as $questionnaire)
                             <tr>
                                 <td>{{$questionnaire->name}}</td>
-                                <td>{{ $questionnaire->steps()->pluck('name')->implode(', ') }}</td> {{-- Step could be hidden, so we optional it --}}
+                                <td>{{ $questionnaire->steps()->pluck('name')->implode(', ') }}</td>
                                 <td>
                                     <input data-active="{{$questionnaire->isActive() ? 'on' : 'off'}}" class="toggle-active" data-questionnaire-id="{{$questionnaire->id}}" type="checkbox" data-toggle="toggle" data-on="Actief" data-off="Niet actief">
                                 </td>
@@ -38,9 +38,7 @@
                                     </button>
                                 </td>
                             </tr>
-                        @empty
-
-                        @endforelse
+                        @endforeach
                         </tbody>
                     </table>
 
@@ -84,7 +82,6 @@
             });
 
             toggleActive.change(function () {
-                console.log($(this));
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

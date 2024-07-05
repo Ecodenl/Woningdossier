@@ -12,6 +12,7 @@ return [
                 'city' => 'Stad',
                 'status' => 'Status',
                 'no-known-created-at' => 'Niet bekend',
+                'email-verified' => 'E-mail geverifieerd',
             ],
         ],
     ],

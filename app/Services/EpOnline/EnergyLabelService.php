@@ -11,6 +11,7 @@ use App\Traits\Services\HasBuilding;
 use Ecodenl\EpOnlinePhpWrapper\EpOnline;
 use Ecodenl\EpOnlinePhpWrapper\Resources\PandEnergielabel;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class EnergyLabelService
@@ -33,6 +34,7 @@ class EnergyLabelService
         // So, byId does NOT give the same results... This means that a label can be found with a given address,
         // but not from a BAG ID which is returned from the given address. How that works...???
         if (empty($result)) {
+            $this->log('No result by BAG ID', [$this->building->id, $this->building->bag_addressid]);
             // Fall back to address in case no BAG ID is available.
             $attributes = [
                 'postcode' => $this->getNormalizedZipcode(),
@@ -70,6 +72,8 @@ class EnergyLabelService
             }
         }
 
+        $this->log('Final result', [$this->building->id, $result]);
+
         // Result is array wrapped but always only one result...
         return $result[0]['labelLetter'] ?? null;
     }
@@ -78,6 +82,8 @@ class EnergyLabelService
     {
         $label = $this->getEnergyLabel();
         $hydratedLabel = $this->hydrateLabel($label);
+
+        $this->log("Syncing energy label", [$this->building->id, $hydratedLabel->id, $hydratedLabel->name]);
 
         // Save label to external.
         BuildingFeature::withoutGlobalScopes()
@@ -107,6 +113,8 @@ class EnergyLabelService
     private function hydrateLabel(?string $label): EnergyLabel
     {
         $label = strtoupper($label);
+
+        $this->log('Found energy label:', [$this->building->id, $label]);
 
         // Convert A++ and A++++ like labels to just A.
         if (Str::startsWith($label, 'A')) {
@@ -163,5 +171,12 @@ class EnergyLabelService
         }
 
         return '';
+    }
+
+    private function log(string $message, array $data = [])
+    {
+        if (config('hoomdossier.services.enable_logging')) {
+            Log::debug($message, $data);
+        }
     }
 }

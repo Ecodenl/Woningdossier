@@ -39,10 +39,10 @@ return [
 
     'services' => [
         'ep_online' => [
-            'secret' => env('EP_ONLINE_API_KEY', '')
+            'secret' => env('EP_ONLINE_API_KEY', ''),
         ],
         'bag' => [
-            'secret' => env('BAG_API_KEY', '')
+            'secret' => env('BAG_API_KEY', ''),
         ],
         'econobis' => [
             'enabled' => env('ECONOBIS_ENABLED', true),
@@ -55,6 +55,7 @@ return [
                 \App\Jobs\Econobis\Out\SendPdfReportToEconobis::class => env('ECONOBIS_INTERVAL_PDF_REPORT', 30),
             ],
         ],
+        'enable_logging' => env('SERVICES_ENABLE_LOGGING', false),
     ],
 
     'webhooks' => [

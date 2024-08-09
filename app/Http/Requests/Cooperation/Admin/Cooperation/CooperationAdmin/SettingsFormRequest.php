@@ -28,6 +28,7 @@ class SettingsFormRequest extends FormRequest
     {
         $rules = [
             'cooperation_settings.' . CooperationSettingHelper::SHORT_REGISTER_URL => ['nullable', 'url'],
+            'cooperation_settings.' . CooperationSettingHelper::SHORT_VERIFICATION_EMAIL_TEXT => ['nullable', 'string'],
         ];
 
         foreach (MediaHelper::getFillableTagsForClass(Cooperation::class) as $tag) {

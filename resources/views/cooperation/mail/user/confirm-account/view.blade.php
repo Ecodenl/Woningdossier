@@ -5,19 +5,18 @@
              'last_name' => $user->last_name
          ])
     @endcomponent
-    <?php
-    $cooperationHoomdossierHref = View::make('cooperation.mail.parts.ahref', ['href' => route('cooperation.home', ['cooperation' => $userCooperation])]);
+    @php
+        $cooperationHoomdossierHref = View::make('cooperation.mail.parts.ahref', ['href' => route('cooperation.home', ['cooperation' => $userCooperation])]);
 
-    $cooperationWebsiteHref = View::make('cooperation.mail.parts.ahref', [
-        'href' => is_null($userCooperation->cooperation_email) ? $userCooperation->website_url : "mailto:" . $userCooperation->cooperation_email,
-    ]);
-    ?>
+        $cooperationWebsiteHref = View::make('cooperation.mail.parts.ahref', [
+            'href' => is_null($userCooperation->cooperation_email) ? $userCooperation->website_url : "mailto:" . $userCooperation->cooperation_email,
+        ]);
+    @endphp
     @component('cooperation.mail.components.text')
         @lang('cooperation/mail/confirm-account.text', [
             'hoomdossier_link' => $cooperationHoomdossierHref,
         ])
     @endcomponent
-
 
     @component('cooperation.mail.parts.centered-button', ['href' => $verifyUrl, 'width' => '200'])
         @lang('cooperation/mail/confirm-account.button')

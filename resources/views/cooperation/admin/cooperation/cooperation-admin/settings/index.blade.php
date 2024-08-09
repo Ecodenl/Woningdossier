@@ -44,23 +44,39 @@
                         </div>
 
                         <div class="row" style="margin-top: 1rem;">
-                            @foreach(CooperationSettingHelper::getAvailableSettings() as $short)
-                                @php 
+                            @foreach(CooperationSettingHelper::getAvailableSettings() as $short => $type)
+                                @php
                                     $kebabShort = Str::kebab(Str::studly($short));
                                     $setting = $cooperationSettings->where('short', $short)->first();
+                                    $colClass = $type === 'input' ? 'col-md-4' : 'col-xs-12';
                                 @endphp
-                                <div class="col-md-4">
+                                <div class="{{ $colClass }}">
                                     @component('layouts.parts.components.form-group', [
                                         'input_name' => "cooperation_settings.{$short}",
                                     ])
                                         <label for="{{$kebabShort}}">
                                             @lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.label")
                                         </label>
-                                        <input id="{{$kebabShort}}" type="text"
-                                               value="{{old("cooperation_settings.{$short}", optional($setting)->value)}}"
-                                               class="form-control"
-                                               placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
-                                               name="cooperation_settings[{{$short}}]">
+                                        <small>
+                                            <br>
+                                            @lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.help")
+                                        </small>
+                                        @switch($type)
+                                            @case('input')
+                                                <input id="{{$kebabShort}}" type="text"
+                                                       value="{{old("cooperation_settings.{$short}", optional($setting)->value)}}"
+                                                       class="form-control"
+                                                       placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
+                                                       name="cooperation_settings[{{$short}}]">
+                                                @break
+                                            @case('textarea')
+                                                <textarea id="{{$kebabShort}}" type="text"
+                                                       class="form-control" rows="10"
+                                                       placeholder="@lang("cooperation/admin/cooperation/cooperation-admin/settings.form.{$kebabShort}.placeholder")"
+                                                       name="cooperation_settings[{{$short}}]"
+                                                >{{old("cooperation_settings.{$short}", optional($setting)->value)}}</textarea>
+                                                @break
+                                        @endswitch
                                     @endcomponent
                                 </div>
                             @endforeach

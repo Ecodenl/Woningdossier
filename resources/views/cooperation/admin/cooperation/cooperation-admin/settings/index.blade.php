@@ -89,7 +89,6 @@
                                 </button>
                             </div>
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -97,3 +96,16 @@
     </div>
 @endsection
 
+@push('js')
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
+            let id = '{{ Str::kebab(Str::studly(CooperationSettingHelper::SHORT_VERIFICATION_EMAIL_TEXT)) }}';
+
+            document.getElementById(id).addEventListener('mousedown', function () {
+                if (! this.value) {
+                    this.value = this.placeholder;
+                }
+            }, {once: true});
+        });
+    </script>
+@endpush

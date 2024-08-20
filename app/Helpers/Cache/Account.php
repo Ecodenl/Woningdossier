@@ -9,12 +9,7 @@ class Account extends BaseCache
     const CACHE_KEY_FIND = 'Account_find_%s';
     const CACHE_KEY_USER = 'Account_user_%s';
 
-    /**
-     * @param int $id
-     *
-     * @return \App\Models\InputSource|null
-     */
-    public static function find($id)
+    public static function find(int $id): ?\App\Models\Account
     {
         return Cache::remember(
             self::getCacheKey(static::CACHE_KEY_FIND, $id),
@@ -25,12 +20,8 @@ class Account extends BaseCache
         );
     }
 
-    public static function user($account)
+    public static function user(\App\Models\Account $account)
     {
-        if (! $account instanceof \App\Models\Account) {
-            $account = self::find($account);
-        }
-
         return Cache::remember(
             self::getCooperationCacheKey(static::CACHE_KEY_USER, $account->id),
             config('hoomdossier.cache.times.default'),
@@ -40,7 +31,7 @@ class Account extends BaseCache
         );
     }
 
-    public static function wipe($id)
+    public static function wipe(int $id): void
     {
         static::clear(self::getCacheKey(static::CACHE_KEY_FIND, $id));
         static::clear(self::getCooperationCacheKey(static::CACHE_KEY_USER, $id));

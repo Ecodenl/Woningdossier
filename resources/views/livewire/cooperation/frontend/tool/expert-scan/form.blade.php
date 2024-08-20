@@ -52,8 +52,11 @@
             let hasWireModel = false;
             for (const attr of target.attributes) {
                 if (attr.name.startsWith('wire:model')) {
-                    hasWireModel = true;
-                    break;
+                    // Ensure we don't trigger updates if it's deferred to maintain defer logic.
+                    if (! attr.name.includes('defer')) {
+                        hasWireModel = true;
+                        break;
+                    }
                 }
             }
 

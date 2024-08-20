@@ -293,6 +293,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 /* Section that a coach, coordinator and cooperation-admin can access */
                 Route::middleware('current-role:cooperation-admin|coach|coordinator')->group(function () {
+                    Route::prefix('actions')->as('actions.')->group(function () {
+                        Route::get('{account}/verify-email', [Cooperation\Admin\ActionController::class, 'verifyEmail'])->name('verify-email');
+                    });
+
                     Route::resource('messages', Cooperation\Admin\MessagesController::class)->only('index');
 
                     Route::prefix('tool')->name('tool.')->group(function () {

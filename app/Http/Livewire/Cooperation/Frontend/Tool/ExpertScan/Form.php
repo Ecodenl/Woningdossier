@@ -103,10 +103,10 @@ class Form extends Scannable
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->data_type === Caster::FLOAT) {
-                $this->filledInAnswers[$toolQuestion->short] = Caster::init(
-                    $toolQuestion->data_type,
-                    $this->filledInAnswers[$toolQuestion->short]
-                )->reverseFormatted();
+                $this->filledInAnswers[$toolQuestion->short] = Caster::init()
+                    ->dataType($toolQuestion->data_type)
+                    ->value($this->filledInAnswers[$toolQuestion->short])
+                    ->reverseFormatted();
             }
         }
 
@@ -126,12 +126,13 @@ class Form extends Scannable
 
             foreach ($this->toolQuestions as $toolQuestion) {
                 if (in_array($toolQuestion->data_type, [Caster::INT, Caster::FLOAT])) {
-                    $this->filledInAnswers[$toolQuestion->short] = Caster::init(
-                        $toolQuestion->data_type,
-                        $this->filledInAnswers[$toolQuestion->short]
-                    )->getFormatForUser();
+                    $this->filledInAnswers[$toolQuestion->short] = Caster::init()
+                        ->dataType($toolQuestion->data_type)
+                        ->value($this->filledInAnswers[$toolQuestion->short])
+                        ->getFormatForUser();
                 }
             }
+
             if ($validator->fails()) {
                 foreach ($validator->errors()->messages() as $field => $messages) {
                     $short = explode('.', $field, 2)[1];
@@ -200,9 +201,10 @@ class Form extends Scannable
                         // this is horseshit but is necessary; the sub steppable component reverseFormats and goes back to human readable
                         // so when we actually start saving it we have to format it one more time
                         if ($toolQuestion->data_type === Caster::FLOAT) {
-                            $givenAnswer = Caster::init(
-                                $toolQuestion->data_type, $givenAnswer
-                            )->reverseFormatted();
+                            $givenAnswer = Caster::init()
+                                ->dataType($toolQuestion->data_type)
+                                ->value($givenAnswer)
+                                ->reverseFormatted();
                         }
 
                         // TODO: this is a horrible way to trace dirty answers
@@ -211,7 +213,8 @@ class Form extends Scannable
                             $dirtyToolQuestions[$toolQuestion->short] = $toolQuestion;
                         }
 
-                        ToolQuestionService::init($toolQuestion)
+                        ToolQuestionService::init()
+                            ->toolQuestion($toolQuestion)
                             ->building($this->building)
                             ->currentInputSource($this->currentInputSource)
                             ->applyExampleBuilding()
@@ -313,7 +316,11 @@ class Form extends Scannable
 
                 // Could be an unused result
                 if ($result instanceof ToolCalculationResult) {
-                    Arr::set($performedCalculations, $resultShort, Caster::init($result->data_type, $value)->getFormatForUser());
+                    Arr::set(
+                        $performedCalculations,
+                        $resultShort,
+                        Caster::init()->dataType($result->data_type)->value($value)->getFormatForUser()
+                    );
                 }
             }
 

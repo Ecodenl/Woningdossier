@@ -131,11 +131,6 @@ abstract class Scannable extends Component
         $conditionsForAllSubSteppables = $this->subSteppables->pluck('conditions')->flatten(1)->filter()->all();
 
         $answers = collect($this->filledInAnswers);
-        // The expert scan has flown over answers. We want to add those for evaluation also, if they exist.
-        // This way, we can reuse this method in both cases.
-        if ($this->hasProperty('intercontinentalAnswers')) {
-            $answers = $answers->merge(collect($this->intercontinentalAnswers));
-        }
 
         $answersForAllSubSteppables = $evaluator->getToolAnswersForConditions(
             $conditionsForAllSubSteppables,

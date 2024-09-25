@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateExampleBuildingContentsTableWithNewServiceId extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -83,4 +83,4 @@ class UpdateExampleBuildingContentsTableWithNewServiceId extends Migration
     public function down()
     {
     }
-}
+};

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable extends Migration
+return new class extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
 
@@ -117,4 +117,4 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
     public function down()
     {
     }
-}
+};

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateToolQuestionCustomValuesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -40,4 +40,4 @@ class CreateToolQuestionCustomValuesTable extends Migration
     {
         Schema::dropIfExists('tool_question_custom_values');
     }
-}
+};

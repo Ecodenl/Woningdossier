@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateKeyFigureHeatPumpCoveragesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -32,4 +32,4 @@ class CreateKeyFigureHeatPumpCoveragesTable extends Migration
     {
         Schema::dropIfExists('key_figure_heat_pump_coverages');
     }
-}
+};

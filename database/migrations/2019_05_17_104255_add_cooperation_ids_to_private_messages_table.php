@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class AddCooperationIdsToPrivateMessagesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -29,4 +29,4 @@ class AddCooperationIdsToPrivateMessagesTable extends Migration
     {
         DB::table('private_messages')->update(['cooperation_id' => null]);
     }
-}
+};

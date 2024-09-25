@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveRoleIdFromBuildingPermissions extends Migration
+return new class extends Migration
 {
     /**
      * Only applies to accept and local currently. So no rollback is required.
@@ -59,4 +59,4 @@ class RemoveRoleIdFromBuildingPermissions extends Migration
                 $table->text('permissions');
             });
     }
-}
+};

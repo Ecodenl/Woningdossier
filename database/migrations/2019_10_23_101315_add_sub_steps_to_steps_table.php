@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class AddSubStepsToStepsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -84,4 +84,4 @@ class AddSubStepsToStepsTable extends Migration
     public function down()
     {
     }
-}
+};

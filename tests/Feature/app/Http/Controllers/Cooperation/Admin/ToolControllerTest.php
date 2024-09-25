@@ -125,11 +125,11 @@ class ToolControllerTest extends TestCase
     public function test_municipality_attaches_and_regulations_refresh_when_accessing_tool_controller(string $routeName)
     {
         $fallbackData = [
-            'street' => $this->faker->streetName,
+            'street' => $this->faker->streetName(),
             'number' => $this->faker->numberBetween(3, 22),
             'city' => 'bubba',
             'extension' => 'd',
-            'postal_code' => $this->faker->postcode,
+            'postal_code' => $this->faker->postcode(),
         ];
     
         Bus::fake([RefreshRegulationsForBuildingUser::class]);

@@ -17,7 +17,7 @@ class AccountFactory extends Factory
         static $password;
 
         return [
-            'email' => $this->faker->email,
+            'email' => $this->faker->email(),
             'password' => $password ?: Hash::make('secret'),
             'email_verified_at' => now(),
             'active' => true,

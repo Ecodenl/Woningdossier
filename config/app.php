@@ -223,14 +223,14 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'Caster' => \App\Helpers\DataTypes\Caster::class,
-        'CooperationSettingHelper' => \App\Helpers\Models\CooperationSettingHelper::class,
-        'Hoomdossier' => \App\Helpers\Hoomdossier::class,
-        'HoomdossierSession' => \App\Helpers\HoomdossierSession::class,
-        'Kengetallen' => \App\Helpers\Kengetallen::class,
-        'MediaHelper' => \App\Helpers\MediaHelper::class,
         'Redis' => Illuminate\Support\Facades\Redis::class,
-        'RoleHelper' => \App\Helpers\RoleHelper::class,
-        'RouteLogic' => \App\Helpers\Blade\RouteLogic::class,
+        'Caster' => App\Helpers\DataTypes\Caster::class,
+        'CooperationSettingHelper' => App\Helpers\Models\CooperationSettingHelper::class,
+        'Hoomdossier' => App\Helpers\Hoomdossier::class,
+        'HoomdossierSession' => App\Helpers\HoomdossierSession::class,
+        'Kengetallen' => App\Helpers\Kengetallen::class,
+        'MediaHelper' => App\Helpers\MediaHelper::class,
+        'RoleHelper' => App\Helpers\RoleHelper::class,
+        'RouteLogic' => App\Helpers\Blade\RouteLogic::class,
     ])->toArray(),
 ];

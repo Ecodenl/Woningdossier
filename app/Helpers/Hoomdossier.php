@@ -19,10 +19,10 @@ class Hoomdossier
      * Check if a column contains a needle, wrapper for stristr.
      *
      * @return bool
+     * @deprecated rather use Str::contains
      */
     public static function columnContains(string $column, string $needle)
     {
-        // TODO: Refactor references to Str::contains
         return false !== stristr($column, $needle);
     }
 
@@ -53,23 +53,23 @@ class Hoomdossier
             'percentage_consumption' => '%',
         ];
 
-        if (static::columnContains($column, 'surface') || static::columnContains($column, 'm2')) {
+        if (Str::contains($column, 'surface') || Str::contains($column, 'm2')) {
             $unit = 'm2';
         }
 
-        if (static::columnContains($column, 'amount_electricity')) {
+        if (Str::contains($column, 'amount_electricity')) {
             $unit = 'kWh';
         }
 
-        if (static::columnContains($column, 'amount_gas')) {
+        if (Str::contains($column, 'amount_gas')) {
             $unit = 'm3';
         }
 
-        if (static::columnContains($column, 'peak_power')) {
+        if (Str::contains($column, 'peak_power')) {
             $unit = 'Wp';
         }
 
-        if (static::columnContains($column, 'angle')) {
+        if (Str::contains($column, 'angle')) {
             $unit = '°';
         }
 

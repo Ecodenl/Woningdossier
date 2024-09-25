@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeInterestedInTypeFromEnumToStringOnUserInterestsTable extends Migration
+return new class extends Migration
 {
     public function __construct()
     {
@@ -31,4 +31,4 @@ class ChangeInterestedInTypeFromEnumToStringOnUserInterestsTable extends Migrati
     public function down()
     {
     }
-}
+};

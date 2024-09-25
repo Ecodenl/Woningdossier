@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class RemoveOldMyPlanWarningsFromLanguageLinesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -26,4 +26,4 @@ class RemoveOldMyPlanWarningsFromLanguageLinesTable extends Migration
     public function down()
     {
     }
-}
+};

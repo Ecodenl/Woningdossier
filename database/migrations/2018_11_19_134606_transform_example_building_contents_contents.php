@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Arr;
 
-class TransformExampleBuildingContentsContents extends Migration
+return new class extends Migration
 {
     /**
      * Transform the example buildings content where needed.
@@ -167,4 +167,4 @@ class TransformExampleBuildingContentsContents extends Migration
         }
         */
     }
-}
+};

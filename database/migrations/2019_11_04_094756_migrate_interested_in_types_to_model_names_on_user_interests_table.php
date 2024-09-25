@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
+return new class extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
 
@@ -83,4 +83,4 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
     public function down()
     {
     }
-}
+};

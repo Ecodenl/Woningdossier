@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -78,4 +78,4 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
 
         DB::table('building_coach_statuses')->where('status', 'in_progress')->delete();
     }
-}
+};

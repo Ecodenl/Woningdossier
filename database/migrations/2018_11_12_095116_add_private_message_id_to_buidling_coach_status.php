@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPrivateMessageIdToBuidlingCoachStatus extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -31,4 +31,4 @@ class AddPrivateMessageIdToBuidlingCoachStatus extends Migration
     {
         // We don't know for sure if the migration has run, so don't do anything.
     }
-}
+};

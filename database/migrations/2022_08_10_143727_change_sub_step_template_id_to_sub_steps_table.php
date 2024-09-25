@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeSubStepTemplateIdToSubStepsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -32,4 +32,4 @@ class ChangeSubStepTemplateIdToSubStepsTable extends Migration
             $table->unsignedBigInteger('sub_step_template_id')->nullable(false)->change();
         });
     }
-}
+};

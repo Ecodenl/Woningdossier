@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class ClearUpUserInterestsTable extends Migration
+return new class extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
 
@@ -67,4 +67,4 @@ class ClearUpUserInterestsTable extends Migration
     public function down()
     {
     }
-}
+};

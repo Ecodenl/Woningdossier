@@ -4,7 +4,7 @@ use App\Models\MeasureApplication;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateKeyFigures extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -51,4 +51,4 @@ class UpdateKeyFigures extends Migration
     public function down()
     {
     }
-}
+};

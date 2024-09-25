@@ -13,7 +13,7 @@ class PvPanelOrientationFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->word;
+        $name = $this->faker->word();
 
         return [
             'name' => ['nl' => $name],

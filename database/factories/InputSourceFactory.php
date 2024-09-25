@@ -13,7 +13,7 @@ class InputSourceFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->word;
+        $name = $this->faker->word();
         $short = \Illuminate\Support\Str::slug($name);
         return [
             'name' => $name,

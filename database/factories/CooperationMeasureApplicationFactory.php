@@ -25,8 +25,8 @@ class CooperationMeasureApplicationFactory extends Factory
             'extra' => [
                 'icon' => 'icon-tools',
             ],
-            'is_extensive_measure' => $this->faker->boolean,
-            'is_deletable' => $this->faker->boolean,
+            'is_extensive_measure' => $this->faker->boolean(),
+            'is_deletable' => $this->faker->boolean(),
         ];
     }
 }

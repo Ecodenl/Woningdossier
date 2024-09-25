@@ -15,7 +15,7 @@ class ElementValueFactory extends Factory
     {
         return [
             'element_id' => \App\Models\Element::factory(),
-            'value' => ['nl' => $this->faker->word],
+            'value' => ['nl' => $this->faker->word()],
             'calculate_value' => $this->faker->randomFloat(2, 0, 100),
             'order' => $this->faker->randomNumber(2),
         ];

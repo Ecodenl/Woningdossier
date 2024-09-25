@@ -18,7 +18,7 @@ class QuestionFactory extends Factory
             'name' => [
                 'nl' => $this->faker->text(80),
             ],
-            'required' => $this->faker->boolean,
+            'required' => $this->faker->boolean(),
             'validation' => [],
         ];
     }

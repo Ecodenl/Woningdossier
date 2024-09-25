@@ -77,11 +77,11 @@ class AuthenticatedSessionControllerTest extends TestCase
     public function test_regulations_refresh_after_municipality_has_been_attached_after_login()
     {
         $fallbackData = [
-            'street' => $this->faker->streetName,
+            'street' => $this->faker->streetName(),
             'number' => $this->faker->numberBetween(3, 22),
             'city' => 'bubba',
             'extension' => 'd',
-            'postal_code' => $this->faker->postcode,
+            'postal_code' => $this->faker->postcode(),
         ];
 
         Bus::fake([RefreshRegulationsForBuildingUser::class]);

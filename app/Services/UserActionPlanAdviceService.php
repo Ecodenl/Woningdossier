@@ -80,7 +80,7 @@ class UserActionPlanAdviceService
                     'regulations_refreshed_at' => Carbon::now(),
                 ]);
             })
-            ->name('Refresh all user his regulations for advices.')
+            ->name('Refresh the user\'s regulations for advices.')
             ->onQueue(Queue::APP_EXTERNAL)
             ->allowFailures()
             ->dispatch();

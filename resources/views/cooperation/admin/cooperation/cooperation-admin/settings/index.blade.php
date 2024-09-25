@@ -9,7 +9,13 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.cooperation.cooperation-admin.settings.store')}}"
+                    @php
+                        $action = isset($cooperationToManage) && $cooperationToManage instanceof \App\Models\Cooperation
+                            ? route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.settings.store', compact('cooperation', 'cooperationToManage'))
+                            : route('cooperation.admin.cooperation.cooperation-admin.settings.store');
+                    @endphp
+
+                    <form action="{{ $action }}"
                           enctype="multipart/form-data" method="post">
                         @csrf
                         <div class="row">

@@ -30,7 +30,7 @@ class SettingsFormRequest extends FormRequest
         $rules = [
             'cooperation_settings.' . CooperationSettingHelper::SHORT_REGISTER_URL => ['nullable', 'url'],
             'cooperation_settings.' . CooperationSettingHelper::SHORT_VERIFICATION_EMAIL_TEXT => [
-                'nullable', 'string', function ($attribute, $value, $fail) {
+                'nullable', 'string', 'max:1000', function ($attribute, $value, $fail) {
                     if (! Str::contains($value, ':verify_link')) {
                         $fail('Tekst moet ":verify_link" bevatten!');
                     } elseif (Str::substrCount($value, ':verify_link') > 1) {

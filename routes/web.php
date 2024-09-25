@@ -33,7 +33,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
         }
 
-        Route::group([], base_path('routes/auth.php'));
+Route::group([], base_path('routes/auth.php'));
 
         Route::view('styleguide', 'cooperation.frontend.styleguide');
         Route::view('input-guide', 'cooperation.frontend.input-guide');
@@ -224,7 +224,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 // Wall Insulation
-                Route::group(['prefix' => 'verwarming', 'as' => 'heating.'], function () {
+                Route::prefix('verwarming')->name('heating.')->group(function () {
                     Route::resource('', Cooperation\Tool\WallInsulationController::class)->only('index', 'store');
                     Route::post('calculate', [Cooperation\Tool\WallInsulationController::class, 'calculate'])->name('calculate');
                 });
